@@ -21,18 +21,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Xml;
 
     public class DCSInterface : BaseUDPInterface, IProfileAwareInterface
     {
-        protected string _dcsPath;
-        protected bool _phantomFix;
-        protected int _phantomLeft;
-        protected int _phantomTop;
-        protected long _nextCheck = 0;
+        private const string SettingsGroup = "DCSInterface";
 
-        protected string _exportDeviceName;
-
+        // do we expect the Export.lua to use a module we did not write?
+        // exported via UsesExportModule property with IPropertyNotification
         protected bool _usesExportModule;
         private static readonly bool DEFAULT_MODULE_USE = false;
 
@@ -40,24 +37,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected string _currentDriver = "";
         protected bool _currentDriverIsModule = false;
 
+        // phantom monitor fix 
+        private DCSPhantomMonitorFix _phantomFix;
+
         // protocol to talk to DCS Export script (control messages)
         protected DCSExportProtocol _protocol;
 
-        public DCSInterface(string name, string exportDeviceName)
+        public DCSInterface(string name, string exportDeviceName, string exportFunctionsPath)
             : base(name)
         {
-            _exportDeviceName = exportDeviceName;
+            VehicleName = exportDeviceName;
+            ExportFunctionsPath = exportFunctionsPath;
             _usesExportModule = DEFAULT_MODULE_USE;
 
             // XXX temp until we get rid of alternate names
             AlternateName = exportDeviceName;
 
-            DCSConfigurator config = new DCSConfigurator(name, DCSPath);
-            Port = config.Port;
-            _phantomFix = config.PhantomFix;
-            _phantomLeft = config.PhantomFixLeft;
-            _phantomTop = config.PhantomFixTop;
+            // make sure we keep our list up to date and don't typo on the name of an export device
+            Debug.Assert(DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
 
+            // create handling for DCS export meta information we handle ourselves
             NetworkTriggerValue activeVehicle = new NetworkTriggerValue(this, "ACTIVE_VEHICLE", "ActiveVehicle", "Vehicle currently inhabited in DCS.", "Short name of vehicle");
             AddFunction(activeVehicle);
             activeVehicle.ValueReceived += ActiveVehicle_ValueReceived;
@@ -73,12 +72,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         #region Events
         // this event indicates that the interface received an indication that a profile that 
         // matches the specified hint should be loaded
-        [field: NonSerialized]
         public event EventHandler<ProfileHint> ProfileHintReceived;
 
         // this event indicates that the interface received an indication that the specified
-        // profile name is loaded on the other side of the interface
-        [field: NonSerialized]
+        // exports are loaded on the other side of the interface
         public event EventHandler<DriverStatus> DriverStatusReceived;
         #endregion
 
@@ -103,6 +100,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
+        /// <summary>
+        /// The vehicle (usually an aircraft) that DCS will report in LoGetSelfData when we are using this interface.
+        /// </summary>
+        public string VehicleName { get; private set; }
+
         // WARNING: there is currently no UI for this feature, because that UI is in a different development branch.
         // this value will be set manually in the XML for testing in this branch of the code
         /// <summary>
@@ -111,37 +113,52 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         public string ImpersonatedVehicleName { get; internal set; }
 
+        // we only support selection based on which vehicle this interface supports
+        public IEnumerable<string> Tags => new string[] { ImpersonatedVehicleName ?? VehicleName };
+
+        /// <summary>
+        /// vehicle-specific file resource to include
+        /// </summary>
+        public string ExportFunctionsPath { get; }
+
         #endregion
 
-        private string DCSPath
+        internal string LoadSetting(string key, string defaultValue)
         {
-            get
+            if (ConfigManager.SettingsManager.IsSettingAvailable(SettingsGroup, key))
             {
-                if (_dcsPath == null)
-                {
-                    RegistryKey pathKey = Registry.CurrentUser.OpenSubKey(@"Software\Eagle Dynamics\DCS World");
-                    if (pathKey != null)
-                    {
-                        _dcsPath = (string)pathKey.GetValue("Path");
-                        pathKey.Close();
-                        ConfigManager.LogManager.LogDebug($"{Name} Interface Editor - Found DCS Path (Path=\"" + _dcsPath + "\")");
-                    }
-                    else
-                    {
-                        _dcsPath = "";
-                    }
-                }
-                return _dcsPath;
+                // get from shared location
+                return ConfigManager.SettingsManager.LoadSetting(SettingsGroup, key, defaultValue);
+            }
+            else
+            {
+                // get from legacy location
+                return ConfigManager.SettingsManager.LoadSetting(Name, key, defaultValue);
             }
         }
 
-        // we only support selection based on which vehicle this interface supports
-        public IEnumerable<string> Tags
+        internal T LoadSetting<T>(string key, T defaultValue)
         {
-            get
+            if (ConfigManager.SettingsManager.IsSettingAvailable(SettingsGroup, key))
             {
-                return new string[] { ImpersonatedVehicleName ?? _exportDeviceName };
+                // get from shared location, using LoadSetting<T>
+                return ConfigManager.SettingsManager.LoadSetting(SettingsGroup, key, defaultValue);
             }
+            else
+            {
+                // get from legacy location, using LoadSetting<T>
+                return ConfigManager.SettingsManager.LoadSetting(Name, key, defaultValue);
+            }
+        }
+
+        internal void SaveSetting(string key, string value)
+        {
+            ConfigManager.SettingsManager.SaveSetting(SettingsGroup, key, value);
+        }
+
+        internal void SaveSetting<T>(string key, T value)
+        {
+            ConfigManager.SettingsManager.SaveSetting(SettingsGroup, key, value);
         }
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
@@ -161,21 +178,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         void Profile_Tick(object sender, EventArgs e)
         {
-            if (_phantomFix && System.Environment.TickCount - _nextCheck >= 0)
+            if (_phantomFix != null)
             {
-                System.Diagnostics.Process[] dcs = System.Diagnostics.Process.GetProcessesByName("DCS");
-                if (dcs.Length == 1)
-                {
-                    IntPtr hWnd = dcs[0].MainWindowHandle;
-                    NativeMethods.Rect dcsRect;
-                    NativeMethods.GetWindowRect(hWnd, out dcsRect);
-
-                    if (dcsRect.Width > 640 && (dcsRect.Left != _phantomLeft || dcsRect.Top != _phantomTop))
-                    {
-                        NativeMethods.MoveWindow(hWnd, _phantomLeft, _phantomTop, dcsRect.Width, dcsRect.Height, true);
-                    }
-                }
-                _nextCheck = System.Environment.TickCount + 5000;
+                _phantomFix.Profile_Tick(sender, e);
             }
         }
 
@@ -217,14 +222,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
             else
             {
-                if ((!_currentDriverIsModule) && (_exportDeviceName == _currentDriver))
+                if ((!_currentDriverIsModule) && (VehicleName == _currentDriver))
                 {
                     // already in correct state
                     // but we let our UI know
                     DriverStatusReceived?.Invoke(this, new DriverStatus() { ExportDriver = _currentDriver });
                     return;
                 }
-                _protocol.SendDriverRequest(_exportDeviceName);
+                _protocol.SendDriverRequest(VehicleName);
             }
         }
 
@@ -236,7 +241,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         protected override void OnProfileStarted()
         {
-            _protocol = new DCSExportProtocol(this, Profile);
+            // these parts are only used at run time (i.e. not in the Profile Editor)
+            _protocol = new DCSExportProtocol(this, Profile.Dispatcher);
+            _phantomFix = new DCSPhantomMonitorFix(this);
         }
 
         protected override void OnProfileStopped()

@@ -16,14 +16,10 @@
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
 {
     using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Interfaces.DCS.FA18C.Functions;
-    //using GadrocsWorkshop.Helios.Interfaces.DCS.FA18C;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using Microsoft.Win32;
-    using System;
+    using GadrocsWorkshop.Helios.Interfaces.DCS.FA18C.Functions;
 
-    [HeliosInterface("Helios.FA18C", "DCS F/A-18C", typeof(FA18CInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.FA18C", "DCS F/A-18C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class FA18CInterface : DCSInterface
     {
         #region Devices
@@ -102,7 +98,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
         #endregion
 
         public FA18CInterface()
-            : base("DCS F/A-18C", "FA-18C_hornet")
+            : base("DCS F/A-18C", "FA-18C_hornet", "pack://application:,,,/Helios;component/Interfaces/DCS/FA18C/ExportFunctions.lua")
         {
             #region Caution Indicators
             // Caution Light Indicator Panel

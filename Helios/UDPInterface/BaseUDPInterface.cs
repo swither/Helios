@@ -385,7 +385,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         public BaseUDPInterface(string name)
             : base(name)
         {
-            // const
             _socketDataCallback = new AsyncCallback(OnDataReceived);
 
             _main.ConnectedTrigger = new HeliosTrigger(this, "", "", "Connected", "Fired on DCS connect.");

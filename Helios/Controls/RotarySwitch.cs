@@ -768,15 +768,19 @@ namespace GadrocsWorkshop.Helios.Controls
                 SwipeSensitivity = 0d;
             }
 
-            try
+            if (reader.Name == "MouseWheel")
             {
-                bool mw;
-                bool.TryParse(reader.ReadElementString("MouseWheel"), out mw);
-                MouseWheelAction = mw;
-            }
-            catch 
-            {
-                MouseWheelAction = true;
+                try
+                {
+
+                    bool mw;
+                    bool.TryParse(reader.ReadElementString("MouseWheel"), out mw);
+                    MouseWheelAction = mw;
+                }
+                catch 
+                {
+                    MouseWheelAction = true;
+                }
             }
 
             BeginTriggerBypass(true);

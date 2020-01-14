@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GadrocsWorkshop.Helios.UDPInterface;
+using System;
 using System.Timers;
-using GadrocsWorkshop.Helios.ProfileAwareInterface;
-using GadrocsWorkshop.Helios.UDPInterface;
+using System.Windows.Threading;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     public class DCSExportProtocol
     {
-        private HeliosProfile _profile;
+        private Dispatcher _dispatcher;
         private RetriedRequest _requestExport;
         private string _requestedExports;
 
         public class RetriedRequest
         {
-            private HeliosProfile _profile;
+            private Dispatcher _dispatcher;
             private BaseUDPInterface _udp;
 
             private string _request;
@@ -27,9 +23,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             private int _retryLimit;
 
-            public RetriedRequest(UDPInterface.BaseUDPInterface udp, HeliosProfile profile)
+            public RetriedRequest(UDPInterface.BaseUDPInterface udp, Dispatcher dispatcher)
             {
-                _profile = profile;
+                _dispatcher = dispatcher;
                 _udp = udp;
 
                 // REVISIT: configurable?
@@ -74,7 +70,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             private void Timer_Elapsed(object sender, ElapsedEventArgs e)
             {
                 // if profile is unloaded, do nothing
-                _profile?.Dispatcher.Invoke((Action)OnRetry, System.Windows.Threading.DispatcherPriority.Normal);
+                _dispatcher?.Invoke((Action)OnRetry, System.Windows.Threading.DispatcherPriority.Normal);
             }
 
             private void OnRetry()
@@ -103,10 +99,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        public DCSExportProtocol(UDPInterface.BaseUDPInterface udp, HeliosProfile profile)
+        public DCSExportProtocol(UDPInterface.BaseUDPInterface udp, Dispatcher dispatcher)
         {
-            _profile = profile;
-            _requestExport = new RetriedRequest(udp, profile);
+            _dispatcher = dispatcher;
+            _requestExport = new RetriedRequest(udp, _dispatcher);
         }
 
         public void SendDriverRequest(string driverShortName)
