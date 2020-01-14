@@ -17,6 +17,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C.Functions
 {
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
+    using GadrocsWorkshop.Helios.Util;
     using System;
     using System.Collections.ObjectModel;
     using System.Globalization;
@@ -51,18 +52,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C.Functions
 
         public override void ProcessNetworkData(string id, string value)
         {
-            string[] parts = value.Split(';');
+            string[] parts = Tokenizer.TokenizeAtLeast(value, 3, ';');
 
             if (id == _altID)
             {
                 double altitude = ClampedParse(parts[0], 10000d) + ClampedParse(parts[1], 1000d) + Parse(parts[2], 100d);
-                //ConfigManager.LogManager.LogDebug("F/A-18C Interface Argument " + id.ToString() + " value = " + altitude.ToString());
                 _altitude.SetValue(new BindingValue(altitude), false);
             }
             else if (id == _pressID)
             {
                 double pressure = ClampedParse(parts[0], 1d, 26d, 5d) + ClampedParse(parts[1], .1d) + ClampedParse(parts[2], .01d);
-                //ConfigManager.LogManager.LogDebug("F/A-18C Interface Argument " + id.ToString() + " value = " + pressure.ToString());
                 _pressure.SetValue(new BindingValue(pressure), false);
             } else
             {

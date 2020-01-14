@@ -17,6 +17,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
 {
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
+    using GadrocsWorkshop.Helios.Util;
     using System;
     using System.Globalization;
 
@@ -56,7 +57,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
             switch (id)
             {
                 case "2263":
-                    string[] parts = value.Split(';');
+                    string[] parts = Tokenizer.TokenizeAtLeast(value, 3, ';');
                     _hundreds = ClampedParse(parts[0], 100d);
                     _tens = ClampedParse(parts[1], 10d);
                     _ones = ClampedParse(parts[2], 1d);

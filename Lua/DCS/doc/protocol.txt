@@ -1,0 +1,160 @@
+title Helios Auto Start (https://sequencediagram.org/)
+actor User
+participant Helios
+participant Export
+
+group 1: Helios using its own exports
+
+Export->Export:EnterVehicle(A-10C)
+Export->Export:LoadModule(Helios_A10C)
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveModule(Helios_A10C)
+User->Helios:StartProfile(my_F18_profile_name)
+Helios->Export:RequestDriver(FA-18C_hornet)
+Helios<-Export:ActiveVehicle(A-10C)
+Helios<-Export:ActiveModule(Helios_A10C)
+Helios->Helios:AutoStartProfile(my_A10_profile_name)
+note over Helios: Most recent A-10C profile uses Helios exports
+Helios->Export:RequestDriver(A-10C)
+Export->Export:SwitchFromModuleToDriver
+Helios<-Export:ActiveVehicle(A-10C)
+Helios<-Export:ActiveDriver(A-10C)
+
+end
+
+group 1b: Helios using its own exports (CZ profile active)
+
+Export->Export:EnterVehicle(A-10C)
+Export->Export:LoadModule(Helios_A10C)
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveModule(Helios_A10C)
+User->Helios:StartProfile(CaptZeenF18C)
+Helios->Export:RequestModule()
+Helios<-Export:ActiveVehicle(A-10C)
+Helios->Helios:AutoStartProfile(my_A10_profile_name)
+Helios<-Export:ActiveModule(Helios_A10C)
+note over Helios: Most recent A-10C profile uses Helios exports
+Helios->Export:RequestDriver(A-10C)
+Export->Export:SwitchFromModuleToDriver
+Helios<-Export:ActiveVehicle(A-10C)
+Helios<-Export:ActiveDriver(A-10C)
+
+end
+
+group 2: Helios using Capt Zeen profile
+
+Export->Export:EnterVehicle(A-10C)
+Export->Export:LoadModule(Helios_A10C)
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveModule(Helios_A10C)
+User->Helios:StartProfile(my_F18_profile_name)
+Helios->Export:RequestDriver(FA-18C_hornet)
+Helios<-Export:ActiveVehicle(A-10C)
+Helios->Helios:AutoStartProfile(CaptZeenA10C)
+Helios<-Export:ActiveModule(Helios_A10C)
+note over Helios: Most recent A-10C profile is Capt Zeen profile
+
+end
+
+group 2b: Helios active profile is Capt Zeen profile 
+
+Export->Export:EnterVehicle(A-10C)
+Export->Export:LoadModule(Helios_A10C)
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveModule(Helios_A10C)
+User->Helios:StartProfile(CaptZeenF18C)
+Helios->Export:RequestModule()
+Helios<-Export:ActiveVehicle(A-10C)
+Helios->Helios:AutoStartProfile(CaptZeenA10C)
+Helios<-Export:ActiveModule(Helios_A10C)
+note over Helios: Most recent A-10C profile is Capt Zeen profile
+
+end
+
+group 3: Legacy Helios running Capt Zeen profile
+
+Export->Export:EnterVehicle(A-10C)
+Export->Export:LoadModule(Helios_A10C)
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveModule(Helios_A10C)
+User->Helios:StartProfile(CaptZeenA10C)
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveModule(Helios_A10C)
+note over Helios: Works as today
+
+end
+
+group 4: Legacy Helios running Profile with its own Exports
+
+Export->Export:EnterVehicle(FA-18C_hornet)
+Export-xExport:LoadModule(FA-18C_hornet)
+note over Export:must not have matching module installed for this to work
+Export->Export:LoadDriver(FA-18C_hornet)
+Heliosx-Export:ActiveVehicle(FA-18C_hornet)
+Heliosx-Export:ActiveDriver(FA-18C_hornet)
+User->Helios:StartProfile(my_F18_profile_name)
+Heliosx-Export:ActiveVehicle(FA-18C_hornet)
+Heliosx-Export:ActiveDriver(FA-18C_hornet)
+note over Helios: Works as today
+
+end
+
+group 5: Helios with Autoload disabled running Profile with its own Exports
+
+Export->Export:EnterVehicle(FA-18C_hornet)
+Export->Export:LoadModule(FA-18C_hornet)
+Heliosx-Export:ActiveVehicle(FA-18C_hornet)
+Heliosx-Export:ActiveModule(Helios_FA18C)
+User->Helios:StartProfile(my_F18_profile_name)
+Helios->Export:RequestDriver(FA-18C_hornet)
+Export->Export:SwitchFromModuleToDriver
+Helios<-Export:ActiveVehicle(FA-18C_hornet)
+Helios<-Export:ActiveDriver(FA-18C_hornet)
+
+end
+
+group 100: Legacy Helios running wrong profile
+
+Export->Export:EnterVehicle(A-10C)
+Export->Export:LoadModule(Helios_A10C)
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveModule(Helios_A-10C)
+User->Helios:StartProfile(my_F18_profile_name)
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveModule(Helios_A-10C)
+note over Helios: Fails just as it does today
+
+end
+
+group 101: Case 1 Implementation Detail
+
+Export->Export:handleSelfNameChange(A-10C)
+activate Export
+Export->Export:loadModule(Helios_A10C)
+deactivate Export
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveModule(Helios_A10C)
+User->Helios:StartProfile(my_F18_profile_name)
+activate Helios
+Helios->Export:RequestDriver(FA-18C_hornet)
+deactivate Helios
+Helios<-Export:ActiveVehicle(A-10C)
+activate Helios
+User<-Helios:UpdateStatusMessage
+Helios<-Export:ActiveModule(Helios_A10C)
+note over Helios: Module status not used here, already auto starting
+User<-Helios:UpdateStatusMessage
+Helios->Helios:AutoStartProfile(my_A10_profile_name)
+User<-Helios:UpdateStatusMessage
+note over Helios: UsesExportModule==false
+Helios->Export:RequestDriver(A-10C)
+deactivate Helios
+activate Export
+Export->Export:loadDriver(A-10C)
+Helios<-Export:ActiveVehicle(A-10C)
+User<-Helios:UpdateStatusMessage
+Helios<-Export:ActiveDriver(A-10C)
+User<-Helios:UpdateStatusMessage
+deactivate Export
+
+end

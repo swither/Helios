@@ -15,6 +15,7 @@
 
 namespace GadrocsWorkshop.Helios
 {
+    using GadrocsWorkshop.Helios.Util;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -411,11 +412,11 @@ namespace GadrocsWorkshop.Helios
             string[] components;
             if (reference.StartsWith("{"))
             {
-                components = reference.Substring(1, reference.Length - 2).Split(';');
+                components = Tokenizer.TokenizeAtLeast(reference.Substring(1, reference.Length - 2), 4, ';');
             }
             else
             {
-                components = reference.Split(';');
+                components = Tokenizer.TokenizeAtLeast(reference, 4, ';');
             }
             string refType = components[0];
             string path = components[1];

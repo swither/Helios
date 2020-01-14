@@ -133,6 +133,8 @@
     <Compile Include="Gauges\M2000C\Miscellaneous\FireWarning_Panel.cs" />
     <Compile Include="Gauges\M2000C\Miscellaneous\PCI_Panel.cs" />
     <Compile Include="Gauges\M2000C\VorIlsChannel\VorIls_Panel.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSExportProtocol.cs" />
+    <Compile Include="IProfileAwareInterface.cs" />
     <Compile Include="Interfaces\DCS\Common\SilentValueConsumer.cs" />
     <Compile Include="NonClickableZone.cs" />
     <Compile Include="Collections\HeliosObjectCollection.cs" />
@@ -576,6 +578,9 @@
     <Compile Include="Interfaces\DCS\AV8B\Functions\SMCFuzeDisplay.cs" />
     <Compile Include="Interfaces\DCS\Common\DualNetworkValue.cs" />
     <Compile Include="Interfaces\DCS\Common\DualRocker.cs" />
+    <Compile Include="UDPInterface\NetworkTriggerValue.cs" />
+    <Compile Include="UDPInterface\NetworkTrigger.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSInterface.cs" />
     <Compile Include="Interfaces\DCS\F14B\F14BInterface.cs" />
     <Compile Include="Interfaces\DCS\F14B\F14BInterfaceEditor.xaml.cs">
       <DependentUpon>F14BInterfaceEditor.xaml</DependentUpon>
@@ -732,6 +737,7 @@
     <Compile Include="UnitConverters\TimeConverter.cs" />
     <Compile Include="Units\NozzlePositionPercentUnit.cs" />
     <Compile Include="Units\NozzlePositionUnit.cs" />
+    <Compile Include="Util\Tokenizer.cs" />
     <Compile Include="Windows\Controls\AnalogBar.cs" />
     <Compile Include="Windows\Controls\AxisBar.cs" />
     <Compile Include="Windows\Controls\ButtonIndicator.cs" />

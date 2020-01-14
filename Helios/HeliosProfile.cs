@@ -16,11 +16,13 @@
 namespace GadrocsWorkshop.Helios
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Windows.Threading;
 
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.ProfileAwareInterface;
 
     public class HeliosProfile : NotificationObject
     {
@@ -33,11 +35,11 @@ namespace GadrocsWorkshop.Helios
         private string _name = "Untitled";
         private string _path = "";
         DateTime _loadTime;
-
         Dispatcher _dispatcher = null;
 
         private MonitorCollection _monitors = new MonitorCollection();
         private HeliosInterfaceCollection _interfaces = new HeliosInterfaceCollection();
+        private HashSet<string> _tags = new HashSet<string>();
 
         public HeliosProfile() : this(true)
         {
@@ -76,6 +78,18 @@ namespace GadrocsWorkshop.Helios
         public event EventHandler ProfileStopped;
         public event EventHandler ProfileTick;
 
+        // this event indicates that some interface received an indication that a profile that 
+        // matches the specified hint should be loaded
+        public event EventHandler<ProfileHint> ProfileHintReceived;
+
+        // this event indicates that some interface received an indication that the specified
+        // export driver name is loaded on the other side of the interface
+        public event EventHandler<DriverStatus> DriverStatusReceived;
+
+        // this event indicates that some interface may have connected to a different endpoint
+        // than before
+        public event EventHandler<ProfileAwareInterface.ClientChange> ClientChanged;
+
         #region Properties
 
         public Dispatcher Dispatcher
@@ -93,6 +107,14 @@ namespace GadrocsWorkshop.Helios
                     _dispatcher = value;
                     OnPropertyChanged("Dispatcher", oldValue, value, false);
                 }
+            }
+        }
+
+        public IEnumerable<string> Tags
+        {
+            get
+            {
+                return _tags;
             }
         }
 
@@ -295,7 +317,21 @@ namespace GadrocsWorkshop.Helios
                 ConfigManager.LogManager.LogInfo("Profile starting. (Name=\"" + Name + "\")");
                 OnProfileStarted();
                 IsStarted = true;
+                RequestProfileSupport();
                 ConfigManager.LogManager.LogInfo("Profile started. (Name=\"" + Name + "\")");
+            }
+        }
+
+        public void RequestProfileSupport()
+        {
+            // any interfaces that care should now provide information for the newly loaded profile
+            string shortName = System.IO.Path.GetFileNameWithoutExtension(Path);
+            foreach (HeliosInterface heliosInterface in _interfaces)
+            {
+                if (heliosInterface is IProfileAwareInterface profileAware)
+                {
+                    profileAware.RequestDriver(shortName);
+                }
             }
         }
 
@@ -362,24 +398,61 @@ namespace GadrocsWorkshop.Helios
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add ||
                 e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace)
             {
-                    foreach (HeliosInterface heliosInterface in e.NewItems)
+                foreach (HeliosInterface heliosInterface in e.NewItems)
+                {
+                    heliosInterface.Profile = this;
+                    heliosInterface.ReconnectBindings();
+                    heliosInterface.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+                    if (heliosInterface is IProfileAwareInterface profileAware)
                     {
-                        heliosInterface.Profile = this;
-                        heliosInterface.ReconnectBindings();
-                        heliosInterface.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+                        profileAware.ProfileHintReceived += Interface_ProfileHintReceived;
+                        profileAware.DriverStatusReceived += Interface_DriverStatusReceived;
+                        profileAware.ClientChanged += Interface_ClientChanged;
+                        _tags.UnionWith(profileAware.Tags);
                     }
+                }
             }
 
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove ||
                 e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace)
             {
-                    foreach (HeliosInterface heliosInterface in e.OldItems)
+                foreach (HeliosInterface heliosInterface in e.OldItems)
+                {
+                    heliosInterface.Profile = null;
+                    heliosInterface.DisconnectBindings();
+                    heliosInterface.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+                    if (heliosInterface is IProfileAwareInterface profileAware)
                     {
-                        heliosInterface.Profile = null;
-                        heliosInterface.DisconnectBindings();
-                        heliosInterface.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+                        profileAware.ProfileHintReceived -= Interface_ProfileHintReceived;
+                        profileAware.DriverStatusReceived -= Interface_DriverStatusReceived;
+                        profileAware.ClientChanged -= Interface_ClientChanged;
                     }
+                }
+                // reindex all tags, since we have no way of removing non-unique ones
+                _tags.Clear();
+                foreach (HeliosInterface heliosInterface in _interfaces)
+                {
+                    if (heliosInterface is IProfileAwareInterface profileAware)
+                    {
+                        _tags.UnionWith(profileAware.Tags);
+                    }
+                }
             }
+        }
+
+        private void Interface_DriverStatusReceived(object sender, DriverStatus e)
+        {
+            DriverStatusReceived?.Invoke(this, e);
+        }
+
+        private void Interface_ProfileHintReceived(object sender, ProfileHint e)
+        {
+            ProfileHintReceived?.Invoke(this, e);
+        }
+
+        private void Interface_ClientChanged(object sender, ProfileAwareInterface.ClientChange e)
+        {
+            ClientChanged?.Invoke(this, e);
         }
 
         void Monitors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

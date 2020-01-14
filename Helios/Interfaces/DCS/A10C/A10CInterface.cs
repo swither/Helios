@@ -23,16 +23,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
     using System;
 
     [HeliosInterface("Helios.A10C", "DCS A-10C", typeof(A10CInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    public class A10CInterface : BaseUDPInterface
+    public class A10CInterface : DCSInterface
     {
-        private string _dcsPath;
-
-        private bool _phantomFix;
-        private int _phantomLeft;
-        private int _phantomTop;
-
-        private long _nextCheck = 0;
-
         #region Devices
         private const string ELEC_INTERFACE = "1";
         private const string MFCD_LEFT = "2";
@@ -151,16 +143,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         #endregion
 
         public A10CInterface()
-            : base("DCS A10C")
+            : base("DCS A10C", "A-10C")
         {
             AlternateName = "A-10C";  // this is the name that DCS uses to describe the aircraft being flown
-            DCSConfigurator config = new DCSConfigurator("DCSA10C", DCSPath);
-            config.ExportConfigPath = "Config\\Export";
-            config.ExportFunctionsPath = "pack://application:,,,/Helios;component/Interfaces/DCS/A10C/ExportFunctions.lua";
-            Port = config.Port;
-            _phantomFix = config.PhantomFix;
-            _phantomLeft = config.PhantomFixLeft;
-            _phantomTop = config.PhantomFixTop;
 
             #region Indexers
             AddFunction(new FlagValue(this, "540", "AOA Indexer", "High Indicator", "High AOA indicator light."));
@@ -970,62 +955,5 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 			
 			AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_10, "733", "1", "Disarmed", "0", "Armed", "Mechanical", "Seat Arm Handle", "%1d"));
         }
-
-        private string DCSPath
-        {
-            get
-            {
-                if (_dcsPath == null)
-                {
-                    RegistryKey pathKey = Registry.CurrentUser.OpenSubKey(@"Software\Eagle Dynamics\DCS World");
-                    if (pathKey != null)
-                    {
-                        _dcsPath = (string)pathKey.GetValue("Path");
-                        pathKey.Close();
-                        ConfigManager.LogManager.LogDebug("DCS A-10C Interface Editor - Found DCS Path (Path=\"" + _dcsPath + "\")");
-                    }
-                    else
-                    {
-                        _dcsPath = "";
-                    }
-                }
-                return _dcsPath;
-            }
-        }
-
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
-        {
-            base.OnProfileChanged(oldProfile);
-
-            if (oldProfile != null)
-            {
-                oldProfile.ProfileTick -= Profile_Tick;
-            }
-
-            if (Profile != null)
-            {
-                Profile.ProfileTick += Profile_Tick;
-            }
-        }
-
-        void Profile_Tick(object sender, EventArgs e)
-        {
-            if (_phantomFix && System.Environment.TickCount - _nextCheck >= 0)
-            {
-                System.Diagnostics.Process[] dcs = System.Diagnostics.Process.GetProcessesByName("DCS");
-                if (dcs.Length == 1)
-                {
-                    IntPtr hWnd = dcs[0].MainWindowHandle;
-                    NativeMethods.Rect dcsRect;
-                    NativeMethods.GetWindowRect(hWnd, out dcsRect);
-
-                    if (dcsRect.Width > 640 && (dcsRect.Left != _phantomLeft || dcsRect.Top != _phantomTop))
-                    {
-                        NativeMethods.MoveWindow(hWnd, _phantomLeft, _phantomTop, dcsRect.Width, dcsRect.Height, true);
-                    }
-                }
-                _nextCheck = System.Environment.TickCount + 5000;
-            }
-        }
-    }
+     }
 }

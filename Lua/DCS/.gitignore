@@ -1,0 +1,3 @@
+lua/
+Scripts/liblua.dll
+Scripts\Helios\Mods\*.lua

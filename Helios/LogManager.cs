@@ -80,7 +80,7 @@ namespace GadrocsWorkshop.Helios
         private void WriteLogMessage(LogLevel level, string message, Exception exception)
         {
 #if DEBUG
-            Console.WriteLine(message);
+            Console.WriteLine($"{DateTime.Now.ToString()} {level.ToString()}: {message}");
 #endif
             if (_level >= level)
             {

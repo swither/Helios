@@ -17,6 +17,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
 {
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
+    using GadrocsWorkshop.Helios.Util;
     using System;
     using System.Globalization;
 
@@ -41,7 +42,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
 
         public override void ProcessNetworkData(string id, string value)
         {
-            string[] parts = value.Split(';');
+            string[] parts = Tokenizer.TokenizeAtLeast(value, 3, ';');
 
             double tenThousands = ClampedParse(parts[0], 10000d);
             double thousands = ClampedParse(parts[1], 1000d);

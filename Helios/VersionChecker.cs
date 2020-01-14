@@ -21,6 +21,7 @@ namespace GadrocsWorkshop.Helios
     using System.Xml;
     using System.Net;
     using System.IO;
+    using GadrocsWorkshop.Helios.Util;
 
     public static class VersionChecker
     {
@@ -191,7 +192,7 @@ namespace GadrocsWorkshop.Helios
 
         private static Version ToVersion(string strVersion)
         {
-            string[] _ver = strVersion.Split('.');
+            string[] _ver = Tokenizer.TokenizeAtLeast(strVersion, 4, '.');
             Version Ver = new Version(Convert.ToInt32(_ver[0]), Convert.ToInt32(_ver[1]), Convert.ToInt32(_ver[2]), Convert.ToInt32(_ver[3]));
             return Ver;
         }

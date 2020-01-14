@@ -324,8 +324,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Phidgets
                     string leds = reader.ReadElementString("Leds");
                     if (!string.IsNullOrWhiteSpace(leds))
                     {
-                        string[] ledSplit = leds.Split(',');
-                        foreach (string led in ledSplit)
+                        foreach (string led in leds.Split(','))
                         {
                             group.Leds.Add(int.Parse(led, CultureInfo.InvariantCulture));
                         }

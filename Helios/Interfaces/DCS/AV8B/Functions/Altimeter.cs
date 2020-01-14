@@ -17,6 +17,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
 {
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
+    using GadrocsWorkshop.Helios.Util;
     using System;
     using System.Collections.ObjectModel;
     using System.Globalization;
@@ -51,9 +52,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
 
         public override void ProcessNetworkData(string id, string value)
         {
-            string[] parts = value.Split(';');
+            string[] parts;
 
             if (id == _altID) {
+                parts = Tokenizer.TokenizeAtLeast(value, 3, ';');
                 double tenThousands = ClampedParse(parts[0], 10000d);
                 double thousands = ClampedParse(parts[1], 1000d);
                 double hundreds = Parse(parts[2], 100d);
@@ -62,6 +64,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
                 _altitude.SetValue(new BindingValue(altitude), false);
             }
             else if (id == _pressID) {
+                parts = Tokenizer.TokenizeAtLeast(value, 4, ';');
                 double tens = ClampedParse(parts[0], 10d);
                 double ones = ClampedParse(parts[1], 1d);
                 double tenths = ClampedParse(parts[2], .1d);

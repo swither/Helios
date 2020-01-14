@@ -22,24 +22,23 @@ namespace GadrocsWorkshop.Helios.Controls
     public class CustomGaugeRenderer : HeliosVisualRenderer
     {
         private ImageSource _image, _bgplate_image;
+
+        // XXX why is this here, it is never used?
         private ImageBrush _brush;
+
         private Rect _imageRect, _bgplate_imageRect;
         private Point _center, _punto;
         private Brush _scopeBrush;
 
-       
-
         protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
         {
-        _scopeBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-        Pen _scopePen = new Pen(_scopeBrush, 1d);
-
+            _scopeBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            Pen _scopePen = new Pen(_scopeBrush, 1d);
 
             CustomNeedle customNeedle = Visual as CustomNeedle;
             if (customNeedle != null)
             {
                 drawingContext.DrawImage(_bgplate_image, _bgplate_imageRect);
-
                 drawingContext.PushTransform(new RotateTransform(customNeedle.KnobRotation, _center.X, _center.Y));
                 drawingContext.DrawImage(_image, _imageRect);
                 drawingContext.DrawLine(_scopePen, _center, _punto); //draw rotation point for reference
@@ -49,23 +48,27 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRefresh()
         {
-
-           
             CustomGauge customGauge = Visual as CustomGauge;  // ----------BG plate
             CustomNeedle customNeedle = Visual as CustomNeedle;   // ----- needle
 
             if (customNeedle != null) // needle
             {
-               
-                _imageRect.X = customNeedle.Width * customGauge.Needle_PosX; ;
-                _imageRect.Y = customNeedle.Height * customGauge.Needle_PosY; ;
-                _image = ConfigManager.ImageManager.LoadImage(customNeedle.KnobImage);
+                _imageRect.X = customNeedle.Width * customGauge.Needle_PosX;
+                _imageRect.Y = customNeedle.Height * customGauge.Needle_PosY;
                 _imageRect.Height = customGauge.Height * customGauge.Needle_Scale;
-                _imageRect.Width = (_image.Width * (customGauge.Height/_image.Height) )*customGauge.Needle_Scale; // uniform image based on Height
-                _brush = new ImageBrush(_image);
+                _image = ConfigManager.ImageManager.LoadImage(customNeedle.KnobImage);
+                if (_image != null)
+                {
+                    _imageRect.Width = (_image.Width * (customGauge.Height / _image.Height)) * customGauge.Needle_Scale; // uniform image based on Height
+                    _brush = new ImageBrush(_image);
+                } 
+                else
+                {
+                    _imageRect.Width = customGauge.Width * customGauge.Needle_Scale;
+                    _brush = null;
+                }
                 _center = new Point(customGauge.Width * customGauge.Needle_PivotX, customGauge.Height * customGauge.Needle_PivotY); // calculate rotation point
-                _punto = new Point((customNeedle.Width * customGauge.Needle_PivotX)+1, customNeedle.Height * customGauge.Needle_PivotY);
-
+                _punto = new Point((customNeedle.Width * customGauge.Needle_PivotX) + 1, customNeedle.Height * customGauge.Needle_PivotY);
             }
             else
             {

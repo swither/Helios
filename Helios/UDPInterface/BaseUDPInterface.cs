@@ -15,59 +15,389 @@
 
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
+    using GadrocsWorkshop.Helios;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Net;
     using System.Net.Sockets;
     using System.Timers;
 
-
     public class BaseUDPInterface : HeliosInterface
     {
-        private NetworkFunctionCollection _functions = new NetworkFunctionCollection();
-        private Dictionary<string, NetworkFunction> _functionsById = new Dictionary<string, NetworkFunction>();
+        // const during lifetime, no access control required
+        private readonly AsyncCallback _socketDataCallback;
+        private static readonly System.Text.Encoding _iso_8859_1 = System.Text.Encoding.GetEncoding("iso-8859-1");  // This is the locale of the lua exports program
 
-        private int _port = 9089;
-        private Socket _socket = null;
-        private EndPoint _bindEndPoint;
-        private EndPoint _client = null;
-        private string _clientID = "";
+        // events don't need access control
+        // event to notify potentially other threads that the client connection has changed
+        public event EventHandler<ProfileAwareInterface.ClientChange> ClientChanged;
 
-        private bool _started = false;
+        /// <summary>
+        /// accessed only by main thread
+        /// </summary>
+        private class MainThreadAccess
+        {
+            static private int _id = System.Threading.Thread.CurrentThread.ManagedThreadId;
 
-        public AsyncCallback _socketDataCallback = null;
-        private byte[] _dataBuffer = new byte[2048];
+            private NetworkFunctionCollection _functions = new NetworkFunctionCollection();
+            private Dictionary<string, NetworkFunction> _functionsById = new Dictionary<string, NetworkFunction>();
 
-        private HeliosTrigger _connectedTrigger;
-        private HeliosTrigger _disconnectedTrigger;
-        private HeliosTrigger _profileLoadedTrigger;
+            private EndPoint _client = null;
+            private string _clientID = ProfileAwareInterface.ClientChange.NO_CLIENT;
 
-        private HeliosProfile _profile = null;
+            private HeliosTrigger _connectedTrigger;
+            private HeliosTrigger _disconnectedTrigger;
+            private HeliosTrigger _profileLoadedTrigger;
 
-        private string[] _tokens = new string[1024];
-        private int _tokenCount = 0;
-        private Timer _startuptimer;
+            private Timer _startuptimer;
 
-        private System.Text.Encoding iso_8859_1;
+            // XXX to be removed
+            private string _alternatename = "";
 
-        private string _alternatename = "";
+            public NetworkFunctionCollection Functions
+            {
+                get
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    return _functions;
+                }
+            }
+
+            public Dictionary<string, NetworkFunction> FunctionsById
+            {
+                get
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    return _functionsById;
+                }
+            }
+
+            public EndPoint Client
+            {
+                get
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    return _client;
+                }
+                set
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    _client = value;
+                }
+            }
+
+            public string ClientID
+            {
+                get
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    return _clientID;
+                }
+                set
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    _clientID = value;
+                }
+            }
+
+            public HeliosTrigger ConnectedTrigger
+            {
+                get
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    return _connectedTrigger;
+                }
+                set
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    _connectedTrigger = value;
+                }
+            }
+
+            public HeliosTrigger DisconnectedTrigger
+            {
+                get
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    return _disconnectedTrigger;
+                }
+                set
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    _disconnectedTrigger = value;
+                }
+            }
+
+            public HeliosTrigger ProfileLoadedTrigger
+            {
+                get
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    return _profileLoadedTrigger;
+                }
+                set
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    _profileLoadedTrigger = value;
+                }
+            }
+
+            public Timer StartupTimer
+            {
+                get
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    return _startuptimer;
+                }
+                set
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    _startuptimer = value;
+                }
+            }
+
+            public string Alternatename
+            {
+                get
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    return _alternatename;
+                }
+                set
+                {
+                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
+                    _alternatename = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// accessed by multiple threads (main and socket pool, or multiple socket pool)
+        /// </summary>
+        private class SharedAccess
+        {
+            // contention between main and socket threads due to read/write and error recovery open/close
+            private Socket _socket = null;
+
+            // pool of receive contexts
+            private Queue<ReceiveContext> _receiveContexts = new Queue<ReceiveContext>();
+            private const int _cachedReceiveContexts = 16;
+
+            private int _port = 9089;
+
+            // lock on all the other fields, public access ok so we can lock larger
+            // sections of code and rely on re-entrant locking to avoid deadlock
+            public object Lock { get; } = new object();
+
+            public bool Started
+            {
+                get
+                {
+                    lock (Lock)
+                    {
+                        return _socket != null;
+                    }
+                }
+            }
+
+            public Socket ServerSocket
+            {
+                get
+                {
+                    lock (Lock)
+                    {
+                        return _socket;
+                    }
+                }
+                set
+                {
+                    lock (Lock)
+                    {
+                        _socket = value;
+                    }
+                }
+            }
+
+            public int Port
+            {
+                get
+                {
+                    lock (Lock)
+                    {
+                        return _port;
+                    }
+                }
+                set
+                {
+                    lock (Lock)
+                    {
+                        _port = value;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// returns clean ReceiveContext or null
+            /// </summary>
+            /// <returns></returns>
+            public ReceiveContext FetchReceiveContext()
+            {
+                lock(Lock)
+                {
+                    if (_receiveContexts.Count > 0)
+                    {
+                        ReceiveContext context = _receiveContexts.Dequeue();
+                        context.socket = _socket;
+                        return context;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// adds a receive context back to the pool
+            /// </summary>
+            public void ReturnReceiveContext(ReceiveContext context)
+            {
+                context.Clear();
+                lock(Lock)
+                {
+                    if (_receiveContexts.Count < _cachedReceiveContexts)
+                    {
+                        _receiveContexts.Enqueue(context);
+                    }
+                }
+            }
+        }
+
+        private class SendContext
+        {
+            // buffer for datagram to be sent
+            // NOTE: send size is entire buffer for now, since we don't reuse these
+            public byte[] dataBuffer = null;
+        }
+
+        /// <summary>
+        /// owned by the socket thread pool thread that is currently processing the receive operation, then
+        /// ownership is handed off to main thread for final processing.  object is not reused (yet)
+        /// </summary>
+        private class ReceiveContext
+        {
+            public Socket socket;
+
+            public class Message
+            {
+                // preallocated space
+                public byte[] data = new byte[2048];
+
+                // fill level
+                public int bytesReceived = 0;
+
+                // source of datagram received
+                public EndPoint fromEndPoint = new IPEndPoint(IPAddress.Any, 0);
+
+                // tokens parsed out on socket thread pool to avoid loading main thread
+                public string[] tokens = new string[1024];
+                public int tokenCount = 0;
+
+                public void Clear()
+                {
+                    fromEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    bytesReceived = 0;
+                    tokenCount = 0;
+                }
+            }
+
+            // buffers for datagrams received on one context switch
+            // XXX tune size
+            private Message[] _messages = new Message[10];
+
+            // number of buffers filled
+            private int _messagesFilled = 0;
+
+            /// <summary>
+            /// called before we are recycled to pool
+            /// </summary>
+            public void Clear()
+            {
+                _messagesFilled = 0;
+                socket = null;
+            }
+
+            public int Length
+            {
+                get => _messagesFilled;
+            }
+
+            public int Capacity
+            {
+                get => _messages.Length;
+            }
+
+            public Message BeginWrite()
+            {
+                if (_messagesFilled >= _messages.Length)
+                {
+                    throw new IndexOutOfRangeException("logic error: attempt to fill receive context past capacity");
+                }
+                if (_messages[_messagesFilled] == null)
+                {
+                    // lazy allocate
+                    _messages[_messagesFilled] = new Message();
+                } else
+                {
+                    _messages[_messagesFilled].Clear();
+                }
+                return _messages[_messagesFilled];
+            }
+
+            public Message ContinueWrite(int index)
+            {
+                if (index != _messagesFilled)
+                {
+                    throw new IndexOutOfRangeException("logic error: attempt to continue write that is not current");
+                }
+                return _messages[index];
+            }
+
+            public void EndWrite()
+            {
+                _messagesFilled++;
+            }
+
+            public Message Read(int index)
+            {
+                if (index >= _messagesFilled)
+                {
+                    throw new IndexOutOfRangeException("logic error: attempt to read receive context past fill level");
+                }
+                return _messages[index];
+            }
+        }
+
+        private MainThreadAccess _main = new MainThreadAccess();
+        private SharedAccess _shared = new SharedAccess();
 
         public BaseUDPInterface(string name)
             : base(name)
         {
-            iso_8859_1 = System.Text.Encoding.GetEncoding("iso-8859-1");  // This is the locale of the lua exports program
+            // const
             _socketDataCallback = new AsyncCallback(OnDataReceived);
 
-            _connectedTrigger = new HeliosTrigger(this, "", "", "Connected", "Fired on DCS connect.");
-            Triggers.Add(_connectedTrigger);
+            _main.ConnectedTrigger = new HeliosTrigger(this, "", "", "Connected", "Fired on DCS connect.");
+            Triggers.Add(_main.ConnectedTrigger);
 
-            _disconnectedTrigger = new HeliosTrigger(this, "", "", "Disconnected", "Fired on DCS disconnect.");
-            Triggers.Add(_disconnectedTrigger);
+            _main.DisconnectedTrigger = new HeliosTrigger(this, "", "", "Disconnected", "Fired on DCS disconnect.");
+            Triggers.Add(_main.DisconnectedTrigger);
 
-            _profileLoadedTrigger = new HeliosTrigger(this, "", "", "Profile Delay Start", "Fired 10 seconds after DCS profile is started.");
-            Triggers.Add(_profileLoadedTrigger);
+            _main.ProfileLoadedTrigger = new HeliosTrigger(this, "", "", "Profile Delay Start", "Fired 10 seconds after DCS profile is started.");
+            Triggers.Add(_main.ProfileLoadedTrigger);
 
-            _functions.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Functions_CollectionChanged);
+            _main.Functions.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Functions_CollectionChanged);
         }
 
         void Functions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -83,9 +413,9 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
                     foreach (ExportDataElement element in function.GetDataElements())
                     {
-                        if (_functionsById.ContainsKey(element.ID))
+                        if (_main.FunctionsById.ContainsKey(element.ID))
                         {
-                            _functionsById.Remove(element.ID);
+                            _main.FunctionsById.Remove(element.ID);
                         }
                     }
                 }
@@ -101,9 +431,9 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
                     foreach (ExportDataElement element in function.GetDataElements())
                     {
-                        if (!_functionsById.ContainsKey(element.ID))
+                        if (!_main.FunctionsById.ContainsKey(element.ID))
                         {
-                            _functionsById.Add(element.ID, function);
+                            _main.FunctionsById.Add(element.ID, function);
                         }
                         else
                         {
@@ -118,14 +448,21 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             get
             {
-                return _port;
+                return _shared.Port;
             }
             set
             {
-                if (!_port.Equals(value))
+                int oldValue;
+                lock(_shared.Lock)
                 {
-                    int oldValue = _port;
-                    _port = value;
+                    oldValue = _shared.Port;
+                    if (!_shared.Port.Equals(value))
+                    {
+                        _shared.Port = value;
+                    }
+                }
+                if (!oldValue.Equals(value))
+                {
                     OnPropertyChanged("Port", oldValue, value, false);
                 }
             }
@@ -135,14 +472,14 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             get
             {
-                return _alternatename;
+                return _main.Alternatename;
             }
             set
             {
-                if (!_port.Equals(value))
+                if (!_main.Alternatename.Equals(value))
                 {
-                    string oldValue = _alternatename;
-                    _alternatename = value;
+                    string oldValue = _main.Alternatename;
+                    _main.Alternatename = value;
                     OnPropertyChanged("AlternateName", oldValue, value, false);
                 }
             }
@@ -152,7 +489,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             get
             {
-                return _functions;
+                return _main.Functions;
             }
         }
 
@@ -172,9 +509,19 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
         }
 
-        private void WaitForData()
+        /// <summary>
+        /// exclusive ownership of context is transfered to the callee
+        /// </summary>
+        /// <param name="context"></param>
+        private void WaitForData(ReceiveContext context)
         {
-            if (_started)
+            if ((!_shared.Started) || (context.socket == null))
+            {
+                // we are shut down
+                return;
+            }
+
+            do
             {
                 // this message drowns the console output, so only send it if requested
                 if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
@@ -183,130 +530,210 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 }
                 try
                 {
-                    _socket.BeginReceiveFrom(_dataBuffer, 0, _dataBuffer.Length, SocketFlags.None, ref _bindEndPoint, _socketDataCallback, null);
+                    ReceiveContext.Message message = context.BeginWrite();
+                    _ = context.socket.BeginReceiveFrom(message.data, 0, message.data.Length, SocketFlags.None, ref message.fromEndPoint, _socketDataCallback, context);
+                    break;
                 }
                 catch (SocketException se)
                 {
-                    if (HandleSocketException(se))
-                    {
-                        _socket.BeginReceiveFrom(_dataBuffer, 0, _dataBuffer.Length, SocketFlags.None, ref _bindEndPoint, _socketDataCallback, null);
-                    }
-                    else
+                    if (!HandleSocketException(se, out context.socket))
                     {
                         ConfigManager.LogManager.LogError("UDP interface unable to recover from socket reset, no longer receiving data. (Interface=\"" + Name + "\")");
+                        break;
                     }
+                    // else retry forever
                 }
-            }
+            } while (true);
         }
 
-        private void OnDataReceived(IAsyncResult asyn)
+        /// <summary>
+        /// socket thread pool callback
+        /// </summary>
+        /// <param name="asyncResult"></param>
+        private void OnDataReceived(IAsyncResult asyncResult)
         {
+            if (!_shared.Started)
+            {
+                // ignore, we shut down since requesting receive
+                return;
+            }
+            ReceiveContext context = asyncResult.AsyncState as ReceiveContext;
             try
             {
-                if (_socket != null && _started)
-                {
-                    int receivedByteCount = _socket.EndReceiveFrom(asyn, ref _client);
-                    if (receivedByteCount > 12)
-                    {
-                        // Don't create the extra strings if we don't need to
-                        if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
-                        {
-                            ConfigManager.LogManager.LogDebug("UDP Interface received packet. (Interface=\"" + Name + "\", Packet=\"" + iso_8859_1.GetString(_dataBuffer, 0, receivedByteCount) + "\")");
-                        }
-
-                        String packetClientID = iso_8859_1.GetString(_dataBuffer, 0, 8);
-                        if (!_clientID.Equals(packetClientID))
-                        {
-                            ConfigManager.LogManager.LogInfo("UDP interface new client connected, sending data reset command. (Interface=\"" + Name + "\", Client=\"" + _client.ToString() + "\", Client ID=\"" + packetClientID + "\")");
-                            _connectedTrigger.FireTrigger(BindingValue.Empty);
-                            _clientID = packetClientID;
-                            SendData("R");
-                        }
-
-                        _tokenCount = 0;
-                        int parseCount = receivedByteCount - 1;
-                        int lastIndex = 8;
-                        for (int i = 9; i < parseCount; i++)
-                        {
-                            if (_dataBuffer[i] == 0x3a || _dataBuffer[i] == 0x3d)
-                            {
-                                int size = i - lastIndex - 1;
-                                //_tokens[_tokenCount++] = System.Text.Encoding.UTF8.GetString(_dataBuffer, lastIndex + 1, size);
-                                _tokens[_tokenCount++] = iso_8859_1.GetString(_dataBuffer, lastIndex + 1, size);
-                                lastIndex = i;
-                            }
-                        }
-                        //_tokens[_tokenCount++] = System.Text.Encoding.UTF8.GetString(_dataBuffer, lastIndex + 1, parseCount - lastIndex - 1);
-                        _tokens[_tokenCount++] = iso_8859_1.GetString(_dataBuffer, lastIndex + 1, parseCount - lastIndex - 1);
-
-
-                        if (_tokenCount % 1 > 0)
-                        {
-                            _tokenCount--;
-                        }
-
-                        _profile.Dispatcher.Invoke((Action)ProcessData, System.Windows.Threading.DispatcherPriority.Send);
-                    }
-                    else
-                    {
-                        string RecString = iso_8859_1.GetString(_dataBuffer, 0, receivedByteCount);
-                        // Special case for Disconnect - Event must be put into the LUA file
-                        if (RecString.Contains("DISCONNECT"))
-                        {
-                            ConfigManager.LogManager.LogInfo("UDP interface disconnect from Lua.");
-                            _disconnectedTrigger.FireTrigger(BindingValue.Empty);
-                        }
-                        else
-                            ConfigManager.LogManager.LogWarning("UDP interface short packet received. (Interface=\"" + Name + "\")");
-                    }
-                }
+                ReceiveContext.Message message = context.ContinueWrite(0);
+                message.bytesReceived = context.socket.EndReceiveFrom(asyncResult, ref message.fromEndPoint);
+                context.EndWrite();
             }
             catch (SocketException se)
             {
-                HandleSocketException(se);
+                // NOTE: EndReceiveFrom isn't retriable, because the receive won't we valid after we reset socket
+                if (!HandleSocketException(se, out context.socket))
+                {
+                    // no new receive attempt
+                    return;
+                }
+
+                // recovered with probably a new socket
             }
-            catch (Exception e)
+            // drain the socket, as much as allowed, to share the context switch to main
+            while ((context.socket.Available > 0) && (context.Length < context.Capacity))
             {
-                ConfigManager.LogManager.LogError("UDP interface threw unhandled exception processing packet. (Interface=\"" + Name + "\")", e);
+                ReceiveContext.Message message = context.BeginWrite();
+                message.bytesReceived = 0;
+                try
+                {
+                    message.bytesReceived = context.socket.ReceiveFrom(message.data, 0, message.data.Length, SocketFlags.None, ref message.fromEndPoint);
+                    if (message.bytesReceived > 0)
+                    {
+                        // if we did not receive anything or throw, we use this slot again
+                        context.EndWrite();
+                    }
+                }
+                catch (SocketException se)
+                {
+                    if (HandleSocketException(se, out context.socket))
+                    {
+                        // recovered with probably a new socket
+                    } else {
+                        // dead, stop trying to drain
+                        break;
+                    }
+                }
             }
 
-            WaitForData();
+            // it could be empty if all we did this iteration is throw and reset the socket 
+            if (context.Length > 0)
+            {
+                // offload parsing from main thread to socket thread pool, without lock held
+                ParseReceived(context);
+
+                // pass ownership to main thread, process synchronously
+                Dispatcher.Invoke(new Action(() => this.DispatchReceived(context)), System.Windows.Threading.DispatcherPriority.Send);
+            }
+
+            // start next receive
+            WaitForData(_shared.FetchReceiveContext() ?? new ReceiveContext() { socket = _shared.ServerSocket });
         }
 
-        private void ProcessData()
+        private static void ParseReceived(ReceiveContext owned)
         {
-            for (int i = 0; i < _tokenCount; i += 2)
+            for(int messageIndex=0; messageIndex<owned.Length; messageIndex++)
             {
-                if (_functionsById.ContainsKey(_tokens[i]))
+                ReceiveContext.Message message = owned.Read(messageIndex);
+                message.tokenCount = 0;
+                int parseCount = message.bytesReceived - 1;
+                int offset = 8;
+                for (int scan = 9; scan < parseCount; scan++)
                 {
-                    NetworkFunction function = _functionsById[_tokens[i]];
-                    function.ProcessNetworkData(_tokens[i], _tokens[i + 1]);
+                    if (message.data[scan] == 0x3a || message.data[scan] == 0x3d)
+                    {
+                        int size = scan - offset - 1;
+                        message.tokens[message.tokenCount++] = _iso_8859_1.GetString(message.data, offset + 1, size);
+                        offset = scan;
+                    }
                 }
-                else
+                message.tokens[message.tokenCount++] = _iso_8859_1.GetString(message.data, offset + 1, parseCount - offset - 1);
+                if (message.tokenCount % 1 > 0)
                 {
-                    ConfigManager.LogManager.LogWarning("UDP interface received data for missing function. (Key=\"" + _tokens[i] + "\")");
+                    // don't allow odd number of tokens because a lot of the parsing code is unsafe
+                    message.tokenCount--;
+                }
+            }
+        }
+
+        private void DispatchReceived(ReceiveContext owned)
+        {
+            if (owned.Length > 1)
+            {
+                if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
+                {
+                    ConfigManager.LogManager.LogDebug($"received {owned.Length} UDP messages in batch");
                 }
             }
 
+            // REVISIT: could skip ahead if this batch contains a client change
+            for (int messageIndex = 0; messageIndex < owned.Length; messageIndex++)
+            {
+                ReceiveContext.Message message = owned.Read(messageIndex);
+                // store address and port, since we need it for outgoing messages
+                _main.Client = message.fromEndPoint;
+                if (message.bytesReceived < 13)
+                {
+                    HandleShortMessage(message.data, message.bytesReceived);
+                    continue;
+                }
+
+                // Don't create the extra strings if we don't need to
+                if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
+                {
+                    ConfigManager.LogManager.LogDebug("UDP Interface received packet. (Interface=\"" + Name + "\", Packet=\"" + _iso_8859_1.GetString(message.data, 0, message.bytesReceived) + "\")");
+                }
+
+                // handle client restart or change in client
+                String packetClientID = _iso_8859_1.GetString(message.data, 0, 8);
+                if (!_main.ClientID.Equals(packetClientID))
+                { 
+                    ConfigManager.LogManager.LogInfo("UDP interface new client connected, sending data reset command. (Interface=\"" + Name + "\", Client=\"" + _main.Client.ToString() + "\", Client ID=\"" + packetClientID + "\")");
+                    string fromValue = _main.ClientID;
+                    _main.ClientID = packetClientID;
+                    OnClientChanged(fromValue, packetClientID);
+                    SendData("R");
+                }
+
+                for (int tokenIndex = 0; tokenIndex < message.tokenCount; tokenIndex += 2)
+                {
+                    if (_main.FunctionsById.ContainsKey(message.tokens[tokenIndex]))
+                    {
+                        NetworkFunction function = _main.FunctionsById[message.tokens[tokenIndex]];
+                        function.ProcessNetworkData(message.tokens[tokenIndex], message.tokens[tokenIndex + 1]);
+                    }
+                    else
+                    {
+                        ConfigManager.LogManager.LogWarning("UDP interface received data for missing function. (Key=\"" + message.tokens[tokenIndex] + "\")");
+                    }
+                }
+            }
+
+            _shared.ReturnReceiveContext(owned);
         }
 
-        private bool HandleSocketException(SocketException se)
+
+        private void HandleShortMessage(byte[] dataBuffer, int receivedByteCount)
+        {
+            string RecString = _iso_8859_1.GetString(dataBuffer, 0, receivedByteCount);
+            // Special case for legacy Disconnect
+            if (RecString.Contains("DISCONNECT"))
+            {
+                ConfigManager.LogManager.LogInfo("UDP interface disconnect from Lua.");
+                _main.DisconnectedTrigger.FireTrigger(BindingValue.Empty);
+                return;
+            }
+            ConfigManager.LogManager.LogWarning("UDP interface short packet received. (Interface=\"" + Name + "\")");
+        }
+
+        // WARNING: called on both Main and Socket threads, depending on where the failure occurred
+        private bool HandleSocketException(SocketException se, out Socket newSocket)
         {
             if ((SocketError)se.ErrorCode == SocketError.ConnectionReset)
             {
-                _socket.Close();
-                _socket = null;
-                _socket = new Socket(AddressFamily.InterNetwork,
-                                          SocketType.Dgram,
-                                          ProtocolType.Udp);
-                _socket.Bind(_bindEndPoint);
-                _clientID = "";
-                _client = new IPEndPoint(IPAddress.Any, 0);
+                try
+                {
+                    CloseSocket();
+                    newSocket = OpenSocket();
+                }
+                catch (SocketException secondException)
+                {
+                    ConfigManager.LogManager.LogError("UDP interface threw exception (Interface=\"" + Name + "\")", se);
+                    ConfigManager.LogManager.LogError("UDP interface then threw exception reopening socket; cannot continue. (Interface=\"" + Name + "\")", secondException);
+                    newSocket = null;
+                    return false;
+                }
                 return true;
             }
             else
             {
                 ConfigManager.LogManager.LogError("UDP interface threw unhandled exception handling socket reset. (Interface=\"" + Name + "\")", se);
+                newSocket = null;
                 return false;
             }
         }
@@ -315,16 +742,20 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             try
             {
-                if (_client != null && _clientID.Length > 0)
+                if ((_main.Client != null) && (_main.ClientID != ProfileAwareInterface.ClientChange.NO_CLIENT))
                 {
                     ConfigManager.LogManager.LogDebug("UDP interface sending data. (Interface=\"" + Name + "\", Data=\"" + data + "\")");
-                    byte[] sendData = iso_8859_1.GetBytes(data + "\n");
-                    _socket.SendTo(sendData, _client);
+                    SendContext context = new SendContext();
+                    context.dataBuffer = _iso_8859_1.GetBytes(data + "\n");
+                    Socket socket = _shared.ServerSocket;
+                    socket?.BeginSendTo(context.dataBuffer, 0, context.dataBuffer.Length, SocketFlags.None, _main.Client, OnDataSent, context);
                 }
             }
             catch (SocketException se)
             {
-                HandleSocketException(se);
+                // just ignore
+                ConfigManager.LogManager.LogDebug($"UDP interface threw handled socket exception '{se.Message}' while sending data. (Interface=\"" + Name + "\", Data=\"" + data + "\")");
+                HandleSocketException(se, out Socket unused);
             }
             catch (Exception e)
             {
@@ -332,15 +763,54 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
         }
 
+        /// <summary>
+        /// socket thread pool callback
+        /// </summary>
+        /// <param name="asyncResult"></param>
+        private void OnDataSent(IAsyncResult asyncResult)
+        {
+            SendContext context = asyncResult.AsyncState as SendContext;
+            // currently we don't need to do anything on send
+            // we are only using the async send API in order to match async reads and writes,
+            // because we don't want to be an atypical user of the API
+        }
+
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
-            _started = false;
-            _socket.Close();
-            _socket = null;
+            CloseSocket();
+            if (_main.StartupTimer != null)
+                _main.StartupTimer.Stop();
+        }
 
-            _profile = null;
-            if (_startuptimer != null)
-                _startuptimer.Stop();
+
+        // WARNING: called on both Main and Socket threads, depending on where a socket exception occurred
+        private Socket OpenSocket()
+        {
+            EndPoint bindEndPoint = new IPEndPoint(IPAddress.Any, _shared.Port);
+            Socket socket = new Socket(AddressFamily.InterNetwork,
+                                      SocketType.Dgram,
+                                      ProtocolType.Udp);
+            socket.ExclusiveAddressUse = false;
+            socket.Bind(bindEndPoint);
+            _shared.ServerSocket = socket;
+
+            // we need to return this to the caller, so they don't rely on _shared.ServerSocket, in case it immediately gets changed by another thread
+            return socket;
+        }
+
+        private void CloseSocket()
+        {
+            Socket socket = null;
+            lock (_shared.Lock)
+            {
+                socket = _shared.ServerSocket;
+                _shared.ServerSocket = null;
+            }
+            // shutdown without holding lock
+            socket?.Close();
+
+            // hook for descendants
+            OnProfileStopped();
         }
 
         void Profile_ProfileStarted(object sender, EventArgs e)
@@ -348,25 +818,23 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             ConfigManager.LogManager.LogDebug("UDP interface starting. (Interface=\"" + Name + "\")");
             try
             {
-                _bindEndPoint = new IPEndPoint(IPAddress.Any, Port);
-                _socket = new Socket(AddressFamily.InterNetwork,
-                                          SocketType.Dgram,
-                                          ProtocolType.Udp);
-                _socket.ExclusiveAddressUse = false;
-                // https://github.com/BlueFinBima/Helios/issues/140
-                _socket.Bind(_bindEndPoint);
-                _client = new IPEndPoint(IPAddress.Any, 0);
-                _started = true;
-                _clientID = "";
-                _profile = Profile;
+                _main.Client = new IPEndPoint(IPAddress.Any, 0);
+                _main.ClientID = "";
+                Socket serverSocket = OpenSocket();
 
+                // 10 seconds for Delayed Startup
+                Timer timer = new Timer(10000);
+                timer.AutoReset = false; // only once
+                timer.Elapsed += OnStartupTimer;
+                timer.Start();
+                _main.StartupTimer = timer;
 
-                _startuptimer = new Timer();
-                _startuptimer.Elapsed += OnStartupTimer;
-                _startuptimer.Interval = 10000;  // 10 seconds for Delayed Startup
-                _startuptimer.Start();
                 ConfigManager.LogManager.LogInfo("Startup timer started.");
-                WaitForData();
+                
+                WaitForData(new ReceiveContext() { socket = serverSocket });
+                
+                // hook for descendants
+                OnProfileStarted();
             }
             catch (System.Net.Sockets.SocketException se)
             {
@@ -376,12 +844,21 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
         }
 
+        /// <summary>
+        /// timer thread callback
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         private void OnStartupTimer(Object source, System.Timers.ElapsedEventArgs e)
         {
-            _startuptimer.Stop();
-            ConfigManager.LogManager.LogInfo("Startup Delay timer triggered.");
-            _profileLoadedTrigger.FireTrigger(BindingValue.Empty);
+            // sync notify
+            Dispatcher.Invoke(new Action(OnDelayedStartup));
+        }
 
+        private void OnDelayedStartup()
+        { 
+            ConfigManager.LogManager.LogInfo("Startup Delay timer triggered.");
+            _main.ProfileLoadedTrigger.FireTrigger(BindingValue.Empty);
         }
 
         public override void ReadXml(System.Xml.XmlReader reader)
@@ -413,6 +890,30 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 function.Reset();
             }
             SendData("R");
+        }
+
+        public bool CanSend
+        {
+            get
+            {
+                return (_shared.Started && (_main.Client != null) && (_main.ClientID.Length > 0));
+            }
+        }
+
+        protected virtual void OnProfileStarted()
+        {
+            // no code in base implementation
+        }
+
+        protected virtual void OnProfileStopped()
+        {
+            // no code in base implementation
+        }
+
+        protected virtual void OnClientChanged(string fromValue, string toValue)
+        {
+            _main.ConnectedTrigger.FireTrigger(BindingValue.Empty);
+            ClientChanged?.Invoke(this, new ProfileAwareInterface.ClientChange() { FromOpaqueHandle = fromValue, ToOpaqueHandle = toValue });
         }
     }
 }
