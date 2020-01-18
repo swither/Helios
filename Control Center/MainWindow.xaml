@@ -12,7 +12,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
                         <Grid>
-                            <Image x:Name="ButtonImage" Source="ControlCenterPowerOff.png" Width="32"/>
+                            <Image x:Name="ButtonImage" Source="ControlCenterPowerOff.png" Width="32" Margin="0,-15,0,-15"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
@@ -127,32 +127,138 @@
                 <CheckBox Canvas.Left="7" Canvas.Top="30" Height="100" x:Name="PowerButton" Width="50" Style="{StaticResource HeliosSwitchStyle}" IsChecked="True" Unchecked="PowerButton_Unchecked" />
                 <TextBlock Canvas.Left="76" Canvas.Top="36" Height="29" x:Name="ProfileName" Text="{Binding SelectedProfileName}" Width="223" Foreground="#FF79CC87" FontFamily="Franklin Gothic" FontSize="20" />
                 <TextBlock Canvas.Left="76" Canvas.Top="71" Height="53" x:Name="MessageText" Text="{Binding Message}" Width="223" FontFamily="Franklin Gothic" Foreground="#FF79CC87" FontSize="10" TextWrapping="Wrap" />
-                <Button Canvas.Left="40" Canvas.Top="242" Content="Hide" FontWeight="Bold" Foreground="White" Height="25" Style="{StaticResource HeliosPushButtonStyle}" Width="80" Click="Button_Click" />
+                <Button Canvas.Left="40" Canvas.Top="242" Content="Hide" FontWeight="Bold" Foreground="#FFF7F5F5" Height="25" Style="{StaticResource HeliosPushButtonStyle}" Width="80" Click="Button_Click" />
             </Canvas>
-            <Canvas Name="PreferencesCanvas" Margin="0" Height="320" Width="504" Visibility="Collapsed">
+            <Canvas Name="PreferencesCanvas" Margin="0" Height="320" Width="504" Visibility="Visible"> <!-- XXX-->
+                <Canvas.Resources>
+                    <Style x:Key="TopLabel" TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap"/>
+                        <Setter Property="FontFamily" Value="Franklin Gothic"/>
+                        <Setter Property="FontSize" Value="12"/>
+                        <Setter Property="Foreground" Value="#FFF7F5F5"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Height" Value="30"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="TextAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="0,20,0,10"/>
+                    </Style>
+                    <Style x:Key="UpLabel" TargetType="TextBlock" BasedOn="{StaticResource TopLabel}">
+                        <Setter Property="FontSize" Value="10"/>
+                        <Setter Property="Height" Value="Auto"/>
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                    <Style x:Key="DownLabel" TargetType="TextBlock" BasedOn="{StaticResource TopLabel}">
+                        <Setter Property="FontSize" Value="10"/>
+                        <Setter Property="Height" Value="Auto"/>
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </Canvas.Resources>
                 <Image Source="PreferencesBackground.png" />
                 <Thumb Name="PrefsDragThumb" Width="504" Height="320" Opacity="0" DragDelta="MoveThumb_DragDelta" Canvas.Left="0" Canvas.Top="0" />
-                <CheckBox Canvas.Left="39" Canvas.Top="50" Height="100" Name="MinimizeCheckBox" Width="50" Style="{StaticResource HeliosSwitchStyle}" Checked="MinimizeCheckBox_Checked" Unchecked="MinimizeCheckBox_Unchecked" />
-                <CheckBox Canvas.Left="142" Canvas.Top="50" Height="100" Name="AutoStartCheckBox" Width="50" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoStartCheckBox_Checked" Unchecked="AutoStartCheckBox_Unchecked" />
-                <CheckBox Canvas.Left="256" Canvas.Top="50" Height="100" Name="AutoHideCheckBox" Width="50" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoHideCheckBox_Checked" Unchecked="AutoHideCheckBox_Unchecked" />
-                <Rectangle Fill="White" Width="110" Height="2" Canvas.Left="351" Canvas.Top="37" />
-                <TextBlock FontFamily="Franklin Gothic" FontSize="12" Text="HOTKEY" Foreground="White" Canvas.Left="386" Canvas.Top="31" Width="50" TextAlignment="Center" Background="#FF202020" />
-                <Rectangle Fill="Black" Width="153" Height="36" Canvas.Left="332" Canvas.Top="120" />
-                <TextBlock FontFamily="Franklin Gothic" FontSize="10" Text="SET" Foreground="White" Canvas.Left="344" Canvas.Top="57" Width="50" TextAlignment="Center" />
-                <TextBlock FontFamily="Franklin Gothic" FontSize="10" Text="CLEAR" Foreground="White" Canvas.Left="416" Canvas.Top="57" Width="50" TextAlignment="Center" />
-                <TextBlock FontFamily="Franklin Gothic" Foreground="LimeGreen" FontSize="11" Text="{Binding HotKeyDescription}" Canvas.Left="333" Canvas.Top="124" Width="150" TextAlignment="Center" Height="28" TextWrapping="Wrap" />
-                <Button Canvas.Left="351" Canvas.Top="74" Height="40" Name="SetHotkey" Width="40" Style="{StaticResource HeliosPushButtonStyle}" Click="SetHotkey_Click" />
-                <Button Canvas.Left="423" Canvas.Top="74" Height="40" Name="ClearHotkey" Width="40" Style="{StaticResource HeliosPushButtonStyle}" Click="ClearHotkey_Click" />
-                <CheckBox Canvas.Left="39" Canvas.Top="182" Height="100" Name="TBDCheckBox" Width="50" Style="{StaticResource HeliosSwitchStyle}" Checked="TBDCheckBox_Checked" Unchecked="TBDCheckBox_Unchecked" Visibility="Hidden"/>
-                <TextBlock FontFamily="Franklin Gothic" FontSize="14" Foreground="GhostWhite" Text="TOUCHSCREEN" Canvas.Left="124" Canvas.Top="160" Width="92" TextAlignment="Center" TextWrapping="Wrap"/>
-                <TextBlock FontFamily="Franklin Gothic" FontSize="12" Foreground="GhostWhite" Text="SUPPRESS 2ND TRIGGER" Canvas.Left="120" Canvas.Top="189" Width="96" TextAlignment="Center" TextWrapping="Wrap"/>
-                <TextBlock FontFamily="Franklin Gothic" FontSize="12" Foreground="GhostWhite" Text="ALLOW ALL TRIGGERS" Canvas.Left="130" Canvas.Top="256" Width="72" TextAlignment="Center" TextWrapping="Wrap"/>
-                <CheckBox Canvas.Left="39" Canvas.Top="182" Height="100" Name="ProfileAutoStartCheckBox" Width="50" ToolTipService.ToolTip="Automatically start matching profile if plane type changes." Style="{StaticResource HeliosSwitchStyle}" Checked="ProfileAutoStartCheckBox_Checked" Unchecked="ProfileAutoStartCheckBox_Unchecked" />
-                <CheckBox Canvas.Left="142" Canvas.Top="182" Height="100" Name="TouchscreenCheckBox" Width="50" ToolTipService.ToolTip="Suppress 2nd trigger if you appear to get double touches from a touchscreen." Style="{StaticResource HeliosSwitchStyle}" Checked="TouchscreenCheckBox_Checked" Unchecked="TouchscreenCheckBox_Unchecked" />
-                <Rectangle x:Name="TouchScreenDelayBorder" Stroke="GhostWhite" Width="244" Height="52" Canvas.Left="241" Canvas.Top="198" Visibility="Hidden"/>
-                <TextBlock x:Name="TouchScreenDelayTitle" FontFamily="Franklin Gothic" FontSize="14" Foreground="GhostWhite" Text="IGNORE 2ND TRIGGER FOR" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored." Canvas.Left="245" Canvas.Top="202"  Visibility="Hidden"/>
-                <TextBlock x:Name="TouchscreenDelayTextBlock" FontFamily="Franklin Gothic" FontSize="14" Foreground="LimeGreen" Text="0 ms" Canvas.Left="410" Canvas.Top="202"  Visibility="Hidden"/>
-                <Slider x:Name="TouchScreenDelaySlider" Minimum="0" Maximum="1000" TickFrequency="200" TickPlacement="BottomRight" ValueChanged="TouchScreenDelaySlider_ValueChanged" Width="240" Canvas.Left="245" Canvas.Top="218" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."  Visibility="Hidden"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="84"/>
+                        <ColumnDefinition Width="84"/>
+                        <ColumnDefinition Width="84"/>
+                        <ColumnDefinition Width="84"/>
+                        <ColumnDefinition Width="84"/>
+                        <ColumnDefinition Width="84"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="160"/>
+                        <RowDefinition Height="160"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0">
+                        <TextBlock Text="START MINIMIZED" Style="{StaticResource TopLabel}"/>
+                        <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
+                        <CheckBox Name="MinimizeCheckBox" Style="{StaticResource HeliosSwitchStyle}" Checked="MinimizeCheckBox_Checked" Unchecked="MinimizeCheckBox_Unchecked" />
+                        <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBlock Text="START AT LOGIN" Style="{StaticResource TopLabel}"/>
+                        <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
+                        <CheckBox Name="AutoStartCheckBox" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoStartCheckBox_Checked" Unchecked="AutoStartCheckBox_Unchecked" />
+                        <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="2">
+                        <TextBlock Text="HIDE ON PROFILE START" Style="{StaticResource TopLabel}"/>
+                        <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
+                        <CheckBox Name="AutoHideCheckBox" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoHideCheckBox_Checked" Unchecked="AutoHideCheckBox_Unchecked" />
+                        <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="3">
+                        <TextBlock Text="PROFILE AUTOSTART" Style="{StaticResource TopLabel}"/>
+                        <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
+                        <CheckBox Name="ProfileAutoStartCheckBox" ToolTipService.ToolTip="Automatically start matching profile if plane type changes." Style="{StaticResource HeliosSwitchStyle}" Checked="ProfileAutoStartCheckBox_Checked" Unchecked="ProfileAutoStartCheckBox_Unchecked" />
+                        <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
+                    </StackPanel>
+                    <Grid Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Rectangle Grid.Row="0" Grid.Column="0" Fill="#FFF7F5F5" Margin="9,9,0,0" Height="2" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="HOTKEY" Style="{StaticResource TopLabel}" Height="Auto"/>
+                        <Rectangle Grid.Row="0" Grid.Column="2" Fill="#FFF7F5F5" HorizontalAlignment="Left" Margin="0,9,0,0" Height="2" Width="30"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="SET" Style="{StaticResource UpLabel}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="CLEAR" Style="{StaticResource UpLabel}"/>
+                        <Button Grid.Row="2" Grid.Column="0" Width="36" Height="36" Name="SetHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="SetHotkey_Click" />
+                        <Button Grid.Row="2" Grid.Column="2" Width="36" Height="36" Name="ClearHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="ClearHotkey_Click" />
+                        <TextBlock Panel.ZIndex="2" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="9,0,9,0" FontFamily="Franklin Gothic" Foreground="#FF79CC87" Background="#FF001500" FontSize="20" Text="{Binding HotKeyDescription}" TextAlignment="Center" Height="28" TextWrapping="Wrap" />
+                        <Rectangle Panel.ZIndex="1" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="9,0,9,0" Fill="#FF001500" Height="36"/>
+                    </Grid>
+                    <StackPanel Grid.Row="1" Grid.Column="0">
+                        <TextBlock Text="PREFLIGHT CHECK" Style="{StaticResource TopLabel}"/>
+                        <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
+                        <CheckBox Name="TBD1" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoStartCheckBox_Checked" Unchecked="AutoStartCheckBox_Unchecked" />
+                        <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Visibility="Hidden">
+                        <TextBlock Text="TDB Next" Style="{StaticResource TopLabel}"/>
+                        <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
+                        <CheckBox Name="TBD2" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoStartCheckBox_Checked" Unchecked="AutoStartCheckBox_Unchecked" />
+                        <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="2" Visibility="Hidden">
+                        <TextBlock Text="TDB Next" Style="{StaticResource TopLabel}"/>
+                        <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
+                        <CheckBox Name="TBD3" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoStartCheckBox_Checked" Unchecked="AutoStartCheckBox_Unchecked" />
+                        <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
+                    </StackPanel>
+                    <Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" BorderThickness="1" CornerRadius="4" Padding="2" BorderBrush="#FFF7F5F5">
+                    </Border>
+                    <Grid Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="84"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="TOUCHSCREEN 2ND CLICK SUPPRESSION" Style="{StaticResource TopLabel}"/>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
+                            <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
+                            <CheckBox Name="TouchscreenCheckBox" ToolTipService.ToolTip="Suppress mouse clicks after touch click if you appear to get double touches from a touchscreen." Style="{StaticResource HeliosSwitchStyle}" Checked="TouchscreenCheckBox_Checked" Unchecked="TouchscreenCheckBox_Unchecked" />
+                            <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                            <TextBlock x:Name="TouchScreenDelayTitle" Text="IGNORE 2ND CLICK FOR" Style="{StaticResource UpLabel}" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
+                            <TextBlock x:Name="TouchscreenDelayTextBlock" FontFamily="Franklin Gothic" FontSize="12" Foreground="#FF79CC87" Background="#FF001500" Margin="4,0,9,0" Padding="0,0,2,0" Text="0 ms" Width="55" VerticalAlignment="Center" TextAlignment="Right"/>
+                        </StackPanel>
+                        <Slider Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,9,0" x:Name="TouchScreenDelaySlider" Minimum="0" Maximum="1000" TickFrequency="200" TickPlacement="BottomRight" ValueChanged="TouchScreenDelaySlider_ValueChanged" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
+                    </Grid>
+                </Grid>
             </Canvas>
         </StackPanel>
 

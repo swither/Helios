@@ -97,10 +97,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 TouchScreenDelaySlider.Value = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "TouchScreenMouseSuppressionPeriod", 0);
                 if (TouchScreenDelaySlider.Value > 0)
                 {
-                    TouchscreenDelayTextBlock.Visibility = Visibility.Visible;
-                    TouchScreenDelaySlider.Visibility = Visibility.Visible;
-                    TouchScreenDelayBorder.Visibility = Visibility.Visible;
-                    TouchScreenDelayTitle.Visibility = Visibility.Visible;
                     TouchscreenCheckBox.IsChecked = true;
                 }
                 else
@@ -953,21 +949,15 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void TouchscreenCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            //ConfigManager.SettingsManager.SaveSetting("ControlCenter", "AutoHide", true);
-            TouchscreenDelayTextBlock.Visibility = Visibility.Visible;
-            TouchScreenDelaySlider.Visibility = Visibility.Visible;
-            TouchScreenDelayBorder.Visibility = Visibility.Visible;
-            TouchScreenDelayTitle.Visibility = Visibility.Visible;
+            // don't save anything, because the slider has to be set to non-zero to enable feature
+            TouchScreenDelaySlider.IsEnabled = true;
         }
 
         private void TouchscreenCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             ConfigManager.SettingsManager.SaveSetting("ControlCenter", "TouchScreenMouseSuppressionPeriod", "0");
             TouchScreenDelaySlider.Value = 0;
-            TouchscreenDelayTextBlock.Visibility = Visibility.Hidden;
-            TouchScreenDelaySlider.Visibility = Visibility.Hidden;
-            TouchScreenDelayBorder.Visibility = Visibility.Hidden;
-            TouchScreenDelayTitle.Visibility = Visibility.Hidden;
+            TouchScreenDelaySlider.IsEnabled = false;
         }
         private void TBDCheckBox_Checked(object sender, RoutedEventArgs e)
         {
