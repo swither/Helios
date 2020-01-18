@@ -133,7 +133,7 @@
     <Compile Include="Gauges\M2000C\Miscellaneous\FireWarning_Panel.cs" />
     <Compile Include="Gauges\M2000C\Miscellaneous\PCI_Panel.cs" />
     <Compile Include="Gauges\M2000C\VorIlsChannel\VorIls_Panel.cs" />
-    <Compile Include="Interfaces\DCS\Common\DCSConfigurator2.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSExportConfiguration.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSExportProtocol.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInstallType.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInterfaceEditor.xaml.cs">
@@ -145,6 +145,7 @@
     <Compile Include="Interfaces\DCS\Common\EnumComboBoxConverter.cs" />
     <Compile Include="IProfileAwareInterface.cs" />
     <Compile Include="Interfaces\DCS\Common\SilentValueConsumer.cs" />
+    <Compile Include="IReadyCheck.cs" />
     <Compile Include="NonClickableZone.cs" />
     <Compile Include="Collections\HeliosObjectCollection.cs" />
     <Compile Include="Collections\KeyedObservableCollection.cs" />
@@ -587,6 +588,7 @@
     <Compile Include="Interfaces\DCS\AV8B\Functions\SMCFuzeDisplay.cs" />
     <Compile Include="Interfaces\DCS\Common\DualNetworkValue.cs" />
     <Compile Include="Interfaces\DCS\Common\DualRocker.cs" />
+    <Compile Include="StatusReportItem.cs" />
     <Compile Include="UDPInterface\NetworkTriggerValue.cs" />
     <Compile Include="UDPInterface\NetworkTrigger.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInterface.cs" />
@@ -743,6 +745,7 @@
     <Compile Include="UnitConverters\TimeConverter.cs" />
     <Compile Include="Units\NozzlePositionPercentUnit.cs" />
     <Compile Include="Units\NozzlePositionUnit.cs" />
+    <Compile Include="Util\KnownFolders.cs" />
     <Compile Include="Util\Tokenizer.cs" />
     <Compile Include="Windows\Controls\AnalogBar.cs" />
     <Compile Include="Windows\Controls\AxisBar.cs" />

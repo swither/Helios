@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     public partial class DCSInterfaceEditor : HeliosInterfaceEditor
     {
         // sub-configuration objects we path into
-        protected DCSConfigurator2 _configuration;
+        protected DCSExportConfiguration _configuration;
         protected DCSPhantomMonitorFixConfig _phantomFix;
         protected DCSVehicleImpersonation _vehicleImpersonation;
 
@@ -56,7 +56,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             base.OnInterfaceChanged(oldInterface, newInterface);
             if (newInterface is DCSInterface dcsInterface) {
-                _configuration = new DCSConfigurator2(dcsInterface);
+                _configuration = new DCSExportConfiguration(dcsInterface);
                 _phantomFix = new DCSPhantomMonitorFixConfig(dcsInterface);
                 _vehicleImpersonation = new DCSVehicleImpersonation(dcsInterface);
             } else {
@@ -100,9 +100,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <summary>
         /// used by UI binding paths.
         /// </summary>
-        public DCSConfigurator2 Configuration { get; }
+        public DCSExportConfiguration Configuration { get; }
         public static readonly DependencyProperty ConfigurationProperty =
-            DependencyProperty.Register("Configuration", typeof(DCSConfigurator2), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
+            DependencyProperty.Register("Configuration", typeof(DCSExportConfiguration), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
 
         /// <summary>
         /// used by UI binding paths

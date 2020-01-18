@@ -20,24 +20,16 @@ namespace GadrocsWorkshop.Helios.ControlCenter
     
     static class ControlCenterCommands
     {
-        private static RoutedUICommand NextProfileCommand = new RoutedUICommand("Next Profile", "NextProfile", typeof(ControlCenterCommands));
-        private static RoutedUICommand PreviousProfileCommand = new RoutedUICommand("Previous Profile", "PreviousProfile", typeof(ControlCenterCommands));
-        private static RoutedUICommand StartProfileCommand = new RoutedUICommand("Start Profile", "StartProfile", typeof(ControlCenterCommands));
-        private static RoutedUICommand StopProfileCommand = new RoutedUICommand("Stop Profile", "StopProfile", typeof(ControlCenterCommands));
-        private static RoutedUICommand ResetProfileCommand = new RoutedUICommand("Reset Profile", "ResetProfile", typeof(ControlCenterCommands));
-        private static RoutedUICommand DeleteProfileCommand = new RoutedUICommand("Delete Profile", "DeleteProfile", typeof(ControlCenterCommands));
-        private static RoutedUICommand OpenControlCenterCommand = new RoutedUICommand("Open Control Center", "OpenControlCenter", typeof(ControlCenterCommands));
-        private static RoutedUICommand TogglePreferencesCommand = new RoutedUICommand("Toggle Display of Control Center Preferences", "TogglePreferences", typeof(ControlCenterCommands));
-        private static RoutedUICommand RunProfileCommand = new RoutedUICommand("Opens and Runs a Profile", "RunProfile", typeof(ControlCenterCommands));
+        public static RoutedUICommand NextProfile { get; } = new RoutedUICommand("Next Profile", "NextProfile", typeof(ControlCenterCommands));
+        public static RoutedUICommand PreviousProfile { get; } = new RoutedUICommand("Previous Profile", "PreviousProfile", typeof(ControlCenterCommands));
+        public static RoutedUICommand StartProfile { get; } = new RoutedUICommand("Start Profile", "StartProfile", typeof(ControlCenterCommands));
+        public static RoutedUICommand StopProfile { get; } = new RoutedUICommand("Stop Profile", "StopProfile", typeof(ControlCenterCommands));
+        public static RoutedUICommand ResetProfile { get; } = new RoutedUICommand("Reset Profile", "ResetProfile", typeof(ControlCenterCommands));
+        public static RoutedUICommand DeleteProfile { get; } = new RoutedUICommand("Delete Profile", "DeleteProfile", typeof(ControlCenterCommands));
+        public static RoutedUICommand OpenControlCenter { get; } = new RoutedUICommand("Open Control Center", "OpenControlCenter", typeof(ControlCenterCommands));
+        public static RoutedUICommand TogglePreferences { get; } = new RoutedUICommand("Toggle Display of Control Center Preferences", "TogglePreferences", typeof(ControlCenterCommands));
+        public static RoutedUICommand RunProfile { get; } = new RoutedUICommand("Open and Run a Profile", "RunProfile", typeof(ControlCenterCommands));
 
-        public static RoutedUICommand NextProfile { get { return NextProfileCommand; } }
-        public static RoutedUICommand PreviousProfile { get { return PreviousProfileCommand; } }
-        public static RoutedUICommand StartProfile { get { return StartProfileCommand; } }
-        public static RoutedUICommand StopProfile { get { return StopProfileCommand; } }
-        public static RoutedUICommand ResetProfile { get { return ResetProfileCommand; } }
-        public static RoutedUICommand DeleteProfile { get { return DeleteProfileCommand; } }
-        public static RoutedUICommand OpenControlCenter { get { return OpenControlCenterCommand; } }
-        public static RoutedUICommand TogglePreferences { get { return TogglePreferencesCommand; } }
-        public static RoutedUICommand RunProfile { get { return RunProfileCommand; } }
+        public static RoutedUICommand ResetCaution = new RoutedUICommand("Reset Caution Light", "ResetCaution", typeof(ControlCenterCommands));
     }
 }

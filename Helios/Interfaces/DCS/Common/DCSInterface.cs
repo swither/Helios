@@ -24,7 +24,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     using System.Diagnostics;
     using System.Xml;
 
-    public class DCSInterface : BaseUDPInterface, IProfileAwareInterface
+    public class DCSInterface : BaseUDPInterface, IProfileAwareInterface, IReadyCheck
     {
         private const string SettingsGroup = "DCSInterface";
 
@@ -207,6 +207,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public void RequestDriver(string name)
         {
+            // NOTE: we don't have per-profile drivers, so we ignore the short name of the 
+            // profile provided and instead just request support for the correct vehicle
+
             // the interface is supposed to have called OnProfileStarted before this is called,
             // so don't check for null; we want this to crash if this breaks in the future
             if (_usesExportModule)
@@ -299,6 +302,38 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 writer.WriteElementString("ImpersonatedVehicleName", ImpersonatedVehicleName);
             }
+        }
+
+        public IEnumerable<StatusReportItem> PerformReadyCheck()
+        {
+            List<StatusReportItem> items = new List<StatusReportItem>();
+            string reportingName = ImpersonatedVehicleName ?? VehicleName;
+            if (UsesExportModule)
+            {
+                items.Add(new StatusReportItem()
+                {
+                    Status = $"DCS Interface for {reportingName} will use externally supplied DCS export module.  Helios cannot check that this file is correctly placed.",
+                });
+                if (reportingName != VehicleName)
+                {
+                    items.Add(new StatusReportItem()
+                    {
+                        Status = $"DCS Interface for {reportingName} requires a module that maps to the {VehicleName} interface.  Helios cannot check that this file is correct."
+                    });
+                }
+            }
+            else
+            {
+                items.Add(new StatusReportItem()
+                {
+                    Status = $"DCS Interface for {reportingName} will use an export driver written by Helios Profile Editor.",
+                });
+            }
+
+            // check on the health of our exports
+            DCSExportConfiguration configuration = new DCSExportConfiguration(this);
+            items.AddRange(configuration.PerformReadyCheck());
+            return items;
         }
     }
 }

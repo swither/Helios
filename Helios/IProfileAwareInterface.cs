@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -28,6 +25,12 @@ namespace GadrocsWorkshop.Helios
             public string ToOpaqueHandle { get; set; }
         }
 
+        /// <summary>
+        /// Interface instances that support this interface are loosely aware of the existence
+        /// of profiles.  They may receive information that helps select a profile and they
+        /// may also make their containing profile appropriate for selection or not.
+        /// Finally, they are aware that profiles may require certain drivers to be loaded.
+        /// </summary>
         public interface IProfileAwareInterface
         {
             /// <summary>

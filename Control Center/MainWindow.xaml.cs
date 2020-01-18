@@ -65,6 +65,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
             displaySplash(4000);  // Display a dynamic splash panel with release and credits
 
+            PrefsCheckBox.IsChecked = false;
+            StatusCheckBox.IsChecked = false;
             MinimizeCheckBox.IsChecked = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "StartMinimized", false);
             if (MinimizeCheckBox.IsChecked == true)
             {
@@ -138,6 +140,66 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             aboutDialog.Close();
         }
 
+        private void ComposeStatusMessage(string firstLine)
+        {
+            string message = firstLine;
+            if (_lastProfileHint.Length > 0)
+            {
+                message += $"\nSimulator is {_lastProfileHint}";
+            }
+            else
+            {
+                message += "\n";
+            }
+            if (_lastDriverStatus.Length > 0)
+            {
+                message += $"\nSimulator is running {_lastDriverStatus}";
+            }
+            SetValue(MessageProperty, message);
+        }
+
+        private void UpdateStatusMessage()
+        {
+            // centralize all these messages, because they all need to fit in the same space
+            switch (_status)
+            {
+                case StatusValue.Empty:
+                // fall through
+                case StatusValue.License:
+                    ComposeStatusMessage("");
+                    break;
+                case StatusValue.DeleteWarning:
+                    // this multiline message does not combine with anything
+                    SetValue(MessageProperty, "!!WARNING!!\nYou are about to permanetly delete this profile.  Please press start to confirm.");
+                    break;
+                case StatusValue.Running:
+                    ComposeStatusMessage("Running Profile");
+                    break;
+                case StatusValue.Loading:
+                    ComposeStatusMessage("Loading Profile...");
+                    break;
+                case StatusValue.LoadError:
+                    ComposeStatusMessage("Error loading Profile");
+                    break;
+                case StatusValue.RunningVersion:
+                    Version ver = Assembly.GetEntryAssembly().GetName().Version;
+                    ComposeStatusMessage($"{ver.Major.ToString()}.{ver.Minor.ToString()}.{ver.Build.ToString("0000")}.{ver.Revision.ToString("0000")}\nProject Fork: BlueFinBima\n");
+                    break;
+                case StatusValue.ProfileVersionHigher:
+                    // this multiline message does not combine with anything
+                    SetValue(MessageProperty, "Cannot display this profile because it was created with a newer version of Helios.  Please upgrade to the latest version.");
+                    break;
+                case StatusValue.BadMonitorConfig:
+                    // this multiline message does not combine with anything
+                    SetValue(MessageProperty, "Cannot display this profile because it has an invalid monitor configuration.  Please open the editor and select reset monitors from the profile menu.");
+                    break;
+                case StatusValue.FailedPreflight:
+                    // this multiline message does not combine with anything
+                    SetValue(MessageProperty, "Failed preflight check.  Please resolve problems or disable preflight check in preferences.");
+                    break;
+            }
+        }
+
         #region Properties
 
         public HeliosProfile ActiveProfile
@@ -170,7 +232,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             LoadError,
             RunningVersion,
             ProfileVersionHigher,
-            BadMonitorConfig
+            BadMonitorConfig,
+            FailedPreflight
         }
 
         public static readonly DependencyProperty MessageProperty =
@@ -185,71 +248,26 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
         }
 
-        private void ComposeStatusMessage(string firstLine)
-        {
-            string message = firstLine;
-            if (_lastProfileHint.Length > 0)
-            {
-                message += $"\nSimulator is {_lastProfileHint}";
-            } else {
-                message += "\n";
-            }
-            if (_lastDriverStatus.Length > 0)
-            {
-                message += $"\nSimulator is running {_lastDriverStatus}";
-            }
-            SetValue(MessageProperty, message);
-        }        
-
-        private void UpdateStatusMessage()
-        {
-            // centralize all these messages, because they all need to fit in the same space
-            switch(_status)
-            {
-                case StatusValue.Empty:
-                    // fall through
-                case StatusValue.License:
-                    ComposeStatusMessage("");
-                    break;
-                case StatusValue.DeleteWarning:
-                    // this multiline message does not combine with anything
-                    SetValue(MessageProperty, "!!WARNING!!\nYou are about to permanetly delete this profile.  Please press start to confirm.");
-                    break;
-                case StatusValue.Running:
-                    ComposeStatusMessage("Running Profile");
-                    break;
-                case StatusValue.Loading:
-                    ComposeStatusMessage("Loading Profile...");
-                    break;
-                case StatusValue.LoadError:
-                    ComposeStatusMessage("Error loading Profile");
-                    break;
-                case StatusValue.RunningVersion:
-                    Version ver = Assembly.GetEntryAssembly().GetName().Version;
-                    ComposeStatusMessage($"{ver.Major.ToString()}.{ver.Minor.ToString()}.{ver.Build.ToString("0000")}.{ver.Revision.ToString("0000")}\nProject Fork: BlueFinBima\n");
-                    break;
-                case StatusValue.ProfileVersionHigher:
-                    // this multiline message does not combine with anything
-                    SetValue(MessageProperty, "Cannot display this profile because it was created with a newer version of Helios.  Please upgrade to the latest version.");
-                    break;
-                case StatusValue.BadMonitorConfig:
-                    // this multiline message does not combine with anything
-                    SetValue(MessageProperty, "Cannot display this profile because it has an invalid monitor configuration.  Please open the editor and select reset monitors from the profile menu.");
-                    break;
-            }
-        }
-
         public string HotKeyDescription
         {
             get { return (string)GetValue(HotKeyDescriptionProperty); }
             set { SetValue(HotKeyDescriptionProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for HotKeyDescription.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HotKeyDescriptionProperty =
             DependencyProperty.Register("HotKeyDescription", typeof(string), typeof(MainWindow), new PropertyMetadata(""));
 
+        public StatusViewModel StatusViewer { get; } = new StatusViewModel();
 
+        /// <summary>
+        /// state of master caution light
+        /// </summary>
+        public Visibility CautionLightVisibility
+        {
+            get { return (Visibility)GetValue(CautionLightVisibilityProperty); }
+            set { SetValue(CautionLightVisibilityProperty, value); }
+        }
+        public static readonly DependencyProperty CautionLightVisibilityProperty =
+            DependencyProperty.Register("CautionLightVisibility", typeof(Visibility), typeof(MainWindow), new PropertyMetadata(Visibility.Hidden));
         #endregion
 
         private void Minimize()
@@ -381,6 +399,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 StatusMessage = StatusValue.License;
             }
             ResetProfile();
+            CautionLightVisibility = Visibility.Hidden;
         }
 
         private void OpenControlCenter_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -454,6 +473,10 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             Close();
         }
 
+        private void ResetCaution_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            CautionLightVisibility = Visibility.Hidden;
+        }
         #endregion
 
         #region Profile Running
@@ -462,6 +485,16 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         {
             if (ActiveProfile != null && !ActiveProfile.IsStarted)
             {
+                ActiveProfile.Dispatcher = Dispatcher;
+                if (PreflightCheckBox.IsChecked == true)
+                {
+                    if (!PerformReadyCheck())
+                    {
+                        ConfigManager.LogManager.LogWarning("Aborted start up of Profile due to failed preflight check.  Disable preflight check in preferences to start anyway.");
+                        return;
+                    }
+                }
+
                 ActiveProfile.ControlCenterShown += Profile_ShowControlCenter;
                 ActiveProfile.ControlCenterHidden += Profile_HideControlCenter;
                 ActiveProfile.ProfileStopped += Profile_ProfileStopped;
@@ -469,7 +502,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 ActiveProfile.DriverStatusReceived += Profile_DriverStatusReceived;
                 ActiveProfile.ClientChanged += Profile_ClientChanged;
 
-                ActiveProfile.Dispatcher = Dispatcher;
                 ActiveProfile.Start();
 
                 if (_dispatcherTimer != null)
@@ -598,7 +630,13 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             if (ActiveProfile != null)
             {
                 ActiveProfile.Reset();
+                if (ActiveProfile.IsStarted)
+                {
+                    StatusMessage = StatusValue.Running;
+                    return;
+                }
             }
+            StatusMessage = StatusValue.RunningVersion;
         }
 
         private void Profile_ShowControlCenter(object sender, EventArgs e)
@@ -967,7 +1005,48 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         private void TBDCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             //ConfigManager.SettingsManager.SaveSetting("ControlCenter", "AutoHide", false);
-         }
+        }
+
+        private void HideButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            Minimize();
+        }
+
+        private void PreflightCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ActiveProfile == null)
+            {
+                return;
+            }
+            PerformReadyCheck();
+        }
+
+        private bool PerformReadyCheck()
+        {
+            bool success = true;
+            foreach (StatusReportItem status in ActiveProfile.PerformReadyCheck())
+            {
+                if (status.Severity == StatusReportItem.SeverityCode.Error)
+                {
+                    success = false;
+                }
+                StatusViewer.AddItem(status);
+            }
+            StatusLines.ScrollToBottom();
+            if (!success)
+            {
+                StatusMessage = StatusValue.FailedPreflight;
+                CautionLightVisibility = Visibility.Visible;
+                StatusCheckBox.IsChecked = true;
+            }
+            return success;
+        }
+
+        private void PreflightCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            StatusViewer.Clear();
+        }
+
         private void SetHotkey_Click(object sender, RoutedEventArgs e)
         {
             HotKeyDetector detector = new HotKeyDetector();
@@ -1013,10 +1092,5 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         }
 
         #endregion
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Minimize();
-        }
     }
 }

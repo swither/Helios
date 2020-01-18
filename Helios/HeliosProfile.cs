@@ -24,7 +24,7 @@ namespace GadrocsWorkshop.Helios
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.ProfileAwareInterface;
 
-    public class HeliosProfile : NotificationObject
+    public class HeliosProfile : NotificationObject, IReadyCheck
     {
         private bool _invalidVersion = false;
         private bool _dirty = false;
@@ -488,6 +488,19 @@ namespace GadrocsWorkshop.Helios
             {
                 OnPropertyChanged(child.Name, args);
             }
+        }
+
+        public IEnumerable<StatusReportItem> PerformReadyCheck()
+        {
+            List<StatusReportItem> items = new List<StatusReportItem>();
+            foreach (HeliosInterface heliosInterface in _interfaces)
+            {
+                if (heliosInterface is IReadyCheck readyCheck)
+                {
+                    items.AddRange(readyCheck.PerformReadyCheck());
+                }
+            }
+            return items;
         }
 
         #endregion
