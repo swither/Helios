@@ -84,7 +84,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <Style TargetType="{x:Type Button}" x:Key="HeliosPrevButtonStyle">
             <Setter Property="Template">
                 <Setter.Value>
@@ -119,10 +119,18 @@
             </Setter>
         </Style>
 
+
+        <Style x:Key="BaseDisplayText" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Franklin Gothic Book"/>
+            <Setter Property="Foreground" Value="#FF79CC87"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
         <Style x:Key="BaseLabel" TargetType="TextBlock">
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="FontFamily" Value="Franklin Gothic"/>
             <Setter Property="Foreground" Value="#FFF8F5F5"/>
+            <Setter Property="FontWeight" Value="Normal"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -140,17 +148,17 @@
         <Style x:Key="ButtonLabel" TargetType="TextBlock" BasedOn="{StaticResource BaseLabel}">
             <Setter Property="FontSize" Value="12"/>
         </Style>
-        
+
         <Style x:Key="TopLabel" TargetType="TextBlock" BasedOn="{StaticResource ButtonLabel}">
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="0,20,0,10"/>
         </Style>
-        
+
         <Style x:Key="UpLabel" TargetType="TextBlock" BasedOn="{StaticResource BaseLabel}">
             <Setter Property="FontSize" Value="10"/>
         </Style>
-        
+
         <Style x:Key="DownLabel" TargetType="TextBlock" BasedOn="{StaticResource BaseLabel}">
             <Setter Property="FontSize" Value="10"/>
         </Style>
@@ -158,7 +166,7 @@
         <Style x:Key="CanvasLabel" TargetType="TextBlock" BasedOn="{StaticResource BaseLabel}">
             <Setter Property="FontSize" Value="24"/>
         </Style>
-        
+
         <Style x:Key="CollapsePrefs" TargetType="Canvas">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=PrefsCheckBox}" Value="False">
@@ -226,8 +234,8 @@
                     </StackPanel>
                 </Grid>
 
-                <TextBlock Canvas.Left="76" Canvas.Top="36" Height="29" x:Name="ProfileName" Text="{Binding SelectedProfileName}" Width="223" Foreground="#FF79CC87" FontFamily="Franklin Gothic" FontSize="20" />
-                <TextBlock Canvas.Left="76" Canvas.Top="71" Height="53" x:Name="MessageText" Text="{Binding Message}" Width="223" FontFamily="Franklin Gothic" Foreground="#FF79CC87" FontSize="10" TextWrapping="Wrap" />
+                <TextBlock Canvas.Left="76" Canvas.Top="36" Height="29" x:Name="ProfileName" Text="{Binding SelectedProfileName}" Width="223" Style="{StaticResource BaseDisplayText}" FontSize="20" />
+                <TextBlock Canvas.Left="76" Canvas.Top="71" Height="53" x:Name="MessageText" Text="{Binding Message}" Width="223" Style="{StaticResource BaseDisplayText}" FontSize="10" TextWrapping="Wrap" />
                 <Grid Canvas.Left="3" Canvas.Top="150">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="20"/>
@@ -321,7 +329,7 @@
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="CLEAR" Style="{StaticResource UpLabel}"/>
                         <Button Grid.Row="2" Grid.Column="0" Width="36" Height="36" Name="SetHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="SetHotkey_Click" />
                         <Button Grid.Row="2" Grid.Column="2" Width="36" Height="36" Name="ClearHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="ClearHotkey_Click" />
-                        <TextBlock Panel.ZIndex="2" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="13,11,13,11" FontFamily="Franklin Gothic" Foreground="#FF79CC87" Background="#FF001500" FontSize="20" Text="{Binding HotKeyDescription}" TextAlignment="Center" TextWrapping="Wrap" />
+                        <TextBlock Panel.ZIndex="2" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="13,11,13,11" Style="{StaticResource BaseDisplayText}" FontSize="20" Text="{Binding HotKeyDescription}" TextAlignment="Center" TextWrapping="Wrap" />
                         <Border Panel.ZIndex="1" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,8,10,8" CornerRadius="3" BorderBrush="#FF454545" BorderThickness="2" Background="#FF001500" />
                     </Grid>
                     <StackPanel Grid.Row="1" Grid.Column="0">
@@ -364,7 +372,7 @@
                         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                             <TextBlock x:Name="TouchScreenDelayTitle" Text="IGNORE 2ND CLICK FOR" Style="{StaticResource UpLabel}" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
                             <Border CornerRadius="3" BorderBrush="#FF454545" BorderThickness="1" Background="#FF001500" Padding="0" Width="56" Height="18" Margin="4,0,0,0" >
-                                <TextBlock x:Name="TouchscreenDelayTextBlock" FontFamily="Franklin Gothic" FontSize="12" Foreground="#FF79CC87" Padding="0,0,2,0" Text="0 ms" VerticalAlignment="Center" TextAlignment="Right"/>
+                                <TextBlock x:Name="TouchscreenDelayTextBlock" Style="{StaticResource BaseDisplayText}" FontSize="12" Padding="0,0,2,0" Text="0 ms" VerticalAlignment="Center" TextAlignment="Right"/>
                             </Border>
                         </StackPanel>
                         <Slider Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,9,0" x:Name="TouchScreenDelaySlider" Minimum="0" Maximum="1000" TickFrequency="200" TickPlacement="BottomRight" ValueChanged="TouchScreenDelaySlider_ValueChanged" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
@@ -399,18 +407,18 @@
                                       ItemTemplateSelector="{Binding Path=StatusViewer.TemplateSelector}">
                                 <ListView.Resources>
                                     <DataTemplate x:Key="Info">
-                                        <TextBlock Text="{Binding Status}" FontFamily="Franklin Gothic" TextWrapping="Wrap" Foreground="#FF79CC87" Background="#FF001500" FontSize="12"/>
+                                        <TextBlock Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
                                     </DataTemplate>
                                     <DataTemplate x:Key="Warning">
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Status}" FontFamily="Franklin Gothic" TextWrapping="Wrap" Foreground="#FFCA9834" Background="#FF001500" FontSize="12"/>
-                                            <TextBlock Text="{Binding Recommendation}" Margin="8,0,0,0" FontFamily="Franklin Gothic" TextWrapping="Wrap" Foreground="#FF79CC87" Background="#FF001500" FontSize="12"/>
+                                            <TextBlock Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" Foreground="#FF79CC87" TextWrapping="Wrap" FontSize="12"/>
+                                            <TextBlock Text="{Binding Recommendation}" Margin="8,0,0,0" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
                                         </StackPanel>
                                     </DataTemplate>
                                     <DataTemplate x:Key="Error">
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Status}" FontFamily="Franklin Gothic" TextWrapping="Wrap" Foreground="#FFDA494D" Background="#FF001500" FontSize="12"/>
-                                            <TextBlock Text="{Binding Recommendation}" Margin="8,0,0,0" FontFamily="Franklin Gothic" TextWrapping="Wrap" Foreground="#FF79CC87" Background="#FF001500" FontSize="12"/>
+                                            <TextBlock Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" Foreground="#FFD8696C" TextWrapping="Wrap" FontSize="12"/>
+                                            <TextBlock Text="{Binding Recommendation}" Margin="8,0,0,0" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.Resources>
