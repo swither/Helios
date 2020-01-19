@@ -123,7 +123,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             CautionLightVisibility = Visibility.Hidden;
         }
 
-        public void WriteLogMessage(LogLevel level, string message, Exception exception)
+        public void WriteLogMessage(string timeStamp, LogLevel level, string message, Exception exception)
         {
             StatusReportItem.SeverityCode code;
             switch (level)
@@ -173,9 +173,10 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
             StatusReportItem item = new StatusReportItem()
             {
+                TimeStamp = timeStamp,
+                Severity = code,
                 Status = trimmedMessage,
-                Recommendation = recommendation,
-                Severity = code
+                Recommendation = recommendation
             };
             AddItem(item);
         }

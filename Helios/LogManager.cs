@@ -32,10 +32,11 @@ namespace GadrocsWorkshop.Helios
         /// Callback scheduled on dispatcher provided.  Debug messages
         /// are not scheduled at all.
         /// </summary>
-        /// <param name="level">is always LogLevel.Info or higher</param>
+        /// <param name="timeStamp">the same timestamp used in the primary log file</param>
+        /// <param name="level">always LogLevel.Info or higher</param>
         /// <param name="message"></param>
-        /// <param name="exception"></param>
-        void WriteLogMessage(LogLevel level, string message, Exception exception);
+        /// <param name="exception">an exception that is being logged or null</param>
+        void WriteLogMessage(string timeStamp, LogLevel level, string message, Exception exception);
     }
 
     public class LogManager
@@ -115,22 +116,28 @@ namespace GadrocsWorkshop.Helios
         private void WriteLogMessage(LogLevel level, string message, Exception exception)
         {
 #if DEBUG
-            Console.WriteLine($"{DateTime.Now.ToString()} {level.ToString()}: {message}");
+            Console.WriteLine($"{createTimeStamp()} {level.ToString()}: {message}");
 #endif
+            string timeStamp = null;
             if (_level >= level)
             {
-
-                WriteToFile(level, message, exception);
-            }
-
+                timeStamp = WriteToFile(level, message, exception);
+            } 
+ 
             // after writing to file, also send all non-debug messages to consumers
             if (level < LogLevel.Debug)
             {
-                DispatchToConsumers(level, message, exception);
+                // use timestamp from file for correlation, if available
+                DispatchToConsumers(timeStamp ?? createTimeStamp(), level, message, exception);
             }
         }
 
-        private void WriteToFile(LogLevel level, string message, Exception exception)
+        private static string createTimeStamp()
+        {
+            return DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
+        }
+
+        private string WriteToFile(LogLevel level, string message, Exception exception)
         {
             lock (_lock)
             {
@@ -151,7 +158,11 @@ namespace GadrocsWorkshop.Helios
 
                     using (errorWriter)
                     {
-                        errorWriter.Write(DateTime.Now.ToString());
+                        // because we get this timestamp under lock, messages will be in order in the file
+                        string timeStamp = createTimeStamp();
+
+                        // write to file
+                        errorWriter.Write(timeStamp);
                         errorWriter.Write(" - ");
                         errorWriter.Write(level.ToString());
                         errorWriter.Write(" - ");
@@ -161,16 +172,18 @@ namespace GadrocsWorkshop.Helios
                         {
                             WriteException(errorWriter, exception);
                         }
+                        return timeStamp;
                     }
                 }
                 catch (Exception)
                 {
                     // Nothing to do but go on.
+                    return null;
                 }
             }
         }
 
-        private void DispatchToConsumers(LogLevel level, string message, Exception exception)
+        private void DispatchToConsumers(string timeStamp, LogLevel level, string message, Exception exception)
         {
             // all we do under lock here is schedule async code
             lock (_lock)
@@ -183,7 +196,7 @@ namespace GadrocsWorkshop.Helios
                     {
                         try
                         {
-                            consumer.WriteLogMessage(level, message, exception);
+                            consumer.WriteLogMessage(timeStamp, level, message, exception);
                         }
                         catch (Exception ex)
                         {

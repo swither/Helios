@@ -235,7 +235,7 @@
                         <TextBlock Text="OFF" Style="{StaticResource UpLabel}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1">
-                        <TextBlock Text="STATUS" Style="{StaticResource TopLabel}" Height="Auto"/>
+                        <TextBlock Text="CONSOLE" Style="{StaticResource TopLabel}" Height="Auto"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
                         <CheckBox x:Name="StatusCheckBox" Style="{StaticResource HeliosSwitchStyle}" IsChecked="true"/>
                         <TextBlock Text="OFF" Style="{StaticResource UpLabel}"/>
@@ -466,14 +466,20 @@
                         <Button Height="50" Width="50" Margin="0,52,0,0" Style="{StaticResource HeliosPrevButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageUpCommand}" />
                         <Button Height="50" Width="50" Margin="0,20,0,0" Style="{StaticResource HeliosNextButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageDownCommand}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="2" Grid.Column="3">
+                    <StackPanel Grid.Row="2" Grid.Column="2">
                         <TextBlock Text="CLEAR" Style="{StaticResource BaseLabel}" FontSize="12"/>
-                        <Button Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusViewer}" Command="local:StatusViewer.ClearCommand"/>
+                        <Button Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="local:StatusViewer.ClearCommand"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="2" Grid.Column="4">
+                    <StackPanel Grid.Row="2" Grid.Column="3">
+                        <TextBlock Text="COPY" Style="{StaticResource BaseLabel}" FontSize="12"/>
+                        <Button IsEnabled="False" Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}"/>
+                    </StackPanel>                    <StackPanel Grid.Row="2" Grid.Column="4">
                         <TextBlock Text="REPORT BUG" Style="{StaticResource BaseLabel}" FontSize="12"/>
-                        <Button Name="ReportBugButton" IsEnabled="false" Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusViewer}" />
-                    </StackPanel>                
+                        <Button IsEnabled="false" Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" />
+                    </StackPanel>
+                    <!-- add this once we separate from control center main window 
+                    <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"  Text="HELIOS CONSOLE" Style="{StaticResource BaseLabel}" FontSize="22"/>
+                    -->
                 </Grid>
             </Canvas>
         </StackPanel>

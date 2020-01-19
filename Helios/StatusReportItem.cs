@@ -13,8 +13,18 @@
 
 namespace GadrocsWorkshop.Helios
 {
+    /// <summary>
+    /// this is a structured log item, with the additional restriction
+    /// that it is intended for human consumption, so long messages
+    /// can be truncated and implementation-related messages are discouraged
+    /// </summary>
     public class StatusReportItem
     {
+        /// <summary>
+        /// optional time stamp or null
+        /// </summary>
+        public string TimeStamp { get; set; }
+
         public enum SeverityCode
         {
             Info,
@@ -22,7 +32,16 @@ namespace GadrocsWorkshop.Helios
             Error
         }
         public SeverityCode Severity { get; set; } = SeverityCode.Info;
+        
+        /// <summary>
+        /// the status message, which may be more than one line long
+        /// but should generally be short
+        /// </summary>
         public string Status { get; set; }
+
+        /// <summary>
+        /// a recommendation to the user or null
+        /// </summary>
         public string Recommendation { get; set; }
     }
 }
