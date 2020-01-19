@@ -825,15 +825,16 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 Timer timer = new Timer(10000);
                 timer.AutoReset = false; // only once
                 timer.Elapsed += OnStartupTimer;
-                timer.Start();
                 _main.StartupTimer = timer;
 
-                ConfigManager.LogManager.LogInfo("Startup timer started.");
-                
-                WaitForData(new ReceiveContext() { socket = serverSocket });
-                
                 // hook for descendants
                 OnProfileStarted();
+
+                // now go active
+                ConfigManager.LogManager.LogDebug("Starting startup timer.");
+                timer.Start();
+                ConfigManager.LogManager.LogDebug("Starting UDP receiver.");
+                WaitForData(new ReceiveContext() { socket = serverSocket });
             }
             catch (System.Net.Sockets.SocketException se)
             {
@@ -856,7 +857,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
         private void OnDelayedStartup()
         { 
-            ConfigManager.LogManager.LogInfo("Startup Delay timer triggered.");
+            ConfigManager.LogManager.LogDebug("Delayed startup timer triggered.");
             _main.ProfileLoadedTrigger.FireTrigger(BindingValue.Empty);
         }
 
