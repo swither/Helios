@@ -16,14 +16,33 @@
 namespace GadrocsWorkshop.Helios
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
+    using System.Windows.Threading;
+
+    public interface ILogConsumer
+    {
+        /// <summary>
+        /// write calls will be asynchronously scheduled on this
+        /// </summary>
+        Dispatcher Dispatcher { get; }
+
+        /// <summary>
+        /// Callback scheduled on dispatcher provided.  Debug messages
+        /// are not scheduled at all.
+        /// </summary>
+        /// <param name="level">is always LogLevel.Info or higher</param>
+        /// <param name="message"></param>
+        /// <param name="exception"></param>
+        void WriteLogMessage(LogLevel level, string message, Exception exception);
+    }
 
     public class LogManager
     {
         private string _logFile;
         private LogLevel _level = LogLevel.Info;
-
+        private HashSet<ILogConsumer> _consumers = new HashSet<ILogConsumer>();
         private System.Object _lock = new System.Object();
 
         public LogManager(string path, LogLevel level)
@@ -77,6 +96,22 @@ namespace GadrocsWorkshop.Helios
             WriteLogMessage(LogLevel.Info, message, null);
         }
 
+        public void RegisterConsumer(ILogConsumer consumer)
+        {
+            lock (_lock)
+            {
+                _consumers.Add(consumer);
+            }
+        }
+
+        public void DeregisterConsumer(ILogConsumer consumer)
+        {
+            lock (_lock)
+            {
+                _consumers.Remove(consumer);
+            }
+        }
+
         private void WriteLogMessage(LogLevel level, string message, Exception exception)
         {
 #if DEBUG
@@ -84,42 +119,77 @@ namespace GadrocsWorkshop.Helios
 #endif
             if (_level >= level)
             {
-                lock (_lock)
+
+                WriteToFile(level, message, exception);
+            }
+
+            // after writing to file, also send all non-debug messages to consumers
+            if (level < LogLevel.Debug)
+            {
+                DispatchToConsumers(level, message, exception);
+            }
+        }
+
+        private void WriteToFile(LogLevel level, string message, Exception exception)
+        {
+            lock (_lock)
+            {
+                try
                 {
-                    try
+                    FileInfo errorFile = new FileInfo(_logFile);
+
+                    StreamWriter errorWriter;
+
+                    if (errorFile.Exists)
                     {
-                        FileInfo errorFile = new FileInfo(_logFile);
+                        errorWriter = errorFile.AppendText();
+                    }
+                    else
+                    {
+                        errorWriter = errorFile.CreateText();
+                    }
 
-                        StreamWriter errorWriter;
+                    using (errorWriter)
+                    {
+                        errorWriter.Write(DateTime.Now.ToString());
+                        errorWriter.Write(" - ");
+                        errorWriter.Write(level.ToString());
+                        errorWriter.Write(" - ");
+                        errorWriter.WriteLine(message);
 
-                        if (errorFile.Exists)
+                        if (exception != null)
                         {
-                            errorWriter = errorFile.AppendText();
-                        }
-                        else
-                        {
-                            errorWriter = errorFile.CreateText();
-                        }
-
-                        using (errorWriter)
-                        {
-
-                            errorWriter.Write(DateTime.Now.ToString());
-                            errorWriter.Write(" - ");
-                            errorWriter.Write(level.ToString());
-                            errorWriter.Write(" - ");
-                            errorWriter.WriteLine(message);
-
-                            if (exception != null)
-                            {
-                                WriteException(errorWriter, exception);
-                            }
+                            WriteException(errorWriter, exception);
                         }
                     }
-                    catch (Exception)
+                }
+                catch (Exception)
+                {
+                    // Nothing to do but go on.
+                }
+            }
+        }
+
+        private void DispatchToConsumers(LogLevel level, string message, Exception exception)
+        {
+            // all we do under lock here is schedule async code
+            lock (_lock)
+            {
+                // no exception handling here, since messages aren't handled on this stack
+                foreach (ILogConsumer consumer in _consumers)
+                {
+                    // note: exceptions here will bring down the application
+                    consumer.Dispatcher.InvokeAsync(() =>
                     {
-                        // Nothing to do but go on.
-                    }
+                        try
+                        {
+                            consumer.WriteLogMessage(level, message, exception);
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteToFile(LogLevel.Error, "log consumer failed to write message", ex);
+                        }
+                    }, DispatcherPriority.ApplicationIdle);
                 }
             }
         }

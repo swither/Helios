@@ -13,6 +13,7 @@
         Topmost="True" 
         Loaded="Window_Loaded" 
         ContentRendered="Window_Opened">
+    <!-- add this for debugging: xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase" -->
     <Window.Resources>
         <Style TargetType="{x:Type CheckBox}" x:Key="HeliosSwitchStyle">
             <Setter Property="Template">
@@ -124,6 +125,11 @@
             <Setter Property="FontFamily" Value="Franklin Gothic Book"/>
             <Setter Property="Foreground" Value="#FF79CC87"/>
             <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="BaseLabel" TargetType="TextBlock">
@@ -195,6 +201,8 @@
         <CommandBinding Command="local:ControlCenterCommands.RunProfile" Executed="RunProfile_Executed" />
         <CommandBinding Command="local:ControlCenterCommands.ResetCaution" Executed="ResetCaution_Executed" />
         <CommandBinding Command="Close" Executed="Close_Executed" />
+        <!-- REVISIT move this once StatusViewer becomes its own XAML-based class -->
+        <CommandBinding Command="local:StatusViewer.ClearCommand" Executed="StatusViewer_Clear_Executed" />
     </Window.CommandBindings>
     <Grid Name="WindowGrid">
         <Grid.RowDefinitions>
@@ -259,7 +267,7 @@
                     <TextBlock Grid.Row="0" Grid.Column="7" Text="RESET" Style="{StaticResource ButtonLabel}"/>
                     <TextBlock Grid.Row="0" Grid.Column="9" Text="HIDE" Style="{StaticResource ButtonLabel}"/>
                     <Button x:Name="CautionButton" Grid.Row="1" Grid.Column="1" Panel.ZIndex="2" Style="{StaticResource HeliosCautionButtonStyle}" Command="local:ControlCenterCommands.ResetCaution"/>
-                    <Rectangle x:Name="CautionLight" Grid.Row="1" Grid.Column="1" Panel.ZIndex="1" Margin="4" Fill="#FFF1ED31" Visibility="{Binding CautionLightVisibility}"/>
+                    <Rectangle x:Name="CautionLight" Grid.Row="1" Grid.Column="1" Panel.ZIndex="1" Margin="4" Fill="#FFF1ED31" Visibility="{Binding Path=StatusViewer.CautionLightVisibility}"/>
                     <Button Grid.Row="1" Grid.Column="3" x:Name="StartButton" Style="{StaticResource HeliosPushButtonStyle}" Command="local:ControlCenterCommands.StartProfile"/>
                     <Button Grid.Row="1" Grid.Column="5" x:Name="StopButton" Style="{StaticResource HeliosPushButtonStyle}" Command="local:ControlCenterCommands.StopProfile"/>
                     <Button Grid.Row="1" Grid.Column="7" x:Name="ResetProfileButton" Style="{StaticResource HeliosPushButtonStyle}" Command="local:ControlCenterCommands.ResetProfile" />
@@ -335,7 +343,7 @@
                     <StackPanel Grid.Row="1" Grid.Column="0">
                         <TextBlock Text="PREFLIGHT CHECK" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Name="PreflightCheckBox" Style="{StaticResource HeliosSwitchStyle}" IsChecked="True" Checked="PreflightCheckBox_Checked" Unchecked="PreflightCheckBox_Unchecked" />
+                        <CheckBox Name="PreflightCheckBox" Style="{StaticResource HeliosSwitchStyle}" Checked="PreflightCheckBox_Checked" Unchecked="PreflightCheckBox_Unchecked" />
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1" Visibility="Hidden">
@@ -407,28 +415,65 @@
                                       ItemTemplateSelector="{Binding Path=StatusViewer.TemplateSelector}">
                                 <ListView.Resources>
                                     <DataTemplate x:Key="Info">
-                                        <TextBlock Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                        </Grid>
                                     </DataTemplate>
                                     <DataTemplate x:Key="Warning">
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" Foreground="#FF79CC87" TextWrapping="Wrap" FontSize="12"/>
-                                            <TextBlock Text="{Binding Recommendation}" Margin="8,0,0,0" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                        </StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Fill="#FFF1ED31" Stroke="Transparent"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                        </Grid>
                                     </DataTemplate>
                                     <DataTemplate x:Key="Error">
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" Foreground="#FFD8696C" TextWrapping="Wrap" FontSize="12"/>
-                                            <TextBlock Text="{Binding Recommendation}" Margin="8,0,0,0" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                        </StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Fill="#FFD8696C" Stroke="Transparent"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </ListView.Resources>
                             </ListView>
                         </ScrollViewer>
                     </Border>
                     <StackPanel Grid.Row="1" Grid.Column="5">
-                        <Button Height="50" Width="50" Margin="0,52,0,0" Style="{StaticResource HeliosPrevButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.LineUpCommand}" />
-                        <Button Height="50" Width="50" Margin="0,20,0,0" Style="{StaticResource HeliosNextButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.LineDownCommand}" />
+                        <Button Height="50" Width="50" Margin="0,52,0,0" Style="{StaticResource HeliosPrevButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageUpCommand}" />
+                        <Button Height="50" Width="50" Margin="0,20,0,0" Style="{StaticResource HeliosNextButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageDownCommand}" />
                     </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="3">
+                        <TextBlock Text="CLEAR" Style="{StaticResource BaseLabel}" FontSize="12"/>
+                        <Button Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusViewer}" Command="local:StatusViewer.ClearCommand"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="4">
+                        <TextBlock Text="REPORT BUG" Style="{StaticResource BaseLabel}" FontSize="12"/>
+                        <Button Name="ReportBugButton" IsEnabled="false" Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusViewer}" />
+                    </StackPanel>                
                 </Grid>
             </Canvas>
         </StackPanel>
