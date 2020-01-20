@@ -492,15 +492,16 @@ namespace GadrocsWorkshop.Helios
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
-            List<StatusReportItem> items = new List<StatusReportItem>();
             foreach (HeliosInterface heliosInterface in _interfaces)
             {
                 if (heliosInterface is IReadyCheck readyCheck)
                 {
-                    items.AddRange(readyCheck.PerformReadyCheck());
+                    foreach (StatusReportItem item in readyCheck.PerformReadyCheck())
+                    {
+                        yield return item;
+                    }
                 }
             }
-            return items;
         }
 
         #endregion

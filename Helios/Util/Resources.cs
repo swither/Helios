@@ -45,5 +45,12 @@ namespace GadrocsWorkshop.Helios.Util
             reader.Close();
             resourceStream.Close();
         }
+
+        static public string ReadResourceFile(string resourceUri)
+        {
+            Stream resourceStream = Application.GetResourceStream(new Uri(resourceUri, UriKind.Absolute)).Stream;
+            StreamReader reader = new StreamReader(resourceStream);
+            return reader.ReadToEnd();
+        }
     }
 }

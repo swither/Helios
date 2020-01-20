@@ -306,34 +306,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
-            List<StatusReportItem> items = new List<StatusReportItem>();
-            string reportingName = ImpersonatedVehicleName ?? VehicleName;
-            if (UsesExportModule)
-            {
-                items.Add(new StatusReportItem()
-                {
-                    Status = $"DCS Interface for {reportingName} will use externally supplied DCS export module.  Helios cannot check that this file is correctly placed.",
-                });
-                if (reportingName != VehicleName)
-                {
-                    items.Add(new StatusReportItem()
-                    {
-                        Status = $"DCS Interface for {reportingName} requires a module that maps to the {VehicleName} interface.  Helios cannot check that this file is correct."
-                    });
-                }
-            }
-            else
-            {
-                items.Add(new StatusReportItem()
-                {
-                    Status = $"DCS Interface for {reportingName} will use an export driver written by Helios Profile Editor.",
-                });
-            }
+            // XXX check on our health
 
             // check on the health of our exports
             DCSExportConfiguration configuration = new DCSExportConfiguration(this);
-            items.AddRange(configuration.PerformReadyCheck());
-            return items;
+            foreach (StatusReportItem item in configuration.PerformReadyCheck())
+            {
+                yield return item;
+            }
         }
     }
 }

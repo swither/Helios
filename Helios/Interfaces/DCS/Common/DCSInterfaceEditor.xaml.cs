@@ -45,7 +45,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public DCSInterfaceEditor()
         {
             InitializeComponent();
-            UpdateScriptDirectoryPath();
         }
 
         /// <summary>
@@ -56,13 +55,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             base.OnInterfaceChanged(oldInterface, newInterface);
             if (newInterface is DCSInterface dcsInterface) {
+                // create configuration objects
                 _configuration = new DCSExportConfiguration(dcsInterface);
                 _phantomFix = new DCSPhantomMonitorFixConfig(dcsInterface);
                 _vehicleImpersonation = new DCSVehicleImpersonation(dcsInterface);
-            } else {
+
+                // calculate up to date status
+                _configuration.UpdateExports();
+            }
+            else {
                 // provoke crash on attempt to use 
                 _configuration = null;
                 _phantomFix = null;
+                _vehicleImpersonation = null;
             }
             // need to rebind everything on the form
             SetValue(ConfigurationProperty, _configuration);
@@ -94,6 +99,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 editor._configuration.DoFiles.Remove(file);
             }
         }
+
+        private void Configure_Click(object sender, RoutedEventArgs e)
+        {
+            if (_configuration.WriteExports())
+            {
+                MessageBox.Show(Window.GetWindow(this), $"DCS export scripts for {Interface.Name} have been configured.");
+            }
+            else
+            {
+                MessageBox.Show(Window.GetWindow(this), $"Error updating DCS export scripts for {Interface.Name}.");
+            }
+        }
+
+        private void Remove_Click(object sender, RoutedEventArgs e)
+        {
+            // XXX consider removing this _configuration.RestoreConfig();
+        }
         #endregion
 
         #region Properties
@@ -117,106 +139,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public DCSVehicleImpersonation VehicleImpersonation { get; }
         public static readonly DependencyProperty VehicleImpersonationProperty =
             DependencyProperty.Register("VehicleImpersonation", typeof(DCSVehicleImpersonation), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
-
-        /// <summary>
-        /// location where we will write Export.lua and related directories, recalculated by calling UpdateScriptDirectoryPath
-        /// </summary>
-        public string ScriptDirectoryPath
-        {
-            get { return (string)GetValue(ScriptDirectoryPathProperty); }
-        }
-        public static readonly DependencyProperty ScriptDirectoryPathProperty =
-            DependencyProperty.Register("ScriptDirectoryPath", typeof(String), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
-
-        /// <summary>
-        /// selected install type 
-        /// </summary>
-        public DCSInstallType SelectedInstallType {
-            get { return (DCSInstallType)GetValue(SelectedInstallTypeProperty); }
-            set { SetValue(SelectedInstallTypeProperty, value); }
-        }
-        public static readonly DependencyProperty SelectedInstallTypeProperty =
-            DependencyProperty.Register(
-                "SelectedInstallType", 
-                typeof(DCSInstallType), 
-                typeof(DCSInterfaceEditor), 
-                new PropertyMetadata(DCSInstallType.GA, new PropertyChangedCallback(OnInstallTypeSelected)));
-
-        private static void OnInstallTypeSelected(DependencyObject target, DependencyPropertyChangedEventArgs e)
-        {
-            ((DCSInterfaceEditor)target).UpdateScriptDirectoryPath();
-        }
-
-        private void UpdateScriptDirectoryPath()
-        {
-            SetValue(ScriptDirectoryPathProperty, System.IO.Path.Combine(SavedGamesPath, SavedGamesName, "Scripts"));
-        }
-
-        private static Guid FolderSavedGames = new Guid("4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4");
-
-        private string SavedGamesPath
-        {
-            get
-            {
-                // We attempt to get the Saved Games known folder from the native method to cater for situations
-                // when the locale of the installation has the folder name in non-English.
-                IntPtr pathPtr;
-                string savedGamesPath;
-                int hr = NativeMethods.SHGetKnownFolderPath(ref FolderSavedGames, 0, IntPtr.Zero, out pathPtr);
-                if (hr == 0)
-                {
-                    savedGamesPath = System.Runtime.InteropServices.Marshal.PtrToStringUni(pathPtr);
-                    System.Runtime.InteropServices.Marshal.FreeCoTaskMem(pathPtr);
-                }
-                else
-                {
-                    savedGamesPath = Environment.GetEnvironmentVariable("userprofile") + "Saved Games";
-                }
-                return savedGamesPath;
-            }
-        }
-
-        private string SavedGamesName
-        {
-            get
-            {
-                switch (SelectedInstallType)
-                {
-                    case DCSInstallType.OpenAlpha:
-                        return "DCS.OpenAlpha";
-                    case DCSInstallType.OpenBeta:
-                        return "DCS.OpenBeta";
-                    case DCSInstallType.GA:
-                    default:
-                        return "DCS";
-                }
-            }
-        }
-
-        public bool IsPathValid { get => true; }
-        public bool IsUpToDate { get => true; }
-
-        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-        {
-            base.OnPropertyChanged(e);
-        }
-
-        private void Configure_Click(object sender, RoutedEventArgs e)
-        {
-            if (_configuration.UpdateExportConfig())
-            {
-                MessageBox.Show(Window.GetWindow(this), $"DCS export scripts for {Interface.Name} have been configured.");
-            }
-            else
-            {
-                MessageBox.Show(Window.GetWindow(this), $"Error updating DCS export scripts for {Interface.Name}.");
-            }
-        }
-
-        private void Remove_Click(object sender, RoutedEventArgs e)
-        {
-            _configuration.RestoreConfig();
-        }
         #endregion
     }
 }

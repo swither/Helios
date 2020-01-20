@@ -145,7 +145,11 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
             _uniqueLogMessages.Add(message);
             // shorten multiline messages, taking at most one line
-            string trimmedMessage = message.Substring(0, STATUS_LIMIT);
+            string trimmedMessage = message;
+            if (trimmedMessage.Length > STATUS_LIMIT)
+            {
+                trimmedMessage = message.Substring(0, STATUS_LIMIT);
+            }
             int newline = trimmedMessage.IndexOf('\n');
             while (newline >= 0)
             {

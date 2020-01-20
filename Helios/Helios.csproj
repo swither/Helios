@@ -863,7 +863,6 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Resource>
-    <Resource Include="Interfaces\DCS\Common\Export_Stub.lua" />
     <Resource Include="Interfaces\DCS\FA18C\ExportFunctions - New - Post.lua" />
     <Resource Include="Interfaces\DCS\FA18C\ExportFunctions - New - Pre.lua" />
     <Resource Include="Images\Toggles\guard-up-empty.png" />
@@ -875,6 +874,7 @@
     </Content>
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions - New - Post.lua" />
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions - New - Pre.lua" />
+    <Resource Include="Interfaces\DCS\Common\HeliosExport16.lua" />
     <None Include="_Documents\Helios Release 1.4 Users Guide.docx" />
     <None Include="_Documents\Helios Release 1.4 Users Guide.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

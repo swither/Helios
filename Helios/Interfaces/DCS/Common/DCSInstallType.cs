@@ -4,7 +4,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     public enum DCSInstallType
     {
-        GA,
+        Release,
         OpenBeta,
         OpenAlpha
     }

@@ -8,21 +8,12 @@
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                                  x:Name="DCSPropertiesWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
     <FrameworkElement.Resources>
-        <Style x:Key="PathInvalid" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=DCSPropertiesWindow, Path=IsPathValid}" Value="False">
-                    <Setter Property="UIElement.Visibility" Value="Visible"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
         <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
             <Setter Property="UIElement.Visibility" Value="Collapsed"/>
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.IsUpToDate}" Value="True"/>
-                        <Condition Binding="{Binding ElementName=DCSPropertiesWindow, Path=IsPathValid}" Value="True"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -36,7 +27,6 @@
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.IsUpToDate}" Value="False"/>
-                        <Condition Binding="{Binding ElementName=DCSPropertiesWindow, Path=IsPathValid}" Value="True"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -140,27 +130,27 @@
                                     Grid.Column="0" Grid.Row="0" 
                                     VerticalContentAlignment="Center" 
                                     Padding="0" Margin="0,0,16,0"
-                                    IsChecked="{Binding SelectedInstallType, ElementName=DCSPropertiesWindow, Converter={StaticResource DCSInstallTypeConverter}, ConverterParameter={x:Static dcs:DCSInstallType.GA}}">
-                        <Label Content="GA" />
+                                    IsChecked="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.SelectedInstallType, Converter={StaticResource DCSInstallTypeConverter}, ConverterParameter={x:Static dcs:DCSInstallType.Release}}">
+                        <Label Content="Release" />
                     </RadioButton>
                     <RadioButton GroupName="DCSInstallTypeGroup" 
                                     Grid.Column="0" Grid.Row="0" 
                                     VerticalContentAlignment="Center" 
                                     Padding="0" Margin="0,0,16,0"
-                                    IsChecked="{Binding SelectedInstallType, ElementName=DCSPropertiesWindow, Converter={StaticResource DCSInstallTypeConverter}, ConverterParameter={x:Static dcs:DCSInstallType.OpenBeta}}">
+                                    IsChecked="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.SelectedInstallType, Converter={StaticResource DCSInstallTypeConverter}, ConverterParameter={x:Static dcs:DCSInstallType.OpenBeta}}">
                         <Label Content="Open Beta"/>
                     </RadioButton>
                     <RadioButton GroupName="DCSInstallTypeGroup" 
                                     Grid.Column="0" Grid.Row="0" 
                                     VerticalContentAlignment="Center" 
                                     Padding="0" Margin="0,0,16,0"
-                                    IsChecked="{Binding SelectedInstallType, ElementName=DCSPropertiesWindow, Converter={StaticResource DCSInstallTypeConverter}, ConverterParameter={x:Static dcs:DCSInstallType.OpenAlpha}}">
+                                    IsChecked="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.SelectedInstallType, Converter={StaticResource DCSInstallTypeConverter}, ConverterParameter={x:Static dcs:DCSInstallType.OpenAlpha}}">
                         <Label Content="Open Alpha"/>
                     </RadioButton>
                 </StackPanel>
 
                 <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Content="Install Path"/>
-                <TextBlock Grid.Row="3" Grid.Column="1" MinWidth="200" MaxWidth="400" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding ScriptDirectoryPath, ElementName=DCSPropertiesWindow}" Margin="0,4"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" MinWidth="200" MaxWidth="400" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.ScriptDirectoryPath}" Margin="0,4"/>
                 <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource Documentation}">Directory to which Helios will write DCS Export.lua and related directories</TextBlock>
 
                 <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Content="Advanced"/>
@@ -171,9 +161,6 @@
                 <TextBlock Grid.Row="7" Grid.Column="1" Style="{StaticResource Documentation}">Select this to show advanced configuration options.</TextBlock>
 
                 <Label Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" Content="Status"/>
-                <StackPanel Grid.Row="9" Grid.Column="1" Orientation="Horizontal" Style="{StaticResource PathInvalid}">
-                    <TextBlock Foreground="Red" VerticalAlignment="Center" TextWrapping="Wrap">Cannot find game install.</TextBlock>
-                </StackPanel>
                 <Grid Grid.Row="9" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
