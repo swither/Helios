@@ -543,7 +543,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 {
                     if (!PerformReadyCheck())
                     {
-                        ConfigManager.LogManager.LogWarning("Aborted start up of Profile due to failed preflight check.  Disable preflight check in preferences to start anyway.");
+                        // this is already logged as an error because we set the StatusMessage to an error type
+                        ConfigManager.LogManager.LogDebug("Aborted start up of Profile due to failed preflight check.");
                         return;
                     }
                 }
