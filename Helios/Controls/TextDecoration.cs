@@ -33,7 +33,13 @@ namespace GadrocsWorkshop.Helios.Controls
         private bool _fillBackground = false;
 
         public TextDecoration()
-            : base("Label", new Size(60, 20))
+            : this("Label")
+        {
+            // all code in protected constructor shared with descendants
+        }
+
+        protected TextDecoration(string name)
+        : base(name, new Size(60, 20))
         {
             _format.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Format_PropertyChanged);
 

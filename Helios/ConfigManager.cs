@@ -168,6 +168,7 @@ namespace GadrocsWorkshop.Helios
                 _settingsManager = value;
             }
         }
+        public static HeliosApplication Application { get; internal set; }
 
         #endregion
     }

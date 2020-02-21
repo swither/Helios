@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public static class HeliosInit
     {
-        public static void Initialize(string docPath, string logFileName, LogLevel logLevel)
+        public static void Initialize(string docPath, string logFileName, LogLevel logLevel, HeliosApplication application = null)
         {
             // Create documents directory if it does not exist
             ConfigManager.DocumentPath = docPath;
@@ -58,7 +58,8 @@ namespace GadrocsWorkshop.Helios
 
             ConfigManager.ModuleManager = new ModuleManager(ConfigManager.ApplicationPath);
             ConfigManager.TemplateManager = new TemplateManager(ConfigManager.TemplatePath, ConfigManager.PanelTemplatePath);
-
+            ConfigManager.Application = application ?? new HeliosApplication();
+            
             ConfigManager.LogManager.LogDebug("Loading Modules");
 
             LoadModule(Assembly.GetExecutingAssembly());

@@ -336,7 +336,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 #endif
 
         #region PathComponents
-        private string SavedGamesName
+        internal string SavedGamesName
         {
             get
             {

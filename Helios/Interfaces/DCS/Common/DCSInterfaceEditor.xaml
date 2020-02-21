@@ -230,6 +230,34 @@
                 </GroupBox>
             </Grid>
         </GroupBox>
+        <GroupBox Header="DCS Monitor Setup" Style="{StaticResource BasicGroup}">
+            <Grid Height="Auto">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="120"/>
+                    <!-- primary labels -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- primary controls and long messages-->
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="Generate"/>
+                <Grid Grid.Row="1" Grid.Column="1">  <!-- XXX enable if viewports present Style="{StaticResource OutOfDateStyle}" -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap">A monitor setup can be generated based on Simulator Viewports.</TextBlock>
+                    <Button Grid.Row="0" Grid.Column="1" Click="GenerateMonitorSetup_Click" Margin="0,0,12,0" Width="120" Height="24">Setup Monitors</Button>
+                </Grid>
+            </Grid>
+        </GroupBox>
+
         <GroupBox Header="Profile-Specific Settings (Advanced)" Style="{StaticResource AdvancedGroup}">
             <Grid>
                 <Grid.ColumnDefinitions>

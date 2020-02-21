@@ -34,6 +34,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected DCSExportConfiguration _configuration;
         protected DCSPhantomMonitorFixConfig _phantomFix;
         protected DCSVehicleImpersonation _vehicleImpersonation;
+        protected DCSMonitorConfiguration _monitorConfiguration;
 
         static DCSInterfaceEditor()
         {
@@ -59,6 +60,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 _configuration = new DCSExportConfiguration(dcsInterface);
                 _phantomFix = new DCSPhantomMonitorFixConfig(dcsInterface);
                 _vehicleImpersonation = new DCSVehicleImpersonation(dcsInterface);
+                _monitorConfiguration = new DCSMonitorConfiguration(dcsInterface);
 
                 // calculate up to date status
                 _configuration.UpdateExports();
@@ -68,11 +70,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 _configuration = null;
                 _phantomFix = null;
                 _vehicleImpersonation = null;
+                _monitorConfiguration = null;
             }
             // need to rebind everything on the form
             SetValue(ConfigurationProperty, _configuration);
             SetValue(PhantomFixProperty, _phantomFix);
             SetValue(VehicleImpersonationProperty, _vehicleImpersonation);
+            SetValue(MonitorConfigurationProperty, _monitorConfiguration);
         }
 
         #region Commands
@@ -112,6 +116,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
+        private void GenerateMonitorSetup_Click(object sender, RoutedEventArgs e)
+        {
+            _monitorConfiguration.GenerateMonitorSetup(_configuration.SavedGamesName);
+        }
+
         private void Remove_Click(object sender, RoutedEventArgs e)
         {
             // XXX consider removing this _configuration.RestoreConfig();
@@ -122,23 +131,30 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <summary>
         /// used by UI binding paths.
         /// </summary>
-        public DCSExportConfiguration Configuration { get; }
+        public DCSExportConfiguration Configuration { get => (DCSExportConfiguration)GetValue(ConfigurationProperty); }
         public static readonly DependencyProperty ConfigurationProperty =
             DependencyProperty.Register("Configuration", typeof(DCSExportConfiguration), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
 
         /// <summary>
         /// used by UI binding paths
         /// </summary>
-        public DCSPhantomMonitorFixConfig PhantomFix { get; }
+        public DCSPhantomMonitorFixConfig PhantomFix { get => (DCSPhantomMonitorFixConfig)GetValue(PhantomFixProperty); }
         public static readonly DependencyProperty PhantomFixProperty =
             DependencyProperty.Register("PhantomFix", typeof(DCSPhantomMonitorFixConfig), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
 
         /// <summary>
         /// used by UI binding paths
         /// </summary>
-        public DCSVehicleImpersonation VehicleImpersonation { get; }
+        public DCSVehicleImpersonation VehicleImpersonation { get => (DCSVehicleImpersonation)GetValue(VehicleImpersonationProperty); }
         public static readonly DependencyProperty VehicleImpersonationProperty =
             DependencyProperty.Register("VehicleImpersonation", typeof(DCSVehicleImpersonation), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
+
+        /// <summary>
+        /// used by UI binding paths
+        /// </summary>
+        public DCSMonitorConfiguration MonitorConfiguration { get => (DCSMonitorConfiguration)GetValue(MonitorConfigurationProperty); }
+        public static readonly DependencyProperty MonitorConfigurationProperty =
+            DependencyProperty.Register("MonitorConfiguration", typeof(DCSMonitorConfiguration), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
         #endregion
     }
 }

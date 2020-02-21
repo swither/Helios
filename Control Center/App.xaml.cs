@@ -87,7 +87,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
 
             string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), options.DocumentPath);
-            HeliosInit.Initialize(documentPath, "ControlCenter.log", options.LogLevel);
+            HeliosInit.Initialize(documentPath, "ControlCenter.log", options.LogLevel, new HeliosApplication(false));
         }
 
         public bool SignalExternalCommandLineArgs(IList<string> args)

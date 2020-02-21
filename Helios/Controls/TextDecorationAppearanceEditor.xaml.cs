@@ -20,9 +20,10 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
 
     /// <summary>
-    /// Interaction logic for ImageAppearanceEditor.xaml
+    /// Interaction logic for TextDecorationAppearanceEditor.xaml
     /// </summary>
     [HeliosPropertyEditor("Helios.Base.Text", "Appearance")]
+    [HeliosPropertyEditor("Helios.Base.ViewportExtent", "Appearance")]
     public partial class TextDecorationAppearanceEditor : HeliosPropertyEditor
     {
         public TextDecorationAppearanceEditor()

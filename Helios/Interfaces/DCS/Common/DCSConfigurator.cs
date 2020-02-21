@@ -600,7 +600,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-
         private void UpdateHeliosProperties()
         {
             string _luaVarScope; 
