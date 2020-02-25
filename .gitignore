@@ -4,6 +4,7 @@ obj
 Helios*.msi
 setup.exe
 Keypress*.msi
+Helios*.exe
 
 # mstest test results
 TestResults
