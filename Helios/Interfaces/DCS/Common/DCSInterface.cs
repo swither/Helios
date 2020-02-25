@@ -17,7 +17,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     using GadrocsWorkshop.Helios.ProfileAwareInterface;
     using GadrocsWorkshop.Helios.UDPInterface;
-    using Microsoft.Win32;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -51,7 +50,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _usesExportModule = DEFAULT_MODULE_USE;
 
             // XXX temp until we get rid of alternate names
-            AlternateName = exportDeviceName;
+            setAlternateName(exportDeviceName);
 
             // make sure we keep our list up to date and don't typo on the name of an export device
             Debug.Assert(DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));

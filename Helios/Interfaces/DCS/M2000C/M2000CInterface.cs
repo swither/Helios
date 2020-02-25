@@ -16,22 +16,12 @@
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
 {
     using GadrocsWorkshop.Helios.ComponentModel;
-//    using GadrocsWorkshop.Helios.Interfaces.DCS.M2000C.Functions;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using Microsoft.Win32;
-    using System;
 
-    [HeliosInterface("Helios.M2000C", "DCS M2000C", typeof(M2000CInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    public class M2000CInterface : BaseUDPInterface
+
+    [HeliosInterface("Helios.M2000C", "DCS M-2000C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    public class M2000CInterface : DCSInterface
     {
-        private string _dcsPath;
-
-        private bool _phantomFix;
-        private int _phantomLeft;
-        private int _phantomTop;
-
-        private long _nextCheck = 0;
         #region Devices
         private const string FLIGHTINST = "1";
         private const string NAVINST = "2";
@@ -78,17 +68,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
         private const string TACAN_MODE_SELECTOR = "626";
         #endregion
         public M2000CInterface()
-            : base("DCS M2000C")
+            : base("DCS M2000C", "M-2000C", "pack://application:,,,/Helios;component/Interfaces/DCS/M2000C/ExportFunctions.lua")
         {
-            AlternateName = "M-2000C";  // this is the name that DCS uses to describe the aircraft being flown
-            DCSConfigurator config = new DCSConfigurator("DCS M2000C", DCSPath);
-            config.ExportConfigPath = "Config\\Export";
-            config.ExportFunctionsPath = "pack://application:,,,/Helios;component/Interfaces/DCS/M2000C/ExportFunctions.lua";
-            Port = config.Port;
-            _phantomFix = config.PhantomFix;
-            _phantomLeft = config.PhantomFixLeft;
-            _phantomTop = config.PhantomFixTop;
-
             #region Caution Panel
             AddFunction(new FlagValue(this, "525", "Caution Panel", "BATT", "WP BATT"));
             AddFunction(new FlagValue(this, "526", "Caution Panel", "TR", "TR"));
@@ -831,63 +812,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
             AddFunction(new PushButton(this, INSTPANEL, "3386", "386", "IFF", "Mode-3A Switch"));    // elements["PTN_386"] = default_2_position_tumb(_("Mode-3A Switch"), devices.INSTPANEL, device_commands.Button_386, 386)
             AddFunction(new PushButton(this, INSTPANEL, "3387", "387", "IFF", "Mode-C Switch"));    // elements["PTN_387"] = default_2_position_tumb(_("Mode-C Switch"), devices.INSTPANEL, device_commands.Button_387, 387)
             #endregion  
-        }
-
-        private string DCSPath
-        {
-            get
-            {
-                if (_dcsPath == null)
-                {
-                    RegistryKey pathKey = Registry.CurrentUser.OpenSubKey(@"Software\Eagle Dynamics\DCS World");
-                    if (pathKey != null)
-                    {
-                        _dcsPath = (string)pathKey.GetValue("Path");
-                        pathKey.Close();
-                        ConfigManager.LogManager.LogDebug("DCS M-2000C Interface Editor - Found DCS Path (Path=\"" + _dcsPath + "\")");
-                    }
-                    else
-                    {
-                        _dcsPath = "";
-                    }
-                }
-                return _dcsPath;
-            }
-        }
-
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
-        {
-            base.OnProfileChanged(oldProfile);
-
-            if (oldProfile != null)
-            {
-                oldProfile.ProfileTick -= Profile_Tick;
-            }
-
-            if (Profile != null)
-            {
-                Profile.ProfileTick += Profile_Tick;
-            }
-        }
-
-        void Profile_Tick(object sender, EventArgs e)
-        {
-            if (_phantomFix && System.Environment.TickCount - _nextCheck >= 0)
-            {
-                System.Diagnostics.Process[] dcs = System.Diagnostics.Process.GetProcessesByName("DCS");
-                if (dcs.Length == 1)
-                {
-                    IntPtr hWnd = dcs[0].MainWindowHandle;
-                    NativeMethods.Rect dcsRect;
-                    NativeMethods.GetWindowRect(hWnd, out dcsRect);
-
-                    if (dcsRect.Width > 640 && (dcsRect.Left != _phantomLeft || dcsRect.Top != _phantomTop))
-                    {
-                        NativeMethods.MoveWindow(hWnd, _phantomLeft, _phantomTop, dcsRect.Width, dcsRect.Height, true);
-                    }
-                }
-                _nextCheck = System.Environment.TickCount + 5000;
-            }
         }
     }
 }

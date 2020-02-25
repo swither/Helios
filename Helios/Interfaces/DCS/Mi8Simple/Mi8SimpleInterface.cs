@@ -16,22 +16,11 @@
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Mi8Simple
 {
     using GadrocsWorkshop.Helios.ComponentModel;
-    //using GadrocsWorkshop.Helios.Interfaces.DCS.Mi8Simple.Functions;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using Microsoft.Win32;
-    using System;
 
-    [HeliosInterface("Helios.Mi8Simple", "DCS  Mi8 (Simple)", typeof(Mi8SimpleInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    public class  Mi8SimpleInterface : BaseUDPInterface
+    [HeliosInterface("Helios.Mi8Simple", "DCS  Mi8 (Simple)", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    public class Mi8SimpleInterface : DCSInterface
     {
-        private string _dcsPath;
-
-        private bool _phantomFix;
-        private int _phantomLeft;
-        private int _phantomTop;
-
-        private long _nextCheck = 0;
         #region Devices
         private const string ELEC_INTERFACE = "0";
         private const string FUELSYS_INTERFACE = "1";
@@ -94,16 +83,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Mi8Simple
         private const string EXTERNAL_CARGO_VIEW = "58";
         #endregion
         public Mi8SimpleInterface()
-            : base("DCS Mil Mi-8 (Simple)")
+            : base("DCS Mil Mi-8 (Simple)", "Mi-8MT", "pack://application:,,,/Helios;component/Interfaces/DCS/Mi8Simple/ExportFunctions.lua")
         {
-            DCSConfigurator config = new DCSConfigurator("DCSMi8", DCSPath);
-            config.ExportConfigPath = "Config\\Export";
-            config.ExportFunctionsPath = "pack://application:,,,/Helios;component/Interfaces/DCS/Mi8Simple/ExportFunctions.lua";
-            Port = config.Port;
-            _phantomFix = config.PhantomFix;
-            _phantomLeft = config.PhantomFixLeft;
-            _phantomTop = config.PhantomFixTop;
-
             #region Indicators
             // !!!! Any duplicate "name" values in a function will cause Helios to go bang.  Make sure that when you change the name, that it is unique
             AddFunction(new FlagValue(this, "781", "AP Indicators", "AP heading on", ""));
@@ -249,62 +230,5 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Mi8Simple
 
             #endregion
         }
-
-        private string DCSPath
-        {
-        get
-        {
-            if (_dcsPath == null)
-            {
-                RegistryKey pathKey = Registry.CurrentUser.OpenSubKey(@"Software\Eagle Dynamics\DCS World");
-                if (pathKey != null)
-                {
-                    _dcsPath = (string)pathKey.GetValue("Path");
-                    pathKey.Close();
-                    ConfigManager.LogManager.LogDebug("DCS Mil Mi-8 (Simple) Interface Editor - Found DCS Path (Path=\"" + _dcsPath + "\")");
-                }
-                else
-                {
-                    _dcsPath = "";
-                }
-            }
-            return _dcsPath;
-        }
     }
-
-    protected override void OnProfileChanged(HeliosProfile oldProfile)
-    {
-        base.OnProfileChanged(oldProfile);
-
-        if (oldProfile != null)
-        {
-            oldProfile.ProfileTick -= Profile_Tick;
-        }
-
-        if (Profile != null)
-        {
-            Profile.ProfileTick += Profile_Tick;
-        }
-    }
-
-    void Profile_Tick(object sender, EventArgs e)
-    {
-        if (_phantomFix && System.Environment.TickCount - _nextCheck >= 0)
-        {
-            System.Diagnostics.Process[] dcs = System.Diagnostics.Process.GetProcessesByName("DCS");
-            if (dcs.Length == 1)
-            {
-                IntPtr hWnd = dcs[0].MainWindowHandle;
-                NativeMethods.Rect dcsRect;
-                NativeMethods.GetWindowRect(hWnd, out dcsRect);
-
-                if (dcsRect.Width > 640 && (dcsRect.Left != _phantomLeft || dcsRect.Top != _phantomTop))
-                {
-                    NativeMethods.MoveWindow(hWnd, _phantomLeft, _phantomTop, dcsRect.Width, dcsRect.Height, true);
-                }
-            }
-            _nextCheck = System.Environment.TickCount + 5000;
-        }
-    }
-}
 }

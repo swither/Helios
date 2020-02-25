@@ -562,9 +562,6 @@
     <Compile Include="ImageManager.cs" />
     <Compile Include="IModuleManager.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10CInterface.cs" />
-    <Compile Include="Interfaces\DCS\A10C\A10CInterfaceEditor.xaml.cs">
-      <DependentUpon>A10CInterfaceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\DCS\A10C\Functions\Altimeter.cs" />
     <Compile Include="Interfaces\DCS\A10C\Functions\HSIMiles.cs" />
     <Compile Include="Interfaces\DCS\A10C\Functions\ILSFrequency.cs" />
@@ -583,14 +580,8 @@
     <Compile Include="UDPInterface\NetworkTrigger.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInterface.cs" />
     <Compile Include="Interfaces\DCS\F14B\F14BInterface.cs" />
-    <Compile Include="Interfaces\DCS\F14B\F14BInterfaceEditor.xaml.cs">
-      <DependentUpon>F14BInterfaceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\DCS\FA18C\FA18CInterface.cs" />
     <Compile Include="Interfaces\DCS\AV8B\AV8BInterface.cs" />
-    <Compile Include="Interfaces\DCS\AV8B\AV8BInterfaceEditor.xaml.cs">
-      <DependentUpon>AV8BInterfaceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\DCS\AV8B\Functions\Altimeter.cs" />
     <Compile Include="Interfaces\DCS\AV8B\Functions\Digits3Display.cs" />
     <Compile Include="Interfaces\DCS\AV8B\Functions\Digits4Dispaly.cs" />
@@ -598,9 +589,6 @@
     <Compile Include="Interfaces\DCS\AV8B\Functions\Digits2Display.cs" />
     <Compile Include="Interfaces\DCS\AV8B\Functions\FuelTotalDisplay.cs" />
     <Compile Include="Interfaces\DCS\BlackShark\BlackSharkInterface.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\BlackSharkInterfaceEditor.xaml.cs">
-      <DependentUpon>BlackSharkInterfaceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\DCS\BlackShark\Functions\HSIRange.cs" />
     <Compile Include="Interfaces\DCS\BlackShark\Functions\LatitudeEntry.cs" />
     <Compile Include="Interfaces\DCS\BlackShark\Functions\MagVariation.cs" />
@@ -626,25 +614,10 @@
     <Compile Include="Interfaces\DCS\Common\Text.cs" />
     <Compile Include="Interfaces\DCS\FA18C\Functions\Altimeter.cs" />
     <Compile Include="Interfaces\DCS\FC2\FC2Interface.cs" />
-    <Compile Include="Interfaces\DCS\FC2\FC2InterfaceEditor.xaml.cs">
-      <DependentUpon>FC2InterfaceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\DCS\Generic\GenericInterface.cs" />
-    <Compile Include="Interfaces\DCS\Generic\GenericInterfaceEditor.xaml.cs">
-      <DependentUpon>GenericInterfaceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\DCS\M2000C\M2000CInterface.cs" />
-    <Compile Include="Interfaces\DCS\M2000C\M2000CInterfaceEditor.xaml.cs">
-      <DependentUpon>M2000CInterfaceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\DCS\Mi8Simple\Mi8SimpleInterface.cs" />
-    <Compile Include="Interfaces\DCS\Mi8Simple\Mi8SimpleInterfaceEditor.xaml.cs">
-      <DependentUpon>Mi8SimpleInterfaceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\DCS\MiG21\MiG21Interface.cs" />
-    <Compile Include="Interfaces\DCS\MiG21\MiG21InterfaceEditor.xaml.cs">
-      <DependentUpon>MiG21InterfaceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\DirectX\DirectXControllerAxis.cs" />
     <Compile Include="Interfaces\DirectX\DirectXControllerButton.cs" />
     <Compile Include="Interfaces\DirectX\DirectXControllerFunction.cs" />
@@ -2964,44 +2937,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="Interfaces\DCS\A10C\A10CInterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Interfaces\DCS\Common\DCSInterfaceEditor.xaml">
       <Generator>XamlIntelliSenseFileGenerator</Generator>
-    </Page>
-    <Page Include="Interfaces\DCS\F14B\F14BInterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interfaces\DCS\AV8B\AV8BInterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interfaces\DCS\BlackShark\BlackSharkInterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interfaces\DCS\FC2\FC2InterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interfaces\DCS\Generic\GenericInterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interfaces\DCS\M2000C\M2000CInterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interfaces\DCS\Mi8Simple\Mi8SimpleInterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interfaces\DCS\MiG21\MiG21InterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Interfaces\DirectX\DirectXControllerInterfaceEditor.xaml">
       <SubType>Designer</SubType>

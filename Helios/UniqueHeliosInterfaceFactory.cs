@@ -63,28 +63,30 @@ namespace GadrocsWorkshop.Helios
             return interfaces;
         }
 
+        // XXX this hack is going away in helios17 and interface2 branches
+        private static readonly HashSet<string> _udpInterfaceTypes = new HashSet<string>
+        {
+            "BaseUDPInterface",
+            "DCSInterface"
+        };
+
         private bool IsUnique(HeliosInterfaceDescriptor descriptor, HeliosProfile profile)
         {
             foreach (HeliosInterface heliosInterface in profile.Interfaces)
             {
-                if (descriptor.InterfaceType.BaseType.Name != "BaseUDPInterface")
+                HeliosInterfaceDescriptor interfaceDescriptor = ConfigManager.ModuleManager.InterfaceDescriptors[heliosInterface.GetType()];
+                if (interfaceDescriptor.TypeIdentifier.Equals(descriptor.TypeIdentifier))
                 {
-                    HeliosInterfaceDescriptor interfaceDescriptor = ConfigManager.ModuleManager.InterfaceDescriptors[heliosInterface.GetType()];
-                    if (interfaceDescriptor.TypeIdentifier.Equals(descriptor.TypeIdentifier))
-                    {
-                        // If any existing interfaces in the profile have the same type identifier do not add them.
-                        return false;
-                    }
-                } else
+                    // If any existing interfaces in the profile have the same type identifier do not add them.
+                    return false;
+                }
+
+                // XXX this hack is going away in helios17 and interface2 branches
+                if (_udpInterfaceTypes.Contains(descriptor.InterfaceType.BaseType.Name) &&
+                    _udpInterfaceTypes.Contains(heliosInterface.GetType().BaseType.Name))
                 {
-                    string _a = heliosInterface.TypeIdentifier;
-                    string _b = heliosInterface.BaseTypeIdentifier;
-                    HeliosInterfaceDescriptor interfaceDescriptor = ConfigManager.ModuleManager.InterfaceDescriptors[heliosInterface.GetType()];
-                    if (interfaceDescriptor.TypeIdentifier.Equals(descriptor.TypeIdentifier) || heliosInterface.BaseTypeIdentifier == "BaseUDPInterface")
-                    {
-                        // If any existing interfaces in the profile have the same type identifier do not add them.
-                        return false;
-                    }                    
+                    // don't add descendants of BaseUDPInterface
+                    return false;
                 }
             }
 

@@ -16,23 +16,11 @@
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
 {
     using GadrocsWorkshop.Helios.ComponentModel;
-    //using GadrocsWorkshop.Helios.Interfaces.DCS.Generic.Functions;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using Microsoft.Win32;
-    using System;
 
-    [HeliosInterface("Helios.DCS", "DCS Generic Interface", typeof(GenericInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    public class GenericInterface : BaseUDPInterface
+    [HeliosInterface("Helios.DCS", "DCS Generic Interface", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    public class GenericInterface : DCSInterface
     {
-        private string _dcsPath;
-
-        private bool _phantomFix;
-        private int _phantomLeft;
-        private int _phantomTop;
-
-        private long _nextCheck = 0;
-
         #region Devices
         private const string PUSH_BUTTONS = "1";
         private const string TOGGLE_SWITCH = "2";
@@ -46,89 +34,78 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
         private const string INDICATOR_PUSHBUTTON = "11";
 		private const string TOGGLE_SWITCH_B = "12";
 
-		#endregion
+        #endregion
 
-		public GenericInterface()
-            : base("DCS Generic")
+        public GenericInterface()
+            : base("DCS Generic", "DCSGeneric", "pack://application:,,,/Helios;component/Interfaces/DCS/Generic/ExportFunctions.lua")
         {
-            DCSConfigurator config = new DCSConfigurator("DCSGeneric", DCSPath);
-            config.ExportConfigPath = "Config\\Export";
-            config.ExportFunctionsPath = "pack://application:,,,/Helios;component/Interfaces/DCS/Generic/ExportFunctions.lua";
-            Port = config.Port;
-            _phantomFix = config.PhantomFix;
-            _phantomLeft = config.PhantomFixLeft;
-            _phantomTop = config.PhantomFixTop;
-
-            int indice = 0;
-            int contador = 0;
-
             for (int i = 1; i < 200; i++)   // 200 Network values
             {
                 Functions.Add(new NetworkValue(this, i.ToString(), "NetWork Values", "NetWorkValue_" + i.ToString(), "Float values from DCS", "", BindingValueUnits.Numeric, null));
             }
 
-            indice = 1000;
+            int index = 1000;
             for (int i = 1; i < 200; i++)   // 200 flag values
             {
-                AddFunction(new FlagValue(this, (indice + i).ToString(), "Flag Values", "FlagValue_" + i.ToString(), "Used for lights, usually, 1=ON 0=OFF"));
+                AddFunction(new FlagValue(this, (index + i).ToString(), "Flag Values", "FlagValue_" + i.ToString(), "Used for lights, usually, 1=ON 0=OFF"));
             }
 
-            indice = 2000;
+            index = 2000;
             for (int i = 1; i < 200; i++)   // 200 push buttons
             {
-                AddFunction(new PushButton(this, PUSH_BUTTONS, (3000 + i).ToString(), (indice + i).ToString(), "Push Buttons", "PB_" + i.ToString()));
+                AddFunction(new PushButton(this, PUSH_BUTTONS, (3000 + i).ToString(), (index + i).ToString(), "Push Buttons", "PB_" + i.ToString()));
             }
 
-            indice = 3000;
+            index = 3000;
             for (int i = 1; i < 250; i++)       // 250 Toggle Switch 1, 0
             {
-                AddFunction(Switch.CreateToggleSwitch(this, TOGGLE_SWITCH, (3000 + i).ToString(), (indice + i).ToString(), "1", "UP", "0", "DOWN", "Toggle Switch 1,0", "TSwitch_" + i.ToString(), "%1d"));
+                AddFunction(Switch.CreateToggleSwitch(this, TOGGLE_SWITCH, (3000 + i).ToString(), (index + i).ToString(), "1", "UP", "0", "DOWN", "Toggle Switch 1,0", "TSwitch_" + i.ToString(), "%1d"));
             }
 
 
-            indice = 4000;
+            index = 4000;
             for (int i = 1; i < 250; i++)       // 250 Toggle Switch 1, -1
             {
-                AddFunction(Switch.CreateToggleSwitch(this, TOGGLE_SWITCH_B, (3000 + i).ToString(), (indice + i).ToString(), "1", "UP", "-1", "DOWN", "Toggle Switch 1,-1", "TSwitch_B_" + i.ToString(), "%1d"));
+                AddFunction(Switch.CreateToggleSwitch(this, TOGGLE_SWITCH_B, (3000 + i).ToString(), (index + i).ToString(), "1", "UP", "-1", "DOWN", "Toggle Switch 1,-1", "TSwitch_B_" + i.ToString(), "%1d"));
             }
 
 
 
-            indice = 5000;
+            index = 5000;
             for (int i = 1; i < 100; i++)    // 100 Threeway Switch 1,0,-1
             {
-                AddFunction(Switch.CreateThreeWaySwitch(this, THREEWAYSWITCH, (3000 + i).ToString(), (indice + i).ToString(), "1", "UP", "0", "CENTER", "-1", "DOWN", "Threeway Switch 1,0,-1", "3WSwitch_A_" + i.ToString(), "%1d"));
+                AddFunction(Switch.CreateThreeWaySwitch(this, THREEWAYSWITCH, (3000 + i).ToString(), (index + i).ToString(), "1", "UP", "0", "CENTER", "-1", "DOWN", "Threeway Switch 1,0,-1", "3WSwitch_A_" + i.ToString(), "%1d"));
             }
 
-            indice = 5000;
+            index = 5000;
             for (int i = 101; i < 200; i++)    // 100 Threeway Switch  0  0.1  0.2
             {
-                AddFunction(Switch.CreateThreeWaySwitch(this, THREEWAYSWITCH, (3000 + i).ToString(), (indice + i).ToString(), "0.0", "UP", "0.1", "CENTER", "0.2", "DOWN", "Threeway Switch 0,0.1,0.2", "3WSwitch_B_" + i.ToString(), "%0.2f"));
+                AddFunction(Switch.CreateThreeWaySwitch(this, THREEWAYSWITCH, (3000 + i).ToString(), (index + i).ToString(), "0.0", "UP", "0.1", "CENTER", "0.2", "DOWN", "Threeway Switch 0,0.1,0.2", "3WSwitch_B_" + i.ToString(), "%0.2f"));
             }
 
-            indice = 5000;
+            index = 5000;
             for (int i = 201; i < 300; i++)    // 100 Threeway Switch  0   0.5   1
             {
-                AddFunction(Switch.CreateThreeWaySwitch(this, THREEWAYSWITCH, (3000 + i).ToString(), (indice + i).ToString(), "0.0", "UP", "0.5", "CENTER", "1.0", "DOWN", "Threeway Switch 0,0.5,1", "3WSwitch_C_" + i.ToString(), "%0.2f"));
+                AddFunction(Switch.CreateThreeWaySwitch(this, THREEWAYSWITCH, (3000 + i).ToString(), (index + i).ToString(), "0.0", "UP", "0.5", "CENTER", "1.0", "DOWN", "Threeway Switch 0,0.5,1", "3WSwitch_C_" + i.ToString(), "%0.2f"));
             }
 
-            indice = 6000;
+            index = 6000;
             for (int i = 1; i < 100; i++)  // 100 axis 0.1
             {
-                AddFunction(new Axis(this, AXIS, (3000 + i).ToString(), (indice + i).ToString(), 0.1d, 0.0d, 1.0d, "Axis 0.1", "Axis_A_" + i.ToString()));
+                AddFunction(new Axis(this, AXIS, (3000 + i).ToString(), (index + i).ToString(), 0.1d, 0.0d, 1.0d, "Axis 0.1", "Axis_A_" + i.ToString()));
             }
 
-            indice = 6000;
+            index = 6000;
             for (int i = 101; i < 200; i++)  // 100 axis 0.05
             {
-                AddFunction(new Axis(this, AXIS, (3000 + i).ToString(), (indice + i).ToString(), 0.05d, 0.0d, 1.0d, "Axis 0.05", "Axis_B_" + i.ToString()));
+                AddFunction(new Axis(this, AXIS, (3000 + i).ToString(), (index + i).ToString(), 0.05d, 0.0d, 1.0d, "Axis 0.05", "Axis_B_" + i.ToString()));
             }
 
 
-            indice = 7000;
+            index = 7000;
             for (int i = 1; i < 50; i++)   // 50 multiposition 6 pos
             {
-                AddFunction(new Switch(this, MULTI_POS_SWITCH, (indice + i).ToString(), new SwitchPosition[] { new SwitchPosition("0.0", "POS_01", (3000 + i).ToString()),
+                AddFunction(new Switch(this, MULTI_POS_SWITCH, (index + i).ToString(), new SwitchPosition[] { new SwitchPosition("0.0", "POS_01", (3000 + i).ToString()),
                     new SwitchPosition("0.1", "POS_02", (3000 + i).ToString()),
                     new SwitchPosition("0.2", "POS_03", (3000 + i).ToString()),
                     new SwitchPosition("0.3", "POS_04", (3000 + i).ToString()),
@@ -139,7 +116,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
 
             for (int i = 51; i < 100; i++)   // 50 multiposition 11 pos
             {
-                AddFunction(new Switch(this, MULTI_POS_SWITCH, (indice + i).ToString(), new SwitchPosition[] { new SwitchPosition("0.0", "POS_01", (3000 + i).ToString()),
+                AddFunction(new Switch(this, MULTI_POS_SWITCH, (index + i).ToString(), new SwitchPosition[] { new SwitchPosition("0.0", "POS_01", (3000 + i).ToString()),
                     new SwitchPosition("0.1", "POS_02", (3000 + i).ToString()),
                     new SwitchPosition("0.2", "POS_03", (3000 + i).ToString()),
                     new SwitchPosition("0.3", "POS_04", (3000 + i).ToString()),
@@ -154,7 +131,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
 
             for (int i = 101; i < 121; i++)   // 20 multiposition 21 pos
             {
-                AddFunction(new Switch(this, MULTI_POS_SWITCH, (indice + i).ToString(), new SwitchPosition[] { new SwitchPosition("0.0", "POS_01", (3000 + i).ToString()),
+                AddFunction(new Switch(this, MULTI_POS_SWITCH, (index + i).ToString(), new SwitchPosition[] { new SwitchPosition("0.0", "POS_01", (3000 + i).ToString()),
                     new SwitchPosition("0.05", "POS_02", (3000 + i).ToString()),
                     new SwitchPosition("0.1", "POS_03", (3000 + i).ToString()),
                     new SwitchPosition("0.15", "POS_04", (3000 + i).ToString()),
@@ -177,102 +154,42 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
                     new SwitchPosition("1,0", "POS_21", (3000 + i).ToString()), }, "Multi 21 pos Switches", "Multi21PosSwitch_" + i.ToString(), "%0.2f"));
             }
 
-            indice = 8000;
-            contador = 1;
+            index = 8000;
+            int counter = 1;
             for (int i = 1; i < 150; i = i + 3)   // 50 rockers ABCC
             {
-                AddFunction(new Rocker(this, ROCKER_ABCC, (3000 + i).ToString(), (3001 + i).ToString(), (3002 + i).ToString(), (3002 + i).ToString(), (indice + contador).ToString(), "Rocker type ABCC", "Rocker_A_" + contador.ToString(), true));
-                contador++;
+                AddFunction(new Rocker(this, ROCKER_ABCC, (3000 + i).ToString(), (3001 + i).ToString(), (3002 + i).ToString(), (3002 + i).ToString(), (index + counter).ToString(), "Rocker type ABCC", "Rocker_A_" + counter.ToString(), true));
+                counter++;
             }
 
 
             for (int i = 1; i < 100; i = i + 2)   // 50 rockers ABAB
             {
-                AddFunction(new Rocker(this, ROCKER_ABAB, (3000 + i).ToString(), (3001 + i).ToString(), (3000 + i).ToString(), (3001 + i).ToString(), (indice + contador).ToString(), "Rocker type ABAB", "Rocker_B_" + contador.ToString(), true));
-                contador++;
+                AddFunction(new Rocker(this, ROCKER_ABAB, (3000 + i).ToString(), (3001 + i).ToString(), (3000 + i).ToString(), (3001 + i).ToString(), (index + counter).ToString(), "Rocker type ABAB", "Rocker_B_" + counter.ToString(), true));
+                counter++;
             }
 
             for (int i = 1; i < 100; i = i + 2)   // 50 rockers AABB
             {
-                AddFunction(new Rocker(this, ROCKER_AABB, (3000 + i).ToString(), (3000 + i).ToString(), (3001 + i).ToString(), (3001 + i).ToString(), (indice + contador).ToString(), "Rocker type AABB", "Rocker_C_" + contador.ToString(), true));
-                contador++;
+                AddFunction(new Rocker(this, ROCKER_AABB, (3000 + i).ToString(), (3000 + i).ToString(), (3001 + i).ToString(), (3001 + i).ToString(), (index + counter).ToString(), "Rocker type AABB", "Rocker_C_" + counter.ToString(), true));
+                counter++;
             }
 
-
-
-            indice = 9000;
+            index = 9000;
             for (int i = 1; i < 50; i++)   // 50 rotary encoders 0.1
             {
-                AddFunction(new RotaryEncoder(this, ROTARY_ENCODER, (3000 + i).ToString(), (indice + i).ToString(), 0.1d, "Rotary Encoder 0.1", "RotEncode_A_" + i.ToString()));
+                AddFunction(new RotaryEncoder(this, ROTARY_ENCODER, (3000 + i).ToString(), (index + i).ToString(), 0.1d, "Rotary Encoder 0.1", "RotEncode_A_" + i.ToString()));
             }
 
             for (int i = 51; i < 100; i++)   // 50 rotary encoders 0.05
             {
-                AddFunction(new RotaryEncoder(this, ROTARY_ENCODER, (3000 + i).ToString(), (indice + i).ToString(), 0.05d, "Rotary Encoder 0.05", "RotEncoder_B_" + i.ToString()));
+                AddFunction(new RotaryEncoder(this, ROTARY_ENCODER, (3000 + i).ToString(), (index + i).ToString(), 0.05d, "Rotary Encoder 0.05", "RotEncoder_B_" + i.ToString()));
             }
 
-            indice = 10000;
+            index = 10000;
             for (int i = 1; i < 100; i++)   // 100 indicator pushbuttons
             {
-                AddFunction(new IndicatorPushButton(this, INDICATOR_PUSHBUTTON, (3000 + i).ToString(), (indice + i).ToString(), "Indicator pushbutton", "Ind_PButton_" + i.ToString()));
-            }
-
-        }
-
-        private string DCSPath
-        {
-            get
-            {
-                if (_dcsPath == null)
-                {
-                    RegistryKey pathKey = Registry.CurrentUser.OpenSubKey(@"Software\Eagle Dynamics\DCS World");
-                    if (pathKey != null)
-                    {
-                        _dcsPath = (string)pathKey.GetValue("Path");
-                        pathKey.Close();
-                        ConfigManager.LogManager.LogDebug("DCS Generic Interface Editor - Found DCS Path (Path=\"" + _dcsPath + "\")");
-                    }
-                    else
-                    {
-                        _dcsPath = "";
-                    }
-                }
-                return _dcsPath;
-            }
-        }
-
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
-        {
-            base.OnProfileChanged(oldProfile);
-
-            if (oldProfile != null)
-            {
-                oldProfile.ProfileTick -= Profile_Tick;
-            }
-
-            if (Profile != null)
-            {
-                Profile.ProfileTick += Profile_Tick;
-            }
-        }
-
-        void Profile_Tick(object sender, EventArgs e)
-        {
-            if (_phantomFix && System.Environment.TickCount - _nextCheck >= 0)
-            {
-                System.Diagnostics.Process[] dcs = System.Diagnostics.Process.GetProcessesByName("DCS");
-                if (dcs.Length == 1)
-                {
-                    IntPtr hWnd = dcs[0].MainWindowHandle;
-                    NativeMethods.Rect dcsRect;
-                    NativeMethods.GetWindowRect(hWnd, out dcsRect);
-
-                    if (dcsRect.Width > 640 && (dcsRect.Left != _phantomLeft || dcsRect.Top != _phantomTop))
-                    {
-                        NativeMethods.MoveWindow(hWnd, _phantomLeft, _phantomTop, dcsRect.Width, dcsRect.Height, true);
-                    }
-                }
-                _nextCheck = System.Environment.TickCount + 5000;
+                AddFunction(new IndicatorPushButton(this, INDICATOR_PUSHBUTTON, (3000 + i).ToString(), (index + i).ToString(), "Indicator pushbutton", "Ind_PButton_" + i.ToString()));
             }
         }
     }

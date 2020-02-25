@@ -18,21 +18,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using Microsoft.Win32;
-    using System;
 
-    [HeliosInterface("Helios.AV8B", "DCS AV-8B", typeof(AV8BInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    public class AV8BInterface : BaseUDPInterface
+    [HeliosInterface("Helios.AV8B", "DCS AV-8B", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    public class AV8BInterface : DCSInterface
     {
-        private string _dcsPath;
-
-        private bool _phantomFix;
-        private int _phantomLeft;
-        private int _phantomTop;
-
-        private long _nextCheck = 0;
-
         #region Devices
         //  The device list seems to be a moving target at this moment and 2.5.1 saw some changes which altered numbers. 
         //  Need to keep an eye on devices.lua
@@ -79,17 +68,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
         #endregion
 
         public AV8BInterface()
-            : base("DCS AV-8B")
+            : base("DCS AV-8B", "AV8BNA", "pack://application:,,,/Helios;component/Interfaces/DCS/AV8B/ExportFunctions.lua")
         {
-            AlternateName = "AV8BNA";  // this is the name that DCS uses to describe the aircraft being flown
-            DCSConfigurator config = new DCSConfigurator("DCSAV8B", DCSPath);
-            config.ExportConfigPath = "Config\\Export";
-            config.ExportFunctionsPath = "pack://application:,,,/Helios;component/Interfaces/DCS/AV8B/ExportFunctions.lua";
-            Port = config.Port;
-            _phantomFix = config.PhantomFix;
-            _phantomLeft = config.PhantomFixLeft;
-            _phantomTop = config.PhantomFixTop;
-
             #region Left MCFD
             AddFunction(new PushButton(this, MPCD_LEFT, "3200", "200", "Left MFCD", "OSB01", "1", "0", "%1d"));
             AddFunction(new PushButton(this, MPCD_LEFT, "3201", "201", "Left MFCD", "OSB02", "1", "0", "%1d"));
@@ -639,64 +619,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
 
             #endregion
 
-        }
-
-        private string DCSPath
-        {
-            get
-            {
-                if (_dcsPath == null)
-                {
-                    RegistryKey pathKey = Registry.CurrentUser.OpenSubKey(@"Software\Eagle Dynamics\DCS World");
-                    if (pathKey != null)
-                    {
-                        _dcsPath = (string)pathKey.GetValue("Path");
-                        pathKey.Close();
-                        ConfigManager.LogManager.LogDebug("DCS AV-8B Interface Editor - Found DCS Path (Path=\"" + _dcsPath + "\")");
-                    }
-                    else
-                    {
-                        _dcsPath = "";
-                    }
-                }
-                return _dcsPath;
-            }
-        }
-       
-
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
-        {
-            base.OnProfileChanged(oldProfile);
-
-            if (oldProfile != null)
-            {
-                oldProfile.ProfileTick -= Profile_Tick;
-            }
-
-            if (Profile != null)
-            {
-                Profile.ProfileTick += Profile_Tick;
-            }
-        }
-
-        void Profile_Tick(object sender, EventArgs e)
-        {
-            if (_phantomFix && System.Environment.TickCount - _nextCheck >= 0)
-            {
-                System.Diagnostics.Process[] dcs = System.Diagnostics.Process.GetProcessesByName("DCS");
-                if (dcs.Length == 1)
-                {
-                    IntPtr hWnd = dcs[0].MainWindowHandle;
-                    NativeMethods.Rect dcsRect;
-                    NativeMethods.GetWindowRect(hWnd, out dcsRect);
-
-                    if (dcsRect.Width > 640 && (dcsRect.Left != _phantomLeft || dcsRect.Top != _phantomTop))
-                    {
-                        NativeMethods.MoveWindow(hWnd, _phantomLeft, _phantomTop, dcsRect.Width, dcsRect.Height, true);
-                    }
-                }
-                _nextCheck = System.Environment.TickCount + 5000;
-            }
         }
     }
 }

@@ -467,21 +467,22 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
         }
 
+        // XXX to be removed
         public string AlternateName
         {
             get
             {
                 return _main.Alternatename;
             }
-            set
-            {
-                if (!_main.Alternatename.Equals(value))
-                {
-                    string oldValue = _main.Alternatename;
-                    _main.Alternatename = value;
-                    OnPropertyChanged("AlternateName", oldValue, value, false);
-                }
-            }
+        }
+
+        // NOTE: not a property signature, because we don't want to allow changing after init
+        // which might happen by accident if we allow this to be bound to UI
+        // this method exists only to give selective access to _main to descendant class
+        // XXX to be removed
+        protected void setAlternateName(string value)
+        {
+            _main.Alternatename = value;
         }
 
         public NetworkFunctionCollection Functions
@@ -815,26 +816,12 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         void Profile_ProfileStarted(object sender, EventArgs e)
         {
             ConfigManager.LogManager.LogDebug("UDP interface starting. (Interface=\"" + Name + "\")");
+            Socket serverSocket = null;
             try
             {
                 _main.Client = new IPEndPoint(IPAddress.Any, 0);
                 _main.ClientID = "";
-                Socket serverSocket = OpenSocket();
-
-                // 10 seconds for Delayed Startup
-                Timer timer = new Timer(10000);
-                timer.AutoReset = false; // only once
-                timer.Elapsed += OnStartupTimer;
-                _main.StartupTimer = timer;
-
-                // hook for descendants
-                OnProfileStarted();
-
-                // now go active
-                ConfigManager.LogManager.LogDebug("Starting startup timer.");
-                timer.Start();
-                ConfigManager.LogManager.LogDebug("Starting UDP receiver.");
-                WaitForData(new ReceiveContext() { socket = serverSocket });
+                serverSocket = OpenSocket();
             }
             catch (System.Net.Sockets.SocketException se)
             {
@@ -842,6 +829,26 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 ConfigManager.LogManager.LogError("UDP Socket Exception on Profile Start.  " + se.Message, se);
             }
 
+            // 10 seconds for Delayed Startup
+            Timer timer = new Timer(10000);
+            timer.AutoReset = false; // only once
+            timer.Elapsed += OnStartupTimer;
+            _main.StartupTimer = timer;
+
+            // hook for descendants
+            OnProfileStarted();
+
+            // start delayed start timer
+            ConfigManager.LogManager.LogDebug("Starting startup timer.");
+            timer.Start();
+
+            // we continue to run even if we cannot receive
+            if (serverSocket != null)
+            {
+                // now go active
+                ConfigManager.LogManager.LogDebug("Starting UDP receiver.");
+                WaitForData(new ReceiveContext() { socket = serverSocket });
+            }
         }
 
         /// <summary>

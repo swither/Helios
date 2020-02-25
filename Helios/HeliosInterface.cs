@@ -21,7 +21,6 @@ namespace GadrocsWorkshop.Helios
     public abstract class HeliosInterface : HeliosObject
     {
         private string _typeIdentifier;
-        private string _basetypeIdentifier;
 
         protected HeliosInterface(string name)
             : base(name)
@@ -40,18 +39,6 @@ namespace GadrocsWorkshop.Helios
                     _typeIdentifier = descriptor.TypeIdentifier;
                 }
                 return _typeIdentifier;
-            }
-        }
-        public string BaseTypeIdentifier
-        {
-            get
-            {
-                if (_basetypeIdentifier == null)
-                {
-                    HeliosInterfaceDescriptor descriptor = ConfigManager.ModuleManager.InterfaceDescriptors[this.GetType()];
-                    _basetypeIdentifier = descriptor.InterfaceType.BaseType.Name;
-                }
-                return _basetypeIdentifier;
             }
         }
 

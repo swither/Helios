@@ -18,10 +18,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.MiG21
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
-    using GadrocsWorkshop.Helios.UDPInterface;
 
-    [HeliosInterface("Helios.MiG21", "DCS MiG21", typeof(MiG21InterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    public class MiG21Interface : BaseUDPInterface
+    [HeliosInterface("Helios.MiG21", "DCS MiG21", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    public class MiG21Interface : DCSInterface
     {
         #region Devices
         private const string DC_BUS = "1";
@@ -381,7 +380,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.MiG21
         #endregion
 
         public MiG21Interface()
-            : base("DCS MiG-21Bis")
+            : base("DCS MiG-21Bis", "MiG-21Bis", "pack://application:,,,/Helios;component/Interfaces/DCS/MiG21/ExportFunctions.lua")
         {
             #region DragChute
             AddFunction(new PushButton(this, CHUTE, DRAGCHUTE, "298", "Chute", "Release Drop Chute"));
@@ -968,11 +967,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.MiG21
 
             #endregion
 
-
-            /******************************************************
-             * ******************GAUGES BELOW**********************
-             * ****************************************************/
-
+            #region Gauges
             #region Accelerometer
             CalibrationPointCollectionDouble accelerometerScale = new CalibrationPointCollectionDouble(-0.41d, -5, 1.0d, 10d);
             accelerometerScale.Add(new CalibrationPointDouble(0.096d, 1d));
@@ -1158,7 +1153,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.MiG21
             #region Battery capacity meter gauge
             AddFunction(new ScaledNetworkValue(this, "55", 100d, "Battery Capacity Gauge", "Battery Capacity", "Current capacity", "", BindingValueUnits.Numeric, 0d, "%.4f"));
             #endregion
-
+            #endregion
         }
 
     }

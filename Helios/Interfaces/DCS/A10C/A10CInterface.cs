@@ -18,9 +18,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using Microsoft.Win32;
-    using System;
 
     [HeliosInterface("Helios.A10C", "DCS A-10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class A10CInterface : DCSInterface
@@ -145,8 +142,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         public A10CInterface()
             : base("DCS A10C", "A-10C", "pack://application:,,,/Helios;component/Interfaces/DCS/A10C/ExportFunctions.lua")
         {
-            AlternateName = "A-10C";  // this is the name that DCS uses to describe the aircraft being flown
-
             #region Indexers
             AddFunction(new FlagValue(this, "540", "AOA Indexer", "High Indicator", "High AOA indicator light."));
             AddFunction(new FlagValue(this, "541", "AOA Indexer", "Normal Indicator", "Norm AOA indidcator light."));

@@ -15,16 +15,14 @@
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.FC2
 {
-    using System;
     using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.UDPInterface;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    [HeliosInterface("Helios.FC2", "Flaming Cliffs 2", typeof(FC2InterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    public class FC2Interface : BaseUDPInterface
+    [HeliosInterface("Helios.FC2", "Flaming Cliffs 2", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    public class FC2Interface : DCSInterface
     {
         public FC2Interface()
-            : base("Flaming Cliffs 2")
+            : base("Flaming Cliffs 2", "FC2", "pack://application:,,,/Helios;component/Interfaces/DCS/FC2/ExportFunctions.lua")
         {
             Functions.Add(new NetworkValue(this, "1", "ADI", "pitch", "Current pitch of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
             Functions.Add(new NetworkValue(this, "2", "ADI", "bank", "Current bank of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
