@@ -5,6 +5,7 @@ Helios*.msi
 setup.exe
 Keypress*.msi
 Helios*.exe
+*.tmp
 
 # mstest test results
 TestResults
@@ -31,6 +32,6 @@ Helios *.zip
 # temp files
 *.bak
 
-# this needs clean up
+# these need clean up
 Lua/DCS/doc/todo.txt
 Lua/DCS/Scripts/HeliosExport/Mods
