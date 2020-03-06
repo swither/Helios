@@ -177,7 +177,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        protected void AddDefaultInputBinding(string childName, string interfaceTriggerName, string deviceActionName)
+        protected virtual void AddDefaultInputBinding(string childName, string interfaceTriggerName, string deviceActionName)
         {
             DefaultInputBindings.Add(new DefaultInputBinding(
                 childName: childName,
@@ -186,7 +186,7 @@ namespace GadrocsWorkshop.Helios
                 ));
         }
 
-        protected void AddDefaultOutputBinding(string childName, string deviceTriggerName, string interfaceActionName)
+        protected virtual void AddDefaultOutputBinding(string childName, string deviceTriggerName, string interfaceActionName)
         {
             DefaultOutputBindings.Add(new DefaultOutputBinding(
                 childName: childName,
@@ -304,7 +304,7 @@ namespace GadrocsWorkshop.Helios
             Actions.Add(action);
         }
 
-        private string GetComponentName(string name)
+        protected string GetComponentName(string name)
         {
             return Name + "_" + name;
         }
@@ -439,6 +439,7 @@ namespace GadrocsWorkshop.Helios
 
             return _knob;
         }
+
         protected void AddRotarySwitchBindings(string name, Point posn, Size size, RotarySwitch rotarySwitch,
             string interfaceDeviceName, string interfaceElementName)
         {
@@ -462,7 +463,6 @@ namespace GadrocsWorkshop.Helios
                 deviceActionName: "set.position");
 
         }
-
 
         protected PushButton AddButton(string name, Point posn, Size size, string image, string pushedImage,
             string buttonText, string interfaceDeviceName, string interfaceElementName, bool fromCenter)

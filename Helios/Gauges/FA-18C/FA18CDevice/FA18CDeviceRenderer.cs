@@ -15,9 +15,6 @@
 
 namespace GadrocsWorkshop.Helios.Gauges.FA18C
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using System;
-    using System.Globalization;
     using System.Windows;
     using System.Windows.Media;
 
@@ -28,9 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
 
         protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
         {
-            FA18CDevice _FA18Cdevice = Visual as FA18CDevice;
-
-            if (_FA18Cdevice != null)
+            if (_bezel != null)
             {
                 drawingContext.DrawRectangle(_bezel, null, _bezelRectangle);
             }
@@ -43,7 +38,6 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
             if (_FA18Cdevice != null)
             {
                 _bezelRectangle = new Rect(0, 0, _FA18Cdevice.Width, _FA18Cdevice.Height);
-
                 _bezel = CreateImageBrush(_FA18Cdevice.BezelImage);
             }
             else
