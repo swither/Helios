@@ -663,7 +663,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     continue;
                 }
 
-                // Don't create the extra strings if we don't need to
+                // check log level first, so we don't create the extra strings and don't drown the console in debug builds
                 if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
                 {
                     ConfigManager.LogManager.LogDebug("UDP Interface received packet. (Interface=\"" + Name + "\", Packet=\"" + _iso_8859_1.GetString(message.data, 0, message.bytesReceived) + "\")");
@@ -686,6 +686,13 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     {
                         NetworkFunction function = _main.FunctionsById[message.tokens[tokenIndex]];
                         function.ProcessNetworkData(message.tokens[tokenIndex], message.tokens[tokenIndex + 1]);
+                    }
+                    else if (message.tokens[tokenIndex] == "DISCONNECT")
+                    {
+                        // if DISCONNECT is formatted as a valid message with a value, we get here, otherwise we
+                        // handled it in HandleShortMessage
+                        ConfigManager.LogManager.LogDebug("UDP interface received disconnect message from simulator.");
+                        _main.DisconnectedTrigger.FireTrigger(BindingValue.Empty);
                     }
                     else
                     {
