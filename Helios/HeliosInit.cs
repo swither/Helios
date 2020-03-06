@@ -64,11 +64,20 @@ namespace GadrocsWorkshop.Helios
 
             LoadModule(Assembly.GetExecutingAssembly());
 
-            // Check for Phidgets dll and load phidgets assembly if it's loaded
-            String phidgetsDllPath = Path.Combine(Environment.SystemDirectory, "phidget21.dll");
-            if (File.Exists("Phidgets.dll") && File.Exists(phidgetsDllPath))
+            if (ConfigManager.Application.AllowPlugins)
             {
-                LoadModule("Phidgets.dll");
+                string pluginsFolder = Path.Combine("Plugins");
+                foreach (string pluginPath in Directory.EnumerateFiles(pluginsFolder, "*.dll", SearchOption.AllDirectories))
+                {
+                    LoadModule(pluginPath);
+                }
+
+                // XXX move this to plugins folder and get rid of special case
+                String phidgetsDllPath = Path.Combine(Environment.SystemDirectory, "phidget21.dll");
+                if (File.Exists("Phidgets.dll") && File.Exists(phidgetsDllPath))
+                {
+                    LoadModule("Phidgets.dll");
+                }
             }
 
             if (RenderCapability.Tier == 0)

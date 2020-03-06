@@ -30,6 +30,12 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public bool ShowDesignTimeControls { get; private set; }
 
+        /// <summary>
+        /// if set, allows loading of Helios modules from ./Plugins relative to the installation folder
+        /// </summary>
+        public bool AllowPlugins { get; internal set; } = true;
+
+        /// <param name="isDesignApplication"></param>
         public HeliosApplication(bool isDesignApplication = true)
         {
             ShowDesignTimeControls = isDesignApplication;
