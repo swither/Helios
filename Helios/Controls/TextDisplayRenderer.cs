@@ -20,8 +20,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
     public class TextDisplayRenderer : HeliosVisualRenderer
     {
-        private TextDisplay _textDisplay;
-
+        private TextDisplayRect _textDisplay;
         private ImageSource _onImage;
         private Brush _onBrush;
         private Brush _backgroundBrush;
@@ -31,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             if (args.PropertyName.Equals("Visual"))
             {
-                _textDisplay = args.NewValue as TextDisplay;
+                _textDisplay = args.NewValue as TextDisplayRect;
             }
             base.OnPropertyChanged(args);
         }

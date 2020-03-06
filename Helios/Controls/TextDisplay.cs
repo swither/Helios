@@ -24,32 +24,29 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows.Media;
     using System.Xml;
     
-    [HeliosControl("Helios.Base.TextDisplay", "Text Display", "Text Displays", typeof(TextDisplayRenderer))]
-    public class TextDisplay : HeliosVisual
+    /// <summary>
+    /// base class for text displays, does not include any actions or values, just the ability to display text
+    /// </summary>
+    public abstract class TextDisplayRect : HeliosVisual
     {
-        private bool _useParseDicationary = false;
-        private string _textValue = "";
-        private string _rawValue = "";
-        private string _textValueTest = "O";
-        private string _onImage = "{Helios}/Images/Indicators/anunciator.png";
-        private bool _useBackground = true;    // displaying the background or not
-        private Color _onTextColor = Color.FromArgb(0xff, 0x40, 0xb3, 0x29);
-        private Color _backgroundColor = Color.FromArgb(0xff, 0, 0, 0);
-        private TextFormat _textFormat = new TextFormat();
-        private Dictionary<string, string> _parserDictionary = new Dictionary<string, string>(); // the list of input -> output string modifications
-        private HeliosValue _value;
+        protected bool _useParseDicationary = false;
+        protected string _textValue = "";
+        protected string _rawValue = "";
+        protected string _textValueTest = "O";
+        protected string _onImage = "{Helios}/Images/Indicators/anunciator.png";
+        protected bool _useBackground = true;    // displaying the background or not
+        protected Color _onTextColor = Color.FromArgb(0xff, 0x40, 0xb3, 0x29);
+        protected Color _backgroundColor = Color.FromArgb(0xff, 0, 0, 0);
+        protected Dictionary<string, string> _parserDictionary = new Dictionary<string, string>(); // the list of input -> output string modifications
+        protected TextFormat _textFormat = new TextFormat();
 
-        public TextDisplay()
-            : base("TextDisplay", new System.Windows.Size(100, 50))
+        public TextDisplayRect(string name, System.Windows.Size nativeSize) :
+            base(name, nativeSize)
         {
             _textFormat.VerticalAlignment = TextVerticalAlignment.Center;
             _textFormat.HorizontalAlignment = TextHorizontalAlignment.Left;
             _textFormat.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(TextFormat_PropertyChanged);
             // _textFormat.FontFamily = FontManager.Instance.GetFontFamilyByName("SF Digital Readout");
-            _value = new HeliosValue(this, new BindingValue(false), "", "TextDisplay", "Value of this Text Display", "String Value Unit.", BindingValueUnits.Text);
-            _value.Execute += new HeliosActionHandler(On_Execute);
-            Values.Add(_value);
-            Actions.Add(_value);
         }
 
         #region Properties
@@ -62,7 +59,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             set
             {
-               if (_useParseDicationary)
+                if (_useParseDicationary)
                 {
                     if (!_rawValue.Equals(value))
                     {
@@ -75,7 +72,7 @@ namespace GadrocsWorkshop.Helios.Controls
                         }
                         string oldValue = _textValue;
                         _textValue = parsedValue;
-                        _value.SetValue(new BindingValue(_textValue), BypassTriggers);
+                        OnTextValueChange();
                         OnPropertyChanged("TextValue", oldValue, parsedValue, false);
                         OnDisplayUpdate();
                     }
@@ -86,7 +83,7 @@ namespace GadrocsWorkshop.Helios.Controls
                     {
                         string oldValue = _textValue;
                         _textValue = value;
-                        _value.SetValue(new BindingValue(_textValue), BypassTriggers);
+                        OnTextValueChange();
                         OnPropertyChanged("TextValue", oldValue, value, false);
                         OnDisplayUpdate();
                     }
@@ -112,7 +109,8 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public bool UseBackground {
+        public bool UseBackground
+        {
             get
             {
                 return _useBackground;
@@ -152,7 +150,8 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             set /// convert the string to a dictionary
             {
-                if (!value.Equals("")) {
+                if (!value.Equals(""))
+                {
                     Dictionary<string, string> oldValue = _parserDictionary;
                     _parserDictionary = value.TrimEnd(';').Split(';').ToDictionary(item => item.Split('=')[0], item => item.Split('=')[1]);
                     OnPropertyChanged("ParserDictionary", oldValue, value, false);
@@ -252,7 +251,8 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 return _textFormat.FontSize;
             }
-            set {
+            set
+            {
                 double oldValue = _textFormat.FontSize;
                 _textFormat.FontSize = value;
                 OnPropertyChanged("FontSize", oldValue, value, true);
@@ -268,32 +268,13 @@ namespace GadrocsWorkshop.Helios.Controls
             OnDisplayUpdate();
         }
 
-        void ToggleAction_Execute(object action, HeliosActionEventArgs e)
-        {
-            //BeginTriggerBypass(e.BypassCascadingTriggers);
-            //On = !On;
-            //EndTriggerBypass(e.BypassCascadingTriggers);
-        }
-
-        void On_Execute(object action, HeliosActionEventArgs e)
-        {
-            BeginTriggerBypass(e.BypassCascadingTriggers);
-            TextValue = e.Value.StringValue;
-            EndTriggerBypass(e.BypassCascadingTriggers);
-        }
-
         protected override void PostUpdateRectangle(Rect previous, Rect current)
         {
             if (previous.Height == 0)
                 return;
             double scale = current.Height / previous.Height;
-            TextFormat.FontSize = Clamp(scale*TextFormat.FontSize, 1, 100);
+            TextFormat.FontSize = Clamp(scale * TextFormat.FontSize, 1, 100);
             // ConfigManager.LogManager.LogWarning("Font Size " + TextFormat.FontSize);
-        }
-
-        public override void ScaleChildren(double scaleX, double scaleY)
-        {
-            double scale = scaleX > scaleY ? scaleX : scaleY;
         }
 
         public override void Reset()
@@ -366,6 +347,43 @@ namespace GadrocsWorkshop.Helios.Controls
                 return max;
             }
             return value;
+        }
+
+        protected abstract void OnTextValueChange();
+    }
+
+    [HeliosControl("Helios.Base.TextDisplay", "Text Display", "Text Displays", typeof(TextDisplayRenderer))]
+    public class TextDisplay : TextDisplayRect
+    {
+        private HeliosValue _value;
+
+        public TextDisplay()
+            : base("TextDisplay", new System.Windows.Size(100, 50))
+        {
+            _value = new HeliosValue(this, new BindingValue(false), "", "TextDisplay", "Value of this Text Display", "String Value Unit.", BindingValueUnits.Text);
+            _value.Execute += new HeliosActionHandler(On_Execute);
+            Values.Add(_value);
+            Actions.Add(_value);
+        }
+
+
+        protected override void OnTextValueChange()
+        {
+            _value.SetValue(new BindingValue(_textValue), BypassTriggers);
+        }
+
+        void ToggleAction_Execute(object action, HeliosActionEventArgs e)
+        {
+            //BeginTriggerBypass(e.BypassCascadingTriggers);
+            //On = !On;
+            //EndTriggerBypass(e.BypassCascadingTriggers);
+        }
+
+        void On_Execute(object action, HeliosActionEventArgs e)
+        {
+            BeginTriggerBypass(e.BypassCascadingTriggers);
+            TextValue = e.Value.StringValue;
+            EndTriggerBypass(e.BypassCascadingTriggers);
         }
     }
 }
