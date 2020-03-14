@@ -419,212 +419,213 @@
     <Resource Include="Images\ufc_vrocker_blank_up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\0.htpl">
+    <Content Include="Templates\Base\A-10C\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\1.htpl">
+    <Content Include="Templates\Base\A-10C\1.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\2.htpl">
+    <Content Include="Templates\Base\A-10C\2.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\3.htpl">
+    <Content Include="Templates\Base\A-10C\3.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\4.htpl">
+    <Content Include="Templates\Base\A-10C\4.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\5.htpl">
+    <Content Include="Templates\Base\A-10C\5.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\6.htpl">
+    <Content Include="Templates\Base\A-10C\6.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\7.htpl">
+    <Content Include="Templates\Base\A-10C\7.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\8.htpl">
+    <Content Include="Templates\Base\A-10C\8.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\9.htpl">
+    <Content Include="Templates\Base\A-10C\9.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\AFT.htpl">
+    <Content Include="Templates\Base\A-10C\AFT.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Altitude Alert.htpl">
+    <Content Include="Templates\Base\A-10C\Altitude Alert.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\ANCHR.htpl">
+    <Content Include="Templates\Base\A-10C\ANCHR.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Blank.htpl">
+    <Content Include="Templates\Base\A-10C\Blank.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Clear.htpl">
+    <Content Include="Templates\Base\A-10C\Clear.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Data.htpl">
+    <Content Include="Templates\Base\A-10C\Data.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\EGI.htpl">
+    <Content Include="Templates\Base\A-10C\EGI.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Enter.htpl">
+    <Content Include="Templates\Base\A-10C\Enter.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Fire Pull APU.htpl">
+    <Content Include="Templates\Base\A-10C\Fire Pull APU.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Fire Pull Left.htpl">
+    <Content Include="Templates\Base\A-10C\Fire Pull Left.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Fire Pull Right.htpl">
+    <Content Include="Templates\Base\A-10C\Fire Pull Right.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\FM Indicator.htpl">
+    <Content Include="Templates\Base\A-10C\FM Indicator.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Func.htpl">
+    <Content Include="Templates\Base\A-10C\Func.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\FWD.htpl">
+    <Content Include="Templates\Base\A-10C\FWD.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Gear Handle.htpl">
+    <Content Include="Templates\Base\A-10C\Gear Handle.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Hack.htpl">
+    <Content Include="Templates\Base\A-10C\Hack.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\HARS.htpl">
+    <Content Include="Templates\Base\A-10C\HARS.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Horizontal Rocker.htpl">
+    <Content Include="Templates\Base\A-10C\Horizontal Rocker.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\ILS.htpl">
+    <Content Include="Templates\Base\A-10C\ILS.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\LTR.htpl">
+    <Content Include="Templates\Base\A-10C\LTR.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Mark.htpl">
+    <Content Include="Templates\Base\A-10C\Mark.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Master Caution.htpl">
+    <Content Include="Templates\Base\A-10C\Master Caution.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\MID.htpl">
+    <Content Include="Templates\Base\A-10C\MID.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\RWR Bezel.htpl">
+    <Content Include="Templates\Base\A-10C\RWR Bezel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Sel.htpl">
+    <Content Include="Templates\Base\A-10C\Sel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Space.htpl">
+    <Content Include="Templates\Base\A-10C\Space.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\STR PT.htpl">
+    <Content Include="Templates\Base\A-10C\STR PT.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\TCN.htpl">
+    <Content Include="Templates\Base\A-10C\TCN.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\TISL.htpl">
+    <Content Include="Templates\Base\A-10C\TISL.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\UHF Indicator.htpl">
+    <Content Include="Templates\Base\A-10C\UHF Indicator.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Vertical Rocker.htpl">
+    <Content Include="Templates\Base\A-10C\Vertical Rocker.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /y "$(TargetDir)Templates\*.*" "$(SolutionDir)$(OutDir)Templates\Base\$(TargetName)\"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

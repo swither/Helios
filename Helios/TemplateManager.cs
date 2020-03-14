@@ -33,6 +33,7 @@ namespace GadrocsWorkshop.Helios
 
         internal TemplateManager(string userTemplateDirectory, string userPanelTemplateDirectory)
         {
+            // XXX privacy violation: user name
             ConfigManager.LogManager.Log("TemplateManager Intialisation: Templates = " + userTemplateDirectory + " Panel Templates = " + userPanelTemplateDirectory);
 
             _userTemplateDirectory = userTemplateDirectory;
