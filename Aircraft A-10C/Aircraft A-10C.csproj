@@ -628,4 +628,5 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\AssemblyVersion.targets"/>
 </Project>
