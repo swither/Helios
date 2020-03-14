@@ -29,6 +29,8 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         public HeliosVisualView()
         {
             _children = new List<HeliosVisualView>();
+            // XXX make this a configuration option, at least in XML
+            // RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.HighQuality);
         }
 
         #region Properties
