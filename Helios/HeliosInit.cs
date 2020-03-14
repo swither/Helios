@@ -67,9 +67,12 @@ namespace GadrocsWorkshop.Helios
             if (ConfigManager.Application.AllowPlugins)
             {
                 string pluginsFolder = Path.Combine("Plugins");
-                foreach (string pluginPath in Directory.EnumerateFiles(pluginsFolder, "*.dll", SearchOption.AllDirectories))
+                if (Directory.Exists(pluginsFolder))
                 {
-                    LoadModule(pluginPath);
+                    foreach (string pluginPath in Directory.EnumerateFiles(pluginsFolder, "*.dll", SearchOption.AllDirectories))
+                    {
+                        LoadModule(pluginPath);
+                    }
                 }
 
                 // XXX move this to plugins folder and get rid of special case
