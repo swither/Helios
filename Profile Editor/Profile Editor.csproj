@@ -24,10 +24,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>908</ApplicationRevision>
-    <ApplicationVersion>1.4.2019.0908</ApplicationVersion>
+    <ApplicationRevision>222</ApplicationRevision>
+    <ApplicationVersion>1.4.2020.0222</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <BootstrapperEnabled>false</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>ProfileEditor.ico</ApplicationIcon>
@@ -55,7 +55,7 @@
     <StartupObject>GadrocsWorkshop.Helios.ProfileEditor.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine">
+    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -336,14 +336,11 @@
     <Resource Include="Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="ProfileEditor.ico" />
+    <Content Include="ProfileEditor.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>

@@ -90,7 +90,7 @@ namespace GadrocsWorkshop.Helios
         {
             if (File.Exists(moduleFileName))
             {
-                ConfigManager.LogManager.LogInfo("Loading " + moduleFileName);
+                ConfigManager.LogManager.LogInfo("LoadModule - Loading Module: '" + moduleFileName + "'");
                 try
                 {
                     Assembly asm = Assembly.LoadFrom(moduleFileName);
@@ -100,12 +100,12 @@ namespace GadrocsWorkshop.Helios
                     }
                     else
                     {
-                        ConfigManager.LogManager.LogWarning("Failed to load module '" + moduleFileName + "'");
+                        ConfigManager.LogManager.LogWarning("LoadModule - Failed to load module '" + moduleFileName + "'");
                     }
                 }
                 catch (Exception e)
                 {
-                    ConfigManager.LogManager.LogError("Failed adding module " + moduleFileName, e);
+                    ConfigManager.LogManager.LogError("LoadModule - Failed adding module '" + moduleFileName + "'", e);
                 }
             }
         }
@@ -113,6 +113,7 @@ namespace GadrocsWorkshop.Helios
         private static void LoadModule(Assembly asm)
         {
             string moduleName = asm.GetName().Name;
+            ConfigManager.LogManager.LogInfo("LoadModule - Loading Module Assembly: '" + moduleName + "'");
             ((ModuleManager)ConfigManager.ModuleManager).RegisterModule(asm);
 
             string directoryName = moduleName;
@@ -121,6 +122,8 @@ namespace GadrocsWorkshop.Helios
             {
                 directoryName = moduleAttributes[0].Directory;
             }
+            else ConfigManager.LogManager.LogInfo("LoadModule - No Module Attributes: '" + directoryName + "'");
+
             ((TemplateManager)ConfigManager.TemplateManager).LoadModuleTemplates(directoryName);
         }
     }

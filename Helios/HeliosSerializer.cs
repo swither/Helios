@@ -303,7 +303,7 @@ namespace GadrocsWorkshop.Helios
                 }
             } else
             {
-                ConfigManager.LogManager.LogDebug("Binding Source Reference Unresolved: " + xmlReader.GetAttribute("Source"));
+                ConfigManager.LogManager.LogError("Binding Source Reference Unresolved: " + xmlReader.GetAttribute("Source"));
             }
             xmlReader.Read();
 
@@ -327,7 +327,7 @@ namespace GadrocsWorkshop.Helios
             }
             else
             {
-                ConfigManager.LogManager.LogDebug("Binding Target Reference Unresolved: " + xmlReader.GetAttribute("Target"));
+                ConfigManager.LogManager.LogError("Binding Target Reference Unresolved: " + xmlReader.GetAttribute("Target"));
             }
             xmlReader.Read();
             switch (xmlReader.Name)
