@@ -47,18 +47,18 @@ Next
 ' Connect to Windows installer object
 On Error Resume Next
 Dim installer : Set installer = Nothing
-Set installer = Wscript.CreateObject("WindowsInstaller.Installer") : CheckError
+Set installer = Wscript.CreateObject("WindowsInstaller.Installer") : CheckError("create installer")
 
 ' Open database
 Dim databasePath:databasePath = Wscript.Arguments(0)
-Dim database : Set database = installer.OpenDatabase(databasePath, openMode) : CheckError
+Dim database : Set database = installer.OpenDatabase(databasePath, openMode) : CheckError("open database")
 
 ' Process SQL statements
 Dim query, view, record, message, rowData, columnCount, delim, column
 For argNum = 1 To argCount - 1
 	query = Wscript.Arguments(argNum)
-	Set view = database.OpenView(query) : CheckError
-	view.Execute : CheckError
+	Set view = database.OpenView(query) : CheckError("open view")
+	view.Execute : CheckError("execute view")
 	If Ucase(Left(query, 6)) = "SELECT" Then
 		Do
 			Set record = view.Fetch
@@ -85,10 +85,10 @@ If Not IsEmpty(message) Then
 End if
 Wscript.Quit 0
 
-Sub CheckError
+Sub CheckError(when)
 	Dim message, errRec
 	If Err = 0 Then Exit Sub
-	message = Err.Source & " " & Hex(Err) & ": " & Err.Description
+	message = when & ": " & Err.Source & " " & Hex(Err) & ": " & Err.Description
 	If Not installer Is Nothing Then
 		Set errRec = installer.LastErrorRecord
 		If Not errRec Is Nothing Then message = message & vbLf & errRec.FormatText
@@ -97,7 +97,7 @@ Sub CheckError
 End Sub
 
 Sub Fail(message)
-	Wscript.Echo message
+	Wscript.Echo "Fatal: " & message
 	Wscript.Quit 2
 End Sub
 
