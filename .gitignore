@@ -35,3 +35,5 @@ Helios *.zip
 # these need clean up
 Lua/DCS/doc/todo.txt
 Lua/DCS/Scripts/HeliosExport/Mods
+/Helios Installer/select_output.txt
+/ActivityLog.xsl

@@ -1,3 +1,4 @@
 lua/
 Scripts/liblua.dll
 Scripts\Helios\Mods\*.lua
+Scripts\Helios\HeliosExport*.lua
