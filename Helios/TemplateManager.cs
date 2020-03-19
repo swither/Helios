@@ -34,7 +34,8 @@ namespace GadrocsWorkshop.Helios
         internal TemplateManager(string userTemplateDirectory, string userPanelTemplateDirectory)
         {
             // XXX privacy violation: user name
-            ConfigManager.LogManager.Log("TemplateManager Intialisation: Templates = " + userTemplateDirectory + " Panel Templates = " + userPanelTemplateDirectory);
+            ConfigManager.LogManager.LogDebug($"Helios will load user templates from {userTemplateDirectory}");
+            ConfigManager.LogManager.LogDebug($"Helios will load user panel templates from {userPanelTemplateDirectory}");
 
             _userTemplateDirectory = userTemplateDirectory;
 
@@ -65,16 +66,23 @@ namespace GadrocsWorkshop.Helios
 
         internal void LoadModuleTemplates(string moduleName)
         {
-            string templateDirectory = Path.Combine(ConfigManager.ApplicationPath, "Templates", moduleName);
-            if (Directory.Exists(templateDirectory))
+            string templatesDirectory = Path.Combine(ConfigManager.ApplicationPath, "Templates", moduleName);
+            if (Directory.Exists(templatesDirectory))
             {
-                LoadTemplateDirectory(_moduleTemplates, templateDirectory, false);
+                ConfigManager.LogManager.LogDebug($"Loading module templates for module '{moduleName}' from '{templatesDirectory}'");
+                LoadTemplateDirectory(_moduleTemplates, templatesDirectory, false);
+            }
+            string pluingTemplatesDirectory = Path.Combine(ConfigManager.ApplicationPath, "Plugins", "Templates", moduleName);
+            if (Directory.Exists(pluingTemplatesDirectory))
+            {
+                ConfigManager.LogManager.LogDebug($"Loading module templates for plugin '{moduleName}' from '{pluingTemplatesDirectory}'");
+                LoadTemplateDirectory(_moduleTemplates, pluingTemplatesDirectory, false);
             }
         }
 
         private void PopulateUserTemplatesCollection()
         {
-            ConfigManager.LogManager.Log("TemplateManager Loading Templates.");
+            ConfigManager.LogManager.LogDebug("Loading user templates from documents folder");
             LoadTemplateDirectory(_userTemplates, _userTemplateDirectory, true);
         }
 

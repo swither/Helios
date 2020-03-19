@@ -1,0 +1,168 @@
+﻿[
+  {
+    "templateName": "Generic Aircraft",
+    "viewports": [
+      {
+        "viewportName": "LEFT_MFCD",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 540,
+        "width": 300,
+        "height": 300
+      },
+      {
+        "viewportName": "RIGHT_MFCD",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 1620,
+        "y": 540,
+        "width": 300,
+        "height": 300
+      },
+      {
+        "viewportName": "CENTER_MFCD",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 810,
+        "y": 540,
+        "width": 300,
+        "height": 300
+      }
+    ]
+  },
+  {
+    "templateName": "F-16C Unmodified",
+    "moduleId": "F-16C",
+    "viewports": [
+      {
+        "viewportName": "EHSI",
+        "relativeInitFilePath": "Mods\\aircraft\\F-16C\\Cockpit\\Scripts\\Displays\\EHSI\\indicator\\EHSI_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      }
+    ]
+  },
+  {
+    "templateName": "F-14B Unmodified",
+    "moduleId": "HEATBLUR_F-14",
+    "viewports": [
+      {
+        "viewportName": "F14_DDD",
+        "relativeInitFilePath": "Mods\\aircraft\\F14Cockpit\\Scripts\\DetailDataDisplay\\Indicator\\init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "viewportName": "F14_ECMD",
+        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\ElectronicCounterMeasureDisplay\\Indicator\\init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "viewportName": "F14_HSD",
+        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\HorizontalSituationDisplay\\Indicator\\init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "viewportName": "F14_TID",
+        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\TacticalInformationDisplay\\Indicator\\init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "viewportName": "F14_UHF_ARC159",
+        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\UHF_Radio\\Indicator\\Main\\init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "viewportName": "F14_VHF_ARC182",
+        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\VHF_Radio\\Indicator\\Main\\init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "viewportName": "F14_VDI",
+        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\VerticalDisplayIndicator\\Indicator\\init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      }
+    ]
+  },
+  {
+    "templateName": "Ka-50 Unmodified",
+    "moduleId": "Ka-50",
+    "viewports": [
+      {
+        "viewportName": "ABRIS",
+        "relativeInitFilePath": "Mods\\aircraft\\Ka-50\\Cockpit\\Scripts\\ABRIS\\ABRIS_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "viewportName": "Shkval",
+        "relativeInitFilePath": "Mods\\aircraft\\Ka-50\\Cockpit\\Scripts\\SHKVAL\\SHKVAL_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      }
+    ]
+  },
+  {
+    "templateName": "MIG-21bis Unmodified",
+    "moduleId": "MIG-21bis",
+    "viewports": [
+      {
+        "viewportName": "RP22",
+        "relativeInitFilePath": "Mods\\aircraft\\MIG-21bis\\Cockpit\\RADAR\\Indicator\\init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      }
+    ]
+  }
+]

@@ -37,7 +37,7 @@ namespace GadrocsWorkshop.Helios
 
         internal ModuleManager(string applicationPath)
         {
-            ConfigManager.LogManager.Log("ModuleManager Intialisation: " + applicationPath);
+            ConfigManager.LogManager.LogDebug($"Helios will search for Helios modules in {applicationPath}");
             _applicationPath = applicationPath;
 
             Assembly appAssembly = Assembly.GetEntryAssembly();

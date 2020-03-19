@@ -31,12 +31,12 @@ namespace GadrocsWorkshop.Helios
             {
                 if (_dpi == 0)
                 {
-                    ConfigManager.LogManager.Log("DisplayManager Intialisation: Determine DPI");
+                    ConfigManager.LogManager.LogDebug("Helios is measuring screen DPI");
                     IntPtr desktopHwnd = IntPtr.Zero;
                     IntPtr desktopDC = NativeMethods.GetDC(desktopHwnd);
                     _dpi = NativeMethods.GetDeviceCaps(desktopDC, 88 /*LOGPIXELSX*/);
                     NativeMethods.ReleaseDC(desktopHwnd, desktopDC);
-                    ConfigManager.LogManager.Log("DisplayManager Intialisation: DPI = " + _dpi.ToString());
+                    ConfigManager.LogManager.LogDebug($"Helios has determined screen DPI is {_dpi.ToString()}");
                 }
                 return _dpi;
             }

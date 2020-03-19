@@ -34,7 +34,7 @@ namespace GadrocsWorkshop.Helios
 
         internal ImageManager(string userImagePath)
         {
-            ConfigManager.LogManager.Log("ImageManager Intialisation: " + userImagePath);
+            ConfigManager.LogManager.LogDebug($"Helios will load user images from {userImagePath}");
             _documentImagePath = userImagePath;
         }
 

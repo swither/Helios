@@ -1,0 +1,3 @@
+[submodule "ThirdParty/diff-match-patch"]
+	path = ThirdParty/diff-match-patch
+	url = https://github.com/derammo/diff-match-patch

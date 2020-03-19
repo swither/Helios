@@ -1,0 +1,34 @@
+intro to zeen
+- objective
+	- a single set of exported viewports with unique names for all planes
+- viewport hack style
+- patch
+	- DCS versions
+- Templates
+
+questions to CZ
+- naming
+	- makes sense to CZ
+
+- standard set somewhere defined already?
+	- Jabbers launcher may have a set, CZ may have beta access
+*	- CZ reaching out to jabbers
+		- standard list of viewport names and modern (ViewportHandling.lua) exports
+		- viewport reference sizes for appropriate viewport rectangle shape
+
+- use ViewportHandling.lua everywhere?
+	- makes sense to CZ
+
+- how to get reference sizes?
+	- maybe just manual process for now
+	- CZ uses bitmaps of the bezel art from DCS or flattened model viewer screenshots to measure
+
+- how to support new planes
+	- must not require Helios build
+	- additional viewport patches in Helios documents folder supported
+		- or embedded in the profile? <- better
+
+- incompatible DCS versions
+	- how does CZ handle it now?
+		- makes a new profile update
+		- maintains old version of profile for a while

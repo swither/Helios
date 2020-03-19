@@ -60,7 +60,7 @@ namespace GadrocsWorkshop.Helios
             ConfigManager.TemplateManager = new TemplateManager(ConfigManager.TemplatePath, ConfigManager.PanelTemplatePath);
             ConfigManager.Application = application ?? new HeliosApplication();
             
-            ConfigManager.LogManager.LogDebug("Loading Modules");
+            ConfigManager.LogManager.LogDebug("Searching for Helios modules in libraries");
 
             LoadModule(Assembly.GetExecutingAssembly());
 
@@ -93,7 +93,7 @@ namespace GadrocsWorkshop.Helios
         {
             if (File.Exists(moduleFileName))
             {
-                ConfigManager.LogManager.LogInfo("LoadModule - Loading Module: '" + moduleFileName + "'");
+                ConfigManager.LogManager.LogDebug($"Loading library: '{moduleFileName}'");
                 try
                 {
                     Assembly asm = Assembly.LoadFrom(moduleFileName);
@@ -103,12 +103,12 @@ namespace GadrocsWorkshop.Helios
                     }
                     else
                     {
-                        ConfigManager.LogManager.LogWarning("LoadModule - Failed to load module '" + moduleFileName + "'");
+                        ConfigManager.LogManager.LogWarning($"Failed to load library '{moduleFileName}'");
                     }
                 }
                 catch (Exception e)
                 {
-                    ConfigManager.LogManager.LogError("LoadModule - Failed adding module '" + moduleFileName + "'", e);
+                    ConfigManager.LogManager.LogError($"Failed to load library '{moduleFileName}' due to error", e);
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace GadrocsWorkshop.Helios
         private static void LoadModule(Assembly asm)
         {
             string moduleName = asm.GetName().Name;
-            ConfigManager.LogManager.LogInfo("LoadModule - Loading Module Assembly: '" + moduleName + "'");
+            ConfigManager.LogManager.LogDebug($"Helios is searching for Helios components in library '{moduleName}'");
             ((ModuleManager)ConfigManager.ModuleManager).RegisterModule(asm);
 
             string directoryName = moduleName;
@@ -125,7 +125,10 @@ namespace GadrocsWorkshop.Helios
             {
                 directoryName = moduleAttributes[0].Directory;
             }
-            else ConfigManager.LogManager.LogInfo("LoadModule - No Module Attributes: '" + directoryName + "'");
+            else
+            {
+                ConfigManager.LogManager.LogDebug($"No Helios-specific module attribute in library '{directoryName}'; using default path based on library name");
+            }
 
             ((TemplateManager)ConfigManager.TemplateManager).LoadModuleTemplates(directoryName);
         }
