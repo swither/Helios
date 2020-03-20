@@ -22,7 +22,16 @@ namespace GoogleDiff
             string target = File.ReadAllText(args[0]);
 
             // NOTE: do our own diffs so we just do semantic cleanup. We don't want to optimize for efficiency.
-            List<DiffMatchPatch.Diff> diffs = googleDiff.diff_main(source, target);
+            List<DiffMatchPatch.Diff> diffs;
+            if ((args.Length > 1) && (args[1] == "--reverse"))
+            {
+                diffs = googleDiff.diff_main(target, source);
+            }
+            else
+            {
+                diffs = googleDiff.diff_main(source, target);
+            }
+
             googleDiff.diff_cleanupSemantic(diffs);
             List<DiffMatchPatch.Patch> patches = googleDiff.patch_make(diffs);
             System.Console.Write(googleDiff.patch_toText(patches));

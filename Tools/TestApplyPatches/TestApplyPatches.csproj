@@ -64,6 +64,8 @@
     <ProjectReference Include="..\..\ThirdParty\diff-match-patch\GoogleDiffMatchPatch.csproj">
       <Project>{efc42b48-44dd-4066-81f4-60c0d8104f7b}</Project>
       <Name>GoogleDiffMatchPatch</Name>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
