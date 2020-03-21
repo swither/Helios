@@ -7,7 +7,7 @@
     <ProjectGuid>{85E85BDF-EB98-4440-BC7D-52CD44176BD9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Patching</RootNamespace>
+    <RootNamespace>GadrocsWorkshop.Helios.Patching</RootNamespace>
     <AssemblyName>Patching</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -47,6 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DCS\AdditionalViewports.cs" />
+    <Compile Include="IPatchDestination.cs" />
+    <Compile Include="Patch.cs" />
+    <Compile Include="DCS\PatchDestination.cs" />
+    <Compile Include="PatchList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
