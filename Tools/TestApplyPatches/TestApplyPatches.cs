@@ -11,9 +11,9 @@ namespace TestApplyPatches
     {
         static void Main(string[] args)
         {
-            //TestGeneralCases();
+            TestGeneralCases();
             TestBrokenImperfectMatch();
-            // TestDcsPatches();
+            TestDcsPatches();
             // XXX this is useless as it does not use context diff
             // TestDiffPatch(patch);
         }
@@ -27,10 +27,8 @@ namespace TestApplyPatches
             List<Diff> diffs = googleDiff.diff_main(referenceInput, referenceOutput);
             googleDiff.diff_cleanupSemantic(diffs);
             List<Patch> patches = googleDiff.patch_make(diffs);
-            Debug.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             Debug.WriteLine(googleDiff.patch_toText(patches));
-            string patched = ApplyPatches(googleDiff, imperfectInput, patches);
-            Debug.WriteLine("=====================================================================================");
+            string patched = (string)googleDiff.patch_apply(patches, imperfectInput)[0];
             Debug.WriteLine(patched);
             Debug.Assert(patched == "diff match pth");
         }
@@ -38,7 +36,17 @@ namespace TestApplyPatches
         private static void TestDcsPatches()
         {
             // XXX create a Helios utility to locate and remember DCS root folders
-            string dcsRoot = "e:\\dcs";
+            string[] dcsRoots = new string[] { "c:\\dcs", "e:\\dcs" };
+            string dcsRoot = "NOTFOUND";
+            foreach (string candidate in dcsRoots)
+            {
+                if (Directory.Exists(candidate))
+                {
+                    dcsRoot = candidate;
+                    break;
+                }
+            }
+
             // XXX build the utility to get DCS version and select patch tree
             const string testsRoot = "..\\..\\..\\..\\Patches\\DCS\\002_005_005_41371\\";
 
