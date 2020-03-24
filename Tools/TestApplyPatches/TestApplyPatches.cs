@@ -16,7 +16,8 @@ namespace TestApplyPatches
 
         private static void TestBrokenImperfectMatch()
         {
-            // this is a test that fails on the master version of this library and is fixed in my fork
+            // this is a test that fails on the master version of this library 
+            // and is fixed in my fork (reported to master repo)
             string referenceInput = "diff matching patching";
             string referenceOutput = "diff match patch";
             string imperfectInput = "diff matching pthing";
@@ -97,7 +98,7 @@ namespace TestApplyPatches
 
         private static string ReadFile(string filePath)
         {
-            using (StreamReader streamReader = new StreamReader(filePath))
+            using (StreamReader streamReader = new StreamReader(filePath, System.Text.Encoding.UTF8))
             {
                 return streamReader.ReadToEnd();
             }
@@ -161,11 +162,24 @@ namespace TestApplyPatches
             object[] results = googleDiff.patch_apply(patches, testInput);
             string patched = (string)results[0];
             bool[] applied = (bool[])results[1];
+            diff_match_patch.PatchResult[] resultCodes = (diff_match_patch.PatchResult[])results[2];
             for (int i = 0; i < applied.Length; i++)
             {
                 if (!applied[i])
                 {
-                    throw new System.Exception($"failed to apply {patches[i].ToString()}");
+                    throw new System.Exception($"failed to apply {patches[i].ToString()}: {resultCodes[i].ToString()}");
+                }
+                switch (resultCodes[i])
+                {
+                    case diff_match_patch.PatchResult.UNKNOWN:
+                        throw new System.Exception($"invalid result code from application of {patches[i].ToString()}");
+                    case diff_match_patch.PatchResult.APPLIED_PERFECT:
+                        break;
+                    case diff_match_patch.PatchResult.APPLIED_IMPERFECT:
+                        Debug.WriteLine("WARNING: patch imperfectly matched input, but was applied");
+                        break;
+                    default:
+                        throw new System.Exception($"patch should not have returned success with result code {resultCodes[i].ToString()}");
                 }
             }
             return patched;

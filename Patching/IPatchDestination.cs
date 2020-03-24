@@ -2,7 +2,7 @@
 {
     internal interface IPatchDestination
     {
-        object Description { get; }
+        string Description { get; }
 
         bool TryLock();
         bool TryUnlock();

@@ -21,7 +21,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        public object Description => $"DCS installation in '{_dcsRoot}'";
+        public string Description => $"DCS installation in '{_dcsRoot}'";
+
+        public string RootFolder => _dcsRoot;
 
         public bool TryGetSource(string targetPath, out string source)
         {
@@ -31,7 +33,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 source = null;
                 return false;
             }
-            using (StreamReader streamReader = new StreamReader(path))
+            using (StreamReader streamReader = new StreamReader(path, System.Text.Encoding.UTF8))
             {
                 source = streamReader.ReadToEnd();
                 return true;
@@ -62,7 +64,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 ConfigManager.LogManager.LogError($"attempt to write back a patched file to a non-existing location: '{path}'");
                 return false;
             }
-            using (StreamWriter streamWriter = new StreamWriter(path))
+            using (StreamWriter streamWriter = new StreamWriter(path, false, System.Text.Encoding.UTF8))
             {
                 streamWriter.Write(patched);
                 return true;

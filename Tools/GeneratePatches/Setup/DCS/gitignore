@@ -1,0 +1,9 @@
+*.*
+!*.lua
+!*.Lua
+!*.LUA
+/_downloads
+Sounds
+cip
+ip
+[A-Z][a-z]
