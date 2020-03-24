@@ -58,8 +58,8 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Setup\DCS\.gitattributes" />
-    <None Include="Setup\DCS\.gitignore" />
+    <None Include="Setup\DCS\gitattributes" />
+    <None Include="Setup\DCS\gitignore" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Patching\Patching.csproj">
