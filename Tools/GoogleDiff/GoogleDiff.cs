@@ -19,7 +19,11 @@ namespace GoogleDiff
 
             // read stdin raw, including separators
             string source = ReadStdin();
-            string target = File.ReadAllText(args[0]);
+            string target;
+            using (StreamReader streamReader = new StreamReader(args[0], System.Text.Encoding.UTF8))
+            {
+                target = streamReader.ReadToEnd();
+            }
 
             // NOTE: do our own diffs so we just do semantic cleanup. We don't want to optimize for efficiency.
             List<DiffMatchPatch.Diff> diffs;
@@ -50,7 +54,7 @@ namespace GoogleDiff
                     {
                         break;
                     }
-                    strings.Add(System.Text.Encoding.Default.GetString(buffer, 0, read));
+                    strings.Add(System.Text.Encoding.UTF8.GetString(buffer, 0, read));
                 }
                 return string.Join("", strings);
             }
