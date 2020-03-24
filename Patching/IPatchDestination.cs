@@ -6,7 +6,7 @@
 
         bool TryLock();
         bool TryUnlock();
-        bool TryGetSource(object targetPath, out string source);
-        bool TryWritePatched(object targetPath, string patched);
+        bool TryGetSource(string targetPath, out string source);
+        bool TryWritePatched(string targetPath, string patched);
     }
 }

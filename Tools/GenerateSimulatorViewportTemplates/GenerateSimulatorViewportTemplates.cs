@@ -18,11 +18,29 @@ namespace GenerateSimulatorViewportTemplates
             Generate(templates, args[1], args[2]=="true");
         }
 
+        private static readonly string[] _colors = new string[]
+        {
+            "DB2929",
+            "D92762",
+            "9545D8",
+            "4C4CE0",
+            "2F9FE0",
+            "20BAA3",
+            "1FC06F",
+            "81D42F",
+            "E3A322",
+            "E05B2B",
+            "598296",
+            "596387"
+        };
+
         private static void Generate(IList<ToolsCommon.ViewportTemplate> templates, string templatePath, bool viewportPrefix = false)
         {
+            int colorIndex = 0;
             foreach (ToolsCommon.ViewportTemplate template in templates)
             {
-                foreach (ToolsCommon.Viewport viewport in template.Viewports)
+                // XXX use assigned colors based on hashing aircraft names or something else that is stable
+                foreach (ToolsCommon.Viewport viewport in template.Viewports.Where(v => v.IsValid))
                 {
                     List<string> lines = new List<string>();
                     string viewportName = viewport.ViewportName;
@@ -39,8 +57,7 @@ namespace GenerateSimulatorViewportTemplates
                     lines.Add("    <Template>");
                     lines.Add("        <TemplateValues>");
                     lines.Add("            <FillBackground>True</FillBackground>");
-                    // XXX make a bank of background colors and iterate them across the vehicle names
-                    lines.Add("            <BackgroundColor>#80800000</BackgroundColor>");
+                    lines.Add($"            <BackgroundColor>#80{_colors[colorIndex]}</BackgroundColor>");
                     lines.Add("            <FontColor>#FFFFFFFF</FontColor>");
                     lines.Add("            <Font>");
                     lines.Add("                <FontFamily>Franklin Gothic</FontFamily>");
@@ -82,6 +99,7 @@ namespace GenerateSimulatorViewportTemplates
                     }
                     File.WriteAllLines(Path.Combine(outputDirectoryPath, $"{viewportName}.htpl"), lines);
                 }
+                colorIndex = (colorIndex + 1) % _colors.Length;
             }
         }
     }

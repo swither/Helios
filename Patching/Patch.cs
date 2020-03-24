@@ -4,7 +4,7 @@ namespace GadrocsWorkshop.Helios.Patching
 {
     class Patch
     {
-        public object TargetPath { get; internal set; }
+        public string TargetPath { get; internal set; }
 
         internal bool TryApply(string source, out string patched, out StatusReportItem status)
         {

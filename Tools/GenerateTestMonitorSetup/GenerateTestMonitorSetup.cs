@@ -2,24 +2,27 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Xml;
+using GadrocsWorkshop.Helios.Util;
+using System.Linq;
 
 namespace GenerateTestMonitorSetup
 {
     class GenerateTestMonitorSetup
     {
-        private const int MAX_ROWS = 10;
-        private const int MAX_COLUMNS = 25;
+        private const int MAX_ROWS = 5;
+        private const int MAX_COLUMNS = 12;
 
         private class Config
         {
             public int main_left = 1080;
-            public int main_top = 0;
+            public int main_top = 240;
             public int main_width = 2560;
             public int main_height = 1440;
             public int grid_left = 1080 + 2560;
-            public int grid_top = 0;
-            public int cell_width = 100;
-            public int cell_height = 100;
+            public int grid_top = 240;
+            public int cell_width = 200;
+            public int cell_height = 200;
         };
 
         static void Main(string[] args)
@@ -49,38 +52,71 @@ namespace GenerateTestMonitorSetup
             int row = 0;
             int column = 0;
 
+            // also update helios overlay for labels
+            XmlDocument heliosProfile = null;
+            string profilePath = null;
+            foreach (string documentsFolder in new string[] { "HeliosTesting", "Helios" })
+            {
+                profilePath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), documentsFolder, "Profiles", "test_all_viewports.hpf");
+                if (File.Exists(profilePath))
+                {
+                    heliosProfile = new XmlDocument();
+                    heliosProfile.Load(profilePath);
+                    XmlNode root = heliosProfile.DocumentElement;
+                    XmlNode controlNode = root.SelectSingleNode("descendant::Control[@Name=\"Label\"]");
+                    XmlNode childrenNode = controlNode.ParentNode;
+                    childrenNode.RemoveAll();
+                    childrenNode.AppendChild(controlNode);
+                    break;
+                }
+            }
+
             // write standard viewports
-            EmitViewports(lines, config, ref row, ref column, ToolsCommon.StandardViewports.Known);
+            EmitViewports(lines, heliosProfile, config, ref row, ref column, ToolsCommon.StandardViewports.Known);
 
             // write mod-created viewports
-            EmitViewports(lines, config, ref row, ref column, ToolsCommon.ModViewports.Known, true);
+            EmitViewports(lines, heliosProfile, config, ref row, ref column, ToolsCommon.ModViewports.Known, true);
 
             // main view
             lines.Add("UIMainView = Viewports.Center");
             lines.Add("GU_MAIN_VIEWPORT = Viewports.Center");
 
             WriteFile(lines);
+
+            if (heliosProfile != null)
+            {
+                heliosProfile.Save(profilePath);
+            }
         }
 
-        private static void EmitViewports(List<string> lines, Config config, ref int row, ref int column, IList<ToolsCommon.ViewportTemplate> known, bool viewportPrefix = false)
+        private static void EmitViewports(List<string> lines, XmlDocument heliosProfile, Config config, ref int row, ref int column, IList<ToolsCommon.ViewportTemplate> known, bool viewportPrefix = false)
         {
             if (row >= MAX_ROWS)
             {
                 return;
             }
+
+            XmlNode root = null;
+            XmlNode childrenNode = null;
+            XmlNode controlNode = null;
+
+            if (heliosProfile != null) {
+                root = heliosProfile.DocumentElement;
+                controlNode = root.SelectSingleNode("descendant::Control[@Name=\"Label\"]");
+                childrenNode = controlNode.ParentNode;
+            }
+
             foreach (ToolsCommon.ViewportTemplate template in known)
             {
-                foreach (ToolsCommon.Viewport viewport in template.Viewports)
+                foreach (ToolsCommon.Viewport viewport in template.Viewports.Where(v => v.IsValid))
                 {
                     lines.Add($"-- {template.DisplayName(viewport)}");
+                    string viewportName = viewport.ViewportName;
                     if (viewportPrefix)
                     {
-                        lines.Add($"{template.ViewportPrefix}_{viewport.ViewportName} =");
+                        viewportName = $"{template.ViewportPrefix}_{viewport.ViewportName}";
                     }
-                    else
-                    {
-                        lines.Add($"{viewport.ViewportName} =");
-                    }
+                    lines.Add($"{viewportName} =");
                     lines.Add("{");
                     lines.Add($"  x = {config.grid_left + column * config.cell_width},");
                     lines.Add($"  y = {config.grid_top + row * config.cell_height},");
@@ -88,6 +124,23 @@ namespace GenerateTestMonitorSetup
                     lines.Add($"  height = {config.cell_height}");
                     lines.Add("}");
                     lines.Add("");
+
+                    if (childrenNode != null)
+                    {
+                        if ((row == 0) && (column == 0))
+                        {
+                            // crash if control is missing
+                            controlNode.SelectSingleNode("./Text").InnerText = viewportName;
+                        }
+                        else
+                        {
+                            XmlNode cloned = controlNode.CloneNode(true);
+                            cloned.Attributes["Name"].Value = $"Label_{row}_{column}";
+                            cloned.SelectSingleNode("./Text").InnerText = viewportName;
+                            cloned.SelectSingleNode("./Location").InnerText = $"{column * config.cell_width}, {row * config.cell_height}";
+                            childrenNode.AppendChild(cloned);
+                        }
+                    }
 
                     column++;
                     if (column >= MAX_COLUMNS)

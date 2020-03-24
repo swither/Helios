@@ -4,29 +4,28 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{85E85BDF-EB98-4440-BC7D-52CD44176BD9}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GadrocsWorkshop.Helios.Patching</RootNamespace>
-    <AssemblyName>Patching</AssemblyName>
+    <ProjectGuid>{CC8E53BF-9DFB-4D6F-9B85-0994C9C0D49A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>EditViewports</RootNamespace>
+    <AssemblyName>EditViewports</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\Debug\Plugins\</OutputPath>
+    <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\bin\Release\Plugins\</OutputPath>
+    <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -34,8 +33,12 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,39 +49,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DCS\AdditionalViewports.cs" />
-    <Compile Include="IPatchDestination.cs" />
-    <Compile Include="Patch.cs" />
-    <Compile Include="DCS\PatchDestination.cs" />
-    <Compile Include="PatchList.cs" />
+    <Compile Include="EditViewports.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Helios\Helios.csproj">
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Helios\Helios.csproj">
       <Project>{e5abe3f5-46ec-46d1-9330-d42311471a93}</Project>
       <Name>Helios</Name>
-      <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\ThirdParty\diff-match-patch\GoogleDiffMatchPatch.csproj">
-      <Project>{efc42b48-44dd-4066-81f4-60c0d8104f7b}</Project>
-      <Name>GoogleDiffMatchPatch</Name>
+    <ProjectReference Include="..\..\Patching\Patching.csproj">
+      <Project>{85e85bdf-eb98-4440-bc7d-52cd44176bd9}</Project>
+      <Name>Patching</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\GenerateSimulatorViewportTemplates\GenerateSimulatorViewportTemplates.csproj">
-      <Project>{d17e62cb-e81a-412e-931b-cd4456151c40}</Project>
-      <Name>GenerateSimulatorViewportTemplates</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\ToolsCommon\ToolsCommon.csproj">
+      <Project>{b81321db-0cd8-4e6d-843c-0461979eee9d}</Project>
+      <Name>ToolsCommon</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Content Include="Templates\Patching\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="Templates\Patching\readme.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\AssemblyVersion.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>..\..\..\Tools\GenerateSimulatorViewportTemplates\bin\x64\Release\GenerateSimulatorViewportTemplates $(ProjectDir)..\Tools\ToolsCommon\Data\Viewports\ViewportTemplates.json $(ProjectDir)Templates\Patching true</PreBuildEvent>
-  </PropertyGroup>
 </Project>

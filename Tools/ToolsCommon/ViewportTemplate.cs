@@ -32,6 +32,7 @@ namespace ToolsCommon
         [JsonProperty("viewports")]
         public List<Viewport> Viewports { get; set; } = new List<Viewport>();
 
+        // XXX eliminate this in favor of viewport prefix from file
         [JsonIgnore]
         public string ViewportPrefix => ModuleId.Replace(" ", "_").Replace("-", "_");
 

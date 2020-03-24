@@ -20,10 +20,10 @@ namespace ToolsCommon
 
         [JsonProperty("seatIndex")]
         public int SeatIndex { get; set; }
+        */
 
         [JsonProperty("relativeInitFilePath")]
         public string RelativeInitFilePath { get; set; }
-        */
 
         [JsonProperty("originalDisplayWidth")]
         public int OriginalDisplayWidth { get; set; }
@@ -42,5 +42,8 @@ namespace ToolsCommon
 
         [JsonProperty("height")]
         public int Height { get; set; }
+
+        [JsonIgnore]
+        public bool IsValid => (RelativeInitFilePath != null) && (RelativeInitFilePath.Length > 0);
     }
 }

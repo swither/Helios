@@ -1,6 +1,4 @@
-﻿//using DiffPatch;
-//using DiffPatch.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using DiffMatchPatch;
@@ -11,15 +9,14 @@ namespace TestApplyPatches
     {
         static void Main(string[] args)
         {
-            TestGeneralCases();
             TestBrokenImperfectMatch();
             TestDcsPatches();
-            // XXX this is useless as it does not use context diff
-            // TestDiffPatch(patch);
+            TestGeneralCases();
         }
 
         private static void TestBrokenImperfectMatch()
         {
+            // this is a test that fails on the master version of this library and is fixed in my fork
             string referenceInput = "diff matching patching";
             string referenceOutput = "diff match patch";
             string imperfectInput = "diff matching pthing";
@@ -173,18 +170,5 @@ namespace TestApplyPatches
             }
             return patched;
         }
-
-        //private static void TestDiffPatch(string patch)
-        //{
-        //    IEnumerable<FileDiff> fileDiffs = DiffParserHelper.Parse(patch);
-        //    foreach (FileDiff fileDiff in fileDiffs)
-        //    {
-        //        string source = System.IO.File.ReadAllText($"e:\\dcs\\{fileDiff.From}");
-        //        Debug.WriteLine(source);
-        //        string target = PatchHelper.Patch(source, fileDiff.Chunks, "\n");
-        //        Debug.WriteLine("====================================");
-        //        Debug.WriteLine(target);
-        //    }
-        //}
     }
 }
