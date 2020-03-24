@@ -8,6 +8,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         // XXX create a Helios utility to locate and remember DCS root folders
         static private readonly string[] dcsRoots = new string[] { "C:\\Program Files\\Eagle Dynamics\\DCS World", "c:\\dcs", "e:\\dcs" };
         private string _dcsRoot = "NOTFOUND";
+        private static System.Text.Encoding _utf8WithoutBom = new System.Text.UTF8Encoding(false);
 
         public PatchDestination()
         {
@@ -33,7 +34,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 source = null;
                 return false;
             }
-            using (StreamReader streamReader = new StreamReader(path, System.Text.Encoding.UTF8))
+            using (StreamReader streamReader = new StreamReader(path, _utf8WithoutBom))
             {
                 source = streamReader.ReadToEnd();
                 return true;
@@ -64,7 +65,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 ConfigManager.LogManager.LogError($"attempt to write back a patched file to a non-existing location: '{path}'");
                 return false;
             }
-            using (StreamWriter streamWriter = new StreamWriter(path, false, System.Text.Encoding.UTF8))
+            using (StreamWriter streamWriter = new StreamWriter(path, false, _utf8WithoutBom))
             {
                 streamWriter.Write(patched);
                 return true;
