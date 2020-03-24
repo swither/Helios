@@ -49,9 +49,19 @@ namespace ToolsCommon
             }
         }
 
+        /// <summary>
+        /// stable template name to use in Helios UI
+        /// </summary>
+        public string TemplateDisplayName => TemplateName.Replace("-", "").Replace("Helios ", "");
+
+        /// <summary>
+        /// stale viewport name to use in Helios UI
+        /// </summary>
+        /// <param name="viewport"></param>
+        /// <returns></returns>
         public string DisplayName(Viewport viewport)
         {
-            return $"{TemplateName.Replace("-", "").Replace("Helios ","")} {(viewport.Description ?? viewport.ViewportName).Replace("-", " ")}";
+            return $"{TemplateDisplayName} {(viewport.Description ?? viewport.ViewportName).Replace("-", " ")}";
         }
     }
 }

@@ -36,10 +36,12 @@ namespace GenerateSimulatorViewportTemplates
 
         private static void Generate(IList<ToolsCommon.ViewportTemplate> templates, string templatePath, bool viewportPrefix = false)
         {
-            int colorIndex = 0;
             foreach (ToolsCommon.ViewportTemplate template in templates)
             {
-                // XXX use assigned colors based on hashing aircraft names or something else that is stable
+                // assign a stable color based on the UI name of this viewport template
+                int colorIndex = System.Math.Abs(template.TemplateDisplayName.GetHashCode()) % _colors.Length;
+
+                // generate all valid viewports as templates
                 foreach (ToolsCommon.Viewport viewport in template.Viewports.Where(v => v.IsValid))
                 {
                     List<string> lines = new List<string>();
@@ -99,7 +101,6 @@ namespace GenerateSimulatorViewportTemplates
                     }
                     File.WriteAllLines(Path.Combine(outputDirectoryPath, $"{viewportName}.htpl"), lines);
                 }
-                colorIndex = (colorIndex + 1) % _colors.Length;
             }
         }
     }
