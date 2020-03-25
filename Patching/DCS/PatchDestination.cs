@@ -26,6 +26,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public string RootFolder => _dcsRoot;
 
+        // XXX implement
+        public string Version { get; private set; } = "002_005_005_41371";
+        public string DisplayVersion { get; private set; } = "2.5.5.41371";
+
         public bool TryGetSource(string targetPath, out string source)
         {
             string path = LocateFile(targetPath);
@@ -70,6 +74,52 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 streamWriter.Write(patched);
                 return true;
             }
+        }
+
+        public PatchList SelectPatches(string patchesPath, string patchSet)
+        {
+            PatchList patches = new PatchList();
+            if (!Directory.Exists(patchesPath))
+            {
+                return patches;
+            }
+            string candidateVersion = "";
+            string candidatePatchSetPath = "";
+            foreach (string versionPath in Directory.EnumerateDirectories(patchesPath, "???_???_???_*", SearchOption.TopDirectoryOnly))
+            {
+                string directoryVersion = Path.GetFileName(versionPath);
+                string patchSetPath = Path.Combine(versionPath, patchSet);
+                if (!Directory.Exists(patchSetPath))
+                {
+                    // patch set not included in this update
+                    continue;
+                }
+                if (directoryVersion.CompareTo(Version) > 0)
+                {
+                    // patches are only for later version of DCS
+                    continue;
+                }
+                if (directoryVersion.CompareTo(candidateVersion) > 0)
+                {
+                    candidateVersion = directoryVersion;
+                    candidatePatchSetPath = patchSetPath;
+                }
+            }
+            if (candidatePatchSetPath == "")
+            {
+                ConfigManager.LogManager.LogWarning($"current version of DCS {DisplayVersion} is not supported by any installed {patchSet} patch set");
+                return patches;
+            }
+            foreach (string patchPath in Directory.EnumerateFiles(candidatePatchSetPath, "*.gpatch", SearchOption.AllDirectories))
+            {
+                PatchFile patch = new PatchFile
+                {
+                    TargetPath = patchPath.Substring(candidatePatchSetPath.Length + 1, patchPath.Length - (candidatePatchSetPath.Length + 8))
+                };
+                patch.Load(patchPath);
+                patches.Add(patch);
+            }
+            return patches;
         }
     }
 }

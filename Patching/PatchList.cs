@@ -1,9 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GadrocsWorkshop.Helios.Patching
 {
-    class PatchList: List<Patch>
+    public class PatchList : List<PatchFile>
     {
+        public static PatchList LoadPatches(IPatchDestination destination, string patchSet)
+        {
+            // load user-provided patches from documents folder
+            string userPatchesPath = System.IO.Path.Combine(ConfigManager.DocumentPath, "Patches", "DCS");
+            PatchList patches = destination.SelectPatches(userPatchesPath, patchSet);
+
+            // load pre-installed patches from Helios installation folder
+            string installedPatchesPath = System.IO.Path.Combine(ConfigManager.ApplicationPath, "Patches", "DCS");
+            PatchList patches2 = destination.SelectPatches(installedPatchesPath, patchSet);
+
+            // index patches by target path
+            HashSet<string> existing = new HashSet<string>(patches.Select(p => p.TargetPath));
+
+            // merge those preinstalled patches that are not replaced by a file for the same target path
+            patches.AddRange(patches2.Where(p => !existing.Contains(p.TargetPath)));
+            return patches;
+        }
+
         public IEnumerable<StatusReportItem> SimulateApply(IPatchDestination destination)
         {
             return DoApply(destination, true);
@@ -12,6 +32,43 @@ namespace GadrocsWorkshop.Helios.Patching
         public IEnumerable<StatusReportItem> Apply(IPatchDestination destination)
         {
             return DoApply(destination, false);
+        }
+
+        public IEnumerable<StatusReportItem> Verify(IPatchDestination destination)
+        {
+            if (!destination.TryLock())
+            {
+                yield return new StatusReportItem
+                {
+                    Status = $"cannot acquire lock on {destination.Description} to verify patches",
+                    Recommendation = $"close any programs that are holding a lock on this location",
+                    Severity = StatusReportItem.SeverityCode.Error
+                };
+                yield break;
+            }
+            foreach (PatchFile patch in this)
+            {
+                if (!destination.TryGetSource(patch.TargetPath, out string source))
+                {
+                    ConfigManager.LogManager.LogDebug($"{patch.TargetPath} does not exist in target destination; patch does not apply");
+                    continue;
+                }
+                if (!patch.IsApplied(source, out string appliedStatus))
+                {
+                    // already applied, go to next patch
+                    yield return new StatusReportItem
+                    {
+                        Status = appliedStatus,
+                        Recommendation = "using Helios Profile Editor, apply patches",
+                        Severity = StatusReportItem.SeverityCode.Error
+                    };
+                }
+            }
+            if (!destination.TryUnlock())
+            {
+                ConfigManager.LogManager.LogError($"cannot release lock on {destination.Description} after verifying patches");
+            }
+            yield break;
         }
 
         private IEnumerable<StatusReportItem> DoApply(IPatchDestination destination, bool simulate)
@@ -28,7 +85,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 };
                 yield break;
             }
-            foreach (Patch patch in this)
+            foreach (PatchFile patch in this)
             {
                 if (!destination.TryGetSource(patch.TargetPath, out string source))
                 {
@@ -39,16 +96,24 @@ namespace GadrocsWorkshop.Helios.Patching
                     };
                     continue;
                 }
-                if (patch.IsApplied(source, out StatusReportItem appliedStatus))
+                if (patch.IsApplied(source, out string appliedStatus))
                 {
                     // already applied, go to next patch
-                    yield return appliedStatus;
+                    yield return new StatusReportItem
+                    {
+                        Status = appliedStatus
+                    };
                     continue;
                 }
-                if (!patch.TryApply(source, out string patched, out StatusReportItem failureStatus)) 
+                if (!patch.TryApply(source, out string patched, out string failureStatus)) 
                 {
                     // could not patch; fatal
-                    yield return failureStatus;
+                    yield return new StatusReportItem
+                    {
+                        Status = failureStatus,
+                        Recommendation = "please install a newer Helios distribution with support for this DCS version",
+                        Severity = StatusReportItem.SeverityCode.Error
+                    };
                     destination.TryUnlock();
                     yield break;
                 }

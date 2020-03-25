@@ -1,6 +1,6 @@
 ﻿namespace GadrocsWorkshop.Helios.Patching
 {
-    internal interface IPatchDestination
+    public interface IPatchDestination
     {
         string Description { get; }
 
@@ -8,5 +8,7 @@
         bool TryUnlock();
         bool TryGetSource(string targetPath, out string source);
         bool TryWritePatched(string targetPath, string patched);
+
+        PatchList SelectPatches(string patchesPath, string patchSet);
     }
 }

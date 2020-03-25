@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="DCS\AdditionalViewports.cs" />
     <Compile Include="IPatchDestination.cs" />
-    <Compile Include="Patch.cs" />
+    <Compile Include="PatchFile.cs" />
     <Compile Include="DCS\PatchDestination.cs" />
     <Compile Include="PatchList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -22,15 +22,14 @@ namespace GeneratePatches
                     case "init":
                         InitializeRepo(dcsRoot);
                         break;
+                    default:
+                        UpdatePatches(dcsRoot, args[0]);
+                        break;
                 }
-            }
-            else
-            {
-                UpdatePatches(dcsRoot);
             }
         }
 
-        private static void UpdatePatches(string dcsRoot)
+        private static void UpdatePatches(string dcsRoot, string patchSet)
         {
             // XXX determine DCS version
             string dcsVersion = "002_005_005_41371";
@@ -59,8 +58,8 @@ namespace GeneratePatches
                         {
                             throw new System.Exception($"relative path for patch output '{patchesPath}' does not exist");
                         }
-                        string outputPath = Path.Combine(patchesPath, "DCS", dcsVersion, $"{item.FilePath}.gpatch");
-                        string reversePath = Path.Combine(patchesPath, "DCS", dcsVersion, $"{item.FilePath}.grevert");
+                        string outputPath = Path.Combine(patchesPath, "DCS", dcsVersion, patchSet, $"{item.FilePath}.gpatch");
+                        string reversePath = Path.Combine(patchesPath, "DCS", dcsVersion, patchSet, $"{item.FilePath}.grevert");
                         string outputDirectoryPath = Path.GetDirectoryName(outputPath);
                         if (!Directory.Exists(outputDirectoryPath))
                         {
