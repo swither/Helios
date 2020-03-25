@@ -111,7 +111,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     yield return new StatusReportItem
                     {
                         Status = failureStatus,
-                        Recommendation = "please install a newer Helios distribution with support for this DCS version",
+                        Recommendation = "please install a newer Helios distribution or patches with support for this DCS version",
                         Severity = StatusReportItem.SeverityCode.Error
                     };
                     destination.TryUnlock();
