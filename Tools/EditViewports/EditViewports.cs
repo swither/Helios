@@ -87,6 +87,8 @@ namespace EditViewports
                 patched += $"dofile(LockOn_Options.common_script_path..\"ViewportHandling.lua\")\r\n";
             }
 
+            // XXX this is wrong.  if there are multiple viewports defined in the same file, we need to 
+            // XXX use original viewport name to disambiguate and edit each separately
             Match assigned = _tryFindAssignedViewport.Match(source);
             if (!assigned.Success)
             {

@@ -16,6 +16,9 @@ else
    Wscript.Echo "Starting Post Build Script to set up " & msiPackage & " for version " & version
    Wscript.Echo "Setting file versions to " & infinity
 
+   ' https://docs.microsoft.com/en-us/windows/win32/msi/database-object
+   ' https://docs.microsoft.com/en-us/windows/win32/msi/session-object
+
    ' open MSI as database session ourselves, instead of using WiRunSQL wrapper
    Dim installer : Set installer = Wscript.CreateObject("WindowsInstaller.Installer") : CheckError "connect to installer"
    Dim database : Set database = installer.OpenDatabase(msiPackage, 1) : CheckError "open database"
@@ -45,12 +48,17 @@ else
       Wscript.Echo "DISABLEADVTSHORTCUTS " & session.Property("DISABLEADVTSHORTCUTS")
    end if
 
-   Wscript.Echo "UpgradeCode " & session.Property("UpgradeCode")
-   Wscript.Echo "ProductVersion " & session.Property("ProductVersion")
-   Wscript.Echo "ProductCode " & session.Property("ProductCode")
-
    ' commit database
    database.Commit() : CheckError "commit"
+
+   ' check results
+   ' XXX since we can't correctly close the views, we need to do this in another process
+   ' session = nothing
+   ' database = nothing
+   ' Dim session2 : Set session2 = installer.OpenPackage(msiPackage, 1) : If Err <> 0 ThenFail "Cannot reopen '" & msiPackage & "' to check results"
+   ' Wscript.Echo "UpgradeCode " & session2.Property("UpgradeCode")
+   ' Wscript.Echo "ProductVersion " & session2.Property("ProductVersion")
+   ' Wscript.Echo "ProductCode " & session2.Property("ProductCode")
 end if
 
 Wscript.Quit 0
@@ -58,6 +66,11 @@ Wscript.Quit 0
 Sub Execute(database, sql)
    Dim view: Set view = database.OpenView(sql) : CheckError sql
    view.Execute : CheckError sql
+   ' this appears to be async, so it breaks if we release view, and there is no way
+   ' to wait for result because Fetch is not allowed
+   ' Dim record: Set record = view.Fetch
+   ' view.Close
+   ' view = nothing
 end Sub
 
 Sub CheckError(context)

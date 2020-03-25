@@ -6,6 +6,7 @@ setup.exe
 Keypress*.msi
 Helios*.exe
 *.tmp
+*.binlog
 
 # mstest test results
 TestResults
@@ -38,3 +39,4 @@ Lua/DCS/Scripts/HeliosExport/Mods
 /Helios Installer/select_output.txt
 /ActivityLog.xsl
 /Patching/Templates/Patching/Additional Simulator Viewports
+/prebuild.binlog
