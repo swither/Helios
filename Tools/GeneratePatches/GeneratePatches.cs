@@ -1,12 +1,10 @@
 ﻿using GadrocsWorkshop.Helios.Patching.DCS;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LibGit2Sharp;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace GeneratePatches
 {
@@ -107,7 +105,7 @@ namespace GeneratePatches
                 {
                     Commit commit = repo.Commit("Initial checkin of clean files", author, author);
                 }
-                catch (LibGit2Sharp.EmptyCommitException)
+                catch (EmptyCommitException)
                 {
                     Console.WriteLine("all non-ignored files are already committed");
                 }
@@ -119,7 +117,8 @@ namespace GeneratePatches
             string configPath = Path.Combine(dcsRoot, $".{configFile}");
             if (!File.Exists(configPath))
             {
-                string config = File.ReadAllText($"..\\..\\..\\Setup\\DCS\\{configFile}");
+                string sourcePath = ToolsCommon.FileSystem.FindNearestDirectory("Setup\\DCS") + configFile;
+                string config = File.ReadAllText(sourcePath);
                 File.WriteAllText(configPath, config);
             }
         }

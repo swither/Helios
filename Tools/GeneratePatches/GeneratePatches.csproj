@@ -68,6 +68,10 @@
       <Project>{efc42b48-44dd-4066-81f4-60c0d8104f7b}</Project>
       <Name>GoogleDiffMatchPatch</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ToolsCommon\ToolsCommon.csproj">
+      <Project>{b81321db-0cd8-4e6d-843c-0461979eee9d}</Project>
+      <Name>ToolsCommon</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

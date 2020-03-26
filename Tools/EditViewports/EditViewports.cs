@@ -19,7 +19,7 @@ namespace EditViewports
             string jsonPath;
             if (args.Length < 1)
             {
-                jsonPath = "..\\..\\..\\..\\ToolsCommon\\Data\\Viewports\\ViewportTemplates.json";
+                jsonPath = FileSystem.FindNearestDirectory("ToolsCommon\\Data\\Viewports") + "ViewportTemplates.json";
             } 
             else
             {
