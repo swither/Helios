@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
+    // XXX add IInstallation when that interface is available
     public class DCSMonitorConfiguration: IReadyCheck
     {
         private DCSInterface _parent;
@@ -13,6 +15,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private Dictionary<string, Rect> _viewports;
         private Rect _display;
         private List<Rect> _monitors;
+        private List<IViewportExtent> _viewportInterfaces;
         private static readonly HashSet<string> _mainViewNames = new HashSet<string>
         {
             "center",
@@ -30,6 +33,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             List<Rect> monitors = new List<Rect>();
             _display = new Rect(0d, 0d, 0d, 0d);
             _viewports = new Dictionary<string, Rect>();
+            _viewportInterfaces = new List<IViewportExtent>();
 
             if (_parent.Profile == null)
             {
@@ -62,8 +66,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void InventoryVisual(Monitor monitor, HeliosVisual visual)
         {
-            if (visual is IViewPortExtent viewport)
+            if (visual is IViewportExtent viewport)
             {
+                // save for later
+                _viewportInterfaces.Add(viewport);
+
                 // get absolute extent based on monitor
                 Rect extent = VisualToRect(visual);
                 extent.Offset(monitor.Left, monitor.Top);
@@ -105,7 +112,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             string shortName = System.IO.Path.GetFileNameWithoutExtension(_parent.Profile.Path).Replace(" ", "");
             List<string> lines = new List<string>();
 
-            // REVISIT: why do we need to run this string through a local function?  does this create a ref somehow?
+            // NOTE: why do we need to run this string through a local function?  does this create a ref somehow or prevent string interning?
             lines.Add("_  = function(p) return p; end;");
             lines.Add($"name = _('H_{shortName}')");
             lines.Add($"description = 'Generated from {shortName} Helios profile'");
@@ -200,6 +207,29 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
             // XXX check if monitor config exists and is selected
+            InventoryProfile();
+            IEnumerable<IViewportProvider> providers = _parent.Profile.Interfaces.OfType<IViewportProvider>();
+            foreach (IViewportExtent viewport in _viewportInterfaces.Where(v => v.RequiresPatches))
+            {
+                bool found = false;
+                foreach (IViewportProvider provider in providers)
+                {
+                    if (provider.IsViewportAvailable(viewport.ViewportName))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"viewport '{viewport.ViewportName}' requires patches to be installed",
+                        Recommendation = $"using Helios Profile Editor, add an Additional Viewports interface or configure the viewport extent not to require patches",
+                        Severity = StatusReportItem.SeverityCode.Error
+                    };
+                }
+            }
             yield break;
         }
     }

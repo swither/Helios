@@ -90,6 +90,10 @@ namespace GenerateSimulatorViewportTemplates
                     lines.Add($"            <Size>{width},{height}</Size>");
                     lines.Add("            <Hidden>False</Hidden>");
                     lines.Add($"            <ViewportName>{viewportName}</ViewportName>");
+                    if (viewportPrefix)
+                    {
+                        lines.Add("            <RequiresPatches>true</RequiresPatches>");
+                    }
                     lines.Add("        </TemplateValues>");
                     lines.Add("    </Template>");
                     lines.Add("</ControlTemplate>");

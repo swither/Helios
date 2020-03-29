@@ -6,7 +6,7 @@ using System.Xml;
 namespace GadrocsWorkshop.Helios.Controls
 {
     [HeliosControl("Helios.Base.ViewportExtent", "Simulator Viewport", "Miscellaneous", typeof(ViewportExtentRenderer))]
-    public class ViewportExtent: TextDecoration, IViewPortExtent
+    public class ViewportExtent: TextDecoration, IViewportExtent
     {
         private const string DEFAULT_NAME = "Simulator Viewport";
         private const string DEFAULT_TEXT = "Label";
@@ -21,6 +21,8 @@ namespace GadrocsWorkshop.Helios.Controls
             FontColor = Color.FromArgb(255, 255, 255, 255);
             Format.VerticalAlignment = TextVerticalAlignment.Center;
         }
+
+        public bool RequiresPatches { get; set; }
 
         public string ViewportName
         {
@@ -50,18 +52,40 @@ namespace GadrocsWorkshop.Helios.Controls
         public override void ReadXml(XmlReader reader)
         {
             base.ReadXml(reader);
-            if (reader.Name == "ViewportName")
+            System.ComponentModel.TypeConverter bc = System.ComponentModel.TypeDescriptor.GetConverter(typeof(bool));
+            while (reader.NodeType == XmlNodeType.Element)
             {
-                ViewportName = reader.ReadElementContentAsString();
+                switch (reader.Name)
+                {
+                    case "ViewportName":
+                        ViewportName = reader.ReadElementContentAsString();
+                        break;
+                    case "RequiresPatches":
+                        RequiresPatches = (bool)bc.ConvertFromInvariantString(reader.ReadElementString("RequiresPatches"));
+                        break;
+                    case "Children":
+                        // leave this for our caller
+                        return;
+                    default:
+                        // ignore unsupported settings
+                        string discard = reader.ReadElementString(reader.Name);
+                        ConfigManager.LogManager.LogWarning($"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
+                        break;
+                }
             }
         }
 
         public override void WriteXml(XmlWriter writer)
         {
             base.WriteXml(writer);
+            System.ComponentModel.TypeConverter bc = System.ComponentModel.TypeDescriptor.GetConverter(typeof(bool));
             if (ViewportName != DEFAULT_VIEWPORT_NAME)
             {
                 writer.WriteElementString("ViewportName", ViewportName);
+            }
+            if (RequiresPatches)
+            {
+                writer.WriteElementString("RequiresPatches", bc.ConvertToInvariantString(RequiresPatches));
             }
         }
     }

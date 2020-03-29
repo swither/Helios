@@ -102,7 +102,7 @@
     <Compile Include="HeliosApplication.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSMonitorConfiguration.cs" />
     <Compile Include="ISettingsManager2.cs" />
-    <Compile Include="IViewPortExtent.cs" />
+    <Compile Include="IViewportExtent.cs" />
     <Compile Include="Controls\CustomGaugeNeedle.cs" />
     <Compile Include="Controls\CustomDrum.cs" />
     <Compile Include="Controls\CustomTape.cs" />
@@ -157,6 +157,7 @@
     <Compile Include="IProfileAwareInterface.cs" />
     <Compile Include="Interfaces\DCS\Common\SilentValueConsumer.cs" />
     <Compile Include="IReadyCheck.cs" />
+    <Compile Include="IViewportProvider.cs" />
     <Compile Include="NonClickableZone.cs" />
     <Compile Include="Collections\HeliosObjectCollection.cs" />
     <Compile Include="Collections\KeyedObservableCollection.cs" />

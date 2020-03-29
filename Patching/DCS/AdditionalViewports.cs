@@ -6,12 +6,18 @@ using System.Xml;
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     [HeliosInterface("Patching.DCS.AdditionalViewports", "DCS Additional Viewports", typeof(AdditionalViewportsEditor), Factory = typeof(UniqueHeliosInterfaceFactory))]
-    public class AdditionalViewports : HeliosInterface, IReadyCheck
+    public class AdditionalViewports : HeliosInterface, IReadyCheck, IViewportProvider
     {
         public const string PATCH_SET = "Viewports";
 
         public AdditionalViewports() : base("DCS Additional Viewports")
         {
+        }
+
+        public bool IsViewportAvailable(string viewportName)
+        {
+            // For now, this assumes all patches are either included or not (just checks for presence of interface.)        
+            return true;
         }
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()

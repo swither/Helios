@@ -313,6 +313,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 yield return item;
             }
+
+            // check on the health of our viewport and monitor configuration
+            DCSMonitorConfiguration monitorConfig = new DCSMonitorConfiguration(this);
+            foreach (StatusReportItem item in monitorConfig.PerformReadyCheck())
+            {
+                yield return item;
+            }
         }
     }
 }

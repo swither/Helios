@@ -1,7 +1,8 @@
 ﻿namespace GadrocsWorkshop.Helios
 {
-    public interface IViewPortExtent
+    public interface IViewportExtent
     {
         string ViewportName { get; }
+        bool RequiresPatches { get; }
     }
 }
