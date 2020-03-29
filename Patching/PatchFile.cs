@@ -48,16 +48,23 @@ namespace GadrocsWorkshop.Helios.Patching
             // check if applied by just seeing if all the inserts are present (we don't generate patches that insert and then delete the same thing)
             foreach (Patch patch in _patches)
             {
+                string matchText = "";
                 foreach (Diff chunk in patch.diffs)
                 {
-                    if (chunk.operation == Operation.INSERT)
+                    switch (chunk.operation)
                     {
-                        if (!patched.Contains(chunk.text))
-                        {
-                            status = $"{TargetPath} is missing some patches";
-                            return false;
-                        }
+                        case Operation.DELETE:
+                            break;
+                        case Operation.INSERT:
+                        case Operation.EQUAL:
+                            matchText += chunk.text;
+                            break;
                     }
+                }
+                if (!patched.Contains(matchText))
+                {
+                    status = $"{TargetPath} is missing some patches";
+                    return false;
                 }
             }
             status = $"{TargetPath} is already patched";

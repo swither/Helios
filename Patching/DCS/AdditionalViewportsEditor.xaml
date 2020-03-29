@@ -4,6 +4,7 @@
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                  xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
+                                 xmlns:patching="clr-namespace:GadrocsWorkshop.Helios.Patching"
                                  xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                                  x:Name="ViewportsWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
@@ -13,7 +14,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Status}" Value="{x:Static local:StatusCodes.UpToDate}"/>
+                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static patching:StatusCodes.UpToDate}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -26,7 +27,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Status}" Value="{x:Static local:StatusCodes.OutOfDate}"/>
+                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static patching:StatusCodes.OutOfDate}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -39,7 +40,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Status}" Value="{x:Static local:StatusCodes.Incompatible}"/>
+                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static patching:StatusCodes.Incompatible}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -93,7 +94,7 @@
                     <Button Grid.Row="0" Grid.Column="1" Command="local:InstallationLocationsControl.AddInstallationLocationCommand" CommandTarget="{Binding ElementName=InstallationLocations}" Margin="0,0,12,0" Width="120" Height="24">Add Location</Button>
                 </Grid>
 
-                <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Content="Status"/>
+                <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="Status" MinHeight="24"/>
                 <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -102,8 +103,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap">All viewport patches are installed.</TextBlock>
-                    <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120">Revert Patches</Button>
+                    <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" MinHeight="24">All viewport patches are installed.</TextBlock>
+                    <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120" Height="24">Revert Patches</Button>
                 </Grid>
                 <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
                     <Grid.ColumnDefinitions>
@@ -113,7 +114,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red">You need to install patches to add additional viewports in the DCS installation</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap"  MinHeight="24" Foreground="Red">You need to install patches to add additional viewports to DCS.</TextBlock>
                     <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Margin="0,0,12,0" Width="120" Height="24">Install Patches</Button>
                 </Grid>
                 <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource CannotApplyStyle}">
@@ -124,7 +125,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red">The patches to install additional viewports are not compatible with this version of DCS.  
+                    <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" MinHeight="24" Foreground="Red">The patches to install additional viewports are not compatible with this version of DCS.  
                         You will need a more recent version of Helios or additional patch files.</TextBlock>
                 </Grid>
             </Grid>

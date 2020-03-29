@@ -1,5 +1,5 @@
-﻿using GadrocsWorkshop.Helios.Patching.DCS;
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,9 +10,25 @@ namespace GeneratePatches
 {
     class GeneratePatches
     {
+        static private readonly string[] _dcsRoots = new string[] { "C:\\Program Files\\Eagle Dynamics\\DCS World", "c:\\dcs", "e:\\dcs" };
+
+        private class AutoUpdateConfig
+        {
+            [JsonProperty("version")]
+            public string Version { get; private set; }
+        }
+
         static void Main(string[] args)
         {
-            string dcsRoot = new PatchDestination().RootFolder;
+            string dcsRoot = "NOTFOUND";
+            foreach (string candidate in _dcsRoots)
+            {
+                if (Directory.Exists(candidate))
+                {
+                    dcsRoot = candidate;
+                    break;
+                }
+            }
             if (args.Length > 0)
             {
                 switch (args[0])
@@ -29,8 +45,14 @@ namespace GeneratePatches
 
         private static void UpdatePatches(string dcsRoot, string patchSet)
         {
-            // XXX determine DCS version
-            string dcsVersion = "002_005_005_41371";
+            // determine DCS version
+            string autoUpdatePath = Path.Combine(dcsRoot, "autoupdate.cfg");
+            string versionString = JsonConvert.DeserializeObject<AutoUpdateConfig>(File.ReadAllText(autoUpdatePath)).Version;
+            System.Version parsed = System.Version.Parse(versionString);
+            string dcsVersion = $"{parsed.Major:000}_{parsed.Minor:000}_{parsed.Build:000}_{parsed.Revision:00000}";
+
+            // now build patches based on files changed in repo
+            string patchesPath = ToolsCommon.FileSystem.FindNearestDirectory("Patches");
             using (Repository repo = new Repository(dcsRoot))
             {
                 foreach (StatusEntry item in repo.RetrieveStatus(new StatusOptions()))
@@ -51,11 +73,6 @@ namespace GeneratePatches
                             target = content.ReadToEnd();
                         }
 
-                        string patchesPath = Path.Combine("..", "..", "..", "..", "Patches");
-                        if (!Directory.Exists(patchesPath))
-                        {
-                            throw new System.Exception($"relative path for patch output '{patchesPath}' does not exist");
-                        }
                         string outputPath = Path.Combine(patchesPath, "DCS", dcsVersion, patchSet, $"{item.FilePath}.gpatch");
                         string reversePath = Path.Combine(patchesPath, "DCS", dcsVersion, patchSet, $"{item.FilePath}.grevert");
                         string outputDirectoryPath = Path.GetDirectoryName(outputPath);

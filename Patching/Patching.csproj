@@ -55,16 +55,19 @@
     <Compile Include="DCS\AdditionalViewportsEditor.xaml.cs">
       <DependentUpon>AdditionalViewportsEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DCS\DestinationPatches.cs" />
+    <Compile Include="InstallationDialogs.cs" />
+    <Compile Include="IInstallation.cs" />
+    <Compile Include="PatchDestinationViewModel.cs" />
     <Compile Include="DCS\InstallationLocation.cs" />
     <Compile Include="DCS\InstallationLocations.cs" />
     <Compile Include="DCS\InstallationLocationsControl.xaml.cs">
       <DependentUpon>InstallationLocationsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DCS\StatusCodes.cs" />
+    <Compile Include="PatchingViewModel.cs" />
+    <Compile Include="StatusCodes.cs" />
     <Compile Include="IPatchDestination.cs" />
     <Compile Include="PatchFile.cs" />
-    <Compile Include="DCS\PatchDestination.cs" />
+    <Compile Include="DCS\DCSPatchDestination.cs" />
     <Compile Include="PatchList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

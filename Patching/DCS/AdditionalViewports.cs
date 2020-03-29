@@ -1,14 +1,14 @@
 ﻿using GadrocsWorkshop.Helios.ComponentModel;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    // XXX this needs an interface editor where multiple DCS installations can be configured and selected/deselected for patch installation
     [HeliosInterface("Patching.DCS.AdditionalViewports", "DCS Additional Viewports", typeof(AdditionalViewportsEditor), Factory = typeof(UniqueHeliosInterfaceFactory))]
     public class AdditionalViewports : HeliosInterface, IReadyCheck
     {
-        private List<IPatchDestination> _destinations = new List<IPatchDestination>();
+        public const string PATCH_SET = "Viewports";
 
         public AdditionalViewports() : base("DCS Additional Viewports")
         {
@@ -16,8 +16,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
-            // do the check if all our patches are installed
-            foreach (IPatchDestination destination in _destinations)
+            // check if all our patches are installed
+            List<IPatchDestination> destinations = InstallationLocations.Singleton.Items.Select(
+                location => new DCSPatchDestination(location) as IPatchDestination).ToList();
+            foreach (IPatchDestination destination in destinations)
             {
                 PatchList patches = PatchList.LoadPatches(destination, "Viewports");
                 if (patches.Count < 1)
@@ -45,17 +47,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public override void WriteXml(XmlWriter writer)
         {
             // no code
-        }
-
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
-        {
-            base.OnProfileChanged(oldProfile);
-            if (Profile != null)
-            {
-                // XXX implement configuration of DCS installations
-                _destinations.Clear();
-                _destinations.Add(new PatchDestination());
-            }
         }
     }
 }

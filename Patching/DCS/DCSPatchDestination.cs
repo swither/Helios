@@ -3,26 +3,12 @@ using System.IO;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    public class PatchDestination : IPatchDestination
+    public class DCSPatchDestination : IPatchDestination
     {
-        // XXX create a Helios utility to locate and remember DCS root folders
-        static private readonly string[] dcsRoots = new string[] { "C:\\Program Files\\Eagle Dynamics\\DCS World", "c:\\dcs", "e:\\dcs" };
         private string _dcsRoot = "NOTFOUND";
         private static System.Text.Encoding _utf8WithoutBom = new System.Text.UTF8Encoding(false);
 
-        public PatchDestination()
-        {
-            foreach (string candidate in dcsRoots)
-            {
-                if (Directory.Exists(candidate))
-                {
-                    _dcsRoot = candidate;
-                    break;
-                }
-            }
-        }
-
-        public PatchDestination(InstallationLocation location)
+        public DCSPatchDestination(InstallationLocation location)
         {
             _dcsRoot = location.Path;
             if (!System.Version.TryParse(location.Version, out Version parsed)) {

@@ -13,18 +13,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Patching.DCS
+using GadrocsWorkshop.Helios.Patching.DCS;
+
+namespace GadrocsWorkshop.Helios.Patching
 {
-    class DestinationPatches
+    public class PatchDestinationViewModel
     {
-        public PatchDestination Destination;
+        public IPatchDestination Destination;
         public StatusCodes Status;
         public PatchList Patches;
         public bool Enabled;
 
-        public DestinationPatches(InstallationLocation location, string patchSet)
+        public PatchDestinationViewModel(InstallationLocation location, string patchSet)
         {
-            Destination = new PatchDestination(location);
+            Destination = new DCSPatchDestination(location);
             Status = StatusCodes.Unknown;
             Patches = PatchList.LoadPatches(Destination, patchSet);
             Enabled = location.IsEnabled;

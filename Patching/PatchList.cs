@@ -109,7 +109,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     // could not patch; fatal
                     yield return new StatusReportItem
                     {
-                        Status = failureStatus,
+                        Status = $"{destination.Description} {failureStatus}",
                         Recommendation = "please install a newer Helios distribution or patches with support for this DCS version",
                         Severity = StatusReportItem.SeverityCode.Error
                     };
@@ -131,7 +131,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"{patch.TargetPath} could not be written to target destination after patch",
+                        Status = $"{destination.Description} {patch.TargetPath} could not be written to target destination after patch",
                         Severity = StatusReportItem.SeverityCode.Error,
                         Recommendation = "please ensure you have write permission to all the files in the target location"
                     };

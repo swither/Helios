@@ -29,7 +29,7 @@ namespace EditViewports
             List<ToolsCommon.ViewportTemplate> templates = JsonConvert.DeserializeObject<ToolsCommon.ViewportTemplate[]>(json).ToList();
 
             // XXX get this from a Helios utility that manages DCS install locations
-            PatchDestination destination = new PatchDestination();
+            DCSPatchDestination destination = new DCSPatchDestination();
 
             if (!destination.TryLock())
             {

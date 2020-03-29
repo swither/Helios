@@ -15,101 +15,62 @@
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
+    using GadrocsWorkshop.Helios;
     using GadrocsWorkshop.Helios.Windows.Controls;
     using System.Collections.Generic;
     using System.Windows;
 
     /// <summary>
     /// This interface editor manages a collection of DCS installation locations and allows installation of viewport patches into those locations.
+    /// 
+    /// It also translates from DCS-specific installation location to generic patching interfaces to be shared with other instances of patching things
     /// </summary>
     public partial class AdditionalViewportsEditor : HeliosInterfaceEditor
     {
-        /// <summary>
-        /// map from path to status
-        /// </summary>
-        private Dictionary<string, DestinationPatches> _destinations = new Dictionary<string, DestinationPatches>();
+        private InstallationDialogs _installationDialogs;
 
         public AdditionalViewportsEditor()
         {
             InitializeComponent();
 
             // load patches for all destinations
+            Dictionary<string, PatchDestinationViewModel> destinations = new Dictionary<string, PatchDestinationViewModel>();
             InstallationLocations locations = DCS.InstallationLocations.Singleton;
             foreach (InstallationLocation location in locations.Items)
             {
-                _destinations[location.Path] = new DestinationPatches(location, "Viewports");
+                destinations[location.Path] = new PatchDestinationViewModel(location, AdditionalViewports.PATCH_SET);
             }
 
-            // check if all selected patches are installed
-            foreach (DestinationPatches status in _destinations.Values)
-            {
-                status.CheckApplied();
-            }
-
-            // update overall status
-            UpdateStatus();
+            Patching = new PatchingViewModel(destinations, AdditionalViewports.PATCH_SET, "Helios viewport patches");
 
             // register for changes in selected destinations so we can scan again
             locations.Added += OnAdded;
             locations.Removed += OnRemoved;
             locations.Enabled += OnEnabled;
             locations.Disabled += OnDisabled;
+
+            _installationDialogs = new InstallationDialogs(this);
         }
 
         private void OnDisabled(object sender, InstallationLocations.LocationEvent e)
         {
-            _destinations[e.Location.Path].Enabled = false;
-            UpdateStatus();
+            Patching?.OnDisabled(e.Location.Path);
         }
 
         private void OnEnabled(object sender, InstallationLocations.LocationEvent e)
         {
-            DestinationPatches destinationPatches = _destinations[e.Location.Path];
-            destinationPatches.Enabled = true;
-            destinationPatches.CheckApplied();
-            UpdateStatus();
+            Patching?.OnEnabled(e.Location.Path);
         }
 
         private void OnRemoved(object sender, InstallationLocations.LocationEvent e)
         {
-            _destinations.Remove(e.Location.Path);
-            UpdateStatus();
+            Patching?.OnRemoved(e.Location.Path);
         }
 
         private void OnAdded(object sender, InstallationLocations.LocationEvent e)
         {
-            DestinationPatches destinationStatus = new DestinationPatches(e.Location, "Viewports");
-            destinationStatus.CheckApplied();
-            _destinations[e.Location.Path] = destinationStatus;
-            UpdateStatus();
-        }
-
-        private void UpdateStatus()
-        {
-            StatusCodes newStatus = StatusCodes.UpToDate;
-            foreach (DestinationPatches status in _destinations.Values)
-            {
-                if (!status.Enabled)
-                {
-                    // does not count
-                    continue;
-                }
-                switch (status.Status)
-                {
-                    case StatusCodes.Unknown:
-                    case StatusCodes.OutOfDate:
-                        newStatus = StatusCodes.OutOfDate;
-                        // don't end iteration, need to check for failures
-                        break;
-                    case StatusCodes.UpToDate:
-                        break;
-                    case StatusCodes.Incompatible:
-                        // any destination being incompatible counts
-                        Status = StatusCodes.Incompatible;
-                        return;
-                }
-            }
-            Status = newStatus;
+            PatchDestinationViewModel destinationPatches = new PatchDestinationViewModel(e.Location, AdditionalViewports.PATCH_SET);
+            Patching?.OnAdded(e.Location.Path, destinationPatches);
         }
 
         /// <summary>
@@ -121,93 +82,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             base.OnInterfaceChanged(oldInterface, newInterface);
             if (newInterface is AdditionalViewports viewportsInterface)
             {
+                // do things with our interface, if we need to
             }
             else
             {
-                // XXX deinit; provoke crash on attempt to use 
+                // deinit; provoke crash on attempt to use 
             }
-            // XXX need to rebind everything on the form
         }
 
         #region Commands
         private void Configure_Click(object sender, RoutedEventArgs e)
         {
-            List<StatusReportItem> results = new List<StatusReportItem>();
-            bool failed = false;
-            bool imprecise = false;
-            string message = "";
-
-            // simulate patches and collect any errors
-            foreach (DestinationPatches item in _destinations.Values)
-            {
-                foreach (StatusReportItem result in item.Patches.SimulateApply(item.Destination))
-                {
-                    result.Log(ConfigManager.LogManager);
-                    results.Add(result);
-                    if (result.Severity >= StatusReportItem.SeverityCode.Error)
-                    {
-                        if (!failed)
-                        {
-                            // keep first message
-                            message = $"{result.Status}\n{result.Recommendation}";
-                        }
-                        failed = true;
-                        item.Status = StatusCodes.Incompatible;
-                    }
-                    if (result.Severity >= StatusReportItem.SeverityCode.Warning)
-                    {
-                        imprecise = true;
-                    }
-                }
-            }
-
-            if (failed)
-            {
-                UpdateStatus();
-                MessageBox.Show(Window.GetWindow(this), message, "Helios Viewport patch installation would fail");
-                return;
-            }
-
-            if (imprecise)
-            {
-                MessageBoxResult result = MessageBox.Show(Window.GetWindow(this), "Installation of the viewport patches for DCS can continue, but some DCS files have changed since these patches were created.", "Helios Viewport patch installation may have risks", MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.Cancel)
-                {
-                    // status unchanged
-                    return;
-                }
-            }
-
-            // apply patches
-            foreach (DestinationPatches item in _destinations.Values)
-            {
-                StatusCodes newStatus = StatusCodes.UpToDate;
-                foreach (StatusReportItem result in item.Patches.Apply(item.Destination))
-                {
-                    result.Log(ConfigManager.LogManager);
-                    results.Add(result);
-                    if (result.Severity >= StatusReportItem.SeverityCode.Error)
-                    {
-                        if (!failed)
-                        {
-                            // keep first message
-                            message = $"{result.Status}\n{result.Recommendation}";
-                        }
-                        failed = true;
-                        newStatus = StatusCodes.Incompatible;
-                    }
-                }
-                item.Status = newStatus;
-            }
-
-            // message box the result if failed
-            // XXX need to revert any patches that were installed, if we can, and add to result report
-            // XXX add a custom dialog to show the detailed report of "results"
-            UpdateStatus();
-            if (failed)
-            {
-                MessageBox.Show(Window.GetWindow(this), message, "Helios Viewport patch installation failed");
-            }
+            Patching?.Install(_installationDialogs);
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)
@@ -217,16 +103,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Patch installation status
-        /// </summary>
-        public StatusCodes Status
+        public PatchingViewModel Patching
         {
-            get { return (StatusCodes)GetValue(StatusProperty); }
-            set { SetValue(StatusProperty, value); }
+            get { return (PatchingViewModel)GetValue(PatchingProperty); }
+            set { SetValue(PatchingProperty, value); }
         }
-        public static readonly DependencyProperty StatusProperty =
-            DependencyProperty.Register("Status", typeof(StatusCodes), typeof(AdditionalViewportsEditor), new PropertyMetadata(StatusCodes.OutOfDate));
+        public static readonly DependencyProperty PatchingProperty =
+            DependencyProperty.Register("Patching", typeof(PatchingViewModel), typeof(AdditionalViewportsEditor), new PropertyMetadata(null));
         #endregion
     }
 }
