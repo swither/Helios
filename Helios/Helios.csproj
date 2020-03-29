@@ -101,6 +101,7 @@
     <Compile Include="Controls\ViewportExtentRenderer.cs" />
     <Compile Include="HeliosApplication.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSMonitorConfiguration.cs" />
+    <Compile Include="ISettingsManager2.cs" />
     <Compile Include="IViewPortExtent.cs" />
     <Compile Include="Controls\CustomGaugeNeedle.cs" />
     <Compile Include="Controls\CustomDrum.cs" />

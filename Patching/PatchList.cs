@@ -55,7 +55,6 @@ namespace GadrocsWorkshop.Helios.Patching
                 }
                 if (!patch.IsApplied(source, out string appliedStatus))
                 {
-                    // already applied, go to next patch
                     yield return new StatusReportItem
                     {
                         Status = appliedStatus,
@@ -105,7 +104,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     };
                     continue;
                 }
-                if (!patch.TryApply(source, out string patched, out string failureStatus)) 
+                if (!patch.TryApply(source, out string patched, out string failureStatus))
                 {
                     // could not patch; fatal
                     yield return new StatusReportItem
@@ -121,7 +120,14 @@ namespace GadrocsWorkshop.Helios.Patching
                 {
                     continue;
                 }
-                if (!destination.TryWritePatched(patch.TargetPath, patched))
+                if (destination.TryWritePatched(patch.TargetPath, patched))
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{patch.TargetPath} successfully patched"
+                    };
+                }
+                else
                 {
                     yield return new StatusReportItem
                     {

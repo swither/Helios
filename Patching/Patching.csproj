@@ -34,17 +34,34 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DCS\AdditionalViewports.cs" />
+    <Compile Include="DCS\AdditionalViewportsEditor.xaml.cs">
+      <DependentUpon>AdditionalViewportsEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DCS\DestinationPatches.cs" />
+    <Compile Include="DCS\InstallationLocation.cs" />
+    <Compile Include="DCS\InstallationLocations.cs" />
+    <Compile Include="DCS\InstallationLocationsControl.xaml.cs">
+      <DependentUpon>InstallationLocationsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DCS\StatusCodes.cs" />
     <Compile Include="IPatchDestination.cs" />
     <Compile Include="PatchFile.cs" />
     <Compile Include="DCS\PatchDestination.cs" />
@@ -67,11 +84,21 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="DCS\AdditionalViewportsEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DCS\InstallationLocationsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Templates\Patching\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="packages.config" />
     <None Include="Templates\Patching\readme.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

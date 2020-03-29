@@ -5,7 +5,7 @@ using System.Xml;
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     // XXX this needs an interface editor where multiple DCS installations can be configured and selected/deselected for patch installation
-    [HeliosInterface("Patching.DCS.AdditionalViewports", "DCS Additional Viewports", null, Factory = typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Patching.DCS.AdditionalViewports", "DCS Additional Viewports", typeof(AdditionalViewportsEditor), Factory = typeof(UniqueHeliosInterfaceFactory))]
     public class AdditionalViewports : HeliosInterface, IReadyCheck
     {
         private List<IPatchDestination> _destinations = new List<IPatchDestination>();

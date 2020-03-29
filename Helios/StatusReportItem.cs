@@ -11,6 +11,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+
 namespace GadrocsWorkshop.Helios
 {
     /// <summary>
@@ -43,5 +45,37 @@ namespace GadrocsWorkshop.Helios
         /// a recommendation to the user or null
         /// </summary>
         public string Recommendation { get; set; }
+
+        /// <summary>
+        /// log this result
+        /// </summary>
+        /// <param name="logManager"></param>
+        public void Log(LogManager logManager)
+        {
+            switch (Severity)
+            {
+                case SeverityCode.Info:
+                    logManager.LogInfo(Status);
+                    if (Recommendation != null)
+                    {
+                        logManager.LogInfo(Recommendation);
+                    }
+                    break;
+                case SeverityCode.Warning:
+                    logManager.LogWarning(Status);
+                    if (Recommendation != null)
+                    {
+                        logManager.LogWarning(Recommendation);
+                    }
+                    break;
+                case SeverityCode.Error:
+                    logManager.LogError(Status);
+                    if (Recommendation != null)
+                    {
+                        logManager.LogError(Recommendation);
+                    }
+                    break;
+            }
+        }
     }
 }

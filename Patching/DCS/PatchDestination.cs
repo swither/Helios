@@ -22,11 +22,20 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
+        public PatchDestination(InstallationLocation location)
+        {
+            _dcsRoot = location.Path;
+            if (!System.Version.TryParse(location.Version, out Version parsed)) {
+                throw new System.Exception("invalid version format read from DCS autoupdate file; update Helios to support current DCS version");
+            }
+            Version = $"{parsed.Major:000}_{parsed.Minor:000}_{parsed.Build:000}_{parsed.Revision:00000}";
+            DisplayVersion = location.Version;
+        }
+
         public string Description => $"DCS installation in '{_dcsRoot}'";
 
         public string RootFolder => _dcsRoot;
 
-        // XXX implement
         public string Version { get; private set; } = "002_005_005_41371";
         public string DisplayVersion { get; private set; } = "2.5.5.41371";
 

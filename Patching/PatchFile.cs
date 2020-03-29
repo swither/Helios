@@ -15,7 +15,32 @@ namespace GadrocsWorkshop.Helios.Patching
 
         internal bool TryApply(string source, out string patched, out string status)
         {
-            throw new NotImplementedException();
+            status = null;
+            object[] results = _googleDiff.patch_apply(_patches, source);
+            patched = (string)results[0];
+            bool[] applied = (bool[])results[1];
+            diff_match_patch.PatchResult[] resultCodes = (diff_match_patch.PatchResult[])results[2];
+            for (int i = 0; i < applied.Length; i++)
+            {
+                if (!applied[i])
+                {
+                    status = ($"failed to apply patch to {TargetPath}: {resultCodes[i].ToString()}");
+                    return false;
+                }
+                switch (resultCodes[i])
+                {
+                    case diff_match_patch.PatchResult.UNKNOWN:
+                        throw new System.Exception($"invalid result code from application of {_patches[i].ToString()}");
+                    case diff_match_patch.PatchResult.APPLIED_PERFECT:
+                        break;
+                    case diff_match_patch.PatchResult.APPLIED_IMPERFECT:
+                        status = "patch imperfectly matched input, but was applied";
+                        break;
+                    default:
+                        throw new System.Exception($"patch should not have returned success with result code {resultCodes[i].ToString()}");
+                }
+            }
+            return true;
         }
 
         internal bool IsApplied(string patched, out string status)
@@ -29,13 +54,13 @@ namespace GadrocsWorkshop.Helios.Patching
                     {
                         if (!patched.Contains(chunk.text))
                         {
-                            status = $"a required patch to the file '{TargetPath}' is not installed";
+                            status = $"{TargetPath} is missing some patches";
                             return false;
                         }
                     }
                 }
             }
-            status = $"file '{TargetPath}' is correctly patched";
+            status = $"{TargetPath} is already patched";
             return true;
         }
 

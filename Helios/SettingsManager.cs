@@ -15,12 +15,13 @@
 
 namespace GadrocsWorkshop.Helios
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
     using System.Xml;
 
-    internal class SettingsManager : ISettingsManager
+    internal class SettingsManager : ISettingsManager2
     {
         private class Setting
         {
@@ -30,6 +31,15 @@ namespace GadrocsWorkshop.Helios
 
         private class SettingsColleciton : KeyedCollection<string, Setting>
         {
+            public IEnumerable<string> Keys {
+                get {
+                    if (Dictionary == null) {
+                        return new List<string>();
+                    }
+                    return Dictionary.Keys;
+                }
+            }
+
             protected override string GetKeyForItem(Setting item)
             {
                 return item.Name;
@@ -281,6 +291,31 @@ namespace GadrocsWorkshop.Helios
 
             Group settingGroup = GetGroup(group);
             return settingGroup.Settings.Contains(name);
+        }
+
+        /// <summary>
+        /// ISettingsManager2: enumerate all keys for group
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public IEnumerable<string> EnumerateSettingNames(string group)
+        {
+            LoadSettings();
+            Group settingGroup = GetGroup(group);
+            return settingGroup.Settings.Keys;
+        }
+
+        /// <summary>
+        /// ISettingsManager2: delete key from group
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="name"></param>
+        public void DeleteSetting(string group, string name)
+        {
+            LoadSettings();
+            Group settingGroup = GetGroup(group);
+            settingGroup.Settings.Remove(name);
+            SaveSettings();
         }
     }
 }
