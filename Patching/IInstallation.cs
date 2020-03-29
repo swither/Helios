@@ -38,6 +38,7 @@ namespace GadrocsWorkshop.Helios
     {
         InstallationPromptResult DangerPrompt(string title, string message, List<StatusReportItem> details);
         void Failure(string title, string message, List<StatusReportItem> details);
+        void Success(string title, string message, List<StatusReportItem> details);
     }
 
     /// <summary>

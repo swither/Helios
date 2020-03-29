@@ -20,6 +20,7 @@ namespace GadrocsWorkshop.Helios.Patching
         Unknown,
         UpToDate,
         OutOfDate,
-        Incompatible
+        Incompatible,
+        NoLocations
     }
 }

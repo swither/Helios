@@ -70,6 +70,10 @@ namespace GadrocsWorkshop.Helios.Patching
         private void UpdateStatus()
         {
             StatusCodes newStatus = StatusCodes.UpToDate;
+            if (_destinations.Count < 1)
+            {
+                newStatus = StatusCodes.NoLocations;
+            }
             foreach (PatchDestinationViewModel status in _destinations.Values)
             {
                 if (!status.Enabled)
@@ -181,6 +185,8 @@ namespace GadrocsWorkshop.Helios.Patching
                 callbacks.Failure($"{_patchSetDescription} installation failed", message, results);
                 return InstallationResult.Fatal;
             }
+
+            callbacks.Success($"{_patchSetDescription} installation success", "All patches installed successfully", results);
             return InstallationResult.Success;
         }
 
@@ -195,7 +201,6 @@ namespace GadrocsWorkshop.Helios.Patching
         }
         public static readonly DependencyProperty StatusProperty =
             DependencyProperty.Register("Status", typeof(StatusCodes), typeof(PatchingViewModel), new PropertyMetadata(StatusCodes.OutOfDate));
-
         #endregion
     }
 }

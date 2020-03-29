@@ -48,6 +48,19 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="NoLocationsStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="UIElement.Visibility" Value="Hidden"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static patching:StatusCodes.NoLocations}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Visible"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style x:Key="BasicGroup" TargetType="{x:Type Control}">
             <Setter Property="Margin" Value="0,0,0,12"/>
         </Style>
@@ -90,7 +103,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Right"></TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"  Foreground="Red" Style="{StaticResource NoLocationsStyle}">Add at least one Location of a DCS Installation to install viewport patches.</TextBlock>
                     <Button Grid.Row="0" Grid.Column="1" Command="local:InstallationLocationsControl.AddInstallationLocationCommand" CommandTarget="{Binding ElementName=InstallationLocations}" Margin="0,0,12,0" Width="120" Height="24">Add Location</Button>
                 </Grid>
 

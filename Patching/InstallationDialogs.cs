@@ -43,5 +43,10 @@ namespace GadrocsWorkshop.Helios.Patching
             // XXX create a custom dialog to explore the details
             MessageBox.Show(Window.GetWindow(_host), message, title);
         }
+
+        public void Success(string title, string message, List<StatusReportItem> details)
+        {
+            // no code until we have a custom dialog to browse the details
+        }
     }
 }

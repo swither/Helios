@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             Version = JsonConvert.DeserializeObject<AutoUpdateConfig>(System.IO.File.ReadAllText(autoUpdatePath)).Version;
             Path = System.IO.Path.GetDirectoryName(autoUpdatePath);
-            IsEnabled = false;
+            IsEnabled = true;
         }
 
         public string Path { get; private set; }

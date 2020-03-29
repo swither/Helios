@@ -33,10 +33,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             string guessName = InstallationLocation.AUTO_UPDATE_CONFIG;
+            openFileDialog.Title = "Navigate to DCS Installation";
             openFileDialog.InitialDirectory = "";
             openFileDialog.FileName = guessName;
             openFileDialog.DefaultExt = ".cfg";
-            openFileDialog.Filter = $"DCS Installations|{InstallationLocation.AUTO_UPDATE_CONFIG}";
+            openFileDialog.Filter = $"DCS|{InstallationLocation.AUTO_UPDATE_CONFIG}";
             openFileDialog.CheckFileExists = true;
 
             foreach (string guess in guesses)
