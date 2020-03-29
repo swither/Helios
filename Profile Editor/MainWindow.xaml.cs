@@ -533,17 +533,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     {
                         LoadVisual(monitor);
                     }
-                }
 
-                Dispatcher.Invoke(DispatcherPriority.Send, (System.Threading.SendOrPostCallback)delegate { SetValue(ProfileProperty, profile); }, profile);
+                    // NOTE: only install profile if not null (i.e. load succeeded)
+                    Dispatcher.Invoke(DispatcherPriority.Send, (System.Threading.SendOrPostCallback)delegate { SetValue(ProfileProperty, profile); }, profile);
 
-                Dispatcher.Invoke(DispatcherPriority.Background, new Action(RemoveLoadingAdorner));
-
-                Dispatcher.Invoke(DispatcherPriority.Background, (System.Threading.SendOrPostCallback)delegate { SetValue(StatusBarMessageProperty, ""); }, "");
-
-                // TODO Restore docking panel layout
-                if (profile != null)
-                {
                     string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
                     if (File.Exists(layoutFileName))
                     {
@@ -551,8 +544,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     }
                 } else
                 {
-                    ConfigManager.LogManager.LogDebug("Docking Panel Layout Problem.  Profile Object Null during restore of hply for " + path);
+                    // XXX need a popup here
+                    ConfigManager.LogManager.LogError($"Failed to load profile '{path}'; continuing with previously loaded profile");
                 }
+
+                Dispatcher.Invoke(DispatcherPriority.Background, new Action(RemoveLoadingAdorner));
+                Dispatcher.Invoke(DispatcherPriority.Background, (System.Threading.SendOrPostCallback)delegate { SetValue(StatusBarMessageProperty, ""); }, "");
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
