@@ -28,6 +28,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     public partial class AdditionalViewportsEditor : HeliosInterfaceEditor
     {
         private InstallationDialogs _installationDialogs;
+        private AdditionalViewports _parent;
 
         public AdditionalViewportsEditor()
         {
@@ -55,22 +56,26 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void OnDisabled(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnDisabled(e.Location.Path);
+            _parent?.InvalidateStatus();
         }
 
         private void OnEnabled(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnEnabled(e.Location.Path);
+            _parent?.InvalidateStatus();
         }
 
         private void OnRemoved(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnRemoved(e.Location.Path);
+            _parent?.InvalidateStatus();
         }
 
         private void OnAdded(object sender, InstallationLocations.LocationEvent e)
         {
             PatchDestinationViewModel destinationPatches = new PatchDestinationViewModel(e.Location, AdditionalViewports.PATCH_SET);
             Patching?.OnAdded(e.Location.Path, destinationPatches);
+            _parent?.InvalidateStatus();
         }
 
         /// <summary>
@@ -82,11 +87,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             base.OnInterfaceChanged(oldInterface, newInterface);
             if (newInterface is AdditionalViewports viewportsInterface)
             {
-                // do things with our interface, if we need to
+                _parent = viewportsInterface;
             }
             else
             {
                 // deinit; provoke crash on attempt to use 
+                _parent = null;
             }
         }
 
@@ -94,6 +100,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void Configure_Click(object sender, RoutedEventArgs e)
         {
             Patching?.Install(_installationDialogs);
+            _parent?.InvalidateStatus();
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)

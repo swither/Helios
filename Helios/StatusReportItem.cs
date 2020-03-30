@@ -11,8 +11,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-
 namespace GadrocsWorkshop.Helios
 {
     /// <summary>
@@ -31,7 +29,8 @@ namespace GadrocsWorkshop.Helios
         {
             Info,
             Warning,
-            Error
+            Error,
+            None
         }
         public SeverityCode Severity { get; set; } = SeverityCode.Info;
         
@@ -54,6 +53,8 @@ namespace GadrocsWorkshop.Helios
         {
             switch (Severity)
             {
+                case SeverityCode.None:
+                    throw new System.Exception($"Severity 'None' must not be used for any status report instances; implementation error");
                 case SeverityCode.Info:
                     logManager.LogInfo(Status);
                     if (Recommendation != null)

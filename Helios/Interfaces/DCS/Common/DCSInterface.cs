@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     using System.Diagnostics;
     using System.Xml;
 
-    public class DCSInterface : BaseUDPInterface, IProfileAwareInterface, IReadyCheck
+    public class DCSInterface : BaseUDPInterface, IProfileAwareInterface, IReadyCheck, IStatusReportNotify
     {
         private const string SettingsGroup = "DCSInterface";
 
@@ -41,6 +41,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         // protocol to talk to DCS Export script (control messages)
         protected DCSExportProtocol _protocol;
+
+        // observers of our status report that need to be told when we change status
+        private HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
 
         public DCSInterface(string name, string exportDeviceName, string exportFunctionsPath)
             : base(name)
@@ -319,6 +322,29 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             foreach (StatusReportItem item in monitorConfig.PerformReadyCheck())
             {
                 yield return item;
+            }
+        }
+
+        public void Subscribe(IStatusReportObserver observer)
+        {
+            _observers.Add(observer);
+        }
+
+        public void Unsubscribe(IStatusReportObserver observer)
+        {
+            _observers.Remove(observer);
+        }
+
+        internal void InvalidateStatus()
+        {
+            if (_observers.Count < 1)
+            {
+                return;
+            }
+            IEnumerable<StatusReportItem> newReport = PerformReadyCheck();
+            foreach (IStatusReportObserver observer in _observers)
+            {
+                observer.ReceiveStatusReport(newReport);
             }
         }
     }

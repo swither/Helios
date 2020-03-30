@@ -15,6 +15,7 @@
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
+    using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Util;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -419,6 +420,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
                 // all up to date
                 IsUpToDate = true;
+
+                // notify our interface that its status report should be regenerated
+                _parent?.InvalidateStatus();
                 return true;
             }
             catch (System.Exception ex)
@@ -779,6 +783,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             // some properties in our interface have changed
             UpdateExports();
+        }
+
+        protected override void OnPropertyChanged(PropertyNotificationEventArgs args)
+        {
+            base.OnPropertyChanged(args);
+            _parent?.InvalidateStatus();
         }
 
 #if false

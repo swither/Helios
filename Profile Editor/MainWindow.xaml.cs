@@ -26,6 +26,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
+    using System.Text.RegularExpressions;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Documents;
@@ -55,7 +56,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private XmlLayoutSerializer _layoutSerializer;
         private string _systemDefaultLayout;
-        private string _defalutLayoutFile;
+        private string _defaultLayoutFile;
 
         private LoadingAdorner _loadingAdorner;
         private List<DocumentMeta> _documents = new List<DocumentMeta>();
@@ -72,8 +73,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             _layoutSerializer = new XmlLayoutSerializer(this.DockManager);
             _layoutSerializer.LayoutSerializationCallback += LayoutSerializer_LayoutSerializationCallback;
 
-            _defalutLayoutFile = System.IO.Path.Combine(ConfigManager.DocumentPath, "DefaultLayout.hply");
-
+            _defaultLayoutFile = System.IO.Path.Combine(ConfigManager.DocumentPath, "DefaultLayout.hply");
         }
 
         void LayoutSerializer_LayoutSerializationCallback(object sender, LayoutSerializationCallbackEventArgs e)
@@ -345,7 +345,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private DocumentMeta AddNewDocument(HeliosObject profileObject)
         {
-
             DocumentMeta meta = FindDocumentMeta(profileObject);
             if (meta != null)
             {
@@ -467,6 +466,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 ConfigManager.UndoManager.ClearHistory();
 
                 AddNewDocument(Profile.Monitors[0]);
+                OnProfileChangeComplete();
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -520,6 +520,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             StatusBarMessage = "Loading Profile...";
             GetLoadingAdorner();
 
+            string systemLayoutText = _systemDefaultLayout;
             System.Threading.Thread t = new System.Threading.Thread(delegate()
             {
                 HeliosProfile profile = ConfigManager.ProfileManager.LoadProfile(path, Dispatcher);
@@ -540,9 +541,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
                     if (File.Exists(layoutFileName))
                     {
-                        Dispatcher.Invoke(DispatcherPriority.Background, (LayoutDelegate)_layoutSerializer.Deserialize, layoutFileName);
+                        if (LayoutIsComplete(systemLayoutText, layoutFileName))
+                        {
+                            Dispatcher.Invoke(DispatcherPriority.Background, (LayoutDelegate)_layoutSerializer.Deserialize, layoutFileName);
+                        }
                     }
-                } else
+                } 
+                else
                 {
                     // XXX need a popup here
                     ConfigManager.LogManager.LogError($"Failed to load profile '{path}'; continuing with previously loaded profile");
@@ -550,12 +555,58 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
                 Dispatcher.Invoke(DispatcherPriority.Background, new Action(RemoveLoadingAdorner));
                 Dispatcher.Invoke(DispatcherPriority.Background, (System.Threading.SendOrPostCallback)delegate { SetValue(StatusBarMessageProperty, ""); }, "");
+                Dispatcher.Invoke(DispatcherPriority.Background, new Action(OnProfileChangeComplete));
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             });
             t.Start();
 
+        }
+
+
+        /// <summary>
+        /// tries to determine if a given layout file will abandon any controls if loaded, by comparing
+        /// to the system default layout that is dynamically generated on every startup
+        /// </summary>
+        /// <param name="layoutFileName"></param>
+        /// <returns></returns>
+        static private bool LayoutIsComplete(string systemLayoutText, string layoutFileName)
+        {
+            // WARNING: called on a worker thread
+            Regex contentId = new Regex("ContentId=\"([^\"]+)\"", RegexOptions.Compiled);
+            string layout = File.ReadAllText(layoutFileName);
+            foreach (Match match in contentId.Matches(systemLayoutText))
+            {
+                if (match.Groups.Count < 2)
+                {
+                    continue;
+                }
+                if (!match.Groups[1].Success)
+                {
+                    continue;
+                }
+                if (match.Groups[1].Value.StartsWith("Visual;"))
+                {
+                    // ignore monitor that is added by default
+                    continue;
+                }
+                if (!layout.Contains(match.Groups[0].Value))
+                {
+                    // there is a named panel in this version of the software that
+                    // would be removed if we load this layout
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// called when creating or loading a profile is complete
+        /// </summary>
+        private void OnProfileChangeComplete()
+        {
+            ChecklistWindow.Load(Profile);
         }
 
         private void LoadVisual(HeliosVisual visual)
@@ -768,18 +819,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void SaveLayout_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (File.Exists(_defalutLayoutFile))
+            if (File.Exists(_defaultLayoutFile))
             {
-                File.Delete(_defalutLayoutFile);
+                File.Delete(_defaultLayoutFile);
             }
-            _layoutSerializer.Serialize(_defalutLayoutFile);
+            _layoutSerializer.Serialize(_defaultLayoutFile);
         }
 
         private void LoadLayout_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (File.Exists(_defalutLayoutFile))
+            if (File.Exists(_defaultLayoutFile))
             {
-                _layoutSerializer.Deserialize(_defalutLayoutFile);
+                _layoutSerializer.Deserialize(_defaultLayoutFile);
             }
             else
             {
@@ -790,14 +841,35 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void RestoreDefaultLayout_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (File.Exists(_defalutLayoutFile))
+            if (File.Exists(_defaultLayoutFile))
             {
-                File.Delete(_defalutLayoutFile);
+                File.Delete(_defaultLayoutFile);
             }
+            // we need to close any editor documents before we deserialize the layout because they will be removed but not closed and
+            // then can never be recovered
+            CloseAllDocuments();
             StringReader reader = new StringReader(_systemDefaultLayout);
             _layoutSerializer.Deserialize(reader);
         }
 
+        private void CloseAllDocuments()
+        {
+            // get as stable snapshot to enumerate
+            List<DocumentMeta> documents = new List<DocumentMeta>(_documents);
+            foreach (DocumentMeta meta in documents)
+            {
+                meta.document.Close();
+            }
+        }
+
+        private void GoThere_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ChecklistSection section = (ChecklistSection)(e.Parameter);
+            if (section.HasEditor)
+            {
+                AddNewDocument(section.Interface);
+            }
+        }
         #endregion
 
         private void Show_Preview(object sender, RoutedEventArgs e)
@@ -808,6 +880,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void Show_Toolbox(object sender, RoutedEventArgs e)
         {
             ToolboxPane.Show();
+        }
+
+        private void Show_Checklist(object sender, RoutedEventArgs e)
+        {
+            ChecklistPane.Show();
         }
 
         private void Show_Explorer(object sender, RoutedEventArgs e)

@@ -21,7 +21,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             Version = JsonConvert.DeserializeObject<AutoUpdateConfig>(System.IO.File.ReadAllText(autoUpdatePath)).Version;
             Path = System.IO.Path.GetDirectoryName(autoUpdatePath);
-            IsEnabled = true;
         }
 
         public string Path { get; private set; }
@@ -36,7 +35,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public const string AUTO_UPDATE_CONFIG = "autoupdate.cfg";
 
         public static readonly DependencyProperty IsEnabledProperty =
-            DependencyProperty.Register("IsEnabled", typeof(bool), typeof(InstallationLocation), new PropertyMetadata(false, OnChangeEnabled));
+            DependencyProperty.Register("IsEnabled", typeof(bool), typeof(InstallationLocation), new PropertyMetadata(true, OnChangeEnabled));
 
         private static void OnChangeEnabled(DependencyObject target, DependencyPropertyChangedEventArgs e)
         {

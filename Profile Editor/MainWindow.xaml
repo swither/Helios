@@ -20,6 +20,7 @@
         <CommandBinding Command="local:ProfileEditorCommands.SaveLayout" Executed="SaveLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.LoadLayout" Executed="LoadLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.RestoreDefaultLayout" Executed="RestoreDefaultLayout_Executed" />
+        <CommandBinding Command="local:Checklist.GoThereCommand" Executed="GoThere_Executed" />
     </Window.CommandBindings>
     <Grid Name="PrimaryGrid">
         <Grid.RowDefinitions>
@@ -90,6 +91,8 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_View">
+                <MenuItem Header="Configuration _Check" Click="Show_Checklist" />
+                <Separator />
                 <MenuItem Header="Tool_box" Click="Show_Toolbox" />
                 <Separator />
                 <MenuItem Header="Profile P_review" Click="Show_Preview" />
@@ -200,6 +203,9 @@
                     <ad:LayoutPanel  Orientation="Horizontal" DockWidth="*">
                         <ad:LayoutPanel  Orientation="Vertical">
                             <ad:LayoutDocumentPane   x:Name="DocumentPane">
+                                <ad:LayoutAnchorable Title="Configuration Check" x:Name="ChecklistPane">
+                                    <local:Checklist x:Name="ChecklistWindow"/>
+                                </ad:LayoutAnchorable>
                             </ad:LayoutDocumentPane>
                             <ad:LayoutAnchorablePane DockHeight="300">
                                 <ad:LayoutAnchorable  Title="Bindings" x:Name="BindingsPane" AutoHideMinHeight="300">
