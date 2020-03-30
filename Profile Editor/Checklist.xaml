@@ -134,13 +134,11 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="12"/>
                             </Grid.RowDefinitions>
-                            <Canvas Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="36" Height="36" Style="{StaticResource SuccessVisible}">
-                                <Path Width="34.2877" Height="29.4585" Canvas.Left="3" Canvas.Top="4" Stretch="Fill" Fill="Green" Data="F1 M 32.2209,33.4875L 39.1875,40.0582L 52.9627,24.5415L 56.2877,27.4707L 39.5834,47.5L 28.8959,36.8125L 32.2209,33.4875 Z M 22,25L 50,25L 45.5,30L 27,30L 27,49L 46,49L 46,42.5L 51,36.5L 51,54L 22,54L 22,25 Z "/>
-                            </Canvas>
-                            <Ellipse Grid.Row="1" Grid.Column="0" Margin="3" Width="30" Height="30" Fill="Red" Stroke="White" Style="{StaticResource FailureVisible}"/>
+                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="36" FontWeight="UltraBold" Foreground="Green" Content="&#xE73E;" Style="{StaticResource SuccessVisible}"/>
+                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="36" FontWeight="UltraBold" Foreground="Red" Content="&#xE711;" Style="{StaticResource FailureVisible}"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
                             <Button Margin="6,6,22,6" Grid.Row="1" Grid.Column="2" Content="Go There" Command="local:Checklist.GoThereCommand" CommandParameter="{Binding}" Style="{StaticResource SettingsButton}" Visibility="{Binding GoThereVisibility}"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="0,6" Text="{Binding StatusNarrative}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,6" Text="{Binding StatusNarrative}"/>
                             <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="False" Visibility="{Binding DetailsVisibility}">
                                 <!-- Expander appears very broken if used with a custom Header, so let's not use it -->
                                 <Expander.Content>
@@ -176,7 +174,7 @@
 
     <DockPanel Grid.Row="0" Grid.Column="1" Background="White">
         <StackPanel DockPanel.Dock="Top">
-            <Expander FontWeight="Bold" Header="Automatically Show" IsExpanded="False" Style="{StaticResource SettingsExpander}">
+            <Expander FontWeight="Bold" Header="Show this View" IsExpanded="False" Style="{StaticResource SettingsExpander}">
                 <StackPanel Margin="0,6">
                     <RadioButton GroupName="auto" Margin="6,0,0,0">Always</RadioButton>
                     <RadioButton GroupName="auto" Margin="6,0,0,0" IsChecked="True">For Warnings &amp; Errors</RadioButton>
@@ -186,7 +184,7 @@
             </Expander>
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Margin="0,6,0,0">
-            <Expander FontWeight="Bold" Header="Show Details" IsExpanded="False" Style="{StaticResource SettingsExpander}">
+            <Expander FontWeight="Bold" Header="Filter Details" IsExpanded="False" Style="{StaticResource SettingsExpander}">
                 <StackPanel Margin="0,6">
                     <RadioButton GroupName="details" Margin="6,0,0,0" IsChecked="True">All</RadioButton>
                     <RadioButton GroupName="details" Margin="6,0,0,0">Warnings &amp; Errors</RadioButton>
