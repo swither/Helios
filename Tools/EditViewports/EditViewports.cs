@@ -20,7 +20,7 @@ namespace EditViewports
             if (args.Length < 1)
             {
                 jsonPath = FileSystem.FindNearestDirectory("ToolsCommon\\Data\\Viewports") + "ViewportTemplates.json";
-            } 
+            }
             else
             {
                 jsonPath = args[0];
@@ -31,11 +31,17 @@ namespace EditViewports
             // XXX get this from a Helios utility that manages DCS install locations
             DCSPatchDestination destination = new DCSPatchDestination();
 
+            EditFilesInDestination(templates, destination);
+        }
+
+        private static void EditFilesInDestination(List<ViewportTemplate> templates, DCSPatchDestination destination)
+        {
             if (!destination.TryLock())
             {
-                throw new System.Exception($"cannot acquire lock on {destination.Description} to edit viewports");
+                throw new System.Exception($"cannot acquire lock on {destination.LongDescription} to edit viewports");
             }
-            try {
+            try
+            {
                 foreach (ToolsCommon.ViewportTemplate template in templates)
                 {
                     foreach (ToolsCommon.Viewport viewport in template.Viewports.Where(v => v.IsValid))
@@ -69,10 +75,11 @@ namespace EditViewports
                     }
                 }
             }
-            finally {
+            finally
+            {
                 if (!destination.TryUnlock())
                 {
-                    Debug.Fail($"cannot release lock on {destination.Description} after editing viewports");
+                    Debug.Fail($"cannot release lock on {destination.LongDescription} after editing viewports");
                 }
             }
         }

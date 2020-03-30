@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    // XXX add IInstallation when that interface is available
+    // XXX make this its own HeliosInterface with its own editor
     public class DCSMonitorConfiguration: IReadyCheck
     {
         private DCSInterface _parent;

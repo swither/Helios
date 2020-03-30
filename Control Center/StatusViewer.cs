@@ -49,7 +49,16 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 {
                     return null;
                 }
-                return element.FindResource(listItem.Severity.ToString()) as DataTemplate;
+                StatusReportItem.SeverityCode severity = listItem.Severity;
+                switch (severity)
+                {
+                    case StatusReportItem.SeverityCode.None:
+                        // these are incorrectly initialized
+                        ConfigManager.LogManager.LogError($"received status report item with invalid severity: {listItem.Severity} '{listItem.Status}'; implementation error");
+                        severity = StatusReportItem.SeverityCode.Error;
+                        break;
+                }
+                return element.FindResource(severity.ToString()) as DataTemplate;
             }
         }
 
@@ -69,17 +78,25 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         public void AddItem(StatusReportItem item)
         {
-            _items.Enqueue(item);
             switch (item.Severity)
             {
                 case StatusReportItem.SeverityCode.Info:
+                    if (item.Verbose)
+                    {
+                        // too numerous for this console
+                        return;
+                    }
                     break;
                 case StatusReportItem.SeverityCode.Warning:
-                    // fall through
+                // fall through
                 case StatusReportItem.SeverityCode.Error:
+                case StatusReportItem.SeverityCode.None:
                     CautionLightVisibility = Visibility.Visible;
                     break;
             }
+
+            // store it for display
+            _items.Enqueue(item);
 
             // if visible, display new item
             if (_windowBase + _windowSize >= _items.Count)

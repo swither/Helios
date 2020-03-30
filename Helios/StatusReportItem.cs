@@ -30,10 +30,16 @@ namespace GadrocsWorkshop.Helios
             Info,
             Warning,
             Error,
-            None
+            None // no messages should be created at this level, in it used to filter out all messages
         }
         public SeverityCode Severity { get; set; } = SeverityCode.Info;
         
+        /// <summary>
+        /// if set, this indicates this message is too numerous for display in a short
+        /// status display.  It will usually only be set on Info messages.
+        /// </summary>
+        public bool Verbose { get; set; }
+
         /// <summary>
         /// the status message, which may be more than one line long
         /// but should generally be short

@@ -18,7 +18,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             DisplayVersion = location.Version;
         }
 
-        public string Description => $"DCS installation in '{_dcsRoot}'";
+        public string Description => $"DCS {DisplayVersion}";
+        public string LongDescription => $"DCS installation in '{_dcsRoot}'";
 
         public string RootFolder => _dcsRoot;
 
@@ -80,7 +81,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
             string candidateVersion = "";
             string candidatePatchSetPath = "";
-            foreach (string versionPath in Directory.EnumerateDirectories(patchesPath, "???_???_???_*", SearchOption.TopDirectoryOnly))
+            foreach (string versionPath in Directory.EnumerateDirectories(patchesPath, "???_???_?????_*", SearchOption.TopDirectoryOnly))
             {
                 string directoryVersion = Path.GetFileName(versionPath);
                 string patchSetPath = Path.Combine(versionPath, patchSet);

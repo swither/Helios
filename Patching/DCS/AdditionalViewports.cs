@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     yield return new StatusReportItem
                     {
-                        Status = "DCS Viewport patches not found in installation",
+                        Status = $"No Viewport patches compatible with {destination.Description} found in installation",
                         Recommendation = $"Please reinstall Helios to install these patches or provide them in documents folder",
                         Severity = StatusReportItem.SeverityCode.Error
                     };

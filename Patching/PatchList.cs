@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Patching
             {
                 yield return new StatusReportItem
                 {
-                    Status = $"cannot acquire lock on {destination.Description} to verify patches",
+                    Status = $"cannot acquire lock on {destination.LongDescription} to verify patches",
                     Recommendation = $"close any programs that are holding a lock on this location",
                     Severity = StatusReportItem.SeverityCode.Error
                 };
@@ -50,14 +50,23 @@ namespace GadrocsWorkshop.Helios.Patching
             {
                 if (!destination.TryGetSource(patch.TargetPath, out string source))
                 {
-                    ConfigManager.LogManager.LogDebug($"{patch.TargetPath} does not exist in target destination; patch does not apply");
+                    ConfigManager.LogManager.LogDebug($"{patch.TargetPath} does not exist in {destination.LongDescription}; patch does not apply");
                     continue;
                 }
-                if (!patch.IsApplied(source, out string appliedStatus))
+                if (patch.IsApplied(source, out string appliedStatus))
                 {
                     yield return new StatusReportItem
                     {
-                        Status = appliedStatus,
+                        Status = $"{destination.Description} {appliedStatus}",
+                        // there will be a lot of these, don't show them in small views
+                        Verbose = true
+                    };
+                }
+                else
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{destination.Description} {appliedStatus}",
                         Recommendation = "using Helios Profile Editor, apply patches",
                         Severity = StatusReportItem.SeverityCode.Error
                     };
@@ -65,7 +74,7 @@ namespace GadrocsWorkshop.Helios.Patching
             }
             if (!destination.TryUnlock())
             {
-                ConfigManager.LogManager.LogError($"cannot release lock on {destination.Description} after verifying patches");
+                ConfigManager.LogManager.LogError($"cannot release lock on {destination.LongDescription} after verifying patches");
             }
             yield break;
         }
@@ -78,7 +87,7 @@ namespace GadrocsWorkshop.Helios.Patching
             {
                 yield return new StatusReportItem
                 {
-                    Status = $"cannot acquire lock on {destination.Description} to {verb} patches",
+                    Status = $"cannot acquire lock on {destination.LongDescription} to {verb} patches",
                     Recommendation = $"close any programs that are holding a lock on this location",
                     Severity = StatusReportItem.SeverityCode.Error
                 };
@@ -90,8 +99,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"{patch.TargetPath} does not exist in target destination; ignoring patch",
-                        Severity = StatusReportItem.SeverityCode.Info
+                        Status = $"{patch.TargetPath} does not exist in {destination.Description}; ignoring patch"
                     };
                     continue;
                 }
@@ -100,7 +108,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     // already applied, go to next patch
                     yield return new StatusReportItem
                     {
-                        Status = appliedStatus
+                        Status = $"{destination.Description} {appliedStatus}"
                     };
                     continue;
                 }
@@ -124,7 +132,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"{patch.TargetPath} successfully patched"
+                        Status = $"{destination.Description} {patch.TargetPath} successfully patched"
                     };
                 }
                 else
@@ -143,7 +151,7 @@ namespace GadrocsWorkshop.Helios.Patching
             {
                 yield return new StatusReportItem
                 {
-                    Status = $"cannot release lock on {destination.Description} after {verbing} patches",
+                    Status = $"cannot release lock on {destination.LongDescription} after {verbing} patches",
                     Recommendation = $"please restart and try the patch process again",
                     Severity = StatusReportItem.SeverityCode.Error
                 };

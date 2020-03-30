@@ -122,7 +122,7 @@ namespace GadrocsWorkshop.Helios.Patching
                         if (!failed)
                         {
                             // keep first message
-                            message = $"Test failed in {item.Destination.Description}\n{result.Status}\n{result.Recommendation}";
+                            message = $"Patching {item.Destination.Description} would fail\n{result.Status}\n{result.Recommendation}";
                         }
                         failed = true;
                         item.Status = StatusCodes.Incompatible;
