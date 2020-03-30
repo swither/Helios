@@ -30,7 +30,7 @@
             </DataTemplate>
 
             <DataTemplate x:Key="ToolboxGroupLayout" DataType="{x:Type vm:ToolboxGroup}">
-                <Expander Header="{Binding Path=Name}" Margin="2,0">
+                <Expander Header="{Binding Path=Name}" BorderThickness="0">
                     <ItemsControl Grid.Row="1" ItemsSource="{Binding}" ItemTemplate="{StaticResource ToolboxControlLayout}" >
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>

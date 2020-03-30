@@ -13,7 +13,7 @@
         <ControlTemplate x:Key="DeleteButton" TargetType="Button">
             <Grid>
                 <Border Height="Auto" Margin="0,0,0,0" x:Name="MouseOverBackground" VerticalAlignment="Stretch" Opacity="0" Background="#FFBDBDBD" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" />
-                <Path Height="Auto" HorizontalAlignment="Center" Margin="4,3" VerticalAlignment="Center" Width="Auto" RenderTransformOrigin="0.5,0.5" Stroke="#666" StrokeThickness="2" Data="M 1,1.5 L 4.5,5 L 8,1.5 M 1,8.5 L 4.5,5 L 8,8.5" />
+                <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="#666" FontWeight="UltraBold" Content="&#xE711;"/>
             </Grid>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="true">
@@ -29,20 +29,12 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Border Grid.ColumnSpan="2" Height="Auto" Margin="0,0,0,0" x:Name="MouseOverBackground" VerticalAlignment="Stretch" Opacity="0" Background="#FFBDBDBD" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" />
-                <Path Grid.Column="0" Height="Auto" HorizontalAlignment="Center" Margin="4,3" x:Name="arrow" VerticalAlignment="Center" Width="Auto" RenderTransformOrigin="0.5,0.5" Stroke="#666" StrokeThickness="2" Data="M 1,1.5 L 4.5,5 L 8,1.5">
-                    <Path.RenderTransform>
-                        <RotateTransform Angle="-90" />
-                    </Path.RenderTransform>
-                </Path>
+                <Label Name="arrow" Grid.Column="0" Margin="3" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe MDL2 Assets" Foreground="#666" Content="&#xE970;"/>
                 <ContentPresenter Grid.Column="1" Margin="0,3" ContentSource="Content" RecognizesAccessKey="True" />
             </Grid>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsChecked" Value="true">
-                    <Setter TargetName="arrow" Property="RenderTransform">
-                        <Setter.Value>
-                            <RotateTransform Angle="0" />
-                        </Setter.Value>
-                    </Setter>
+                    <Setter TargetName="arrow" Property="Content" Value="&#xE96E;"/>
                 </Trigger>
                 <Trigger Property="IsMouseOver" Value="true">
                     <Setter TargetName="MouseOverBackground" Property="Opacity" Value="0.2" />
@@ -51,19 +43,21 @@
         </ControlTemplate>
 
         <Style TargetType="{x:Type Expander}">
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Expander}">
                         <StackPanel Margin="0,0,0,0">
                             <Border
                                         Name="Border"
-                                        BorderBrush="#FFA0A0A0" BorderThickness="0,0,0,1">
+                                        BorderBrush="#FFA0A0A0" 
+                                        BorderThickness="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=BorderThickness, TargetNullValue='0,0,0,1'}">
                                 <ToggleButton Grid.Column="0"
                                             IsChecked="{Binding Path=IsExpanded,Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                             OverridesDefaultStyle="True" 
                                             Template="{StaticResource ExpanderToggleButton}"
                                             HorizontalAlignment="Stretch">
-                                    <TextBlock Text="{TemplateBinding Header}"  Foreground="Black" FontWeight="Bold"  Margin="4,2,0,2" />
+                                    <TextBlock Text="{TemplateBinding Header}" Foreground="Black" FontWeight="Bold" Margin="4,2,0,2"/>
                                 </ToggleButton>
                             </Border>
                             <ContentPresenter Name="ExpandSite" Visibility="Collapsed" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" Margin="{TemplateBinding Padding}" Focusable="False" Content="{TemplateBinding Content}" />

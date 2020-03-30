@@ -69,13 +69,6 @@
             <Setter Property="FontStyle" Value="Italic"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
-        <DataTemplate x:Key="DoFileTemplate">
-            <StackPanel Orientation="Horizontal" Margin="6,3">
-                <Button Template="{StaticResource DeleteButton}" Command="local:AdditionalViewportsEditor:RemoveInstallationLocation"
-                CommandParameter="{Binding}"/>
-                <TextBlock Margin="6,0,0,0" Text="{Binding}"/>
-            </StackPanel>
-        </DataTemplate>
     </FrameworkElement.Resources>
     <StackPanel>
         <GroupBox Header="DCS Additional Viewports" Style="{StaticResource BasicGroup}">

@@ -15,13 +15,14 @@
             BorderBrush="Transparent"
             ItemsSource= "{Binding Items}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+    <!-- XXX make this table style so the buttons line up -->
     <ItemsControl.ItemTemplate>
         <DataTemplate>
             <StackPanel Orientation="Horizontal" Margin="0,6">
                 <CheckBox VerticalAlignment="Bottom" IsChecked="{Binding IsEnabled}"/>
                 <TextBlock Margin="6,0,0,0" Text="{Binding Path}"/>
                 <TextBlock Margin="6,0,0,0" Text="{Binding Version}"/>
-                <Button VerticalAlignment="Bottom" Template="{StaticResource DeleteButton}" Command="local:InstallationLocationsControl.RemoveInstallationLocationCommand" CommandParameter="{Binding}"/>
+                <Button VerticalAlignment="Center" Margin="8,0,0,0" Template="{StaticResource DeleteButton}" Command="local:InstallationLocationsControl.RemoveInstallationLocationCommand" CommandParameter="{Binding}"/>
             </StackPanel>
         </DataTemplate>
     </ItemsControl.ItemTemplate>
