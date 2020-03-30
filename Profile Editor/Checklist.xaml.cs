@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
             PerformChecks();
 
-            // XXX sign up for interface changes add/remove
+            // sign up for interface changes add/remove
             profile.Interfaces.CollectionChanged += Profile_InterfacesChanged;
         }
 

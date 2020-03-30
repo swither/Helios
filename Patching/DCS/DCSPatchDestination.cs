@@ -14,7 +14,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             if (!System.Version.TryParse(location.Version, out Version parsed)) {
                 throw new System.Exception("invalid version format read from DCS autoupdate file; update Helios to support current DCS version");
             }
-            Version = $"{parsed.Major:000}_{parsed.Minor:000}_{parsed.Build:000}_{parsed.Revision:00000}";
+            Version = $"{parsed.Major:000}_{parsed.Minor:000}_{parsed.Build:00000}_{parsed.Revision:00000}";
             DisplayVersion = location.Version;
         }
 
@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public string RootFolder => _dcsRoot;
 
-        public string Version { get; private set; } = "002_005_005_41371";
+        public string Version { get; private set; } = "002_005_00005_41371";
         public string DisplayVersion { get; private set; } = "2.5.5.41371";
 
         public bool TryGetSource(string targetPath, out string source)

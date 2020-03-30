@@ -114,7 +114,7 @@
     </Grid.ColumnDefinitions>
     <ScrollViewer Grid.Row="0" Grid.Column="0">
         <StackPanel>
-            <ItemsControl Background="White" Margin="6" ItemsSource="{Binding Sections}">
+            <ItemsControl Background="LightGray" Margin="6" ItemsSource="{Binding Sections}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="6" Background="White">
@@ -139,7 +139,7 @@
                             </Canvas>
                             <Ellipse Grid.Row="1" Grid.Column="0" Margin="3" Width="30" Height="30" Fill="Red" Stroke="White" Style="{StaticResource FailureVisible}"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
-                            <Button Margin="6" Grid.Row="1" Grid.Column="2" Content="Go There" Command="local:Checklist.GoThereCommand" CommandParameter="{Binding}" Style="{StaticResource SettingsButton}" Visibility="{Binding GoThereVisibility}"/>
+                            <Button Margin="6,6,22,6" Grid.Row="1" Grid.Column="2" Content="Go There" Command="local:Checklist.GoThereCommand" CommandParameter="{Binding}" Style="{StaticResource SettingsButton}" Visibility="{Binding GoThereVisibility}"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="0,6" Text="{Binding StatusNarrative}"/>
                             <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="False" Visibility="{Binding DetailsVisibility}">
                                 <!-- Expander appears very broken if used with a custom Header, so let's not use it -->

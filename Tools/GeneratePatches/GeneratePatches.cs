@@ -49,7 +49,7 @@ namespace GeneratePatches
             string autoUpdatePath = Path.Combine(dcsRoot, "autoupdate.cfg");
             string versionString = JsonConvert.DeserializeObject<AutoUpdateConfig>(File.ReadAllText(autoUpdatePath)).Version;
             System.Version parsed = System.Version.Parse(versionString);
-            string dcsVersion = $"{parsed.Major:000}_{parsed.Minor:000}_{parsed.Build:000}_{parsed.Revision:00000}";
+            string dcsVersion = $"{parsed.Major:000}_{parsed.Minor:000}_{parsed.Build:00000}_{parsed.Revision:00000}";
 
             // now build patches based on files changed in repo
             string patchesPath = ToolsCommon.FileSystem.FindNearestDirectory("Patches");
