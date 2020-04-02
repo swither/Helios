@@ -1,5 +1,7 @@
-﻿using GadrocsWorkshop.Helios.Patching.DCS;
+﻿using GadrocsWorkshop.Helios;
+using GadrocsWorkshop.Helios.Patching.DCS;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -28,13 +30,23 @@ namespace EditViewports
             string json = File.ReadAllText(jsonPath);
             List<ToolsCommon.ViewportTemplate> templates = JsonConvert.DeserializeObject<ToolsCommon.ViewportTemplate[]>(json).ToList();
 
-            // XXX get this from a Helios utility that manages DCS install locations
-            DCSPatchDestination destination = new DCSPatchDestination();
+            // get DCS location from the Helios utility that manages DCS install locations (have to use Profile Editor to configure it with --documents HeliosTesting)
+            string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HeliosTesting");
+            HeliosInit.Initialize(documentPath, "EditViewports.log", LogLevel.Debug);
 
-            EditFilesInDestination(templates, destination);
+            InstallationLocations locations = InstallationLocations.Singleton;
+            if (locations.Items.Count < 1)
+            {
+                throw new System.Exception("at least one DCS install location must be configured");
+            }
+            foreach (InstallationLocation location in locations.Items)
+            {
+                PatchDestination destination = new PatchDestination(location);
+                EditFilesInDestination(templates, destination);
+            }
         }
 
-        private static void EditFilesInDestination(List<ViewportTemplate> templates, DCSPatchDestination destination)
+        private static void EditFilesInDestination(List<ViewportTemplate> templates, PatchDestination destination)
         {
             if (!destination.TryLock())
             {

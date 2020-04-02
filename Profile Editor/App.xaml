@@ -72,5 +72,10 @@
             </Setter>
         </Style>
 
+        <Style x:Key="Documentation" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
     </Application.Resources>
 </Application>

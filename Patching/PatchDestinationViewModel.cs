@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Patching
 
         public PatchDestinationViewModel(InstallationLocation location, string patchSet)
         {
-            Destination = new DCSPatchDestination(location);
+            Destination = new PatchDestination(location);
             Status = StatusCodes.Unknown;
             Patches = PatchList.LoadPatches(Destination, patchSet);
             Enabled = location.IsEnabled;

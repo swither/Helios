@@ -81,7 +81,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             switch (item.Severity)
             {
                 case StatusReportItem.SeverityCode.Info:
-                    if (item.Verbose)
+                    if (item.Flags.HasFlag(StatusReportItem.StatusFlags.Verbose))
                     {
                         // too numerous for this console
                         return;

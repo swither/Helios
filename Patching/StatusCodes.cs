@@ -21,6 +21,7 @@ namespace GadrocsWorkshop.Helios.Patching
         UpToDate,
         OutOfDate,
         Incompatible,
-        NoLocations
+        NoLocations,
+        ResetMonitorsRequired
     }
 }

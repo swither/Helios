@@ -212,7 +212,7 @@
       },
       {
         "viewportName": "UFC",
-        "relativeInitFilePath": "/aircraft/FA-18C/Cockpit/Scripts/UFC/indicator/UFC_init.lua",
+        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/UFC/indicator/UFC_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,

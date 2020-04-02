@@ -56,26 +56,26 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void OnDisabled(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnDisabled(e.Location.Path);
-            _parent?.InvalidateStatus();
+            _parent?.InvalidateStatusReport();
         }
 
         private void OnEnabled(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnEnabled(e.Location.Path);
-            _parent?.InvalidateStatus();
+            _parent?.InvalidateStatusReport();
         }
 
         private void OnRemoved(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnRemoved(e.Location.Path);
-            _parent?.InvalidateStatus();
+            _parent?.InvalidateStatusReport();
         }
 
         private void OnAdded(object sender, InstallationLocations.LocationEvent e)
         {
             PatchDestinationViewModel destinationPatches = new PatchDestinationViewModel(e.Location, AdditionalViewports.PATCH_SET);
             Patching?.OnAdded(e.Location.Path, destinationPatches);
-            _parent?.InvalidateStatus();
+            _parent?.InvalidateStatusReport();
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void Configure_Click(object sender, RoutedEventArgs e)
         {
             Patching?.Install(_installationDialogs);
-            _parent?.InvalidateStatus();
+            _parent?.InvalidateStatusReport();
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)

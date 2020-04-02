@@ -52,9 +52,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DCS\AdditionalViewports.cs" />
+    <Compile Include="DCS\InstallationLocationsGroup.xaml.cs">
+      <DependentUpon>InstallationLocationsGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DCS\MonitorSetupEditor.xaml.cs">
+      <DependentUpon>MonitorSetupEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DCS\AdditionalViewportsEditor.xaml.cs">
       <DependentUpon>AdditionalViewportsEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DCS\MonitorSetup.cs" />
+    <Compile Include="DCS\MonitorViewModel.cs" />
+    <Compile Include="DCS\ShadowMonitor.cs" />
+    <Compile Include="DCS\ShadowVisual.cs" />
+    <Compile Include="DCS\ViewportViewModel.cs" />
     <Compile Include="InstallationDialogs.cs" />
     <Compile Include="IInstallation.cs" />
     <Compile Include="PatchDestinationViewModel.cs" />
@@ -67,7 +78,7 @@
     <Compile Include="StatusCodes.cs" />
     <Compile Include="IPatchDestination.cs" />
     <Compile Include="PatchFile.cs" />
-    <Compile Include="DCS\DCSPatchDestination.cs" />
+    <Compile Include="DCS\PatchDestination.cs" />
     <Compile Include="PatchList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -88,6 +99,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DCS\InstallationLocationsGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DCS\MonitorSetupEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="DCS\AdditionalViewportsEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

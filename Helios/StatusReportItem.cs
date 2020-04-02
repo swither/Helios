@@ -33,18 +33,33 @@ namespace GadrocsWorkshop.Helios
             None // no messages should be created at this level, in it used to filter out all messages
         }
         public SeverityCode Severity { get; set; } = SeverityCode.Info;
-        
-        /// <summary>
-        /// if set, this indicates this message is too numerous for display in a short
-        /// status display.  It will usually only be set on Info messages.
-        /// </summary>
-        public bool Verbose { get; set; }
 
         /// <summary>
         /// the status message, which may be more than one line long
         /// but should generally be short
         /// </summary>
         public string Status { get; set; }
+
+        /// <summary>
+        /// Additional information related to this status, expressed as a set of
+        /// flags that may be set to communicate different facts.
+        /// </summary>
+        [System.Flags]
+        public enum StatusFlags
+        {
+            // no flags
+            None = 0,
+            // this status may be numerous or verbose and should be filtered in small status displays
+            Verbose = 1,
+            // this status indicates that some checked configuration item was up to date and does not need to regenerated
+            ConfigurationUpToDate = 2
+        }
+
+        /// <summary>
+        /// Any flags set in this value (combined via binary 'or') indicate that
+        /// the corresponding fact is true about this status report item.
+        /// </summary>
+        public StatusFlags Flags { get; set; }
 
         /// <summary>
         /// a recommendation to the user or null

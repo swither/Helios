@@ -1,5 +1,4 @@
 ﻿using GadrocsWorkshop.Helios.ComponentModel;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -24,10 +23,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
+            // check if DCS install folders are configured
+            InstallationLocations locations = InstallationLocations.Singleton;
+            if (locations.Items.Count < 1)
+            {
+                yield return new StatusReportItem
+                {
+                    Status = $"No DCS installation locations are configured for viewport patch installation",
+                    Recommendation = $"Using Helios Profile Editor, configure any DCS installation directories you use",
+                    Severity = StatusReportItem.SeverityCode.Error
+                };
+                yield break;
+            }
+
             // check if all our patches are installed
-            List<IPatchDestination> destinations = InstallationLocations.Singleton.Items
+            List<IPatchDestination> destinations = locations.Items
                 .Where(item => item.IsEnabled)
-                .Select(location => new DCSPatchDestination(location) as IPatchDestination)
+                .Select(location => new PatchDestination(location) as IPatchDestination)
                 .ToList();
             foreach (IPatchDestination destination in destinations)
             {
@@ -69,16 +81,21 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _observers.Remove(observer);
         }
 
-        internal void InvalidateStatus()
+        public void InvalidateStatusReport()
         {
             if (_observers.Count < 1)
             {
                 return;
             }
             IEnumerable<StatusReportItem> newReport = PerformReadyCheck();
+            PublishStatusReport(newReport);
+        }
+
+        public void PublishStatusReport(IEnumerable<StatusReportItem> statusReport)
+        {
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(newReport);
+                observer.ReceiveStatusReport(statusReport);
             }
         }
     }

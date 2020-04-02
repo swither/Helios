@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    internal class InstallationLocations : DependencyObject
+    public class InstallationLocations : DependencyObject
     {
         private static InstallationLocations _singleton;
 

@@ -34,7 +34,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected DCSExportConfiguration _configuration;
         protected DCSPhantomMonitorFixConfig _phantomFix;
         protected DCSVehicleImpersonation _vehicleImpersonation;
-        protected DCSMonitorConfiguration _monitorConfiguration;
 
         static DCSInterfaceEditor()
         {
@@ -60,7 +59,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 _configuration = new DCSExportConfiguration(dcsInterface);
                 _phantomFix = new DCSPhantomMonitorFixConfig(dcsInterface);
                 _vehicleImpersonation = new DCSVehicleImpersonation(dcsInterface);
-                _monitorConfiguration = new DCSMonitorConfiguration(dcsInterface);
 
                 // calculate up to date status
                 _configuration.UpdateExports();
@@ -70,18 +68,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 _configuration = null;
                 _phantomFix = null;
                 _vehicleImpersonation = null;
-                _monitorConfiguration = null;
             }
             // need to rebind everything on the form
             SetValue(ConfigurationProperty, _configuration);
             SetValue(PhantomFixProperty, _phantomFix);
             SetValue(VehicleImpersonationProperty, _vehicleImpersonation);
-            SetValue(MonitorConfigurationProperty, _monitorConfiguration);
         }
 
         #region Commands
-        public static readonly RoutedUICommand AddDoFileCommand = new RoutedUICommand("Adds a dofile(...) to a DCS config.", "AddDoFile", typeof(DCSConfigurator));
-        public static readonly RoutedUICommand RemoveDoFileCommand = new RoutedUICommand("Removes a dofile(...) to a DCS config.", "RemoveDoFile", typeof(DCSConfigurator));
+        public static readonly RoutedUICommand AddDoFileCommand = new RoutedUICommand("Adds a dofile(...) to a DCS config.", "AddDoFile", typeof(DCSInterfaceEditor));
+        public static readonly RoutedUICommand RemoveDoFileCommand = new RoutedUICommand("Removes a dofile(...) to a DCS config.", "RemoveDoFile", typeof(DCSInterfaceEditor));
 
         private static void AddDoFile_Executed(object target, ExecutedRoutedEventArgs e)
         {
@@ -116,11 +112,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        private void GenerateMonitorSetup_Click(object sender, RoutedEventArgs e)
-        {
-            _monitorConfiguration.GenerateMonitorSetup(_configuration.SavedGamesName);
-        }
-
         private void Remove_Click(object sender, RoutedEventArgs e)
         {
             // XXX consider removing this _configuration.RestoreConfig();
@@ -148,13 +139,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public DCSVehicleImpersonation VehicleImpersonation { get => (DCSVehicleImpersonation)GetValue(VehicleImpersonationProperty); }
         public static readonly DependencyProperty VehicleImpersonationProperty =
             DependencyProperty.Register("VehicleImpersonation", typeof(DCSVehicleImpersonation), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
-
-        /// <summary>
-        /// used by UI binding paths
-        /// </summary>
-        public DCSMonitorConfiguration MonitorConfiguration { get => (DCSMonitorConfiguration)GetValue(MonitorConfigurationProperty); }
-        public static readonly DependencyProperty MonitorConfigurationProperty =
-            DependencyProperty.Register("MonitorConfiguration", typeof(DCSMonitorConfiguration), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
         #endregion
     }
 }

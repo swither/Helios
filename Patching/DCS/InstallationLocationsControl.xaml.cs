@@ -12,7 +12,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     {
         static InstallationLocationsControl()
         {
-            System.Type ownerType = typeof(AdditionalViewportsEditor);
+            System.Type ownerType = typeof(InstallationLocationsControl);
             CommandManager.RegisterClassCommandBinding(ownerType, new CommandBinding(AddInstallationLocationCommand, Add_Executed));
             CommandManager.RegisterClassCommandBinding(ownerType, new CommandBinding(RemoveInstallationLocationCommand, Remove_Executed));
         }

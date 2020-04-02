@@ -38,7 +38,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     /// Secondly, it is instantiated by the Control Center before running a Profile to check the Export
     /// configuration as a pre-flight check.
     /// </summary>
-    public class DCSExportConfiguration: NotificationObject, IReadyCheck
+    public partial class DCSExportConfiguration: NotificationObject, IReadyCheck
     {
         // the main export script we generate
         private const string EXPORT_SCRIPT_NAME = "HeliosExport16.lua";
@@ -86,16 +86,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         private DCSInstallType _selectedInstallType;
 
-        /// <summary>
-        /// extended status result that also carries the up to date
-        /// result, so we can use the same calls for ready check and 
-        /// checking for up to date at configuration time
-        /// </summary>
-        private class CheckResult: StatusReportItem
-        {
-            public bool IsUpToDate { get; internal set; }
-        }
-
         public DCSExportConfiguration(DCSInterface parent) 
         {
             _parent = parent;
@@ -126,6 +116,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // Save Config
             _parent.SaveSetting("DoFiles", string.Join(",", DoFiles));
             UpdateExports();
+            _parent.InvalidateStatusReport();
         }
 
         #region Properties
@@ -204,9 +195,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 _parent.Port = value;
                 if (!oldValue.Equals(value))
                 {
-                    OnPropertyChanged("Port", oldValue, value, false);
                     // persist
                     _parent.SaveSetting("Port", value);
+
+                    // notify
+                    OnPropertyChanged("Port", oldValue, value, false);
+
                     // invalidate export script
                     UpdateExports();
                 }
@@ -255,8 +249,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     // need to generate extra file
                     IsUpToDate = false;
                 }
-                OnPropertyChanged("GenerateExportLoader", oldValue, value, false);
                 _parent.SaveSetting("GenerateExportLoader", _generateExportLoader);
+                OnPropertyChanged("GenerateExportLoader", oldValue, value, false);
             }
         }
 
@@ -364,6 +358,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         #endregion
 
 #if false
+        string backupFile = exportLuaPath + ".back";
+        if (!File.Exists(backupFile))
+        {
+            File.Move(exportLuaPath, backupFile);
+        }
+        File.Delete(exportLuaPath);
+
+        StreamWriter propertiesFile = File.CreateText(exportLuaPath);
+        propertiesFile.Write(_exportLuaStub);
+        propertiesFile.Close();
+
+        catch (Exception e)
+        {
+            ConfigManager.LogManager.LogError($"Could not create Export.lua '{exportLuaPath}'", e);
+            throw;
+        }
+        IsUpToDate = CheckConfig();
+#endif
+
+#if false
         private bool CheckPath()
         {
             try
@@ -395,7 +409,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             UpdateDirectories();
             UpdateExportStub();
             UpdateExportScript();
-            UpdateDriver();
+            if (!UsesExportModule)
+            {
+                UpdateDriver();
+            }
             IsUpToDate = CheckConfig();
         }
 
@@ -416,13 +433,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // write all the generated files
                 File.WriteAllText(ExportStubPath, _exportStub);
                 File.WriteAllText(ExportMainPath, _exportMain);
-                File.WriteAllText(ExportDriverPath, _exportDriver);
+                if (!UsesExportModule)
+                {
+                    File.WriteAllText(ExportDriverPath, _exportDriver);
+                }
 
                 // all up to date
                 IsUpToDate = true;
 
                 // notify our interface that its status report should be regenerated
-                _parent?.InvalidateStatus();
+                _parent?.InvalidateStatusReport();
                 return true;
             }
             catch (System.Exception ex)
@@ -438,14 +458,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <returns></returns>
         public bool CheckConfig()
         {
-            foreach (System.Func<CheckResult> check in new System.Func<CheckResult>[] { 
+            List<System.Func<StatusReportItem>> checks = new List<System.Func<StatusReportItem>> {
                 CheckDirectories,
-                CheckExportStub, 
-                CheckExportScript,
-                CheckDriver}) 
+                CheckExportStub,
+                CheckExportScript
+            };
+            if (!UsesExportModule)
             {
-                CheckResult result = check();
-                if (!result.IsUpToDate)
+                checks.Add(CheckDriver);
+            }
+            foreach (System.Func<StatusReportItem> check in checks) 
+            {
+                StatusReportItem result = check();
+                if (!result.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate))
                 {
                     ConfigManager.LogManager.LogDebug(result.Status);
                     return false;
@@ -467,7 +492,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // check IP address to see if the files are are checking are actually used
             if (LocalMachineIsRemoteHelios())
             {
-                yield return new StatusReportItem()
+                yield return new StatusReportItem
                 {
                     Status = $"This computer may not be where DCS runs, because Exports are sent here via IP address {IPAddress}",
                     Recommendation = "Helios cannot check that the export files have been copied to your computer running DCS."
@@ -492,17 +517,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // check if drivers are generated or we expect modules copied
             if (UsesExportModule)
             {
-                yield return new StatusReportItem()
+                yield return new StatusReportItem
                 {
-                    Status = $"DCS exports for {reportingName} are provided by third party export module.",
-                    Recommendation = "Please manually check that this file was correctly placed."
+                    Status = $"DCS exports for {reportingName} are provided by a third party export module.",
+                    Recommendation = "Please manually check that the export module was correctly placed."
                 };
                 if (reportingName != _parent.VehicleName)
                 {
-                    yield return new StatusReportItem()
+                    yield return new StatusReportItem
                     {
                         Status = $"DCS Interface for {reportingName} requires a module that maps to the {_parent.VehicleName} interface.",
-                        Recommendation = "Please manually check that this file was correctly placed."
+                        Recommendation = "Please manually check that you are using an appropriate export module."
                     };
                 }
             }
@@ -613,23 +638,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         #region ExportChecks
 
-        private CheckResult CheckDirectories()
+        private StatusReportItem CheckDirectories()
         {
-            return new CheckResult()
+            return new StatusReportItem
             {
-                Status = "XXX unimplemented",
-                IsUpToDate = true
+                Status = "XXX unimplemented"
             };
         }
 
         // NOTE: we don't factor this to share code with the other Check... functions because they are all
         // subtly different in terms of severity and we want to encourage more special cases added in the future
-        private CheckResult CheckExportStub()
+        private StatusReportItem CheckExportStub()
         {
             string exportLuaPath = ExportStubPath;
             if (!File.Exists(exportLuaPath))
             {
-                return new CheckResult()
+                return new StatusReportItem
                 {
                     Status = $"The configured DCS Export.lua stub does not exist at '{exportLuaPath}'",
                     Recommendation = "Using Helios Profile Editor, generate the file or configure DCS install type correctly to locate the file.",
@@ -642,7 +666,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             string contents = File.ReadAllText(exportLuaPath);
             if (!contents.Equals(_exportStub))
             {
-                return new CheckResult()
+                return new StatusReportItem
                 {
                     Status = $"The DCS Export.lua stub at '{exportLuaPath}' does not match configuration",
                     Recommendation = "Using Helios Profile Editor, recreate the file or configure DCS interface not to create it.",
@@ -651,59 +675,58 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 };
             }
 
-            return new CheckResult()
+            return new StatusReportItem
             {
                 Status = $"The configured DCS Export.lua stub at '{exportLuaPath}' is up to date.",
-                IsUpToDate = true
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
         }
 
         // NOTE: we don't factor this to share code with the other Check... functions because they are all
         // subtly different in terms of severity and we want to encourage more special cases added in the future
-        private CheckResult CheckThirdPartyExportStub()
+        private StatusReportItem CheckThirdPartyExportStub()
         {
             string exportLuaPath = ExportStubPath;
             if (!File.Exists(exportLuaPath))
             {
-                return new CheckResult()
+                return new StatusReportItem
                 {
                     Status = $"The Export.lua stub does not exist at '{exportLuaPath}'",
-                    Recommendation = "Using Helios Profile Editor, configure Helios to create this file or place it there manually.",
+                    Recommendation = "Using Helios Profile Editor, generate Export.lua or create it manually.",
                     Severity = StatusReportItem.SeverityCode.Error,
                     // writing updates won't fix this
-                    IsUpToDate = true
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
 
             string contents = File.ReadAllText(exportLuaPath);
             if (!contents.Contains(EXPORT_SCRIPT_NAME))
             {
-                return new CheckResult()
+                return new StatusReportItem
                 {
                     Status = $"Helios Export script Helios\\{EXPORT_SCRIPT_NAME} does not appear to be called by Export.lua at '{exportLuaPath}'",
-                    Recommendation = "Using Helios Profile Editor, configure Helios to create this file or edit it manually.",
+                    Recommendation = "Using Helios Profile Editor, recreate Export.lua or edit it manually.",
                     Severity = StatusReportItem.SeverityCode.Error,
                     // writing updates won't fix this
-                    IsUpToDate = true
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
 
-            return new CheckResult()
+            return new StatusReportItem
             {
                 Status = $"The Export.lua stub at '{exportLuaPath}' is not generated by Helios.",
-                Recommendation =$"Helios can generate this file if configured in Helios Profile Editor.",
-                IsUpToDate = true
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
         }
 
         // NOTE: we don't factor this to share code with the other Check... functions because they are all
         // subtly different in terms of severity and we want to encourage more special cases added in the future
-        private CheckResult CheckExportScript()
+        private StatusReportItem CheckExportScript()
         {
             string mainPath = ExportMainPath;
             if (!File.Exists(mainPath))
             {
-                return new CheckResult()
+                return new StatusReportItem
                 {
                     Status = $"The configured DCS export script does not exist at '{mainPath}'",
                     Recommendation = "Using Helios Profile Editor, generate the file or configure DCS install type correctly to locate the file.",
@@ -715,7 +738,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             string contents = File.ReadAllText(mainPath);
             if (!contents.Equals(_exportMain))
             {
-                return new CheckResult()
+                return new StatusReportItem
                 {
                     Status = $"The DCS export script at '{mainPath}' does not match configuration",
                     Recommendation = "Using Helios Profile Editor, recreate the file.",
@@ -723,21 +746,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 };
             }
 
-            return new CheckResult()
+            return new StatusReportItem
             {
                 Status = $"The configured DCS export script at '{mainPath}' is up to date.",
-                IsUpToDate = true
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
         }
 
         // NOTE: we don't factor this to share code with the other Check... functions because they are all
         // subtly different in terms of severity and we want to encourage more special cases added in the future
-        private CheckResult CheckDriver()
+        private StatusReportItem CheckDriver()
         {
             string exportDriverPath = ExportDriverPath;
             if (!File.Exists(exportDriverPath))
             {
-                return new CheckResult()
+                return new StatusReportItem
                 {
                     Status = $"The driver generated by Helios Profile Editor does not exist at '{exportDriverPath}'",
                     Recommendation = "Using Helios Profile Editor, generate the file or configure DCS install type correctly to locate the file.",
@@ -749,7 +772,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             string contents = File.ReadAllText(exportDriverPath);
             if (!contents.Equals(_exportDriver))
             {
-                return new CheckResult()
+                return new StatusReportItem
                 {
                     Status = $"The driver generated by Helios Profile Editor at '{exportDriverPath}' does not match configuration",
                     Recommendation = $"Using Helios Profile Editor, select the interface for {_parent.VehicleName} and run the DCS setup.",
@@ -757,10 +780,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 };
             }
 
-            return new CheckResult()
+            return new StatusReportItem
             {
                 Status = $"The driver generated by Helios Profile Editor at '{exportDriverPath}' is up to date.",
-                IsUpToDate = true
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
         }
 
@@ -788,7 +811,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected override void OnPropertyChanged(PropertyNotificationEventArgs args)
         {
             base.OnPropertyChanged(args);
-            _parent?.InvalidateStatus();
+            _parent?.InvalidateStatusReport();
         }
 
 #if false

@@ -923,7 +923,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             if (reset.HasValue && reset.Value)
             {
                 GetLoadingAdorner();
-                // this value comes from a dependency property that can only be 
+
+                // WARNING: this value comes from a dependency property that can only be 
                 // read on this thread
                 HeliosProfile profile = Profile;
 
@@ -987,6 +988,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             finally
             {
                 Dispatcher.Invoke(DispatcherPriority.Background, new Action(RemoveLoadingAdorner));
+                Dispatcher.Invoke(DispatcherPriority.Background, new Action(OnResetMonitorsComplete));
             }
         }
 
@@ -1019,6 +1021,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
             ConfigManager.LogManager.LogDebug($"Resetting Monitor {monitorIndex + 1}");
             Dispatcher.Invoke(DispatcherPriority.Background, new Action(item.Reset));
+        }
+
+        /// <summary>
+        /// callback to main thread after reset monitors thread completes and all change events on Profile.Monitors collection
+        /// and properties on Monitor objects have been delivered
+        /// </summary>
+        private void OnResetMonitorsComplete()
+        {
+            foreach (IResetMonitorsObserver interestedInterface in Profile.Interfaces.OfType<IResetMonitorsObserver>())
+            {
+                interestedInterface.NotifyResetMonitorsComplete();
+            }
         }
 
         private void DockManager_Loaded(object sender, RoutedEventArgs e)

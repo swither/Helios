@@ -3,12 +3,12 @@ using System.IO;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    public class DCSPatchDestination : IPatchDestination
+    public class PatchDestination : IPatchDestination
     {
         private string _dcsRoot = "NOTFOUND";
         private static System.Text.Encoding _utf8WithoutBom = new System.Text.UTF8Encoding(false);
 
-        public DCSPatchDestination(InstallationLocation location)
+        public PatchDestination(InstallationLocation location)
         {
             _dcsRoot = location.Path;
             if (!System.Version.TryParse(location.Version, out Version parsed)) {

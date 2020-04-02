@@ -17,7 +17,21 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public interface IStatusReportNotify
     {
+        // REVISIT: once on language 8.0, these can all be default implemented?
         void Subscribe(IStatusReportObserver observer);
         void Unsubscribe(IStatusReportObserver observer);
+
+        /// <summary>
+        /// alternative to InvalidateStatusReport: send this status report to all subscribers,
+        /// asserting that it is fresh
+        /// </summary>
+        /// <param name="statusReport"></param>
+        void PublishStatusReport(IEnumerable<StatusReportItem> statusReport);
+
+        /// <summary>
+        /// asynchronously invalidate the status report, so that a fresh one will be generated
+        /// and sent to all subscribers
+        /// </summary>
+        void InvalidateStatusReport();
     }
 }

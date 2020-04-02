@@ -316,13 +316,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 yield return item;
             }
-
-            // check on the health of our viewport and monitor configuration
-            DCSMonitorConfiguration monitorConfig = new DCSMonitorConfiguration(this);
-            foreach (StatusReportItem item in monitorConfig.PerformReadyCheck())
-            {
-                yield return item;
-            }
         }
 
         public void Subscribe(IStatusReportObserver observer)
@@ -335,16 +328,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _observers.Remove(observer);
         }
 
-        internal void InvalidateStatus()
+        public void InvalidateStatusReport()
         {
             if (_observers.Count < 1)
             {
                 return;
             }
             IEnumerable<StatusReportItem> newReport = PerformReadyCheck();
+            PublishStatusReport(newReport);
+        }
+
+        public void PublishStatusReport(IEnumerable<StatusReportItem> statusReport)
+        {
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(newReport);
+                observer.ReceiveStatusReport(statusReport);
             }
         }
     }

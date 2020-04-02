@@ -48,7 +48,7 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="NoLocationsStyle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
             <Setter Property="UIElement.Visibility" Value="Hidden"/>
             <Style.Triggers>
                 <MultiDataTrigger>
@@ -71,6 +71,7 @@
         </Style>
     </FrameworkElement.Resources>
     <StackPanel>
+        <local:InstallationLocationsGroup/>
         <GroupBox Header="DCS Additional Viewports" Style="{StaticResource BasicGroup}">
             <Grid Height="Auto">
                 <Grid.ColumnDefinitions>
@@ -82,26 +83,12 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Content="DCS Installations"/>
-                <local:InstallationLocationsControl x:Name="InstallationLocations" Grid.Row="1" Grid.Column="1"/>
-                <Grid Grid.Row="2" Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"  Foreground="Red" Style="{StaticResource NoLocationsStyle}">Add at least one Location of a DCS Installation to install viewport patches.</TextBlock>
-                    <Button Grid.Row="0" Grid.Column="1" Command="local:InstallationLocationsControl.AddInstallationLocationCommand" CommandTarget="{Binding ElementName=InstallationLocations}" Margin="0,0,12,0" Width="120" Height="24">Add Location</Button>
-                </Grid>
 
-                <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="Status" MinHeight="24"/>
-                <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
+                <!-- REVISIT this should show a list of additional viewports installed and their source (documents folder vs installation) -->
+                
+                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="Status" MinHeight="24"/>
+                <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -112,7 +99,7 @@
                     <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" MinHeight="24">All viewport patches are installed.</TextBlock>
                     <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120" Height="24">Revert Patches</Button>
                 </Grid>
-                <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
+                <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -123,7 +110,7 @@
                     <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap"  MinHeight="24" Foreground="Red">You need to install patches to add additional viewports to DCS.</TextBlock>
                     <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Margin="0,0,12,0" Width="120" Height="24">Install Patches</Button>
                 </Grid>
-                <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource CannotApplyStyle}">
+                <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource CannotApplyStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -133,6 +120,16 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" MinHeight="24" Foreground="Red">The patches to install additional viewports are not compatible with this version of DCS.  
                         You will need a more recent version of Helios or additional patch files.</TextBlock>
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" MinHeight="24" Foreground="Red">You must configure DCS installation locations before configuring monitor setup.</TextBlock>
                 </Grid>
             </Grid>
         </GroupBox>

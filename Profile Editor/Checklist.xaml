@@ -136,8 +136,8 @@
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
     </Grid.ColumnDefinitions>
-    <ScrollViewer Grid.Row="0" Grid.Column="0" HorizontalScrollBarVisibility="Auto">
-        <WrapPanel>
+    <ScrollViewer Grid.Row="0" Grid.Column="0">
+        <StackPanel>
             <ItemsControl Background="LightGray" Margin="6" ItemsSource="{Binding Sections}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -166,12 +166,17 @@
                             <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="False" Visibility="{Binding DetailsVisibility}">
                                 <!-- Expander appears very broken if used with a custom Header, so let's not use it -->
                                 <Expander.Content>
-                                    <ItemsControl ItemsSource="{Binding Items}" Margin="22,0,0,0">
+                                    <ItemsControl ItemsSource="{Binding Items}" Margin="10,0,0,0">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
-                                                </StackPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Row="1" Grid.Column="0" Margin="0,6,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" FontWeight="UltraBold" Foreground="Red" Content="&#xE711;" Style="{StaticResource FailureVisible}"/>
+                                                    <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
+                                                </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -193,7 +198,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </WrapPanel>
+        </StackPanel>
     </ScrollViewer>
 
     <DockPanel Grid.Row="0" Grid.Column="1" Background="White">
@@ -217,7 +222,7 @@
                 </StackPanel>
             </Expander>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" Margin="0,6,0,0" VerticalAlignment="Bottom">
+        <StackPanel DockPanel.Dock="Bottom" Margin="0,6" VerticalAlignment="Bottom">
             <Button Click="Share_Click" Style="{StaticResource SettingsButton}">Share</Button>
             <Button Click="Reload_Click" Style="{StaticResource SettingsButton}">Reload</Button>
         </StackPanel>

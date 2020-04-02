@@ -100,7 +100,7 @@
     </Compile>
     <Compile Include="Controls\ViewportExtentRenderer.cs" />
     <Compile Include="HeliosApplication.cs" />
-    <Compile Include="Interfaces\DCS\Common\DCSMonitorConfiguration.cs" />
+    <Compile Include="IResetMonitorsObserver.cs" />
     <Compile Include="ISettingsManager2.cs" />
     <Compile Include="IStatusReportNotify.cs" />
     <Compile Include="IViewportExtent.cs" />
@@ -629,7 +629,6 @@
     <Compile Include="Interfaces\DCS\BlackShark\Functions\VHF2Rotary4.cs" />
     <Compile Include="Interfaces\DCS\Common\AbsoluteEncoder.cs" />
     <Compile Include="Interfaces\DCS\Common\Axis.cs" />
-    <Compile Include="Interfaces\DCS\Common\DCSConfigurator.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSDataElement.cs" />
     <Compile Include="Interfaces\DCS\Common\FlagValue.cs" />
     <Compile Include="Interfaces\DCS\Common\GuardedSwitch.cs" />

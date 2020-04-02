@@ -59,7 +59,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     {
                         Status = $"{destination.Description} {appliedStatus}",
                         // there will be a lot of these, don't show them in small views
-                        Verbose = true
+                        Flags = StatusReportItem.StatusFlags.Verbose
                     };
                 }
                 else
