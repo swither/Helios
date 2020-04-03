@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
@@ -15,6 +16,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private string _key;
         private double _scale;
         private Vector _globalOffset;
+        private string _canExcludeNarrative;
 
         public MonitorViewModel(string key, Monitor monitor, Vector globalOffset, double scale)
         {
@@ -23,6 +25,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _scale = scale;
             _globalOffset = globalOffset;
             Update(monitor);
+        }
+
+        public void SetCanExclude(bool value, string narrative)
+        {
+            CanBeExcluded = value;
+            _canExcludeNarrative = narrative;
+            if ((!Included) && (!value))
+            {
+                Included = true;
+            }
+            UpdateIncludedNarrative();
         }
 
         private void LoadSettings()
@@ -79,23 +92,40 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public bool Included
         {
             get { return (bool)GetValue(IncludedProperty); }
-            set {
+            set
+            {
                 SetValue(IncludedProperty, value);
+                UpdateIncludedNarrative();
             }
         }
+
+        private void UpdateIncludedNarrative()
+        {
+            if (Included)
+            {
+                IncludedNarrative = _canExcludeNarrative;
+            }
+            else
+            {
+                IncludedNarrative = "This monitor is not being drawn on by DCS because it is excluded by this selection.";
+            }
+        }
+
         public static readonly DependencyProperty IncludedProperty =
             DependencyProperty.Register("Included", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(true, OnIncludedChanged));
         private static void OnIncludedChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
         {
+            MonitorViewModel model = ((MonitorViewModel)target);
+            model.UpdateIncludedNarrative();
             if ((bool)args.NewValue)
             {
-                (ConfigManager.SettingsManager as ISettingsManager2).DeleteSetting(MonitorSetup.SETTINGS_GROUP, ((MonitorViewModel)target)._key);
-                ((MonitorViewModel)target).Enabled?.Invoke(target, System.EventArgs.Empty);
+                (ConfigManager.SettingsManager as ISettingsManager2).DeleteSetting(MonitorSetup.SETTINGS_GROUP, model._key);
+                model.Enabled?.Invoke(target, EventArgs.Empty);
             }
             else
             {
-                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, ((MonitorViewModel)target)._key, false);
-                ((MonitorViewModel)target).Disabled?.Invoke(target, System.EventArgs.Empty);
+                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, model._key, false);
+                model.Disabled?.Invoke(target, System.EventArgs.Empty);
             }
         }
 
@@ -208,6 +238,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
         public static readonly DependencyProperty RectProperty =
             DependencyProperty.Register("Rect", typeof(Rect), typeof(MonitorViewModel), new PropertyMetadata(null));
+
+        public string IncludedNarrative
+        {
+            get { return (string)GetValue(IncludedNarrativeProperty); }
+            set { SetValue(IncludedNarrativeProperty, value); }
+        }
+        public static readonly DependencyProperty IncludedNarrativeProperty =
+            DependencyProperty.Register("IncludedNarrative", typeof(string), typeof(MonitorViewModel), new PropertyMetadata(null));
 
         public Rect RawRect { get; set; }
     }

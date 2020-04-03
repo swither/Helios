@@ -201,6 +201,21 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="MonitorIncludedCheckbox" TargetType="CheckBox">
+            <Setter Property="IsChecked" Value="{Binding Included}"/>
+            <Setter Property="IsEnabled" Value="{Binding CanBeExcluded}"/>
+            <Setter Property="ToolTip">
+                <Setter.Value>
+                    <TextBlock Text="{Binding IncludedNarrative}"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="true"/>
+            <Setter Property="Panel.ZIndex" Value="10"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="6"/>
+        </Style>
     </FrameworkElement.Resources>
     <StackPanel>
         <helios_dcs:InstallationLocationsGroup/>
@@ -239,8 +254,8 @@
                             <DataTemplate>
                                 <Grid>
                                     <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Black"/>
-                                    <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Opacity="0.2" Fill="SkyBlue" Style="{StaticResource IsMainStyle}"/>
-                                    <CheckBox Panel.ZIndex="10" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6" IsChecked="{Binding Included}" IsEnabled="{Binding CanBeExcluded}"/>
+                                    <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="SkyBlue" Style="{StaticResource IsMainStyle}"/>
+                                    <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
                                     <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" IsChecked="{Binding Main}" IsEnabled="{Binding CanBeRemovedFromMain}" Style="{StaticResource AircraftCheckbox}"/>
                                 </Grid>
                             </DataTemplate>
@@ -275,8 +290,18 @@
                     </Canvas>
 
                     <!-- DCS main view -->
-                    <Canvas Grid.Row="1" Grid.Column="1">
-                        <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledMain.Left}" Canvas.Top="{Binding Path=ScaledMain.Top}" Width="{Binding Path=ScaledMain.Width}" Height="{Binding Path=ScaledMain.Height}" Stroke="Transparent" Fill="SkyBlue" Opacity="0.2" StrokeDashArray="3"/>
+                    <Canvas Panel.ZIndex="-1"  Grid.Row="1" Grid.Column="1">
+                        <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledMain.Left}" Canvas.Top="{Binding Path=ScaledMain.Top}" Width="{Binding Path=ScaledMain.Width}" Height="{Binding Path=ScaledMain.Height}" Stroke="SkyBlue">
+                            <Rectangle.Fill>
+                                <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                    <VisualBrush.Visual>
+                                        <Grid Background="Transparent">
+                                            <Path Data="M 0 0 L 10 10" Stroke="SkyBlue"/>
+                                        </Grid>
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
                     </Canvas>
 
                     <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="Menus / Loading" MinHeight="24"/>
@@ -299,7 +324,7 @@
                                 <Grid>
                                     <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Black"/>
                                     <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Opacity="0.2" Fill="LightGray" Style="{StaticResource IsUserInterfaceStyle}"/>
-                                    <CheckBox Panel.ZIndex="10" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6" IsChecked="{Binding Included}" IsEnabled="{Binding CanBeExcluded}"/>
+                                    <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
                                     <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding UserInterface}" IsEnabled="{Binding CanBeRemovedFromUserInterface}" Style="{StaticResource UserInterfaceCheckbox}"/>
                                 </Grid>
                             </DataTemplate>

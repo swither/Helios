@@ -144,15 +144,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 totalBounds.Union(monitor.Rect);
                 if (monitor.HasContent)
                 {
-                    if (!monitor.Included)
-                    {
-                        monitor.Included = true;
-                    }
-                    if (monitor.CanBeExcluded)
-                    {
-                        // this change is necessary when we add the last monitor to main
-                        monitor.CanBeExcluded = false;
-                    }
+                    monitor.SetCanExclude(false, "This monitor must be included in the area drawn by DCS because there is content on it.");
                 }
                 if (monitor.Main)
                 {
@@ -204,8 +196,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // don't allow the left-most monitor to be excluded
             int leftMost = index.Count - 1;
-            index[leftMost].CanBeExcluded = false;
-            index[leftMost].Included = true;
+            index[leftMost].SetCanExclude(false, "This monitor can not be unselected because DCS requires drawing on the left-most monitor.");
             index.RemoveAt(leftMost);
 
             // now fix up the flags for all the other monitors, which may have moved around
@@ -215,15 +206,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (enableRest)
                 {
                     // all monitors to the left must be included
-                    monitor.Included = true;
-                    monitor.CanBeExcluded = false;
+                    monitor.SetCanExclude(false, "This monitor can not be unselected because there are selected monitors to the right of it.");
                     continue;
                 }
 
                 // right-most monitors can be excluded unless it has an assigned function
                 if (!monitor.HasContent)
                 {
-                    monitor.CanBeExcluded = true;
+                    monitor.SetCanExclude(true, "This monitor can be removed from the area that will be drawn by DCS because it is the right-most monitor and it is empty.");
                 }
 
                 if (monitor.Included)

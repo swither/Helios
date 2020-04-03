@@ -642,7 +642,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             return new StatusReportItem
             {
-                Status = "XXX unimplemented"
+                Status = "XXX unimplemented",
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
         }
 
