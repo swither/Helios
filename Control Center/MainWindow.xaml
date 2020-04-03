@@ -261,13 +261,13 @@
                         <ColumnDefinition Width="35"/>
                         <ColumnDefinition Width="50"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="WARN" Style="{StaticResource ButtonLabel}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="50" Margin="5,0,20,0" Text="WARN" Style="{StaticResource ButtonLabel}"/>
                     <TextBlock Grid.Row="0" Grid.Column="3" Text="START" Style="{StaticResource ButtonLabel}"/>
                     <TextBlock Grid.Row="0" Grid.Column="5" Text="STOP" Style="{StaticResource ButtonLabel}"/>
                     <TextBlock Grid.Row="0" Grid.Column="7" Text="RESET" Style="{StaticResource ButtonLabel}"/>
                     <TextBlock Grid.Row="0" Grid.Column="9" Text="HIDE" Style="{StaticResource ButtonLabel}"/>
-                    <Button x:Name="CautionButton" Grid.Row="1" Grid.Column="1" Panel.ZIndex="2" Style="{StaticResource HeliosCautionButtonStyle}" Command="local:ControlCenterCommands.ResetCaution"/>
-                    <Rectangle x:Name="CautionLight" Grid.Row="1" Grid.Column="1" Panel.ZIndex="1" Margin="4" Fill="#FFF1ED31" Visibility="{Binding Path=StatusViewer.CautionLightVisibility}"/>
+                    <Button x:Name="CautionButton" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Panel.ZIndex="2" HorizontalAlignment="Left" Width="50" Margin="5,0,7,0" Style="{StaticResource HeliosCautionButtonStyle}" Command="local:ControlCenterCommands.ResetCaution"/>
+                    <Rectangle x:Name="CautionLight" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Panel.ZIndex="1" HorizontalAlignment="Left" Width="40" Height="40" Margin="10,5,12,5" Fill="#FFF1ED31" Visibility="{Binding Path=StatusViewer.CautionLightVisibility}"/>
                     <Button Grid.Row="1" Grid.Column="3" x:Name="StartButton" Style="{StaticResource HeliosPushButtonStyle}" Command="local:ControlCenterCommands.StartProfile"/>
                     <Button Grid.Row="1" Grid.Column="5" x:Name="StopButton" Style="{StaticResource HeliosPushButtonStyle}" Command="local:ControlCenterCommands.StopProfile"/>
                     <Button Grid.Row="1" Grid.Column="7" x:Name="ResetProfileButton" Style="{StaticResource HeliosPushButtonStyle}" Command="local:ControlCenterCommands.ResetProfile" />
@@ -275,6 +275,7 @@
                 </Grid>
                 <Button Canvas.Left="323" Canvas.Top="26" Height="50" x:Name="PrevButton" Width="50" Style="{StaticResource HeliosPrevButtonStyle}" Command="local:ControlCenterCommands.PreviousProfile" />
                 <Button Canvas.Left="323" Canvas.Top="82" Height="50" x:Name="NextButton" Width="50" Style="{StaticResource HeliosNextButtonStyle}" Command="local:ControlCenterCommands.NextProfile" />
+                <!-- XXX remove this button, the bitmap parts, and the code, even though it is very cute -->
                 <Button Canvas.Left="413" Canvas.Top="171" Height="50" x:Name="DeleteButton" Width="50" Style="{StaticResource HeliosRoundPushButtonStyle}" Command="local:ControlCenterCommands.DeleteProfile" />
                 <TextBlock Canvas.Left="0" Canvas.Top="240" Width="504" Text="HELIOS CONTROL CENTER" Style="{StaticResource BaseLabel}" FontSize="22"/>
             </Canvas>
