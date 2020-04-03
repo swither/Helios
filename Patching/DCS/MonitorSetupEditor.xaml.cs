@@ -136,7 +136,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             foreach (MonitorViewModel monitor in Monitors)
             {
                 totalBounds.Union(monitor.Rect);
-                if (monitor.Main)
+                if (monitor.Main || monitor.HasViewports)
                 {
                     if (!monitor.Included)
                     {
