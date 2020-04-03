@@ -155,7 +155,7 @@
                 </StackPanel>
                 <TextBlock Grid.Row="7" Grid.Column="1" Style="{StaticResource Documentation}">Select this to show advanced configuration options.</TextBlock>
 
-                <Label Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" Content="Status"/>
+                <Label Grid.Row="9" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Status"/>
                 <Grid Grid.Row="9" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -164,7 +164,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap">Your DCS configuration is up to date.</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Your DCS configuration is up to date.</TextBlock>
                     <!-- let's not do this? <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120">Remove DCS Setup</Button> -->
                 </Grid>
                 <Grid Grid.Row="9" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
@@ -175,8 +175,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red">An updated export script and associated files must be installed to support this profile in DCS.</TextBlock>
-                    <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Margin="0,0,12,0" Width="120" Height="24">Setup DCS</Button>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">An updated export script and associated files must be installed to support this profile in DCS.</TextBlock>
+                    <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Style="{StaticResource InterfaceEditorButton}">Setup DCS</Button>
                 </Grid>
             </Grid>
         </GroupBox>

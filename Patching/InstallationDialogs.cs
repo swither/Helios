@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Patching
             this._host = host;
         }
 
-        public InstallationPromptResult DangerPrompt(string title, string message, List<StatusReportItem> details)
+        public InstallationPromptResult DangerPrompt(string title, string message, IList<StatusReportItem> details)
         {
             // XXX create a custom dialog to explore the details
             MessageBoxResult response = MessageBox.Show(Window.GetWindow(_host), message, title, MessageBoxButton.OKCancel);
@@ -38,13 +38,13 @@ namespace GadrocsWorkshop.Helios.Patching
             return InstallationPromptResult.Ok;
         }
 
-        public void Failure(string title, string message, List<StatusReportItem> details)
+        public void Failure(string title, string message, IList<StatusReportItem> details)
         {
             // XXX create a custom dialog to explore the details
             MessageBox.Show(Window.GetWindow(_host), message, title);
         }
 
-        public void Success(string title, string message, List<StatusReportItem> details)
+        public void Success(string title, string message, IList<StatusReportItem> details)
         {
             // no code until we have a custom dialog to browse the details
         }

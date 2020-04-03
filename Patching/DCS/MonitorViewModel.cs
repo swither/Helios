@@ -191,6 +191,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static readonly DependencyProperty CanBeRemovedFromUserInterfaceProperty =
             DependencyProperty.Register("CanBeRemovedFromUserInterface", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(true));
 
+        public bool HasViewports
+        {
+            get { return (bool)GetValue(HasViewportsProperty); }
+            set { SetValue(HasViewportsProperty, value); }
+        }
+        public static readonly DependencyProperty HasViewportsProperty =
+            DependencyProperty.Register("HasViewports", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(false));
+
         public Rect Rect
         {
             get { return (Rect)GetValue(RectProperty); }

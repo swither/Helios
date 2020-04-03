@@ -77,5 +77,26 @@
             <Setter Property="FontStyle" Value="Italic"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
+
+        <Style x:Key="InterfaceEditorStatus" TargetType="{x:Type TextBlock}">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Margin" Value="0, 10, 6, 0"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="MinHeight" Value="24"/>
+        </Style>
+
+        <Style x:Key="InterfaceEditorButton" TargetType="{x:Type Button}">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="24"/>
+        </Style>
+
+        <Style x:Key="InterfaceEditorLabel" TargetType="{x:Type Label}">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Margin" Value="0,6,0,0"/>
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="MinHeight" Value="24"/>
+        </Style>
     </Application.Resources>
 </Application>

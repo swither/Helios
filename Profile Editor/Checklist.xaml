@@ -88,8 +88,9 @@
             </Style.Triggers>
         </Style>
 
+        <!-- starts out expanded, and keeps expanding every time a failure state is reached -->
         <Style x:Key="FailureExpanded" TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
-            <Setter Property="IsExpanded" Value="False"/>
+            <Setter Property="IsExpanded" Value="True"/>
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>

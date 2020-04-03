@@ -345,7 +345,7 @@
                     </StackPanel>
                     <TextBlock Grid.Row="2" Grid.Column="1" Text="Resolution that must be selected in DCS Options" Style="{StaticResource Documentation}"/>
 
-                    <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="Status" MinHeight="24"/>
+                    <Label Grid.Row="4" Grid.Column="0" Content="Status" Style="{StaticResource InterfaceEditorLabel}"/>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -354,7 +354,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" MinHeight="24">[NOTE: This entire feature is unimplemented.] Monitor setup files are up to date.</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Monitor setup files are up to date.</TextBlock>
                     </Grid>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
                         <Grid.ColumnDefinitions>
@@ -364,8 +364,8 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap"  MinHeight="24" Foreground="Red">Monitor setup files need to be reconfigured.</TextBlock>
-                        <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Margin="0,0,12,0" Width="120" Height="24">Configure</Button>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">Monitor setup files need to be reconfigured.</TextBlock>
+                        <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Style="{StaticResource InterfaceEditorButton}">Configure</Button>
                     </Grid>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource ResetMonitorsRequiredStyle}">
                         <Grid.ColumnDefinitions>
@@ -375,7 +375,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" MinHeight="24" Foreground="Red">You must complete 'Reset Monitors' before configuring monitor setup.</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must complete 'Reset Monitors' before configuring monitor setup.</TextBlock>
                     </Grid>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                         <Grid.ColumnDefinitions>
@@ -385,7 +385,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" MinHeight="24" Foreground="Red">You must configure DCS installation locations before configuring monitor setup.</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must configure DCS installation locations before configuring monitor setup.</TextBlock>
                     </Grid>
                 </Grid>
             </WrapPanel>

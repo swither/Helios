@@ -58,7 +58,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public Monitor Monitor => _monitor;
 
-        internal ShadowVisual(IShadowVisualParent parent, Monitor monitor, HeliosVisual visual)
+        public IViewportExtent Viewport => _viewport;
+
+        internal ShadowVisual(IShadowVisualParent parent, Monitor monitor, HeliosVisual visual, bool recurse = true)
         {
             // create a shadow object
             _parent = parent;
@@ -75,7 +77,19 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             visual.PropertyChanged += Visual_PropertyChanged;
             visual.Children.CollectionChanged += Children_CollectionChanged;
 
-            // recursively track all descendants
+            if (recurse)
+            {
+                Instrument(monitor, visual);
+            }
+        }
+
+        /// <summary>
+        /// recusively add all descendants for tracking
+        /// </summary>
+        /// <param name="monitor"></param>
+        /// <param name="visual"></param>
+        protected void Instrument(Monitor monitor, HeliosVisual visual)
+        {
             foreach (HeliosVisual child in visual.Children)
             {
                 _children[child] = new ShadowVisual(_parent, monitor, child);

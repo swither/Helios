@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             // check if DCS install folders are configured
             InstallationLocations locations = InstallationLocations.Singleton;
-            if (locations.Items.Count < 1)
+            if (locations.Items.Where(l => l.IsEnabled).Count() < 1)
             {
                 yield return new StatusReportItem
                 {

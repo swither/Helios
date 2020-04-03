@@ -95,7 +95,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 // sign up for changes from property changes and from ready check
                 _parent.GeometryChange += Parent_GeometryChange;
                 _parent.Subscribe(this);
-                _parent?.InvalidateStatusReport();
+                _parent.InvalidateStatusReport();
             }
             else
             {
@@ -112,14 +112,27 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void OnGeometryChange()
         {
+            List<MonitorViewModel> mainMonitors, uiMonitors;
+            ClassifyMonitorsAndUpdateBounds(out mainMonitors, out uiMonitors);
+            OnlyAllowRightMostMonitorRemoved();
+            ProtectLastMonitor(mainMonitors, (m, value) => m.CanBeRemovedFromMain = value);
+            ProtectLastMonitor(uiMonitors, (m, value) => m.CanBeRemovedFromUserInterface = value);
+
+            // also request new status report
+            _parent?.InvalidateStatusReport();
+        }
+
+        // XXX this is all wrong, all of this belongs in the model (code in MonitorSetup operating on ShadowMonitor) once we refactor
+        private void ClassifyMonitorsAndUpdateBounds(out List<MonitorViewModel> mainMonitors, out List<MonitorViewModel> uiMonitors)
+        {
             Rect totalBounds = new Rect(0, 0, 1, 1);
-            Rect bounds = new Rect(0,0,1,1);
+            Rect bounds = new Rect(0, 0, 1, 1);
             Rect rawBounds = new Rect(0, 0, 1, 1);
             Rect mainBounds = new Rect(0, 0, 0, 0);
             Rect uiBounds = new Rect(0, 0, 0, 0);
 
-            List<MonitorViewModel> mainMonitors = new List<MonitorViewModel>();
-            List<MonitorViewModel> uiMonitors = new List<MonitorViewModel>();
+            mainMonitors = new List<MonitorViewModel>();
+            uiMonitors = new List<MonitorViewModel>();
             foreach (MonitorViewModel monitor in Monitors)
             {
                 totalBounds.Union(monitor.Rect);
@@ -182,7 +195,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ScaledUserInterface = uiBounds;
             ResolutionWidth = rawBounds.Width;
             ResolutionHeight = rawBounds.Height;
-            
+        }
+
+        private void OnlyAllowRightMostMonitorRemoved()
+        {
             // now figure out ordering of monitors and enable the correct controls
             List<MonitorViewModel> index = Monitors.OrderBy(v => -v.Rect.Right).ToList();
 
@@ -205,8 +221,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 }
 
                 // right-most monitors can be excluded unless it has an assigned function
-                // XXX check for viewports
-                if (!view.Main && !view.UserInterface)
+                if (!view.Main && !view.UserInterface && !view.HasViewports)
                 {
                     view.CanBeExcluded = true;
                 }
@@ -217,15 +232,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     enableRest = true;
                 }
             }
+        }
 
-            if (mainMonitors.Count == 1)
-            {            
+        private static void ProtectLastMonitor(List<MonitorViewModel> monitors, Action<MonitorViewModel, bool> setter)
+        {
+            if (monitors.Count == 1)
+            {
                 // can't remove the last main view
-                mainMonitors[0].CanBeRemovedFromMain = false;
+                setter(monitors[0], false);
             }
             else
             {
-                mainMonitors.ForEach(m => m.CanBeRemovedFromMain = true);
+                monitors.ForEach(m => setter(m, true));
             }
         }
 
@@ -246,15 +264,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        private void OnStatusChange(object sender, EventArgs e)
-        {
-            _parent?.InvalidateStatusReport();
-        }
-
         #region Commands
         private void Configure_Click(object sender, RoutedEventArgs e)
         {
-            _parent?.Configure(_locations, _installationDialogs);
+            _parent?.Install(_installationDialogs);
             _parent?.InvalidateStatusReport();
         }
 
@@ -277,7 +290,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 newStatus = StatusCodes.ResetMonitorsRequired;
             }
-            else if (_locations.Items.Count == 0)
+            else if (_locations.Items.Where(l => l.IsEnabled).Count() < 1)
             {
                 newStatus = StatusCodes.NoLocations;
             }

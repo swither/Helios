@@ -36,9 +36,9 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public interface IInstallationCallbacks
     {
-        InstallationPromptResult DangerPrompt(string title, string message, List<StatusReportItem> details);
-        void Failure(string title, string message, List<StatusReportItem> details);
-        void Success(string title, string message, List<StatusReportItem> details);
+        InstallationPromptResult DangerPrompt(string title, string message, IList<StatusReportItem> details);
+        void Failure(string title, string message, IList<StatusReportItem> details);
+        void Success(string title, string message, IList<StatusReportItem> details);
     }
 
     /// <summary>

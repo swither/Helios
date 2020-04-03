@@ -6,9 +6,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     public class ShadowMonitor : ShadowVisual
     {
         protected MonitorViewModel _monitorViewModel;
+        private int _viewportCount;
+
         public string Key { get; private set; }
         internal ShadowMonitor(IShadowVisualParent parent, Monitor monitor)
-            : base(parent, monitor, monitor)
+            : base(parent, monitor, monitor, false)
         {
             Key = CreateKey(monitor);
             _monitorViewModel = new MonitorViewModel(Key, monitor, parent.GlobalOffset, parent.Scale);
@@ -18,6 +20,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _monitorViewModel.RemovedFromMain += MonitorViewModel_RemovedFromMain;
             _monitorViewModel.AddedToUserInterface += MonitorViewModel_AddedToUserInterface;
             _monitorViewModel.RemovedFromUserInterface += MonitorViewModel_RemovedFromUserInterface;
+        }
+
+        /// <summary>
+        /// deferred initialization so our factory can index this before we add children to it
+        /// </summary>
+        internal void Instrument()
+        {
+            Instrument(Monitor, Monitor);
         }
 
         public static string CreateKey(Monitor display)
@@ -123,6 +133,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _monitorViewModel.RemovedFromUserInterface -= MonitorViewModel_RemovedFromUserInterface;
         }
 
+        // XXX this is all wrong.  all these properties that are relevant to calculating the output should be in ShadowMonitor (the model)
+        // XXX instead.  remove access to the view model in MonitorSetup.cs and refactor until everything is in the right place
         public MonitorViewModel MonitorViewModel => _monitorViewModel;
 
         internal static IEnumerable<string> GetAllKeys(Monitor monitor)
@@ -130,5 +142,29 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             string baseKey = CreateKey(monitor);
             return MonitorViewModel.GetAllKeys(baseKey);
         }
+
+        internal bool AddViewport()
+        {
+            _viewportCount++;
+            if (_viewportCount == 1)
+            {
+                _monitorViewModel.HasViewports = true;
+                return true;
+            }
+            return false;
+        }
+
+        internal bool RemoveViewport()
+        {
+            _viewportCount--;
+            if (_viewportCount == 0)
+            {
+                _monitorViewModel.HasViewports = false;
+                return true;
+            }
+            return false;
+        }
+
+        internal int ViewportCount => _viewportCount;
     }
 }
