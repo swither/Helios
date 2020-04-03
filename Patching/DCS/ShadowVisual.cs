@@ -74,13 +74,19 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             // observe changes
-            visual.PropertyChanged += Visual_PropertyChanged;
-            visual.Children.CollectionChanged += Children_CollectionChanged;
+            visual.Moved += Visual_Modified;
+            visual.Resized += Visual_Modified;
+            visual.Children.CollectionChanged += Visual_Children_CollectionChanged;
 
             if (recurse)
             {
                 Instrument(monitor, visual);
             }
+        }
+
+        private void Visual_Modified(object sender, EventArgs e)
+        {
+            OnModified();
         }
 
         /// <summary>
@@ -96,7 +102,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Visual_Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
@@ -112,11 +118,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     OnRemoved(oldChild);
                 }
             }
-        }
-
-        private void Visual_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            OnModified();
         }
 
         protected virtual void OnAdded(HeliosVisual newChild)
@@ -147,8 +148,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 _parent.RemoveViewport(this);
             }
-            _visual.PropertyChanged -= Visual_PropertyChanged;
-            _visual.Children.CollectionChanged -= Children_CollectionChanged;
+            _visual.Moved -= Visual_Modified;
+            _visual.Resized -= Visual_Modified;
+            _visual.Children.CollectionChanged -= Visual_Children_CollectionChanged;
             foreach (ShadowVisual child in _children.Values)
             {
                 child.Dispose();

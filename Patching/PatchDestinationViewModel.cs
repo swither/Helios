@@ -14,6 +14,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using GadrocsWorkshop.Helios.Patching.DCS;
+using GadrocsWorkshop.Helios.Util;
+using GadrocsWorkshop.Helios.Util.DCS;
 
 namespace GadrocsWorkshop.Helios.Patching
 {

@@ -74,6 +74,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ConfigManager.LogManager.LogDebug($"scaled monitor view {this.GetHashCode()} for monitor setup UI is {Rect}");
         }
 
+        public bool HasContent => Main || UserInterface || HasViewports;
+
         public bool Included
         {
             get { return (bool)GetValue(IncludedProperty); }

@@ -4,7 +4,8 @@
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                  xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
-                                 xmlns:patching="clr-namespace:GadrocsWorkshop.Helios.Patching"
+                                 xmlns:HeliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
+                                 xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
                                  xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                                  x:Name="ViewportsWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
@@ -14,7 +15,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static patching:StatusCodes.UpToDate}"/>
+                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static util:StatusCodes.UpToDate}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -27,7 +28,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static patching:StatusCodes.OutOfDate}"/>
+                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -40,7 +41,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static patching:StatusCodes.Incompatible}"/>
+                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static util:StatusCodes.Incompatible}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -53,7 +54,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static patching:StatusCodes.NoLocations}"/>
+                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static util:StatusCodes.NoLocations}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -71,7 +72,7 @@
         </Style>
     </FrameworkElement.Resources>
     <StackPanel>
-        <local:InstallationLocationsGroup/>
+        <HeliosDcs:InstallationLocationsGroup/>
         <GroupBox Header="DCS Additional Viewports" Style="{StaticResource BasicGroup}">
             <Grid Height="Auto">
                 <Grid.ColumnDefinitions>

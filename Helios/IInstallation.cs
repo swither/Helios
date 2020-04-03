@@ -13,7 +13,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// XXX move to Helios assembly when done
 using System.Collections.Generic;
 
 namespace GadrocsWorkshop.Helios

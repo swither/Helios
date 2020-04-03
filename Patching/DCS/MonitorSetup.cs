@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Util.DCS;
 
 // XXX missing feature: allow specifying a shared monitor config and merging into it
 // XXX missing feature: support explicit view ports for MAIN and UI
@@ -570,7 +571,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 return;
             }
-            IEnumerable<StatusReportItem> newReport = PerformReadyCheck();
+            // actually enumerate the report now and store it
+            List<StatusReportItem> newReport = PerformReadyCheck().ToList();
             PublishStatusReport(newReport);
         }
 

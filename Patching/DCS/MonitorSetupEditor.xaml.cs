@@ -16,23 +16,27 @@
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     using GadrocsWorkshop.Helios;
+    using GadrocsWorkshop.Helios.Util;
+    using GadrocsWorkshop.Helios.Util.DCS;
     using GadrocsWorkshop.Helios.Windows.Controls;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Threading;
 
     /// <summary>
-    /// This interface editor manages a collection of DCS installation locations and allows installation of viewport patches into those locations.
-    /// 
-    /// It also translates from DCS-specific installation location to generic patching interfaces to be shared with other instances of patching things
+    /// This interface editor allows generation of a DCS Monitor Setup by presenting a view of installed monitors
+    /// and extra viewports that have been placed.  By manipulating this graphically, a valid DCS monitor configuration
+    /// can be generated.
     /// </summary>
     public partial class MonitorSetupEditor : HeliosInterfaceEditor, IStatusReportObserver
     {
         private InstallationDialogs _installationDialogs;
         private MonitorSetup _parent;
         private InstallationLocations _locations;
+        private DispatcherTimer _geometryChangeTimer;
 
         public MonitorSetupEditor()
         {
@@ -41,7 +45,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // load patches for all destinations
             Dictionary<string, PatchDestinationViewModel> destinations = new Dictionary<string, PatchDestinationViewModel>();
-            _locations = DCS.InstallationLocations.Singleton;
+            _locations = InstallationLocations.Singleton;
             foreach (InstallationLocation location in _locations.Items)
             {
                 destinations[location.Path] = new PatchDestinationViewModel(location, AdditionalViewports.PATCH_SET);
@@ -86,11 +90,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             if (newInterface is MonitorSetup monitorSetupInterface)
             {
                 _parent = monitorSetupInterface;
+                _geometryChangeTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Normal, OnGeometryChange, Dispatcher);
 
                 // initialize our monitors and viewports and calculate bounds
                 Monitors = _parent.Monitors;
                 Viewports = _parent.Viewports;
-                OnGeometryChange();
+                _geometryChangeTimer.Start();
 
                 // sign up for changes from property changes and from ready check
                 _parent.GeometryChange += Parent_GeometryChange;
@@ -106,12 +111,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void Parent_GeometryChange(object sender, EventArgs e)
         {
-            // some monitor or viewport has changed, recalculate bounds
-            OnGeometryChange();
+            // eat all events for a short duration and process only once in case there are a lot of updates
+            _geometryChangeTimer?.Start();
         }
 
-        private void OnGeometryChange()
+        private void OnGeometryChange(object sender, EventArgs e)
         {
+            _geometryChangeTimer.Stop();
             List<MonitorViewModel> mainMonitors, uiMonitors;
             ClassifyMonitorsAndUpdateBounds(out mainMonitors, out uiMonitors);
             OnlyAllowRightMostMonitorRemoved();
@@ -136,7 +142,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             foreach (MonitorViewModel monitor in Monitors)
             {
                 totalBounds.Union(monitor.Rect);
-                if (monitor.Main || monitor.HasViewports)
+                if (monitor.HasContent)
                 {
                     if (!monitor.Included)
                     {
@@ -147,6 +153,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         // this change is necessary when we add the last monitor to main
                         monitor.CanBeExcluded = false;
                     }
+                }
+                if (monitor.Main)
+                {
                     mainMonitors.Add(monitor);
                     if (mainBounds.Width > 0)
                     {
@@ -160,15 +169,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 }
                 if (monitor.UserInterface)
                 {
-                    if (!monitor.Included)
-                    {
-                        monitor.Included = true;
-                    }
-                    if (monitor.CanBeExcluded)
-                    {
-                        // this change is necessary when we add the last monitor to UI
-                        monitor.CanBeExcluded = false;
-                    }
                     uiMonitors.Add(monitor);
                     if (uiBounds.Width > 0)
                     {
@@ -210,23 +210,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // now fix up the flags for all the other monitors, which may have moved around
             bool enableRest = false;
-            foreach (MonitorViewModel view in index)
+            foreach (MonitorViewModel monitor in index)
             {
                 if (enableRest)
                 {
                     // all monitors to the left must be included
-                    view.Included = true;
-                    view.CanBeExcluded = false;
+                    monitor.Included = true;
+                    monitor.CanBeExcluded = false;
                     continue;
                 }
 
                 // right-most monitors can be excluded unless it has an assigned function
-                if (!view.Main && !view.UserInterface && !view.HasViewports)
+                if (!monitor.HasContent)
                 {
-                    view.CanBeExcluded = true;
+                    monitor.CanBeExcluded = true;
                 }
 
-                if (view.Included)
+                if (monitor.Included)
                 {
                     // found one that is the first included monitor
                     enableRest = true;

@@ -656,7 +656,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 return new StatusReportItem
                 {
                     Status = $"The configured DCS Export.lua stub does not exist at '{exportLuaPath}'",
-                    Recommendation = "Using Helios Profile Editor, generate the file or configure DCS install type correctly to locate the file.",
+                    Recommendation = "Using Helios Profile Editor, configure the DCS interface or configure install location correctly to locate the file.",
                     // survive this
                     Severity = StatusReportItem.SeverityCode.Warning
                 };
@@ -669,7 +669,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 return new StatusReportItem
                 {
                     Status = $"The DCS Export.lua stub at '{exportLuaPath}' does not match configuration",
-                    Recommendation = "Using Helios Profile Editor, recreate the file or configure DCS interface not to create it.",
+                    Recommendation = "Using Helios Profile Editor, configure the DCS interface.",
                     // survive this
                     Severity = StatusReportItem.SeverityCode.Warning
                 };
@@ -729,7 +729,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 return new StatusReportItem
                 {
                     Status = $"The configured DCS export script does not exist at '{mainPath}'",
-                    Recommendation = "Using Helios Profile Editor, generate the file or configure DCS install type correctly to locate the file.",
+                    Recommendation = "Using Helios Profile Editor, configure the DCS interface or configure install locations correctly to locate the file.",
                     Severity = StatusReportItem.SeverityCode.Error
                 };
             }
@@ -741,7 +741,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 return new StatusReportItem
                 {
                     Status = $"The DCS export script at '{mainPath}' does not match configuration",
-                    Recommendation = "Using Helios Profile Editor, recreate the file.",
+                    Recommendation = "Using Helios Profile Editor, configure the DCS interface.",
                     Severity = StatusReportItem.SeverityCode.Error
                 };
             }

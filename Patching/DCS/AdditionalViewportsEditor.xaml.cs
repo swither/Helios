@@ -16,6 +16,7 @@
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     using GadrocsWorkshop.Helios;
+    using GadrocsWorkshop.Helios.Util.DCS;
     using GadrocsWorkshop.Helios.Windows.Controls;
     using System.Collections.Generic;
     using System.Windows;
@@ -36,7 +37,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // load patches for all destinations
             Dictionary<string, PatchDestinationViewModel> destinations = new Dictionary<string, PatchDestinationViewModel>();
-            InstallationLocations locations = DCS.InstallationLocations.Singleton;
+            InstallationLocations locations = InstallationLocations.Singleton;
             foreach (InstallationLocation location in locations.Items)
             {
                 destinations[location.Path] = new PatchDestinationViewModel(location, AdditionalViewports.PATCH_SET);

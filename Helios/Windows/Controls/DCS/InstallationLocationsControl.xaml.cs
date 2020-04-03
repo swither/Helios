@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using GadrocsWorkshop.Helios.Util.DCS;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace GadrocsWorkshop.Helios.Patching.DCS
+namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
 {
     /// <summary>
     /// Interaction logic for InstallationLocationsControl.xaml

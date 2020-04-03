@@ -1,9 +1,10 @@
-﻿<HeliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSInterfaceEditor"
+﻿<helios_sdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSInterfaceEditor"
                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                                 xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
+                                 xmlns:helios_sdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
+                                 xmlns:helios_dcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS"
                                  xmlns:dcs="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                                  x:Name="DCSPropertiesWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
@@ -71,6 +72,7 @@
         <dcs:EnumComboBoxConverter x:Key="DCSInstallTypeConverter"/>
     </FrameworkElement.Resources>
     <StackPanel>
+        <helios_dcs:InstallationLocationsGroup/>
         <GroupBox Header="DCS Export Configuration" Style="{StaticResource BasicGroup}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -110,53 +112,20 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="DCS Version"/>
+
+                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="Advanced"/>
                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                    <RadioButton GroupName="DCSInstallTypeGroup" 
-                                    Grid.Column="0" Grid.Row="0" 
-                                    VerticalContentAlignment="Center" 
-                                    Padding="0" Margin="0,0,16,0"
-                                    IsChecked="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.SelectedInstallType, Converter={StaticResource DCSInstallTypeConverter}, ConverterParameter={x:Static dcs:DCSInstallType.Release}}">
-                        <Label Content="Release" />
-                    </RadioButton>
-                    <RadioButton GroupName="DCSInstallTypeGroup" 
-                                    Grid.Column="0" Grid.Row="0" 
-                                    VerticalContentAlignment="Center" 
-                                    Padding="0" Margin="0,0,16,0"
-                                    IsChecked="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.SelectedInstallType, Converter={StaticResource DCSInstallTypeConverter}, ConverterParameter={x:Static dcs:DCSInstallType.OpenBeta}}">
-                        <Label Content="Open Beta"/>
-                    </RadioButton>
-                    <RadioButton GroupName="DCSInstallTypeGroup" 
-                                    Grid.Column="0" Grid.Row="0" 
-                                    VerticalContentAlignment="Center" 
-                                    Padding="0" Margin="0,0,16,0"
-                                    IsChecked="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.SelectedInstallType, Converter={StaticResource DCSInstallTypeConverter}, ConverterParameter={x:Static dcs:DCSInstallType.OpenAlpha}}">
-                        <Label Content="Open Alpha"/>
-                    </RadioButton>
-                </StackPanel>
-
-                <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Content="Install Path"/>
-                <TextBlock Grid.Row="3" Grid.Column="1" MinWidth="200" MaxWidth="400" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.ScriptDirectoryPath}" Margin="0,4"/>
-                <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource Documentation}">Directory to which Helios will write DCS Export.lua and related directories</TextBlock>
-
-                <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Content="Advanced"/>
-                <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
                     <!-- shielded from stretching -->
                     <CheckBox VerticalAlignment="Center" x:Name="ShowAdvanced" IsChecked="false"/>
                 </StackPanel>
-                <TextBlock Grid.Row="7" Grid.Column="1" Style="{StaticResource Documentation}">Select this to show advanced configuration options.</TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}">Select this to show advanced configuration options.</TextBlock>
 
-                <Label Grid.Row="9" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Status"/>
-                <Grid Grid.Row="9" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
+                <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Status"/>
+                <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -167,7 +136,7 @@
                     <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Your DCS configuration is up to date.</TextBlock>
                     <!-- let's not do this? <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120">Remove DCS Setup</Button> -->
                 </Grid>
-                <Grid Grid.Row="9" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
+                <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -297,4 +266,4 @@
             </Grid>
         </GroupBox>
     </StackPanel>
-</HeliosSdk:HeliosInterfaceEditor>
+</helios_sdk:HeliosInterfaceEditor>

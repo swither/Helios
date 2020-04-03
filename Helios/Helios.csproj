@@ -57,6 +57,9 @@
     <Reference Include="KeraLua, Version=1.0.26.0, Culture=neutral, PublicKeyToken=6a194c04b9c89217, processorArchitecture=MSIL">
       <HintPath>..\packages\KeraLua.1.0.26\lib\net45\KeraLua.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLua, Version=1.4.29.0, Culture=neutral, PublicKeyToken=6a194c04b9c89217, processorArchitecture=MSIL">
       <HintPath>..\packages\NLua.1.4.29\lib\net45\NLua.dll</HintPath>
     </Reference>
@@ -100,6 +103,7 @@
     </Compile>
     <Compile Include="Controls\ViewportExtentRenderer.cs" />
     <Compile Include="HeliosApplication.cs" />
+    <Compile Include="IInstallation.cs" />
     <Compile Include="IResetMonitorsObserver.cs" />
     <Compile Include="ISettingsManager2.cs" />
     <Compile Include="IStatusReportNotify.cs" />
@@ -739,6 +743,8 @@
     <Compile Include="UnitConverters\TimeConverter.cs" />
     <Compile Include="Units\NozzlePositionPercentUnit.cs" />
     <Compile Include="Units\NozzlePositionUnit.cs" />
+    <Compile Include="Util\DCS\InstallationLocation.cs" />
+    <Compile Include="Util\DCS\InstallationLocations.cs" />
     <Compile Include="VersionReminderForm.xaml.cs">
       <DependentUpon>VersionReminderForm.xaml</DependentUpon>
     </Compile>
@@ -825,6 +831,13 @@
     <Compile Include="Windows\Controls\ColorWell.xaml.cs">
       <DependentUpon>ColorWell.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Controls\DCS\InstallationLocationsControl.xaml.cs">
+      <DependentUpon>InstallationLocationsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Controls\DCS\InstallationLocationsGroup.xaml.cs">
+      <DependentUpon>InstallationLocationsGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Util\StatusCodes.cs" />
     <Compile Include="Windows\Controls\DigitalInputIndicator.cs" />
     <Compile Include="Windows\Controls\FontChooserDialog.xaml.cs">
       <DependentUpon>FontChooserDialog.xaml</DependentUpon>
@@ -3024,6 +3037,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Controls\ColorWell.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Controls\DCS\InstallationLocationsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Controls\DCS\InstallationLocationsGroup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

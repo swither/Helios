@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows;
 
-namespace GadrocsWorkshop.Helios.Patching.DCS
+namespace GadrocsWorkshop.Helios.Util.DCS
 {
     public class InstallationLocation : DependencyObject
     {

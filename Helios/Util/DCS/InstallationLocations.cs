@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 
-namespace GadrocsWorkshop.Helios.Patching.DCS
+namespace GadrocsWorkshop.Helios.Util.DCS
 {
     public class InstallationLocations : DependencyObject
     {
