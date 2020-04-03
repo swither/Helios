@@ -88,6 +88,21 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="CautionVisible" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="UIElement.Visibility" Value="Hidden"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Status}" Value="Info"/>
+                        <Condition Binding="{Binding HasRecommendation}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Visible"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+        
         <!-- starts out expanded, and keeps expanding every time a failure state is reached -->
         <Style x:Key="FailureExpanded" TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
             <Setter Property="IsExpanded" Value="True"/>
@@ -159,9 +174,12 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="12"/>
                             </Grid.RowDefinitions>
-                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="36" FontWeight="UltraBold" Foreground="Green" Content="&#xE73E;" Style="{StaticResource SuccessVisible}"/>
-                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="36" FontWeight="UltraBold" Foreground="Red" Content="&#xE711;" Style="{StaticResource FailureVisible}"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
+                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Green" Content="&#xE930;" Style="{StaticResource SuccessVisible}"/>
+                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
+                            <WrapPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Label Margin="0,6,6,6" FontWeight="Bold" Padding="0" VerticalAlignment="Center" Content="Interface:"/>
+                                <TextBlock FontWeight="Bold" VerticalAlignment="Center" Text="{Binding Name}"/>
+                            </WrapPanel>
                             <Button Margin="6,6,22,6" Grid.Row="1" Grid.Column="2" Content="Go There" Command="local:Checklist.GoThereCommand" CommandParameter="{Binding}" Style="{StaticResource SettingsButton}" Visibility="{Binding GoThereVisibility}"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,6" Text="{Binding StatusNarrative}" TextWrapping="Wrap"/>
                             <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="False" Visibility="{Binding DetailsVisibility}">
@@ -175,7 +193,8 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Label Grid.Row="1" Grid.Column="0" Margin="0,6,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" FontWeight="UltraBold" Foreground="Red" Content="&#xE711;" Style="{StaticResource FailureVisible}"/>
+                                                    <Label Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
+                                                    <Label Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8C9;" Style="{StaticResource CautionVisible}"/>
                                                     <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
                                                 </Grid>
                                             </DataTemplate>

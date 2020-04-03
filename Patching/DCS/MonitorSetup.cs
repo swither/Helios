@@ -506,7 +506,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 yield return new StatusReportItem
                 {
-                    Status = "This version of Helios does not configure the selected monitor setup in DCS directly",
+                    Status = "This version of Helios does not select the generated monitor setup in DCS directly",
                     Recommendation = $"Using DCS, please set 'Monitors' in the graphical Options to '{GenerateShortName()}'",
                     Severity = StatusReportItem.SeverityCode.Info,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate

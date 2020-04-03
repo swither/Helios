@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800"
-            Margin="0"
+            Margin="0,0,0,6"
             Padding="0"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
@@ -15,14 +15,33 @@
             BorderBrush="Transparent"
             ItemsSource= "{Binding Items}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-    <!-- XXX make this table style so the buttons line up -->
+    <!-- REVISIT: is there a simple way to make an ItemsControl on a grid, instead of DataGrid? -->
+    <ItemsControl.Template>
+        <ControlTemplate TargetType="ItemsControl">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <HeaderedContentControl>
+                    <HeaderedContentControl.Header>
+                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Margin="0,6">
+                            <Label VerticalAlignment="Top" Padding="0" Width="60" FontWeight="Bold" Content="Write"/>
+                            <Label VerticalAlignment="Top" Padding="0" Width="300" FontWeight="Bold" Content="Path"/>
+                            <Label VerticalAlignment="Top" Padding="0" Width="100" FontWeight="Bold" Content="Version"/>
+                            <Label VerticalAlignment="Top" Padding="0" Width="100" FontWeight="Bold" Content="Saved Games"/>
+                            <Label VerticalAlignment="Top" Padding="0" Width="100" FontWeight="Bold" Content="Exclude"/>
+                        </StackPanel>
+                    </HeaderedContentControl.Header>
+                    <ItemsPresenter/>
+                </HeaderedContentControl>
+            </ScrollViewer>
+        </ControlTemplate>
+    </ItemsControl.Template>
     <ItemsControl.ItemTemplate>
         <DataTemplate>
             <StackPanel Orientation="Horizontal" Margin="0,6">
-                <CheckBox VerticalAlignment="Bottom" IsChecked="{Binding IsEnabled}"/>
-                <TextBlock Margin="6,0,0,0" Text="{Binding Path}"/>
-                <TextBlock Margin="6,0,0,0" Text="{Binding Version}"/>
-                <Button VerticalAlignment="Center" Margin="8,0,0,0" Template="{StaticResource DeleteButton}" Command="local:InstallationLocationsControl.RemoveInstallationLocationCommand" CommandParameter="{Binding}"/>
+                <CheckBox Width="40" VerticalAlignment="Bottom" Margin="7,0,13,0" IsChecked="{Binding IsEnabled}"/>
+                <TextBlock Width="300" TextWrapping="Wrap" Text="{Binding Path}"/>
+                <TextBlock Width="100" TextWrapping="Wrap" Text="{Binding Version}"/>
+                <TextBlock Width="100" TextWrapping="Wrap" Text="{Binding SavedGamesName}"/>
+                <Button VerticalAlignment="Center" Margin="15,0,0,0" Template="{StaticResource DeleteButton}" Command="local:InstallationLocationsControl.RemoveInstallationLocationCommand" CommandParameter="{Binding}"/>
             </StackPanel>
         </DataTemplate>
     </ItemsControl.ItemTemplate>
