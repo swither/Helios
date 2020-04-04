@@ -216,6 +216,20 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Margin" Value="6"/>
         </Style>
+
+        <Style x:Key="DimIfNotIncluded" TargetType="{x:Type Shape}">
+            <Setter Property="Stroke" Value="Black"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Included}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="Stroke" Value="LightGray"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
     </FrameworkElement.Resources>
     <StackPanel>
         <helios_dcs:InstallationLocationsGroup/>
@@ -253,7 +267,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
-                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Black"/>
+                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
                                     <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="SkyBlue" Style="{StaticResource IsMainStyle}"/>
                                     <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
                                     <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" IsChecked="{Binding Main}" IsEnabled="{Binding CanBeRemovedFromMain}" Style="{StaticResource AircraftCheckbox}"/>
@@ -322,8 +336,8 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
-                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Black"/>
-                                    <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Opacity="0.2" Fill="LightGray" Style="{StaticResource IsUserInterfaceStyle}"/>
+                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
+                                    <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="LightGray" Style="{StaticResource IsUserInterfaceStyle}"/>
                                     <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
                                     <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding UserInterface}" IsEnabled="{Binding CanBeRemovedFromUserInterface}" Style="{StaticResource UserInterfaceCheckbox}"/>
                                 </Grid>
@@ -337,8 +351,18 @@
                     </Canvas>
 
                     <!-- DCS UI view -->
-                    <Canvas Grid.Row="3" Grid.Column="1">
-                        <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}" Canvas.Top="{Binding Path=ScaledUserInterface.Top}" Width="{Binding Path=ScaledUserInterface.Width}" Height="{Binding Path=ScaledUserInterface.Height}" Stroke="Transparent" Fill="LightGray" Opacity="0.2" StrokeDashArray="3"/>
+                    <Canvas Panel.ZIndex="-1"  Grid.Row="3" Grid.Column="1">
+                        <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}" Canvas.Top="{Binding Path=ScaledUserInterface.Top}" Width="{Binding Path=ScaledUserInterface.Width}" Height="{Binding Path=ScaledUserInterface.Height}" Stroke="LightGray">
+                            <Rectangle.Fill>
+                                <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                    <VisualBrush.Visual>
+                                        <Grid Background="Transparent">
+                                            <Path Data="M 0 0 L 10 10" Stroke="LightGray"/>
+                                        </Grid>
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
                     </Canvas>
 
                 </Grid>

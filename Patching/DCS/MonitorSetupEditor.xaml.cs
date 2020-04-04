@@ -119,8 +119,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             _geometryChangeTimer.Stop();
             List<MonitorViewModel> mainMonitors, uiMonitors;
+
             ClassifyMonitorsAndUpdateBounds(out mainMonitors, out uiMonitors);
-            OnlyAllowRightMostMonitorRemoved();
+
+            // XXX this isn't true I think?  you just need to include 0,0
+            // OnlyAllowRightMostMonitorRemoved();
+
             ProtectLastMonitor(mainMonitors, (m, value) => m.CanBeRemovedFromMain = value);
             ProtectLastMonitor(uiMonitors, (m, value) => m.CanBeRemovedFromUserInterface = value);
 
@@ -134,8 +138,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Rect totalBounds = new Rect(0, 0, 1, 1);
             Rect bounds = new Rect(0, 0, 1, 1);
             Rect rawBounds = new Rect(0, 0, 1, 1);
-            Rect mainBounds = new Rect(0, 0, 0, 0);
-            Rect uiBounds = new Rect(0, 0, 0, 0);
+            Rect mainBounds = Rect.Empty;
+            Rect uiBounds = Rect.Empty;
 
             mainMonitors = new List<MonitorViewModel>();
             uiMonitors = new List<MonitorViewModel>();
@@ -146,38 +150,30 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     monitor.SetCanExclude(false, "This monitor must be included in the area drawn by DCS because there is content on it.");
                 }
+                else
+                {
+                    // XXX remove this comment if OnlyAllowRightMostMonitorRemoved is permanently removed, otherwise remove this else statement
+                    monitor.SetCanExclude(true, "This monitor can be removed from the area drawn by DCS because it is empty.");
+                }
                 if (monitor.Main)
                 {
                     mainMonitors.Add(monitor);
-                    if (mainBounds.Width > 0)
-                    {
-                        mainBounds.Union(monitor.Rect);
-                    }
-                    else
-                    {
-                        // these are structs, so this copies
-                        mainBounds = monitor.Rect;
-                    }
+                    mainBounds.Union(monitor.Rect);
                 }
                 if (monitor.UserInterface)
                 {
                     uiMonitors.Add(monitor);
-                    if (uiBounds.Width > 0)
-                    {
-                        uiBounds.Union(monitor.Rect);
-                    }
-                    else
-                    {
-                        // these are structs, so this copies
-                        uiBounds = monitor.Rect;
-                    }
+                    uiBounds.Union(monitor.Rect);
                 }
                 if (!monitor.Included)
                 {
                     continue;
                 }
                 bounds.Union(monitor.Rect);
-                rawBounds.Union(monitor.RawRect);
+                Rect rawDcsCoordinates = new Rect();
+                rawDcsCoordinates = monitor.RawRect;
+                rawDcsCoordinates.Offset(_parent.GlobalOffset);
+                rawBounds.Union(rawDcsCoordinates);
             }
             ScaledResolutionWidth = bounds.Width;
             ScaledResolutionHeight = bounds.Height;
@@ -192,25 +188,28 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void OnlyAllowRightMostMonitorRemoved()
         {
             // now figure out ordering of monitors and enable the correct controls
-            List<MonitorViewModel> index = Monitors.OrderBy(v => -v.Rect.Right).ToList();
+            List<MonitorViewModel> index = Monitors
+                .OrderBy(v => -v.Rect.Right)
+                .ThenBy(v => -v.Rect.Top)
+                .ToList();
 
-            // don't allow the left-most monitor to be excluded
+            // don't allow the left-most monitor to be excluded (topmost in a tie)
             int leftMost = index.Count - 1;
             index[leftMost].SetCanExclude(false, "This monitor can not be unselected because DCS requires drawing on the left-most monitor.");
             index.RemoveAt(leftMost);
 
             // now fix up the flags for all the other monitors, which may have moved around
-            bool enableRest = false;
+            double rightEdge = double.NegativeInfinity;
             foreach (MonitorViewModel monitor in index)
             {
-                if (enableRest)
+                if (monitor.Rect.Right < rightEdge)
                 {
                     // all monitors to the left must be included
                     monitor.SetCanExclude(false, "This monitor can not be unselected because there are selected monitors to the right of it.");
                     continue;
                 }
 
-                // right-most monitors can be excluded unless it has an assigned function
+                // right-most monitors can be excluded unless they have an assigned function
                 if (!monitor.HasContent)
                 {
                     monitor.SetCanExclude(true, "This monitor can be removed from the area that will be drawn by DCS because it is the right-most monitor and it is empty.");
@@ -219,7 +218,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (monitor.Included)
                 {
                     // found one that is the first included monitor
-                    enableRest = true;
+                    rightEdge = monitor.Rect.Right;
                 }
             }
         }
@@ -254,7 +253,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        #region Commands
+#region Commands
         private void Configure_Click(object sender, RoutedEventArgs e)
         {
             _parent?.Install(_installationDialogs);
@@ -298,9 +297,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
             Status = newStatus;
         }
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
         public StatusCodes Status
         {
             get { return (StatusCodes)GetValue(StatusProperty); }
@@ -389,6 +388,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static readonly DependencyProperty ScaledUserInterfaceProperty =
             DependencyProperty.Register("ScaledUserInterface", typeof(Rect), typeof(MonitorSetupEditor), new PropertyMetadata(null));
 
-        #endregion
+#endregion
     }
 }
