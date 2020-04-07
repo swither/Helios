@@ -1,38 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Util.DCS
 {
     public class InstallationLocations : DependencyObject
     {
+        public event EventHandler<LocationEvent> Added;
+        public event EventHandler<LocationEvent> Disabled;
+        public event EventHandler<LocationEvent> Enabled;
+        public event EventHandler<LocationEvent> Removed;
+
         private static InstallationLocations _singleton;
 
-        public class LocationEvent: EventArgs 
+        public static InstallationLocations Singleton => _singleton ?? (_singleton = new InstallationLocations());
+
+        public class LocationEvent : EventArgs
         {
             internal LocationEvent(InstallationLocation location)
             {
                 Location = location;
             }
 
-            public InstallationLocation Location { get; private set; }
-        }
+            #region Properties
 
-        public event EventHandler<LocationEvent> Added;
-        public event EventHandler<LocationEvent> Removed;
-        public event EventHandler<LocationEvent> Enabled;
-        public event EventHandler<LocationEvent> Disabled;
+            public InstallationLocation Location { get; }
 
-        public static InstallationLocations Singleton
-        {
-            get
-            {
-                if (_singleton == null)
-                {
-                    _singleton = new InstallationLocations();
-                }
-                return _singleton;
-            }
+            #endregion
         }
 
         private InstallationLocations()
@@ -44,14 +40,6 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             }
         }
 
-        public ObservableCollection<InstallationLocation> Items
-        {
-            get { return (ObservableCollection<InstallationLocation>)GetValue(ItemsProperty); }
-            set { SetValue(ItemsProperty, value); }
-        }
-        public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof(ObservableCollection<InstallationLocation>), typeof(InstallationLocations), new PropertyMetadata(new ObservableCollection<InstallationLocation>()));
-
         internal bool TryAdd(InstallationLocation newItem)
         {
             // scan list; O(n) but this is a UI action
@@ -62,10 +50,10 @@ namespace GadrocsWorkshop.Helios.Util.DCS
                     return false;
                 }
             }
-            
+
             // add to our collection and register handlers
             DoAdd(newItem);
-            
+
             // write it to settings file
             newItem.UpdateSettings();
 
@@ -78,7 +66,7 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         {
             newItem.ChangeEnabled += (sender, e) =>
             {
-                InstallationLocation location = (InstallationLocation)sender;
+                InstallationLocation location = (InstallationLocation) sender;
                 if (location.IsEnabled)
                 {
                     Enabled?.Invoke(this, new LocationEvent(location));
@@ -97,13 +85,31 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             {
                 return false;
             }
+
             if (!Items.Remove(oldItem))
             {
                 return false;
             }
+
             oldItem.DeleteSettings();
             Removed?.Invoke(this, new LocationEvent(oldItem));
             return true;
         }
+
+        public static readonly DependencyProperty ItemsProperty =
+            DependencyProperty.Register("Items", typeof(ObservableCollection<InstallationLocation>),
+                typeof(InstallationLocations), new PropertyMetadata(new ObservableCollection<InstallationLocation>()));
+
+        #region Properties
+
+        public IList<InstallationLocation> Active => Items.Where(l => l.IsEnabled).ToList();
+
+        public ObservableCollection<InstallationLocation> Items
+        {
+            get => (ObservableCollection<InstallationLocation>) GetValue(ItemsProperty);
+            set => SetValue(ItemsProperty, value);
+        }
+
+        #endregion
     }
 }

@@ -17,6 +17,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     using GadrocsWorkshop.Helios.Windows.Controls;
     using System;
+    using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Input;
 
@@ -30,10 +31,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     /// </summary>
     public partial class DCSInterfaceEditor : HeliosInterfaceEditor
     {
-        // sub-configuration objects we path into
-        protected DCSExportConfiguration _configuration;
         protected DCSPhantomMonitorFixConfig _phantomFix;
-        protected DCSVehicleImpersonation _vehicleImpersonation;
 
         static DCSInterfaceEditor()
         {
@@ -54,25 +52,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected override void OnInterfaceChanged(HeliosInterface oldInterface, HeliosInterface newInterface)
         {
             base.OnInterfaceChanged(oldInterface, newInterface);
+            DCSExportConfiguration configuration;
+            DCSVehicleImpersonation vehicleImpersonation;
             if (newInterface is DCSInterface dcsInterface) {
-                // create configuration objects
-                _configuration = new DCSExportConfiguration(dcsInterface);
+                // create or connect to configuration objects
                 _phantomFix = new DCSPhantomMonitorFixConfig(dcsInterface);
-                _vehicleImpersonation = new DCSVehicleImpersonation(dcsInterface);
-
-                // calculate up to date status
-                _configuration.UpdateExports();
+                configuration = dcsInterface.Configuration;
+                vehicleImpersonation = dcsInterface.VehicleImpersonation;
             }
             else {
                 // provoke crash on attempt to use 
-                _configuration = null;
                 _phantomFix = null;
-                _vehicleImpersonation = null;
+                configuration = null;
+                vehicleImpersonation = null;
             }
             // need to rebind everything on the form
-            SetValue(ConfigurationProperty, _configuration);
+            SetValue(ConfigurationProperty, configuration);
             SetValue(PhantomFixProperty, _phantomFix);
-            SetValue(VehicleImpersonationProperty, _vehicleImpersonation);
+            SetValue(VehicleImpersonationProperty, vehicleImpersonation);
         }
 
         #region Commands
@@ -83,9 +80,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             DCSInterfaceEditor editor = target as DCSInterfaceEditor;
             string file = e.Parameter as string;
-            if (editor != null && !string.IsNullOrWhiteSpace(file) && !editor._configuration.DoFiles.Contains(file))
+            if (editor != null && !string.IsNullOrWhiteSpace(file) && !editor.Configuration.DoFiles.Contains(file))
             {
-                editor._configuration.DoFiles.Add((string)e.Parameter);
+                editor.Configuration.DoFiles.Add((string)e.Parameter);
                 editor.NewDoFile.Text = "";
             }
         }
@@ -94,28 +91,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             DCSInterfaceEditor editor = target as DCSInterfaceEditor;
             string file = e.Parameter as string;
-            if (editor != null && !string.IsNullOrWhiteSpace(file) && editor._configuration.DoFiles.Contains(file))
+            if (editor != null && !string.IsNullOrWhiteSpace(file) && editor.Configuration.DoFiles.Contains(file))
             {
-                editor._configuration.DoFiles.Remove(file);
+                editor.Configuration.DoFiles.Remove(file);
             }
         }
 
         private void Configure_Click(object sender, RoutedEventArgs e)
         {
-            if (_configuration.WriteExports())
-            {
-                MessageBox.Show(Window.GetWindow(this), $"DCS export scripts for {Interface.Name} have been configured.");
-            }
-            else
-            {
-                MessageBox.Show(Window.GetWindow(this), $"Error updating DCS export scripts for {Interface.Name}.");
-            }
+            Configuration.Install(new Windows.InstallationDialogs(this));
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)
         {
             // XXX consider removing this _configuration.RestoreConfig();
         }
+
         #endregion
 
         #region Properties

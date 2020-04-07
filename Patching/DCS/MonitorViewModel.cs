@@ -1,56 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    public class MonitorViewModel: DependencyObject
+    // XXX move almost all of this into ShadowMonitor, except anythign that is presentation only and not persisted,
+    public class MonitorViewModel: HeliosViewModel<ShadowMonitor>
     {
-        public event System.EventHandler Enabled;
-        public event System.EventHandler Disabled;
-        public event System.EventHandler AddedToMain;
-        public event System.EventHandler RemovedFromMain;
-        public event System.EventHandler AddedToUserInterface;
-        public event System.EventHandler RemovedFromUserInterface;
-
-        private string _key;
         private double _scale;
         private Vector _globalOffset;
         private string _canExcludeNarrative;
 
-        public MonitorViewModel(string key, Monitor monitor, Vector globalOffset, double scale)
+        internal MonitorViewModel(ShadowMonitor monitor, Vector globalOffset, double scale)
+        : base(monitor)
         {
-            _key = key;
-            LoadSettings();
             _scale = scale;
             _globalOffset = globalOffset;
-            Update(monitor);
+            Update(monitor.Monitor);
+
+            // changes to the Helios monitor geometry
+            monitor.MonitorChanged += Monitor_MonitorChanged;
         }
 
-        public void SetCanExclude(bool value, string narrative)
+        // not automatically called because we are strongly referenced by event
+        internal void Dispose()
         {
-            CanBeExcluded = value;
-            _canExcludeNarrative = narrative;
-            if ((!Included) && (!value))
-            {
-                Included = true;
-            }
-            UpdateIncludedNarrative();
+            Data.MonitorChanged -= Monitor_MonitorChanged;
         }
 
-        private void LoadSettings()
+        private void Monitor_MonitorChanged(object sender, RawMonitorEventArgs e)
         {
-            Included = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, _key, true);
-            Main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{_key}_Main", false);
-            Main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{_key}_UI", false);
-        }
-
-        private void DeleteSettings()
-        {
-            ISettingsManager2 settings2 = ConfigManager.SettingsManager as ISettingsManager2;
-            settings2.DeleteSetting(MonitorSetup.SETTINGS_GROUP, _key);
-            settings2.DeleteSetting(MonitorSetup.SETTINGS_GROUP, $"{_key}_Main");
-            settings2.DeleteSetting(MonitorSetup.SETTINGS_GROUP, $"{_key}_UI");
+            // some geometry change may have happened to our monitor specifically
+            Update(e.Raw);
         }
 
         internal static IEnumerable<string> GetAllKeys(string baseKey)
@@ -87,46 +69,28 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ConfigManager.LogManager.LogDebug($"scaled monitor view {this.GetHashCode()} for monitor setup UI is {Rect}");
         }
 
-        public bool HasContent => Main || UserInterface || HasViewports;
-
-        public bool Included
-        {
-            get { return (bool)GetValue(IncludedProperty); }
-            set
-            {
-                SetValue(IncludedProperty, value);
-                UpdateIncludedNarrative();
-            }
-        }
-
         private void UpdateIncludedNarrative()
         {
-            if (Included)
+            if (Data.Included)
             {
                 IncludedNarrative = _canExcludeNarrative;
             }
             else
             {
-                IncludedNarrative = "This monitor is not being drawn on by DCS because it is excluded by this selection.";
+                IncludedNarrative =
+                    "This monitor is not being drawn on by DCS because it is excluded by this selection.";
             }
         }
 
-        public static readonly DependencyProperty IncludedProperty =
-            DependencyProperty.Register("Included", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(true, OnIncludedChanged));
-        private static void OnIncludedChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
+        internal void SetCanExclude(bool value, string narrative)
         {
-            MonitorViewModel model = ((MonitorViewModel)target);
-            model.UpdateIncludedNarrative();
-            if ((bool)args.NewValue)
+            CanBeExcluded = value;
+            _canExcludeNarrative = narrative;
+            if ((!Data.Included) && (!value))
             {
-                (ConfigManager.SettingsManager as ISettingsManager2).DeleteSetting(MonitorSetup.SETTINGS_GROUP, model._key);
-                model.Enabled?.Invoke(target, EventArgs.Empty);
+                Data.Included = true;
             }
-            else
-            {
-                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, model._key, false);
-                model.Disabled?.Invoke(target, System.EventArgs.Empty);
-            }
+            UpdateIncludedNarrative();
         }
 
         public bool CanBeExcluded
@@ -137,50 +101,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static readonly DependencyProperty CanBeExcludedProperty =
             DependencyProperty.Register("CanBeExcluded", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(false));
 
-        /// <summary>
-        /// changes the key used for load and save settings and switches settings to those of 
-        /// the new key
-        /// 
-        /// settings for the old key are deleted
-        /// </summary>
-        /// <param name="key"></param>
-        internal void ChangeKey(string key)
-        {
-            if (key == _key)
-            {
-                return;
-            }
-            DeleteSettings();
-            _key = key;
-            LoadSettings();
-        }
-
-        public bool Main
-        {
-            get { return (bool)GetValue(MainProperty); }
-            set
-            {
-                SetValue(MainProperty, value);
-            }
-        }
-        public static readonly DependencyProperty MainProperty =
-            DependencyProperty.Register("Main", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(true, OnMainChanged));
-        private static void OnMainChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
-        {
-            string key = $"{((MonitorViewModel)target)._key}_Main";
-            MonitorViewModel model = ((MonitorViewModel)target);
-            if ((bool)args.NewValue)
-            {
-                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, key, true);
-                model.AddedToMain?.Invoke(target, System.EventArgs.Empty);
-            }
-            else
-            {
-                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, key, false);
-                model.RemovedFromMain?.Invoke(target, System.EventArgs.Empty);
-            }
-        }
-
         public bool CanBeRemovedFromMain
         {
             get { return (bool)GetValue(CanBeRemovedFromMainProperty); }
@@ -189,32 +109,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static readonly DependencyProperty CanBeRemovedFromMainProperty =
             DependencyProperty.Register("CanBeRemovedFromMain", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(true));
 
-        public bool UserInterface
-        {
-            get { return (bool)GetValue(UserInterfaceProperty); }
-            set
-            {
-                SetValue(UserInterfaceProperty, value);
-            }
-        }
-        public static readonly DependencyProperty UserInterfaceProperty =
-             DependencyProperty.Register("UserInterface", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(false, OnUserInterfaceChanged));
-        private static void OnUserInterfaceChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
-        {
-            string key = $"{((MonitorViewModel)target)._key}_UserInterface";
-            MonitorViewModel model = ((MonitorViewModel)target);
-            if ((bool)args.NewValue)
-            {
-                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, key, true);
-                model.AddedToUserInterface?.Invoke(target, System.EventArgs.Empty);
-            }
-            else
-            {
-                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, key, false);
-                model.RemovedFromUserInterface?.Invoke(target, System.EventArgs.Empty);
-            }
-        }
-
         public bool CanBeRemovedFromUserInterface
         {
             get { return (bool)GetValue(CanBeRemovedFromUserInterfaceProperty); }
@@ -222,14 +116,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
         public static readonly DependencyProperty CanBeRemovedFromUserInterfaceProperty =
             DependencyProperty.Register("CanBeRemovedFromUserInterface", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(true));
-
-        public bool HasViewports
-        {
-            get { return (bool)GetValue(HasViewportsProperty); }
-            set { SetValue(HasViewportsProperty, value); }
-        }
-        public static readonly DependencyProperty HasViewportsProperty =
-            DependencyProperty.Register("HasViewports", typeof(bool), typeof(MonitorViewModel), new PropertyMetadata(false));
 
         public Rect Rect
         {
@@ -248,5 +134,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             DependencyProperty.Register("IncludedNarrative", typeof(string), typeof(MonitorViewModel), new PropertyMetadata(null));
 
         public Rect RawRect { get; set; }
+        public bool HasContent => Data.Main || Data.UserInterface || (Data.ViewportCount > 0);
     }
 }

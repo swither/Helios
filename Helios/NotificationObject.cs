@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        protected void OnPropertyChanged(string childPropertyName, PropertyNotificationEventArgs args)
+        public void OnPropertyChanged(string childPropertyName, PropertyNotificationEventArgs args)
         {
             OnPropertyChanged(new PropertyNotificationEventArgs(this, childPropertyName, args));
         }

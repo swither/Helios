@@ -16,15 +16,15 @@
 using System.Collections.Generic;
 using System.Windows;
 
-namespace GadrocsWorkshop.Helios.Patching
+namespace GadrocsWorkshop.Helios.Windows
 {
-    internal class InstallationDialogs: IInstallationCallbacks
+    public class InstallationDialogs: IInstallationCallbacks
     {
         private DependencyObject _host;
 
         public InstallationDialogs(DependencyObject host)
         {
-            this._host = host;
+            _host = host;
         }
 
         public InstallationPromptResult DangerPrompt(string title, string message, IList<StatusReportItem> details)

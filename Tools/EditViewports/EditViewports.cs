@@ -1,5 +1,6 @@
 ﻿using GadrocsWorkshop.Helios;
 using GadrocsWorkshop.Helios.Patching.DCS;
+using GadrocsWorkshop.Helios.Util.DCS;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace EditViewports
             HeliosInit.Initialize(documentPath, "EditViewports.log", LogLevel.Debug);
 
             InstallationLocations locations = InstallationLocations.Singleton;
-            if (locations.Items.Where(l => l.IsEnabled).Count() < 1)
+            if (locations.Active.Count() < 1)
             {
                 throw new System.Exception("at least one DCS install location must be configured and enabled");
             }

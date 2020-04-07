@@ -4,20 +4,48 @@ using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    // callbacks from shadow objects
+    public class ShadowViewportEventArgs : EventArgs
+    {
+        public ShadowVisual Data;
+
+        public ShadowViewportEventArgs(ShadowVisual shadow)
+        {
+            Data = shadow;
+        }
+    }
+
+    public class RawViewportEventArgs : EventArgs
+    {
+        public HeliosVisual Raw;
+
+        public RawViewportEventArgs(HeliosVisual visual)
+        {
+            Raw = visual;
+        }
+    }
+
+
+    /// <summary>
+    /// callbacks from objects shadowing visuals (viewports, monitors) in the Helios Profile
+    /// to implement our model
+    /// </summary>
     public interface IShadowVisualParent
     {
         Vector GlobalOffset { get; }
         double Scale { get; }
         void AddViewport(ShadowVisual viewport);
         void RemoveViewport(ShadowVisual viewport);
-        void ChangeViewport(ShadowVisual viewport);
-        void ChangeMonitor(ShadowMonitor shadowMonitor);
-        void ChangeMonitorKey(ShadowMonitor shadowMonitor, string oldKey, string newKey);
     }
 
-    public class ShadowVisual
+    /// <summary>
+    /// This class represents a Helios visual being observed.
+    /// It is the model class.
+    /// </summary>
+    public class ShadowVisual : NotificationObject
     {
+        public event EventHandler<RawViewportEventArgs> ViewportChanged;
+        public event EventHandler<RawMonitorEventArgs> MonitorChanged;
+
         /// <summary>
         /// callbacks to our parent
         /// </summary>
@@ -39,18 +67,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         protected IViewportExtent _viewport;
 
         /// <summary>
-        /// viewport view model or null if this item is not a viewport
-        /// </summary>
-        protected ViewportViewModel _viewportViewModel;
-
-        /// <summary>
         /// the monitor on which this visual is placed
         /// </summary>
         protected Monitor _monitor;
 
         public bool IsViewport => _viewport != null;
-
-        public ViewportViewModel ViewportViewModel => _viewportViewModel;
 
         public Dictionary<HeliosVisual, ShadowVisual> Children => _children;
 
@@ -69,14 +90,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _viewport = visual as IViewportExtent;
             if (IsViewport)
             {
-                _viewportViewModel = new ViewportViewModel(_monitor, _parent.GlobalOffset, visual, _parent.Scale);
                 _parent.AddViewport(this);
             }
 
             // observe changes
+            monitor.Moved += Monitor_Modified;
+            monitor.Resized += Monitor_Modified;
             visual.Moved += Visual_Modified;
             visual.Resized += Visual_Modified;
             visual.Children.CollectionChanged += Visual_Children_CollectionChanged;
+
+            // NOTE: changes in monitor children tracked in ShadowMonitor
 
             if (recurse)
             {
@@ -84,9 +108,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
+        private void Monitor_Modified(object sender, EventArgs e)
+        {
+            MonitorChanged?.Invoke(this, new RawMonitorEventArgs(_monitor));
+        }
+
         private void Visual_Modified(object sender, EventArgs e)
         {
-            OnModified();
+            OnVisualModified();
         }
 
         /// <summary>
@@ -102,7 +131,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        private void Visual_Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Visual_Children_CollectionChanged(object sender,
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
@@ -111,6 +141,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     OnAdded(newChild);
                 }
             }
+
             if (e.OldItems != null)
             {
                 foreach (HeliosVisual oldChild in e.OldItems)
@@ -132,14 +163,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _children.Remove(oldChild);
         }
 
-        protected virtual void OnModified()
+        protected virtual void OnVisualModified()
         {
-            if (IsViewport)
+            if (!IsViewport)
             {
-                // we actually care about this change
-                _viewportViewModel.Update(_visual);
-                _parent.ChangeViewport(this);
+                return;
             }
+
+            // we actually care about this change
+            ViewportChanged?.Invoke(this, new RawViewportEventArgs(_visual));
         }
 
         internal virtual void Dispose()
@@ -148,6 +180,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 _parent.RemoveViewport(this);
             }
+
             _visual.Moved -= Visual_Modified;
             _visual.Resized -= Visual_Modified;
             _visual.Children.CollectionChanged -= Visual_Children_CollectionChanged;

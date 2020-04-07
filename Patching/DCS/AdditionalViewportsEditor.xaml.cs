@@ -13,22 +13,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+using System.Windows;
+using GadrocsWorkshop.Helios.Util.DCS;
+using GadrocsWorkshop.Helios.Windows;
+using GadrocsWorkshop.Helios.Windows.Controls;
+
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    using GadrocsWorkshop.Helios;
-    using GadrocsWorkshop.Helios.Util.DCS;
-    using GadrocsWorkshop.Helios.Windows.Controls;
-    using System.Collections.Generic;
-    using System.Windows;
-
     /// <summary>
-    /// This interface editor manages a collection of DCS installation locations and allows installation of viewport patches into those locations.
-    /// 
-    /// It also translates from DCS-specific installation location to generic patching interfaces to be shared with other instances of patching things
+    /// This interface editor manages a collection of DCS installation locations and allows installation of viewport patches
+    /// into those locations.
+    /// It also translates from DCS-specific installation location to generic patching interfaces to be shared with other
+    /// instances of patching things
     /// </summary>
     public partial class AdditionalViewportsEditor : HeliosInterfaceEditor
     {
-        private InstallationDialogs _installationDialogs;
+        private readonly InstallationDialogs _installationDialogs;
         private AdditionalViewports _parent;
 
         public AdditionalViewportsEditor()
@@ -36,7 +37,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             InitializeComponent();
 
             // load patches for all destinations
-            Dictionary<string, PatchDestinationViewModel> destinations = new Dictionary<string, PatchDestinationViewModel>();
+            Dictionary<string, PatchDestinationViewModel> destinations =
+                new Dictionary<string, PatchDestinationViewModel>();
             InstallationLocations locations = InstallationLocations.Singleton;
             foreach (InstallationLocation location in locations.Items)
             {
@@ -57,26 +59,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void OnDisabled(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnDisabled(e.Location.Path);
-            _parent?.InvalidateStatusReport();
         }
 
         private void OnEnabled(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnEnabled(e.Location.Path);
-            _parent?.InvalidateStatusReport();
         }
 
         private void OnRemoved(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnRemoved(e.Location.Path);
-            _parent?.InvalidateStatusReport();
         }
 
         private void OnAdded(object sender, InstallationLocations.LocationEvent e)
         {
-            PatchDestinationViewModel destinationPatches = new PatchDestinationViewModel(e.Location, AdditionalViewports.PATCH_SET);
+            PatchDestinationViewModel destinationPatches =
+                new PatchDestinationViewModel(e.Location, AdditionalViewports.PATCH_SET);
             Patching?.OnAdded(e.Location.Path, destinationPatches);
-            _parent?.InvalidateStatusReport();
         }
 
         /// <summary>
@@ -98,10 +97,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         #region Commands
+
         private void Configure_Click(object sender, RoutedEventArgs e)
         {
             Patching?.Install(_installationDialogs);
-            _parent?.InvalidateStatusReport();
+            _parent.InvalidateStatusReport();
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)
@@ -109,16 +109,21 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // XXX revert patches where applicable
             MessageBox.Show("Unimplemented");
         }
+
         #endregion
 
         #region Properties
+
         public PatchingViewModel Patching
         {
-            get { return (PatchingViewModel)GetValue(PatchingProperty); }
-            set { SetValue(PatchingProperty, value); }
+            get => (PatchingViewModel) GetValue(PatchingProperty);
+            set => SetValue(PatchingProperty, value);
         }
+
         public static readonly DependencyProperty PatchingProperty =
-            DependencyProperty.Register("Patching", typeof(PatchingViewModel), typeof(AdditionalViewportsEditor), new PropertyMetadata(null));
+            DependencyProperty.Register("Patching", typeof(PatchingViewModel), typeof(AdditionalViewportsEditor),
+                new PropertyMetadata(null));
+
         #endregion
     }
 }

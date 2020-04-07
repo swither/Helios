@@ -104,6 +104,7 @@
     <Compile Include="Controls\ViewportExtentRenderer.cs" />
     <Compile Include="HeliosApplication.cs" />
     <Compile Include="IInstallation.cs" />
+    <Compile Include="Util\DCS\DCSConfiguration.cs" />
     <Compile Include="IResetMonitorsObserver.cs" />
     <Compile Include="ISettingsManager2.cs" />
     <Compile Include="IStatusReportNotify.cs" />
@@ -487,6 +488,9 @@
     <Compile Include="Gauges\FA-18C\UFC\UFC.cs" />
     <Compile Include="Gauges\FA-18C\IFEI\IFEI.cs" />
     <Compile Include="Gauges\FA-18C\VVI\VVI.cs" />
+    <Compile Include="Util\HeliosUndoBatch.cs" />
+    <Compile Include="Windows\HeliosViewModel.cs" />
+    <Compile Include="Windows\InstallationDialogs.cs" />
     <Content Include="_Documents\Licenses\AvalonDock\LICENSE.txt" />
     <Content Include="_Documents\Licenses\CommandLineParser\LICENSE.txt" />
     <Content Include="_Documents\Licenses\EOSSharp\LICENSE.txt" />
@@ -496,6 +500,7 @@
     <Content Include="_Documents\Licenses\Phidget\License.txt" />
     <Content Include="_Documents\Licenses\SharpDX.DirectInput\LICENSE.txt" />
     <Content Include="_Documents\Licenses\SharpDX\LICENSE.txt" />
+    <None Include="HeliosNotificationObject.cd" />
     <None Include="Gauges\GaugeTextDisplay.cs" />
     <Compile Include="Gauges\KA-50\EGT\EGT.cs" />
     <Compile Include="Gauges\F-16\ADI\ADI.cs" />

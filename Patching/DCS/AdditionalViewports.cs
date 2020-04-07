@@ -1,5 +1,6 @@
 ﻿using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Util.DCS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -10,10 +11,38 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     public class AdditionalViewports : HeliosInterface, IReadyCheck, IViewportProvider, IStatusReportNotify
     {
         public const string PATCH_SET = "Viewports";
-        private HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
+        private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
 
         public AdditionalViewports() : base("DCS Additional Viewports")
         {
+        }
+
+        protected override void OnProfileChanged(HeliosProfile oldProfile)
+        {
+            base.OnProfileChanged(oldProfile);
+            if (Profile != null)
+            {
+                // initialization
+                InstallationLocations locations = InstallationLocations.Singleton;
+                locations.Added += Locations_Changed;
+                locations.Removed += Locations_Changed;
+                locations.Enabled += Locations_Changed;
+                locations.Disabled += Locations_Changed;
+            }
+            else
+            {
+                // deinit
+                InstallationLocations locations = InstallationLocations.Singleton;
+                locations.Added -= Locations_Changed;
+                locations.Removed -= Locations_Changed;
+                locations.Enabled -= Locations_Changed;
+                locations.Disabled -= Locations_Changed;
+            }
+        }
+
+        private void Locations_Changed(object sender, InstallationLocations.LocationEvent e)
+        {
+            InvalidateStatusReport();
         }
 
         public bool IsViewportAvailable(string viewportName)
@@ -25,8 +54,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
             // check if DCS install folders are configured
-            InstallationLocations locations = InstallationLocations.Singleton;
-            if (locations.Items.Where(l => l.IsEnabled).Count() < 1)
+            IList<InstallationLocation> locations = InstallationLocations.Singleton.Active;
+            if (!locations.Any())
             {
                 yield return new StatusReportItem
                 {
@@ -38,11 +67,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             // check if all our patches are installed
-            List<IPatchDestination> destinations = locations.Items
-                .Where(item => item.IsEnabled)
-                .Select(location => new PatchDestination(location) as IPatchDestination)
-                .ToList();
-            foreach (IPatchDestination destination in destinations)
+            foreach (IPatchDestination destination in locations
+                .Select(location => new PatchDestination(location) as IPatchDestination))
             {
                 PatchList patches = PatchList.LoadPatches(destination, "Viewports");
                 if (patches.Count < 1)
@@ -94,9 +120,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public void PublishStatusReport(IEnumerable<StatusReportItem> statusReport)
         {
+            IEnumerable<StatusReportItem> statusReportItems = statusReport.ToList();
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(statusReport);
+                observer.ReceiveStatusReport(statusReportItems);
             }
         }
     }

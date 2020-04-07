@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GadrocsWorkshop.Helios.NotificationObject" Collapsed="true">
+    <Position X="2.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>NotificationObject.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.CalibrationPointCollectionDouble" Collapsed="true">
+    <Position X="4.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACIYBAACAAAQABAQgAABhBQgFAEAgBEAAQAAQAFQICA=</HashCode>
+      <FileName>CalibrationPointCollectionDouble.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.CalibrationPointCollectionLong" Collapsed="true">
+    <Position X="6.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACIYBAACAAAQABAQgAABhBQgEAEAgBEAAQAAQAFQIAA=</HashCode>
+      <FileName>CalibrationPointCollectionLong.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.CalibrationPointDouble" Collapsed="true">
+    <Position X="9" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAABAABAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>CalibrationPointDouble.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.CalibrationPointLong" Collapsed="true">
+    <Position X="11.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAABAABAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>CalibrationPointLong.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Controls.KneeBoardPosition" Collapsed="true">
+    <Position X="13.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAgAAQAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controls\KneeBoardPosition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Controls.RotarySwitchPosition" Collapsed="true">
+    <Position X="15.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAgoAAAAAAAAIAQAAAgAAQAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controls\RotarySwitchPosition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosAction" Collapsed="true">
+    <Position X="4.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIACAAiggBgQEIgBAAGQAQAAAkAAACKAkADAAgAI=</HashCode>
+      <FileName>HeliosAction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosBinding" Collapsed="true">
+    <Position X="6.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ERQAEAQAQICgAFQQNAgBAIgADAgAIAIAAACwAQACBBQ=</HashCode>
+      <FileName>HeliosBinding.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosInterfaceFactory" Collapsed="true">
+    <Position X="9" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>HeliosInterfaceFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosObject" Collapsed="true">
+    <Position X="4.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABIQKAAAICKABQAAIAAAIAQGCACBBAQIABAggQAgQCA=</HashCode>
+      <FileName>HeliosObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosProfile" Collapsed="true">
+    <Position X="13.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAGOEwAhCASBQaAAAIAII1AAADBAEAAoBCBgYQAUBA=</HashCode>
+      <FileName>HeliosProfile.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosTemplate" Collapsed="true">
+    <Position X="15.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAJAAAAAAABAAAAAgAAAQCABAAAIAAAAAAgAAACAA=</HashCode>
+      <FileName>HeliosTemplate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosTrigger" Collapsed="true">
+    <Position X="4.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAIAKoAkAABgAEIABAAAQBQAACgAAACIgABCAAAQI=</HashCode>
+      <FileName>HeliosTrigger.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosValue" Collapsed="true">
+    <Position X="6.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABBAoGKoAgggBgQGIgBAQGQRAAACkAAAAKAkBDAAgQI=</HashCode>
+      <FileName>HeliosValue.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosVisualRenderer" Collapsed="true">
+    <Position X="9" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAQAgAQAAAAQAAACUAAAAABAAIIAAAAA=</HashCode>
+      <FileName>HeliosVisualRenderer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSExportConfiguration" Collapsed="true">
+    <Position X="11.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABRCAggFCIiCAKOqABMACAbCABAAAgAAAAogAACEAE=</HashCode>
+      <FileName>Interfaces\DCS\Common\DCSExportConfiguration.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSPhantomMonitorFixBase" Collapsed="true">
+    <Position X="13.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAQABAAAAAACAA=</HashCode>
+      <FileName>Interfaces\DCS\Common\DCSPhantomMonitorFix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.Eos.EosBoard" Collapsed="true">
+    <Position X="15.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JQCgJQ4IAAoANhAAJAYRAAwGEAAIiAAyAAAUhGAAoAA=</HashCode>
+      <FileName>Interfaces\Eos\EosBoard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.Eos.EosInput" Collapsed="true">
+    <Position X="4.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAQACAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Interfaces\Eos\EosInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.Eos.EosOutput" Collapsed="true">
+    <Position X="6.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAIAAAAAAAEAAAAAQAAAAABAAAAAAAACAAAAA=</HashCode>
+      <FileName>Interfaces\Eos\EosOutput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.TextFormat" Collapsed="true">
+    <Position X="9" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UCABEBQgBAAEAgApgBAgAgUCUBCIAAABAAAAgCIBUCA=</HashCode>
+      <FileName>TextFormat.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosInterface" Collapsed="true">
+    <Position X="12" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>HeliosInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.HeliosVisual" Collapsed="true">
+    <Position X="2.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ICAwiAAABCBAFMIQyACEVEEaMR4NUAQICMCLiQAAEGA=</HashCode>
+      <FileName>HeliosVisual.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DirectX.DirectXControllerInterface" Collapsed="true">
+    <Position X="6.5" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAQBAAAAAAAAAgAAAoChAAAgAAKAAAAgAIAAAA=</HashCode>
+      <FileName>Interfaces\DirectX\DirectXControllerInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DTSCard.DTSCardInterface" Collapsed="true">
+    <Position X="8.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAGAAAAEAAAAAQAAEAABCAAEAAAAIAEAAgAAAAAA=</HashCode>
+      <FileName>Interfaces\DTSCard\DTSCardInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.Eos.EosDirectSerial" Collapsed="true">
+    <Position X="11" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EQYAAAAAAAEgCARAAAAEAIESCgADAAA4hBADgCAAAAA=</HashCode>
+      <FileName>Interfaces\Eos\EosDirectSerial.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.Falcon.FalconInterface" Collapsed="true">
+    <Position X="13.25" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAwAIAAAYAEIAAAAEAQEAABCgAAAAAAISEAAgQAAAwA=</HashCode>
+      <FileName>Interfaces\Falcon\FalconInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.Keyboard.KeyboardInterface" Collapsed="true">
+    <Position X="15.5" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAIAAAAAgEAAAAAADAEAAAACAAAAQCAAAAAAgAAACAA=</HashCode>
+      <FileName>Interfaces\Keyboard\KeyboardInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.Profile.ProfileInterface" Collapsed="true">
+    <Position X="17.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAwAAAAAAAAAIAAAAACABAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Interfaces\Profile\ProfileInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.UDPInterface.BaseUDPInterface" Collapsed="true">
+    <Position X="20" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQAEAAQAoECBAQACJAEAEJCCAQAAFAIAAAOgCCAFAA=</HashCode>
+      <FileName>UDPInterface\BaseUDPInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSInterface" Collapsed="true">
+    <Position X="20" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEggAgAQHFIA0QAAAAQBGAABDAEQIwAEShBwCEQA=</HashCode>
+      <FileName>Interfaces\DCS\Common\DCSInterface.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.A10CInterface" Collapsed="true">
+    <Position X="10" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gABAAYFFAAAKAeAAACCAz8CAIgLISCBAAARCKoRgUAg=</HashCode>
+      <FileName>Interfaces\DCS\A10C\A10CInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.AV8BInterface" Collapsed="true">
+    <Position X="12.25" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IgBAAEAAgAICwIAIBIJAQAmDBChAkARAIQQAAAQCQAA=</HashCode>
+      <FileName>Interfaces\DCS\AV8B\AV8BInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.BlackSharkInterface" Collapsed="true">
+    <Position X="14.5" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgIoAEAABCIIICgIEECQKSEGuQQAFEIABUqAjiEBg=</HashCode>
+      <FileName>Interfaces\DCS\BlackShark\BlackSharkInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.F14B.F14BInterface" Collapsed="true">
+    <Position X="16.75" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RAAAMMAAAAEgAWsIAQASGAKOI3IMMCUFUVAcKAaSCBg=</HashCode>
+      <FileName>Interfaces\DCS\F14B\F14BInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.FA18C.FA18CInterface" Collapsed="true">
+    <Position X="19" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RABAEJACAogvgIARAEkA6UjKAqEMABgAAMSEQAIgAHA=</HashCode>
+      <FileName>Interfaces\DCS\FA18C\FA18CInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.FC2.FC2Interface" Collapsed="true">
+    <Position X="21.25" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\FC2\FC2Interface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Generic.GenericInterface" Collapsed="true">
+    <Position X="23.5" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAYAQAAAAAAAIAAIAAAAIAAQAAAAAAAQAAAIAACAE=</HashCode>
+      <FileName>Interfaces\DCS\Generic\GenericInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.M2000C.M2000CInterface" Collapsed="true">
+    <Position X="25.75" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EigQEASAAEGQiFoFBEACQACIJACEAwAAVQQEAAQAAAQ=</HashCode>
+      <FileName>Interfaces\DCS\M2000C\M2000CInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Mi8Simple.Mi8SimpleInterface" Collapsed="true">
+    <Position X="28" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ALAUAMpmAEQXwAIAiEACDkoSBg0AAAgEAIAAiADaSBA=</HashCode>
+      <FileName>Interfaces\DCS\Mi8Simple\Mi8SimpleInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.MiG21.MiG21Interface" Collapsed="true">
+    <Position X="30.25" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>t97P+R/5yvj8sd4vzds7Td9++t73KmdBfzd/pvj9/pc=</HashCode>
+      <FileName>Interfaces\DCS\MiG21\MiG21Interface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

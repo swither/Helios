@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
+
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     using GadrocsWorkshop.Helios.ProfileAwareInterface;
@@ -25,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
     public class DCSInterface : BaseUDPInterface, IProfileAwareInterface, IReadyCheck, IStatusReportNotify
     {
-        private const string SettingsGroup = "DCSInterface";
+        private const string SETTINGS_GROUP = "DCSInterface";
 
         // do we expect the Export.lua to use a module we did not write?
         // exported via UsesExportModule property with IPropertyNotification
@@ -39,11 +41,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         // phantom monitor fix 
         private DCSPhantomMonitorFix _phantomFix;
 
+        // export configuration generation and checking
+        protected DCSExportConfiguration _configuration;
+
+        // vehicle impersonation configuration
+        protected DCSVehicleImpersonation _vehicleImpersonation;
+
         // protocol to talk to DCS Export script (control messages)
         protected DCSExportProtocol _protocol;
 
         // observers of our status report that need to be told when we change status
-        private HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
+        private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
 
         public DCSInterface(string name, string exportDeviceName, string exportFunctionsPath)
             : base(name)
@@ -87,18 +95,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         // this value will be set manually in the XML for testing in this branch of the code
         public bool UsesExportModule
         {
-            get
-            {
-                return _usesExportModule;
-            }
+            get => _usesExportModule;
             set
             {
-                if (!_usesExportModule.Equals(value))
-                {
-                    bool oldValue = _usesExportModule;
-                    _usesExportModule = value;
-                    OnPropertyChanged("UsesExportModule", oldValue, value, false);
-                }
+                if (_usesExportModule.Equals(value)) return;
+                bool oldValue = _usesExportModule;
+                _usesExportModule = value;
+                OnPropertyChanged("UsesExportModule", oldValue, value, false);
             }
         }
 
@@ -123,44 +126,43 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         public string ExportFunctionsPath { get; }
 
+        public DCSExportConfiguration Configuration => _configuration;
+
+        public DCSVehicleImpersonation VehicleImpersonation => _vehicleImpersonation;
         #endregion
 
         internal string LoadSetting(string key, string defaultValue)
         {
-            if (ConfigManager.SettingsManager.IsSettingAvailable(SettingsGroup, key))
+            if (ConfigManager.SettingsManager.IsSettingAvailable(SETTINGS_GROUP, key))
             {
                 // get from shared location
-                return ConfigManager.SettingsManager.LoadSetting(SettingsGroup, key, defaultValue);
+                return ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, key, defaultValue);
             }
-            else
-            {
-                // get from legacy location
-                return ConfigManager.SettingsManager.LoadSetting(Name, key, defaultValue);
-            }
+
+            // get from legacy location
+            return ConfigManager.SettingsManager.LoadSetting(Name, key, defaultValue);
         }
 
         internal T LoadSetting<T>(string key, T defaultValue)
         {
-            if (ConfigManager.SettingsManager.IsSettingAvailable(SettingsGroup, key))
+            if (ConfigManager.SettingsManager.IsSettingAvailable(SETTINGS_GROUP, key))
             {
                 // get from shared location, using LoadSetting<T>
-                return ConfigManager.SettingsManager.LoadSetting(SettingsGroup, key, defaultValue);
+                return ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, key, defaultValue);
             }
-            else
-            {
-                // get from legacy location, using LoadSetting<T>
-                return ConfigManager.SettingsManager.LoadSetting(Name, key, defaultValue);
-            }
+
+            // get from legacy location, using LoadSetting<T>
+            return ConfigManager.SettingsManager.LoadSetting(Name, key, defaultValue);
         }
 
         internal void SaveSetting(string key, string value)
         {
-            ConfigManager.SettingsManager.SaveSetting(SettingsGroup, key, value);
+            ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, key, value);
         }
 
         internal void SaveSetting<T>(string key, T value)
         {
-            ConfigManager.SettingsManager.SaveSetting(SettingsGroup, key, value);
+            ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, key, value);
         }
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
@@ -169,21 +171,39 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             if (oldProfile != null)
             {
-                oldProfile.ProfileTick -= Profile_Tick;
+                // deinitialize on main thread
+                Dispatcher.Invoke(() =>
+                {
+                    Deinit(oldProfile);
+                });
             }
 
             if (Profile != null)
             {
-                Profile.ProfileTick += Profile_Tick;
+                // initialize on main thread
+                Dispatcher.Invoke(Init);
             }
         }
 
-        void Profile_Tick(object sender, EventArgs e)
+        private void Init()
         {
-            if (_phantomFix != null)
-            {
-                _phantomFix.Profile_Tick(sender, e);
-            }
+            Profile.ProfileTick += Profile_Tick;
+            _configuration = new DCSExportConfiguration(this);
+            _vehicleImpersonation = new DCSVehicleImpersonation(this);
+        }
+
+        private void Deinit(HeliosProfile oldProfile)
+        {
+            oldProfile.ProfileTick -= Profile_Tick;
+            _configuration.Dispose();
+            _configuration = null;
+            _vehicleImpersonation.Dispose();
+            _vehicleImpersonation = null;
+        }
+
+        private void Profile_Tick(object sender, EventArgs e)
+        {
+            _phantomFix?.Profile_Tick(sender, e);
         }
 
         private void ActiveDriver_ValueReceived(object sender, NetworkTriggerValue.Value e)
@@ -311,8 +331,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // XXX check on our health
 
             // check on the health of our exports
-            DCSExportConfiguration configuration = new DCSExportConfiguration(this);
-            foreach (StatusReportItem item in configuration.PerformReadyCheck())
+            foreach (StatusReportItem item in _configuration.PerformReadyCheck())
             {
                 yield return item;
             }
@@ -334,15 +353,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 return;
             }
-            IEnumerable<StatusReportItem> newReport = PerformReadyCheck();
+            IList<StatusReportItem> newReport = _configuration.CheckConfig();
             PublishStatusReport(newReport);
         }
 
         public void PublishStatusReport(IEnumerable<StatusReportItem> statusReport)
         {
+            IList<StatusReportItem> statusReportItems = statusReport.ToList();
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(statusReport);
+                observer.ReceiveStatusReport(statusReportItems);
             }
         }
     }

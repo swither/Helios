@@ -16,7 +16,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.NoLocations}"/>
+                        <Condition Binding="{Binding Status, ElementName=InstallationLocations}" Value="{x:Static util:StatusCodes.NoLocations}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -47,7 +47,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"  Foreground="Red" Style="{StaticResource NoLocationsStyle}">Add at least one Location of a DCS Installation.</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"  Foreground="Red" Style="{StaticResource NoLocationsStyle}">Add at least one enabled DCS installation location.</TextBlock>
             <Button Grid.Row="0" Grid.Column="1" Command="local:InstallationLocationsControl.AddInstallationLocationCommand" CommandTarget="{Binding ElementName=InstallationLocations}" Margin="0,0,6,6" Width="120" Height="24">Add Location</Button>
         </Grid>
     </Grid>

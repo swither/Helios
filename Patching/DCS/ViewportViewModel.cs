@@ -1,21 +1,44 @@
 ﻿using System;
 using System.Windows;
+using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    public class ViewportViewModel: DependencyObject
+    public class ViewportViewModel : HeliosViewModel<ShadowVisual>
     {
         private Vector _globalOffset;
-        private double _scale;
         private Rect _monitor = new Rect(0, 0, 1, 1);
+        private double _scale;
         private Rect _viewport = new Rect(0, 0, 1, 1);
 
-        public ViewportViewModel(Monitor monitor, Vector globalOffset, HeliosVisual viewport, double scale)
+        internal ViewportViewModel(ShadowVisual data, Vector globalOffset, double scale) : base(data)
         {
             _globalOffset = globalOffset;
             _scale = scale;
-            Update(monitor);
-            Update(viewport);
+            Update(data.Monitor);
+            Update(data.Visual);
+
+            Data.ViewportChanged += Data_ViewportChanged;
+            Data.MonitorChanged += Data_MonitorChanged;
+        }
+
+        private void Data_MonitorChanged(object sender, RawMonitorEventArgs e)
+        {
+            // some geometry of our containing monitor may have happened
+            Update(e.Raw);
+        }
+
+        // not automatically called because we are strongly referenced by event
+        internal void Dispose()
+        {
+            Data.ViewportChanged -= Data_ViewportChanged;
+            Data.MonitorChanged -= Data_MonitorChanged;
+        }
+
+        private void Data_ViewportChanged(object sender, RawViewportEventArgs e)
+        {
+            // some geometry change may have happened to our viewport specifically
+            Update(e.Raw);
         }
 
         internal void Update(Monitor monitor)
@@ -55,15 +78,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             absolute.Offset(_globalOffset);
             absolute.Scale(_scale, _scale);
             Rect = absolute;
-            ConfigManager.LogManager.LogDebug($"scaled viewport view {this.GetHashCode()} for monitor setup UI is {Rect}");
+            ConfigManager.LogManager.LogDebug($"scaled viewport view {GetHashCode()} for monitor setup UI is {Rect}");
         }
+
+        public static readonly DependencyProperty RectProperty =
+            DependencyProperty.Register("Rect", typeof(Rect), typeof(ViewportViewModel), new PropertyMetadata(null));
 
         public Rect Rect
         {
-            get { return (Rect)GetValue(RectProperty); }
-            set { SetValue(RectProperty, value); }
+            get => (Rect) GetValue(RectProperty);
+            set => SetValue(RectProperty, value);
         }
-        public static readonly DependencyProperty RectProperty =
-            DependencyProperty.Register("Rect", typeof(Rect), typeof(ViewportViewModel), new PropertyMetadata(null));
     }
 }

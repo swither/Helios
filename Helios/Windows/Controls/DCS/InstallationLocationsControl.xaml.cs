@@ -1,6 +1,8 @@
-﻿using GadrocsWorkshop.Helios.Util.DCS;
+﻿using GadrocsWorkshop.Helios.Util;
+using GadrocsWorkshop.Helios.Util.DCS;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -22,6 +24,25 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
         {
             DataContext = InstallationLocations.Singleton;
             InitializeComponent();
+            UpdateStatus();
+            InstallationLocations.Singleton.Enabled += Locations_Changed;
+            InstallationLocations.Singleton.Disabled += Locations_Changed;
+        }
+
+        public void Dispose()
+        {
+            InstallationLocations.Singleton.Enabled -= Locations_Changed;
+            InstallationLocations.Singleton.Disabled -= Locations_Changed;
+        }
+
+        private void Locations_Changed(object sender, InstallationLocations.LocationEvent e)
+        {
+            UpdateStatus();
+        }
+
+        private void UpdateStatus()
+        {
+            Status = InstallationLocations.Singleton.Active.Any() ? StatusCodes.UpToDate : StatusCodes.NoLocations;
         }
 
         #region Commands
@@ -57,6 +78,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             {
                 InstallationLocations.Singleton.TryAdd(new InstallationLocation(openFileDialog.FileName));
             }
+            ((InstallationLocationsControl)target).UpdateStatus();
         }
 
         private static List<string> GenerateDcsRootDirectoryGuesses()
@@ -64,6 +86,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             HashSet<string> existing = new HashSet<string>(
                 InstallationLocations.Singleton.Items.Select(item => item.Path), 
                 System.StringComparer.OrdinalIgnoreCase);
+
             string[] guessPaths = new string[] {
                 System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles), "Eagle Dynamics", "DCS World"),
                 System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86), "Steam", "steamapps", "common", "DCSWorld"),
@@ -71,31 +94,32 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             };
 
             // generate a lot of guesses where it might be
-            List<string> guesses = new List<string>();
-            foreach (string guess in guessPaths)
-            {
-                guesses.Add(guess);
-            }
+            List<string> guesses = guessPaths.ToList();
             foreach (System.IO.DriveInfo drive in System.IO.DriveInfo.GetDrives())
             {
-                if ((drive.DriveType == System.IO.DriveType.Fixed) && (drive.IsReady))
+                if ((drive.DriveType != System.IO.DriveType.Fixed) || (!drive.IsReady))
                 {
-                    if (drive.Name.Substring(1) == ":\\")
-                    {
-                        string letter = drive.Name.Substring(0, 1);
+                    continue;
+                }
 
-                        // check if it is a different drive
-                        foreach (string guess in guessPaths)
-                        {
-                            if ((guess.Substring(1, 2) == ":\\") && (!guess.StartsWith(drive.Name)))
-                            {
-                                guesses.Add($"{letter}{guess.Substring(1)}");
-                            }
-                        }
-                        // check the root too
-                        guesses.Add($"{letter}:\\DCS");
+                if (drive.Name.Substring(1) != ":\\")
+                {
+                    continue;
+                }
+
+                string letter = drive.Name.Substring(0, 1);
+
+                // check if it is a different drive
+                foreach (string guess in guessPaths)
+                {
+                    if ((guess.Substring(1, 2) == ":\\") && (!guess.StartsWith(drive.Name)))
+                    {
+                        guesses.Add($"{letter}{guess.Substring(1)}");
                     }
                 }
+
+                // check the root too
+                guesses.Add($"{letter}:\\DCS");
             }
 
             // now filter to existing directories we haven't already added
@@ -105,8 +129,18 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
         private static void Remove_Executed(object target, ExecutedRoutedEventArgs e)
         {
             InstallationLocations.Singleton.TryRemove(e.Parameter as InstallationLocation);
+            ((InstallationLocationsControl)target).UpdateStatus();
         }
         #endregion
 
+        #region Properties
+        public StatusCodes Status
+        {
+            get => (StatusCodes)GetValue(StatusProperty);
+            set => SetValue(StatusProperty, value);
+        }
+        public static readonly DependencyProperty StatusProperty =
+            DependencyProperty.Register("Status", typeof(StatusCodes), typeof(InstallationLocationsControl), new PropertyMetadata(StatusCodes.Unknown));
+        #endregion
     }
 }

@@ -1,10 +1,10 @@
-﻿<helios_sdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Patching.DCS.MonitorSetupEditor"
+﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Patching.DCS.MonitorSetupEditor"
                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                                 xmlns:helios_sdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
-                                 xmlns:helios_dcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
+                                 xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
+                                 xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
                                  xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
@@ -28,7 +28,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
+                        <Condition Binding="{Binding Status, diag:PresentationTraceSources.TraceLevel=High}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -203,11 +203,11 @@
         </Style>
 
         <Style x:Key="MonitorIncludedCheckbox" TargetType="CheckBox">
-            <Setter Property="IsChecked" Value="{Binding Included}"/>
+            <Setter Property="IsChecked" Value="{Binding Path=Data.Included}"/>
             <Setter Property="IsEnabled" Value="{Binding CanBeExcluded}"/>
             <Setter Property="ToolTip">
                 <Setter.Value>
-                    <TextBlock Text="{Binding IncludedNarrative}"/>
+                    <TextBlock Text="{Binding Path=IncludedNarrative}"/>
                 </Setter.Value>
             </Setter>
             <Setter Property="ToolTipService.ShowOnDisabled" Value="true"/>
@@ -222,7 +222,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Included}" Value="False"/>
+                        <Condition Binding="{Binding Path=Data.Included}" Value="False"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="Stroke" Value="LightGray"/>
@@ -232,10 +232,15 @@
         </Style>
     </FrameworkElement.Resources>
     <StackPanel>
-        <helios_dcs:InstallationLocationsGroup/>
+        <heliosDcs:InstallationLocationsGroup/>
         <GroupBox Header="DCS Monitor Setup" Style="{StaticResource BasicGroup}">
-            <WrapPanel Orientation="Vertical">
-                <Grid Height="Auto" Style="{StaticResource MonitorSetupAllowedStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Disabled">
+                <Grid Style="{StaticResource MonitorSetupAllowedStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" MinWidth="120"/>
                         <!-- primary labels -->
@@ -252,10 +257,11 @@
                     <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="In-Game View" MinHeight="24"/>
                     
                     <!-- monitors -->
-                    <ItemsControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" ItemsSource="{Binding Monitors, ElementName=MonitorSetupWindow}">
+                    <ItemsControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" 
+                                  ItemsSource="{Binding Monitors}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas Width="{Binding ScaledTotalWidth, ElementName=MonitorSetupWindow}" Height="{Binding ScaledTotalHeight, ElementName=MonitorSetupWindow}"/>
+                                <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemContainerStyle>
@@ -270,17 +276,17 @@
                                     <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
                                     <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="SkyBlue" Style="{StaticResource IsMainStyle}"/>
                                     <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
-                                    <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" IsChecked="{Binding Main}" IsEnabled="{Binding CanBeRemovedFromMain}" Style="{StaticResource AircraftCheckbox}"/>
+                                    <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" IsChecked="{Binding Path=Data.Main}" IsEnabled="{Binding CanBeRemovedFromMain}" Style="{StaticResource AircraftCheckbox}"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
                     <!-- viewports -->
-                    <ItemsControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" ItemsSource="{Binding Viewports, ElementName=MonitorSetupWindow}">
+                    <ItemsControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" ItemsSource="{Binding Viewports}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas IsHitTestVisible="False" Opacity="0.2" Width="{Binding ScaledTotalWidth, ElementName=MonitorSetupWindow}" Height="{Binding ScaledTotalHeight, ElementName=MonitorSetupWindow}"/>
+                                <Canvas IsHitTestVisible="False" Opacity="0.2" Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemContainerStyle>
@@ -321,10 +327,10 @@
                     <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="Menus / Loading" MinHeight="24"/>
                     
                     <!-- monitors2 -->
-                    <ItemsControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" ItemsSource="{Binding Monitors, ElementName=MonitorSetupWindow}">
+                    <ItemsControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas Width="{Binding ScaledTotalWidth, ElementName=MonitorSetupWindow}" Height="{Binding ScaledTotalHeight, ElementName=MonitorSetupWindow}"/>
+                                <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemContainerStyle>
@@ -339,7 +345,7 @@
                                     <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
                                     <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="LightGray" Style="{StaticResource IsUserInterfaceStyle}"/>
                                     <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
-                                    <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding UserInterface}" IsEnabled="{Binding CanBeRemovedFromUserInterface}" Style="{StaticResource UserInterfaceCheckbox}"/>
+                                    <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Path=Data.UserInterface}" IsEnabled="{Binding CanBeRemovedFromUserInterface}" Style="{StaticResource UserInterfaceCheckbox}"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -366,12 +372,13 @@
                     </Canvas>
 
                 </Grid>
-                <Grid Height="Auto">
+                </ScrollViewer>
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" MinWidth="120"/>
                         <!-- primary labels -->
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto" MinWidth="120"/>
                         <!-- primary controls and long messages-->
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="10"/>
@@ -395,9 +402,6 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Monitor setup files are up to date.</TextBlock>
                     </Grid>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
@@ -419,7 +423,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must complete 'Reset Monitors' before configuring monitor setup.</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must complete 'Reset Monitors' before configuring shadow setup.</TextBlock>
                     </Grid>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                         <Grid.ColumnDefinitions>
@@ -429,10 +433,10 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must configure DCS installation locations before configuring monitor setup.</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must configure DCS installation locations before configuring shadow setup.</TextBlock>
                     </Grid>
                 </Grid>
-            </WrapPanel>
+            </Grid>
         </GroupBox>
     </StackPanel>
-</helios_sdk:HeliosInterfaceEditor>
+</heliosSdk:HeliosInterfaceEditor>

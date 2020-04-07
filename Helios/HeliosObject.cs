@@ -19,6 +19,11 @@ namespace GadrocsWorkshop.Helios
     using System.Windows.Threading;
     using System.Xml;
 
+    /// <summary>
+    /// this is the type of Helios object that supports input and output bindings
+    /// 
+    /// it inherits the capability of being in a profile and supporting the undo manager for all property changes
+    /// </summary>
     public abstract class HeliosObject : NotificationObject
     {
         private string _name;
