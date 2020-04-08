@@ -18,15 +18,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using CommandLine;
     using System.Collections.Generic;
 
-    class CommandLineOptions
+    class CommandLineOptions : Util.CommandLineOptions
     {
-        [Option('l', "loglevel", DefaultValue = LogLevel.Warning)]
-        public LogLevel LogLevel { get; set; }
-
-        [Option('d', "documents", DefaultValue = "Helios")]
-        public string DocumentPath { get; set; }
-
-        [ValueList(typeof(List<string>), MaximumElements = -1)]
-        public IList<string> Profiles { get; set; }
+        [Value(0)]
+        public IEnumerable<string> Profiles
+        {
+            get;
+            set;
+        }
     }
 }

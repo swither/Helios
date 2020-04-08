@@ -40,3 +40,5 @@ Lua/DCS/Scripts/HeliosExport/Mods
 /ActivityLog.xsl
 /Patching/Templates/Patching/Additional Simulator Viewports
 /prebuild.binlog
+/Tools/TestApplyPatches/test
+attribution_*.txt

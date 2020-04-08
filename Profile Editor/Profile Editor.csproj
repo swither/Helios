@@ -7,7 +7,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GadrocsWorkshop.Helios.ProfileEditor</RootNamespace>
     <AssemblyName>Profile Editor</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -53,8 +53,8 @@
     <StartupObject>GadrocsWorkshop.Helios.ProfileEditor.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+    <Reference Include="CommandLine, Version=2.7.82.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.7.82\lib\net461\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -171,12 +171,15 @@
     <Compile Include="ViewModel\ChecklistItem.cs" />
     <Compile Include="ViewModel\ChecklistSection.cs" />
     <Compile Include="ViewModel\DescriptorToolboxItem.cs" />
+    <Compile Include="InterfaceStatusScanner.cs" />
+    <Compile Include="InterfaceStatus.cs" />
     <Compile Include="ViewModel\MonitorResetItem.cs" />
     <Compile Include="ViewModel\ProfileExplorerTreeItem.cs" />
     <Compile Include="ViewModel\ProfileExplorerTreeItemCollection.cs" />
     <Compile Include="ViewModel\ProfileExplorerTreeItemType.cs" />
     <Compile Include="ViewModel\PropertyEditorGroup.cs" />
     <Compile Include="ViewModel\PropertyEditorGroupCollection.cs" />
+    <Compile Include="ViewModel\SeverityThreshold.cs" />
     <Compile Include="ViewModel\TemplateManagerGroup.cs" />
     <Compile Include="ViewModel\TemplateManagerGroupCollection.cs" />
     <Compile Include="ViewModel\TemplateToolboxItem.cs" />

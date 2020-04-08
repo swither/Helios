@@ -63,6 +63,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private bool _initialLoad = true;
 
+        private InterfaceStatusScanner _configurationCheck = new InterfaceStatusScanner();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -74,6 +76,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             _layoutSerializer.LayoutSerializationCallback += LayoutSerializer_LayoutSerializationCallback;
 
             _defaultLayoutFile = System.IO.Path.Combine(ConfigManager.DocumentPath, "DefaultLayout.hply");
+
+            // arm this to tell us if any interface reports status above a configured threshold
+            _configurationCheck.Triggered += ConfigurationCheck_Triggered;
         }
 
         void LayoutSerializer_LayoutSerializationCallback(object sender, LayoutSerializationCallbackEventArgs e)
@@ -571,7 +576,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// </summary>
         /// <param name="layoutFileName"></param>
         /// <returns></returns>
-        static private bool LayoutIsComplete(string systemLayoutText, string layoutFileName)
+        private static bool LayoutIsComplete(string systemLayoutText, string layoutFileName)
         {
             // WARNING: called on a worker thread
             Regex contentId = new Regex("ContentId=\"([^\"]+)\"", RegexOptions.Compiled);
@@ -605,8 +610,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// called when creating or loading a profile is complete
         /// </summary>
         private void OnProfileChangeComplete()
+        { 
+            _configurationCheck?.Reload(Profile);
+        }
+
+        private void ConfigurationCheck_Triggered(object sender, EventArgs e)
         {
-            ChecklistWindow.Load(Profile);
+            ConfigManager.LogManager.LogError("unimplemented configuration check triggered");
         }
 
         private void LoadVisual(HeliosVisual visual)
@@ -626,7 +636,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private bool SaveProfile()
         {
-            if (Profile.Path == null || Profile.Path.Length == 0)
+            if (string.IsNullOrEmpty(Profile.Path))
             {
                 return SaveAsProfile();
             }
@@ -865,9 +875,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void GoThere_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             ChecklistSection section = (ChecklistSection)(e.Parameter);
-            if (section.HasEditor)
+            if (section.Data.HasEditor)
             {
-                AddNewDocument(section.Interface);
+                AddNewDocument(section.Data.Interface);
             }
         }
         #endregion

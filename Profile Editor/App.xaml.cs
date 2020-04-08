@@ -47,19 +47,28 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             base.OnStartup(e);
 
-            CommandLineOptions options = new CommandLineOptions();
+            base.OnStartup(e);
 
-            if (CommandLine.Parser.Default.ParseArguments(e.Args, options))
+            CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
+
+            // react to options or defaults
+            if (options.Profiles.Any())
             {
-                if (options.Profiles != null && options.Profiles.Count > 0)
-                {
-                    StartupProfile = options.Profiles.Last();
-                }
+                StartupProfile = options.Profiles.Last();
             }
 
+            // start up Helios
             string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), options.DocumentPath);
             HeliosInit.Initialize(documentPath, "ProfileEditor.log", options.LogLevel);
 
+            // need to defer exit until after we initialize Helios or our main window will crash
+            if (exitCode < 0)
+            {
+                Current.Shutdown();
+                return;
+            }
+
+            // note that we started
             ConfigManager.LogManager.LogInfo("Starting Editor");
         }
 

@@ -16,24 +16,18 @@
 namespace GadrocsWorkshop.Helios.ControlCenter
 {
     using CommandLine;
-    using System;
     using System.Collections.Generic;
 
-    class CommandLineOptions
+    class CommandLineOptions : Util.CommandLineOptions
     {
-        [Option('t', "notouchkit", DefaultValue = false)]
-        public bool DisableTouchKit { get; set; }
+        [Option('x', "exit", HelpText = "Kill a running Control Center")]
+        public bool Exit { get; set; } = false;
 
-        [Option('l', "loglevel", DefaultValue = LogLevel.Warning)]
-        public LogLevel LogLevel { get; set; }
-
-        [Option('x', "exit", DefaultValue = false)]
-        public bool Exit { get; set; }
-
-        [Option('d', "documents", DefaultValue = "Helios")]
-        public string DocumentPath { get; set; }
-
-        [ValueList(typeof(List<string>), MaximumElements = -1)]
-        public IList<string> Profiles { get; set; }
+        [Value(0, MetaName="[Profile]", HelpText = "Startup profile name")]
+        public IEnumerable<string> Profiles
+        {
+            get;
+            set;
+        }
     }
 }

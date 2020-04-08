@@ -2,6 +2,11 @@
 
 namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 {
+    /// <summary>
+    /// A view model for StatusReportItem viewed in the configuration check (Checklist) view
+    ///
+    /// Not implemented as HeliosViewModel<T> because StatusReportItem (the model) is not a Helios NotificationObject
+    /// </summary>
     public class ChecklistItem : DependencyObject
     {
         private StatusReportItem item;

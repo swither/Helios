@@ -1,64 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 {
-    public class ChecklistSection : DependencyObject, IStatusReportObserver
+    /// <summary>
+    /// a view model for the status of an interface, as viewed in the configuration check (Checklist) view
+    /// </summary>
+    public class ChecklistSection : HeliosViewModel<InterfaceStatus>
     {
-        private List<StatusReportItem> _report = new List<StatusReportItem>();
+        #region Private
+
+        private readonly List<StatusReportItem> _report = new List<StatusReportItem>();
+
         private StatusReportItem.SeverityCode _displayThreshold;
 
-        private ChecklistSection()
+        #endregion
+
+        public ChecklistSection(InterfaceStatus data)
+            : base(data)
         {
             Items = new ObservableCollection<ChecklistItem>();
             Recommendations = new ObservableCollection<string>();
+            Update(data.Report);
+            data.PropertyChanged += Data_PropertyChanged;
         }
 
-        public static bool TryManage(HeliosInterface heliosInterface, out ChecklistSection managed)
+        private void Data_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (!(heliosInterface is IReadyCheck readyCheck))
+            switch (e.PropertyName)
             {
-                managed = null;
-                return false;
+                case "Report":
+                    Update(((InterfaceStatus) sender).Report);
+                    break;
             }
-            ChecklistSection section = new ChecklistSection();
-            section.Interface = heliosInterface;
-            section.ReadyCheck = readyCheck;
-            section.Name = $"{heliosInterface.Name}";
-            HeliosInterfaceDescriptor descriptor = ConfigManager.ModuleManager.InterfaceDescriptors[heliosInterface.TypeIdentifier];
-            section.HasEditor = descriptor.InterfaceEditorType != null;
-
-            // sign up for status changes
-            if (heliosInterface is IStatusReportNotify subscription)
-            {
-                section.Subscription = subscription;
-                section.Subscription.Subscribe(section);
-            }
-
-            // allow this object to be used in UI
-            managed = section;
-            return true;
-        }
-
-        public void Dispose()
-        {
-            Subscription?.Unsubscribe(this);
-        }
-
-        public void PerformCheck(StatusReportItem.SeverityCode displayThreshold)
-        {
-            DisplayThreshold = displayThreshold;
-            IEnumerable<StatusReportItem> collection = ReadyCheck.PerformReadyCheck();
-            Update(collection);
         }
 
         private void Update(IEnumerable<StatusReportItem> freshReport)
         {
             _report.Clear();
-            _report.AddRange(freshReport);
+            _report.AddRange(freshReport.Where(i => i.Severity >= DisplayThreshold));
             Items.Clear();
             Recommendations.Clear();
             RecommendationsVisibility = Visibility.Collapsed;
@@ -73,8 +58,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
             // create a unique set of recommendations
             HashSet<string> uniqueRecommendations = new HashSet<string>(
-                _report.Select(item => item.Recommendation).Where(text => !string.IsNullOrEmpty(text)), 
-                System.StringComparer.OrdinalIgnoreCase);
+                _report.Select(item => item.Recommendation).Where(text => !string.IsNullOrEmpty(text)),
+                StringComparer.OrdinalIgnoreCase);
             foreach (string recommendation in uniqueRecommendations)
             {
                 Recommendations.Add(recommendation);
@@ -83,60 +68,26 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
             // create full resolution status items
             StatusReportItem.SeverityCode newStatus = _report.Select(item => item.Severity).Max();
-            IEnumerable<ChecklistItem> checklistItems = _report.Where(item => item.Severity >= DisplayThreshold).Select(item => new ChecklistItem(item));
+            IEnumerable<ChecklistItem> checklistItems = _report.Where(item => item.Severity >= DisplayThreshold)
+                .Select(item => new ChecklistItem(item));
             foreach (ChecklistItem checklistItem in checklistItems)
             {
                 Items.Add(checklistItem);
             }
+
             setStatus(newStatus);
             UpdateDetailsVisibility();
         }
 
-        public void ReceiveStatusReport(IEnumerable<StatusReportItem> statusReport)
-        {
-            Update(statusReport);
-        }
-
         private void UpdateDetailsVisibility()
         {
-            DetailsVisibility = ((Items.Count > 0) && (_displayThreshold < StatusReportItem.SeverityCode.None)) ? Visibility.Visible : Visibility.Collapsed;
+            DetailsVisibility = Items.Count > 0 && _displayThreshold < StatusReportItem.SeverityCode.None
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
-
-        #region Properties
-        public IReadyCheck ReadyCheck { get; private set; }
-        public IStatusReportNotify Subscription { get; private set; }
-        public String Name { get; private set; }
-        public bool HasEditor { get; private set; }
-        public HeliosInterface Interface { get; private set; }
-        public StatusReportItem.SeverityCode DisplayThreshold
-        {
-            get => _displayThreshold;
-            set
-            {
-                _displayThreshold = value;
-                UpdateDetailsVisibility();
-            }
-        }
-        public Visibility GoThereVisibility => HasEditor ? Visibility.Visible : Visibility.Hidden;
-
-        public Visibility DetailsVisibility
-        {
-            get { return (Visibility)GetValue(DetailsVisibilityProperty); }
-            set { SetValue(DetailsVisibilityProperty, value); }
-        }
-        public static readonly DependencyProperty DetailsVisibilityProperty =
-            DependencyProperty.Register("DetailsVisibility", typeof(Visibility), typeof(ChecklistSection), new PropertyMetadata(Visibility.Visible));
-
-        public Visibility RecommendationsVisibility
-        {
-            get { return (Visibility)GetValue(RecommendationsVisibilityProperty); }
-            set { SetValue(RecommendationsVisibilityProperty, value); }
-        }
-        public static readonly DependencyProperty RecommendationsVisibilityProperty =
-            DependencyProperty.Register("RecommendationsVisibility", typeof(Visibility), typeof(ChecklistSection), new PropertyMetadata(Visibility.Visible));
 
         /// <summary>
-        /// Instead of a setter for the corresponding string, we use this method to 
+        /// Instead of a setter for the corresponding string, we use this method to
         /// ensure the underlying enum can be renamed and otherwise changed safely.
         /// </summary>
         /// <param name="code"></param>
@@ -158,38 +109,81 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                     StatusNarrative = "This component is reporting errors and requires attention.";
                     break;
             }
+        }
 
-        }
-        public string Status
-        {
-            get { return (string)GetValue(StatusProperty); }
-        }
-        public static readonly DependencyProperty StatusProperty =
-            DependencyProperty.Register("Status", typeof(string), typeof(ChecklistSection), new PropertyMetadata("None"));
+        #region Properties
 
-        public string StatusNarrative
+        public StatusReportItem.SeverityCode DisplayThreshold
         {
-            get { return (string)GetValue(StatusNarrativeProperty); }
-            set { SetValue(StatusNarrativeProperty, value); }
+            get => _displayThreshold;
+            set
+            {
+                _displayThreshold = value;
+                UpdateDetailsVisibility();
+            }
         }
-        public static readonly DependencyProperty StatusNarrativeProperty =
-            DependencyProperty.Register("StatusNarrative", typeof(string), typeof(ChecklistSection), new PropertyMetadata(""));
+
+        public Visibility GoThereVisibility => Data.HasEditor ? Visibility.Visible : Visibility.Hidden;
+
+        public Visibility DetailsVisibility
+        {
+            get => (Visibility) GetValue(DetailsVisibilityProperty);
+            set => SetValue(DetailsVisibilityProperty, value);
+        }
 
         public ObservableCollection<ChecklistItem> Items
         {
-            get { return (ObservableCollection<ChecklistItem>)GetValue(itemsProperty); }
-            set { SetValue(itemsProperty, value); }
+            get => (ObservableCollection<ChecklistItem>) GetValue(ItemsProperty);
+            set => SetValue(ItemsProperty, value);
         }
-        public static readonly DependencyProperty itemsProperty =
-            DependencyProperty.Register("Items", typeof(ObservableCollection<ChecklistItem>), typeof(ChecklistSection), new PropertyMetadata(null));
 
         public ObservableCollection<string> Recommendations
         {
-            get { return (ObservableCollection<string>)GetValue(RecommendationsProperty); }
-            set { SetValue(RecommendationsProperty, value); }
+            get => (ObservableCollection<string>) GetValue(RecommendationsProperty);
+            set => SetValue(RecommendationsProperty, value);
         }
+
+        public Visibility RecommendationsVisibility
+        {
+            get => (Visibility) GetValue(RecommendationsVisibilityProperty);
+            set => SetValue(RecommendationsVisibilityProperty, value);
+        }
+
+        public string Status => (string) GetValue(StatusProperty);
+
+        public string StatusNarrative
+        {
+            get => (string) GetValue(StatusNarrativeProperty);
+            set => SetValue(StatusNarrativeProperty, value);
+        }
+
+        #endregion
+
+        #region DependencyProperties
+
+        public static readonly DependencyProperty DetailsVisibilityProperty =
+            DependencyProperty.Register("DetailsVisibility", typeof(Visibility), typeof(ChecklistSection),
+                new PropertyMetadata(Visibility.Visible));
+
+        public static readonly DependencyProperty ItemsProperty =
+            DependencyProperty.Register("Items", typeof(ObservableCollection<ChecklistItem>), typeof(ChecklistSection),
+                new PropertyMetadata(null));
+
         public static readonly DependencyProperty RecommendationsProperty =
-            DependencyProperty.Register("Recommendations", typeof(ObservableCollection<string>), typeof(ChecklistSection), new PropertyMetadata(null));
+            DependencyProperty.Register("Recommendations", typeof(ObservableCollection<string>),
+                typeof(ChecklistSection), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty RecommendationsVisibilityProperty =
+            DependencyProperty.Register("RecommendationsVisibility", typeof(Visibility), typeof(ChecklistSection),
+                new PropertyMetadata(Visibility.Visible));
+
+        public static readonly DependencyProperty StatusProperty =
+            DependencyProperty.Register("Status", typeof(string), typeof(ChecklistSection),
+                new PropertyMetadata("None"));
+
+        public static readonly DependencyProperty StatusNarrativeProperty =
+            DependencyProperty.Register("StatusNarrative", typeof(string), typeof(ChecklistSection),
+                new PropertyMetadata(""));
 
         #endregion
     }

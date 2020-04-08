@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using CommandLine;
+using CommandLine.Text;
+
 namespace GadrocsWorkshop.Helios.ControlCenter
 {
     using Microsoft.Shell;
@@ -31,7 +34,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
     {
         private const string InstanceUniqueName = "HeliosApplicationInstanceMutex";
         private string _startupProfile = null;
-        private bool _disableTouchKit;
 
         /// <summary>
         /// Application Entry Point.
@@ -62,53 +64,48 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             private set { _startupProfile = value; }
         }
 
-        public bool DisableTouchKit
-        {
-            get { return _disableTouchKit; }
-            private set { _disableTouchKit = value; }
-        }
-
         #endregion
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            CommandLineOptions options = new CommandLineOptions();
+            CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
 
-            if (CommandLine.Parser.Default.ParseArguments(e.Args, options))
+            // react to options or defaults
+            if (options.Profiles != null && options.Profiles.Any())
             {
-                DisableTouchKit = options.DisableTouchKit;
-
-                if (options.Profiles != null && options.Profiles.Count > 0)
-                {
-                    StartupProfile = options.Profiles.Last();
-                }
+                StartupProfile = options.Profiles.Last();
             }
 
+            // start up Helios
             string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), options.DocumentPath);
             HeliosInit.Initialize(documentPath, "ControlCenter.log", options.LogLevel, new HeliosApplication(false));
+
+            // need to defer exit until after we initialize Helios or our main window will crash
+            if (exitCode < 0)
+            {
+                Current.Shutdown();
+            }
         }
 
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
-
-            CommandLineOptions options = new CommandLineOptions();
-
-            CommandLine.Parser.Default.ParseArguments(args.ToArray(), options);
-
+            CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), args.ToArray(), out int exitCode);
             if (options.Exit)
             {
-                ApplicationCommands.Close.Execute(null, Application.Current.MainWindow);
+                ApplicationCommands.Close.Execute(null, Current.MainWindow);
             }
-            else if (options.Profiles != null && options.Profiles.Count > 0 && File.Exists(options.Profiles.Last()))
+            else if (options.Profiles != null && options.Profiles.Any() &&
+                     File.Exists(options.Profiles.Last()))
             {
-                ControlCenterCommands.RunProfile.Execute(options.Profiles.Last(), Application.Current.MainWindow);
+                ControlCenterCommands.RunProfile.Execute(options.Profiles.Last(),
+                    Current.MainWindow);
             }
-
-            return true;
+            return exitCode == 0;
         }
 
+        // XXX re-enable this and test
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             System.Windows.MessageBox.Show(string.Format("An error occured: {0}", e.Exception.Message), "Error");
