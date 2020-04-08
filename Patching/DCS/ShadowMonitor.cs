@@ -63,19 +63,19 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         /// <summary>
         /// backing field for property Included, contains
-        /// true if this shadow is included in the extent used to calculate the DCS resolution
+        /// true if this monitor is included in the extent used to calculate the DCS resolution
         /// </summary>
         private bool _included;
 
         /// <summary>
         /// backing field for property Main, contains
-        /// true if this shadow is included in Main 3D view
+        /// true if this monitor is included in Main 3D view
         /// </summary>
         private bool _main;
 
         /// <summary>
         /// backing field for property UserInterface, contains
-        /// true if this shadow is included in UI view showing DCS dialogs and loading screen
+        /// true if this monitor is included in UI view showing DCS dialogs and loading screen
         /// </summary>
         private bool _userInterface;
 
@@ -147,7 +147,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 KeyChanged?.Invoke(this, new KeyChangeEventArgs(oldKey, newKey));
             }
 
-            // need to update all viewports on this shadow
+            // need to update all viewports on this monitor
             foreach (ShadowVisual child in _children.Values)
             {
                 UpdateChild(child);
@@ -192,7 +192,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         internal int ViewportCount => _viewportCount;
 
         /// <summary>
-        /// true if this shadow is included in Main 3D view
+        /// true if this monitor is included in Main 3D view
         /// </summary>
         public bool Main
         {
@@ -212,7 +212,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         /// <summary>
-        /// true if this shadow is included in UI view showing DCS dialogs and loading screen
+        /// true if this monitor is included in UI view showing DCS dialogs and loading screen
         /// </summary>
         public bool UserInterface
         {
@@ -232,7 +232,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         /// <summary>
-        /// true if this shadow is included in the extent used to calculate the DCS resolution
+        /// true if this monitor is included in the extent used to calculate the DCS resolution
         /// </summary>
         public bool Included
         {
