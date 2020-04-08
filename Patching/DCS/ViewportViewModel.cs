@@ -1,15 +1,18 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     public class ViewportViewModel : HeliosViewModel<ShadowVisual>
     {
+        #region Private
+
         private Vector _globalOffset;
         private Rect _monitor = new Rect(0, 0, 1, 1);
         private double _scale;
         private Rect _viewport = new Rect(0, 0, 1, 1);
+
+        #endregion
 
         internal ViewportViewModel(ShadowVisual data, Vector globalOffset, double scale) : base(data)
         {

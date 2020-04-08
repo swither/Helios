@@ -3,9 +3,13 @@ using System.Collections.Generic;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    public class ShadowMonitorEventArgs: EventArgs
+    public class ShadowMonitorEventArgs : EventArgs
     {
-        public ShadowMonitor Data;
+        #region Private
+
+        public ShadowMonitor Data { get; }
+
+        #endregion
 
         public ShadowMonitorEventArgs(ShadowMonitor shadow)
         {
@@ -15,7 +19,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
     public class RawMonitorEventArgs : EventArgs
     {
-        public Monitor Raw;
+        #region Private
+
+        public Monitor Raw { get; }
+
+        #endregion
 
         public RawMonitorEventArgs(Monitor monitor)
         {
@@ -29,17 +37,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     /// </summary>
     public class ShadowMonitor : ShadowVisual
     {
+        #region Delegates
+
         public event EventHandler<KeyChangeEventArgs> KeyChanged;
 
-        // the position and size of a shadow is all we care about
-        public static string CreateKey(Monitor display) =>
-            $"{display.Left}_{display.Top}_{display.Width}_{display.Height}";
+        #endregion
 
-        internal static IEnumerable<string> GetAllKeys(Monitor monitor)
-        {
-            string baseKey = CreateKey(monitor);
-            return MonitorViewModel.GetAllKeys(baseKey);
-        }
+        #region Nested
 
         public class KeyChangeEventArgs : EventArgs
         {
@@ -52,6 +56,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             public string OldKey { get; }
             public string NewKey { get; }
         }
+
+        #endregion
+
+        #region Private
 
         /// <summary>
         /// backing field for property Included, contains
@@ -73,6 +81,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private int _viewportCount;
 
+        #endregion
+
         internal ShadowMonitor(IShadowVisualParent parent, Monitor monitor)
             : base(parent, monitor, monitor, false)
         {
@@ -82,6 +92,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             LoadSettings();
         }
 
+        // the position and size of a shadow is all we care about
+        public static string CreateKey(Monitor display) =>
+            $"{display.Left}_{display.Top}_{display.Width}_{display.Height}";
+
+        internal static IEnumerable<string> GetAllKeys(Monitor monitor)
+        {
+            string baseKey = CreateKey(monitor);
+            yield return baseKey;
+            yield return $"{baseKey}_Main";
+            yield return $"{baseKey}_UserInterface";
+        }
+
         public string Key { get; private set; }
 
 
@@ -89,7 +111,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             Included = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, Key, true);
             Main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_Main", false);
-            Main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_UserInterface",
+            UserInterface = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_UserInterface",
                 false);
         }
 

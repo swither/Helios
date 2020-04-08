@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
-using GadrocsWorkshop.Helios.Util;
-using GadrocsWorkshop.Helios.Util.DCS;
 
 // XXX missing feature: allow specifying a shared monitor config and merging into it
 // XXX missing feature: support explicit view ports for MAIN and UI
 
-// XXX factor out ShadowModel (IShadowVisualParent) into field?
+// REVISIT factor out ShadowModel (IShadowVisualParent) into field?
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
+    /// <summary>
+    /// This interface represents the capability of generating a MonitorSetup lua file for DCS.
+    /// </summary>
     [HeliosInterface("Patching.DCS.MonitorSetup", "DCS Monitor Setup", typeof(MonitorSetupEditor),
         Factory = typeof(UniqueHeliosInterfaceFactory))]
     public class MonitorSetup : HeliosInterface, IReadyCheck, IStatusReportNotify, IResetMonitorsObserver,
@@ -74,8 +74,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         #region Private
 
-        private MonitorSetupGenerator _config;
-
         /// <summary>
         /// live inventory of our profile, indexed by monitor key
         /// </summary>
@@ -88,6 +86,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private readonly Dictionary<HeliosVisual, ShadowVisual> _viewports =
             new Dictionary<HeliosVisual, ShadowVisual>();
+
+        private MonitorSetupGenerator _config;
 
         /// <summary>
         /// timer to delay execution of change in geometry because we sometimes receive thousands of events,
@@ -403,6 +403,22 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         internal IEnumerable<ShadowVisual> Viewports => _viewports.Values;
 
+        #region IInstallation
+
+        // all we have right now is the monitor setup file generator
+        public InstallationResult Install(IInstallationCallbacks callbacks) => _config.Install(callbacks);
+
+        #endregion
+
+        #region IReadyCheck
+
+        // all we have right now is the monitor setup file generator
+        public IEnumerable<StatusReportItem> PerformReadyCheck() => _config.PerformReadyCheck();
+
+        #endregion
+
+        #region IResetMonitorsObserver
+
         /// <summary>
         /// notification from profile or UI that the monitors defined in the profile have been changed
         /// </summary>
@@ -410,6 +426,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             OnMonitorCollectionChange();
         }
+
+        #endregion
+
+        #region IShadowVisualParent
 
         public double Scale
         {
@@ -469,6 +489,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
+        #endregion
+
+        #region IStatusReportNotify
+
         public void Subscribe(IStatusReportObserver observer)
         {
             _observers.Add(observer);
@@ -499,16 +523,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        public InstallationResult Install(IInstallationCallbacks callbacks)
-        {
-            // all we have right now is the monitor setup file generator
-            return _config.Install(callbacks);
-        }
-
-        public IEnumerable<StatusReportItem> PerformReadyCheck()
-        {
-            // all we have right now is the monitor setup file generator
-            return _config.PerformReadyCheck();
-        }
+        #endregion
     }
 }

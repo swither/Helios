@@ -80,7 +80,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Main}" Value="True"/>
+                        <Condition Binding="{Binding Path=Data.Main}" Value="True"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -93,7 +93,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding UserInterface}" Value="True"/>
+                        <Condition Binding="{Binding Path=Data.UserInterface}" Value="True"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -394,7 +394,11 @@
                         <TextBlock VerticalAlignment="Center" Text="x"/>
                         <TextBlock VerticalAlignment="Center" Text="{Binding ResolutionHeight}"/>
                     </StackPanel>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Resolution that must be selected in DCS Options" Style="{StaticResource Documentation}"/>
+                    <WrapPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
+                        <TextBlock Style="{StaticResource Documentation}">Minimum resolution that must be selected in DCS Options.</TextBlock>
+                        <TextBlock Style="{StaticResource Documentation}">If this resolution is not available in DCS, you can choose any larger resolution.</TextBlock>
+                        <TextBlock Style="{StaticResource Documentation}">If you are technical or very brave, you can hack DCS options.lua to add this as a custom resolution.</TextBlock>
+                    </WrapPanel>
 
                     <Label Grid.Row="4" Grid.Column="0" Content="Status" Style="{StaticResource InterfaceEditorLabel}"/>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource UpToDateStyle}">

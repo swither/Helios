@@ -45,7 +45,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 destinations[location.Path] = new PatchDestinationViewModel(location, AdditionalViewports.PATCH_SET);
             }
 
-            Patching = new PatchingViewModel(destinations, AdditionalViewports.PATCH_SET, "Helios viewport patches");
+            Patching = new PatchingConfiguration(destinations, AdditionalViewports.PATCH_SET, "Helios viewport patches");
 
             // register for changes in selected destinations so we can scan again
             locations.Added += OnAdded;
@@ -114,14 +114,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         #region Properties
 
-        public PatchingViewModel Patching
+        public PatchingConfiguration Patching
         {
-            get => (PatchingViewModel) GetValue(PatchingProperty);
+            get => (PatchingConfiguration) GetValue(PatchingProperty);
             set => SetValue(PatchingProperty, value);
         }
 
         public static readonly DependencyProperty PatchingProperty =
-            DependencyProperty.Register("Patching", typeof(PatchingViewModel), typeof(AdditionalViewportsEditor),
+            DependencyProperty.Register("Patching", typeof(PatchingConfiguration), typeof(AdditionalViewportsEditor),
                 new PropertyMetadata(null));
 
         #endregion

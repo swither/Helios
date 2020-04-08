@@ -19,13 +19,14 @@ using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching
 {
-    public class PatchingViewModel: DependencyObject, IInstallation
+    // REVISIT: reimplement as a HeliosViewModel and a DCSConfiguration
+    public class PatchingConfiguration: DependencyObject, IInstallation
     {
         private Dictionary<string, PatchDestinationViewModel> _destinations;
         private string _patchSet;
         private string _patchSetDescription;
 
-        public PatchingViewModel(Dictionary<string, PatchDestinationViewModel> destinations, string patchSet, string patchSetDescription)
+        public PatchingConfiguration(Dictionary<string, PatchDestinationViewModel> destinations, string patchSet, string patchSetDescription)
         {
             _destinations = destinations;
             _patchSet = patchSet;
@@ -201,7 +202,7 @@ namespace GadrocsWorkshop.Helios.Patching
             set { SetValue(StatusProperty, value); }
         }
         public static readonly DependencyProperty StatusProperty =
-            DependencyProperty.Register("Status", typeof(StatusCodes), typeof(PatchingViewModel), new PropertyMetadata(StatusCodes.OutOfDate));
+            DependencyProperty.Register("Status", typeof(StatusCodes), typeof(PatchingConfiguration), new PropertyMetadata(StatusCodes.OutOfDate));
         #endregion
     }
 }

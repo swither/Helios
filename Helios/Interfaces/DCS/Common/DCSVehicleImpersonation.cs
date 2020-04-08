@@ -13,7 +13,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -53,7 +52,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void OnItemAdded(object sender, EditableComboBoxModel.NewItemAddedArgs e)
         {
-            // XXX persist e.value
+            // REVISIT persist e.value
         }
 
         /// <summary>
@@ -72,7 +71,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         SortedSet<string> CreateItemSet()
         {
             SortedSet<string> vehicles = new SortedSet<string>(KnownVehicles);
-            // XXX load set from config file and merge
+            vehicles.Remove("DCSGeneric");
+            // REVISIT load set from config file and merge
             return vehicles;
         }
 

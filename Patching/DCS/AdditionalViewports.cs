@@ -1,17 +1,26 @@
-﻿using GadrocsWorkshop.Helios.ComponentModel;
-using GadrocsWorkshop.Helios.Util.DCS;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Util.DCS;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    [HeliosInterface("Patching.DCS.AdditionalViewports", "DCS Additional Viewports", typeof(AdditionalViewportsEditor), Factory = typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Patching.DCS.AdditionalViewports", "DCS Additional Viewports", typeof(AdditionalViewportsEditor),
+        Factory = typeof(UniqueHeliosInterfaceFactory))]
     public class AdditionalViewports : HeliosInterface, IReadyCheck, IViewportProvider, IStatusReportNotify
     {
+        #region Constant
+
         public const string PATCH_SET = "Viewports";
+
+        #endregion
+
+        #region Private
+
         private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
+
+        #endregion
 
         public AdditionalViewports() : base("DCS Additional Viewports")
         {
@@ -45,11 +54,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             InvalidateStatusReport();
         }
 
-        public bool IsViewportAvailable(string viewportName)
+        public override void ReadXml(XmlReader reader)
         {
-            // For now, this assumes all patches are either included or not (just checks for presence of interface.)        
-            return true;
+            // no code
         }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            // no code
+        }
+
+        #region IReadyCheck
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
@@ -59,8 +74,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 yield return new StatusReportItem
                 {
-                    Status = $"No DCS installation locations are configured for viewport patch installation",
-                    Recommendation = $"Using Helios Profile Editor, configure any DCS installation directories you use",
+                    Status = "No DCS installation locations are configured for viewport patch installation",
+                    Recommendation = "Using Helios Profile Editor, configure any DCS installation directories you use",
                     Severity = StatusReportItem.SeverityCode.Error
                 };
                 yield break;
@@ -76,10 +91,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     yield return new StatusReportItem
                     {
                         Status = $"No Viewport patches compatible with {destination.Description} found in installation",
-                        Recommendation = $"Please reinstall Helios to install these patches or provide them in documents folder",
+                        Recommendation =
+                            "Please reinstall Helios to install these patches or provide them in documents folder",
                         Severity = StatusReportItem.SeverityCode.Error
                     };
                 }
+
                 IEnumerable<StatusReportItem> results = patches.Verify(destination);
                 foreach (StatusReportItem result in results)
                 {
@@ -88,15 +105,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        public override void ReadXml(XmlReader reader)
-        {
-            // no code
-        }
+        #endregion
 
-        public override void WriteXml(XmlWriter writer)
-        {
-            // no code
-        }
+        #region IStatusReportNotify
 
         public void Subscribe(IStatusReportObserver observer)
         {
@@ -114,6 +125,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 return;
             }
+
             IEnumerable<StatusReportItem> newReport = PerformReadyCheck();
             PublishStatusReport(newReport);
         }
@@ -126,5 +138,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 observer.ReceiveStatusReport(statusReportItems);
             }
         }
+
+        #endregion
+
+        #region IViewportProvider
+
+        // For now, this assumes all patches are either included or not (just checks for presence of interface.)        
+        public bool IsViewportAvailable(string viewportName) => true;
+
+        #endregion
     }
 }

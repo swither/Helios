@@ -19,6 +19,9 @@ using GadrocsWorkshop.Helios.Util.DCS;
 
 namespace GadrocsWorkshop.Helios.Patching
 {
+    /// <summary>
+    /// generic IPatchDestination, currently can only be constructed from a DCS InstallationLocation
+    /// </summary>
     public class PatchDestinationViewModel
     {
         public IPatchDestination Destination;

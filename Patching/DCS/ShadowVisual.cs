@@ -6,7 +6,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     public class ShadowViewportEventArgs : EventArgs
     {
-        public ShadowVisual Data;
+        public ShadowVisual Data { get; }
 
         public ShadowViewportEventArgs(ShadowVisual shadow)
         {
@@ -16,14 +16,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
     public class RawViewportEventArgs : EventArgs
     {
-        public HeliosVisual Raw;
+        public HeliosVisual Raw { get; }
 
         public RawViewportEventArgs(HeliosVisual visual)
         {
             Raw = visual;
         }
     }
-
 
     /// <summary>
     /// callbacks from objects shadowing visuals (viewports, monitors) in the Helios Profile
