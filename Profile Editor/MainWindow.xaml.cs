@@ -69,6 +69,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             InitializeComponent();
 
+            ChecklistPanel.DataContext = new ViewModelCollection<InterfaceStatus, ChecklistSection>(_configurationCheck.InterfaceStatuses);
             DockManager.ActiveContentChanged += new EventHandler(DockManager_ActiveDocumentChanged);
             NewProfile();
 
@@ -370,11 +371,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 // Since a new LayoutRoot object is created upon de-serialization, the Child LayoutDocumentPane no longer belongs to the LayoutRoot 
                 // therefore the LayoutDocumentPane 'DocumentPane' must be referred to dynamically
                 // change added by yzfanimal
-                LayoutDocumentPane DocumentPane = this.DockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
-                if (DocumentPane != null)
-                {
-                    DocumentPane.Children.Add(document);
-                }
+                LayoutDocumentPane documentPane = DockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
+                documentPane?.Children.Add(document);
                 document.Closed += Document_Closed;
 
                 meta = AddDocumentMeta(profileObject, document, editor);
@@ -616,7 +614,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void ConfigurationCheck_Triggered(object sender, EventArgs e)
         {
-            ConfigManager.LogManager.LogError("unimplemented configuration check triggered");
+            // REVISIT: this is expensive.  add tracking whether it is currently closed or hidden, so we don't have to search?
+            ShowCurrentLayoutAnchorable(ChecklistPanel);
         }
 
         private void LoadVisual(HeliosVisual visual)
@@ -884,37 +883,50 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void Show_Preview(object sender, RoutedEventArgs e)
         {
-            PreviewPane.Show();
+            ShowCurrentLayoutAnchorable(PreviewPanel);
         }
 
         private void Show_Toolbox(object sender, RoutedEventArgs e)
         {
-            ToolboxPane.Show();
+            ShowCurrentLayoutAnchorable(ToolboxPanel);
         }
 
         private void Show_Checklist(object sender, RoutedEventArgs e)
         {
-            ChecklistPane.Show();
+            ShowCurrentLayoutAnchorable(ChecklistPanel);
+        }
+
+        /// <summary>
+        /// try to find the layout panel that is now hosting the specified control
+        /// and display it.  During every layout deserialization, these layout panels
+        /// are replaced so we don't keep references to them.
+        /// </summary>
+        /// <param name="withContent"></param>
+        private void ShowCurrentLayoutAnchorable(object withContent)
+        {
+            // LayoutAnchorable current = FindLayoutAnchorable(DockManager.Layout, withContent);
+            LayoutAnchorable current = DockManager.Layout.Descendents().OfType<LayoutAnchorable>().First(l => l.Content == withContent);
+            current?.Show();
         }
 
         private void Show_Explorer(object sender, RoutedEventArgs e)
         {
-            ExplorerPane.Show();
+            ShowCurrentLayoutAnchorable(ExplorerPanel);
         }
 
         private void Show_Properties(object sender, RoutedEventArgs e)
         {
-            PropertiesPane.Show();
+            ShowCurrentLayoutAnchorable(PropertiesPanel);
         }
 
         private void Show_Bindings(object sender, RoutedEventArgs e)
         {
-            BindingsPane.Show();
+            ShowCurrentLayoutAnchorable(BindingsPanel);
         }
 
         private void Show_Layers(object sender, RoutedEventArgs e)
         {
-            LayersPane.Show();
+            ShowCurrentLayoutAnchorable(LayersPanel);
         }
 
         private void Show_TemplateManager(object sender, RoutedEventArgs e)

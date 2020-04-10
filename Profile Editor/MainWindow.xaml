@@ -183,43 +183,47 @@
             <ad:DockingManager.Theme>
                 <ad:VS2010Theme />
             </ad:DockingManager.Theme>
+            <!-- WARNING: the layout root node and all layout nodes under it are replaced every time
+                 a layout is deserialized from a file or the views are reset.  This means we must not
+                 try to name any of them and try to bind them by name.  Note that controls are preserved,
+                 so we name the controls and search for their containing layout object instead. -->
             <ad:LayoutRoot>
                 <ad:LayoutPanel  Orientation="Horizontal">
                     <ad:LayoutAnchorablePaneGroup Orientation="Vertical" DockWidth="300">
                         <ad:LayoutAnchorablePane DockHeight="1*">
-                            <ad:LayoutAnchorable Title="Preview" x:Name="PreviewPane" Selector.IsSelected="True">
-                                <local:PreviewContent Profile="{Binding ElementName=ProfileEditorWindow,Path=Profile}" />
+                            <ad:LayoutAnchorable Title="Preview" Selector.IsSelected="True">
+                                <local:PreviewContent  x:Name="PreviewPanel" Profile="{Binding ElementName=ProfileEditorWindow,Path=Profile}" />
                             </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="Profile Explorer" x:Name="ExplorerPane">
-                                <local:ProfileExplorerPanel Profile="{Binding ElementName=ProfileEditorWindow,Path=Profile}" ItemDeleting="Explorer_ItemDeleting" />
+                            <ad:LayoutAnchorable Title="Profile Explorer">
+                                <local:ProfileExplorerPanel x:Name="ExplorerPanel" Profile="{Binding ElementName=ProfileEditorWindow,Path=Profile}" ItemDeleting="Explorer_ItemDeleting" />
                             </ad:LayoutAnchorable>
                         </ad:LayoutAnchorablePane>
                         <ad:LayoutAnchorablePane DockHeight="3*">
-                            <ad:LayoutAnchorable Title="Toolbox" Selector.IsSelected="True" x:Name="ToolboxPane">
-                                <local:ToolboxPanel />
+                            <ad:LayoutAnchorable Title="Toolbox" Selector.IsSelected="True">
+                                <local:ToolboxPanel x:Name="ToolboxPanel"/>
                             </ad:LayoutAnchorable>
                         </ad:LayoutAnchorablePane>
                     </ad:LayoutAnchorablePaneGroup>
                     <ad:LayoutPanel  Orientation="Horizontal" DockWidth="*">
                         <ad:LayoutPanel  Orientation="Vertical">
-                            <ad:LayoutDocumentPane   x:Name="DocumentPane">
-                                <ad:LayoutAnchorable Title="Configuration Check" x:Name="ChecklistPane">
-                                    <local:Checklist x:Name="ChecklistWindow"/>
+                            <ad:LayoutDocumentPane>
+                                <ad:LayoutAnchorable Title="Configuration Check" CanClose="False" CanHide="True">
+                                    <local:Checklist x:Name="ChecklistPanel"/>
                                 </ad:LayoutAnchorable>
                             </ad:LayoutDocumentPane>
                             <ad:LayoutAnchorablePane DockHeight="300">
-                                <ad:LayoutAnchorable  Title="Bindings" x:Name="BindingsPane" AutoHideMinHeight="300">
-                                    <local:BindingsPanel BindingObject="{Binding ElementName=ProfileEditorWindow,Path=CurrentEditor.BindingFocus}" />
+                                <ad:LayoutAnchorable  Title="Bindings" AutoHideMinHeight="300">
+                                    <local:BindingsPanel x:Name="BindingsPanel" BindingObject="{Binding ElementName=ProfileEditorWindow,Path=CurrentEditor.BindingFocus}" />
                                 </ad:LayoutAnchorable>
                             </ad:LayoutAnchorablePane>
                         </ad:LayoutPanel>
                         <ad:LayoutAnchorablePaneGroup  Orientation="Vertical" DockWidth="300">
                             <ad:LayoutAnchorablePane  >
-                                <ad:LayoutAnchorable Title="Properties" Selector.IsSelected="True"  x:Name="PropertiesPane">
-                                    <local:PropertyPanel PropertyEditors="{Binding ElementName=ProfileEditorWindow,Path=CurrentEditor.PropertyEditors,Mode=TwoWay}" />
+                                <ad:LayoutAnchorable Title="Properties" Selector.IsSelected="True">
+                                    <local:PropertyPanel x:Name="PropertiesPanel" PropertyEditors="{Binding ElementName=ProfileEditorWindow,Path=CurrentEditor.PropertyEditors,Mode=TwoWay}" />
                                 </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="Layers" x:Name="LayersPane">
-                                    <local:LayersPanel Editor="{Binding ElementName=ProfileEditorWindow,Path=CurrentEditor}" />
+                                <ad:LayoutAnchorable Title="Layers">
+                                    <local:LayersPanel x:Name="LayersPanel" Editor="{Binding ElementName=ProfileEditorWindow,Path=CurrentEditor}" />
                                 </ad:LayoutAnchorable>
                             </ad:LayoutAnchorablePane>
                         </ad:LayoutAnchorablePaneGroup>
