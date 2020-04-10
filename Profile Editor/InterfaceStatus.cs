@@ -58,7 +58,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// backing field for property Report, contains
         /// the most recently received status report from the managed interface
         /// </summary>
-        private IList<StatusReportItem> _report;
+        private IList<StatusReportItem> _report = new List<StatusReportItem>();
 
         /// <summary>
         /// the most recently received status report from the managed interface

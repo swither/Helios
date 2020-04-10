@@ -154,7 +154,7 @@
     </Grid.ColumnDefinitions>
     <ScrollViewer Grid.Row="0" Grid.Column="0">
         <StackPanel>
-            <ItemsControl Background="LightGray" Margin="6" ItemsSource="{Binding Sections}">
+            <ItemsControl Background="LightGray" Margin="6" ItemsSource="{Binding}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="6" Background="White">

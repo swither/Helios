@@ -43,11 +43,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         private void Update(IEnumerable<StatusReportItem> freshReport)
         {
             _report.Clear();
-            _report.AddRange(freshReport.Where(i => i.Severity >= DisplayThreshold));
             Items.Clear();
             Recommendations.Clear();
             RecommendationsVisibility = Visibility.Collapsed;
 
+            _report.AddRange(freshReport.Where(i => i.Severity >= DisplayThreshold));
             if (_report.Count < 1)
             {
                 // done

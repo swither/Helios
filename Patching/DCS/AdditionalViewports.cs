@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Util.DCS;
@@ -29,6 +30,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         protected override void OnProfileChanged(HeliosProfile oldProfile)
         {
             base.OnProfileChanged(oldProfile);
+            Application.Current.Dispatcher.Invoke(InitializeOnMainThread);
+        }
+
+        private void InitializeOnMainThread()
+        {
             if (Profile != null)
             {
                 // initialization

@@ -19,7 +19,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         public Checklist()
         {
-            // XXX DataContext = ;
             InitializeComponent();
         }
 

@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// the minimum severity that a result item must have to trigger displaying the
         /// check list
         /// </summary>
-        private StatusReportItem.SeverityCode _triggerThreshold;
+        private StatusReportItem.SeverityCode _triggerThreshold = StatusReportItem.SeverityCode.Warning;
 
         private HeliosProfile _profile;
 

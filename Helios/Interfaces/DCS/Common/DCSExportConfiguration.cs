@@ -102,6 +102,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 }
             }
 
+            // create our current config for configuration check
+            UpdateConfiguration();
+
             // if the UI changes our collection of dofiles, we recompute the exports
             DoFiles.CollectionChanged += DoFiles_CollectionChanged;
 
@@ -328,7 +331,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 #endif
 
-        protected override void Update()
+        private void UpdateConfiguration()
         {
             UpdateDirectories();
             UpdateExportStub();
@@ -337,7 +340,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 UpdateDriver();
             }
+        }
 
+        protected override void Update()
+        {
+            UpdateConfiguration();
             _parent.InvalidateStatusReport();
         }
 
