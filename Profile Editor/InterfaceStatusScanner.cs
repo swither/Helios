@@ -21,13 +21,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// the minimum severity that a result item must have to trigger displaying the
         /// check list
         /// </summary>
-        private StatusReportItem.SeverityCode _triggerThreshold = StatusReportItem.SeverityCode.Warning;
+        private StatusReportItem.SeverityCode _triggerThreshold;
 
         private HeliosProfile _profile;
 
         #endregion
 
         public event EventHandler Triggered;
+
+        public InterfaceStatusScanner()
+        {
+            _triggerThreshold = ConfigManager.SettingsManager.LoadSetting("InterfaceStatusScanner", "TriggerThreshold",
+                StatusReportItem.SeverityCode.Warning);
+        }
 
         public void Reload(HeliosProfile profile)
         {
@@ -129,6 +135,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
                 StatusReportItem.SeverityCode oldValue = _triggerThreshold;
                 _triggerThreshold = value;
+                ConfigManager.SettingsManager.SaveSetting("InterfaceStatusScanner", "TriggerThreshold", value);
                 OnPropertyChanged("TriggerThreshold", oldValue, value, true);
             }
         }

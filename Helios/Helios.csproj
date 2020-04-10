@@ -492,6 +492,7 @@
     <Compile Include="Gauges\FA-18C\IFEI\IFEI.cs" />
     <Compile Include="Gauges\FA-18C\VVI\VVI.cs" />
     <Compile Include="Util\CommandLineOptions.cs" />
+    <Compile Include="Util\EnumBooleanConverter.cs" />
     <Compile Include="Util\HeliosUndoBatch.cs" />
     <Compile Include="Windows\HeliosViewModel.cs" />
     <Compile Include="Windows\InstallationDialogs.cs" />

@@ -21,10 +21,11 @@ namespace GadrocsWorkshop.Helios
     public class StatusReportItem
     {
         /// <summary>
-        /// optional time stamp or null
+        /// This severity code mirrors the log levels where names are the same.
+        ///
+        /// Note: It should be a nested class of StatusReportItem, but WPF bindings require it to be
+        /// a top-level type.
         /// </summary>
-        public string TimeStamp { get; set; }
-
         public enum SeverityCode
         {
             Info,
@@ -32,6 +33,12 @@ namespace GadrocsWorkshop.Helios
             Error,
             None // no messages should be created at this level, in it used to filter out all messages
         }
+
+        /// <summary>
+        /// optional time stamp or null
+        /// </summary>
+        public string TimeStamp { get; set; }
+
         public SeverityCode Severity { get; set; } = SeverityCode.Info;
 
         /// <summary>

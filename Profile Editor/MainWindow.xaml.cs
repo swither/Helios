@@ -69,8 +69,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             InitializeComponent();
 
-            ChecklistPanel.DataContext = new ViewModelCollection<InterfaceStatus, ChecklistSection>(_configurationCheck.InterfaceStatuses);
-            DockManager.ActiveContentChanged += new EventHandler(DockManager_ActiveDocumentChanged);
+            ChecklistPanel.DataContext = new ChecklistViewModel(_configurationCheck);
+            DockManager.ActiveContentChanged += DockManager_ActiveDocumentChanged;
             NewProfile();
 
             _layoutSerializer = new XmlLayoutSerializer(this.DockManager);

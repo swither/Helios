@@ -154,7 +154,7 @@
     </Grid.ColumnDefinitions>
     <ScrollViewer Grid.Row="0" Grid.Column="0">
         <StackPanel>
-            <ItemsControl Background="LightGray" Margin="6" ItemsSource="{Binding}">
+            <ItemsControl Background="LightGray" Margin="6" ItemsSource="{Binding Items}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="6" Background="White">
@@ -203,7 +203,7 @@
                                 </Expander.Content>
                             </Expander>
                             <Expander Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Header="Recommendations" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" Style="{StaticResource FailureExpanded}" Visibility="{Binding RecommendationsVisibility}">
-                                <!-- Expander appears very broken if used with a custom Header, so let's not use it -->
+                                <!-- Expander is very broken if used with a custom Header because a global style in App.xaml assumes Header is text, so let's not use it -->
                                 <Expander.Content>
                                     <ItemsControl ItemsSource="{Binding Recommendations}" Margin="22,0,0,0">
                                         <ItemsControl.ItemTemplate>
@@ -225,20 +225,28 @@
         <StackPanel DockPanel.Dock="Top">
             <Expander FontWeight="Bold" Header="Show this View" IsExpanded="False" Style="{StaticResource SettingsExpander}">
                 <StackPanel Margin="0,6">
-                    <RadioButton GroupName="auto" Margin="6,0,0,0">Always</RadioButton>
-                    <RadioButton GroupName="auto" Margin="6,0,0,0" IsChecked="True">For Warnings &amp; Errors</RadioButton>
-                    <RadioButton GroupName="auto" Margin="6,0,0,0">For Errors</RadioButton>
-                    <RadioButton GroupName="auto" Margin="6,0,0,0">Never</RadioButton>
+                    <RadioButton IsChecked="{Binding Path=Data.TriggerThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static Helios:StatusReportItem+SeverityCode.Info}}"
+                    GroupName="auto" Margin="6,0,0,0">Always</RadioButton>
+                    <RadioButton IsChecked="{Binding Path=Data.TriggerThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static Helios:StatusReportItem+SeverityCode.Warning}}"
+                    GroupName="auto" Margin="6,0,0,0">For Warnings &amp; Errors</RadioButton>
+                    <RadioButton IsChecked="{Binding Path=Data.TriggerThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static Helios:StatusReportItem+SeverityCode.Error}}"
+                    GroupName="auto" Margin="6,0,0,0">For Errors</RadioButton>
+                    <RadioButton IsChecked="{Binding Path=Data.TriggerThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static Helios:StatusReportItem+SeverityCode.None}}"
+                    GroupName="auto" Margin="6,0,0,0">Never</RadioButton>
                 </StackPanel>
             </Expander>
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Margin="0,6,0,0">
             <Expander FontWeight="Bold" Header="Filter Details" IsExpanded="False" Style="{StaticResource SettingsExpander}">
                 <StackPanel Margin="0,6">
-                    <RadioButton GroupName="details" Margin="6,0,0,0" IsChecked="True">All</RadioButton>
-                    <RadioButton GroupName="details" Margin="6,0,0,0">Warnings &amp; Errors</RadioButton>
-                    <RadioButton GroupName="details" Margin="6,0,0,0">Only Errors</RadioButton>
-                    <RadioButton GroupName="details" Margin="6,0,0,0">None</RadioButton>
+                    <RadioButton IsChecked="{Binding DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static Helios:StatusReportItem+SeverityCode.Info}}"
+                                 GroupName="details" Margin="6,0,0,0">All</RadioButton>
+                    <RadioButton IsChecked="{Binding DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static Helios:StatusReportItem+SeverityCode.Warning}}"
+                                 GroupName="details" Margin="6,0,0,0">Warnings &amp; Errors</RadioButton>
+                    <RadioButton IsChecked="{Binding DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static Helios:StatusReportItem+SeverityCode.Error}}"
+                                 GroupName="details" Margin="6,0,0,0">Only Errors</RadioButton>
+                    <RadioButton IsChecked="{Binding DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static Helios:StatusReportItem+SeverityCode.None}}"
+                                 GroupName="details" Margin="6,0,0,0">None</RadioButton>
                 </StackPanel>
             </Expander>
         </StackPanel>

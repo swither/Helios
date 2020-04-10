@@ -106,6 +106,7 @@
     <Compile Include="DragSelectionAdorner.cs" />
     <Compile Include="DropPreviewAdorner.cs" />
     <Compile Include="EditorMouseState.cs" />
+    <Compile Include="ViewModel\ChecklistViewModel.cs" />
     <Compile Include="GlassCockpitEditor.xaml.cs">
       <DependentUpon>GlassCockpitEditor.xaml</DependentUpon>
     </Compile>
@@ -180,7 +181,6 @@
     <Compile Include="ViewModel\ProfileExplorerTreeItemType.cs" />
     <Compile Include="ViewModel\PropertyEditorGroup.cs" />
     <Compile Include="ViewModel\PropertyEditorGroupCollection.cs" />
-    <Compile Include="ViewModel\SeverityThreshold.cs" />
     <Compile Include="ViewModel\TemplateManagerGroup.cs" />
     <Compile Include="ViewModel\TemplateManagerGroupCollection.cs" />
     <Compile Include="ViewModel\TemplateToolboxItem.cs" />
@@ -377,6 +377,7 @@
   <ItemGroup>
     <Resource Include="CCIcon.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

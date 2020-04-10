@@ -16,7 +16,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         #region Private
 
         private readonly List<StatusReportItem> _report = new List<StatusReportItem>();
-
         private StatusReportItem.SeverityCode _displayThreshold;
 
         #endregion
@@ -26,8 +25,27 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         {
             Items = new ObservableCollection<ChecklistItem>();
             Recommendations = new ObservableCollection<string>();
-            Update(data.Report);
-            data.PropertyChanged += Data_PropertyChanged;
+        }
+
+        /// <summary>
+        /// late init from parent
+        /// </summary>
+        /// <param name="displayThreshold"></param>
+        internal void Initialize(StatusReportItem.SeverityCode displayThreshold)
+        {
+            _displayThreshold = displayThreshold;
+            Update(Data.Report);
+            Data.PropertyChanged += Data_PropertyChanged;
+        }
+
+        /// <summary>
+        /// called by parent if the display threshold is changed after we have already been initialized 
+        /// </summary>
+        /// <param name="displayThreshold"></param>
+        internal void ChangeDisplayThreshold(StatusReportItem.SeverityCode displayThreshold)
+        {
+            _displayThreshold = displayThreshold;
+            Update(Data.Report);
         }
 
         private void Data_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -40,18 +58,26 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             }
         }
 
-        private void Update(IEnumerable<StatusReportItem> freshReport)
+        private void Update(IList<StatusReportItem> freshReport)
         {
             _report.Clear();
             Items.Clear();
             Recommendations.Clear();
             RecommendationsVisibility = Visibility.Collapsed;
 
-            _report.AddRange(freshReport.Where(i => i.Severity >= DisplayThreshold));
+            // scan all items for status codes, even if filtered
+            StatusReportItem.SeverityCode newStatus = freshReport
+                .Select(item => item.Severity)
+                .DefaultIfEmpty(StatusReportItem.SeverityCode.None)
+                .Max();
+
+            // filter report
+            _report.AddRange(freshReport.Where(i => i.Severity >= _displayThreshold));
+
             if (_report.Count < 1)
             {
                 // done
-                setStatus(StatusReportItem.SeverityCode.None);
+                SetStatus(newStatus);
                 UpdateDetailsVisibility();
                 return;
             }
@@ -66,16 +92,15 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 RecommendationsVisibility = Visibility.Visible;
             }
 
-            // create full resolution status items
-            StatusReportItem.SeverityCode newStatus = _report.Select(item => item.Severity).Max();
-            IEnumerable<ChecklistItem> checklistItems = _report.Where(item => item.Severity >= DisplayThreshold)
+            // create view models for status items
+            IEnumerable<ChecklistItem> checklistItems = _report
                 .Select(item => new ChecklistItem(item));
             foreach (ChecklistItem checklistItem in checklistItems)
             {
                 Items.Add(checklistItem);
             }
 
-            setStatus(newStatus);
+            SetStatus(newStatus);
             UpdateDetailsVisibility();
         }
 
@@ -91,7 +116,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         /// ensure the underlying enum can be renamed and otherwise changed safely.
         /// </summary>
         /// <param name="code"></param>
-        public void setStatus(StatusReportItem.SeverityCode code)
+        public void SetStatus(StatusReportItem.SeverityCode code)
         {
             SetValue(StatusProperty, code.ToString());
             switch (code)
@@ -112,16 +137,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         }
 
         #region Properties
-
-        public StatusReportItem.SeverityCode DisplayThreshold
-        {
-            get => _displayThreshold;
-            set
-            {
-                _displayThreshold = value;
-                UpdateDetailsVisibility();
-            }
-        }
 
         public Visibility GoThereVisibility => Data.HasEditor ? Visibility.Visible : Visibility.Hidden;
 
