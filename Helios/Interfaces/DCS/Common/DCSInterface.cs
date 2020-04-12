@@ -23,6 +23,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Windows;
     using System.Xml;
 
     public class DCSInterface : BaseUDPInterface, IProfileAwareInterface, IReadyCheck, IStatusReportNotify
@@ -172,7 +173,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             if (oldProfile != null)
             {
                 // deinitialize on main thread
-                Dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     Deinit(oldProfile);
                 });
@@ -181,7 +182,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             if (Profile != null)
             {
                 // initialize on main thread
-                Dispatcher.Invoke(Init);
+                Application.Current.Dispatcher.Invoke(Init);
             }
         }
 

@@ -41,7 +41,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             _triggerThreshold = ConfigManager.SettingsManager.LoadSetting(CONFIGURATION_GROUP, "TriggerThreshold",
                 StatusReportItem.SeverityCode.Warning);
             _displayThreshold = ConfigManager.SettingsManager.LoadSetting(CONFIGURATION_GROUP, "DisplayThreshold",
-                StatusReportItem.SeverityCode.Warning);
+                StatusReportItem.SeverityCode.Info);
         }
 
         public void Reload(HeliosProfile profile)
