@@ -30,6 +30,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         public static RoutedUICommand TogglePreferences { get; } = new RoutedUICommand("Toggle Display of Control Center Preferences", "TogglePreferences", typeof(ControlCenterCommands));
         public static RoutedUICommand RunProfile { get; } = new RoutedUICommand("Open and Run a Profile", "RunProfile", typeof(ControlCenterCommands));
 
-        public static RoutedUICommand ResetCaution = new RoutedUICommand("Reset Caution Light", "ResetCaution", typeof(ControlCenterCommands));
+        public static RoutedUICommand ResetCaution { get; } = new RoutedUICommand("Reset Caution Light", "ResetCaution", typeof(ControlCenterCommands));
     }
 }

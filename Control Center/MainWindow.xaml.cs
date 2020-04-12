@@ -43,7 +43,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private DispatcherTimer _dispatcherTimer;
         private List<MonitorWindow> _windows = new List<MonitorWindow>();
-        private bool _deletingProfile = false;
         private long _lastTick = 0;
 
         private WindowInteropHelper _helper;
@@ -215,10 +214,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 case StatusValue.License:
                     updateInfoStatus("");
                     break;
-                case StatusValue.DeleteWarning:
-                    // this multiline message does not combine with anything and does not get added to the status viewer
-                    updatePopup?.Invoke("!!WARNING!!\nYou are about to permanetly delete this profile.  Please press start to confirm.");
-                    break;
                 case StatusValue.Running:
                     updateInfoStatus("Running Profile");
                     break;
@@ -278,7 +273,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         {
             Empty,
             License, // Helios used to display a license; this case is here in case we need to put that back
-            DeleteWarning,
             Running,
             Loading,
             LoadError,
@@ -332,7 +326,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void RunProfile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _deletingProfile = false;
             string profileToLoad = e.Parameter as string;
             if (profileToLoad == null || !File.Exists(profileToLoad))
             {
@@ -371,11 +364,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void StartProfile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_deletingProfile)
-            {
-                DeleteProfileActionViaStartButton();
-                return;
-            }
             if (ActiveProfile != null)
             {
                 if (ActiveProfile.IsStarted)
@@ -396,29 +384,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             StartProfile();
         }
 
-        private void DeleteProfileActionViaStartButton()
-        {
-            if (_profileIndex < _profiles.Count)
-            {
-                File.Delete(_profiles[_profileIndex]);
-                _profiles.RemoveAt(_profileIndex);
-                if (_profileIndex == _profiles.Count)
-                {
-                    _profileIndex--;
-                    if (_profileIndex > -1)
-                    {
-                        SelectedProfileName = System.IO.Path.GetFileNameWithoutExtension(_profiles[_profileIndex]);
-                    }
-                    else
-                    {
-                        SelectedProfileName = "- No Profiles Available -";
-                    }
-                    ActiveProfile = null;
-                }
-                LoadProfileList();
-            }
-        }
-
         public void StopProfile_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
@@ -426,7 +391,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void StopProfile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _deletingProfile = false;
             StopProfile();
             StatusMessage = StatusValue.License;
         }
@@ -438,11 +402,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void ResetProfile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_deletingProfile)
-            {
-                _deletingProfile = false;
-                StatusMessage = StatusValue.License;
-            }
             ResetProfile();
             StatusViewer.ResetCautionLight();
             StatusViewer.AddItem(new StatusReportItem()
@@ -473,7 +432,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void PrevProfile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _deletingProfile = false;
             StatusMessage = StatusValue.License;
 
             LoadProfileList();
@@ -493,7 +451,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void NextProfile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _deletingProfile = false;
             StatusMessage = StatusValue.License;
 
             LoadProfileList();
@@ -509,12 +466,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 _profileIndex++;
                 SelectedProfileName = System.IO.Path.GetFileNameWithoutExtension(_profiles[_profileIndex]);
             }
-        }
-
-        private void DeleteProfile_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            _deletingProfile = true;
-            StatusMessage = StatusValue.DeleteWarning;
         }
 
         private void Close_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -889,9 +840,9 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             this.TouchscreenDelayTextBlock.Text = msg;
             ConfigManager.SettingsManager.SaveSetting("ControlCenter", "TouchScreenMouseSuppressionPeriod", Convert.ToString(delayValue));
         }
+
         private void PowerButton_Unchecked(object sender, RoutedEventArgs e)
         {
-            _deletingProfile = false;
             DispatcherTimer minimizeTimer = new DispatcherTimer(new TimeSpan(0, 0, 0, 0, 250), DispatcherPriority.Normal, TimedMinimize, Dispatcher);
         }
 

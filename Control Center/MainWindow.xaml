@@ -40,7 +40,6 @@
         <CommandBinding Command="local:ControlCenterCommands.TogglePreferences" Executed="TogglePreferences_Executed" />
         <CommandBinding Command="local:ControlCenterCommands.PreviousProfile" Executed="PrevProfile_Executed" />
         <CommandBinding Command="local:ControlCenterCommands.NextProfile" Executed="NextProfile_Executed" />
-        <CommandBinding Command="local:ControlCenterCommands.DeleteProfile" Executed="DeleteProfile_Executed" />
         <CommandBinding Command="local:ControlCenterCommands.RunProfile" Executed="RunProfile_Executed" />
         <CommandBinding Command="local:ControlCenterCommands.ResetCaution" Executed="ResetCaution_Executed" />
         <CommandBinding Command="Close" Executed="Close_Executed" />
@@ -117,8 +116,6 @@
                 </Grid>
                 <Button Canvas.Left="323" Canvas.Top="26" Height="50" x:Name="PrevButton" Width="50" Style="{StaticResource HeliosPrevButtonStyle}" Command="local:ControlCenterCommands.PreviousProfile" />
                 <Button Canvas.Left="323" Canvas.Top="82" Height="50" x:Name="NextButton" Width="50" Style="{StaticResource HeliosNextButtonStyle}" Command="local:ControlCenterCommands.NextProfile" />
-                <!-- XXX remove this button, the bitmap parts, and the code, even though it is very cute -->
-                <Button Canvas.Left="413" Canvas.Top="171" Height="50" x:Name="DeleteButton" Width="50" Style="{StaticResource HeliosRoundPushButtonStyle}" Command="local:ControlCenterCommands.DeleteProfile" />
                 <TextBlock Canvas.Left="0" Canvas.Top="240" Width="504" Text="HELIOS CONTROL CENTER" Style="{StaticResource BaseLabel}" FontSize="22"/>
             </Canvas>
             <Canvas Name="PreferencesCanvas" Margin="0" Height="320" Width="504" Style="{StaticResource CollapsePrefs}">
