@@ -12,7 +12,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -36,6 +35,11 @@ namespace GadrocsWorkshop.Helios
             Error,
             None // no messages should be created at this level, in it used to filter out all messages
         }
+
+        // Uri components used in Links
+        public const string HELIOS_SCHEME = "helios";
+        public const string PROFILE_EDITOR_HOST = "ProfileEditor";
+        public const string CONTROL_CENTER_HOST = "ControlCenter";
 
         /// <summary>
         /// optional time stamp or null
@@ -80,6 +84,24 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         [JsonProperty("Recommendation", NullValueHandling = NullValueHandling.Ignore)]
         public string Recommendation { get; set; }
+
+        /// <summary>
+        /// If this is not null and a consumer of this data has the capability of generating
+        /// references or links, this value should be parsed and presented as a link to the
+        /// specified entities. 
+        /// </summary>
+        [JsonIgnore]
+        public System.Uri Link;
+
+        /// <summary>
+        /// utility to create a link to the profile editor without referring to any specific UI component
+        /// </summary>
+        public static System.Uri ProfileEditor => new System.Uri($"{HELIOS_SCHEME}://{PROFILE_EDITOR_HOST}/");
+
+        /// <summary>
+        /// utility to create a link to the control center without referring to any specific UI component
+        /// </summary>
+        public static System.Uri ControlCenter => new System.Uri($"{HELIOS_SCHEME}://{CONTROL_CENTER_HOST}/");
 
         /// <summary>
         /// log this result

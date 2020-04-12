@@ -81,7 +81,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status = "No DCS installation locations are configured for viewport patch installation",
-                    Recommendation = "Using Helios Profile Editor, configure any DCS installation directories you use",
+                    Recommendation = "Configure any DCS installation directories you use",
+                    Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
                 };
                 yield break;

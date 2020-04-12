@@ -247,13 +247,13 @@
         <StackPanel DockPanel.Dock="Top" Margin="0,6,0,0">
             <Expander FontWeight="Bold" Header="Filter Details" IsExpanded="False" Style="{StaticResource SettingsExpander}">
                 <StackPanel Margin="0,6">
-                    <RadioButton IsChecked="{Binding DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.Info}}"
+                    <RadioButton IsChecked="{Binding Data.DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.Info}}"
                                  GroupName="details" Margin="6,0,0,0">All</RadioButton>
-                    <RadioButton IsChecked="{Binding DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.Warning}}"
+                    <RadioButton IsChecked="{Binding Data.DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.Warning}}"
                                  GroupName="details" Margin="6,0,0,0">Warnings &amp; Errors</RadioButton>
-                    <RadioButton IsChecked="{Binding DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.Error}}"
+                    <RadioButton IsChecked="{Binding Data.DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.Error}}"
                                  GroupName="details" Margin="6,0,0,0">Only Errors</RadioButton>
-                    <RadioButton IsChecked="{Binding DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.None}}"
+                    <RadioButton IsChecked="{Binding Data.DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.None}}"
                                  GroupName="details" Margin="6,0,0,0">None</RadioButton>
                 </StackPanel>
             </Expander>

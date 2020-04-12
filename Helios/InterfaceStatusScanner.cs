@@ -8,7 +8,10 @@ namespace GadrocsWorkshop.Helios
 {
     public class InterfaceStatusScanner : NotificationObject, IStatusReportObserver
     {
+        public event EventHandler Triggered;
+
         #region Private
+        private static readonly string CONFIGURATION_GROUP = "ConfigurationCheck";
 
         /// <summary>
         /// backing field for property InterfaceStatuses, contains
@@ -23,15 +26,21 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         private StatusReportItem.SeverityCode _triggerThreshold;
 
-        private HeliosProfile _profile;
-        
-        #endregion
+        /// <summary>
+        /// backing field for property DisplayThreshold, contains
+        /// the minimum severity that a result item must have to be shown in details
+        /// </summary>
+        private StatusReportItem.SeverityCode _displayThreshold;
 
-        public event EventHandler Triggered;
+        private HeliosProfile _profile;
+
+        #endregion
 
         public InterfaceStatusScanner()
         {
-            _triggerThreshold = ConfigManager.SettingsManager.LoadSetting("InterfaceStatusScanner", "TriggerThreshold",
+            _triggerThreshold = ConfigManager.SettingsManager.LoadSetting(CONFIGURATION_GROUP, "TriggerThreshold",
+                StatusReportItem.SeverityCode.Warning);
+            _displayThreshold = ConfigManager.SettingsManager.LoadSetting(CONFIGURATION_GROUP, "DisplayThreshold",
                 StatusReportItem.SeverityCode.Warning);
         }
 
@@ -135,8 +144,28 @@ namespace GadrocsWorkshop.Helios
 
                 StatusReportItem.SeverityCode oldValue = _triggerThreshold;
                 _triggerThreshold = value;
-                ConfigManager.SettingsManager.SaveSetting("InterfaceStatusScanner", "TriggerThreshold", value);
+                ConfigManager.SettingsManager.SaveSetting(CONFIGURATION_GROUP, "TriggerThreshold", value);
                 OnPropertyChanged("TriggerThreshold", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// the minimum severity that a result item must have to be shown in details
+        /// </summary>
+        public StatusReportItem.SeverityCode DisplayThreshold
+        {
+            get => _displayThreshold;
+            set
+            {
+                if (_displayThreshold == value)
+                {
+                    return;
+                }
+
+                StatusReportItem.SeverityCode oldValue = _displayThreshold;
+                _displayThreshold = value;
+                ConfigManager.SettingsManager.SaveSetting(CONFIGURATION_GROUP, "DisplayThreshold", value);
+                OnPropertyChanged("DisplayThreshold", oldValue, value, true);
             }
         }
 
@@ -159,27 +188,6 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        /// <summary>
-        /// backing field for property CurrentReport, contains
-        /// the most recent status report received
-        /// </summary>
-        private IList<StatusReportItem> _currentReport = new List<StatusReportItem>();
-
-        /// <summary>
-        /// the most recent status report received
-        /// </summary>
-        public IList<StatusReportItem> CurrentReport
-        {
-            get => _currentReport;
-            set
-            {
-                if (_currentReport != null && _currentReport == value) return;
-                IList<StatusReportItem> oldValue = _currentReport;
-                _currentReport = value;
-                OnPropertyChanged("CurrentReport", oldValue, value, true);
-            }
-        }
-
         #endregion
 
         #region IStatusReportObserver
@@ -192,7 +200,7 @@ namespace GadrocsWorkshop.Helios
                 return;
             }
 
-            if (CurrentReport.Any(item => item.Severity >= TriggerThreshold))
+            if (statusReport.Any(item => item.Severity >= TriggerThreshold))
             {
                 Triggered?.Invoke(this, EventArgs.Empty);
             }

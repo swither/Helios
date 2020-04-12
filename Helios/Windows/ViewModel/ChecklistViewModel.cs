@@ -38,6 +38,21 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         {
             Items = new ViewModelCollection<InterfaceStatus, ChecklistSection>(data.InterfaceStatuses);
             Items.CollectionChanged += Items_CollectionChanged;
+            Data.PropertyChanged += Data_PropertyChanged;
+        }
+
+        private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "DisplayThreshold":
+                    // broadcast to all sections
+                    foreach (ChecklistSection section in Items)
+                    {
+                        section.ChangeDisplayThreshold(Data.DisplayThreshold);
+                    }
+                    break;
+            }
         }
 
         private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -47,18 +62,14 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             {
                 foreach (ChecklistSection section in e.NewItems)
                 {
-                    section.Initialize(DisplayThreshold);
+                    section.Initialize(Data.DisplayThreshold);
                 }
             }
         }
 
         private void OnDisplayThresholdChanged()
         {
-            // broadcast to all sections
-            foreach (ChecklistSection section in Items)
-            {
-                section.ChangeDisplayThreshold(DisplayThreshold);
-            }
+
         }
 
         public ViewModelCollection<InterfaceStatus, ChecklistSection> Items { get; }
@@ -98,17 +109,5 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                 return _reloadCommand;
             }
         }
-
-        public StatusReportItem.SeverityCode DisplayThreshold
-        {
-            get => (StatusReportItem.SeverityCode) GetValue(DisplayThresholdProperty);
-            set => SetValue(DisplayThresholdProperty, value);
-        }
-
-        public static readonly DependencyProperty DisplayThresholdProperty =
-            DependencyProperty.Register("DisplayThreshold", typeof(StatusReportItem.SeverityCode),
-                typeof(ChecklistViewModel), new PropertyMetadata(
-                    StatusReportItem.SeverityCode.Warning,
-                    (d, e) => ((ChecklistViewModel) d).OnDisplayThresholdChanged()));
     }
 }

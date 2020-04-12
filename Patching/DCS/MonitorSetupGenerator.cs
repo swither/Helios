@@ -189,7 +189,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     Status =
                         $"{GenerateAnonymousPath(location.SavedGamesName)} does not contain the monitor setup file '{name}'",
-                    Recommendation = $"Using Helios Profile Editor, configure {_parent.Name}",
+                    Recommendation = $"Configure {_parent.Name}",
+                    Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Warning
                 };
             }
@@ -201,7 +202,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     Status =
                         $"monitor setup file '{name}' in {GenerateAnonymousPath(location.SavedGamesName)} does not match configuration",
-                    Recommendation = $"Using Helios Profile Editor, configure {_parent.Name}",
+                    Recommendation = $"Configure {_parent.Name}",
+                    Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Warning
                 };
             }
@@ -302,7 +304,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status = "Monitor configuration in profile does not match this computer",
-                    Recommendation = "Using Helios Profile Editor, perform 'Reset Monitors' function.",
+                    Recommendation = "Perform 'Reset Monitors' function from the 'Profile' menu.",
+                    Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
                 };
                 yield break;
@@ -315,7 +318,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status = "No DCS installation locations are configured for monitor setup",
-                    Recommendation = "Using Helios Profile Editor, configure any DCS installation directories you use",
+                    Recommendation = "Configure any DCS installation location you use",
+                    Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
                 };
             }
