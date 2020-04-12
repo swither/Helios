@@ -17,10 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using GadrocsWorkshop.Helios.Windows;
 
 // XXX promote to Helios
-namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
+namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
     /// <summary>
     /// a collection of view model items created for each element in the
@@ -28,7 +27,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
     /// <typeparam name="TViewModel"></typeparam>
-    internal class ViewModelCollection<TModel, TViewModel>: ObservableCollection<TViewModel> where TModel: NotificationObject where TViewModel: HeliosViewModel<TModel>
+    public class ViewModelCollection<TModel, TViewModel> : ObservableCollection<TViewModel>
+        where TModel : NotificationObject where TViewModel : HeliosViewModel<TModel>
     {
         private readonly Dictionary<TModel, TViewModel> _activeMappings = new Dictionary<TModel, TViewModel>();
 
@@ -38,10 +38,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             {
                 AddViewModel(newItem);
             }
+
             sourceCollection.CollectionChanged += SourceCollection_CollectionChanged;
         }
 
-        private void SourceCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void SourceCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
@@ -75,7 +76,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
         private void AddViewModel(TModel newItem)
         {
-            TViewModel viewModel = (TViewModel) Activator.CreateInstance(typeof(TViewModel), newItem);
+            TViewModel viewModel = (TViewModel) Activator.CreateInstance(typeof(TViewModel), new[] {newItem});
             _activeMappings[newItem] = viewModel;
             Add(viewModel);
         }

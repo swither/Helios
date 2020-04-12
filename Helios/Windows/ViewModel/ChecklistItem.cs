@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
+namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
     /// <summary>
     /// A view model for StatusReportItem viewed in the configuration check (Checklist) view

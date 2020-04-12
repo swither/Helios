@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using GadrocsWorkshop.Helios.ComponentModel;
+﻿using GadrocsWorkshop.Helios.ComponentModel;
+using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Windows
 {

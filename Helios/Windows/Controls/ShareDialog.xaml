@@ -1,0 +1,43 @@
+﻿<Grid x:Class="GadrocsWorkshop.Helios.Windows.Controls.ShareDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
+             xmlns:heliosWindows="clr-namespace:GadrocsWorkshop.Helios.Windows"
+             xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel"
+             mc:Ignorable="d"
+             Height="600"
+             d:DataContext="{d:DesignInstance d:Type=viewModel:ShareInterfaceStatus}"
+             d:DesignHeight="600" d:DesignWidth="700">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.RowSpan="7" Background="LightGray" HorizontalScrollBarVisibility="Auto">
+        <Grid Background="White" Margin="6" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Padding="3" FontWeight="Bold" Text="Status Report to be shared:"/>
+            <TextBox Grid.Row="1" Padding="3" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Text, Mode=OneTime}"/>
+        </Grid>
+    </ScrollViewer>
+    <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Documentation}" MaxWidth="200" Margin="10,24,10,6" TextWrapping="Wrap">You may share this report by copying and pasting it, for example in a Discord channel where you receive help.</TextBlock>
+    <Button Grid.Row="2" Grid.Column="1" Style="{StaticResource InterfaceEditorButton}" Content="Copy to Clipboard" Command="{Binding CopyCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" IsDefault="True"/>
+    <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource Documentation}" MaxWidth="200" Margin="10,24,10,6" TextWrapping="Wrap">Pressing this button will attempt to open a Browser and start the process of creating a new bug report on Github.  
+        Please make sure to carefully review the existing bugs that will be displayed to make
+        sure this is not a duplicate.</TextBlock>
+    <Button Grid.Row="4" Grid.Column="1" Style="{StaticResource InterfaceEditorButton}" Content="File a Bug" Command="{Binding FileBugCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"/>
+    <Button Grid.Row="6" Grid.Column="1" Margin="0,24,0,12" Style="{StaticResource InterfaceEditorButton}" Content="Cancel" IsCancel="True"/>
+</Grid>

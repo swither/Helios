@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Util;
+using GadrocsWorkshop.Helios.Windows;
+
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -20,6 +23,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using GadrocsWorkshop.Helios.ProfileEditor.UndoEvents;
     using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
     using GadrocsWorkshop.Helios.Windows.Controls;
+    using GadrocsWorkshop.Helios.Windows.ViewModel;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -859,6 +863,27 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             CloseAllDocuments();
             StringReader reader = new StringReader(_systemDefaultLayout);
             _layoutSerializer.Deserialize(reader);
+        }
+
+        private void DialogShowModal_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // this is the source of the event, and we will resolve DataTemplate from their position
+            FrameworkElement host = (FrameworkElement)e.OriginalSource;
+
+            // crash if incorrect parameter type
+            ShowModalParameter parameter = (ShowModalParameter) e.Parameter;
+
+            // resolve the data template
+            DataTemplate template = parameter.DataTemplate ?? (DataTemplate)host.TryFindResource(new DataTemplateKey(parameter.Content.GetType()));
+
+            // display the dialog appropriate to the content
+            Window generic = new DialogWindow
+            {
+                ContentTemplate = template, 
+                Content = parameter.Content
+            };
+            
+            generic.ShowDialog();
         }
 
         private void CloseAllDocuments()

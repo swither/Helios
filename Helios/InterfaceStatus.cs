@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
-namespace GadrocsWorkshop.Helios.ProfileEditor
+namespace GadrocsWorkshop.Helios
 {
     public class InterfaceStatus : NotificationObject, IStatusReportObserver
     {
@@ -43,15 +43,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// <summary>
         /// the ready check interface of Interface
         /// </summary>
+        [JsonIgnore]
         public IReadyCheck ReadyCheck { get; }
 
         /// <summary>
         /// the Helios interface object being observed and queried for status
         /// </summary>
+        [JsonIgnore]
         public HeliosInterface Interface { get; }
 
+        [JsonProperty("Name")]
         public string Name { get; }
 
+        [JsonIgnore]
         public bool HasEditor { get; }
 
         /// <summary>
@@ -63,6 +67,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// <summary>
         /// the most recently received status report from the managed interface
         /// </summary>
+        [JsonProperty("Report")]
         public IList<StatusReportItem> Report
         {
             get => _report;
@@ -78,6 +83,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// <summary>
         /// the managed interface's status report subscription interface or null
         /// </summary>
+        [JsonIgnore]
         public IStatusReportNotify Subscription { get; }
 
         internal void PerformCheck()

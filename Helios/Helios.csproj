@@ -494,8 +494,25 @@
     <Compile Include="Util\CommandLineOptions.cs" />
     <Compile Include="Util\EnumBooleanConverter.cs" />
     <Compile Include="Util\HeliosUndoBatch.cs" />
+    <Compile Include="InterfaceStatus.cs" />
+    <Compile Include="InterfaceStatusScanner.cs" />
+    <Compile Include="Windows\Controls\DialogWindow.xaml.cs">
+      <DependentUpon>DialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Controls\ShareDialog.xaml.cs">
+      <DependentUpon>ShareDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Dialog.cs" />
     <Compile Include="Windows\HeliosViewModel.cs" />
     <Compile Include="Windows\InstallationDialogs.cs" />
+    <Compile Include="Windows\RelayCommand.cs" />
+    <Compile Include="Windows\ShowModalParameter.cs" />
+    <Compile Include="Windows\ViewModel\ChecklistItem.cs" />
+    <Compile Include="Windows\ViewModel\ChecklistSection.cs" />
+    <Compile Include="Windows\ViewModel\ChecklistViewModel.cs" />
+    <Compile Include="Windows\ViewModel\Share.cs" />
+    <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
+    <Compile Include="Windows\ViewModel\ViewModelCollection.cs" />
     <Content Include="_Documents\Licenses\AvalonDock\LICENSE.txt" />
     <Content Include="_Documents\Licenses\CommandLineParser\LICENSE.txt" />
     <Content Include="_Documents\Licenses\EOSSharp\LICENSE.txt" />
@@ -3058,6 +3075,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Windows\Controls\DialogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Controls\FontChooserDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -3065,6 +3086,10 @@
     <Page Include="Windows\Controls\ImagePicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Controls\ShareDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Controls\TextFormatButton.xaml">
       <Generator>MSBuild:Compile</Generator>

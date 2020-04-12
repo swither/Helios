@@ -28,7 +28,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status, diag:PresentationTraceSources.TraceLevel=High}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
+                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>

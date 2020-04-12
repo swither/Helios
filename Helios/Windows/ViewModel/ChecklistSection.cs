@@ -4,9 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using GadrocsWorkshop.Helios.Windows;
 
-namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
+namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
     /// <summary>
     /// a view model for the status of an interface, as viewed in the configuration check (Checklist) view
@@ -39,7 +38,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         }
 
         /// <summary>
-        /// called by parent if the display threshold is changed after we have already been initialized 
+        /// called by parent if the display threshold is changed after we have already been initialized
         /// </summary>
         /// <param name="displayThreshold"></param>
         internal void ChangeDisplayThreshold(StatusReportItem.SeverityCode displayThreshold)
@@ -84,7 +83,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
             // create a unique set of recommendations
             HashSet<string> uniqueRecommendations = new HashSet<string>(
-                _report.Select(item => item.Recommendation).Where(text => !string.IsNullOrEmpty(text)),
+                _report.Select(item => item.Recommendation).Where<string>(text => !string.IsNullOrEmpty(text)),
                 StringComparer.OrdinalIgnoreCase);
             foreach (string recommendation in uniqueRecommendations)
             {

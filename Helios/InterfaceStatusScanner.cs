@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace GadrocsWorkshop.Helios.ProfileEditor
+namespace GadrocsWorkshop.Helios
 {
     public class InterfaceStatusScanner : NotificationObject, IStatusReportObserver
     {
@@ -24,7 +24,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private StatusReportItem.SeverityCode _triggerThreshold;
 
         private HeliosProfile _profile;
-
+        
         #endregion
 
         public event EventHandler Triggered;
@@ -101,7 +101,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
-        private void PerformChecks()
+        public void PerformChecks()
         {
             foreach (InterfaceStatus interfaceStatus in InterfaceStatuses)
             {
@@ -159,6 +159,27 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
+        /// <summary>
+        /// backing field for property CurrentReport, contains
+        /// the most recent status report received
+        /// </summary>
+        private IList<StatusReportItem> _currentReport = new List<StatusReportItem>();
+
+        /// <summary>
+        /// the most recent status report received
+        /// </summary>
+        public IList<StatusReportItem> CurrentReport
+        {
+            get => _currentReport;
+            set
+            {
+                if (_currentReport != null && _currentReport == value) return;
+                IList<StatusReportItem> oldValue = _currentReport;
+                _currentReport = value;
+                OnPropertyChanged("CurrentReport", oldValue, value, true);
+            }
+        }
+
         #endregion
 
         #region IStatusReportObserver
@@ -171,7 +192,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 return;
             }
 
-            if (statusReport.Any(item => item.Severity >= TriggerThreshold))
+            if (CurrentReport.Any(item => item.Severity >= TriggerThreshold))
             {
                 Triggered?.Invoke(this, EventArgs.Empty);
             }

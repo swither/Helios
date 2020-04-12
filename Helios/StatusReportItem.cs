@@ -11,6 +11,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 namespace GadrocsWorkshop.Helios
 {
     /// <summary>
@@ -37,14 +40,17 @@ namespace GadrocsWorkshop.Helios
         /// <summary>
         /// optional time stamp or null
         /// </summary>
+        [JsonProperty("TimeStamp", NullValueHandling = NullValueHandling.Ignore)]
         public string TimeStamp { get; set; }
 
+        [JsonProperty("Severity", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public SeverityCode Severity { get; set; } = SeverityCode.Info;
 
         /// <summary>
         /// the status message, which may be more than one line long
         /// but should generally be short
         /// </summary>
+        [JsonProperty("Status")]
         public string Status { get; set; }
 
         /// <summary>
@@ -66,11 +72,13 @@ namespace GadrocsWorkshop.Helios
         /// Any flags set in this value (combined via binary 'or') indicate that
         /// the corresponding fact is true about this status report item.
         /// </summary>
+        [JsonProperty("Flags", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public StatusFlags Flags { get; set; }
 
         /// <summary>
         /// a recommendation to the user or null
         /// </summary>
+        [JsonProperty("Recommendation", NullValueHandling = NullValueHandling.Ignore)]
         public string Recommendation { get; set; }
 
         /// <summary>

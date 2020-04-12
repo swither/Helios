@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:local="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor"
-        xmlns:hsdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
+        xmlns:heliosWindows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
+        xmlns:heliosViewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel;assembly=Helios"
         Title="{Binding ElementName=ProfileEditorWindow,Path=Profile.Name}" Height="900" Width="1400" Name="ProfileEditorWindow" Icon="Icon.png" Background="{StaticResource WindowBackground}">
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="New_Executed" />
@@ -20,7 +21,8 @@
         <CommandBinding Command="local:ProfileEditorCommands.SaveLayout" Executed="SaveLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.LoadLayout" Executed="LoadLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.RestoreDefaultLayout" Executed="RestoreDefaultLayout_Executed" />
-        <CommandBinding Command="local:Checklist.GoThereCommand" Executed="GoThere_Executed" />
+        <CommandBinding Command="heliosViewModel:ChecklistViewModel.GoThereCommand" Executed="GoThere_Executed" />
+        <CommandBinding Command="heliosWindows:Dialog.ShowModalCommand" Executed="DialogShowModal_Executed"/>
     </Window.CommandBindings>
     <Grid Name="PrimaryGrid">
         <Grid.RowDefinitions>
