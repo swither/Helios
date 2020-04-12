@@ -47,6 +47,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DTSCard
         {
             get
             {
+#pragma warning disable CS0612 // Type or member is obsolete
                 HidDeviceLoader deviceLoader = new HidDeviceLoader();
                 List<String> cards = new List<String>();
                 foreach (HidDevice device in deviceLoader.GetDevices(0x04d8, 0xf64e))
@@ -116,6 +117,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DTSCard
                     _device = device;
                     break;
                 }
+#pragma warning restore CS0612 // Type or member is obsolete
             }
 
             if (_device != null)

@@ -35,11 +35,6 @@ namespace GadrocsWorkshop.Helios
             _defaultInterface = null;
         }
 
-        private string GetComponentName(string name)
-        {
-            return Name + "_" + name;
-        }
-
         //
         // For gauges with more than one input function, we need this override to map the 
         // different interface element names to the individual functions.  This carries with it

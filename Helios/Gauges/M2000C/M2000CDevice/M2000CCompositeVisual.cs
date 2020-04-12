@@ -79,10 +79,6 @@ namespace GadrocsWorkshop.Helios.M2000C
             return new Point(pos.X - size.Width / 2.0, pos.Y - size.Height / 2.0);
         }
 
-        private string GetComponentName(string name) {
-            return Name + "_" + name;
-        }
-
         protected RotarySwitch AddRotarySwitch(string name, Point posn, Size size,
             string knobImage, int defaultPosition, ClickType clickType,
             string interfaceDeviceName, string interfaceElementName, bool fromCenter, NonClickableZone[] nonClickableZones = null)
