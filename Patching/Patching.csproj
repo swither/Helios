@@ -100,7 +100,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Patching\**">
+    <Content Include="Templates\Patching\Additional Simulator Viewports\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />

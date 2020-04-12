@@ -46,7 +46,7 @@ namespace GenerateSimulatorViewportTemplates
                 {
                     List<string> lines = new List<string>();
                     string viewportName = viewport.ViewportName;
-                    string category = "Basic Simulator Viewports";
+                    string category = "Simulator Viewports";
                     if (viewportPrefix)
                     {
                         viewportName = $"{template.ViewportPrefix}_{viewport.ViewportName}";
@@ -98,7 +98,7 @@ namespace GenerateSimulatorViewportTemplates
                     lines.Add("    </Template>");
                     lines.Add("</ControlTemplate>");
 
-                    string outputDirectoryPath = Path.Combine(templatePath, "Additional Simulator Viewports");
+                    string outputDirectoryPath = Path.Combine(templatePath, viewportPrefix ? "Additional Simulator Viewports" : "Simulator Viewports");
                     if (!Directory.Exists(outputDirectoryPath))
                     {
                         Directory.CreateDirectory(outputDirectoryPath);

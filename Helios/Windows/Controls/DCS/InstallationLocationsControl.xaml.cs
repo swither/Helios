@@ -55,7 +55,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
 
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             string guessName = InstallationLocation.AUTO_UPDATE_CONFIG;
-            openFileDialog.Title = "Navigate to DCS Installation";
+            openFileDialog.Title = $"Navigate to DCS Installation and select {InstallationLocation.AUTO_UPDATE_CONFIG} file";
             openFileDialog.InitialDirectory = "";
             openFileDialog.FileName = guessName;
             openFileDialog.DefaultExt = ".cfg";

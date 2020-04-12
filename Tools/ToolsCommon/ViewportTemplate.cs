@@ -52,7 +52,7 @@ namespace ToolsCommon
         /// <summary>
         /// stable template name to use in Helios UI
         /// </summary>
-        public string TemplateDisplayName => TemplateName.Replace("-", "").Replace("Helios ", "");
+        public string TemplateDisplayName => TemplateName.Replace("-", "").Replace("Helios ", "").Replace(" (16/9)", "");
 
         /// <summary>
         /// stale viewport name to use in Helios UI

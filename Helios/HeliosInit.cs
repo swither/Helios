@@ -75,7 +75,8 @@ namespace GadrocsWorkshop.Helios
                     }
                 }
 
-                // XXX move this to plugins folder and get rid of special case
+                // REVISIT: move this to plugins folder and get rid of special case if we can add the check for system libraries
+                // to HeliosModuleAttribute.  This would be relevant if we create other plugins for DCSFlightPanels and the like
                 String phidgetsDllPath = Path.Combine(Environment.SystemDirectory, "phidget21.dll");
                 if (File.Exists("Phidgets.dll") && File.Exists(phidgetsDllPath))
                 {
