@@ -76,7 +76,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                         {
                             foreach (Typeface typeface in family.GetTypefaces())
                             {
-                                FormattedText text = new FormattedText("test", CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, typeface, 12, Brushes.AliceBlue);
+                                FormattedText text = new FormattedText("test", CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, typeface, 12, Brushes.AliceBlue, ConfigManager.DisplayManager.PixelsPerDip);
                                 double testWidth = text.Width;
                                 double testHeight = text.Height;
                             }

@@ -48,6 +48,11 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
+        /// this value is required by some windows APIs such as FormattedText
+        /// </summary>
+        public double PixelsPerDip => ((double)DPI) / 96.0;
+
+        /// <summary>
         /// Returns the number of Displays using the Win32 functions
         /// </summary>
         /// <returns>collection of Display Info</returns>

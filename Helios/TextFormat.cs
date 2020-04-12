@@ -282,7 +282,7 @@ namespace GadrocsWorkshop.Helios
         public FormattedText GetFormattedText(Brush textBrush, string text)
         {
             Typeface type = new Typeface(FontFamily, FontStyle, FontWeight, FontStretches.Normal);
-            FormattedText formatedText = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, type, FontSize, textBrush);
+            FormattedText formatedText = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, type, FontSize, textBrush, ConfigManager.DisplayManager.PixelsPerDip);
 
             formatedText.SetTextDecorations(TextDecorations);
 
