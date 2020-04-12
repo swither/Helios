@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using GadrocsWorkshop.Helios.Interfaces.Common;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {

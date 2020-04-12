@@ -9,6 +9,10 @@
              WindowStartupLocation = "CenterScreen"
              SizeToContent = "WidthAndHeight"
              Title="{Binding RelativeSource={RelativeSource Self}, Path=Content.Title}"
+             MaxHeight="800"
+             WindowStyle = "SingleBorderWindow"
+             Topmost = "True"
+             ResizeMode = "NoResize"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Window.CommandBindings>

@@ -27,6 +27,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
     using System.Windows.Threading;
     using GadrocsWorkshop.Helios.Splash;
     using GadrocsWorkshop.Helios.ProfileAwareInterface;
+    using GadrocsWorkshop.Helios.Windows;
+    using GadrocsWorkshop.Helios.Windows.Controls;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -308,7 +310,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             DependencyProperty.Register("HotKeyDescription", typeof(string), typeof(MainWindow), new PropertyMetadata(""));
 
         // no need for dependency property, this is constant
-        public StatusViewer StatusViewer { get; } = new StatusViewer();
+        public StatusViewer.StatusViewer StatusViewer { get; } = new StatusViewer.StatusViewer();
         #endregion
 
         private void Minimize()
@@ -525,11 +527,28 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             StatusViewer.ResetCautionLight();
         }
 
-        private void StatusViewer_Clear_Executed(object sender, ExecutedRoutedEventArgs e)
+
+        private void DialogShowModal_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // REVISIT: move this to StatusViewer once it becomes its own XAML-based class
-            StatusViewer.Clear();
+            // this is the source of the event, and we will resolve DataTemplate from their position
+            FrameworkElement host = (FrameworkElement)e.OriginalSource;
+
+            // crash if incorrect parameter type
+            ShowModalParameter parameter = (ShowModalParameter)e.Parameter;
+
+            // resolve the data template
+            DataTemplate template = parameter.DataTemplate ?? (DataTemplate)host.TryFindResource(new DataTemplateKey(parameter.Content.GetType()));
+
+            // display the dialog appropriate to the content
+            Window generic = new DialogWindow
+            {
+                ContentTemplate = template,
+                Content = parameter.Content
+            };
+            
+            generic.ShowDialog();
         }
+
         #endregion
 
         #region Profile Running
@@ -1107,7 +1126,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 }
                 StatusViewer.AddItem(status);
             }
-            StatusLines.ScrollToBottom();
+            StatusCanvas.StatusLines.ScrollToBottom();
             if (!success)
             {
                 StatusMessage = StatusValue.FailedPreflight;

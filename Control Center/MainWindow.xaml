@@ -2,6 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:GadrocsWorkshop.Helios.ControlCenter"
+        xmlns:statusViewer="clr-namespace:GadrocsWorkshop.Helios.ControlCenter.StatusViewer"
+        xmlns:heliosWindows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
         Title="Helios Control Center"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         SizeToContent="Height" Width="504" 
@@ -13,166 +15,7 @@
         Topmost="True" 
         Loaded="Window_Loaded" 
         ContentRendered="Window_Opened">
-    <!-- add this for debugging: xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase" -->
     <Window.Resources>
-        <Style TargetType="{x:Type CheckBox}" x:Key="HeliosSwitchStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <Grid>
-                            <Image x:Name="ButtonImage" Source="ControlCenterPowerOff.png" Width="32" Margin="0,-15,0,-15"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="ButtonImage" Property="Source" Value="ControlCenterPower.png"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="{x:Type Button}" x:Key="HeliosRoundPushButtonStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Grid>
-                            <Image Name="ButtonImage" Source="ControlCenterDelete.png" Stretch="Fill" />
-                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonImage" Property="Source" Value="ControlCenterDeletePressed.png" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="{x:Type Button}" x:Key="HeliosPushButtonStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Grid>
-                            <Image Name="ButtonImage" Source="ControlCenterButton.png" Stretch="Fill" />
-                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonImage" Property="Source" Value="ControlCenterButtonPressed.png" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="{x:Type Button}" x:Key="HeliosCautionButtonStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Grid>
-                            <Image Name="ButtonImage" Source="ControlCenterCautionButton.png" Stretch="Fill" />
-                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonImage" Property="Source" Value="ControlCenterCautionButtonPressed.png" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="{x:Type Button}" x:Key="HeliosPrevButtonStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Grid>
-                            <Image Name="ButtonImage" Source="PrevButton.png" />
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonImage" Property="Source" Value="PrevButtonPressed.png" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="{x:Type Button}" x:Key="HeliosNextButtonStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Grid>
-                            <Image Name="ButtonImage" Source="NextButton.png" />
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonImage" Property="Source" Value="NextButtonPressed.png" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-
-        <Style x:Key="BaseDisplayText" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Franklin Gothic Book"/>
-            <Setter Property="Foreground" Value="#FF79CC87"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Style.Triggers>
-                <Trigger Property="Text" Value="">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="BaseLabel" TargetType="TextBlock">
-            <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="FontFamily" Value="Franklin Gothic"/>
-            <Setter Property="Foreground" Value="#FFF8F5F5"/>
-            <Setter Property="FontWeight" Value="Normal"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="TextAlignment" Value="Center"/>
-        </Style>
-
-        <Style x:Key="FillWithFontColor" TargetType="Rectangle">
-            <Setter Property="Fill" Value="#FFF8F5F5"/>
-        </Style>
-
-        <Style x:Key="BorderInFontColor" TargetType="Border">
-            <Setter Property="BorderBrush" Value="#FFF8F5F5"/>
-        </Style>
-
-        <Style x:Key="ButtonLabel" TargetType="TextBlock" BasedOn="{StaticResource BaseLabel}">
-            <Setter Property="FontSize" Value="12"/>
-        </Style>
-
-        <Style x:Key="TopLabel" TargetType="TextBlock" BasedOn="{StaticResource ButtonLabel}">
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Margin" Value="0,20,0,10"/>
-        </Style>
-
-        <Style x:Key="UpLabel" TargetType="TextBlock" BasedOn="{StaticResource BaseLabel}">
-            <Setter Property="FontSize" Value="10"/>
-        </Style>
-
-        <Style x:Key="DownLabel" TargetType="TextBlock" BasedOn="{StaticResource BaseLabel}">
-            <Setter Property="FontSize" Value="10"/>
-        </Style>
-
-        <Style x:Key="CanvasLabel" TargetType="TextBlock" BasedOn="{StaticResource BaseLabel}">
-            <Setter Property="FontSize" Value="24"/>
-        </Style>
-
         <Style x:Key="CollapsePrefs" TargetType="Canvas">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=PrefsCheckBox}" Value="False">
@@ -201,8 +44,7 @@
         <CommandBinding Command="local:ControlCenterCommands.RunProfile" Executed="RunProfile_Executed" />
         <CommandBinding Command="local:ControlCenterCommands.ResetCaution" Executed="ResetCaution_Executed" />
         <CommandBinding Command="Close" Executed="Close_Executed" />
-        <!-- REVISIT move this once StatusViewer becomes its own XAML-based class -->
-        <CommandBinding Command="local:StatusViewer.ClearCommand" Executed="StatusViewer_Clear_Executed" />
+        <CommandBinding Command="heliosWindows:Dialog.ShowModalCommand" Executed="DialogShowModal_Executed"/>
     </Window.CommandBindings>
     <Grid Name="WindowGrid">
         <Grid.RowDefinitions>
@@ -384,106 +226,11 @@
                                 <TextBlock x:Name="TouchscreenDelayTextBlock" Style="{StaticResource BaseDisplayText}" FontSize="12" Padding="0,0,2,0" Text="0 ms" VerticalAlignment="Center" TextAlignment="Right"/>
                             </Border>
                         </StackPanel>
-                        <Slider Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,9,0" x:Name="TouchScreenDelaySlider" Minimum="0" Maximum="1000" TickFrequency="200" TickPlacement="BottomRight" ValueChanged="TouchScreenDelaySlider_ValueChanged" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
+                        <Slider Grid.Row="2" Grid.Column="1" Margin="0,0,9,0" x:Name="TouchScreenDelaySlider" Minimum="0" Maximum="1000" TickFrequency="200" TickPlacement="BottomRight" ValueChanged="TouchScreenDelaySlider_ValueChanged" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
                     </Grid>
                 </Grid>
             </Canvas>
-            <Canvas Name="StatusCanvas" Margin="0" Height="320" Width="504" Style="{StaticResource CollapseStatus}">
-                <Image Source="StatusBackground.png" />
-                <Thumb Name="StatusDragThumb" Width="504" Height="320" Opacity="0" DragDelta="MoveThumb_DragDelta" Canvas.Left="0" Canvas.Top="0" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="84"/>
-                        <ColumnDefinition Width="84"/>
-                        <ColumnDefinition Width="84"/>
-                        <ColumnDefinition Width="84"/>
-                        <ColumnDefinition Width="84"/>
-                        <ColumnDefinition Width="70"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="32"/>
-                        <RowDefinition Height="224"/>
-                        <RowDefinition Height="64"/>
-                    </Grid.RowDefinitions>
-                    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="10,8,10,8" CornerRadius="3" BorderBrush="#FF454545" BorderThickness="2" Background="#FF001500">
-                        <ScrollViewer Name="StatusLines" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
-                            <ListView Margin="4" Background="#FF001500"
-                                      BorderThickness="0"
-                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                      HorizontalContentAlignment="Stretch"    
-                                      ItemsSource="{Binding Path=StatusViewer.Items}" 
-                                      ItemTemplateSelector="{Binding Path=StatusViewer.TemplateSelector}">
-                                <ListView.Resources>
-                                    <DataTemplate x:Key="Info">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="8"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                    <DataTemplate x:Key="Warning">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="8"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Fill="#FFF1ED31" Stroke="Transparent"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                    <DataTemplate x:Key="Error">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="8"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Fill="#FFD8696C" Stroke="Transparent"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.Resources>
-                            </ListView>
-                        </ScrollViewer>
-                    </Border>
-                    <StackPanel Grid.Row="1" Grid.Column="5">
-                        <Button Height="50" Width="50" Margin="0,52,0,0" Style="{StaticResource HeliosPrevButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageUpCommand}" />
-                        <Button Height="50" Width="50" Margin="0,20,0,0" Style="{StaticResource HeliosNextButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageDownCommand}" />
-                    </StackPanel>
-                    <StackPanel Grid.Row="2" Grid.Column="2">
-                        <TextBlock Text="CLEAR" Style="{StaticResource BaseLabel}" FontSize="12"/>
-                        <Button Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="local:StatusViewer.ClearCommand"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="2" Grid.Column="3">
-                        <TextBlock Text="COPY" Style="{StaticResource BaseLabel}" FontSize="12"/>
-                        <Button IsEnabled="False" Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}"/>
-                    </StackPanel>                    <StackPanel Grid.Row="2" Grid.Column="4">
-                        <TextBlock Text="REPORT BUG" Style="{StaticResource BaseLabel}" FontSize="12"/>
-                        <Button IsEnabled="false" Height="36" Width="36" Margin="0,8,0,0" Style="{StaticResource HeliosPushButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" />
-                    </StackPanel>
-                    <!-- add this once we separate from control center main window 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"  Text="HELIOS CONSOLE" Style="{StaticResource BaseLabel}" FontSize="22"/>
-                    -->
-                </Grid>
-            </Canvas>
+            <statusViewer:StatusViewerCanvas x:Name="StatusCanvas" Margin="0" Style="{StaticResource CollapseStatus}" DataContext="{Binding StatusViewer}"/>
         </StackPanel>
-
     </Grid>
 </Window>

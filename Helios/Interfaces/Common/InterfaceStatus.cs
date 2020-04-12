@@ -2,7 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace GadrocsWorkshop.Helios
+namespace GadrocsWorkshop.Helios.Interfaces.Common
 {
     public class InterfaceStatus : NotificationObject, IStatusReportObserver
     {

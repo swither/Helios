@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GadrocsWorkshop.Helios.Interfaces.Common;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {

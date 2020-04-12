@@ -13,13 +13,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Newtonsoft.Json;
+using GadrocsWorkshop.Helios.Interfaces.Common;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
@@ -65,11 +62,6 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                     section.Initialize(Data.DisplayThreshold);
                 }
             }
-        }
-
-        private void OnDisplayThresholdChanged()
-        {
-
         }
 
         public ViewModelCollection<InterfaceStatus, ChecklistSection> Items { get; }

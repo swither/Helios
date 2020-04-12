@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace GadrocsWorkshop.Helios
+namespace GadrocsWorkshop.Helios.Interfaces.Common
 {
     public class InterfaceStatusScanner : NotificationObject, IStatusReportObserver
     {

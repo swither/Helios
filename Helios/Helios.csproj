@@ -107,6 +107,8 @@
     <Compile Include="Controls\ViewportExtentRenderer.cs" />
     <Compile Include="HeliosApplication.cs" />
     <Compile Include="IInstallation.cs" />
+    <Compile Include="Interfaces\Common\InterfaceStatusScanner.cs" />
+    <Compile Include="Util\Anonymizer.cs" />
     <Compile Include="Util\DCS\DCSConfiguration.cs" />
     <Compile Include="IResetMonitorsObserver.cs" />
     <Compile Include="ISettingsManager2.cs" />
@@ -494,8 +496,7 @@
     <Compile Include="Util\CommandLineOptions.cs" />
     <Compile Include="Util\EnumBooleanConverter.cs" />
     <Compile Include="Util\HeliosUndoBatch.cs" />
-    <Compile Include="InterfaceStatus.cs" />
-    <Compile Include="InterfaceStatusScanner.cs" />
+    <Compile Include="Interfaces\Common\InterfaceStatus.cs" />
     <Compile Include="Windows\Controls\DialogWindow.xaml.cs">
       <DependentUpon>DialogWindow.xaml</DependentUpon>
     </Compile>

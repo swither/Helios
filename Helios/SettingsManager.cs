@@ -67,7 +67,7 @@ namespace GadrocsWorkshop.Helios
 
         public SettingsManager(string settingsFile)
         {
-            ConfigManager.LogManager.LogDebug($"Helios will load settings from {settingsFile}");
+            ConfigManager.LogManager.LogDebug($"Helios will load settings from {Util.Anonymizer.Anonymize(settingsFile)}");
             _settingsFile = settingsFile;
         }
 

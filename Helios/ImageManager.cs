@@ -34,7 +34,7 @@ namespace GadrocsWorkshop.Helios
 
         internal ImageManager(string userImagePath)
         {
-            ConfigManager.LogManager.LogDebug($"Helios will load user images from {userImagePath}");
+            ConfigManager.LogManager.LogDebug($"Helios will load user images from {Util.Anonymizer.Anonymize(userImagePath)}");
             _documentImagePath = userImagePath;
         }
 

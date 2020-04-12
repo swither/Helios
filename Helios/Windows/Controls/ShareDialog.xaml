@@ -7,9 +7,8 @@
              xmlns:heliosWindows="clr-namespace:GadrocsWorkshop.Helios.Windows"
              xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel"
              mc:Ignorable="d"
-             Height="600"
              d:DataContext="{d:DesignInstance d:Type=viewModel:ShareInterfaceStatus}"
-             d:DesignHeight="600" d:DesignWidth="700">
+             d:DesignHeight="100" d:DesignWidth="640">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
@@ -35,7 +34,7 @@
     </ScrollViewer>
     <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Documentation}" MaxWidth="200" Margin="10,24,10,6" TextWrapping="Wrap">You may share this report by copying and pasting it, for example in a Discord channel where you receive help.</TextBlock>
     <Button Grid.Row="2" Grid.Column="1" Style="{StaticResource InterfaceEditorButton}" Content="Copy to Clipboard" Command="{Binding CopyCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" IsDefault="True"/>
-    <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource Documentation}" MaxWidth="200" Margin="10,24,10,6" TextWrapping="Wrap">Pressing this button will attempt to open a Browser and start the process of creating a new bug report on Github.  
+    <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource Documentation}" MaxWidth="200" Margin="10,24,10,6" TextWrapping="Wrap">Pressing this button will attempt to open a Browser and start the process of creating a new bug report on GitHub.  
         Please make sure to carefully review the existing bugs that will be displayed to make
         sure this is not a duplicate.</TextBlock>
     <Button Grid.Row="4" Grid.Column="1" Style="{StaticResource InterfaceEditorButton}" Content="File a Bug" Command="{Binding FileBugCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"/>

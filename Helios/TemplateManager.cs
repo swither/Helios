@@ -33,9 +33,8 @@ namespace GadrocsWorkshop.Helios
 
         internal TemplateManager(string userTemplateDirectory, string userPanelTemplateDirectory)
         {
-            // XXX privacy violation: user name
-            ConfigManager.LogManager.LogDebug($"Helios will load user templates from {userTemplateDirectory}");
-            ConfigManager.LogManager.LogDebug($"Helios will load user panel templates from {userPanelTemplateDirectory}");
+            ConfigManager.LogManager.LogDebug($"Helios will load user templates from {Util.Anonymizer.Anonymize(userTemplateDirectory)}");
+            ConfigManager.LogManager.LogDebug($"Helios will load user panel templates from {Util.Anonymizer.Anonymize(userPanelTemplateDirectory)}");
 
             _userTemplateDirectory = userTemplateDirectory;
 
@@ -90,7 +89,19 @@ namespace GadrocsWorkshop.Helios
         {
             foreach (string templateFile in Directory.GetFiles(directory, "*.htpl"))
             {
-                templates.Add(LoadTemplate(templateFile, userTemplates));
+                HeliosTemplate template = LoadTemplate(templateFile, userTemplates);
+
+                // prevent crash on duplicate key
+                if (templates is HeliosTemplateCollection indexed)
+                {
+                    string key = indexed.GetKeyForItem(template);
+                    if (indexed.ContainsKey(key))
+                    {
+                        ConfigManager.LogManager.LogError($"ignored duplicate template '{Util.Anonymizer.Anonymize(templateFile)}' already loaded from another location");
+                        continue;
+                    }
+                }
+                templates.Add(template);
             }
 
             foreach (string subDirectory in Directory.GetDirectories(directory))

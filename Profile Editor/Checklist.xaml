@@ -3,12 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor"
              xmlns:helios="clr-namespace:GadrocsWorkshop.Helios;assembly=Helios"                      
              xmlns:heliosViewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel;assembly=Helios"                      
              xmlns:heliosControls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
              mc:Ignorable="d"
-             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              d:DesignHeight="450" 
              d:DesignWidth="800"
              d:DataContext="{d:DesignInstance d:Type=heliosViewModel:ChecklistViewModel}"
@@ -260,7 +258,7 @@
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Margin="0,6" VerticalAlignment="Bottom">
             <Button Command="{Binding ShareCommand}" CommandParameter="{Binding ElementName=ChecklistWindow}"  Style="{StaticResource SettingsButton}" Content="Share"/>
-            <Button Command="{Binding ReloadCommand}"  Style="{StaticResource SettingsButton}">Reload</Button>
+            <Button Command="{Binding ReloadCommand}" Style="{StaticResource SettingsButton}">Reload</Button>
         </StackPanel>
     </DockPanel>
 </Grid>

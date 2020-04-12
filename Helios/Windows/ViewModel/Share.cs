@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -62,27 +60,12 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         /// </summary>
         private class PrivacyConverter : JsonConverter<string>
         {
-            private static readonly OrderedDictionary _replacements = new OrderedDictionary
-            {
-                // replace home directory reference
-                {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "%USERPROFILE%"},
-                // just in case user name appears in other paths
-                {$"\\{Environment.UserName}\\", "\\%USERNAME%\\"}
-            };
-
             public override string ReadJson(JsonReader reader, Type objectType, string existingValue,
                 bool hasExistingValue, JsonSerializer serializer) => reader.ReadAsString();
 
             public override void WriteJson(JsonWriter writer, string value, JsonSerializer serializer)
             {
-                string working = value;
-                IDictionaryEnumerator iterator = _replacements.GetEnumerator();
-                while (iterator.MoveNext())
-                {
-                    working = working.Replace((string) iterator.Key, (string) iterator.Value);
-                }
-
-                writer.WriteValue(working);
+                writer.WriteValue(Util.Anonymizer.Anonymize(value));
             }
         }
 

@@ -19,9 +19,11 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GadrocsWorkshop.Helios.Windows;
 
-namespace GadrocsWorkshop.Helios.ControlCenter
+namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
 {
+    // model and view model for the status viewer
     public class StatusViewer: DependencyObject, ILogConsumer
     {
         // about two lines of status message are allowed, the rest will be cut if from log
@@ -62,8 +64,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
         }
 
-        public static RoutedUICommand ClearCommand { get; } = new RoutedUICommand("Clear Status", "Clear", typeof(StatusViewer));
-
         public StatusViewer()
         {
             // as long as we don't use these, this needs to be set to max
@@ -74,6 +74,58 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
             // register as a log consumer (NOTE: we never deregister)
             ConfigManager.LogManager.RegisterConsumer(this);
+        }
+
+        /// <summary>
+        /// backing field for property ClearCommand, contains
+        /// handler for Clear action
+        /// </summary>
+        private ICommand _clearCommand;
+
+        /// <summary>
+        /// handler for Clear action
+        /// </summary>
+        public ICommand ClearCommand
+        {
+            get
+            {
+                _clearCommand = _clearCommand ?? new RelayCommand(parameter => { Clear(); });
+                return _clearCommand;
+            }
+        }
+
+        /// <summary>
+        /// backing field for property ShareCommand, contains
+        /// handler for share action
+        /// </summary>
+        private ICommand _shareCommand;
+
+        /// <summary>
+        /// handler for share action
+        /// </summary>
+        public ICommand ShareCommand
+        {
+            get
+            {
+                _shareCommand = _shareCommand ?? new RelayCommand(parameter =>
+                {
+                    // stop the profile because we need to use the screen without getting
+                    // covered up
+                    ControlCenterCommands.StopProfile.Execute(null, parameter as IInputElement);
+
+                    // execute a modal dialog
+                    Dialog.ShowModalCommand.Execute(
+                        new ShowModalParameter
+                        {
+                            Content = new ShareConsoleStatus(new List<ConsoleStatus>
+                            {
+                                new ConsoleStatus(Items)
+                            })
+                        },
+                        parameter as IInputElement);
+                });
+                return _shareCommand;
+            }
         }
 
         public void AddItem(StatusReportItem item)
