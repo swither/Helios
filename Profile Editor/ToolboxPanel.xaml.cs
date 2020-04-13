@@ -83,18 +83,43 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
+        /// <summary>
+        /// these are mappings from an item's true category, which we cannot change without breaking profiles,
+        /// to the category in which they are shown in the UI
+        /// </summary>
+        private static readonly Dictionary<string, string> CategoryRemap = new Dictionary<string, string>
+        {
+            { "A-10", "A-10C" },
+            { "A-10 Gauges", "A-10C Gauges" }
+        };
+
+        /// <summary>
+        /// get the UI toolbox category in which we show items of the given category
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private string DisplayCategory(string value)
+        {
+            if (CategoryRemap.TryGetValue(value, out string assignToCategory))
+            {
+                return assignToCategory;
+            }
+            return value;
+        }
+
         private void AddTool(ToolboxItem tool)
         {
-            if (tool.Category != "_Hidden Parts")
+            string toolCategory = DisplayCategory(tool.Category);
+            if (toolCategory != "_Hidden Parts")
             {
                 ToolboxGroup group;
-                if (_toolboxGroups.ContainsKey(tool.Category))
+                if (_toolboxGroups.ContainsKey(toolCategory))
                 {
-                    group = _toolboxGroups[tool.Category];
+                    group = _toolboxGroups[toolCategory];
                 }
                 else
                 {
-                    group = new ToolboxGroup(tool.Category);
+                    group = new ToolboxGroup(toolCategory);
                     group.DragAdvisor = new ToolboxDragAdvisor();
                     _toolboxGroups.Add(group);
                 }
@@ -105,10 +130,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void RemoveTemplateTool(HeliosTemplate template)
         {
-
-            if (_toolboxGroups.ContainsKey(template.Category))
+            string templateCategory = DisplayCategory(template.Category);
+            if (_toolboxGroups.ContainsKey(templateCategory))
             {
-                ToolboxGroup group = _toolboxGroups[template.Category];
+                ToolboxGroup group = _toolboxGroups[templateCategory];
 
                 if (group != null)
                 {

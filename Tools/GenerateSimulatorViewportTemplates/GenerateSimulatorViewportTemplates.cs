@@ -11,7 +11,7 @@ namespace GenerateSimulatorViewportTemplates
         {
             if (args.Length < 3)
             {
-                throw new System.Exception("JSON path, output path, and prefix boolean parameters are required");
+                throw new System.Exception("JSON path, output path, and usesPatches boolean parameters are required");
             }
             string json = File.ReadAllText(args[0]);
             List<ToolsCommon.ViewportTemplate> templates = JsonConvert.DeserializeObject<ToolsCommon.ViewportTemplate[]>(json).ToList();
@@ -34,7 +34,7 @@ namespace GenerateSimulatorViewportTemplates
             "596387"
         };
 
-        private static void Generate(IList<ToolsCommon.ViewportTemplate> templates, string templatePath, bool viewportPrefix = false)
+        private static void Generate(IList<ToolsCommon.ViewportTemplate> templates, string templatePath, bool usesPatches = false)
         {
             foreach (ToolsCommon.ViewportTemplate template in templates)
             {
@@ -42,12 +42,12 @@ namespace GenerateSimulatorViewportTemplates
                 int colorIndex = System.Math.Abs(template.TemplateDisplayName.GetHashCode()) % _colors.Length;
 
                 // generate all valid viewports as templates
-                foreach (ToolsCommon.Viewport viewport in template.Viewports.Where(v => v.IsValid))
+                foreach (ToolsCommon.Viewport viewport in template.Viewports.Where(v => v.IsValid || !usesPatches))
                 {
                     List<string> lines = new List<string>();
                     string viewportName = viewport.ViewportName;
                     string category = "Simulator Viewports";
-                    if (viewportPrefix)
+                    if (usesPatches)
                     {
                         viewportName = $"{template.ViewportPrefix}_{viewport.ViewportName}";
                         category = $"{template.TemplateCategory} Simulator Viewports";
@@ -90,7 +90,7 @@ namespace GenerateSimulatorViewportTemplates
                     lines.Add($"            <Size>{width},{height}</Size>");
                     lines.Add("            <Hidden>False</Hidden>");
                     lines.Add($"            <ViewportName>{viewportName}</ViewportName>");
-                    if (viewportPrefix)
+                    if (usesPatches)
                     {
                         lines.Add("            <RequiresPatches>true</RequiresPatches>");
                     }
@@ -98,7 +98,7 @@ namespace GenerateSimulatorViewportTemplates
                     lines.Add("    </Template>");
                     lines.Add("</ControlTemplate>");
 
-                    string outputDirectoryPath = Path.Combine(templatePath, viewportPrefix ? "Additional Simulator Viewports" : "Simulator Viewports");
+                    string outputDirectoryPath = Path.Combine(templatePath, usesPatches ? "Additional Simulator Viewports" : "Simulator Viewports");
                     if (!Directory.Exists(outputDirectoryPath))
                     {
                         Directory.CreateDirectory(outputDirectoryPath);
