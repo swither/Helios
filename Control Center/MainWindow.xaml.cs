@@ -101,10 +101,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 if (TouchScreenDelaySlider.Value > 0)
                 {
                     TouchscreenCheckBox.IsChecked = true;
+                    TouchScreenDelaySlider.IsEnabled = true;
                 }
                 else
                 {
                     TouchscreenCheckBox.IsChecked = false;
+                    TouchScreenDelaySlider.IsEnabled = false;
                 }
             }
 
