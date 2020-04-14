@@ -4,8 +4,10 @@ using System.Windows;
 namespace GadrocsWorkshop.Helios.Windows
 {
     /// <summary>
-    /// a view model class using dependency properties, demonstrating how those
-    /// can still be hooking in to Helios' undo mechanism
+    /// a view model class supporting dependency properties, referencing a
+    /// Helios model object supporting automatic undo
+    ///
+    /// this type of view model also supports generating undo events for dependency properties
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class HeliosViewModel<T> : DependencyObject where T : NotificationObject
@@ -31,4 +33,24 @@ namespace GadrocsWorkshop.Helios.Windows
 
         #endregion
     }
+
+    /// <summary>
+    /// a view model class using dependency properties, referencing a model class that
+    /// is not a notifaction object and is assumed not to change
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class HeliosStaticViewModel<T> : DependencyObject where T : class
+    {
+        protected HeliosStaticViewModel(T data) 
+        {
+            Data = data;
+        }
+
+        #region Properties
+
+        public T Data { get; }
+
+        #endregion
+    }
+
 }

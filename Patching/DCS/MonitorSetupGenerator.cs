@@ -189,7 +189,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     Status =
                         $"{GenerateAnonymousPath(location.SavedGamesName)} does not contain the monitor setup file '{name}'",
-                    Recommendation = $"Configure {_parent.Name}",
+                    Recommendation = $"Configure or remove {_parent.Name}",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Warning
                 };
@@ -202,7 +202,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     Status =
                         $"monitor setup file '{name}' in {GenerateAnonymousPath(location.SavedGamesName)} does not match configuration",
-                    Recommendation = $"Configure {_parent.Name}",
+                    Recommendation = $"Configure or remove {_parent.Name}",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Warning
                 };

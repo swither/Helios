@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,8 +30,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
         // about two lines of status message are allowed, the rest will be cut if from log
         private const int STATUS_LIMIT = 120;
 
-        private Queue<StatusReportItem> _items = new Queue<StatusReportItem>();
-        private LinkedList<StatusReportItem> _shown = new LinkedList<StatusReportItem>();
+        private Queue<StatusViewerItem> _items = new Queue<StatusViewerItem>();
+        private LinkedList<StatusViewerItem> _shown = new LinkedList<StatusViewerItem>();
         private HashSet<string> _uniqueLogMessages = new HashSet<string>();
 
         // maximum
@@ -45,18 +46,18 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
         {
             public override DataTemplate SelectTemplate(object item, DependencyObject container)
             {
-                StatusReportItem listItem = item as StatusReportItem;
+                StatusViewerItem listItem = item as StatusViewerItem;
                 FrameworkElement element = container as FrameworkElement;
                 if (listItem == null)
                 {
                     return null;
                 }
-                StatusReportItem.SeverityCode severity = listItem.Severity;
+                StatusReportItem.SeverityCode severity = listItem.Data.Severity;
                 switch (severity)
                 {
                     case StatusReportItem.SeverityCode.None:
                         // these are incorrectly initialized
-                        ConfigManager.LogManager.LogError($"received status report item with invalid severity: {listItem.Severity} '{listItem.Status}'; implementation error");
+                        ConfigManager.LogManager.LogError($"received status report item with invalid severity: {listItem.Data.Severity} '{listItem.Data.Status}'; implementation error");
                         severity = StatusReportItem.SeverityCode.Error;
                         break;
                 }
@@ -70,7 +71,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             _windowSize = _capacity;
 
             // don't use default generated dependency property, we need our own copy
-            Items = new ObservableCollection<StatusReportItem>();
+            Items = new ObservableCollection<StatusViewerItem>();
 
             // register as a log consumer (NOTE: we never deregister)
             ConfigManager.LogManager.RegisterConsumer(this);
@@ -119,7 +120,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                         {
                             Content = new ShareConsoleStatus(new List<ConsoleStatus>
                             {
-                                new ConsoleStatus(Items)
+                                new ConsoleStatus(Items.Select(v => v.Data))
                             })
                         },
                         parameter as IInputElement);
@@ -147,14 +148,16 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                     break;
             }
 
+            StatusViewerItem viewModel = new StatusViewerItem(item);
+
             // store it for display
-            _items.Enqueue(item);
+            _items.Enqueue(viewModel);
 
             // if visible, display new item
             if (_windowBase + _windowSize >= _items.Count)
             {
-                _shown.AddLast(item);
-                Items.Add(item);
+                _shown.AddLast(viewModel);
+                Items.Add(viewModel);
 
                 // may have scrolled something off
                 while (_shown.Count > _windowSize)
@@ -167,7 +170,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             // finally, check if we exceeded our capacity
             while (_items.Count > _capacity)
             {
-                StatusReportItem discard = _items.Dequeue();
+                StatusViewerItem discard = _items.Dequeue();
                 if (_windowBase == 0)
                 {
                     Items.Remove(discard);
@@ -267,12 +270,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
         public static readonly DependencyProperty CautionLightVisibilityProperty =
             DependencyProperty.Register("CautionLightVisibility", typeof(Visibility), typeof(StatusViewer), new PropertyMetadata(Visibility.Hidden));
 
-        public ObservableCollection<StatusReportItem> Items
+        public ObservableCollection<StatusViewerItem> Items
         {
-            get { return (ObservableCollection<StatusReportItem>)GetValue(ItemsProperty); }
+            get { return (ObservableCollection<StatusViewerItem>)GetValue(ItemsProperty); }
             set { SetValue(ItemsProperty, value); }
         }
         public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("observableCollection", typeof(ObservableCollection<StatusReportItem>), typeof(StatusViewer), new PropertyMetadata(null));
+            DependencyProperty.Register("observableCollection", typeof(ObservableCollection<StatusViewerItem>), typeof(StatusViewer), new PropertyMetadata(null));
     }
 }

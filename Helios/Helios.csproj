@@ -891,9 +891,6 @@
       <DependentUpon>TextStaticEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Controls\TypefaceListItem.cs" />
-    <Content Include="_Documents\HeliosDiag.cmd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="_Documents\Licenses\GoogleDiffMatchPatch\LICENSE.txt" />
     <Content Include="Templates\Base\Buttons\MFD Lit.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -99,6 +99,7 @@
     <Compile Include="StatusViewer\StatusViewerCanvas.xaml.cs">
       <DependentUpon>StatusViewerCanvas.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StatusViewer\StatusViewerItem.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

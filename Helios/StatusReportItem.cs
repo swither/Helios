@@ -38,8 +38,8 @@ namespace GadrocsWorkshop.Helios
 
         // Uri components used in Links
         public const string HELIOS_SCHEME = "helios";
-        public const string PROFILE_EDITOR_HOST = "ProfileEditor";
-        public const string CONTROL_CENTER_HOST = "ControlCenter";
+        public const string PROFILE_EDITOR_HOST = "profileeditor";
+        public const string CONTROL_CENTER_HOST = "controlcenter";
 
         /// <summary>
         /// optional time stamp or null

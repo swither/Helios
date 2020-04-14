@@ -690,7 +690,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         "Configure the DCS interface or configure install location correctly to locate the file",
                     Link = StatusReportItem.ProfileEditor,
                     // survive this
-                    Severity = StatusReportItem.SeverityCode.Warning
+                    Severity = StatusReportItem.SeverityCode.Error
                 };
             }
 

@@ -19,21 +19,21 @@
     <Thumb Name="StatusDragThumb" Width="504" Height="320" Opacity="0" DragDelta="MoveThumb_DragDelta" Canvas.Left="0" Canvas.Top="0" /> -->
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="84"/>
-            <ColumnDefinition Width="84"/>
-            <ColumnDefinition Width="84"/>
-            <ColumnDefinition Width="84"/>
-            <ColumnDefinition Width="84"/>
-            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="88"/>
+            <ColumnDefinition Width="88"/>
+            <ColumnDefinition Width="88"/>
+            <ColumnDefinition Width="88"/>
+            <ColumnDefinition Width="88"/>
+            <ColumnDefinition Width="64"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition Height="224"/>
             <RowDefinition Height="64"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="10,8,10,8" CornerRadius="3" BorderBrush="#FF454545" BorderThickness="2" Background="#FF001500">
+        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="12,8,0,8" CornerRadius="3" BorderBrush="#FF454545" BorderThickness="2" Background="#FF001500">
             <ScrollViewer Name="StatusLines" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
-                <ListView Margin="4" Background="#FF001500"
+                <ListView Margin="0" Background="#FF001500"
                                       BorderThickness="0"
                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                       ScrollViewer.VerticalScrollBarVisibility="Disabled"
@@ -41,7 +41,7 @@
                                       ItemsSource="{Binding Path=Items}" 
                                       ItemTemplateSelector="{Binding Path=TemplateSelector}">
                     <ListView.Resources>
-                        <DataTemplate x:Key="Info" DataType="helios:StatusReportItem">
+                        <DataTemplate x:Key="Info" DataType="statusViewer:StatusViewerItem">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="8"/>
@@ -51,11 +51,11 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=Data.Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
                             </Grid>
                         </DataTemplate>
-                        <DataTemplate x:Key="Warning" DataType="helios:StatusReportItem">
+                        <DataTemplate x:Key="Warning" DataType="statusViewer:StatusViewerItem">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="8"/>
@@ -66,11 +66,11 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Fill="#FFF1ED31" Stroke="Transparent"/>
-                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=Data.Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
                             </Grid>
                         </DataTemplate>
-                        <DataTemplate x:Key="Error" DataType="helios:StatusReportItem">
+                        <DataTemplate x:Key="Error" DataType="statusViewer:StatusViewerItem">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="8"/>
@@ -81,17 +81,17 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Fill="#FFD8696C" Stroke="Transparent"/>
-                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
-                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=Data.Status}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Recommendation}" Style="{StaticResource BaseDisplayText}" TextWrapping="Wrap" FontSize="12"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.Resources>
                 </ListView>
             </ScrollViewer>
         </Border>
-        <StackPanel Grid.Row="1" Grid.Column="5">
-            <Button Height="50" Width="50" Margin="0,52,0,0" Style="{StaticResource HeliosPrevButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageUpCommand}" />
-            <Button Height="50" Width="50" Margin="0,20,0,0" Style="{StaticResource HeliosNextButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageDownCommand}" />
+        <StackPanel Grid.Row="1" Grid.Column="5" VerticalAlignment="Center">
+            <Button Height="36" Width="36" Margin="0,0,0,0" HorizontalAlignment="Center" Style="{StaticResource HeliosPrevButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageUpCommand}" />
+            <Button Height="36" Width="36" Margin="0,20,0,0" HorizontalAlignment="Center" Style="{StaticResource HeliosNextButtonStyle}" CommandTarget="{Binding ElementName=StatusLines}" Command="{x:Static ScrollBar.PageDownCommand}" />
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.Column="3">
             <TextBlock Text="CLEAR" Style="{StaticResource BaseLabel}" FontSize="12"/>
