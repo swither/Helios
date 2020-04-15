@@ -437,7 +437,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // XXX check if correct monitor resolution selected in DCS (should be a gentle message but error)
             yield return new StatusReportItem
             {
-                Status = "This version of Helios does not configure the selected Resolution in DCS directly",
+                Status = "This version of Helios does not select the Resolution in DCS directly",
                 Recommendation =
                     $"Using DCS, please set 'Resolution' in the 'System' options to at least {_parent.Resolution.X}x{_parent.Resolution.Y}",
                 Severity = StatusReportItem.SeverityCode.Info,
@@ -449,7 +449,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 yield return new StatusReportItem
                 {
-                    Status = "This version of Helios does not select the generated monitor setup in DCS directly",
+                    Status = "This version of Helios does not select the monitor setup in DCS directly",
                     Recommendation =
                         $"Using DCS, please set 'Monitors' in the 'System' options to '{GenerateShortName()}'",
                     Severity = StatusReportItem.SeverityCode.Info,

@@ -97,7 +97,7 @@ namespace GadrocsWorkshop.Helios
                     MessageBox.Show(message, "Please get a new Development build of Helios");
                     Application.Current.Shutdown();
                 }
-                ConfigManager.LogManager.LogWarning($"this is a development prototype build that will expire on {_timeBombTime.ToLongDateString()}");
+                ConfigManager.LogManager.LogInfo($"this is a development prototype build that will expire on {_timeBombTime.ToLongDateString()}");
                 return;
             }
             if (!string.IsNullOrWhiteSpace(_currentVersion) && _runningVersion != null)

@@ -36,7 +36,7 @@ namespace EditViewports
             HeliosInit.Initialize(documentPath, "EditViewports.log", LogLevel.Debug);
 
             InstallationLocations locations = InstallationLocations.Singleton;
-            if (locations.Active.Count() < 1)
+            if (!locations.Active.Any())
             {
                 throw new System.Exception("at least one DCS install location must be configured and enabled");
             }

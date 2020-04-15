@@ -366,6 +366,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void StartProfile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+
             if (ActiveProfile != null)
             {
                 if (ActiveProfile.IsStarted)
@@ -373,6 +374,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     return;
                 }
 
+                StatusViewer.ResetCautionLight();
                 if (File.GetLastWriteTime(ActiveProfile.Path) > ActiveProfile.LoadTime)
                 {
                     LoadProfile(ActiveProfile.Path);
@@ -380,9 +382,10 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
             else if (_profileIndex >= 0)
             {
+                StatusViewer.ResetCautionLight();
                 LoadProfile(_profiles[_profileIndex]);
             }
-
+            
             StartProfile();
         }
 

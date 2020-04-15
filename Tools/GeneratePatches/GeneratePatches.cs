@@ -10,6 +10,7 @@ namespace GeneratePatches
 {
     class GeneratePatches
     {
+        // XXX port to real command line, make dcs root a required parameter
         static private readonly string[] _dcsRoots = new string[] { "C:\\Program Files\\Eagle Dynamics\\DCS World", "c:\\dcs", "e:\\dcs" };
 
         private class AutoUpdateConfig
