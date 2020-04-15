@@ -206,6 +206,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             }
         }
 
+        public void ReceiveNameChange(string _)
+        {
+            // no code, each of our StatusReportItem children handles this
+        }
+
         #endregion
     }
 }

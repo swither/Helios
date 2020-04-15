@@ -256,6 +256,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Status = newStatus;
         }
 
+        public void ReceiveNameChange(string newStatusName)
+        {
+            // no code
+        }
+
         #region Properties
 
         public StatusCodes Status

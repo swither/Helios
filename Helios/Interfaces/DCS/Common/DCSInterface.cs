@@ -54,15 +54,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         // observers of our status report that need to be told when we change status
         private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
 
+        /// <summary>
+        /// backing field for ImpersonatedVehicleName
+        /// </summary>
+        private string _impersonatedVehicleName;
+
         public DCSInterface(string name, string exportDeviceName, string exportFunctionsPath)
             : base(name)
         {
             VehicleName = exportDeviceName;
             ExportFunctionsPath = exportFunctionsPath;
             _usesExportModule = DEFAULT_MODULE_USE;
-
-            // XXX temp until we get rid of alternate names
-            setAlternateName(exportDeviceName);
 
             // make sure we keep our list up to date and don't typo on the name of an export device
             Debug.Assert(DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
@@ -111,13 +113,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         public string VehicleName { get; private set; }
 
-        // WARNING: there is currently no UI for this feature, because that UI is in a different development branch.
-        // this value will be set manually in the XML for testing in this branch of the code
         /// <summary>
         /// If not null, the this interface instance is configured to impersonate the specified vehicle name.  This means
         /// that Helios should select it for the given vehicle, instead of the one that the interface natively supports.
         /// </summary>
-        public string ImpersonatedVehicleName { get; internal set; }
+        public string ImpersonatedVehicleName
+        {
+            get { return _impersonatedVehicleName; }
+            set
+            {
+                _impersonatedVehicleName = value;
+                foreach (IStatusReportObserver observer in _observers)
+                {
+                    string newName = StatusName;
+                    observer.ReceiveNameChange(newName);
+                }
+            }
+        }
 
         // we only support selection based on which vehicle this interface supports
         public IEnumerable<string> Tags => new string[] { ImpersonatedVehicleName ?? VehicleName };
@@ -130,6 +142,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public DCSExportConfiguration Configuration => _configuration;
 
         public DCSVehicleImpersonation VehicleImpersonation => _vehicleImpersonation;
+
+        public string StatusName => (ImpersonatedVehicleName != null) ? $"{Name} impersonating {ImpersonatedVehicleName}" : Name;
         #endregion
 
         internal string LoadSetting(string key, string defaultValue)

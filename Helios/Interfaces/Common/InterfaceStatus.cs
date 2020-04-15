@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -15,8 +16,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
                 ConfigManager.ModuleManager.InterfaceDescriptors[heliosInterface.TypeIdentifier];
             HasEditor = descriptor.InterfaceEditorType != null;
             Subscription = heliosInterface as IStatusReportNotify;
-            Subscription?.Subscribe(this);
+            if (Subscription != null)
+            {
+                Subscription.Subscribe(this);
+                Name = Subscription.StatusName;
+            }
         }
+
+
+        /// <summary>
+        /// backing field for property Name, contains
+        /// the status reporting name for this status item
+        /// </summary>
+        private string _private;
 
         public void Dispose()
         {
@@ -33,6 +45,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
 
             managed = new InterfaceStatus(heliosInterface);
             return true;
+        }
+
+        public void ReceiveNameChange(string newStatusName)
+        {
+            Name = newStatusName;
         }
 
         public void ReceiveStatusReport(IEnumerable<StatusReportItem> statusReport)
@@ -52,11 +69,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
         [JsonIgnore]
         public HeliosInterface Interface { get; }
 
+        /// <summary>
+        /// the status reporting name for this status item
+        /// </summary>
         [JsonProperty("Name")]
-        public string Name { get; }
+        public string Name
+        {
+            get => _private;
+            set
+            {
+                if (_private != null && _private == value)
+                {
+                    return;
+                }
 
-        [JsonIgnore]
-        public bool HasEditor { get; }
+                string oldValue = _private;
+                _private = value;
+                OnPropertyChanged("Name", oldValue, value, true);
+            }
+        }
+
+        [JsonIgnore] public bool HasEditor { get; }
 
         /// <summary>
         /// backing field for property Report, contains
@@ -73,7 +106,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             get => _report;
             set
             {
-                if (_report != null && _report == value) return;
+                if (_report != null && _report == value)
+                {
+                    return;
+                }
+
                 IList<StatusReportItem> oldValue = _report;
                 _report = value;
                 OnPropertyChanged("Report", oldValue, value, true);

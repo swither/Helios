@@ -523,6 +523,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
+        public string StatusName => Name;
+
         #endregion
     }
 }

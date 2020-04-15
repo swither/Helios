@@ -52,9 +52,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
             private Timer _startuptimer;
 
-            // XXX to be removed
-            private string _alternatename = "";
-
             public NetworkFunctionCollection Functions
             {
                 get
@@ -154,20 +151,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 {
                     Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
                     _startuptimer = value;
-                }
-            }
-
-            public string Alternatename
-            {
-                get
-                {
-                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
-                    return _alternatename;
-                }
-                set
-                {
-                    Debug.Assert(System.Threading.Thread.CurrentThread.ManagedThreadId == _id);
-                    _alternatename = value;
                 }
             }
         }
@@ -465,24 +448,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     OnPropertyChanged("Port", oldValue, value, false);
                 }
             }
-        }
-
-        // XXX to be removed
-        public string AlternateName
-        {
-            get
-            {
-                return _main.Alternatename;
-            }
-        }
-
-        // NOTE: not a property signature, because we don't want to allow changing after init
-        // which might happen by accident if we allow this to be bound to UI
-        // this method exists only to give selective access to _main to descendant class
-        // XXX to be removed
-        protected void setAlternateName(string value)
-        {
-            _main.Alternatename = value;
         }
 
         public NetworkFunctionCollection Functions
