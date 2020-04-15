@@ -80,7 +80,11 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
             // start up Helios
             string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), options.DocumentPath);
-            HeliosInit.Initialize(documentPath, "ControlCenter.log", options.LogLevel, new HeliosApplication(false));
+            HeliosInit.Initialize(documentPath, "ControlCenter.log", options.LogLevel, new HeliosApplication
+            {
+                ShowDesignTimeControls = false,
+                ConnectToServers = true
+            });
 
             // need to defer exit until after we initialize Helios or our main window will crash
             if (exitCode < 0)

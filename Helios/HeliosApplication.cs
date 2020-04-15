@@ -28,17 +28,16 @@ namespace GadrocsWorkshop.Helios
         /// this value is stable for the entire execution of any Helios Application and it can
         /// be accessed at any time after HeliosInit.Initialize
         /// </summary>
-        public bool ShowDesignTimeControls { get; private set; }
+        public bool ShowDesignTimeControls { get; set; } = true;
 
         /// <summary>
         /// if set, allows loading of Helios modules from ./Plugins relative to the installation folder
         /// </summary>
-        public bool AllowPlugins { get; internal set; } = true;
+        public bool AllowPlugins { get; set; } = true;
 
-        /// <param name="isDesignApplication"></param>
-        public HeliosApplication(bool isDesignApplication = true)
-        {
-            ShowDesignTimeControls = isDesignApplication;
-        }
+        /// <summary>
+        /// if set, interfaces should attempt to connect to remote servers for runtime operation
+        /// </summary>
+        public bool ConnectToServers { get; set; } = false;
     }
 }
