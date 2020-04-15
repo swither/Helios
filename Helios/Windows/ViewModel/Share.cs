@@ -27,8 +27,6 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         /// </summary>
         private ICommand _fileBugCommand;
 
-        private IList<T> _report;
-
         public string Text { get; }
 
         internal class EmptyStatus
@@ -71,17 +69,15 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
         public Share(IList<T> report)
         {
-            _report = report;
-
             // XXX enum converter
             // XXX flags converter
-            if (_report.Count == 0)
+            if (report.Count == 0)
             {
                 Text = JsonConvert.SerializeObject(EmptyReport, Formatting.Indented);
             }
             else
             {
-                Text = JsonConvert.SerializeObject(_report, new JsonSerializerSettings
+                Text = JsonConvert.SerializeObject(report, new JsonSerializerSettings
                 {
                     Formatting = Formatting.Indented,
                     Converters = new List<JsonConverter>
@@ -149,15 +145,8 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             Match match = new Regex("^https://github.com/[a-zA-Z0-9_]+/[a-zA-Z0-9_]+/").Match(repo);
             if (match.Success)
             {
-                // prepare the clipboard with a file reference
-                string fileName = $"Helios_status_report_{System.DateTime.Now.ToFileTime()}.txt";
-                string tempPath = Path.GetTempPath();
-                string path = Path.Combine(tempPath, fileName);
-                File.WriteAllText(path, Text);
-
-                // NOTE: github claims to support paste for attachments, but it doesn't work so we have to drag and drop
-                string explorer =
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe");
+                // NOTE: github claims to support paste for attachments, but it doesn't work so we have to drag and drop a file
+                string fileName = PrepareStatusReportFile(out string tempPath);
                 System.Diagnostics.Process.Start(tempPath);
 
                 // only take the part we validated
@@ -175,6 +164,17 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                 // fire a close command up the tree from the source of our command so it finds the right window
                 SystemCommands.CloseWindowCommand.Execute(null, inputElement);
             }
+        }
+
+        private string PrepareStatusReportFile(out string tempPath)
+        {
+            long timeStamp = System.DateTime.Now.ToFileTime();
+            string fileName = $"Helios_status_report_{timeStamp}.txt";
+            tempPath = Path.Combine(Path.GetTempPath(), $"Helios_status_report_{timeStamp}");
+            Directory.CreateDirectory(tempPath);
+            string path = Path.Combine(tempPath, fileName);
+            File.WriteAllText(path, Text);
+            return fileName;
         }
 
         public string Title
