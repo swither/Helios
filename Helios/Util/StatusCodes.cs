@@ -22,6 +22,7 @@ namespace GadrocsWorkshop.Helios.Util
         OutOfDate,
         Incompatible,
         NoLocations,
-        ResetMonitorsRequired
+        ResetMonitorsRequired,
+        ProfileSaveRequired
     }
 }

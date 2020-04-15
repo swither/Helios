@@ -50,6 +50,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _parent.InvalidateStatusReport();
         }
 
+        private const StatusReportItem.StatusFlags Informational = StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate;
+
         /// <summary>
         /// generate the monitor setup file but do not write it out yet
         /// </summary>
@@ -78,7 +80,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status = code,
-                    Flags = StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    Flags = Informational
                 };
                 lines.Add(code);
             }
@@ -88,15 +90,47 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Rect uiView = Rect.Empty;
             foreach (ShadowMonitor monitor in _parent.Monitors)
             {
+                string monitorDescription =
+                    $"Monitor at Windows coordinates ({monitor.Monitor.Left},{monitor.Monitor.Top}) of size {monitor.Monitor.Width}x{monitor.Monitor.Height}";
+                if (!monitor.Included)
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{monitorDescription} is not included in monitor setup",
+                        Flags = Informational
+                    };
+                    continue;
+                }
+
                 Rect rect = MonitorSetup.VisualToRect(monitor.Monitor);
                 if (monitor.Main)
                 {
                     mainView.Union(rect);
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{monitorDescription} is used for main view",
+                        Flags = Informational
+                    };
                 }
 
                 if (monitor.UserInterface)
                 {
                     uiView.Union(rect);
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{monitorDescription} is used to display the DCS user interface",
+                        Flags = Informational
+                    };
+                }
+
+                if (monitor.ViewportCount > 0)
+                {
+                    string plural = (monitor.ViewportCount > 1) ? "s" : "";
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{monitorDescription} has {monitor.ViewportCount} viewport{plural}",
+                        Flags = Informational
+                    };
                 }
             }
 
@@ -119,7 +153,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 Status =
                     $"MAIN = {{ x = {mainView.Left}, y = {mainView.Top}, width = {mainView.Width}, height = {mainView.Height} }}",
-                Flags = StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate
+                Flags = Informational
             };
 
             // check for separate UI view
@@ -189,7 +223,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     Status =
                         $"{GenerateAnonymousPath(location.SavedGamesName)} does not contain the monitor setup file '{name}'",
-                    Recommendation = $"Configure or remove {_parent.Name}",
+                    Recommendation = $"Configure {_parent.Name}",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Warning
                 };
@@ -202,7 +236,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     Status =
                         $"monitor setup file '{name}' in {GenerateAnonymousPath(location.SavedGamesName)} does not match configuration",
-                    Recommendation = $"Configure or remove {_parent.Name}",
+                    Recommendation = $"Configure {_parent.Name}",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Warning
                 };
@@ -264,6 +298,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         "UI should have disabled monitor setup writing without up to date monitors; implementation error");
                 }
 
+                if (string.IsNullOrWhiteSpace(_parent.Profile.Path))
+                {
+                    throw new Exception(
+                        "UI should have disabled monitor setup without a profile name; implementation error");
+                }
+
                 // WARNING: have to read the enumeration or it won't run (yield return)
                 List<StatusReportItem> results = new List<StatusReportItem>(
                     EnumerateMonitorSetupFiles(InstallFile));
@@ -304,7 +344,19 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status = "Monitor configuration in profile does not match this computer",
-                    Recommendation = "Perform 'Reset Monitors' function from the 'Profile' menu.",
+                    Recommendation = "Perform 'Reset Monitors' function from the 'Profile' menu",
+                    Link = StatusReportItem.ProfileEditor,
+                    Severity = StatusReportItem.SeverityCode.Error
+                };
+                yield break;
+            }
+
+            if (string.IsNullOrWhiteSpace(_parent.Profile.Path))
+            {
+                yield return new StatusReportItem
+                {
+                    Status = "You must save the profile before you can use Monitor Setup, because it uses the profile name as the name of the monitor setup",
+                    Recommendation = "Save the profile at least once before configuring Monitor Setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
                 };
@@ -354,7 +406,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     {
                         Status = $"viewport '{viewport.ViewportName}' requires patches to be installed",
                         Recommendation =
-                            "using Helios Profile Editor, add an Additional Viewports interface or configure the viewport extent not to require patches",
+                            "Add an Additional Viewports interface or configure the viewport extent not to require patches",
+                        Link = StatusReportItem.ProfileEditor,
                         Severity = StatusReportItem.SeverityCode.Error
                     };
                 }
@@ -386,7 +439,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 Status = "This version of Helios does not configure the selected Resolution in DCS directly",
                 Recommendation =
-                    $"Using DCS, please set 'Resolution' in the graphical Options to the value displayed in {_parent.Name}",
+                    $"Using DCS, please set 'Resolution' in the 'System' options to at least {_parent.Resolution.X}x{_parent.Resolution.Y}",
                 Severity = StatusReportItem.SeverityCode.Info,
                 Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
@@ -398,7 +451,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     Status = "This version of Helios does not select the generated monitor setup in DCS directly",
                     Recommendation =
-                        $"Using DCS, please set 'Monitors' in the graphical Options to '{GenerateShortName()}'",
+                        $"Using DCS, please set 'Monitors' in the 'System' options to '{GenerateShortName()}'",
                     Severity = StatusReportItem.SeverityCode.Info,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };

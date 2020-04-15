@@ -191,7 +191,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             Rect totalBounds = new Rect(0, 0, 1, 1);
             Rect bounds = new Rect(0, 0, 1, 1);
-            Rect rawBounds = new Rect(0, 0, 1, 1);
             Rect mainBounds = Rect.Empty;
             Rect uiBounds = Rect.Empty;
 
@@ -220,7 +219,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 // to calculate the resolution required by DCS
                 Rect rawDcsCoordinates = monitor.RawRect;
                 rawDcsCoordinates.Offset(Data.GlobalOffset);
-                rawBounds.Union(rawDcsCoordinates);
             }
 
             ScaledResolutionWidth = bounds.Width;
@@ -229,8 +227,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ScaledTotalHeight = totalBounds.Height;
             ScaledMain = mainBounds;
             ScaledUserInterface = uiBounds;
-            ResolutionWidth = rawBounds.Width;
-            ResolutionHeight = rawBounds.Height;
+
         }
 
         public void ReceiveStatusReport(IEnumerable<StatusReportItem> statusReport)
@@ -240,6 +237,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             if (!Data.Profile.IsValidMonitorLayout)
             {
                 newStatus = StatusCodes.ResetMonitorsRequired;
+            }
+            else if (string.IsNullOrWhiteSpace(Data.Profile.Path))
+            {
+                newStatus = StatusCodes.ProfileSaveRequired;
             }
             else if (!InstallationLocations.Singleton.Active.Any())
             {
@@ -332,26 +333,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static readonly DependencyProperty ScaledResolutionHeightProperty =
             DependencyProperty.Register("ScaledResolutionHeight", typeof(double), typeof(MonitorSetupViewModel),
                 new PropertyMetadata(1.0));
-
-        public double ResolutionWidth
-        {
-            get => (double) GetValue(ResolutionWidthProperty);
-            set => SetValue(ResolutionWidthProperty, value);
-        }
-
-        public static readonly DependencyProperty ResolutionWidthProperty =
-            DependencyProperty.Register("ResolutionWidth", typeof(double), typeof(MonitorSetupViewModel),
-                new PropertyMetadata(10.0));
-
-        public double ResolutionHeight
-        {
-            get => (double) GetValue(ResolutionHeightProperty);
-            set => SetValue(ResolutionHeightProperty, value);
-        }
-
-        public static readonly DependencyProperty ResolutionHeightProperty =
-            DependencyProperty.Register("ResolutionHeight", typeof(double), typeof(MonitorSetupViewModel),
-                new PropertyMetadata(10.0));
 
         public Rect ScaledMain
         {

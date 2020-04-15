@@ -62,6 +62,19 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="ProfileSaveRequiredStyle" TargetType="{x:Type Panel}">
+            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.ProfileSaveRequired}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Visible"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
             <Setter Property="UIElement.Visibility" Value="Hidden"/>
             <Style.Triggers>
@@ -396,9 +409,9 @@
 
                     <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Margin="0,10,0,0" Content="Resolution" MinHeight="24"/>
                     <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock VerticalAlignment="Center" Text="{Binding ResolutionWidth}"/>
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=Data.Resolution.X}"/>
                         <TextBlock VerticalAlignment="Center" Text="x"/>
-                        <TextBlock VerticalAlignment="Center" Text="{Binding ResolutionHeight}"/>
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=Data.Resolution.Y}"/>
                     </StackPanel>
                     <WrapPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
                         <TextBlock Style="{StaticResource Documentation}">Minimum resolution that must be selected in DCS Options.</TextBlock>
@@ -439,6 +452,16 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must complete 'Reset Monitors' before configuring monitor setup.</TextBlock>
+                    </Grid>
+                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource ProfileSaveRequiredStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must save the profile at least once before configuring monitor setup.</TextBlock>
                     </Grid>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                         <Grid.ColumnDefinitions>

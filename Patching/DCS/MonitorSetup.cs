@@ -101,6 +101,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private double _scale = 0.1;
 
+        /// <summary>
+        /// backing field for property Resolution, contains
+        /// the minimum DCS resolution required for this setup
+        /// </summary>
+        private Vector _resolution;
+
         #endregion
 
         public MonitorSetup()
@@ -195,6 +201,20 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // push this value to all viewports and monitors
             GlobalOffsetChanged?.Invoke(this, new GlobalOffsetEventArgs(GlobalOffset));
+        }
+
+        /// <summary>
+        /// find the minimum required DCS resolution to contain all the configured content
+        /// </summary>
+        private void UpdateResolution()
+        {
+            // NOTE: we need this for status reporting, so this can't be in view model only
+            IList<ShadowMonitor> included = _monitors.Values.Where(m => m.Included).ToList();
+            Vector bottomRight = new Vector(
+                included.Select(m => m.Visual.Left + m.Visual.Width).Max<double>(),
+                included.Select(m => m.Visual.Top + m.Visual.Height).Max<double>());
+            bottomRight += GlobalOffset;
+            Resolution = bottomRight;
         }
 
         /// <summary>
@@ -386,6 +406,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             AutoSelectMainView();
             AutoSelectUserInterfaceView();
             UpdateGlobalOffset();
+            UpdateResolution();
         }
 
         public void ChangeViewport(ShadowVisual viewport)
@@ -399,9 +420,30 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ScheduleGeometryChange();
         }
 
+        #region Properties
         internal IEnumerable<ShadowMonitor> Monitors => _monitors.Values;
 
         internal IEnumerable<ShadowVisual> Viewports => _viewports.Values;
+
+        /// <summary>
+        /// the minimum DCS resolution required for this setup
+        /// </summary>
+        public Vector Resolution
+        {
+            get => _resolution;
+            set
+            {
+                if (_resolution == value)
+                {
+                    return;
+                }
+
+                Vector oldValue = _resolution;
+                _resolution = value;
+                OnPropertyChanged("Resolution", oldValue, value, true);
+            }
+        }
+        #endregion
 
         #region IInstallation
 
