@@ -721,6 +721,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             dialog.Owner = this;
             dialog.ShowDialog();
         }
+
         private void NewVersionCheck_Click(object sender, RoutedEventArgs e)
         {
             VersionChecker.CheckVersion();

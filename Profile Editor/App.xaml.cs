@@ -47,8 +47,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             base.OnStartup(e);
 
-            base.OnStartup(e);
-
             CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
 
             // react to options or defaults
@@ -66,6 +64,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             {
                 Current.Shutdown();
                 return;
+            }
+
+            if (VersionChecker.IsDevelopmentPrototype)
+            {
+                VersionChecker.CheckVersion();
             }
 
             // note that we started

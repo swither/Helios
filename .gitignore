@@ -43,3 +43,4 @@ Lua/DCS/Scripts/HeliosExport/Mods
 /Tools/TestApplyPatches/test
 attribution_*.txt
 /Helios/Templates/Base/Simulator Viewports
+/Helios/TimeStamp.g.cs

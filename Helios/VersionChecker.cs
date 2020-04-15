@@ -37,17 +37,29 @@ namespace GadrocsWorkshop.Helios
         private static Boolean _downloadneeded = false;
         private static Boolean _remindnextrelease = false;
         private const string VERSION_URL = "https://github.com/BlueFinBima/HeliosCheckRelease/releases/download/CheckRelease/HeliosCurrentVersionV2.xml";
+        
+        private static readonly bool _developmentPrototype;
+        private static readonly DateTime _timeBombTime;
 
         static VersionChecker()
         {
             _today = DateTime.Today.ToString("yyyyMMdd");
             _todayVal = Convert.ToInt32(_today);
             GetRunningVersion();
+            if (_runningVersion.Build == 1000)
+            {
+                _developmentPrototype = true;
+                _timeBombTime = TimeStamp.CompilationTimestampUtc.AddDays(30.0);
+            }
             _lastseenVersion = ToVersion(ConfigManager.SettingsManager.LoadSetting("Helios", "LastReturnedVersion", "0.0.0.0"));
             _nextdatewarn = ConfigManager.SettingsManager.LoadSetting("Helios", "NextDateForVersionWarning", _today);
             _remindnextrelease = ConfigManager.SettingsManager.LoadSetting("Helios", "ReminderForNextRelease", "0")=="1"?true:false;
+
             // also need to do a periodic (weekly) check for people wanting to stop reminders until the following release 
-            if (_runningVersion.CompareTo(_lastseenVersion) >= 0 || _lastseenVersion.Major == 0 || (_remindnextrelease && Convert.ToInt32(_nextdatewarn) <= _todayVal))
+            if ((!_developmentPrototype) && (
+                _runningVersion.CompareTo(_lastseenVersion) >= 0 || 
+                _lastseenVersion.Major == 0 || 
+                (_remindnextrelease && Convert.ToInt32(_nextdatewarn) <= _todayVal)))
             {
                 _currentNetVersion = GetCurrentVersion();  // only get the latest version if the saved version isn't already higher than the running version
                 if (_remindnextrelease)
@@ -68,12 +80,26 @@ namespace GadrocsWorkshop.Helios
                 _currentNetVersion = _lastseenVersion;
                 _currentVersion = VersionToString(_currentNetVersion);
                 _downloadUrl = ConfigManager.SettingsManager.LoadSetting("Helios", "LastestDownloadUrl", "Https://www.digitalcombatsimulator.com/en/files/3302014/");
+                // REVISIT: is this default used? then document why it is ok to assume the DCS page is up to date
                 _ghdownloadUrl = ConfigManager.SettingsManager.LoadSetting("Helios", "LastestGitHubDownloadUrl", "Https://www.digitalcombatsimulator.com/en/files/3302014/");
             }
         }
-
-         public static void CheckVersion()
+        
+        public static void CheckVersion()
         {
+            if (_developmentPrototype)
+            {
+                if (_timeBombTime.CompareTo(DateTime.Now) < 0)
+                {
+                    string message =
+                        $"this is a development prototype build that expired on {_timeBombTime.ToLongDateString()}";
+                    ConfigManager.LogManager.LogError(message);
+                    MessageBox.Show(message, "Please get a new Development build of Helios");
+                    Application.Current.Shutdown();
+                }
+                ConfigManager.LogManager.LogWarning($"this is a development prototype build that will expire on {_timeBombTime.ToLongDateString()}");
+                return;
+            }
             if (!string.IsNullOrWhiteSpace(_currentVersion) && _runningVersion != null)
             {
                 try
@@ -103,6 +129,7 @@ namespace GadrocsWorkshop.Helios
                 }
             }
         }
+
         public static void SetNextCheckDate(DateTime dateNextCheck, Boolean remindNextRelease)
         {
             _nextdatewarn = dateNextCheck.ToString("yyyyMMdd");
@@ -118,6 +145,10 @@ namespace GadrocsWorkshop.Helios
             _nextdatewarn = _today;
             ConfigManager.SettingsManager.SaveSetting("Helios", "NextDateForVersionWarning", _nextdatewarn);
         }
+
+        public static bool IsDevelopmentPrototype => _developmentPrototype;
+
+        public static Version RunningVersion => _runningVersion;
 
         private static void GetRunningVersion()
         {
@@ -195,6 +226,7 @@ namespace GadrocsWorkshop.Helios
             }
             return ToVersion(_currentVersion);
         }
+
         private static string VersionToString(Version _ver)
         {
             return _ver.Major.ToString() + "." + _ver.Minor.ToString() + "." + _ver.Build.ToString("0000") + "." + _ver.Revision.ToString("0000"); ;

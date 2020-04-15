@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Splash
     using System.Windows.Input;
 
     /// <summary>
-    /// Interaction logic for About.xaml
+    /// Splash screen for Helios, currently also used as about box without any buttons
     /// </summary>
     public partial class About : Window
     {
@@ -30,13 +30,13 @@ namespace GadrocsWorkshop.Helios.Splash
             InitializeComponent();
         }
 
-         protected override void OnActivated(EventArgs e)
+        protected override void OnActivated(EventArgs e)
         {
-            Version _runningVersion = Assembly.GetEntryAssembly().GetName().Version;
-            VersionBlock.Text = _runningVersion.Major.ToString() + "." + _runningVersion.Minor.ToString() + "." + _runningVersion.Build.ToString() + "." + _runningVersion.Revision.ToString("0000");
+            Version runningVersion = VersionChecker.RunningVersion;
+            VersionBlock.Text = runningVersion.Major.ToString() + "." + runningVersion.Minor.ToString() + "." + runningVersion.Build.ToString() + "." + runningVersion.Revision.ToString("0000");
             ContributionBlock.Text = "Gadroc; BlueFinBima; ";
             ContributionBlock.Text = ContributionBlock.Text + "derammo; CaptZeen; KiwiLostInMelb; Phar71; damien022; Will Hartsell; Cylution; Rachmaninoff; yzfanimal; BeamRider";
-            StatusBlock.Text = "Development Prototype";
+            StatusBlock.Text = VersionChecker.IsDevelopmentPrototype ? "Development Prototype" : "Released";
             base.OnActivated(e);
         }
 
