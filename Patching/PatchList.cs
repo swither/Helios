@@ -67,7 +67,8 @@ namespace GadrocsWorkshop.Helios.Patching
                     yield return new StatusReportItem
                     {
                         Status = $"{destination.Description} {appliedStatus}",
-                        Recommendation = "using Helios Profile Editor, apply patches",
+                        Recommendation = $"Apply patches",
+                        Link = StatusReportItem.ProfileEditor,
                         Severity = StatusReportItem.SeverityCode.Error
                     };
                 }
