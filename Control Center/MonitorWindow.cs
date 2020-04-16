@@ -128,6 +128,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             try
             {
                 HwndSource hwndSource = PresentationSource.FromVisual(this) as System.Windows.Interop.HwndSource;
+                if (null == hwndSource)
+                {
+                    // XXX find out why this happens when screen is high DPI
+                    ConfigManager.LogManager.LogInfo("Cannot determine rendering mode for " + _display.Name);
+                    return;
+                }
                 HwndTarget hwndTarget = hwndSource.CompositionTarget;
                 if (hwndTarget.RenderMode == RenderMode.SoftwareOnly)
                 {
