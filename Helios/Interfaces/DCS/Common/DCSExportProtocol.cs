@@ -37,6 +37,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             public void Send(string request, string description)
             {
+                if (request == _request)
+                {
+                    OnRetry();
+                    return;
+                }
                 _timer.Stop();
                 _request = request;
                 _retries = 0;
@@ -78,7 +83,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 if (_retries >= _retryLimit)
                 {
                     // no answer after max retries; the export script is either not there or does not support the command
-                    // we are using (normal case if some other Export script is used)
+                    // we are using (normal case if some other Export script is used, so not fatal)
+                    // REVISIT: could have advanced setting to say this is entirely different script and just don't even try
                     ConfigManager.LogManager.LogWarning($"giving up on {_description} after {_retries} attempts");
                     _timer.Stop();
                     return;
