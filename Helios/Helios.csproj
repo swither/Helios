@@ -108,10 +108,10 @@
     <Compile Include="HeliosApplication.cs" />
     <Compile Include="IInstallation.cs" />
     <Compile Include="Interfaces\Common\InterfaceStatusScanner.cs" />
-    <Content Include="TimeStamp.tt">
+    <AdditionalFiles Include="TimeStamp.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TimeStamp.g.cs</LastGenOutput>
-    </Content>
+    </AdditionalFiles>
     <Compile Include="TimeStamp.g.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
