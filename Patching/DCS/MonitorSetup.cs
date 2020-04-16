@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     /// </summary>
     [HeliosInterface("Patching.DCS.MonitorSetup", "DCS Monitor Setup", typeof(MonitorSetupEditor),
         Factory = typeof(UniqueHeliosInterfaceFactory))]
-    public class MonitorSetup : HeliosInterface, IReadyCheck, IStatusReportNotify, IResetMonitorsObserver,
+    public class MonitorSetup : HeliosInterface, IReadyCheck, IStatusReportNotify,
         IShadowVisualParent, IInstallation
     {
         #region Delegates
@@ -162,9 +162,57 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             shadow.Instrument();
             shadow.KeyChanged += Shadow_KeyChanged;
             shadow.PropertyChanged += Shadow_PropertyChanged;
+            shadow.MonitorChanged += Raw_MonitorChanged;
+
             MonitorAdded?.Invoke(this, new ShadowMonitorEventArgs(shadow));
         }
 
+        private void RemoveMonitor(Monitor monitor)
+        {
+            string key = ShadowMonitor.CreateKey(monitor);
+            ShadowMonitor shadow = _monitors[key];
+            shadow.MonitorChanged -= Raw_MonitorChanged;
+            MonitorRemoved?.Invoke(this, new ShadowMonitorEventArgs(shadow));
+            _monitors.Remove(key);
+            shadow.Dispose();
+        }
+
+        public void AddViewport(ShadowVisual viewport)
+        {
+            _viewports[viewport.Visual] = viewport;
+            ViewportAdded?.Invoke(this, new ShadowViewportEventArgs(viewport));
+
+            // update viewport count on hosting monitor
+            string monitorKey = ShadowMonitor.CreateKey(viewport.Monitor);
+            ShadowMonitor monitor = _monitors[monitorKey];
+            monitor.AddViewport();
+
+            viewport.ViewportChanged += Raw_ViewportChanged;
+
+            // recalculate, delayed
+            ScheduleGeometryChange();
+        }
+
+        public void RemoveViewport(ShadowVisual viewport)
+        {
+            viewport.ViewportChanged -= Raw_ViewportChanged;
+            _viewports.Remove(viewport.Visual);
+            ViewportRemoved?.Invoke(this, new ShadowViewportEventArgs(viewport));
+
+            // update viewport count on hosting monitor
+            string monitorKey = ShadowMonitor.CreateKey(viewport.Monitor);
+            ShadowMonitor monitor = _monitors[monitorKey];
+            monitor.RemoveViewport();
+
+            // recalculate, delayed
+            ScheduleGeometryChange();
+        }
+
+        /// <summary>
+        /// called when a configuration property on our model has changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Shadow_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // configuration of our shadow object changed by UI, need to re-evaluate
@@ -172,6 +220,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ScheduleGeometryChange();
         }
 
+        /// <summary>
+        /// called when a monitor has changed enough to require a new
+        /// key (currently this happens every time the dimensions are changed because
+        /// the dimensions are the key)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Shadow_KeyChanged(object sender, ShadowMonitor.KeyChangeEventArgs e)
         {
             ShadowMonitor renamed = _monitors[e.OldKey];
@@ -179,13 +234,56 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _monitors[e.NewKey] = renamed;
         }
 
-        private void RemoveMonitor(Monitor monitor)
+        /// <summary>
+        /// called when the viewport dimensions are modified 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Raw_ViewportChanged(object sender, RawViewportEventArgs e)
         {
-            string key = ShadowMonitor.CreateKey(monitor);
-            ShadowMonitor shadow = _monitors[key];
-            MonitorRemoved?.Invoke(this, new ShadowMonitorEventArgs(shadow));
-            _monitors.Remove(key);
-            shadow.Dispose();
+            _ = sender;
+            _ = e;
+            ScheduleGeometryChange();
+        }
+
+        /// <summary>
+        /// called when the monitor dimensions are modified
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Raw_MonitorChanged(object sender, RawMonitorEventArgs e)
+        {
+            _ = sender;
+            _ = e;
+            UpdateGlobalOffset();
+            ScheduleGeometryChange();
+        }
+
+        /// <summary>
+        /// called when the collection of monitors is changed after we initially instrumented everything,
+        /// such as during reset monitors
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Monitors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Monitor monitor in e.NewItems)
+                {
+                    AddMonitor(monitor);
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (Monitor monitor in e.OldItems)
+                {
+                    RemoveMonitor(monitor);
+                }
+            }
+
+            ScheduleGeometryChange();
         }
 
         /// <summary>
@@ -371,35 +469,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        private void Monitors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (Monitor monitor in e.NewItems)
-                {
-                    AddMonitor(monitor);
-                }
-            }
-
-            if (e.OldItems != null)
-            {
-                foreach (Monitor monitor in e.OldItems)
-                {
-                    RemoveMonitor(monitor);
-                }
-            }
-
-            OnMonitorCollectionChange();
-        }
-
-        /// <summary>
-        /// handle any changes that may have added or removed monitors
-        /// </summary>
-        private void OnMonitorCollectionChange()
-        {
-            ScheduleGeometryChange();
-        }
-
         private void UpdateAllGeometry()
         {
             CheckMonitorSettings();
@@ -407,17 +476,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             AutoSelectUserInterfaceView();
             UpdateGlobalOffset();
             UpdateResolution();
-        }
-
-        public void ChangeViewport(ShadowVisual viewport)
-        {
-            ScheduleGeometryChange();
-        }
-
-        public void ChangeMonitor(ShadowMonitor shadowMonitor)
-        {
-            UpdateGlobalOffset();
-            ScheduleGeometryChange();
         }
 
         #region Properties
@@ -459,18 +517,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         #endregion
 
-        #region IResetMonitorsObserver
-
-        /// <summary>
-        /// notification from profile or UI that the monitors defined in the profile have been changed
-        /// </summary>
-        public void NotifyResetMonitorsComplete()
-        {
-            OnMonitorCollectionChange();
-        }
-
-        #endregion
-
         #region IShadowVisualParent
 
         public double Scale
@@ -490,46 +536,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         public Vector GlobalOffset { get; private set; }
-
-        public void AddViewport(ShadowVisual viewport)
-        {
-            _viewports[viewport.Visual] = viewport;
-            ViewportAdded?.Invoke(this, new ShadowViewportEventArgs(viewport));
-
-            // update viewport count on hosting monitor
-            string monitorKey = ShadowMonitor.CreateKey(viewport.Monitor);
-            ShadowMonitor monitor = _monitors[monitorKey];
-            if (monitor.AddViewport())
-            {
-                // need to recalculate everything: monitor now has viewports
-                ScheduleGeometryChange();
-            }
-            else
-            {
-                // just let the UI know something is changed, so we can regenerate status etc.
-                GeometryChangeDelayed?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public void RemoveViewport(ShadowVisual viewport)
-        {
-            _viewports.Remove(viewport.Visual);
-            ViewportRemoved?.Invoke(this, new ShadowViewportEventArgs(viewport));
-
-            // update viewport count on hosting monitor
-            string monitorKey = ShadowMonitor.CreateKey(viewport.Monitor);
-            ShadowMonitor monitor = _monitors[monitorKey];
-            if (monitor.RemoveViewport())
-            {
-                // need to recalculate everything: monitor no longer has viewports
-                ScheduleGeometryChange();
-            }
-            else
-            {
-                // just let the UI know something is changed, so we can regenerate status etc.
-                GeometryChangeDelayed?.Invoke(this, EventArgs.Empty);
-            }
-        }
 
         #endregion
 
