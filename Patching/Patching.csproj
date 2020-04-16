@@ -103,6 +103,9 @@
     <Content Include="Templates\Patching\Additional Simulator Viewports\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Patches\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Templates\Patching\readme.md" />
   </ItemGroup>

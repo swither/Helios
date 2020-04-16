@@ -13,7 +13,7 @@ namespace GadrocsWorkshop.Helios.Patching
             PatchList patches = destination.SelectPatches(userPatchesPath, patchSet);
 
             // load pre-installed patches from Helios installation folder
-            string installedPatchesPath = System.IO.Path.Combine(ConfigManager.ApplicationPath, "Patches", "DCS");
+            string installedPatchesPath = System.IO.Path.Combine(ConfigManager.ApplicationPath, "Plugins", "Patches", "DCS");
             PatchList patches2 = destination.SelectPatches(installedPatchesPath, patchSet);
 
             // index patches by target path
