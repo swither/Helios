@@ -285,12 +285,12 @@ function helios_impl.dispatchCommand(command)
     local rest = string.sub(command, 2):match("^(.-)%s*$");
     if (commandCode == "D") then
         local driverName = rest
-        log.write("HELIOS.EXPORT", log.DEBUG, string.format("driver '%s' requested by Helios", driverName))
+        log.write("HELIOS.EXPORT", log.INFO, string.format("driver '%s' requested by Helios", driverName))
         local selfName = helios_impl.loadDriver(driverName)
         helios_impl.notifySelfName(selfName)
         helios_impl.notifyLoaded()
     elseif (commandCode == "M") then
-        log.write("HELIOS.EXPORT", log.DEBUG, string.format("use of module requested by Helios"))
+        log.write("HELIOS.EXPORT", log.INFO, string.format("use of module requested by Helios"))
         local selfName = helios_impl.loadModule()
         helios_impl.notifySelfName(selfName)
         helios_impl.notifyLoaded()
@@ -392,10 +392,10 @@ function helios_impl.loadModule()
         local driver = helios_impl.createModuleDriver(currentSelfName, moduleName)
         if driver ~= nil then
             helios_impl.installDriver(driver, moduleName)
-            return currentSelfName
         end
         -- if we fail, we just leave the previous driver installed
     end
+    return currentSelfName
 end
 
 function helios_impl.installDriver(driver, driverName)

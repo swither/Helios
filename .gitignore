@@ -44,3 +44,5 @@ Lua/DCS/Scripts/HeliosExport/Mods
 attribution_*.txt
 /Helios/Templates/Base/Simulator Viewports
 /Helios/TimeStamp.g.cs
+/Lua/DCS/Scripts/Helios/HeliosExport16.lua
+/Lua/runExportLua.ps1

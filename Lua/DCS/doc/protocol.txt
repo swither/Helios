@@ -41,6 +41,22 @@ Helios<-Export:ActiveDriver(A-10C)
 
 end
 
+group 1c: Helios using its own exports (CZ profile active, DCS running w/ Driver)
+
+Export->Export:EnterVehicle(A-10C)
+Export->Export:LoadDriver(A-10C)
+Heliosx-Export:ActiveVehicle(A-10C)
+Heliosx-Export:ActiveDriver(A-10C)
+User->Helios:StartProfile(CaptZeenF18C)
+Helios->Export:RequestModule()
+note over Helios: This is an A10C interface impersonating FA-18C_hornet
+Helios<-Export:ActiveVehicle(A-10C)
+Helios->Helios:AutoStartProfile(my_A10_profile_name)
+Helios<-Export:ActiveDriver(A-10C)
+note over Helios: Most recent A-10C profile uses Helios exports
+
+end
+
 group 2: Helios using Capt Zeen profile
 
 Export->Export:EnterVehicle(A-10C)
