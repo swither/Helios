@@ -17,6 +17,9 @@ namespace GadrocsWorkshop.Helios.Util
         [Option('d', "documents", Required = false, Default = "Helios", HelpText = "Set the Documents folder name to use.")]
         public string DocumentPath { get; set; } = "Helios";
 
+        [Option('e', "devdocuments", Required = false, Default = "HeliosDev", HelpText = "Set the Documents folder name to use for a Development Prototype build.")]
+        public string DevDocumentPath { get; set; } = "HeliosDev";
+
         public static T Parse<T> (T defaults, string[] args, out int exitCode) where T: CommandLineOptions
         {
             T options = defaults;

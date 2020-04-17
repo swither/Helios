@@ -79,7 +79,9 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
 
             // start up Helios
-            string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), options.DocumentPath);
+            string documentPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
+                VersionChecker.IsDevelopmentPrototype ? options.DevDocumentPath : options.DocumentPath);
             HeliosInit.Initialize(documentPath, "ControlCenter.log", options.LogLevel, new HeliosApplication
             {
                 ShowDesignTimeControls = false,

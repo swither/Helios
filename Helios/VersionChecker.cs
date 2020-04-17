@@ -41,12 +41,13 @@ namespace GadrocsWorkshop.Helios
         private static readonly bool _developmentPrototype;
         private static readonly DateTime _timeBombTime;
 
+        // XXX: doing this work at static init time depending on Helios having been initialized is an awful idea.  this could even be a child of ConfigManager
         static VersionChecker()
         {
             _today = DateTime.Today.ToString("yyyyMMdd");
             _todayVal = Convert.ToInt32(_today);
             GetRunningVersion();
-            if (_runningVersion.Build == 1000)
+            if (Helios.RunningVersion.IsDevelopmentPrototype)
             {
                 _developmentPrototype = true;
                 _timeBombTime = TimeStamp.CompilationTimestampUtc.AddDays(30.0);
@@ -145,8 +146,6 @@ namespace GadrocsWorkshop.Helios
             _nextdatewarn = _today;
             ConfigManager.SettingsManager.SaveSetting("Helios", "NextDateForVersionWarning", _nextdatewarn);
         }
-
-        public static bool IsDevelopmentPrototype => _developmentPrototype;
 
         public static Version RunningVersion => _runningVersion;
 

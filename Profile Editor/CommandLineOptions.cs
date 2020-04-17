@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
     class CommandLineOptions : Util.CommandLineOptions
     {
-        [Value(0)]
+        [Value(0, MetaName = "[Profile]", HelpText = "Startup profile name")]
         public IEnumerable<string> Profiles
         {
             get;

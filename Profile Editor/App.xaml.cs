@@ -56,7 +56,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
 
             // start up Helios
-            string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), options.DocumentPath);
+            string documentPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                RunningVersion.IsDevelopmentPrototype ? options.DevDocumentPath : options.DocumentPath);
             HeliosInit.Initialize(documentPath, "ProfileEditor.log", options.LogLevel);
 
             // need to defer exit until after we initialize Helios or our main window will crash
@@ -66,8 +68,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 return;
             }
 
-            if (VersionChecker.IsDevelopmentPrototype)
+            if (RunningVersion.IsDevelopmentPrototype)
             {
+                // always run the check when in development build
                 VersionChecker.CheckVersion();
             }
 

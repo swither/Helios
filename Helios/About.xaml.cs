@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Splash
             VersionBlock.Text = runningVersion.Major.ToString() + "." + runningVersion.Minor.ToString() + "." + runningVersion.Build.ToString() + "." + runningVersion.Revision.ToString("0000");
             ContributionBlock.Text = "Gadroc; BlueFinBima; ";
             ContributionBlock.Text = ContributionBlock.Text + "derammo; CaptZeen; KiwiLostInMelb; Phar71; damien022; Will Hartsell; Cylution; Rachmaninoff; yzfanimal; BeamRider";
-            StatusBlock.Text = VersionChecker.IsDevelopmentPrototype ? "Development Prototype" : "Released";
+            StatusBlock.Text = RunningVersion.IsDevelopmentPrototype ? "Development Prototype" : "Released";
             base.OnActivated(e);
         }
 

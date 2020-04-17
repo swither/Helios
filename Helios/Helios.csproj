@@ -506,6 +506,7 @@
     <Compile Include="Util\EnumBooleanConverter.cs" />
     <Compile Include="Util\HeliosUndoBatch.cs" />
     <Compile Include="Interfaces\Common\InterfaceStatus.cs" />
+    <Compile Include="RunningVersion.cs" />
     <Compile Include="Windows\Controls\DialogWindow.xaml.cs">
       <DependentUpon>DialogWindow.xaml</DependentUpon>
     </Compile>
@@ -3655,6 +3656,6 @@
   </Target>
   <Import Project="..\AssemblyVersion.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(ProjectDir)..\Tools\GenerateSimulatorViewportTemplates\bin\x64\Release\GenerateSimulatorViewportTemplates.exe $(ProjectDir)..\Tools\ToolsCommon\Data\Viewports\ExistingViewportTemplates.json $(ProjectDir)Templates\Base false</PreBuildEvent>
+    <PreBuildEvent>if $(ConfigurationName) == Release $(ProjectDir)..\Tools\GenerateSimulatorViewportTemplates\bin\x64\Release\GenerateSimulatorViewportTemplates.exe $(ProjectDir)..\Tools\ToolsCommon\Data\Viewports\ExistingViewportTemplates.json $(ProjectDir)Templates\Base false</PreBuildEvent>
   </PropertyGroup>
 </Project>
