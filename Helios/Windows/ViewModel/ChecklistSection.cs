@@ -84,7 +84,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
             // create a unique set of recommendations
             HashSet<string> uniqueRecommendations = new HashSet<string>(
-                _report.Select(item => item.Recommendation).Where<string>(text => !string.IsNullOrEmpty(text)),
+                _report.Select(item => item.Recommendation).Where(text => !string.IsNullOrEmpty(text)),
                 StringComparer.OrdinalIgnoreCase);
             foreach (string recommendation in uniqueRecommendations)
             {
@@ -109,6 +109,9 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             DetailsVisibility = Items.Count > 0 && _displayThreshold < StatusReportItem.SeverityCode.None
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+            string[] AttentionStatuses =
+                {StatusReportItem.SeverityCode.Warning.ToString(), StatusReportItem.SeverityCode.Error.ToString()};
+            DetailsExpanded = Items.Any(i => AttentionStatuses.Contains(i.Status));
         }
 
         /// <summary>
@@ -144,6 +147,12 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         {
             get => (Visibility) GetValue(DetailsVisibilityProperty);
             set => SetValue(DetailsVisibilityProperty, value);
+        }
+
+        public bool DetailsExpanded
+        {
+            get => (bool) GetValue(DetailsExpandedProperty);
+            set => SetValue(DetailsExpandedProperty, value);
         }
 
         public ObservableCollection<ChecklistItem> Items
@@ -199,6 +208,10 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         public static readonly DependencyProperty StatusNarrativeProperty =
             DependencyProperty.Register("StatusNarrative", typeof(string), typeof(ChecklistSection),
                 new PropertyMetadata(""));
+
+        public static readonly DependencyProperty DetailsExpandedProperty =
+            DependencyProperty.Register("DetailsExpanded", typeof(bool), typeof(ChecklistSection),
+                new PropertyMetadata(false));
 
         #endregion
     }
