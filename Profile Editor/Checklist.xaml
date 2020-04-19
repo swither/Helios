@@ -9,8 +9,8 @@
              mc:Ignorable="d"
              d:DesignHeight="450" 
              d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance d:Type=heliosViewModel:ChecklistViewModel}"
              Background="LightGray"
+             d:DataContext="{d:DesignInstance Type=heliosViewModel:ChecklistViewModel, IsDesignTimeCreatable=False}"
              Name="ChecklistWindow">
     <Grid.Resources>
         <DataTemplate DataType="{x:Type heliosViewModel:ShareInterfaceStatus}">
@@ -83,6 +83,12 @@
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="WarningVisible" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="Visibility" Value="Hidden"/>
+            <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding Status}" Value="Warning"/>
@@ -181,14 +187,14 @@
                                 <RowDefinition Height="12"/>
                             </Grid.RowDefinitions>
                             <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Green" Content="&#xE930;" Style="{StaticResource SuccessVisible}"/>
+                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}"/>
                             <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
                             <WrapPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                 <Label Margin="0,6,6,6" FontWeight="Bold" Padding="0" VerticalAlignment="Center" Content="Interface:"/>
                                 <TextBlock FontWeight="Bold" VerticalAlignment="Center" Text="{Binding Path=Data.Name}"/>
                             </WrapPanel>
                             <Button Margin="6,6,22,6" Grid.Row="1" Grid.Column="2" Content="Go There" Command="heliosViewModel:ChecklistViewModel.GoThereCommand" CommandParameter="{Binding}" Style="{StaticResource SettingsButton}" Visibility="{Binding GoThereVisibility}"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,6" Text="{Binding StatusNarrative}" TextWrapping="Wrap"/>
-                            <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="False" Visibility="{Binding DetailsVisibility}">
+                            <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="{Binding DetailsExpanded}" Visibility="{Binding DetailsVisibility}">
                                 <!-- Expander appears very broken if used with a custom Header, so let's not use it -->
                                 <Expander.Content>
                                     <ItemsControl ItemsSource="{Binding Items}" Margin="10,0,0,0">
@@ -200,6 +206,7 @@
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
+                                                    <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}"/>
                                                     <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8C9;" Style="{StaticResource CautionVisible}"/>
                                                     <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
                                                 </Grid>
