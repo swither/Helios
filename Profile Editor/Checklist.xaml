@@ -10,7 +10,7 @@
              d:DesignHeight="450" 
              d:DesignWidth="800"
              Background="LightGray"
-             d:DataContext="{d:DesignInstance Type=heliosViewModel:ChecklistViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance Type=heliosViewModel:MockChecklistViewModel, IsDesignTimeCreatable=true}"
              Name="ChecklistWindow">
     <Grid.Resources>
         <DataTemplate DataType="{x:Type heliosViewModel:ShareInterfaceStatus}">

@@ -29,6 +29,16 @@ namespace GadrocsWorkshop.Helios
     {
         public static void Initialize(string docPath, string logFileName, LogLevel logLevel, HeliosApplication application = null)
         {
+            // check OS and build
+            if (!Environment.Is64BitOperatingSystem)
+            {
+                throw new PlatformNotSupportedException("Helios must be executed on a 64-bit Windows OS");
+            }
+            if (!Environment.Is64BitProcess)
+            {
+                throw new PlatformNotSupportedException("Helios must be executed as a 64-bit application");
+            }
+
             // Create documents directory if it does not exist
             ConfigManager.DocumentPath = docPath;
 

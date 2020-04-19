@@ -12,39 +12,11 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Helios.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Development|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DEVELOPMENT_CONFIGURATION</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine, Version=2.7.82.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
@@ -521,6 +493,7 @@
     <Compile Include="Windows\ViewModel\ChecklistItem.cs" />
     <Compile Include="Windows\ViewModel\ChecklistSection.cs" />
     <Compile Include="Windows\ViewModel\ChecklistViewModel.cs" />
+    <Compile Include="Windows\ViewModel\MockChecklist.cs" />
     <Compile Include="Windows\ViewModel\Share.cs" />
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
     <Compile Include="Windows\ViewModel\ViewModelCollection.cs" />
@@ -3330,7 +3303,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\Helios.targets" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -3342,8 +3315,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\KeraLua.1.0.26\build\net45\KeraLua.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\KeraLua.1.0.26\build\net45\KeraLua.targets'))" />
   </Target>
-  <Import Project="..\AssemblyVersion.targets" />
   <PropertyGroup>
-    <PreBuildEvent>if $(ConfigurationName) == Release $(ProjectDir)..\Tools\GenerateSimulatorViewportTemplates\bin\x64\Release\GenerateSimulatorViewportTemplates.exe $(ProjectDir)..\Tools\ToolsCommon\Data\Viewports\ExistingViewportTemplates.json $(ProjectDir)Templates\Base false</PreBuildEvent>
+    <PreBuildEvent>$(ProjectDir)..\Tools\bin\$(PlatformName)\$(ConfigurationName)\GenerateSimulatorViewportTemplates.exe $(ProjectDir)..\Tools\ToolsCommon\Data\Viewports\ExistingViewportTemplates.json $(ProjectDir)Templates\Base false</PreBuildEvent>
   </PropertyGroup>
 </Project>
