@@ -22,6 +22,7 @@
         <CommandBinding Command="local:ProfileEditorCommands.LoadLayout" Executed="LoadLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.RestoreDefaultLayout" Executed="RestoreDefaultLayout_Executed" />
         <CommandBinding Command="heliosViewModel:ChecklistViewModel.GoThereCommand" Executed="GoThere_Executed" />
+        <CommandBinding Command="heliosViewModel:ChecklistViewModel.DeleteInterfaceCommand" Executed="DeleteInterface_Executed" />
         <CommandBinding Command="heliosWindows:Dialog.ShowModalCommand" Executed="DialogShowModal_Executed"/>
     </Window.CommandBindings>
     <Grid Name="PrimaryGrid">
@@ -194,7 +195,7 @@
                     <ad:LayoutAnchorablePaneGroup Orientation="Vertical" DockWidth="300">
                         <ad:LayoutAnchorablePane DockHeight="1*">
                             <ad:LayoutAnchorable Title="Preview" Selector.IsSelected="True">
-                                <local:PreviewContent  x:Name="PreviewPanel" Profile="{Binding ElementName=ProfileEditorWindow,Path=Profile}" />
+                                <local:PreviewContent x:Name="PreviewPanel" Profile="{Binding ElementName=ProfileEditorWindow, Path=Profile}" />
                             </ad:LayoutAnchorable>
                             <ad:LayoutAnchorable Title="Profile Explorer">
                                 <local:ProfileExplorerPanel x:Name="ExplorerPanel" Profile="{Binding ElementName=ProfileEditorWindow,Path=Profile}" ItemDeleting="Explorer_ItemDeleting" />

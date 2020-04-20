@@ -15,6 +15,7 @@
 
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
+    using GadrocsWorkshop.Helios;
     using GadrocsWorkshop.Helios.ProfileEditor.UndoEvents;
     using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
     using System;
@@ -138,14 +139,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     HeliosInterface interfaceItem = item.ContextItem as HeliosInterface;
                     if (interfaceItem != null)
                     {
-                        if (MessageBox.Show(Window.GetWindow(this), "Are you sure you want to remove the " + interfaceItem.Name + " interface from the profile.  This will remove all bindings associated with this interface.", "Remove Interface", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No, MessageBoxOptions.None) == MessageBoxResult.Yes)
-                        {
-                            ConfigManager.UndoManager.AddUndoItem(new InterfaceDeleteUndoEvent(Profile, interfaceItem));
-                            OnDeleting(interfaceItem);
-                            Profile.Interfaces.Remove(interfaceItem);
-                        }
+                        DeleteInterface(interfaceItem);
                     }
                 }
+            }
+        }
+
+        public void DeleteInterface(HeliosInterface interfaceItem)
+        {
+            if (MessageBox.Show(Window.GetWindow(this), "Are you sure you want to remove the " + interfaceItem.Name + " interface from the profile.  This will remove all bindings associated with this interface.", "Remove Interface", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No, MessageBoxOptions.None) == MessageBoxResult.Yes)
+            {
+                ConfigManager.UndoManager.AddUndoItem(new InterfaceDeleteUndoEvent(Profile, interfaceItem));
+                OnDeleting(interfaceItem);
+                Profile.Interfaces.Remove(interfaceItem);
             }
         }
 

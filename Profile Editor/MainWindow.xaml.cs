@@ -905,6 +905,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 AddNewDocument(section.Data.Interface);
             }
         }
+
+        private void DeleteInterface_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // redirect delete received from check list to profile explorer
+            HeliosInterface heliosInterface = e.Parameter as HeliosInterface;
+            if (heliosInterface != null)
+            {
+                ExplorerPanel.DeleteInterface(heliosInterface);
+            }
+        }
+
         #endregion
 
         private void Show_Preview(object sender, RoutedEventArgs e)

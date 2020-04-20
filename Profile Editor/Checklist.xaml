@@ -220,7 +220,6 @@
                                     <TextBlock FontWeight="Bold" VerticalAlignment="Center" Text="{Binding Path=Data.Name}" ToolTip="{Binding Path=Data.Description}"/>
                                 </WrapPanel>
                                 <Button Grid.Row="1" Grid.Column="2" Content="&#xE713;" Command="heliosViewModel:ChecklistViewModel.GoThereCommand" CommandParameter="{Binding}" Template="{StaticResource FontIconButton}" Visibility="{Binding GoThereVisibility}" ToolTip="Configure this interface"/>
-                                <Button Grid.Row="5" Grid.Column="2" Content="&#xE74D;" Command="heliosViewModel:ChecklistViewModel.GoThereCommand" CommandParameter="{Binding}" Template="{StaticResource FontIconButton}" ToolTip="Delete this interface from the Profile"/>
                                 <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="{Binding DetailsExpanded}" Visibility="{Binding DetailsVisibility}">
                                     <!-- Expander appears very broken if used with a custom Header, so let's not use it -->
                                     <Expander.Content>
@@ -254,6 +253,7 @@
                                         </ItemsControl>
                                     </Expander.Content>
                                 </Expander>
+                                <Button Grid.Row="5" Grid.Column="2" Content="&#xE74D;" Command="heliosViewModel:ChecklistViewModel.DeleteInterfaceCommand" CommandParameter="{Binding Path=Data.Interface}" Template="{StaticResource FontIconButton}" ToolTip="Delete this interface from the Profile"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

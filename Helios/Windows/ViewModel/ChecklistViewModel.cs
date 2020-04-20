@@ -24,6 +24,8 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
     {
         public static RoutedUICommand GoThereCommand { get; } =
             new RoutedUICommand("Opens an associated editor.", "GoThere", typeof(ChecklistViewModel));
+        public static RoutedUICommand DeleteInterfaceCommand { get; } =
+            new RoutedUICommand("Deletes the interface passed as the parameter.", "DeleteInterface", typeof(ChecklistViewModel));
 
         /// <summary>
         /// backing field for ReloadCommand
