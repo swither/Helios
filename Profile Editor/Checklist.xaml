@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:helios="clr-namespace:GadrocsWorkshop.Helios;assembly=Helios"                      
              xmlns:heliosViewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel;assembly=Helios"                      
-             xmlns:heliosControls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
-             mc:Ignorable="d"
+             xmlns:heliosControls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios" xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+      mc:Ignorable="d"
              d:DesignHeight="450" 
              d:DesignWidth="800"
              Background="LightGray"
@@ -51,7 +51,7 @@
                                         OverridesDefaultStyle="True" 
                                         Template="{StaticResource ExpanderToggleButton}"
                                         HorizontalAlignment="Stretch">
-                                    <TextBlock Text="{TemplateBinding Header}" Foreground="Black" FontWeight="Bold" Margin="4,2,64,2"/>
+                                    <TextBlock Text="{TemplateBinding Header}" Style="{StaticResource Heading1}" Margin="4,2,64,2"/>
                                 </ToggleButton>
                             </Border>
                             <ContentPresenter Name="ExpandSite" Visibility="Collapsed" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" Margin="{TemplateBinding Padding}" Focusable="False" Content="{TemplateBinding Content}" />
@@ -71,6 +71,18 @@
             <Setter Property="MaxWidth" Value="120"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
+
+        <ControlTemplate x:Key="FontIconButton" TargetType="Button">
+            <Grid Margin="7,0">
+                <Border Height="Auto" Margin="0,0,0,0" x:Name="MouseOverBackground" VerticalAlignment="Stretch" Opacity="0" Background="#FFBDBDBD" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" />
+                <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="Black" Content="{TemplateBinding Content}"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="MouseOverBackground" Property="Opacity" Value="0.2" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
         
         <Style x:Key="FailureVisible" TargetType="{x:Type FrameworkElement}">
             <Setter Property="UIElement.Visibility" Value="Hidden"/>
@@ -159,82 +171,98 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
+
+        <CollectionViewSource Source="{Binding Items}" x:Key="sortByInterfaceName">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Data.Name" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
     </Grid.Resources>
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
     </Grid.ColumnDefinitions>
-    <ScrollViewer Grid.Row="0" Grid.Column="0">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Border Grid.Row="0" Grid.Column="0" Background="White" BorderThickness="0,0,0,2">
+        <TextBlock Margin="12" Text="Interfaces installed in the current Profile:" FontSize="16"/>
+    </Border>
+    <ScrollViewer Grid.Row="1" Grid.Column="0">
         <StackPanel>
-            <ItemsControl Background="LightGray" Margin="6" ItemsSource="{Binding Items}">
+            <ItemsControl Background="#e8e8e8" ItemsSource="{Binding Source={StaticResource sortByInterfaceName}}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="6" Background="White">
-                            <Grid.ColumnDefinitions>
-                                <!-- left controls -->
-                                <ColumnDefinition Width="60"/>
-                                <!-- main text -->
-                                <ColumnDefinition Width="*"/>
-                                <!-- buttons -->
-                                <ColumnDefinition Width="120"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="12"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="12"/>
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Green" Content="&#xE930;" Style="{StaticResource SuccessVisible}"/>
-                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}"/>
-                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
-                            <WrapPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                <Label Margin="0,6,6,6" FontWeight="Bold" Padding="0" VerticalAlignment="Center" Content="Interface:"/>
-                                <TextBlock FontWeight="Bold" VerticalAlignment="Center" Text="{Binding Path=Data.Name}"/>
-                            </WrapPanel>
-                            <Button Margin="6,6,22,6" Grid.Row="1" Grid.Column="2" Content="Go There" Command="heliosViewModel:ChecklistViewModel.GoThereCommand" CommandParameter="{Binding}" Style="{StaticResource SettingsButton}" Visibility="{Binding GoThereVisibility}"/>
-                            <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="{Binding DetailsExpanded}" Visibility="{Binding DetailsVisibility}">
-                                <!-- Expander appears very broken if used with a custom Header, so let's not use it -->
-                                <Expander.Content>
-                                    <ItemsControl ItemsSource="{Binding Items}" Margin="10,0,0,0">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
-                                                    <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}"/>
-                                                    <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8C9;" Style="{StaticResource CautionVisible}"/>
-                                                    <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </Expander.Content>
-                            </Expander>
-                            <Expander Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Header="Recommendations" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" Style="{StaticResource FailureExpanded}" Visibility="{Binding RecommendationsVisibility}">
-                                <!-- Expander is very broken if used with a custom Header because a global style in App.xaml assumes Header is text, so let's not use it -->
-                                <Expander.Content>
-                                    <ItemsControl ItemsSource="{Binding Recommendations}" Margin="22,0,0,0">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding}"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </Expander.Content>
-                            </Expander>
-                        </Grid>
+                        <Border Margin="6,6,6,0" Padding="3" CornerRadius="6" BorderThickness="0" Background="White">
+                            <Grid Background="White">
+                                <Grid.ColumnDefinitions>
+                                    <!-- left controls -->
+                                    <ColumnDefinition Width="60"/>
+                                    <!-- main text -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- buttons -->
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="12"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="12"/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Green" Content="&#xE930;" Style="{StaticResource SuccessVisible}" ToolTip="{Binding StatusNarrative}"/>
+                                <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}" ToolTip="{Binding StatusNarrative}"/>
+                                <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}" ToolTip="{Binding StatusNarrative}"/>
+                                <WrapPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock FontWeight="Bold" VerticalAlignment="Center" Text="{Binding Path=Data.Name}" ToolTip="{Binding Path=Data.Description}"/>
+                                </WrapPanel>
+                                <Button Grid.Row="1" Grid.Column="2" Content="&#xE713;" Command="heliosViewModel:ChecklistViewModel.GoThereCommand" CommandParameter="{Binding}" Template="{StaticResource FontIconButton}" Visibility="{Binding GoThereVisibility}" ToolTip="Configure this interface"/>
+                                <Button Grid.Row="5" Grid.Column="2" Content="&#xE74D;" Command="heliosViewModel:ChecklistViewModel.GoThereCommand" CommandParameter="{Binding}" Template="{StaticResource FontIconButton}" ToolTip="Delete this interface from the Profile"/>
+                                <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="{Binding DetailsExpanded}" Visibility="{Binding DetailsVisibility}">
+                                    <!-- Expander appears very broken if used with a custom Header, so let's not use it -->
+                                    <Expander.Content>
+                                        <ItemsControl ItemsSource="{Binding Items}" Margin="10,0,0,0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
+                                                        <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}"/>
+                                                        <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8C9;" Style="{StaticResource CautionVisible}"/>
+                                                        <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Expander.Content>
+                                </Expander>
+                                <Expander Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Header="Recommendations" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" Style="{StaticResource FailureExpanded}" Visibility="{Binding RecommendationsVisibility}">
+                                    <!-- Expander is very broken if used with a custom Header because a global style in App.xaml assumes Header is text, so let's not use it -->
+                                    <Expander.Content>
+                                        <ItemsControl ItemsSource="{Binding Recommendations}" Margin="22,0,0,0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Expander.Content>
+                                </Expander>
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
     </ScrollViewer>
 
-    <DockPanel Grid.Row="0" Grid.Column="1" Background="White">
+    <DockPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Background="White">
         <StackPanel DockPanel.Dock="Top">
             <Expander FontWeight="Bold" Header="Show this View" IsExpanded="False" Style="{StaticResource SettingsExpander}">
                 <StackPanel Margin="0,6">

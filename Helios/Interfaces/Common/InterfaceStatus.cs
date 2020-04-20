@@ -10,17 +10,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
         private InterfaceStatus(HeliosInterface heliosInterface)
         {
             Interface = heliosInterface;
-            ReadyCheck = (IReadyCheck) heliosInterface;
+            ReadyCheck = heliosInterface as IReadyCheck;
             Name = $"{heliosInterface.Name}";
             HeliosInterfaceDescriptor descriptor =
                 ConfigManager.ModuleManager.InterfaceDescriptors[heliosInterface.TypeIdentifier];
             HasEditor = descriptor.InterfaceEditorType != null;
             Subscription = heliosInterface as IStatusReportNotify;
-            if (Subscription != null)
-            {
-                Subscription.Subscribe(this);
-                Name = Subscription.StatusName;
-            }
+            Subscription?.Subscribe(this);
         }
 
 
@@ -37,23 +33,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
 
         public static bool TryManage(HeliosInterface heliosInterface, out InterfaceStatus managed)
         {
-            if (!(heliosInterface is IReadyCheck))
-            {
-                managed = null;
-                return false;
-            }
-
             managed = new InterfaceStatus(heliosInterface);
             return true;
         }
 
-        public void ReceiveNameChange(string newStatusName)
+        public void ReceiveStatusReport(string statusName, string description, IEnumerable<StatusReportItem> statusReport)
         {
-            Name = newStatusName;
-        }
-
-        public void ReceiveStatusReport(IEnumerable<StatusReportItem> statusReport)
-        {
+            Name = statusName;
+            Description = description;
             Report = statusReport.ToList();
         }
 
@@ -89,7 +76,30 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             }
         }
 
-        [JsonIgnore] public bool HasEditor { get; }
+        /// <summary>
+        /// backing field for property Description, contains
+        /// additional description as a sentence fragment or null
+        /// </summary>
+        private string _description;
+
+        /// <summary>
+        /// additional description as a sentence fragment or null
+        /// </summary>
+        [JsonIgnore]
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                if (_description != null && _description == value) return;
+                string oldValue = _description;
+                _description = value;
+                OnPropertyChanged("Description", oldValue, value, true);
+            }
+        }
+
+        [JsonIgnore] 
+        public bool HasEditor { get; }
 
         /// <summary>
         /// backing field for property Report, contains

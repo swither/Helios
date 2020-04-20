@@ -43,6 +43,11 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
+        <Style x:Key="Heading1" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+
         <Style TargetType="{x:Type Expander}">
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="Template">
@@ -58,7 +63,7 @@
                                             OverridesDefaultStyle="True" 
                                             Template="{StaticResource ExpanderToggleButton}"
                                             HorizontalAlignment="Stretch">
-                                    <TextBlock Text="{TemplateBinding Header}" Foreground="Black" FontWeight="Bold" Margin="4,2,0,2"/>
+                                    <TextBlock Text="{TemplateBinding Header}" Style="{StaticResource Heading1}" Margin="4,2,0,2"/>
                                 </ToggleButton>
                             </Border>
                             <ContentPresenter Name="ExpandSite" Visibility="Collapsed" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" Margin="{TemplateBinding Padding}" Focusable="False" Content="{TemplateBinding Content}" />

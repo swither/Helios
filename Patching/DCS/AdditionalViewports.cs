@@ -142,11 +142,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             IEnumerable<StatusReportItem> statusReportItems = statusReport.ToList();
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(statusReportItems);
+                observer.ReceiveStatusReport(Name, "Utility interface that applies patches to DCS installation files to create additional exported viewports.", statusReportItems);
             }
         }
-
-        public string StatusName => Name;
 
         #endregion
 

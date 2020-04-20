@@ -126,7 +126,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 foreach (IStatusReportObserver observer in _observers)
                 {
                     string newName = StatusName;
-                    observer.ReceiveNameChange(newName);
+                    InvalidateStatusReport();
                 }
             }
         }
@@ -375,9 +375,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public void PublishStatusReport(IEnumerable<StatusReportItem> statusReport)
         {
             IList<StatusReportItem> statusReportItems = statusReport.ToList();
+            string statusName = StatusName;
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(statusReportItems);
+                observer.ReceiveStatusReport(statusName, "Interface listening to UDP updates from DCS export.lua and responding with commands.", statusReportItems);
             }
         }
     }

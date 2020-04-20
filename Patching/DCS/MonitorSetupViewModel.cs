@@ -230,8 +230,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         }
 
-        public void ReceiveStatusReport(IEnumerable<StatusReportItem> statusReport)
+        public void ReceiveStatusReport(string name, string description, IEnumerable<StatusReportItem> statusReport)
         {
+            _ = name;
+            _ = description;
+
             // figure out our UI status
             StatusCodes newStatus = StatusCodes.Unknown;
             if (!Data.Profile.IsValidMonitorLayout)
@@ -255,11 +258,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             Status = newStatus;
-        }
-
-        public void ReceiveNameChange(string newStatusName)
-        {
-            // no code
         }
 
         #region Properties

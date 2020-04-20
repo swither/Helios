@@ -567,7 +567,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(statusReport);
+                observer.ReceiveStatusReport(Name, "Utility interface that writes a DCS MonitorSetup Lua file to configure screen layout for the current profile.", statusReport);
             }
         }
 

@@ -192,8 +192,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
 
         #region IStatusReportObserver
 
-        public void ReceiveStatusReport(IEnumerable<StatusReportItem> statusReport)
+        public void ReceiveStatusReport(string name, string description, IEnumerable<StatusReportItem> statusReport)
         {
+            _ = name;
+            _ = description;
+
             if (TriggerThreshold == StatusReportItem.SeverityCode.None)
             {
                 // don't bother scanning
@@ -204,11 +207,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             {
                 Triggered?.Invoke(this, EventArgs.Empty);
             }
-        }
-
-        public void ReceiveNameChange(string _)
-        {
-            // no code, each of our StatusReportItem children handles this
         }
 
         #endregion
