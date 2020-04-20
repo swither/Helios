@@ -44,4 +44,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\LibGit2Sharp.NativeBinaries.2.0.306\build\net46\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\LibGit2Sharp.NativeBinaries.2.0.306\build\net46\LibGit2Sharp.NativeBinaries.props'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>$(TargetPath)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

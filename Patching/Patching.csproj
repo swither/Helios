@@ -91,7 +91,7 @@
   </ItemGroup>
   <Import Project="..\HeliosPlugin.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(ProjectDir)..\Tools\bin\$(PlatformName)\$(ConfigurationName)\GenerateSimulatorViewportTemplates.exe $(ProjectDir)..\Tools\ToolsCommon\Data\Viewports\ViewportTemplates.json $(ProjectDir)Templates\Patching true
+    <PreBuildEvent>
 </PreBuildEvent>
   </PropertyGroup>
 </Project>
