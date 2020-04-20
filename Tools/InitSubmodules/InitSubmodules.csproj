@@ -16,6 +16,9 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="LibGit2Sharp, Version=0.26.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\..\packages\LibGit2Sharp.0.26.2\lib\net46\LibGit2Sharp.dll</HintPath>
