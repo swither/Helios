@@ -13,7 +13,7 @@
         <Helios:EnumConverter Type="{x:Type HeliosTouch:PushButtonType}" x:Key="ButtonTypes" />
     </HeliosSdk:HeliosPropertyEditor.Resources>
     
-    <Grid Background="Transparent" Margin="4">
+    <Grid Background="Transparent" Margin="4,12,4,4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />

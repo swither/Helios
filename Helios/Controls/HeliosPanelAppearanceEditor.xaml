@@ -72,67 +72,65 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--<StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="4,10,2,2" Orientation="Horizontal">
-            <TextBlock VerticalAlignment="Center" FontSize="12" FontWeight="Bold" Margin="0,0,6,0">Style</TextBlock>
+            <TextBlock VerticalAlignment="Center" Style="{StaticResource Heading2}" Margin="0,0,6,0">Style</TextBlock>
             <ComboBox Grid.Column="1" Grid.Row="0" FontSize="10" Margin="2"  HorizontalAlignment="Left" ItemsSource="{Binding Path=Templates}" SelectedItem="{Binding SelectedTemplate}" DisplayMemberPath="Name" />
         </StackPanel>-->
 
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Margin="4,10,2,2" FontSize="12" FontWeight="Bold" >Background</TextBlock>
-        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" >
-            Fill
-        </Label>
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Margin="4,10,2,2" Style="{StaticResource Heading2}" >Background</TextBlock>
+        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" Margin="0,1,0,0">Fill</Label>
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
             <CheckBox VerticalAlignment="Top" Margin="0,6,6,6" IsChecked="{Binding Path=Control.FillBackground}" />
             <HeliosSdk:ColorWell Color="{Binding Control.BackgroundColor,Mode=TwoWay}" HorizontalAlignment="Left" Style="{StaticResource BackgroundColorWellStyle}" Margin="0,2" />
         </StackPanel>
 
-        <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" >Image</Label>
-        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="4" ImageFilename="{Binding Path=Control.BackgroundImage,Mode=TwoWay}" />
+        <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right">Image</Label>
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="4" Margin="-2,0,0,0" ImageFilename="{Binding Path=Control.BackgroundImage,Mode=TwoWay}" />
 
         <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BackgroundAlignmentLabelStyle}" Content="Alignment" />
         <ComboBox Grid.Column="1" Grid.Row="5" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource AlignmentTypes}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.BackgroundAlignment, Converter={StaticResource AlignmentTypes}}" Style="{StaticResource BackgroundAlignmentPickerStyle}" />
 
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" Margin="4,10,2,2" Style="{StaticResource Heading2}" >Border</TextBlock>
 
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" Orientation="Horizontal">
-            <TextBlock Margin="4,11,2,2" FontSize="12" FontWeight="Bold">Border</TextBlock>
-            <CheckBox Margin="4,11,2,2" IsChecked="{Binding Path=Control.DrawBorder}">
-                <CheckBox.ToolTip>When check border will be renderd around the edge of the panel.</CheckBox.ToolTip>
-            </CheckBox>
-        </StackPanel>
+        <Label Grid.Column="0" Grid.Row="7" FontSize="10" HorizontalAlignment="Right">Enabled</Label>
+        <CheckBox Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" IsChecked="{Binding Path=Control.DrawBorder}">
+            <CheckBox.ToolTip>When checked, a border will be rendered around the edge of the panel.</CheckBox.ToolTip>
+        </CheckBox>
 
-        <Label Grid.Column="0" Grid.Row="7" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
+        <Label Grid.Column="0" Grid.Row="8" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
             <TextBlock TextAlignment="Right">Top<LineBreak/>Left</TextBlock>
         </Label>
-        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" ImageFilename="{Binding Path=Control.TopLeftCornerImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="8" VerticalAlignment="Center" ImageFilename="{Binding Path=Control.TopLeftCornerImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="8" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Top</Label>
-        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="8" ImageFilename="{Binding Path=Control.TopBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
+        <Label Grid.Column="0" Grid.Row="9" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Top</Label>
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="9" ImageFilename="{Binding Path=Control.TopBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="9" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
+        <Label Grid.Column="0" Grid.Row="10" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
             <TextBlock TextAlignment="Right">Top<LineBreak/>Right</TextBlock>
         </Label>
-        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="9" VerticalAlignment="Center" ImageFilename="{Binding Path=Control.TopRightCornerImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="10" VerticalAlignment="Center" ImageFilename="{Binding Path=Control.TopRightCornerImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="10" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Left</Label>
-        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="10" ImageFilename="{Binding Path=Control.LeftBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
+        <Label Grid.Column="0" Grid.Row="11" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Left</Label>
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="11" ImageFilename="{Binding Path=Control.LeftBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="11" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Right</Label>
-        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="11" ImageFilename="{Binding Path=Control.RightBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
+        <Label Grid.Column="0" Grid.Row="12" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Right</Label>
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="12" ImageFilename="{Binding Path=Control.RightBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="12" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
+        <Label Grid.Column="0" Grid.Row="13" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
             <TextBlock TextAlignment="Right">Bottom<LineBreak/>Left</TextBlock>
         </Label>
-        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="12" VerticalAlignment="Center" ImageFilename="{Binding Path=Control.BottomLeftCornerImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="13" VerticalAlignment="Center" ImageFilename="{Binding Path=Control.BottomLeftCornerImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="13" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Bottom</Label>
-        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="13" ImageFilename="{Binding Path=Control.BottomBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
+        <Label Grid.Column="0" Grid.Row="14" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Bottom</Label>
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="14" ImageFilename="{Binding Path=Control.BottomBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="14" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
+        <Label Grid.Column="0" Grid.Row="15" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
             <TextBlock TextAlignment="Right">Bottom<LineBreak/>Right</TextBlock>
         </Label>
-        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="14" VerticalAlignment="Center" ImageFilename="{Binding Path=Control.BottomRightCornerImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="15" VerticalAlignment="Center" ImageFilename="{Binding Path=Control.BottomRightCornerImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
 
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>

@@ -28,7 +28,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Padding="3" FontWeight="Bold" Text="Status Report to be shared:"/>
+            <TextBlock Padding="3" Style="{StaticResource Heading1}" Text="Status Report to be shared:"/>
             <TextBox Grid.Row="1" Padding="3" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Text, Mode=OneTime}"/>
         </Grid>
     </ScrollViewer>

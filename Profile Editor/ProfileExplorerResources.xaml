@@ -67,9 +67,9 @@
             <Border.ToolTip>
                 <ToolTip Name="tp" Visibility="Hidden">
                     <StackPanel>
-                        <TextBlock FontWeight="Bold" FontSize="10">Requires Input Value</TextBlock>
+                        <TextBlock Style="{StaticResource PropertyName}">Requires Input Value</TextBlock>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontWeight="Bold" FontSize="10">Value Type:</TextBlock>
+                            <TextBlock Style="{StaticResource PropertyName}">Value Type:</TextBlock>
                             <TextBlock FontSize="10" Text="{Binding ContextItem.Unit.LongName}" Margin="4,0,0,0" />
                         </StackPanel>
                         <TextBlock Margin="10,0,0,0" FontSize="10" Text="{Binding ContextItem.ActionValueDescription}" MaxWidth="300" TextWrapping="Wrap" />
@@ -78,7 +78,7 @@
             </Border.ToolTip>
             <StackPanel>
                 <TextBlock Text="{Binding Name}" FontSize="12" />
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="10" Foreground="DarkGray"  />
+                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="10" Foreground="{StaticResource GrayText}"  />
             </StackPanel>
         </Border>
         <HierarchicalDataTemplate.Triggers>
@@ -97,7 +97,7 @@
                 <ToolTip Name="tp" Visibility="Hidden">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontWeight="Bold" FontSize="10">Value Type:</TextBlock>
+                            <TextBlock Style="{StaticResource PropertyName}">Value Type:</TextBlock>
                             <TextBlock FontSize="10" Text="{Binding ContextItem.Unit.LongName}" Margin="4,0,0,0" />
                         </StackPanel>
                         <TextBlock Margin="10,0,0,0" FontSize="10" Text="{Binding ContextItem.TriggerValueDescription}" MaxWidth="300" TextWrapping="Wrap" />
@@ -106,7 +106,7 @@
             </Border.ToolTip>
             <StackPanel>
                 <TextBlock Text="{Binding Name}" FontSize="12" />
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="10" Foreground="DarkGray"  />
+                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="10" Foreground="{StaticResource GrayText}"  />
             </StackPanel>
         </Border>
         <HierarchicalDataTemplate.Triggers>

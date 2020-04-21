@@ -6,10 +6,34 @@
              xmlns:heliosUtil="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-
         <SolidColorBrush x:Key="WindowBackground" Color="#EBEEFA" />
         <SolidColorBrush x:Key="ToolBackground" Color="#FFFFFFFF" />
         <SolidColorBrush x:Key="StatusBarBackground" Color="#FFF4F7FC" />
+        <SolidColorBrush x:Key="GrayText" Color="#FF808080" />
+
+        <Style x:Key="TextBlockBase" TargetType="TextBlock">
+        </Style>
+
+        <Style x:Key="LabelBase" TargetType="Label">
+        </Style>
+
+        <Style x:Key="Heading1" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style x:Key="Heading2" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <Style x:Key="Heading3" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        </Style>
+
+        <Style x:Key="PropertyName" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        </Style>
+
+        <Style x:Key="TableHeading" TargetType="Label" BasedOn="{StaticResource LabelBase}">
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
 
         <ControlTemplate x:Key="DeleteButton" TargetType="Button">
             <Grid>
@@ -43,11 +67,6 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
-        <Style x:Key="Heading1" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="Black"/>
-        </Style>
-
         <Style TargetType="{x:Type Expander}">
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="Template">
@@ -58,12 +77,12 @@
                                         Name="Border"
                                         BorderBrush="#FFA0A0A0" 
                                         BorderThickness="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=BorderThickness, TargetNullValue='0,0,0,1'}">
-                                <ToggleButton Grid.Column="0"
+                                <ToggleButton
                                             IsChecked="{Binding Path=IsExpanded,Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                             OverridesDefaultStyle="True" 
                                             Template="{StaticResource ExpanderToggleButton}"
                                             HorizontalAlignment="Stretch">
-                                    <TextBlock Text="{TemplateBinding Header}" Style="{StaticResource Heading1}" Margin="4,2,0,2"/>
+                                    <TextBlock VerticalAlignment="Center" Text="{TemplateBinding Header}" Style="{StaticResource Heading2}" Margin="4,2,0,2"/>
                                 </ToggleButton>
                             </Border>
                             <ContentPresenter Name="ExpandSite" Visibility="Collapsed" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" Margin="{TemplateBinding Padding}" Focusable="False" Content="{TemplateBinding Content}" />
@@ -82,6 +101,7 @@
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="FontStyle" Value="Italic"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Foreground" Value="{StaticResource GrayText}"/>
         </Style>
 
         <Style x:Key="InterfaceEditorStatus" TargetType="{x:Type TextBlock}">

@@ -75,7 +75,7 @@
         <ControlTemplate x:Key="FontIconButton" TargetType="Button">
             <Grid Margin="7,0">
                 <Border Height="Auto" Margin="0,0,0,0" x:Name="MouseOverBackground" VerticalAlignment="Stretch" Opacity="0" Background="#FFBDBDBD" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" />
-                <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="Black" Content="{TemplateBinding Content}"/>
+                <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="Black" Content="{TemplateBinding Content}"/>
             </Grid>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="true">
@@ -217,7 +217,7 @@
                                 <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}" ToolTip="{Binding StatusNarrative}"/>
                                 <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}" ToolTip="{Binding StatusNarrative}"/>
                                 <WrapPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock FontWeight="Bold" VerticalAlignment="Center" Text="{Binding Path=Data.Name}" ToolTip="{Binding Path=Data.Description}"/>
+                                    <TextBlock Style="{StaticResource Heading1}" VerticalAlignment="Center" Text="{Binding Path=Data.Name}" ToolTip="{Binding Path=Data.Description}"/>
                                 </WrapPanel>
                                 <Button Grid.Row="1" Grid.Column="2" Content="&#xE713;" Command="heliosViewModel:ChecklistViewModel.GoThereCommand" CommandParameter="{Binding}" Template="{StaticResource FontIconButton}" Visibility="{Binding GoThereVisibility}" ToolTip="Configure this interface"/>
                                 <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="{Binding DetailsExpanded}" Visibility="{Binding DetailsVisibility}">

@@ -24,7 +24,7 @@
                         <StackPanel.ToolTip>
                             <TextBlock Text="{Binding KeyString}" FontSize="10" />
                         </StackPanel.ToolTip>
-                        <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="10" Margin="1,1,8,1" />                        
+                        <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" FontSize="10" Margin="1,1,8,1" />                        
                         <TextBlock Text="{Binding Description}" FontSize="10" />
                     </StackPanel>
                 </DataTemplate>

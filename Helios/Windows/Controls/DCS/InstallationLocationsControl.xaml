@@ -22,11 +22,11 @@
                 <HeaderedContentControl>
                     <HeaderedContentControl.Header>
                         <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Margin="0,6">
-                            <Label VerticalAlignment="Top" Padding="0" Width="60" FontWeight="Bold" Content="Write"/>
-                            <Label VerticalAlignment="Top" Padding="0" Width="300" FontWeight="Bold" Content="Path"/>
-                            <Label VerticalAlignment="Top" Padding="0" Width="100" FontWeight="Bold" Content="Version"/>
-                            <Label VerticalAlignment="Top" Padding="0" Width="100" FontWeight="Bold" Content="Saved Games"/>
-                            <Label VerticalAlignment="Top" Padding="0" Width="100" FontWeight="Bold" Content="Exclude"/>
+                            <Label VerticalAlignment="Top" Padding="0" Width="60" Style="{StaticResource TableHeading}" Content="Write"/>
+                            <Label VerticalAlignment="Top" Padding="0" Width="300" Style="{StaticResource TableHeading}" Content="Path"/>
+                            <Label VerticalAlignment="Top" Padding="0" Width="100" Style="{StaticResource TableHeading}" Content="Version"/>
+                            <Label VerticalAlignment="Top" Padding="0" Width="100" Style="{StaticResource TableHeading}" Content="Saved Games"/>
+                            <Label VerticalAlignment="Top" Padding="0" Width="100" Style="{StaticResource TableHeading}" Content="Exclude"/>
                         </StackPanel>
                     </HeaderedContentControl.Header>
                     <ItemsPresenter/>
