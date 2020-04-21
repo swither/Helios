@@ -237,10 +237,14 @@ namespace GadrocsWorkshop.Helios
 
         /// <summary>
         /// Notification method for profile changes.
+        ///
+        /// WARNING: this method is called on the profile loading thread when
+        /// loading a saved profile, and otherwise on main thread when adding
+        /// an interface to a running profile
         /// </summary>
         protected virtual void OnProfileChanged(HeliosProfile oldProfile)
         {
-
+            // no code
         }
 
         /// <summary>

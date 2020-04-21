@@ -27,6 +27,54 @@ namespace GadrocsWorkshop.Helios
         {
         }
 
+        protected override void OnProfileChanged(HeliosProfile oldProfile)
+        {
+            base.OnProfileChanged(oldProfile);
+
+            // WARNING: this method is called on the profile loading thread when
+            // loading a saved profile, and otherwise on main thread when adding
+            // an interface to a running profile
+            if (oldProfile != null)
+            {
+                // deinitialize on main thread
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    DetachFromProfileOnMainThread(oldProfile);
+                });
+            }
+
+            if (Profile != null)
+            {
+                // initialize on main thread
+                System.Windows.Application.Current.Dispatcher.Invoke(AttachToProfileOnMainThread);
+            }
+        }
+
+        /// <summary>
+        /// called on the main thread when the interface is installed in a Profile
+        /// rather than just being instantiated for testing in the Add Interfaces dialog
+        ///
+        /// heavy initialization should be performed here
+        /// </summary>
+        protected virtual void AttachToProfileOnMainThread()
+        {
+            // no code in base
+        }
+
+        /// <summary>
+        /// called on the main thread when the interface is removed from a profile,
+        /// usually due to deletion by the user
+        ///
+        /// shut down the interface and detach from all event handlers so the interface
+        /// can be deallocated
+        /// </summary>
+        /// <param name="oldProfile"></param>
+        protected virtual void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
+        {
+            // no code in base
+            _ = oldProfile;
+        }
+
         #region Properties
 
         public override string TypeIdentifier

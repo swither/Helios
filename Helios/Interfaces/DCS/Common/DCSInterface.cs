@@ -180,35 +180,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, key, value);
         }
 
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
+        protected override void AttachToProfileOnMainThread()
         {
-            base.OnProfileChanged(oldProfile);
-
-            if (oldProfile != null)
-            {
-                // deinitialize on main thread
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    Deinit(oldProfile);
-                });
-            }
-
-            if (Profile != null)
-            {
-                // initialize on main thread
-                Application.Current.Dispatcher.Invoke(Init);
-            }
-        }
-
-        private void Init()
-        {
+            base.AttachToProfileOnMainThread();
             Profile.ProfileTick += Profile_Tick;
             _configuration = new DCSExportConfiguration(this);
             _vehicleImpersonation = new DCSVehicleImpersonation(this);
         }
 
-        private void Deinit(HeliosProfile oldProfile)
+        protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
         {
+            base.DetachFromProfileOnMainThread(oldProfile);
             oldProfile.ProfileTick -= Profile_Tick;
             _configuration.Dispose();
             _configuration = null;

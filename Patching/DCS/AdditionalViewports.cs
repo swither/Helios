@@ -27,32 +27,24 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
         }
 
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
+        protected override void AttachToProfileOnMainThread()
         {
-            base.OnProfileChanged(oldProfile);
-            Application.Current.Dispatcher.Invoke(InitializeOnMainThread);
+            base.AttachToProfileOnMainThread();
+            InstallationLocations locations = InstallationLocations.Singleton;
+            locations.Added += Locations_Changed;
+            locations.Removed += Locations_Changed;
+            locations.Enabled += Locations_Changed;
+            locations.Disabled += Locations_Changed;
         }
 
-        private void InitializeOnMainThread()
+        protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
         {
-            if (Profile != null)
-            {
-                // initialization
-                InstallationLocations locations = InstallationLocations.Singleton;
-                locations.Added += Locations_Changed;
-                locations.Removed += Locations_Changed;
-                locations.Enabled += Locations_Changed;
-                locations.Disabled += Locations_Changed;
-            }
-            else
-            {
-                // deinit
-                InstallationLocations locations = InstallationLocations.Singleton;
-                locations.Added -= Locations_Changed;
-                locations.Removed -= Locations_Changed;
-                locations.Enabled -= Locations_Changed;
-                locations.Disabled -= Locations_Changed;
-            }
+            base.DetachFromProfileOnMainThread(oldProfile);
+            InstallationLocations locations = InstallationLocations.Singleton;
+            locations.Added -= Locations_Changed;
+            locations.Removed -= Locations_Changed;
+            locations.Enabled -= Locations_Changed;
+            locations.Disabled -= Locations_Changed;
         }
 
         private void Locations_Changed(object sender, InstallationLocations.LocationEvent e)

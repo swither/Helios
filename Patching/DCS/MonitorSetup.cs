@@ -119,9 +119,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static Rect VisualToRect(HeliosVisual visual) =>
             new Rect(visual.Left, visual.Top, visual.Width, visual.Height);
 
-        private void InitializeOnMainThread()
+        protected override void AttachToProfileOnMainThread()
         {
-            // create our implementation
+            base.AttachToProfileOnMainThread();
+
+            // real initialization, not just a test instantiation
             _config = new MonitorSetupGenerator(this);
 
             // recursively walk profile and track every visual
@@ -134,6 +136,27 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // register for changes
             Profile.Monitors.CollectionChanged += Monitors_CollectionChanged;
+
+            _geometryChangeTimer = new DispatcherTimer(
+                TimeSpan.FromMilliseconds(100),
+                DispatcherPriority.Normal,
+                OnDelayedGeometryChange,
+                Application.Current.Dispatcher);
+            _geometryChangeTimer.Stop();
+
+            // see if we need to start over if too much has changed
+            CheckMonitorSettings();
+
+            // read initial state and register for all changes,
+            // must run on main thread because dependency objects are created
+            // when loaded from a saved profile, this is called on the loader thread
+        }
+
+        protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
+        {
+            base.DetachFromProfileOnMainThread(oldProfile);
+            _geometryChangeTimer.Stop();
+            Clear();
         }
 
         private void Clear()
@@ -235,7 +258,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         /// <summary>
-        /// called when the viewport dimensions are modified 
+        /// called when the viewport dimensions are modified
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -386,6 +409,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void OnDelayedGeometryChange(object sender, EventArgs e)
         {
             _geometryChangeTimer.Stop();
+            if (Profile == null)
+            {
+                // although we turn off the timer when we are removed from the profile, this call is still
+                // delivered late
+                return;
+            }
 
             UpdateAllGeometry();
 
@@ -440,35 +469,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             return changesMade;
         }
 
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
-        {
-            // WARNING: this method is called on the profile loading thread, so 
-            // we must not directly create any dependency objects here
-            base.OnProfileChanged(oldProfile);
-            if (Profile != null)
-            {
-                // real initialization, not just a test instantiation
-                _geometryChangeTimer = new DispatcherTimer(
-                    TimeSpan.FromMilliseconds(100),
-                    DispatcherPriority.Normal,
-                    OnDelayedGeometryChange,
-                    Application.Current.Dispatcher);
-                _geometryChangeTimer.Stop();
-
-                // see if we need to start over if too much has changed
-                CheckMonitorSettings();
-
-                // read initial state and register for all changes,
-                // must run on main thread because dependency objects are created
-                // when loaded from a saved profile, this is called on the loader thread
-                Application.Current.Dispatcher.Invoke(InitializeOnMainThread);
-            }
-            else
-            {
-                _geometryChangeTimer.Stop();
-            }
-        }
-
         private void UpdateAllGeometry()
         {
             CheckMonitorSettings();
@@ -479,6 +479,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         #region Properties
+
         internal IEnumerable<ShadowMonitor> Monitors => _monitors.Values;
 
         internal IEnumerable<ShadowVisual> Viewports => _viewports.Values;
@@ -501,6 +502,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 OnPropertyChanged("Resolution", oldValue, value, true);
             }
         }
+
         #endregion
 
         #region IInstallation
@@ -567,7 +569,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(Name, "Utility interface that writes a DCS MonitorSetup Lua file to configure screen layout for the current profile.", statusReport);
+                observer.ReceiveStatusReport(Name,
+                    "Utility interface that writes a DCS MonitorSetup Lua file to configure screen layout for the current profile.",
+                    statusReport);
             }
         }
 
