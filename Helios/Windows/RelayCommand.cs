@@ -74,7 +74,7 @@ namespace GadrocsWorkshop.Helios.Windows
     <Declarations>
     <Literal>
     <ID>Documentation</ID>
-    <Default>XXX document this</Default>
+    <Default>document this</Default>
     </Literal>
     <Literal>
     <ID>CommandName</ID>

@@ -14,6 +14,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using GadrocsWorkshop.Helios.Interfaces.Common;
@@ -24,8 +25,10 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
     {
         public static RoutedUICommand GoThereCommand { get; } =
             new RoutedUICommand("Opens an associated editor.", "GoThere", typeof(ChecklistViewModel));
+
         public static RoutedUICommand DeleteInterfaceCommand { get; } =
-            new RoutedUICommand("Deletes the interface passed as the parameter.", "DeleteInterface", typeof(ChecklistViewModel));
+            new RoutedUICommand("Deletes the interface passed as the parameter.", "DeleteInterface",
+                typeof(ChecklistViewModel));
 
         /// <summary>
         /// backing field for ReloadCommand
@@ -40,7 +43,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             Data.PropertyChanged += Data_PropertyChanged;
         }
 
-        private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void Data_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -50,6 +53,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                     {
                         section.ChangeDisplayThreshold(Data.DisplayThreshold);
                     }
+
                     break;
             }
         }
@@ -88,7 +92,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                         new ShowModalParameter
                         {
                             Content = new ShareInterfaceStatus(Data.InterfaceStatuses)
-                        }, 
+                        },
                         parameter as IInputElement);
                 });
                 return _shareCommand;
