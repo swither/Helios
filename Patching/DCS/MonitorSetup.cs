@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 
 // XXX missing feature: allow specifying a shared monitor config and merging into it
 // XXX missing feature: support explicit view ports for MAIN and UI
@@ -20,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     [HeliosInterface("Patching.DCS.MonitorSetup", "DCS Monitor Setup", typeof(MonitorSetupEditor),
         Factory = typeof(UniqueHeliosInterfaceFactory))]
     public class MonitorSetup : HeliosInterface, IReadyCheck, IStatusReportNotify,
-        IShadowVisualParent, IInstallation
+        IShadowVisualParent, IInstallation, IExtendedDescription
     {
         #region Delegates
 
@@ -124,6 +125,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             base.AttachToProfileOnMainThread();
 
             // real initialization, not just a test instantiation
+            _geometryChangeTimer = new DispatcherTimer(
+                TimeSpan.FromMilliseconds(100),
+                DispatcherPriority.Normal,
+                OnDelayedGeometryChange,
+                Application.Current.Dispatcher)
+            {
+                IsEnabled = false
+            };
             _config = new MonitorSetupGenerator(this);
 
             // recursively walk profile and track every visual
@@ -136,13 +145,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // register for changes
             Profile.Monitors.CollectionChanged += Monitors_CollectionChanged;
-
-            _geometryChangeTimer = new DispatcherTimer(
-                TimeSpan.FromMilliseconds(100),
-                DispatcherPriority.Normal,
-                OnDelayedGeometryChange,
-                Application.Current.Dispatcher);
-            _geometryChangeTimer.Stop();
 
             // see if we need to start over if too much has changed
             CheckMonitorSettings();
@@ -503,6 +505,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
+        public string Description =>
+            "Utility interface that writes a DCS MonitorSetup Lua file to configure screen layout for the current profile.";
+
+        public string RemovalNarrative =>
+            "Delete this interface to no longer let Helios manage the monitor setup file for this profile";
         #endregion
 
         #region IInstallation
@@ -570,7 +577,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             foreach (IStatusReportObserver observer in _observers)
             {
                 observer.ReceiveStatusReport(Name,
-                    "Utility interface that writes a DCS MonitorSetup Lua file to configure screen layout for the current profile.",
+                    Description,
                     statusReport);
             }
         }

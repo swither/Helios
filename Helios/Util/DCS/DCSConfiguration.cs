@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 
 namespace GadrocsWorkshop.Helios.Util.DCS
 {

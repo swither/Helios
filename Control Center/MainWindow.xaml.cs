@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+
 namespace GadrocsWorkshop.Helios.ControlCenter
 {
     using Microsoft.Win32;
@@ -26,7 +28,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
     using System.Windows.Interop;
     using System.Windows.Threading;
     using GadrocsWorkshop.Helios.Splash;
-    using GadrocsWorkshop.Helios.ProfileAwareInterface;
     using GadrocsWorkshop.Helios.Windows;
     using GadrocsWorkshop.Helios.Windows.Controls;
 
@@ -652,9 +653,9 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             ControlCenterCommands.RunProfile.Execute(mostRecent, Application.Current.MainWindow);
         }
 
-        private void Profile_ClientChanged(object sender, ProfileAwareInterface.ClientChange e)
+        private void Profile_ClientChanged(object sender, ClientChange e)
         {
-            if (e.FromOpaqueHandle != ProfileAwareInterface.ClientChange.NO_CLIENT)
+            if (e.FromOpaqueHandle != ClientChange.NO_CLIENT)
             {
                 // this is a change during our profile's lifetime, so we need to discard information we have
                 _lastProfileHint = "";

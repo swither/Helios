@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GadrocsWorkshop.Helios
+namespace GadrocsWorkshop.Helios.Interfaces.Capabilities
 {
     /// <summary>
     /// callback interface for changes that happen without a call to PerformReadyCheck

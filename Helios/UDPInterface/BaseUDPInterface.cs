@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
     using GadrocsWorkshop.Helios;
@@ -31,7 +33,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
         // events don't need access control
         // event to notify potentially other threads that the client connection has changed
-        public event EventHandler<ProfileAwareInterface.ClientChange> ClientChanged;
+        public event EventHandler<ClientChange> ClientChanged;
 
         /// <summary>
         /// accessed only by main thread
@@ -44,7 +46,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             private Dictionary<string, NetworkFunction> _functionsById = new Dictionary<string, NetworkFunction>();
 
             private EndPoint _client = null;
-            private string _clientID = ProfileAwareInterface.ClientChange.NO_CLIENT;
+            private string _clientID = ClientChange.NO_CLIENT;
 
             private HeliosTrigger _connectedTrigger;
             private HeliosTrigger _disconnectedTrigger;
@@ -714,7 +716,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             try
             {
-                if ((_main.Client != null) && (_main.ClientID != ProfileAwareInterface.ClientChange.NO_CLIENT))
+                if ((_main.Client != null) && (_main.ClientID != ClientChange.NO_CLIENT))
                 {
                     ConfigManager.LogManager.LogDebug("UDP interface sending data. (Interface=\"" + Name + "\", Data=\"" + data + "\")");
                     SendContext context = new SendContext();
@@ -892,7 +894,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         protected virtual void OnClientChanged(string fromValue, string toValue)
         {
             _main.ConnectedTrigger.FireTrigger(BindingValue.Empty);
-            ClientChanged?.Invoke(this, new ProfileAwareInterface.ClientChange() { FromOpaqueHandle = fromValue, ToOpaqueHandle = toValue });
+            ClientChanged?.Invoke(this, new ClientChange() { FromOpaqueHandle = fromValue, ToOpaqueHandle = toValue });
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GadrocsWorkshop.Helios
+namespace GadrocsWorkshop.Helios.Interfaces.Capabilities
 {
     namespace ProfileAwareInterface
     {

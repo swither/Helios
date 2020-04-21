@@ -253,7 +253,7 @@
                                         </ItemsControl>
                                     </Expander.Content>
                                 </Expander>
-                                <Button Grid.Row="5" Grid.Column="2" Content="&#xE74D;" Command="heliosViewModel:ChecklistViewModel.DeleteInterfaceCommand" CommandParameter="{Binding Path=Data.Interface}" Template="{StaticResource FontIconButton}" ToolTip="Delete this interface from the Profile"/>
+                                <Button Grid.Row="5" Grid.Column="2" Content="&#xE74D;" Command="heliosViewModel:ChecklistViewModel.DeleteInterfaceCommand" CommandParameter="{Binding Path=Data.Interface}" Template="{StaticResource FontIconButton}" ToolTip="{Binding Path=RemovalNarrative}"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

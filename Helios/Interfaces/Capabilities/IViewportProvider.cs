@@ -1,4 +1,4 @@
-﻿namespace GadrocsWorkshop.Helios
+﻿namespace GadrocsWorkshop.Helios.Interfaces.Capabilities
 {
     /// <summary>
     /// This interface is supported by HeliosInterface instances that provide 

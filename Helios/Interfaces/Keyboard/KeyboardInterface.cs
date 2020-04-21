@@ -13,33 +13,44 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Globalization;
+using System.Xml;
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+
 namespace GadrocsWorkshop.Helios.Interfaces.Keyboard
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using System.Globalization;
-    using System.Xml;
-
-    [HeliosInterface("Helios.Base.Keyboard", "Keyboard", typeof(KeyboardInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), AutoAdd=true)]
-    public class KeyboardInterface : HeliosInterface
+    [HeliosInterface("Helios.Base.Keyboard", "Keyboard", typeof(KeyboardInterfaceEditor),
+        typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
+    public class KeyboardInterface : HeliosInterface, IExtendedDescription
     {
-        public static readonly string SpecialKeyHelp = "\r\n\r\nSpecial keys can be sent by sending their names in brackets, ex: {PAUSE}.\r\nBACKSPACE, TAB, CLEAR, RETURN, ENTER, LSHIFT, RSHIFT, LCONTROL, RCONTROL, LALT, RALT, PAUSE, CAPSLOCK, ESCAPE, SPACE, PAGEUP, PAGEDOWN, END, HOME, LEFT, UP, RIGHT, DOWN, PRINTSCREEN, INSERT, DELETE, LWIN, RWIN, APPS, NUMPAD0, NUMPAD1, NUMPAD2, NUMPAD3, NUMPAD4, NUMPAD5, NUMPAD6, NUMPAD7, NUMPAD8, NUMPAD9, MULTIPLY, ADD, SEPARATOR, SUBTRACT, DECIMAL, DIVIDE, NUMPADENTER, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, F17, F18, F19, F20, F21, F22, F23, F24, NUMLOCK, SCROLLLOCK";
+        public static readonly string SpecialKeyHelp =
+            "\r\n\r\nSpecial keys can be sent by sending their names in brackets, ex: {PAUSE}.\r\nBACKSPACE, TAB, CLEAR, RETURN, ENTER, LSHIFT, RSHIFT, LCONTROL, RCONTROL, LALT, RALT, PAUSE, CAPSLOCK, ESCAPE, SPACE, PAGEUP, PAGEDOWN, END, HOME, LEFT, UP, RIGHT, DOWN, PRINTSCREEN, INSERT, DELETE, LWIN, RWIN, APPS, NUMPAD0, NUMPAD1, NUMPAD2, NUMPAD3, NUMPAD4, NUMPAD5, NUMPAD6, NUMPAD7, NUMPAD8, NUMPAD9, MULTIPLY, ADD, SEPARATOR, SUBTRACT, DECIMAL, DIVIDE, NUMPADENTER, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, F17, F18, F19, F20, F21, F22, F23, F24, NUMLOCK, SCROLLLOCK";
 
-        private HeliosAction _keyPressAction;
-        private HeliosAction _keyDownAction;
-        private HeliosAction _keyUpAction;
+        private readonly HeliosAction _keyPressAction;
+        private readonly HeliosAction _keyDownAction;
+        private readonly HeliosAction _keyUpAction;
 
         public KeyboardInterface()
             : base("Keyboard")
         {
             // load global configuration not specific to profile
-            KeyboardEmulator.ForceQwerty = ConfigManager.SettingsManager.LoadSetting<bool>("KeyboardInterface", "ForceQwerty", false);
+            KeyboardEmulator.ForceQwerty =
+                ConfigManager.SettingsManager.LoadSetting("KeyboardInterface", "ForceQwerty", false);
 
-            _keyPressAction = new HeliosAction(this, "", "", "send keys", "Presses and releases a set of keyboard keys.", "Keys which will be sent to the foreground applications.  Whitespace seperates key combos allowing multiple keystroke commands to be sent. \"{LCONTROL}c\" will hold down left control and then press c while \"{LCONTROL} c\" will press and release left control and then press and release c." + SpecialKeyHelp, BindingValueUnits.Text);
-            _keyPressAction.Execute += new HeliosActionHandler(KeyPress_ExecuteAction);
-            _keyDownAction = new HeliosAction(this, "", "", "press key", "Presses keys.", "Keys which will be pressed down and remain pressed until a release key event is sent." + SpecialKeyHelp, BindingValueUnits.Text);
-            _keyDownAction.Execute += new HeliosActionHandler(KeyDown_ExecuteAction);
-            _keyUpAction = new HeliosAction(this, "", "", "release key", "Releases keys.", "Keys which will be released." + SpecialKeyHelp, BindingValueUnits.Text);
-            _keyUpAction.Execute += new HeliosActionHandler(KeyUp_ExecuteAction);
+            _keyPressAction = new HeliosAction(this, "", "", "send keys",
+                "Presses and releases a set of keyboard keys.",
+                "Keys which will be sent to the foreground applications.  Whitespace seperates key combos allowing multiple keystroke commands to be sent. \"{LCONTROL}c\" will hold down left control and then press c while \"{LCONTROL} c\" will press and release left control and then press and release c." +
+                SpecialKeyHelp, BindingValueUnits.Text);
+            _keyPressAction.Execute += KeyPress_ExecuteAction;
+            _keyDownAction = new HeliosAction(this, "", "", "press key", "Presses keys.",
+                "Keys which will be pressed down and remain pressed until a release key event is sent." +
+                SpecialKeyHelp, BindingValueUnits.Text);
+            _keyDownAction.Execute += KeyDown_ExecuteAction;
+            _keyUpAction = new HeliosAction(this, "", "", "release key", "Releases keys.",
+                "Keys which will be released." + SpecialKeyHelp, BindingValueUnits.Text);
+            _keyUpAction.Execute += KeyUp_ExecuteAction;
 
             Actions.Add(_keyPressAction);
             Actions.Add(_keyDownAction);
@@ -48,10 +59,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Keyboard
 
         public int KeyDelay
         {
-            get
-            {
-                return KeyboardEmulator.KeyDelay;
-            }
+            get => KeyboardEmulator.KeyDelay;
             set
             {
                 int oldValue = KeyboardEmulator.KeyDelay;
@@ -62,15 +70,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Keyboard
 
         public bool ForceQwerty
         {
-            get
-            {
-                return KeyboardEmulator.ForceQwerty;
-            }
+            get => KeyboardEmulator.ForceQwerty;
             set
             {
                 bool oldValue = KeyboardEmulator.ForceQwerty;
                 KeyboardEmulator.ForceQwerty = value;
-                ConfigManager.SettingsManager.SaveSetting<bool>("KeyboardInterface", "ForceQwerty", value);
+                ConfigManager.SettingsManager.SaveSetting("KeyboardInterface", "ForceQwerty", value);
 
                 // no undo, since this isn't part of profile
                 OnPropertyChanged("ForceQwerty", oldValue, value, false);
@@ -83,17 +88,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Keyboard
         /// </summary>
         public bool ForceQwertyAvailable => KeyboardEmulator.CheckIfForceQwertyAvailable();
 
-        void KeyPress_ExecuteAction(object action, HeliosActionEventArgs e)
+        public string Description => "Interface to send synthetic key strokes";
+
+        public string RemovalNarrative => "Delete this interface and removes all of its bindings from the Profile, making it impossible to send keyboard input.";
+
+        private void KeyPress_ExecuteAction(object action, HeliosActionEventArgs e)
         {
             KeyboardEmulator.KeyPress(e.Value.StringValue);
         }
 
-        void KeyDown_ExecuteAction(object action, HeliosActionEventArgs e)
+        private void KeyDown_ExecuteAction(object action, HeliosActionEventArgs e)
         {
             KeyboardEmulator.KeyDown(e.Value.StringValue);
         }
 
-        void KeyUp_ExecuteAction(object action, HeliosActionEventArgs e)
+        private void KeyUp_ExecuteAction(object action, HeliosActionEventArgs e)
         {
             KeyboardEmulator.KeyUp(e.Value.StringValue);
         }

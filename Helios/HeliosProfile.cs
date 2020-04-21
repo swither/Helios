@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -22,7 +25,6 @@ namespace GadrocsWorkshop.Helios
     using System.Windows.Threading;
 
     using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.ProfileAwareInterface;
 
     public class HeliosProfile : NotificationObject, IReadyCheck
     {
@@ -88,7 +90,7 @@ namespace GadrocsWorkshop.Helios
 
         // this event indicates that some interface may have connected to a different endpoint
         // than before
-        public event EventHandler<ProfileAwareInterface.ClientChange> ClientChanged;
+        public event EventHandler<ClientChange> ClientChanged;
 
         #region Properties
 
@@ -450,7 +452,7 @@ namespace GadrocsWorkshop.Helios
             ProfileHintReceived?.Invoke(this, e);
         }
 
-        private void Interface_ClientChanged(object sender, ProfileAwareInterface.ClientChange e)
+        private void Interface_ClientChanged(object sender, ClientChange e)
         {
             ClientChanged?.Invoke(this, e);
         }

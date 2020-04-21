@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
@@ -25,6 +26,10 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         {
             Items = new ObservableCollection<ChecklistItem>();
             Recommendations = new ObservableCollection<string>();
+            if (data.Interface is IExtendedDescription extendedInfo)
+            {
+                RemovalNarrative = extendedInfo.RemovalNarrative;
+            }
         }
 
         /// <summary>
@@ -109,9 +114,9 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             DetailsVisibility = Items.Count > 0 && _displayThreshold < StatusReportItem.SeverityCode.None
                 ? Visibility.Visible
                 : Visibility.Collapsed;
-            string[] AttentionStatuses =
+            string[] attentionStatuses =
                 {StatusReportItem.SeverityCode.Warning.ToString(), StatusReportItem.SeverityCode.Error.ToString()};
-            DetailsExpanded = Items.Any(i => AttentionStatuses.Contains(i.Status));
+            DetailsExpanded = Items.Any(i => attentionStatuses.Contains(i.Status));
         }
 
         /// <summary>
@@ -181,6 +186,12 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             set => SetValue(StatusNarrativeProperty, value);
         }
 
+        public string RemovalNarrative
+        {
+            get => (string) GetValue(RemovalNarrativeProperty);
+            set => SetValue(RemovalNarrativeProperty, value);
+        }
+
         #endregion
 
         #region DependencyProperties
@@ -209,6 +220,10 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             DependencyProperty.Register("StatusNarrative", typeof(string), typeof(ChecklistSection),
                 new PropertyMetadata(""));
 
+        public static readonly DependencyProperty RemovalNarrativeProperty =
+            DependencyProperty.Register("RemovalNarrative", typeof(string), typeof(ChecklistSection),
+                new PropertyMetadata("Delete this interface and remove all of its bindings from the Profile."));
+        
         public static readonly DependencyProperty DetailsExpandedProperty =
             DependencyProperty.Register("DetailsExpanded", typeof(bool), typeof(ChecklistSection),
                 new PropertyMetadata(false));

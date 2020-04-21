@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GadrocsWorkshop.Helios
+namespace GadrocsWorkshop.Helios.Interfaces.Capabilities
 {
     /// <summary>
     /// Objects that implement this interface are able to generate a list of user-readable

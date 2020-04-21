@@ -3,13 +3,14 @@ using System.Linq;
 using System.Windows;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Util.DCS;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     [HeliosInterface("Patching.DCS.AdditionalViewports", "DCS Additional Viewports", typeof(AdditionalViewportsEditor),
         Factory = typeof(UniqueHeliosInterfaceFactory))]
-    public class AdditionalViewports : HeliosInterface, IReadyCheck, IViewportProvider, IStatusReportNotify
+    public class AdditionalViewports : HeliosInterface, IReadyCheck, IViewportProvider, IStatusReportNotify, IExtendedDescription
     {
         #region Constant
 
@@ -62,6 +63,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // no code
         }
 
+        #region Properties
+
+        public string Description =>
+            "Utility interface that applies patches to DCS installation files to create additional exported viewports.";
+
+        public string RemovalNarrative =>
+            "Delete this interface to no longer let Helios manage viewport patches in DCS.";
+        #endregion
+
         #region IReadyCheck
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
@@ -102,6 +112,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     yield return result;
                 }
             }
+
+            yield return new StatusReportItem
+            {
+                Status = "Helios is managing DCS patches for viewports and drawing settings",
+                Recommendation = "Do not also install viewport mods manually or via a mod manager like OVGME",
+                Flags = StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate
+            };
         }
 
         #endregion
@@ -134,7 +151,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             foreach (IStatusReportObserver observer in _observers)
             {
                 observer.ReceiveStatusReport(Name,
-                    "Utility interface that applies patches to DCS installation files to create additional exported viewports.",
+                    Description,
                     statusReport);
             }
         }

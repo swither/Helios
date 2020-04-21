@@ -13,17 +13,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Linq;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.ProfileAwareInterface;
     using GadrocsWorkshop.Helios.UDPInterface;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
-    using System.Windows;
     using System.Xml;
 
     public class DCSInterface : BaseUDPInterface, IProfileAwareInterface, IReadyCheck, IStatusReportNotify

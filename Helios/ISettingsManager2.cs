@@ -18,7 +18,7 @@ using System.Collections.Generic;
 namespace GadrocsWorkshop.Helios
 {
     /// <summary>
-    /// version 2 of this interface to add enumeration and removal
+    /// version 2 of ISettingsManager interface to add enumeration and removal
     /// </summary>
     public interface ISettingsManager2: ISettingsManager
     {

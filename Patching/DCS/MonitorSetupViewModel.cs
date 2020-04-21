@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
 using GadrocsWorkshop.Helios.Windows;
@@ -45,6 +46,20 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // register for status changes and get latest report
             Data.Subscribe(this);
             Data.InvalidateStatusReport();
+        }
+
+        private static void OnScaleChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            MonitorSetupViewModel model = (MonitorSetupViewModel)d;
+            foreach (MonitorViewModel monitor in model._monitors.Values)
+            {
+                monitor.Update(model.Scale);
+            }
+
+            foreach (ViewportViewModel viewport in model._viewports.Values)
+            {
+                viewport.Update(model.Scale);
+            }
         }
 
         private void ProtectLastMonitor(List<MonitorViewModel> monitors, Action<MonitorViewModel, bool> setter)
@@ -227,7 +242,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ScaledTotalHeight = totalBounds.Height;
             ScaledMain = mainBounds;
             ScaledUserInterface = uiBounds;
-
         }
 
         public void ReceiveStatusReport(string name, string description, IList<StatusReportItem> statusReport)
@@ -362,20 +376,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static readonly DependencyProperty ScaleProperty =
             DependencyProperty.Register("Scale", typeof(double), typeof(MonitorSetupViewModel),
                 new PropertyMetadata(0.075, OnScaleChange));
-
-        private static void OnScaleChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            MonitorSetupViewModel model = (MonitorSetupViewModel) d;
-            foreach (MonitorViewModel monitor in model._monitors.Values)
-            {
-                monitor.Update(model.Scale);
-            }
-
-            foreach (ViewportViewModel viewport in model._viewports.Values)
-            {
-                viewport.Update(model.Scale);
-            }
-        }
 
         #endregion
     }

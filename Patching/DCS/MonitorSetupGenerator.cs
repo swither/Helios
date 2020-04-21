@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
 
@@ -452,6 +453,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     Status = "This version of Helios does not select the monitor setup in DCS directly",
                     Recommendation =
                         $"Using DCS, please set 'Monitors' in the 'System' options to '{GenerateShortName()}'",
+                    Severity = StatusReportItem.SeverityCode.Info,
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+                yield return new StatusReportItem
+                {
+                    Status = "This version of Helios generates a separate monitor setup file for each profile",
+                    Recommendation =
+                        $"You will need to switch 'Monitors' in DCS when you switch Helios Profile",
                     Severity = StatusReportItem.SeverityCode.Info,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };

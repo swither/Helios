@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Common
@@ -12,6 +13,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             Interface = heliosInterface;
             ReadyCheck = heliosInterface as IReadyCheck;
             Name = $"{heliosInterface.Name}";
+            if (heliosInterface is IExtendedDescription extendedInfo)
+            {
+                Description = extendedInfo.Description;
+            }
+            else
+            {
+                Description = Name;
+            }
             HeliosInterfaceDescriptor descriptor =
                 ConfigManager.ModuleManager.InterfaceDescriptors[heliosInterface.TypeIdentifier];
             HasEditor = descriptor.InterfaceEditorType != null;
