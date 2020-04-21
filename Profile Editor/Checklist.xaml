@@ -264,7 +264,7 @@
 
     <DockPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Background="White">
         <StackPanel DockPanel.Dock="Top">
-            <Expander FontWeight="Bold" Header="Show this View" IsExpanded="False" Style="{StaticResource SettingsExpander}">
+            <Expander Header="Show this View" IsExpanded="False" Style="{StaticResource SettingsExpander}">
                 <StackPanel Margin="0,6">
                     <RadioButton IsChecked="{Binding Path=Data.TriggerThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.Info}}"
                     GroupName="auto" Margin="6,0,0,0">Always</RadioButton>
@@ -278,7 +278,7 @@
             </Expander>
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Margin="0,6,0,0">
-            <Expander FontWeight="Bold" Header="Filter Details" IsExpanded="False" Style="{StaticResource SettingsExpander}">
+            <Expander Header="Filter Details" IsExpanded="False" Style="{StaticResource SettingsExpander}">
                 <StackPanel Margin="0,6">
                     <RadioButton IsChecked="{Binding Data.DisplayThreshold, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static helios:StatusReportItem+SeverityCode.Info}}"
                                  GroupName="details" Margin="6,0,0,0">All</RadioButton>
