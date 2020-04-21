@@ -10,6 +10,7 @@
         <SolidColorBrush x:Key="ToolBackground" Color="White" />
         <SolidColorBrush x:Key="StatusBarBackground" Color="#FFF4F7FC" />
         <SolidColorBrush x:Key="GrayText" Color="#FF808080" />
+        <SolidColorBrush x:Key="EmptySpaceBetweenWhiteItems" Color="LightGray"/>
 
         <Style x:Key="TextBlockBase" TargetType="TextBlock">
         </Style>

@@ -22,14 +22,14 @@
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.RowSpan="7" Background="LightGray" HorizontalScrollBarVisibility="Auto">
+    <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.RowSpan="7" Background="{StaticResource EmptySpaceBetweenWhiteItems}" HorizontalScrollBarVisibility="Auto">
         <Grid Background="White" Margin="6" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Padding="3" Style="{StaticResource Heading1}" Text="Status Report to be shared:"/>
-            <TextBox Grid.Row="1" Padding="3" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Text, Mode=OneTime}"/>
+            <TextBox Grid.Row="1" BorderThickness="0" Padding="3" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Text, Mode=OneTime}"/>
         </Grid>
     </ScrollViewer>
     <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Documentation}" MaxWidth="200" Margin="10,24,10,6" TextWrapping="Wrap">You may share this report by copying and pasting it, for example in a Discord channel where you receive help.</TextBlock>

@@ -7,9 +7,9 @@
              xmlns:heliosViewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel;assembly=Helios"                      
              xmlns:heliosControls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios" xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       mc:Ignorable="d"
-             d:DesignHeight="450" 
+             d:DesignHeight="490" 
              d:DesignWidth="800"
-             Background="LightGray"
+             Background="{StaticResource EmptySpaceBetweenWhiteItems}"
              d:DataContext="{d:DesignInstance Type=heliosViewModel:MockChecklistViewModel, IsDesignTimeCreatable=true}"
              Name="ChecklistWindow">
     <Grid.Resources>
@@ -292,8 +292,8 @@
             </Expander>
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Margin="0,6" VerticalAlignment="Bottom">
-            <Button Command="{Binding ShareCommand}" CommandParameter="{Binding ElementName=ChecklistWindow}"  Style="{StaticResource SettingsButton}" Content="Share"/>
-            <Button Command="{Binding ReloadCommand}" Style="{StaticResource SettingsButton}">Reload</Button>
+            <Button Command="{Binding ShareCommand}" CommandParameter="{Binding ElementName=ChecklistWindow}"  Style="{StaticResource SettingsButton}" Content="Share Report" ToolTip="Share an anonymized version of this report for help or bug reporting."/>
+            <Button Command="{Binding ReloadCommand}" Style="{StaticResource SettingsButton}" ToolTip="Manually reload the interface status if some interface does not update itself.">Reload Status</Button>
         </StackPanel>
     </DockPanel>
 </Grid>

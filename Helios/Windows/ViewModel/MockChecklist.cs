@@ -23,6 +23,10 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
         public Visibility GoThereVisibility => Visibility.Visible;
 
+        public string Description => Name;
+
+        public bool DetailsExpanded => true;
+
         public class ItemsList : List<MockChecklistItem>
         {
 
