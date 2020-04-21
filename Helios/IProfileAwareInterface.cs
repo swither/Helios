@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios
             /// <summary>
             /// the only handle value which we may interpret, all other values are opaque
             /// </summary>
-            static public string NO_CLIENT = "";
+            public static string NO_CLIENT = "";
             public string FromOpaqueHandle { get; set; }
             public string ToOpaqueHandle { get; set; }
         }

@@ -192,7 +192,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
 
         #region IStatusReportObserver
 
-        public void ReceiveStatusReport(string name, string description, IEnumerable<StatusReportItem> statusReport)
+        public void ReceiveStatusReport(string name, string description, IList<StatusReportItem> statusReport)
         {
             _ = name;
             _ = description;

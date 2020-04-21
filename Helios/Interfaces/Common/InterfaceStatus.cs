@@ -37,11 +37,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             return true;
         }
 
-        public void ReceiveStatusReport(string statusName, string description, IEnumerable<StatusReportItem> statusReport)
+        public void ReceiveStatusReport(string statusName, string description, IList<StatusReportItem> statusReport)
         {
             Name = statusName;
             Description = description;
-            Report = statusReport.ToList();
+            Report = statusReport;
         }
 
         /// <summary>

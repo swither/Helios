@@ -133,18 +133,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return;
             }
 
-            IEnumerable<StatusReportItem> newReport = PerformReadyCheck();
+            IList<StatusReportItem> newReport = PerformReadyCheck().ToList();
             PublishStatusReport(newReport);
         }
 
-        public void PublishStatusReport(IEnumerable<StatusReportItem> statusReport)
+        public void PublishStatusReport(IList<StatusReportItem> statusReport)
         {
-            IEnumerable<StatusReportItem> statusReportItems = statusReport.ToList();
             foreach (IStatusReportObserver observer in _observers)
             {
                 observer.ReceiveStatusReport(Name,
                     "Utility interface that applies patches to DCS installation files to create additional exported viewports.",
-                    statusReportItems);
+                    statusReport);
             }
         }
 

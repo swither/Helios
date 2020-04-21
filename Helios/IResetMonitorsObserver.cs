@@ -1,5 +1,8 @@
 ﻿namespace GadrocsWorkshop.Helios
 {
+    /// <summary>
+    /// Helios interfaces that implement this interface are notified when a "Reset Monitors" operation completes
+    /// </summary>
     public interface IResetMonitorsObserver
     {
         /// <summary>

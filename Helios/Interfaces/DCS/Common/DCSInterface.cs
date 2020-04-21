@@ -372,13 +372,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             PublishStatusReport(newReport);
         }
 
-        public void PublishStatusReport(IEnumerable<StatusReportItem> statusReport)
+        public void PublishStatusReport(IList<StatusReportItem> statusReport)
         {
-            IList<StatusReportItem> statusReportItems = statusReport.ToList();
             string statusName = StatusName;
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(statusName, "Interface listening to UDP updates from DCS export.lua and responding with commands.", statusReportItems);
+                observer.ReceiveStatusReport(statusName, "Interface listening to UDP updates from DCS export.lua and responding with commands.", statusReport);
             }
         }
     }

@@ -148,12 +148,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             PublishStatusReport(newReport);
         }
 
-        public void PublishStatusReport(IEnumerable<StatusReportItem> statusReport)
+        public void PublishStatusReport(IList<StatusReportItem> statusReport)
         {
-            IList<StatusReportItem> statusReportItems = statusReport.ToList();
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport("Profile Interface", "Interface to Helios Control Center itself.", statusReportItems);
+                observer.ReceiveStatusReport("Profile Interface", "Interface to Helios Control Center itself.", statusReport);
             }
         }
 

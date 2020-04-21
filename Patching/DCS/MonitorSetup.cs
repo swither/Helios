@@ -563,7 +563,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             PublishStatusReport(newReport);
         }
 
-        public void PublishStatusReport(IEnumerable<StatusReportItem> statusReport)
+        public void PublishStatusReport(IList<StatusReportItem> statusReport)
         {
             foreach (IStatusReportObserver observer in _observers)
             {

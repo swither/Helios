@@ -7,7 +7,13 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public interface IStatusReportObserver
     {
-        void ReceiveStatusReport(string statusName, string description, IEnumerable<StatusReportItem> statusReport);
+        /// <summary>
+        /// called when interface status changes
+        /// </summary>
+        /// <param name="statusName">the human-readable name the interface would like to use in status reporting</param>
+        /// <param name="description">a longer, human-readable description of the interface</param>
+        /// <param name="statusReport">the current status report</param> 
+        void ReceiveStatusReport(string statusName, string description, IList<StatusReportItem> statusReport);
     }
 
     /// <summary>
@@ -27,11 +33,14 @@ namespace GadrocsWorkshop.Helios
         /// asserting that it is fresh
         /// </summary>
         /// <param name="statusReport"></param>
-        void PublishStatusReport(IEnumerable<StatusReportItem> statusReport);
+        void PublishStatusReport(IList<StatusReportItem> statusReport);
 
         /// <summary>
-        /// asynchronously invalidate the status report, so that a fresh one will be generated
+        /// invalidate the status report, so that a fresh one will be generated
         /// and sent to all subscribers
+        ///
+        /// optionally, this functionality may be implemented asynchronously, so that the new status report
+        /// is not sent immediately
         /// </summary>
         void InvalidateStatusReport();
     }
