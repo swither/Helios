@@ -6,8 +6,8 @@
              xmlns:heliosUtil="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="WindowBackground" Color="#EBEEFA" />
-        <SolidColorBrush x:Key="ToolBackground" Color="#FFFFFFFF" />
+        <SolidColorBrush x:Key="WindowBackground" Color="#f5f5f5" />
+        <SolidColorBrush x:Key="ToolBackground" Color="White" />
         <SolidColorBrush x:Key="StatusBarBackground" Color="#FFF4F7FC" />
         <SolidColorBrush x:Key="GrayText" Color="#FF808080" />
 
@@ -21,7 +21,15 @@
             <Setter Property="FontSize" Value="14"/>
         </Style>
 
+        <Style x:Key="Heading1Label" TargetType="Label" BasedOn="{StaticResource LabelBase}">
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
         <Style x:Key="Heading2" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <Style x:Key="Heading2Label" TargetType="Label" BasedOn="{StaticResource LabelBase}">
             <Setter Property="FontSize" Value="12"/>
         </Style>
 

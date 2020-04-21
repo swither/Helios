@@ -72,7 +72,7 @@
                 </Style.Triggers>
             </Style>
 
-            <Style x:Key="ActionTriggerLabel" TargetType="Label">
+            <Style x:Key="ActionTriggerLabel" TargetType="Label" BasedOn="{StaticResource Heading1Label}">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding ElementName=BindingsPane,Path=BindingType}" Value="Input">
                         <Setter Property="Content" Value="Triggers" />
@@ -100,8 +100,8 @@
             <TabItem Header="Output" Tag="Output" />
         </TabControl>
         <Label Grid.Row="0" Grid.Column="0" Margin="12,29,0,0" Style="{StaticResource ActionTriggerLabel}">Actions</Label>
-        <Label Grid.Row="0" Grid.Column="1" Margin="3,29,0,0">Bindings</Label>
-        <Label Grid.Row="0" Grid.Column="2" Margin="3,29,0,0">Properties</Label>
+        <Label Grid.Row="0" Grid.Column="1" Margin="3,29,0,0" Style="{StaticResource Heading1Label}">Bindings</Label>
+        <Label Grid.Row="0" Grid.Column="2" Margin="3,29,0,0" Style="{StaticResource Heading1Label}">Properties</Label>
         <TreeView Grid.Row="1" Grid.Column="0" Margin="12,0,3,12" ItemsSource="{Binding ElementName=BindingsPane,Path=ProfileExplorerItems}" Style="{StaticResource ProfileExplorerTreeStyle}" local:DragAndDropManager.DragSourceAdvisor="{StaticResource DropAdvisor}" />
         <TreeView Grid.Row="1" Grid.Column="1" Margin="3,0,6,12" Name="BindingTree" ItemsSource="{Binding ElementName=BindingsPane,Path=BindingItems}" Style="{StaticResource ProfileExplorerTreeStyle}" local:DragAndDropManager.DropTargetAdvisor="{StaticResource DropAdvisor}" SelectedItemChanged="BindingsTree_SelectedItemChanged" />
         <ScrollViewer Grid.Row="1" Grid.Column="2" Margin="0,0,12,12" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
