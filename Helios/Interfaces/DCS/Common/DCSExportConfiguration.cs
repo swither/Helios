@@ -92,12 +92,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private readonly DCSInterface _parent;
 
         /// <summary>
-        /// backing field for property IsUpToDate, contains
-        /// a flag that is true if exports are up to date and installed
-        /// </summary>
-        private bool _isUpToDate;
-
-        /// <summary>
         /// full Lua contents of Export.lua stub we sometimes install
         /// </summary>
         private string _exportStub = "";
@@ -295,25 +289,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 
         /// <summary>
-        /// a flag that is true if exports are up to date and installed
-        /// </summary>
-        public bool IsUpToDate
-        {
-            get => _isUpToDate;
-            set
-            {
-                if (_isUpToDate == value)
-                {
-                    return;
-                }
-
-                bool oldValue = _isUpToDate;
-                _isUpToDate = value;
-                OnPropertyChanged("IsUpToDate", oldValue, value, true);
-            }
-        }
-
-        /// <summary>
         /// Export.lua update ticks per second
         /// This is a site-specific setting persisted in HeliosSettings instead of in the profile.
         /// </summary>
@@ -413,6 +388,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 OnPropertyChanged("ModuleFolderGuess", oldValue, value, true);
             }
         }
+
+        /// <summary>
+        /// backing field for property Status, contains
+        /// the status of the configuration, including up to date, out of date, or lack of locations
+        /// </summary>
+        private StatusCodes _status;
+
+        /// <summary>
+        /// the status of the configuration, including up to date, out of date, or lack of locations
+        /// </summary>
+        public StatusCodes Status
+        {
+            get => _status;
+            set
+            {
+                if (_status == value) return;
+                StatusCodes oldValue = _status;
+                _status = value;
+                OnPropertyChanged("Status", oldValue, value, true);
+            }
+        }
         #endregion
 
 #if false
@@ -458,29 +454,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         IsUpToDate = CheckConfig();
 #endif
 
-#if false
-        private bool CheckPath()
-        {
-            try
-            {
-                if (Directory.Exists(KnownFolders.SavedGames))
-                {
-                    string exportLuaPath = System.IO.Path.Combine(KnownFolders.SavedGames, "Scripts");
-                    if (!Directory.Exists(exportLuaPath))
-                    {
-                        Directory.CreateDirectory(exportLuaPath);
-                    }
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-                ConfigManager.LogManager.LogError("Error checking DCS Path", e);
-            }
-
-            return false;
-        }
-#endif
         // view model functionality is embedded in this model class
         private void UpdateViewModel()
         {
@@ -591,7 +564,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     Recommendation = "Configure any DCS installation directories you use",
                     Severity = StatusReportItem.SeverityCode.Error
                 });
-                IsUpToDate = false;
+                Status = StatusCodes.NoLocations;
                 return report;
             }
 
@@ -625,7 +598,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     if (!result.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate))
                     {
                         ConfigManager.LogManager.LogDebug(result.Status);
-                        IsUpToDate = false;
+                        Status = StatusCodes.OutOfDate;
                         // don't test the remaining items
                         return report;
                     }
@@ -633,7 +606,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
 
             // finished
-            IsUpToDate = true;
+            Status = StatusCodes.UpToDate;
             return report;
         }
 

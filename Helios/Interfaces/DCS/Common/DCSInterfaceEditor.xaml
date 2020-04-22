@@ -6,6 +6,7 @@
                                  xmlns:helios="clr-namespace:GadrocsWorkshop.Helios"
                                  xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
                                  xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS"
+                                 xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
                                  xmlns:dcs="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                                  mc:Ignorable="d"
@@ -18,7 +19,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=Configuration.IsUpToDate}" Value="True"/>
+                        <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.UpToDate}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -31,7 +32,20 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=Configuration.IsUpToDate}" Value="False"/>
+                        <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Visible"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
+            <Setter Property="UIElement.Visibility" Value="Hidden"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.NoLocations}"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -134,11 +148,15 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Your DCS configuration is up to date.</TextBlock>
                     <!-- let's not do this? <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120">Remove DCS Setup</Button> -->
+                </Grid>
+                <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must configure DCS installation locations before you can configure this interface.</TextBlock>
                 </Grid>
                 <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
                     <Grid.ColumnDefinitions>
@@ -245,7 +263,7 @@
                     <heliosSdk:FilePicker
                         FileExtension="lua"
                         FileDescription="Lua module"
-                        Text="{Binding diag:PresentationTraceSources.TraceLevel=High, Path=Interface.ExportModuleBaseName}" 
+                        Text="{Binding Path=Interface.ExportModuleBaseName}" 
                         SelectedFilePath="{Binding Path=Configuration.SelectedModuleFile, Mode=TwoWay}"
                         FolderGuess="{Binding Path=Configuration.ModuleFolderGuess}"/>
                 </WrapPanel>
