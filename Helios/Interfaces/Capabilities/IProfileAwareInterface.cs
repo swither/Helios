@@ -12,7 +12,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Capabilities
 
         public class DriverStatus : EventArgs
         {
-            public string ExportDriver { get; set; }
+            public string DriverType { get; set; }
         }
 
         public class ClientChange: EventArgs
@@ -34,9 +34,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Capabilities
         public interface IProfileAwareInterface
         {
             /// <summary>
-            /// Fired to indicate the interface is providing information related
-            /// to the specified export driver name.  This name is not necessarily the 
-            /// same as the HeliosProfile.Name
+            /// Fired to indicate the interface is using a driver of the specified type.  
             ///
             /// This event can be fired with or without a previous RequestDriver call.
             /// </summary>
@@ -61,11 +59,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Capabilities
             IEnumerable<string> Tags { get; }
 
             /// <summary>
-            /// Request that the interface provide the information for the specified driver name,
+            /// Request that the interface switch to using the driver type appropriate to
+            /// the given profile identified by its short name (without extension)
             /// and send a DriverStatus event when this is accomplished.
             /// </summary>
-            /// <param name="name"></param>
-            void RequestDriver(string name);
+            /// <param name="profileShortName"></param>
+            void RequestDriver(string profileShortName);
         }
     }
 }

@@ -13,30 +13,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+using GadrocsWorkshop.Helios.UDPInterface;
+using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Xml;
-
     public class DCSInterface : BaseUDPInterface, IProfileAwareInterface, IReadyCheck, IStatusReportNotify
     {
         private const string SETTINGS_GROUP = "DCSInterface";
+        private const DCSExportModuleFormat DEFAULT_EXPORT_MODULE_FORMAT = DCSExportModuleFormat.HeliosDriver16;
 
-        // do we expect the Export.lua to use a module we did not write?
-        // exported via UsesExportModule property with IPropertyNotification
-        protected bool _usesExportModule;
-        private static readonly bool DEFAULT_MODULE_USE = false;
+        /// <summary>
+        /// backing field for ExportModuleFormat
+        /// </summary>
+        private DCSExportModuleFormat _exportModuleFormat = DEFAULT_EXPORT_MODULE_FORMAT;
 
-        // current state of the Export script, as far as we know
-        protected string _currentDriver = "";
-        protected bool _currentDriverIsModule = false;
+        // current state of the Export script, as far as we know, or null if we don't understand it at all
+        protected DCSExportModuleFormat? _remoteModuleFormat;
 
         // phantom monitor fix 
         private DCSPhantomMonitorFix _phantomFix;
@@ -58,59 +60,51 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         private string _impersonatedVehicleName;
 
+        /// <summary>
+        /// backing field for property ExportModuleText, contains
+        /// the full text of an export module to be attached to the interface in the profile
+        /// </summary>
+        private string _exportModuleText;
+
+        /// <summary>
+        /// backing field for property ExportModuleBaseName, contains
+        /// file base name (no path, no extension) for the ExportModuleText, because naming
+        /// can differ across module formats
+        /// </summary>
+        private string _exportModuleBaseName;
+
         public DCSInterface(string name, string exportDeviceName, string exportFunctionsPath)
             : base(name)
         {
             VehicleName = exportDeviceName;
             ExportFunctionsPath = exportFunctionsPath;
-            _usesExportModule = DEFAULT_MODULE_USE;
 
             // make sure we keep our list up to date and don't typo on the name of an export device
             Debug.Assert(DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
 
             // create handling for DCS export meta information we handle ourselves
-            NetworkTriggerValue activeVehicle = new NetworkTriggerValue(this, "ACTIVE_VEHICLE", "ActiveVehicle", "Vehicle currently inhabited in DCS.", "Short name of vehicle");
+            NetworkTriggerValue activeVehicle = new NetworkTriggerValue(this, "ACTIVE_VEHICLE", "ActiveVehicle",
+                "Vehicle currently inhabited in DCS.", "Short name of vehicle");
             AddFunction(activeVehicle);
             activeVehicle.ValueReceived += ActiveVehicle_ValueReceived;
-            NetworkTriggerValue activeDriver = new NetworkTriggerValue(this, "ACTIVE_DRIVER", "ActiveDriver", "Export driver running on DCS.", "Short name of driver");
+            NetworkTriggerValue activeDriver = new NetworkTriggerValue(this, "ACTIVE_DRIVER", "ActiveDriver",
+                "Export driver running on DCS.", "Short name of driver type");
             AddFunction(activeDriver);
             activeDriver.ValueReceived += ActiveDriver_ValueReceived;
-            NetworkTriggerValue activeModule = new NetworkTriggerValue(this, "ACTIVE_MODULE", "ActiveModule", "Export module running on DCS.", "Short name of module");
-            AddFunction(activeModule);
-            activeModule.ValueReceived += ActiveModule_ValueReceived;
-            AddFunction(new NetworkTrigger(this, "ALIVE", "Heartbeat", "Received periodically if there is no other data received"));
+            AddFunction(new NetworkTrigger(this, "ALIVE", "Heartbeat",
+                "Received periodically if there is no other data received"));
         }
 
         #region Events
-        // this event indicates that the interface received an indication that a profile that 
-        // matches the specified hint should be loaded
-        public event EventHandler<ProfileHint> ProfileHintReceived;
 
-        // this event indicates that the interface received an indication that the specified
-        // exports are loaded on the other side of the interface
-        public event EventHandler<DriverStatus> DriverStatusReceived;
         #endregion
 
         #region Properties
 
-        // WARNING: there is currently no UI for this feature, because that UI is in a different development branch.
-        // this value will be set manually in the XML for testing in this branch of the code
-        public bool UsesExportModule
-        {
-            get => _usesExportModule;
-            set
-            {
-                if (_usesExportModule.Equals(value)) return;
-                bool oldValue = _usesExportModule;
-                _usesExportModule = value;
-                OnPropertyChanged("UsesExportModule", oldValue, value, false);
-            }
-        }
-
         /// <summary>
         /// The vehicle (usually an aircraft) that DCS will report in LoGetSelfData when we are using this interface.
         /// </summary>
-        public string VehicleName { get; private set; }
+        public string VehicleName { get; }
 
         /// <summary>
         /// If not null, the this interface instance is configured to impersonate the specified vehicle name.  This means
@@ -118,7 +112,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         public string ImpersonatedVehicleName
         {
-            get { return _impersonatedVehicleName; }
+            get => _impersonatedVehicleName;
             set
             {
                 _impersonatedVehicleName = value;
@@ -130,9 +124,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        // we only support selection based on which vehicle this interface supports
-        public IEnumerable<string> Tags => new string[] { ImpersonatedVehicleName ?? VehicleName };
-
         /// <summary>
         /// vehicle-specific file resource to include
         /// </summary>
@@ -142,7 +133,80 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public DCSVehicleImpersonation VehicleImpersonation => _vehicleImpersonation;
 
-        public string StatusName => (ImpersonatedVehicleName != null) ? $"{Name} impersonating {ImpersonatedVehicleName}" : Name;
+        public string StatusName =>
+            ImpersonatedVehicleName != null ? $"{Name} impersonating {ImpersonatedVehicleName}" : Name;
+
+        /// <summary>
+        /// the configured format for the export module used by this interface
+        /// </summary>
+        public DCSExportModuleFormat ExportModuleFormat
+        {
+            get => _exportModuleFormat;
+            set
+            {
+                if (_exportModuleFormat == value)
+                {
+                    return;
+                }
+
+                // batch change of format with erase of module text and name
+                using (new HeliosUndoBatch())
+                {
+                    DCSExportModuleFormat oldValue = _exportModuleFormat;
+                    _exportModuleFormat = value;
+                    ExportModuleBaseName = null;
+                    ExportModuleText = null;
+                    OnPropertyChanged("ExportModuleFormat", oldValue, value, true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// the full text of an export module to be attached to the interface in the profile
+        /// </summary>
+        public string ExportModuleText
+        {
+            get => _exportModuleText;
+            set
+            {
+                if (value != null)
+                {
+                    // normalize carriage returns so we can compare it later
+                    // NOTE: XMLReader drops all the carriage returns in cdata
+                    value = Regex.Replace(value, "\r\n|\n\r|\n|\r", "\r\n");
+                }
+                if (_exportModuleText == value)
+                {
+                    return;
+                }
+
+                string oldValue = _exportModuleText;
+                _exportModuleText = value;
+                OnPropertyChanged("ExportModuleText", oldValue, value, true);
+            }
+        }
+
+
+        /// <summary>
+        /// file base name (no path, no extension) for the ExportModuleText, because naming
+        /// can differ across module formats
+        /// </summary>
+        public string ExportModuleBaseName
+        {
+            get => _exportModuleBaseName;
+            set
+            {
+                if (_exportModuleBaseName != null && _exportModuleBaseName == value)
+                {
+                    return;
+                }
+
+                string oldValue = _exportModuleBaseName;
+                _exportModuleBaseName = value;
+                OnPropertyChanged("ExportModuleBaseName", oldValue, value, true);
+            }
+        }
+
         #endregion
 
         internal string LoadSetting(string key, string defaultValue)
@@ -204,54 +268,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void ActiveDriver_ValueReceived(object sender, NetworkTriggerValue.Value e)
         {
-            _currentDriver = e.Text;
-            _currentDriverIsModule = false;
-            _protocol?.OnDriverStatus(e.Text);
-            DriverStatusReceived?.Invoke(this, new DriverStatus() { ExportDriver = e.Text });
-        }
+            if (Enum.TryParse(e.Text, true, out DCSExportModuleFormat remoteModuleFormat))
+            {
+                _remoteModuleFormat = remoteModuleFormat;
+            }
+            else
+            {
+                _remoteModuleFormat = null;
+            }
 
-        private void ActiveModule_ValueReceived(object sender, NetworkTriggerValue.Value e)
-        {
-            _currentDriver = e.Text;
-            _currentDriverIsModule = true;
-            _protocol?.OnModuleStatus();
-            DriverStatusReceived?.Invoke(this, new DriverStatus() { ExportDriver = e.Text });
+            _protocol?.OnDriverStatus(_remoteModuleFormat);
+            DriverStatusReceived?.Invoke(this, new DriverStatus {DriverType = e.Text});
         }
 
         private void ActiveVehicle_ValueReceived(object sender, NetworkTriggerValue.Value e)
         {
-            ProfileHintReceived?.Invoke(this, new ProfileHint() { Tag = e.Text });
-        }
-
-        public void RequestDriver(string name)
-        {
-            // NOTE: we don't have per-profile drivers, so we ignore the short name of the 
-            // profile provided and instead just request support for the correct vehicle
-
-            // the interface is supposed to have called OnProfileStarted before this is called,
-            // so don't check for null; we want this to crash if this breaks in the future
-            if (_usesExportModule)
-            {
-                if (_currentDriverIsModule)
-                {
-                    // we let the Export script make sure it is the right one for the vehicle
-                    // but we let our UI know
-                    DriverStatusReceived?.Invoke(this, new DriverStatus() { ExportDriver = _currentDriver });
-                    return;
-                }
-                _protocol.SendModuleRequest();
-            }
-            else
-            {
-                if ((!_currentDriverIsModule) && (VehicleName == _currentDriver))
-                {
-                    // already in correct state
-                    // but we let our UI know
-                    DriverStatusReceived?.Invoke(this, new DriverStatus() { ExportDriver = _currentDriver });
-                    return;
-                }
-                _protocol.SendDriverRequest(VehicleName);
-            }
+            ProfileHintReceived?.Invoke(this, new ProfileHint {Tag = e.Text});
         }
 
         public override void Reset()
@@ -276,32 +308,46 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected override void OnClientChanged(string fromValue, string toValue)
         {
             base.OnClientChanged(fromValue, toValue);
-            
+
             // protocol needs to know
             _protocol.OnClientChanged();
 
             // our information is now out of date
-            _currentDriver = "";
-            _currentDriverIsModule = false;
+            _remoteModuleFormat = null;
         }
 
+        // WARNING: executed on LoadProfile thread
         public override void ReadXml(XmlReader reader)
         {
             base.ReadXml(reader);
-            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
+
             while (reader.NodeType == XmlNodeType.Element)
             {
                 switch (reader.Name)
                 {
-                    case "UsesExportModule":
-                        _usesExportModule = (bool)bc.ConvertFromInvariantString(reader.ReadElementString("UsesExportModule"));
+                    case "ExportModuleFormat":
+                        TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DCSExportModuleFormat));
+                        ExportModuleFormat =
+                            (DCSExportModuleFormat) enumConverter.ConvertFromInvariantString(
+                                reader.ReadElementString("ExportModuleFormat"));
+                        break;
+                    case "ExportModuleBaseName":
+                        ExportModuleBaseName = reader.ReadElementString("ExportModuleBaseName");
                         break;
                     case "ImpersonatedVehicleName":
                         ImpersonatedVehicleName = reader.ReadElementString("ImpersonatedVehicleName");
                         break;
+                    case "ExportModuleText":
+                        ExportModuleText = reader.ReadElementContentAsString();
+                        break;
+                    case "ExportModuleTextBase64":
+                        string encoded = reader.ReadElementContentAsString();
+                        ExportModuleText = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+                        break;
                     default:
                         string discard = reader.ReadElementString(reader.Name);
-                        ConfigManager.LogManager.LogWarning($"Ignored unsupported DCS Interface setting '{reader.Name}' with value '{discard}'");
+                        ConfigManager.LogManager.LogWarning(
+                            $"Ignored unsupported DCS Interface setting '{reader.Name}' with value '{discard}'");
                         break;
                 }
             }
@@ -310,17 +356,46 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public override void WriteXml(XmlWriter writer)
         {
             base.WriteXml(writer);
-            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
-            if (_usesExportModule != DEFAULT_MODULE_USE)
+            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DCSExportModuleFormat));
+
+            if (ExportModuleFormat != DEFAULT_EXPORT_MODULE_FORMAT)
             {
                 // write new Xml only if configured, because it may break previous versions
-                writer.WriteElementString("UsesExportModule", bc.ConvertToInvariantString(_usesExportModule));
+                writer.WriteElementString("ExportModuleFormat",
+                    enumConverter.ConvertToInvariantString(ExportModuleFormat));
             }
+
+            if (ExportModuleBaseName != null)
+            {
+                writer.WriteElementString("ExportModuleBaseName", ExportModuleBaseName);
+            }
+
+            if (!string.IsNullOrEmpty(ExportModuleText))
+            {
+                if (ExportModuleText.Contains("]]>"))
+                {
+                    string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(ExportModuleText),
+                        Base64FormattingOptions.InsertLineBreaks);
+                    writer.WriteStartElement("ExportModuleTextBase64");
+                    writer.WriteCData(encoded);
+                    writer.WriteEndElement();
+                }
+                else
+                {
+                    // prefer readable format
+                    writer.WriteStartElement("ExportModuleText");
+                    writer.WriteCData(ExportModuleText);
+                    writer.WriteEndElement();
+                }
+            }
+
             if (ImpersonatedVehicleName != null)
             {
                 writer.WriteElementString("ImpersonatedVehicleName", ImpersonatedVehicleName);
             }
         }
+
+        #region IReadyCheck
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
@@ -332,6 +407,45 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 yield return item;
             }
         }
+
+        #endregion
+
+        #region IProfileAwareInterface
+
+        // NOTE: ClientChanged event is in base class
+
+        // this event indicates that the interface received an indication that a profile that 
+        // matches the specified hint should be loaded
+        public event EventHandler<ProfileHint> ProfileHintReceived;
+
+        // this event indicates that the interface received an indication that the specified
+        // exports are loaded on the other side of the interface
+        public event EventHandler<DriverStatus> DriverStatusReceived;
+
+        // we only support selection based on which vehicle this interface supports
+        public IEnumerable<string> Tags => new[] {ImpersonatedVehicleName ?? VehicleName};
+
+        public void RequestDriver(string profileShortName)
+        {
+            // we don't have per-profile drivers
+            _ = profileShortName;
+
+            // the interface is supposed to have called OnProfileStarted before this is called,
+            // so don't check for null; we want this to crash if this breaks in the future
+            if (_remoteModuleFormat == _exportModuleFormat)
+            {
+                // already in correct state
+                // but we let our UI know
+                DriverStatusReceived?.Invoke(this, new DriverStatus {DriverType = _remoteModuleFormat.ToString()});
+                return;
+            }
+
+            _protocol.SendDriverRequest(_exportModuleFormat);
+        }
+
+        #endregion
+
+        #region IStatusReportNotify
 
         public void Subscribe(IStatusReportObserver observer)
         {
@@ -349,6 +463,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 return;
             }
+
             IList<StatusReportItem> newReport = _configuration.CheckConfig();
             PublishStatusReport(newReport);
         }
@@ -358,8 +473,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             string statusName = StatusName;
             foreach (IStatusReportObserver observer in _observers)
             {
-                observer.ReceiveStatusReport(statusName, "Interface listening to UDP updates from DCS export.lua and responding with commands.", statusReport);
+                observer.ReceiveStatusReport(statusName,
+                    "Interface listening to UDP updates from DCS export.lua and responding with commands.",
+                    statusReport);
             }
         }
+
+        #endregion
     }
 }

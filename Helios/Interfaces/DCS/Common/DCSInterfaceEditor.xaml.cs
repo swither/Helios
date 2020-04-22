@@ -13,20 +13,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Windows;
+using System.Windows.Input;
+using GadrocsWorkshop.Helios.Windows;
+using GadrocsWorkshop.Helios.Windows.Controls;
+
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.Windows.Controls;
-    using System;
-    using System.Collections.Generic;
-    using System.Windows;
-    using System.Windows.Input;
-
     /// <summary>
     /// Interaction logic for DCSInterfaceEditor.xaml
-    /// 
     /// This DCS Interface editor can be used by descendants of DCSInterface that do not want to add any specific options.
     /// Using this class will avoid duplicating the XAML.
-    /// 
     /// TODO: implement a content container into which specific options can be added.
     /// </summary>
     public partial class DCSInterfaceEditor : HeliosInterfaceEditor
@@ -36,12 +34,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         static DCSInterfaceEditor()
         {
             Type ownerType = typeof(DCSInterfaceEditor);
-            CommandManager.RegisterClassCommandBinding(ownerType, new CommandBinding(AddDoFileCommand, AddDoFile_Executed));
-            CommandManager.RegisterClassCommandBinding(ownerType, new CommandBinding(RemoveDoFileCommand, RemoveDoFile_Executed));
+            CommandManager.RegisterClassCommandBinding(ownerType,
+                new CommandBinding(AddDoFileCommand, AddDoFile_Executed));
+            CommandManager.RegisterClassCommandBinding(ownerType,
+                new CommandBinding(RemoveDoFileCommand, RemoveDoFile_Executed));
         }
 
         public DCSInterfaceEditor()
         {
+            DataContext = this;
             InitializeComponent();
         }
 
@@ -54,18 +55,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             base.OnInterfaceChanged(oldInterface, newInterface);
             DCSExportConfiguration configuration;
             DCSVehicleImpersonation vehicleImpersonation;
-            if (newInterface is DCSInterface dcsInterface) {
+            if (newInterface is DCSInterface dcsInterface)
+            {
                 // create or connect to configuration objects
                 _phantomFix = new DCSPhantomMonitorFixConfig(dcsInterface);
                 configuration = dcsInterface.Configuration;
                 vehicleImpersonation = dcsInterface.VehicleImpersonation;
             }
-            else {
+            else
+            {
                 // provoke crash on attempt to use 
                 _phantomFix = null;
                 configuration = null;
                 vehicleImpersonation = null;
             }
+
             // need to rebind everything on the form
             SetValue(ConfigurationProperty, configuration);
             SetValue(PhantomFixProperty, _phantomFix);
@@ -73,8 +77,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 
         #region Commands
-        public static readonly RoutedUICommand AddDoFileCommand = new RoutedUICommand("Adds a dofile(...) to a DCS config.", "AddDoFile", typeof(DCSInterfaceEditor));
-        public static readonly RoutedUICommand RemoveDoFileCommand = new RoutedUICommand("Removes a dofile(...) to a DCS config.", "RemoveDoFile", typeof(DCSInterfaceEditor));
+
+        public static readonly RoutedUICommand AddDoFileCommand =
+            new RoutedUICommand("Adds a dofile(...) to a DCS config.", "AddDoFile", typeof(DCSInterfaceEditor));
+
+        public static readonly RoutedUICommand RemoveDoFileCommand =
+            new RoutedUICommand("Removes a dofile(...) to a DCS config.", "RemoveDoFile", typeof(DCSInterfaceEditor));
 
         private static void AddDoFile_Executed(object target, ExecutedRoutedEventArgs e)
         {
@@ -82,7 +90,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             string file = e.Parameter as string;
             if (editor != null && !string.IsNullOrWhiteSpace(file) && !editor.Configuration.DoFiles.Contains(file))
             {
-                editor.Configuration.DoFiles.Add((string)e.Parameter);
+                editor.Configuration.DoFiles.Add((string) e.Parameter);
                 editor.NewDoFile.Text = "";
             }
         }
@@ -99,7 +107,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void Configure_Click(object sender, RoutedEventArgs e)
         {
-            Configuration.Install(new Windows.InstallationDialogs(this));
+            Configuration.Install(new InstallationDialogs(this));
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)
@@ -110,26 +118,35 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         #endregion
 
         #region Properties
+
         /// <summary>
         /// used by UI binding paths.
         /// </summary>
-        public DCSExportConfiguration Configuration { get => (DCSExportConfiguration)GetValue(ConfigurationProperty); }
+        public DCSExportConfiguration Configuration => (DCSExportConfiguration) GetValue(ConfigurationProperty);
+
         public static readonly DependencyProperty ConfigurationProperty =
-            DependencyProperty.Register("Configuration", typeof(DCSExportConfiguration), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
+            DependencyProperty.Register("Configuration", typeof(DCSExportConfiguration), typeof(DCSInterfaceEditor),
+                new PropertyMetadata(null));
 
         /// <summary>
         /// used by UI binding paths
         /// </summary>
-        public DCSPhantomMonitorFixConfig PhantomFix { get => (DCSPhantomMonitorFixConfig)GetValue(PhantomFixProperty); }
+        public DCSPhantomMonitorFixConfig PhantomFix => (DCSPhantomMonitorFixConfig) GetValue(PhantomFixProperty);
+
         public static readonly DependencyProperty PhantomFixProperty =
-            DependencyProperty.Register("PhantomFix", typeof(DCSPhantomMonitorFixConfig), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
+            DependencyProperty.Register("PhantomFix", typeof(DCSPhantomMonitorFixConfig), typeof(DCSInterfaceEditor),
+                new PropertyMetadata(null));
 
         /// <summary>
         /// used by UI binding paths
         /// </summary>
-        public DCSVehicleImpersonation VehicleImpersonation { get => (DCSVehicleImpersonation)GetValue(VehicleImpersonationProperty); }
+        public DCSVehicleImpersonation VehicleImpersonation =>
+            (DCSVehicleImpersonation) GetValue(VehicleImpersonationProperty);
+
         public static readonly DependencyProperty VehicleImpersonationProperty =
-            DependencyProperty.Register("VehicleImpersonation", typeof(DCSVehicleImpersonation), typeof(DCSInterfaceEditor), new PropertyMetadata(null));
+            DependencyProperty.Register("VehicleImpersonation", typeof(DCSVehicleImpersonation),
+                typeof(DCSInterfaceEditor), new PropertyMetadata(null));
+
         #endregion
     }
 }

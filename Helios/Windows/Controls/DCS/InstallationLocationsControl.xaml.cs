@@ -59,6 +59,10 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             openFileDialog.InitialDirectory = "";
             openFileDialog.FileName = guessName;
             openFileDialog.DefaultExt = ".cfg";
+            openFileDialog.CheckPathExists = true;
+            openFileDialog.DereferenceLinks = true;
+            openFileDialog.Multiselect = false;
+            openFileDialog.ValidateNames = true;
             openFileDialog.Filter = $"DCS|{InstallationLocation.AUTO_UPDATE_CONFIG}";
             openFileDialog.CheckFileExists = true;
 

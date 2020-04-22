@@ -1,5 +1,9 @@
 ﻿namespace GadrocsWorkshop.Helios.Interfaces.Capabilities
 {
+    /// <summary>
+    /// Helios interfaces that implement this interface can provide extended display information for
+    /// use in the user interface.
+    /// </summary>
     public interface IExtendedDescription
     {
         /// <summary>

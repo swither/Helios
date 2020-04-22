@@ -63,7 +63,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // no code
         }
 
-        #region Properties
+        #region IExtendedDescription
 
         public string Description =>
             "Utility interface that applies patches to DCS installation files to create additional exported viewports.";

@@ -505,11 +505,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
+        #endregion
+
+        #region IExtendedDescription
+
         public string Description =>
             "Utility interface that writes a DCS MonitorSetup Lua file to configure screen layout for the current profile.";
 
         public string RemovalNarrative =>
             "Delete this interface to no longer let Helios manage the monitor setup file for this profile";
+
         #endregion
 
         #region IInstallation

@@ -46,28 +46,28 @@ namespace GadrocsWorkshop.Helios
             set
             {
                 if (!value.IsEnum)
-                    throw new ArgumentException("parameter is not an Enumermated type", "value");
+                    throw new ArgumentException("parameter is not an enumerated type", nameof(value));
                 this.type = value;
             }
         }
 
-        public ReadOnlyCollection<string> DisplayNames
+        private void EnsureLoaded()
         {
-            get
+            if (displayValues == null)
             {
                 Type displayValuesType = typeof(Dictionary<,>).GetGenericTypeDefinition().MakeGenericType(type, typeof(string));
                 this.displayValues = (IDictionary)Activator.CreateInstance(displayValuesType);
 
                 this.reverseValues =
-                   (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>)
-                            .GetGenericTypeDefinition()
-                            .MakeGenericType(typeof(string), type));
+                    (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>)
+                        .GetGenericTypeDefinition()
+                        .MakeGenericType(typeof(string), type));
 
                 var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static);
                 foreach (var field in fields)
                 {
                     DescriptionAttribute[] a = (DescriptionAttribute[])
-                                                field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                        field.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
                     string displayString = GetDisplayStringValue(a);
                     object enumValue = field.GetValue(null);
@@ -82,6 +82,14 @@ namespace GadrocsWorkshop.Helios
                         reverseValues.Add(displayString, enumValue);
                     }
                 }
+            }
+        }
+
+        public ReadOnlyCollection<string> DisplayNames
+        {
+            get
+            {
+                EnsureLoaded();
                 return new List<string>((IEnumerable<string>)displayValues.Values).AsReadOnly();
             }
         }
@@ -124,11 +132,13 @@ namespace GadrocsWorkshop.Helios
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            EnsureLoaded();
             return displayValues[value];
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            EnsureLoaded();
             return reverseValues[value];
         }
     }

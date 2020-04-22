@@ -8,17 +8,16 @@ group 1: Helios using its own exports
 Export->Export:EnterVehicle(A-10C)
 Export->Export:LoadModule(Helios_A10C)
 Heliosx-Export:ActiveVehicle(A-10C)
-Heliosx-Export:ActiveModule(Helios_A10C)
+Heliosx-Export:ActiveDriver(CaptZeenModule1)
 User->Helios:StartProfile(my_F18_profile_name)
-Helios->Export:RequestDriver(FA-18C_hornet)
+Helios->Export:RequestDriver(HeliosExport16)
 Helios<-Export:ActiveVehicle(A-10C)
-Helios<-Export:ActiveModule(Helios_A10C)
+Helios<-Export:ActiveDriver(HeliosExport16)
 Helios->Helios:AutoStartProfile(my_A10_profile_name)
 note over Helios: Most recent A-10C profile uses Helios exports
-Helios->Export:RequestDriver(A-10C)
-Export->Export:SwitchFromModuleToDriver
+Helios->Export:RequestDriver(HeliosExport16)
 Helios<-Export:ActiveVehicle(A-10C)
-Helios<-Export:ActiveDriver(A-10C)
+Helios<-Export:ActiveDriver(HeliosExport16)
 
 end
 

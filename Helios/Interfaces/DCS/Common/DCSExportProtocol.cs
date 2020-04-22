@@ -1,29 +1,28 @@
-﻿using GadrocsWorkshop.Helios.UDPInterface;
-using System;
-using System.Timers;
+﻿using System.Timers;
 using System.Windows.Threading;
+using GadrocsWorkshop.Helios.UDPInterface;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     public class DCSExportProtocol
     {
-        private Dispatcher _dispatcher;
-        private RetriedRequest _requestExport;
-        private string _requestedExports;
+        private readonly Dispatcher _dispatcher;
+        private readonly RetriedRequest _requestExport;
+        private DCSExportModuleFormat _requestedExports;
 
         public class RetriedRequest
         {
-            private Dispatcher _dispatcher;
-            private BaseUDPInterface _udp;
+            private readonly Dispatcher _dispatcher;
+            private readonly BaseUDPInterface _udp;
 
             private string _request;
-            private Timer _timer = new Timer();
-            private int _retries = 0;
+            private readonly Timer _timer = new Timer();
+            private int _retries;
             private string _description = "";
 
-            private int _retryLimit;
+            private readonly int _retryLimit;
 
-            public RetriedRequest(UDPInterface.BaseUDPInterface udp, Dispatcher dispatcher)
+            public RetriedRequest(BaseUDPInterface udp, Dispatcher dispatcher)
             {
                 _dispatcher = dispatcher;
                 _udp = udp;
@@ -42,6 +41,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     OnRetry();
                     return;
                 }
+
                 _timer.Stop();
                 _request = request;
                 _retries = 0;
@@ -50,11 +50,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 {
                     ConfigManager.LogManager.LogDebug($"sending {_description}");
                     _udp.SendData(_request);
-                } 
+                }
                 else
                 {
-                    ConfigManager.LogManager.LogDebug($"cannot send {_description} because UDP transport is not ready or does not know remote endpoint");
+                    ConfigManager.LogManager.LogDebug(
+                        $"cannot send {_description} because UDP transport is not ready or does not know remote endpoint");
                 }
+
                 _timer.Start();
             }
 
@@ -75,7 +77,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             private void Timer_Elapsed(object sender, ElapsedEventArgs e)
             {
                 // if profile is unloaded, do nothing
-                _dispatcher?.Invoke((Action)OnRetry, System.Windows.Threading.DispatcherPriority.Normal);
+                _dispatcher?.Invoke(OnRetry, DispatcherPriority.Normal);
             }
 
             private void OnRetry()
@@ -89,6 +91,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     _timer.Stop();
                     return;
                 }
+
                 if (_request != null)
                 {
                     if (_udp.CanSend)
@@ -99,46 +102,31 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     }
                     else
                     {
-                        ConfigManager.LogManager.LogDebug($"cannot retry {_description} because UDP transport is not ready or does not know remote endpoint");
+                        ConfigManager.LogManager.LogDebug(
+                            $"cannot retry {_description} because UDP transport is not ready or does not know remote endpoint");
                     }
                 }
             }
         }
 
-        public DCSExportProtocol(UDPInterface.BaseUDPInterface udp, Dispatcher dispatcher)
+        public DCSExportProtocol(BaseUDPInterface udp, Dispatcher dispatcher)
         {
             _dispatcher = dispatcher;
             _requestExport = new RetriedRequest(udp, _dispatcher);
         }
 
-        public void SendDriverRequest(string driverShortName)
+        public void SendDriverRequest(DCSExportModuleFormat driver)
         {
-            _requestedExports = driverShortName;
-            _requestExport.Send($"D{driverShortName}", $"request to install export driver {driverShortName}");
+            _requestedExports = driver;
+            _requestExport.Send($"D{driver}", $"request to install export module of type {driver}");
         }
 
-        public void SendModuleRequest()
+        public void OnDriverStatus(DCSExportModuleFormat? driver)
         {
-            _requestedExports = null;
-            _requestExport.Send($"M", $"request to install export module for current aircraft");
-        }
-
-        public void OnDriverStatus(string driverShortName)
-        {
-            if (_requestedExports == driverShortName)
+            if (_requestedExports == driver)
             {
                 // this acknowledges our attempt to load this driver, if the name matches what we are trying to load
                 // cancel retries of "D" command
-                _requestExport.Stop();
-            }
-        }
-
-        public void OnModuleStatus()
-        {
-            if (_requestedExports == null)
-            {
-                // this acknowledges our attempt to load a module
-                // cancel retries of "M" command
                 _requestExport.Stop();
             }
         }

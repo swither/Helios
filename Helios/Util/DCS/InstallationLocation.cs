@@ -148,10 +148,10 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         public string ExportMainPath(string exportMainName) =>
             System.IO.Path.Combine(ScriptDirectoryPath, "Helios", exportMainName);
 
-        public string ExportDriverPath(string baseName) =>
-            System.IO.Path.Combine(ExportDriverDirectory, $"{baseName}.lua");
+        public string ExportModulePath(string moduleLocation, string baseName) =>
+            System.IO.Path.Combine(ExportModuleDirectory(moduleLocation), $"{baseName}.lua");
 
-        public string ExportDriverDirectory => System.IO.Path.Combine(ScriptDirectoryPath, "Helios", "Drivers");
+        public string ExportModuleDirectory(string moduleLocation) => System.IO.Path.Combine(ScriptDirectoryPath, "Helios", moduleLocation);
 
         #endregion
     }

@@ -284,14 +284,14 @@ function helios_impl.dispatchCommand(command)
     local commandCode = string.sub(command, 1, 1)
     local rest = string.sub(command, 2):match("^(.-)%s*$");
     if (commandCode == "D") then
-        local driverName = rest
-        log.write("HELIOS.EXPORT", log.INFO, string.format("driver '%s' requested by Helios", driverName))
-        local selfName = helios_impl.loadDriver(driverName)
-        helios_impl.notifySelfName(selfName)
-        helios_impl.notifyLoaded()
-    elseif (commandCode == "M") then
-        log.write("HELIOS.EXPORT", log.INFO, string.format("use of module requested by Helios"))
-        local selfName = helios_impl.loadModule()
+        local driverType = rest
+        log.write("HELIOS.EXPORT", log.INFO, string.format("export driver of type '%s' requested by Helios", driverType))
+        local selfName = helios.selfName()
+        if driverType == 'HeliosDriver16' then
+            selfName = helios_impl.loadDriver(driverType)
+        elseif driverType == 'CaptZeenModule1' then
+            selfName = helios_impl.loadModule(driverType)
+        end
         helios_impl.notifySelfName(selfName)
         helios_impl.notifyLoaded()
     elseif helios_private.driver.processInput ~= nil then
@@ -311,26 +311,25 @@ function helios_impl.dispatchCommand(command)
 end
 
 -- load the export driver for the vehicle (DCS info name of the vehicle) and driver short name, not including .lua extension
-function helios_impl.loadDriver(driverName)
+function helios_impl.loadDriver(driverType)
+    if driverType == nil then
+        error("missing driver type in request to load driver; program error")
+    end
+
     local driver = helios_private.createDriver()
-    local newDriverName = ""
+    local newDriverType = ""
     local success, result
 
     -- check if request is allowed
     local currentSelfName = helios.selfName()
-    log.write("HELIOS.EXPORT", log.DEBUG, string.format("attempt to load driver '%s' for '%s'", driverName, currentSelfName))
-    if currentSelfName ~= driverName then
-        log.write("HELIOS.EXPORT", log.DEBUG, string.format("cannot load driver '%s' while vehicle '%s' is active", driverName, currentSelfName))
-        -- tell Helios to choose something that makes sense, but don't disable driver
-        return currentSelfName
-    -- check if request is already satisfied
-    elseif helios_impl.driverName == driverName then
+    log.write("HELIOS.EXPORT", log.DEBUG, string.format("attempt to load driver for '%s'", currentSelfName))
+    if helios_impl.driverType == "HeliosDriver16" then
         -- do nothing
-        log.write("HELIOS.EXPORT", log.INFO, string.format("driver '%s' for '%s' is already loaded", driverName, currentSelfName))
+        log.write("HELIOS.EXPORT", log.INFO, string.format("driver '%s' for '%s' is already loaded", helios_impl.driverType, currentSelfName))
         return currentSelfName
     else
         -- now try to load specific driver
-        local driverPath = string.format("%sScripts\\Helios\\Drivers\\%s.lua", lfs.writedir(), driverName)
+        local driverPath = string.format("%sScripts\\Helios\\Drivers\\%s.lua", lfs.writedir(), currentSelfName)
         success, result = pcall(dofile, driverPath)
 
         -- check result for nil, since driver may not have returned anything
@@ -356,32 +355,35 @@ function helios_impl.loadDriver(driverName)
         for k, v in pairs(result) do
             driver[k] = v
         end
-        log.write("HELIOS.EXPORT", log.INFO, string.format("loaded driver '%s' for '%s'", driverName, driver.selfName))
-        newDriverName = driverName
+        log.write("HELIOS.EXPORT", log.INFO, string.format("loaded driver '%s' for '%s'", driverType, driver.selfName))
+        newDriverType = driverType
     else
         -- if the load fails, just leave the driver initialized to defaults
         log.write(
             "HELIOS.EXPORT",
             log.WARNING,
-            string.format("failed to load driver '%s' for '%s'; disabling interface", driverName, currentSelfName)
+            string.format("failed to load driver '%s' for '%s'; disabling interface", driverType, currentSelfName)
         )
         log.write("HELIOS.EXPORT", log.WARNING, result)
     end
 
     -- actually install the driver
-    helios_impl.installDriver(driver, newDriverName)
+    helios_impl.installDriver(driver, newDriverType)
     return currentSelfName
 end
 
 -- load the module for the current vehicle, even if we previously loaded a driver
-function helios_impl.loadModule()
+function helios_impl.loadModule(driverType)
+    if driverType == nil then
+        error("missing driver type in request to load module; program error")
+    end
     local currentSelfName = helios.selfName()
     log.write("HELIOS.EXPORT", log.DEBUG, string.format("attempt to load module for '%s'", currentSelfName))
     local moduleName = helios_module_names[currentSelfName]
     if moduleName == nil then
         return currentSelfName
     end
-    if helios_impl.moduleName ~= nil then
+    if helios_impl.driverType == driverType then
         log.write("HELIOS.EXPORT", log.DEBUG, string.format("module '%s' already active for '%s'", moduleName, currentSelfName))
         return currentSelfName
     end
@@ -391,14 +393,14 @@ function helios_impl.loadModule()
         -- NOTE: this makes us compatible with Capt Zeen profiles
         local driver = helios_impl.createModuleDriver(currentSelfName, moduleName)
         if driver ~= nil then
-            helios_impl.installDriver(driver, moduleName)
+            helios_impl.installDriver(driver, driverType)
         end
         -- if we fail, we just leave the previous driver installed
     end
     return currentSelfName
 end
 
-function helios_impl.installDriver(driver, driverName)
+function helios_impl.installDriver(driver, driverType)
     -- shut down any existing driver
     if helios_private.driver ~= nil then
         helios_private.driver.unload()
@@ -408,7 +410,7 @@ function helios_impl.installDriver(driver, driverName)
     -- install driver
     driver.init()
     helios_private.driver = driver
-    helios_impl.driverName = driverName
+    helios_impl.driverType = driverType
     helios_impl.moduleName = driver.moduleName
 
     -- drop any remmaining data and mark all values as dirty
@@ -416,14 +418,10 @@ function helios_impl.installDriver(driver, driverName)
 end
 
 function helios_impl.notifyLoaded()
-    -- export code for 'currently active vehicle, reserved across all DCS interfacess
-    if (helios_impl.moduleName ~= nil) then
-        log.write("HELIOS.EXPORT", log.INFO, string.format("notifying Helios of active module '%s'", helios_impl.moduleName))
-        helios_private.doSend("ACTIVE_MODULE", helios_impl.moduleName)
-    else
-        log.write("HELIOS.EXPORT", log.INFO, string.format("notifying Helios of active driver '%s'", helios_impl.driverName))
-        helios_private.doSend("ACTIVE_DRIVER", helios_impl.driverName)
-    end
+    log.write("HELIOS.EXPORT", log.INFO, string.format("notifying Helios of active driver '%s'", helios_impl.driverType))
+
+    -- export code for 'currently active driver, reserved across all DCS interfacess
+    helios_private.doSend("ACTIVE_DRIVER", helios_impl.driverType)
     helios_private.flush()
 end
 
@@ -528,6 +526,9 @@ function helios_private.createDriver()
 end
 
 function helios_impl.notifySelfName(selfName)
+    if selfName == nil then
+        error("uninitialized self name detected; program error")
+    end
     -- export code for 'currently active vehicle, reserved across all DCS interfacess
     log.write("HELIOS.EXPORT", log.INFO, string.format("notifying Helios of active vehicle '%s'", selfName))
     helios_private.doSend("ACTIVE_VEHICLE", selfName)
@@ -549,10 +550,10 @@ function helios_private.handleSelfNameChange(selfName)
     -- load module when present
     -- load driver when no module present
     -- load driver also when told to do so by Helios later
-    helios_impl.loadModule();
+    selfName = helios_impl.loadModule("CaptZeenModule1");
     if (helios_impl.moduleName == nil) then
         -- try driver or give up
-        helios_impl.loadDriver(selfName);
+        selfName = helios_impl.loadDriver("HeliosDriver16");
     end
 
     -- tell Helios results

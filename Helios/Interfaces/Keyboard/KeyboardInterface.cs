@@ -13,7 +13,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Globalization;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
@@ -88,10 +87,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Keyboard
         /// </summary>
         public bool ForceQwertyAvailable => KeyboardEmulator.CheckIfForceQwertyAvailable();
 
-        public string Description => "Interface to send synthetic key strokes";
-
-        public string RemovalNarrative => "Delete this interface and removes all of its bindings from the Profile, making it impossible to send keyboard input.";
-
         private void KeyPress_ExecuteAction(object action, HeliosActionEventArgs e)
         {
             KeyboardEmulator.KeyPress(e.Value.StringValue);
@@ -118,5 +113,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Keyboard
             // save profile-specific configuration
             writer.WriteElementString("KeyDelay", KeyDelay.ToString(CultureInfo.InvariantCulture));
         }
+
+        #region IExtendedDescription
+
+        public string Description => "Interface to send synthetic key strokes";
+
+        public string RemovalNarrative =>
+            "Delete this interface and removes all of its bindings from the Profile, making it impossible to send keyboard input.";
+
+        #endregion
     }
 }

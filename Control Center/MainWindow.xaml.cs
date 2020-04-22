@@ -606,8 +606,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         private void Profile_DriverStatusReceived(object sender, DriverStatus e)
         {
             string oldValue = _lastDriverStatus;
-            _lastDriverStatus = e.ExportDriver;
-            ConfigManager.LogManager.LogDebug($"received profile status indicating that simulator is running exports for '{e.ExportDriver}'");
+            _lastDriverStatus = e.DriverType;
+            ConfigManager.LogManager.LogDebug($"received profile status indicating that simulator is running exports for '{e.DriverType}'");
             if (oldValue != _lastDriverStatus)
             {
                 UpdateStatusMessage();

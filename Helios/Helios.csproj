@@ -139,7 +139,6 @@
     <Compile Include="Gauges\M2000C\VorIlsChannel\VorIls_Panel.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSExportConfiguration.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSExportProtocol.cs" />
-    <Compile Include="Interfaces\DCS\Common\DCSInstallType.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInterfaceEditor.xaml.cs">
       <DependentUpon>DCSInterfaceEditor.xaml</DependentUpon>
     </Compile>
@@ -480,8 +479,14 @@
     <Compile Include="Util\HeliosUndoBatch.cs" />
     <Compile Include="Interfaces\Common\InterfaceStatus.cs" />
     <Compile Include="RunningVersion.cs" />
+    <Compile Include="Windows\Controls\FilePicker.xaml.cs">
+      <DependentUpon>FilePicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Controls\DialogWindow.xaml.cs">
       <DependentUpon>DialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Controls\ImagePicker.xaml.cs">
+      <DependentUpon>ImagePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Controls\ShareDialog.xaml.cs">
       <DependentUpon>ShareDialog.xaml</DependentUpon>
@@ -863,9 +868,6 @@
     <Compile Include="Windows\Controls\HeliosPropertyEditorCollection.cs" />
     <Compile Include="Windows\Controls\HeliosTextBox.cs" />
     <Compile Include="Windows\Controls\HeliosVisualView.cs" />
-    <Compile Include="Windows\Controls\ImagePicker.xaml.cs">
-      <DependentUpon>ImagePicker.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\Controls\PointOfViewIndicator.cs" />
     <Compile Include="Windows\Controls\POVDirection.cs" />
     <Compile Include="Windows\Controls\StaticValueEditor.cs" />
@@ -2661,6 +2663,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Controls\DCS\InstallationLocationsGroup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Controls\FilePicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

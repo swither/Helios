@@ -1,20 +1,24 @@
-﻿<helios_sdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSInterfaceEditor"
+﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSInterfaceEditor"
                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                                 xmlns:helios_sdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
-                                 xmlns:helios_dcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS"
+                                 xmlns:helios="clr-namespace:GadrocsWorkshop.Helios"
+                                 xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
+                                 xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS"
                                  xmlns:dcs="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
-                                 x:Name="DCSPropertiesWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
+                                 mc:Ignorable="d"
+                                 d:DataContext="{d:DesignInstance Type=dcs:DCSInterfaceEditor}"
+                                 Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
     <FrameworkElement.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
             <Setter Property="UIElement.Visibility" Value="Collapsed"/>
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.IsUpToDate}" Value="True"/>
+                        <Condition Binding="{Binding Path=Configuration.IsUpToDate}" Value="True"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -27,7 +31,7 @@
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.IsUpToDate}" Value="False"/>
+                        <Condition Binding="{Binding Path=Configuration.IsUpToDate}" Value="False"/>
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -37,7 +41,7 @@
         </Style>
         <Style x:Key="AppliesIfGenerateExportLoader" TargetType="{x:Type Control}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.GenerateExportLoader}" Value="False">
+                <DataTrigger Binding="{Binding Path=Configuration.GenerateExportLoader}" Value="False">
                     <Setter Property="IsEnabled" Value="false"/>
                     <Setter Property="Foreground" Value="Gray"/>
                 </DataTrigger>
@@ -57,7 +61,7 @@
         </Style>
         <Style x:Key="HideIfNoPhantomFix" TargetType="{x:Type Control}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=DCSPropertiesWindow, Path=PhantomFix.Enabled}" Value="False">
+                <DataTrigger Binding="{Binding Path=PhantomFix.Enabled}" Value="False">
                     <Setter Property="Visibility" Value="Hidden"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -69,10 +73,10 @@
                 <TextBlock Margin="6,0,0,0" Text="{Binding}"/>
             </StackPanel>
         </DataTemplate>
-        <dcs:EnumComboBoxConverter x:Key="DCSInstallTypeConverter"/>
+        <helios:EnumConverter Type="{x:Type dcs:DCSExportModuleFormat}" x:Key="ExportModuleFormatConverter"/>
     </FrameworkElement.Resources>
     <StackPanel>
-        <helios_dcs:InstallationLocationsGroup/>
+        <heliosDcs:InstallationLocationsGroup/>
         <GroupBox Header="DCS Export Configuration" Style="{StaticResource BasicGroup}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -89,15 +93,15 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" Content="IP Address"/>
                 <TextBox Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="200"
-                 MaxWidth="200" Text="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.IPAddress}"/>
+                 MaxWidth="200" Text="{Binding Path=Configuration.IPAddress}"/>
                 <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource Documentation}" Text="IP Address to which Export script will send data.  If you are running on the same machine 127.0.0.1 is recommended."/>
                 <Label Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Content="Port"/>
                 <TextBox Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="40"
-                 MaxWidth="40" Text="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.Port}"/>
+                 MaxWidth="40" Text="{Binding Path=Configuration.Port}"/>
                 <TextBlock Grid.Column="1" Grid.Row="3" Style="{StaticResource Documentation}" Text="UDP port number to which Export script will send data and on which Helios will listen."/>
                 <Label Grid.Column="0" Grid.Row="4" HorizontalAlignment="Right" Content="Export Frequency"/>
                 <TextBox Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" Width="40"
-                 MaxWidth="40" Text="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.ExportFrequency}"/>
+                 MaxWidth="40" Text="{Binding Path=Configuration.ExportFrequency}"/>
                 <TextBlock Grid.Column="1" Grid.Row="5" Style="{StaticResource Documentation}" Text="Number of times per second that instrument gauges will be exported (minimum of 4)."/>
             </Grid>
         </GroupBox>
@@ -169,7 +173,7 @@
                 <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="Export.lua"/>
                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                     <!-- shielded from stretching -->
-                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.GenerateExportLoader}"/>
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=Configuration.GenerateExportLoader}"/>
                 </StackPanel>
                 <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}">Uncheck to generate only the export files in the Helios subdirectory, to use your own Export.lua stub that you already have.</TextBlock>
 
@@ -177,7 +181,7 @@
                     <StackPanel>
                         <TextBlock Margin="4,4,4,12" TextWrapping="Wrap"><Run Text="Helios will add the following scripts as dofile lines when it writes Export.lua. Enter paths relative to the directory containing Export.lua."/><LineBreak/><Run Text="For example: ./TARS/TARSExport.lua"/></TextBlock>
                         <Border BorderBrush="#FF808080" BorderThickness="0,1" Margin="12">
-                            <ItemsControl ItemTemplate="{StaticResource DoFileTemplate}" ItemsSource="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.DoFiles}"/>
+                            <ItemsControl ItemTemplate="{StaticResource DoFileTemplate}" ItemsSource="{Binding Path=Configuration.DoFiles}"/>
                         </Border>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -208,6 +212,9 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
@@ -215,19 +222,36 @@
                 <ComboBox 
                     Grid.Row="1" Grid.Column="1"
                     IsEditable="True"
-                    ItemsSource="{Binding ElementName=DCSPropertiesWindow, Path=VehicleImpersonation.ImpersonatedVehicleName.ItemsSource}"
-                    SelectedItem="{Binding ElementName=DCSPropertiesWindow, Path=VehicleImpersonation.ImpersonatedVehicleName.SelectedItem}"
-                    Text="{Binding ElementName=DCSPropertiesWindow, Path=VehicleImpersonation.ImpersonatedVehicleName.Text, UpdateSourceTrigger=LostFocus}"/>
+                    ItemsSource="{Binding Path=VehicleImpersonation.ImpersonatedVehicleName.ItemsSource}"
+                    SelectedItem="{Binding Path=VehicleImpersonation.ImpersonatedVehicleName.SelectedItem}"
+                    Text="{Binding Path=VehicleImpersonation.ImpersonatedVehicleName.Text, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}" 
-                            Text="{Binding ElementName=DCSPropertiesWindow, Path=VehicleImpersonation.InterfaceName, StringFormat='DCS Aircraft/Vehicle for which this profile can be selected. Change this only if you are using an export script that maps this aircraft to the {0} interface.'}" />
+                            Text="{Binding Path=VehicleImpersonation.InterfaceName, StringFormat='DCS Aircraft/Vehicle for which this profile can be selected. Change this only if you are using an export script that maps this aircraft to the {0} interface.'}" />
 
-                <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Content="Uses Module"/>
+                <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Content="Module Format"/>
                 <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
-                    <!-- shielded from stretching -->
-                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=DCSPropertiesWindow, Path=Configuration.UsesExportModule}"/>
+                    <ComboBox
+                        VerticalContentAlignment="Center"
+                        MinWidth="120"
+                        ItemsSource="{Binding Source={StaticResource ExportModuleFormatConverter}, Path=DisplayNames}" 
+                        SelectedItem="{Binding Path=Interface.ExportModuleFormat, Converter={StaticResource ExportModuleFormatConverter}}" />
                 </StackPanel>
-                <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource Documentation}">Select this option if this profile uses a third-party export module not created by Helios.  Helios won't write any exports for it and
-                    you will need to place the module into the .../Script/Helios/Mods directory yourself.</TextBlock>
+                <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource Documentation}">If this profile uses a third-party export module not created by Helios, select the format of the module here.</TextBlock>
+
+                <WrapPanel Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" Visibility="{Binding Path=Configuration.CanAttachModuleFile, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Label Content="Module File"/>
+                </WrapPanel>
+                <WrapPanel Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Visibility="{Binding Path=Configuration.CanAttachModuleFile, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <heliosSdk:FilePicker
+                        FileExtension="lua"
+                        FileDescription="Lua module"
+                        Text="{Binding diag:PresentationTraceSources.TraceLevel=High, Path=Interface.ExportModuleBaseName}" 
+                        SelectedFilePath="{Binding Path=Configuration.SelectedModuleFile, Mode=TwoWay}"
+                        FolderGuess="{Binding Path=Configuration.ModuleFolderGuess}"/>
+                </WrapPanel>
+                <WrapPanel Grid.Row="8" Grid.Column="1" Visibility="{Binding Path=Configuration.CanAttachModuleFile, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Style="{StaticResource Documentation}">This third-party export module cannot be created by Helios.  You can attach a file here for inclusion into the Profile and automatic installation.</TextBlock>
+                </WrapPanel>
             </Grid>
         </GroupBox>
         <GroupBox Header="Global DCS-related Settings (Advanced)" Style="{StaticResource AdvancedGroup}">
@@ -255,15 +279,15 @@
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <!-- shielded from stretching -->
-                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=DCSPropertiesWindow, Path=PhantomFix.Enabled}"/>
+                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=PhantomFix.Enabled}"/>
                     </StackPanel>
                     <Label Grid.Column="2" HorizontalAlignment="Right" Content="Left Pixel" Style="{StaticResource HideIfNoPhantomFix}"/>
-                    <TextBox Grid.Column="3" VerticalAlignment="Center" Width="40" Style="{StaticResource HideIfNoPhantomFix}" Text="{Binding ElementName=DCSPropertiesWindow, Path=PhantomFix.LeftPosition}"/>
+                    <TextBox Grid.Column="3" VerticalAlignment="Center" Width="40" Style="{StaticResource HideIfNoPhantomFix}" Text="{Binding Path=PhantomFix.LeftPosition}"/>
                     <Label Grid.Column="4" Content="Top Pixel" Style="{StaticResource HideIfNoPhantomFix}"/>
-                    <TextBox Grid.Column="5" VerticalAlignment="Center" Width="40" Margin="0,0,12,0" Style="{StaticResource HideIfNoPhantomFix}" Text="{Binding ElementName=DCSPropertiesWindow, Path=PhantomFix.TopPosition}"/>
+                    <TextBox Grid.Column="5" VerticalAlignment="Center" Width="40" Margin="0,0,12,0" Style="{StaticResource HideIfNoPhantomFix}" Text="{Binding Path=PhantomFix.TopPosition}"/>
                 </Grid>
                 <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource Documentation}" Text="When checked, Helios Control Center will periodically move the DCS window to the specified location on the main screen."/>
             </Grid>
         </GroupBox>
     </StackPanel>
-</helios_sdk:HeliosInterfaceEditor>
+</heliosSdk:HeliosInterfaceEditor>
