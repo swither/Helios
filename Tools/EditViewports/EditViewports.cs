@@ -31,8 +31,8 @@ namespace EditViewports
             string json = File.ReadAllText(jsonPath);
             List<ToolsCommon.ViewportTemplate> templates = JsonConvert.DeserializeObject<ToolsCommon.ViewportTemplate[]>(json).ToList();
 
-            // get DCS location from the Helios utility that manages DCS install locations (have to use Profile Editor to configure it with --documents HeliosTesting)
-            string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HeliosTesting");
+            // get DCS location from the Helios utility that manages DCS install locations (have to use Profile Editor to configure it, either running dev build or start with --documents HeliosDev)
+            string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HeliosDev");
             HeliosInit.Initialize(documentPath, "EditViewports.log", LogLevel.Debug);
 
             InstallationLocations locations = InstallationLocations.Singleton;

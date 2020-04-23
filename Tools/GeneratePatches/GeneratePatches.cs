@@ -56,6 +56,7 @@ namespace GeneratePatches
 
             // now build patches based on files changed in repo
             string patchesPath = outputPath ?? ToolsCommon.FileSystem.FindNearestDirectory("Patches");
+            System.Console.WriteLine($"writing patches for {dcsVersion} to {patchesPath}");
             using (Repository repo = new Repository(dcsRoot))
             {
                 foreach (StatusEntry item in repo.RetrieveStatus(new StatusOptions()))
