@@ -6,7 +6,7 @@ if argCount = 0  then
    vbLf & " msi file to have the releases changed, and also set certain flags." &_
    vbLf & " No argument was passed into the HeliosInstallAdjustments.vbs file." &_
    vbLf & " SELECT queries will display the rows of the result list specified in the query"
-	Wscript.Quit 1
+    Wscript.Quit 1
 else
    Dim msiPackage:msiPackage = Wscript.Arguments(0)
    Dim oShell 
@@ -18,6 +18,13 @@ else
 
    ' https://docs.microsoft.com/en-us/windows/win32/msi/database-object
    ' https://docs.microsoft.com/en-us/windows/win32/msi/session-object
+
+   ' upgrade code for Helios 1.4+ (production)
+   Dim heliosUpgrade:heliosUpgrade = "{589D8667-3ED9-478B-8F67-A56E4FADBC63}"
+   Dim upgradeCode:upgradeCode = heliosUpgrade
+   
+   ' upgrade code for Helios Development Prototypes
+   Dim heliosDevUpgrade:heliosDevUpgrade = "{BA7FFC56-BDB7-4B02-8A12-089A630CCF96}"
 
    ' open MSI as database session ourselves, instead of using WiRunSQL wrapper
    Dim installer : Set installer = Wscript.CreateObject("WindowsInstaller.Installer") : CheckError "connect to installer"
@@ -33,10 +40,21 @@ else
    newGuid = Left(newGuid, Len(newGuid)-2)
    Execute database, "UPDATE Property SET `Value` = '" & newGuid & "' WHERE `Property` = 'ProductCode'"
 
+   ' special handling for development builds
+   Dim devBuild
+   Set devBuild = New RegExp
+   devBuild.Pattern = ".\..\.1...\..+"
+   if devBuild.Test(version) then
+     upgradeCode = heliosDevUpgrade
+     Execute database, "DELETE FROM Shortcut"
+     Execute database, "UPDATE Property SET `Value` = '" & heliosDevUpgrade & "' WHERE `Property` = 'UpgradeCode'"
+     Execute database, "UPDATE Property SET `Value` = 'HeliosDev' WHERE `Property` = 'ProductName'"
+   end if
+
    ' allow any version to upgrade
    Execute database, "DELETE FROM Upgrade"
-   Execute database, "INSERT INTO Upgrade(UpgradeCode, VersionMin, Attributes, ActionProperty) VALUES ('{589D8667-3ED9-478B-8F67-A56E4FADBC63}', '" & version & "', '258', 'NEWERPRODUCTFOUND')"
-   Execute database, "INSERT INTO Upgrade(UpgradeCode, VersionMax, Attributes, ActionProperty) VALUES ('{589D8667-3ED9-478B-8F67-A56E4FADBC63}', '" & version & "', '0', 'PREVIOUSVERSIONINSTALLED')"
+   Execute database, "INSERT INTO Upgrade(UpgradeCode, VersionMin, Attributes, ActionProperty) VALUES ('" & upgradeCode & "', '" & version & "', '258', 'NEWERPRODUCTFOUND')"
+   Execute database, "INSERT INTO Upgrade(UpgradeCode, VersionMax, Attributes, ActionProperty) VALUES ('" & upgradeCode & "', '" & version & "', '0', 'PREVIOUSVERSIONINSTALLED')"
 
    ' "UPDATE MsiAssemblyName SET Value = '" & version & "' WHERE `Value` = '" & sOldRel & "'"
 
@@ -74,19 +92,19 @@ Sub Execute(database, sql)
 end Sub
 
 Sub CheckError(context)
-	Dim message, errRec
-	If Err = 0 Then Exit Sub
-	message = context & ": " & Err.Source & " " & Hex(Err) & ": " & Err.Description
-	If Not installer Is Nothing Then
-		Set errRec = installer.LastErrorRecord
-		If Not errRec Is Nothing Then message = message & vbNewLine & errRec.FormatText
-	End If
-	Fail message
+    Dim message, errRec
+    If Err = 0 Then Exit Sub
+    message = context & ": " & Err.Source & " " & Hex(Err) & ": " & Err.Description
+    If Not installer Is Nothing Then
+        Set errRec = installer.LastErrorRecord
+        If Not errRec Is Nothing Then message = message & vbNewLine & errRec.FormatText
+    End If
+    Fail message
 End Sub
 
 Sub Fail(message)
-	Wscript.Echo message
-	Wscript.Quit 2
+    Wscript.Echo message
+    Wscript.Quit 2
 End Sub
 
  
