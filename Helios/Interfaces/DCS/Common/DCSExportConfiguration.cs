@@ -662,7 +662,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 UpdateExportScript();
                 yield return CheckExportScript(location);
 
-                if (string.IsNullOrEmpty(_parent.ExportModuleBaseName))
+                if (!string.IsNullOrEmpty(_parent.ExportModuleBaseName))
                 {
                     yield return new StatusReportItem
                     {

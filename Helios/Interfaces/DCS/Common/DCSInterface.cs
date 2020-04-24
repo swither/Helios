@@ -175,6 +175,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     // NOTE: XMLReader drops all the carriage returns in cdata
                     value = Regex.Replace(value, "\r\n|\n\r|\n|\r", "\r\n");
                 }
+
                 if (_exportModuleText == value)
                 {
                     return;
@@ -274,6 +275,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
             else
             {
+                if (new Regex("[\\d\\w_-]+").IsMatch(e.Text))
+                {
+                    ConfigManager.LogManager.LogError("DCS interface received advertisement for unsupported export module format '{e.Text}' from export script");
+                }
                 _remoteModuleFormat = null;
             }
 
@@ -315,6 +320,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // our information is now out of date
             _remoteModuleFormat = null;
         }
+
+        protected override void OnUnrecognizedFunction(string id, string value)
+        {
+            // don't log this as warning because our protocol includes times when we 
+            // receive data from the wrong module
+            if (IsSynchronized)
+            {
+                // we think we are synchronized
+                ConfigManager.LogManager.LogInfo($"DCS interface received data for missing function (Key=\"{id}\"); we think export is running module of type '{_remoteModuleFormat}'");
+            }
+        }
+
+        /// <summary>
+        /// true if the export script is running the module we requested, as far as we know
+        /// </summary>
+        private bool IsSynchronized => _remoteModuleFormat.HasValue && _remoteModuleFormat == _exportModuleFormat;
+
+        /// <summary>
+        /// true if we have received a remote module format, so we know the other side is capable of this protocol
+        /// </summary>
+        private bool CanSynchronize => _remoteModuleFormat.HasValue;
 
         // WARNING: executed on LoadProfile thread
         public override void ReadXml(XmlReader reader)

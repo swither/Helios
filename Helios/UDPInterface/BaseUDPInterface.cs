@@ -647,14 +647,17 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     SendData("R");
                 }
 
+                // tokenCount is already even at this point because we fix it up during pre-parsing
+                Debug.Assert(message.tokenCount % 1 == 0);
                 for (int tokenIndex = 0; tokenIndex < message.tokenCount; tokenIndex += 2)
                 {
-                    if (_main.FunctionsById.ContainsKey(message.tokens[tokenIndex]))
+                    string id = message.tokens[tokenIndex];
+                    if (_main.FunctionsById.ContainsKey(id))
                     {
-                        NetworkFunction function = _main.FunctionsById[message.tokens[tokenIndex]];
-                        function.ProcessNetworkData(message.tokens[tokenIndex], message.tokens[tokenIndex + 1]);
+                        NetworkFunction function = _main.FunctionsById[id];
+                        function.ProcessNetworkData(id, message.tokens[tokenIndex + 1]);
                     }
-                    else if (message.tokens[tokenIndex] == "DISCONNECT")
+                    else if (id == "DISCONNECT")
                     {
                         // if DISCONNECT is formatted as a valid message with a value, we get here, otherwise we
                         // handled it in HandleShortMessage
@@ -663,12 +666,17 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     }
                     else
                     {
-                        ConfigManager.LogManager.LogWarning("UDP interface received data for missing function. (Key=\"" + message.tokens[tokenIndex] + "\")");
+                        OnUnrecognizedFunction(id, message.tokens[tokenIndex+1]);
                     }
                 }
             }
 
             _shared.ReturnReceiveContext(owned);
+        }
+
+        protected virtual void OnUnrecognizedFunction(string id, string value)
+        {
+            ConfigManager.LogManager.LogWarning($"UDP interface received data for missing function. (Key=\"{id}\")");
         }
 
 
