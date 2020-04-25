@@ -18,7 +18,8 @@
         Icon="Icon.png" 
         Topmost="True" 
         Loaded="Window_Loaded" 
-        ContentRendered="Window_Opened">
+        ContentRendered="Window_Opened"
+        d:DataContext="{d:DesignInstance Type=local:MainWindow}">
     <Window.Resources>
         <Style x:Key="CollapsePrefs" TargetType="Canvas">
             <Style.Triggers>
@@ -87,8 +88,8 @@
                     </StackPanel>
                 </Grid>
 
-                <TextBlock Canvas.Left="76" Canvas.Top="36" Height="29" x:Name="ProfileName" Text="{Binding SelectedProfileName}" Width="223" Style="{StaticResource BaseDisplayText}" FontSize="20" />
-                <TextBlock Canvas.Left="76" Canvas.Top="71" Height="53" x:Name="MessageText" Text="{Binding Message}" Width="223" Style="{StaticResource BaseDisplayText}" FontSize="10" TextWrapping="Wrap" />
+                <TextBlock Canvas.Left="76" Canvas.Top="36" Height="29" Text="{Binding SelectedProfileName}" Width="223" Style="{StaticResource BaseDisplayText}" FontSize="20" />
+                <TextBlock Canvas.Left="76" Canvas.Top="71" Height="53" Text="{Binding Message}" Width="223" Style="{StaticResource BaseDisplayText}" FontSize="10" TextWrapping="Wrap" />
                 <Grid Canvas.Left="3" Canvas.Top="150">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="20"/>

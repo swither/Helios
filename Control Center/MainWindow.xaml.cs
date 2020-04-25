@@ -13,7 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.ControlCenter
 {
@@ -80,10 +82,19 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             // starting
             ConfigManager.LogManager.LogDebug("Control Center initializing");
 
+            StatusMessage = StatusValue.RunningVersion;
+
             if (Preferences.SplashScreen)
             {
                 // Display a dynamic splash panel with release and credits
                 DisplaySplash(4000);
+            }
+            else
+            {
+                // add the list of contributors to the console instead
+                StatusViewer.AddItem(new StatusReportItem {
+                    Status = $"Contributors: {string.Join(", ", About.Authors.Union(About.Contributors))}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate });
             }
 
             if (Preferences.StartMinimized)
@@ -130,8 +141,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 AutoStartCheckBox.ToolTip = "Unable to read/write registry to enable auto start.  Control Center may require administrator rights for this feature.";
                 ConfigManager.LogManager.LogError("Error checking for auto start.", e);
             }
-
-            StatusMessage = StatusValue.RunningVersion;
         }
 
         private void DisplaySplash(Int32 splashDelay)
@@ -158,18 +167,18 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             {
                 message += $"\nSimulator is running {_lastDriverStatus}";
             }
-            SetValue(MessageProperty, message);
+            Message = message;
         }
 
         private void ComposeErrorMessage(string status, string recommendation)
         {
             // this multiline message does not combine with anything
-            SetValue(MessageProperty, $"{status} {recommendation}");
+            Message = $"{status} {recommendation}";
         }
 
         private void ComposePopupMessage(string message)
         {
-            SetValue(MessageProperty, message);
+            Message = message;
         }
 
         private void ReportStatus(string status) {
@@ -226,7 +235,10 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     break;
                 case StatusValue.RunningVersion:
                     Version ver = Assembly.GetEntryAssembly().GetName().Version;
-                    updateInfoStatus($"{ver.Major.ToString()}.{ver.Minor.ToString()}.{ver.Build.ToString("0000")}.{ver.Revision.ToString("0000")}\nProject Fork: BlueFinBima");
+                    string message =
+                        $"Helios {ver.Major.ToString()}.{ver.Minor.ToString()}.{ver.Build.ToString("0000")}.{ver.Revision.ToString("0000")}";
+                    message += $"\n{KnownLinks.GitRepoUrl() ?? "BlueFinBima fork"}";
+                    updateInfoStatus(message);
                     break;
                 case StatusValue.ProfileVersionHigher:
                     updateErrorStatus(
@@ -281,6 +293,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             ProfileVersionHigher,
             BadMonitorConfig,
             FailedPreflight
+        }
+
+        public string Message
+        {
+            get { return (string)GetValue(MessageProperty); }
+            set { SetValue(MessageProperty, value); }
         }
 
         public static readonly DependencyProperty MessageProperty =

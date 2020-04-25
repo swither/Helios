@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
+
 namespace GadrocsWorkshop.Helios.Splash
 {
     using System;
@@ -25,6 +27,9 @@ namespace GadrocsWorkshop.Helios.Splash
     /// </summary>
     public partial class About : Window
     {
+        public static readonly string[] Authors = { "Gadroc", "BlueFinBima" };
+        public static readonly string[] Contributors = { "derammo", "CaptZeen", "KiwiLostInMelb", "Phar71", "damien022", "Will Hartsell", "Cylution", "Rachmaninoff", "yzfanimal", "BeamRider" };
+
         public About()
         {
             InitializeComponent();
@@ -34,8 +39,8 @@ namespace GadrocsWorkshop.Helios.Splash
         {
             Version runningVersion = VersionChecker.RunningVersion;
             VersionBlock.Text = runningVersion.Major.ToString() + "." + runningVersion.Minor.ToString() + "." + runningVersion.Build.ToString() + "." + runningVersion.Revision.ToString("0000");
-            ContributionBlock.Text = "Gadroc; BlueFinBima; ";
-            ContributionBlock.Text = ContributionBlock.Text + "derammo; CaptZeen; KiwiLostInMelb; Phar71; damien022; Will Hartsell; Cylution; Rachmaninoff; yzfanimal; BeamRider";
+            ContributionBlock.Text = string.Join("; ", Authors);
+            ContributionBlock.Text = ContributionBlock.Text + string.Join("; ", Contributors);
             StatusBlock.Text = RunningVersion.IsDevelopmentPrototype ? "Development Prototype" : "Released";
             base.OnActivated(e);
         }

@@ -11,5 +11,6 @@
         <TextBlock FontWeight="Bold" Canvas.Left="327" Canvas.Top="58" Height="23" Name="StatusLabel" Text="Status:" Width="40" />
         <TextBlock Canvas.Left="368" Canvas.Top="58" Height="23" Name="StatusBlock" Text="In Development" Width="132" />
         <TextBlock Foreground="DarkBlue" FontSize="14" FontWeight="SemiBold" Canvas.Left="8" Canvas.Top="84" Height="18" Name="ContributionTitle" Text="Contributors:" Width="85" />
-        <TextBlock Foreground="DarkBlue" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Canvas.Left="96" Canvas.Top="84" Height="66" Name="ContributionBlock" Text="" Width="416" />    </Canvas>
+        <TextBlock Foreground="DarkBlue" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Canvas.Left="96" Canvas.Top="84" Height="66" Name="ContributionBlock" Text="" Width="416" />    
+    </Canvas>
 </Window>

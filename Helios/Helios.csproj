@@ -501,6 +501,7 @@
     <Compile Include="Windows\ViewModel\InterfaceStatusViewItem.cs" />
     <Compile Include="Windows\ViewModel\InterfaceStatusViewSection.cs" />
     <Compile Include="Windows\ViewModel\InterfaceStatusViewModel.cs" />
+    <Compile Include="Util\KnownLinks.cs" />
     <Compile Include="Windows\ViewModel\MockInterfaceStatusView.cs" />
     <Compile Include="Windows\ViewModel\Share.cs" />
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />

@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
@@ -122,35 +123,13 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
         private void FileBug(object parameter)
         {
-            string repo = ConfigManager.SettingsManager.LoadSetting("Helios", "Repo", null);
-
-            if (repo == null)
+            string repo = KnownLinks.GitRepoUrl();
+            if (repo != null)
             {
-                repo = ConfigManager.SettingsManager.LoadSetting("Helios", "LastestGitHubDownloadUrl", null);
-            }
-            else
-            {
-                if (!repo.EndsWith("/"))
-                {
-                    repo += ('/');
-                }
-            }
-
-            if (repo == null)
-            {
-                // last resort
-                repo = "https://github.com/BlueFinBima/Helios/";
-            }
-
-            Match match = new Regex("^https://github.com/[a-zA-Z0-9_]+/[a-zA-Z0-9_]+/").Match(repo);
-            if (match.Success)
-            {
-                // NOTE: github claims to support paste for attachments, but it doesn't work so we have to drag and drop a file
+            // NOTE: github claims to support paste for attachments, but it doesn't work so we have to drag and drop a file
                 string fileName = PrepareStatusReportFile(out string tempPath);
                 System.Diagnostics.Process.Start(tempPath);
 
-                // only take the part we validated
-                repo = match.Groups[0].Value;
                 string encoded = Uri.EscapeDataString($"[Helios has written the report to the file '{fileName}' and opened its containing folder in Explorer.  Please drag and drop it from Explorer to here and replace this message with a description of the problem you are reporting.]\n\n");
 
                 // launch the default browser
