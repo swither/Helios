@@ -21,24 +21,24 @@ using GadrocsWorkshop.Helios.Interfaces.Common;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
-    public class ChecklistViewModel : HeliosViewModel<InterfaceStatusScanner>
+    public class InterfaceStatusViewModel : HeliosViewModel<InterfaceStatusScanner>
     {
         public static RoutedUICommand GoThereCommand { get; } =
-            new RoutedUICommand("Opens an associated editor.", "GoThere", typeof(ChecklistViewModel));
+            new RoutedUICommand("Opens an associated editor.", "GoThere", typeof(InterfaceStatusViewModel));
 
         public static RoutedUICommand DeleteInterfaceCommand { get; } =
             new RoutedUICommand("Deletes the interface passed as the parameter.", "DeleteInterface",
-                typeof(ChecklistViewModel));
+                typeof(InterfaceStatusViewModel));
 
         /// <summary>
         /// backing field for ReloadCommand
         /// </summary>
         private ICommand _reloadCommand;
 
-        public ChecklistViewModel(InterfaceStatusScanner data)
+        public InterfaceStatusViewModel(InterfaceStatusScanner data)
             : base(data)
         {
-            Items = new ViewModelCollection<InterfaceStatus, ChecklistSection>(data.InterfaceStatuses);
+            Items = new ViewModelCollection<InterfaceStatus, InterfaceStatusViewSection>(data.InterfaceStatuses);
             Items.CollectionChanged += Items_CollectionChanged;
             Data.PropertyChanged += Data_PropertyChanged;
         }
@@ -49,7 +49,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             {
                 case "DisplayThreshold":
                     // broadcast to all sections
-                    foreach (ChecklistSection section in Items)
+                    foreach (InterfaceStatusViewSection section in Items)
                     {
                         section.ChangeDisplayThreshold(Data.DisplayThreshold);
                     }
@@ -63,14 +63,14 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             // configure each new item
             if (e.NewItems != null)
             {
-                foreach (ChecklistSection section in e.NewItems)
+                foreach (InterfaceStatusViewSection section in e.NewItems)
                 {
                     section.Initialize(Data.DisplayThreshold);
                 }
             }
         }
 
-        public ViewModelCollection<InterfaceStatus, ChecklistSection> Items { get; }
+        public ViewModelCollection<InterfaceStatus, InterfaceStatusViewSection> Items { get; }
 
         /// <summary>
         /// backing field for property ShareCommand, contains

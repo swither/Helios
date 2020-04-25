@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using GadrocsWorkshop.Helios.Interfaces.Common;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
-    public class MockChecklistItem: DependencyObject
+    public class MockInterfaceStatusItem: DependencyObject
     {
         public bool HasRecommendation => TextLine2 != null;
         public string Status { get; internal set; }
@@ -13,9 +11,9 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         public string TextLine2 { get; internal set; }
     }
 
-    public class MockChecklistSection: DependencyObject
+    public class MockInterfaceStatusSection: DependencyObject
     {
-        public MockChecklistSection Data => this;
+        public MockInterfaceStatusSection Data => this;
 
         public string Status { get; internal set; }
 
@@ -27,12 +25,12 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
         public bool DetailsExpanded => true;
 
-        public class ItemsList : List<MockChecklistItem>
+        public class ItemsList : List<MockInterfaceStatusItem>
         {
 
             public void Add(string text1, string text2 = null, string status = null)
             {
-                Add(new MockChecklistItem
+                Add(new MockInterfaceStatusItem
                 {
                     TextLine1 = text1,
                     TextLine2 = text2,
@@ -45,17 +43,17 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         public string Name { get; internal set; }
     }
 
-    public class MockChecklistViewModel: DependencyObject
+    public class MockInterfaceStatusViewModel: DependencyObject
     {
-        public MockChecklistViewModel Data => this;
+        public MockInterfaceStatusViewModel Data => this;
 
-        public IList<MockChecklistSection> Items { get; } = new List<MockChecklistSection>
+        public IList<MockInterfaceStatusSection> Items { get; } = new List<MockInterfaceStatusSection>
         {
-            new MockChecklistSection
+            new MockInterfaceStatusSection
             {
                 Name = "Some sort of name with stuff",
                 Status = "Error",
-                Items = new MockChecklistSection.ItemsList
+                Items = new MockInterfaceStatusSection.ItemsList
                 {
                     {
                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",

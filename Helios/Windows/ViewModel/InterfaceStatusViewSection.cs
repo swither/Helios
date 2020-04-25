@@ -10,9 +10,9 @@ using GadrocsWorkshop.Helios.Interfaces.Common;
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
     /// <summary>
-    /// a view model for the status of an interface, as viewed in the configuration check (Checklist) view
+    /// a view model for the status of an interface, as viewed in the Interface Status view
     /// </summary>
-    public class ChecklistSection : HeliosViewModel<InterfaceStatus>
+    public class InterfaceStatusViewSection : HeliosViewModel<InterfaceStatus>
     {
         #region Private
 
@@ -21,10 +21,10 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
         #endregion
 
-        public ChecklistSection(InterfaceStatus data)
+        public InterfaceStatusViewSection(InterfaceStatus data)
             : base(data)
         {
-            Items = new ObservableCollection<ChecklistItem>();
+            Items = new ObservableCollection<InterfaceStatusViewItem>();
             Recommendations = new ObservableCollection<string>();
             if (data.Interface is IExtendedDescription extendedInfo)
             {
@@ -98,9 +98,9 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             }
 
             // create view models for status items
-            IEnumerable<ChecklistItem> checklistItems = _report
-                .Select(item => new ChecklistItem(item));
-            foreach (ChecklistItem checklistItem in checklistItems)
+            IEnumerable<InterfaceStatusViewItem> checklistItems = _report
+                .Select(item => new InterfaceStatusViewItem(item));
+            foreach (InterfaceStatusViewItem checklistItem in checklistItems)
             {
                 Items.Add(checklistItem);
             }
@@ -160,9 +160,9 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             set => SetValue(DetailsExpandedProperty, value);
         }
 
-        public ObservableCollection<ChecklistItem> Items
+        public ObservableCollection<InterfaceStatusViewItem> Items
         {
-            get => (ObservableCollection<ChecklistItem>) GetValue(ItemsProperty);
+            get => (ObservableCollection<InterfaceStatusViewItem>) GetValue(ItemsProperty);
             set => SetValue(ItemsProperty, value);
         }
 
@@ -197,35 +197,35 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         #region DependencyProperties
 
         public static readonly DependencyProperty DetailsVisibilityProperty =
-            DependencyProperty.Register("DetailsVisibility", typeof(Visibility), typeof(ChecklistSection),
+            DependencyProperty.Register("DetailsVisibility", typeof(Visibility), typeof(InterfaceStatusViewSection),
                 new PropertyMetadata(Visibility.Visible));
 
         public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof(ObservableCollection<ChecklistItem>), typeof(ChecklistSection),
+            DependencyProperty.Register("Items", typeof(ObservableCollection<InterfaceStatusViewItem>), typeof(InterfaceStatusViewSection),
                 new PropertyMetadata(null));
 
         public static readonly DependencyProperty RecommendationsProperty =
             DependencyProperty.Register("Recommendations", typeof(ObservableCollection<string>),
-                typeof(ChecklistSection), new PropertyMetadata(null));
+                typeof(InterfaceStatusViewSection), new PropertyMetadata(null));
 
         public static readonly DependencyProperty RecommendationsVisibilityProperty =
-            DependencyProperty.Register("RecommendationsVisibility", typeof(Visibility), typeof(ChecklistSection),
+            DependencyProperty.Register("RecommendationsVisibility", typeof(Visibility), typeof(InterfaceStatusViewSection),
                 new PropertyMetadata(Visibility.Visible));
 
         public static readonly DependencyProperty StatusProperty =
-            DependencyProperty.Register("Status", typeof(string), typeof(ChecklistSection),
+            DependencyProperty.Register("Status", typeof(string), typeof(InterfaceStatusViewSection),
                 new PropertyMetadata("None"));
 
         public static readonly DependencyProperty StatusNarrativeProperty =
-            DependencyProperty.Register("StatusNarrative", typeof(string), typeof(ChecklistSection),
+            DependencyProperty.Register("StatusNarrative", typeof(string), typeof(InterfaceStatusViewSection),
                 new PropertyMetadata(""));
 
         public static readonly DependencyProperty RemovalNarrativeProperty =
-            DependencyProperty.Register("RemovalNarrative", typeof(string), typeof(ChecklistSection),
+            DependencyProperty.Register("RemovalNarrative", typeof(string), typeof(InterfaceStatusViewSection),
                 new PropertyMetadata("Delete this interface and remove all of its bindings from the Profile."));
         
         public static readonly DependencyProperty DetailsExpandedProperty =
-            DependencyProperty.Register("DetailsExpanded", typeof(bool), typeof(ChecklistSection),
+            DependencyProperty.Register("DetailsExpanded", typeof(bool), typeof(InterfaceStatusViewSection),
                 new PropertyMetadata(false));
 
         #endregion

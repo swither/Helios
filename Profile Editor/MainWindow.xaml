@@ -21,8 +21,8 @@
         <CommandBinding Command="local:ProfileEditorCommands.SaveLayout" Executed="SaveLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.LoadLayout" Executed="LoadLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.RestoreDefaultLayout" Executed="RestoreDefaultLayout_Executed" />
-        <CommandBinding Command="heliosViewModel:ChecklistViewModel.GoThereCommand" Executed="GoThere_Executed" />
-        <CommandBinding Command="heliosViewModel:ChecklistViewModel.DeleteInterfaceCommand" Executed="DeleteInterface_Executed" />
+        <CommandBinding Command="heliosViewModel:InterfaceStatusViewModel.GoThereCommand" Executed="GoThere_Executed" />
+        <CommandBinding Command="heliosViewModel:InterfaceStatusViewModel.DeleteInterfaceCommand" Executed="DeleteInterface_Executed" />
         <CommandBinding Command="heliosWindows:Dialog.ShowModalCommand" Executed="DialogShowModal_Executed"/>
     </Window.CommandBindings>
     <Grid Name="PrimaryGrid">
@@ -94,7 +94,7 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_View">
-                <MenuItem Header="Configuration _Check" Click="Show_Checklist" />
+                <MenuItem Header="Interface _Status" Click="Show_InterfaceStatus" />
                 <Separator />
                 <MenuItem Header="Tool_box" Click="Show_Toolbox" />
                 <Separator />
@@ -210,8 +210,8 @@
                     <ad:LayoutPanel  Orientation="Horizontal" DockWidth="*">
                         <ad:LayoutPanel  Orientation="Vertical">
                             <ad:LayoutDocumentPane>
-                                <ad:LayoutAnchorable Title="Configuration Check" CanClose="False" CanHide="True">
-                                    <local:Checklist x:Name="ChecklistPanel"/>
+                                <ad:LayoutAnchorable Title="Inteface Status" CanClose="False" CanHide="True">
+                                    <local:InterfaceStatusView x:Name="InterfaceStatusPanel"/>
                                 </ad:LayoutAnchorable>
                             </ad:LayoutDocumentPane>
                             <ad:LayoutAnchorablePane DockHeight="300">

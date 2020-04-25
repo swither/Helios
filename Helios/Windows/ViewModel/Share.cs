@@ -41,7 +41,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                 {
                     new StatusReportItem
                     {
-                        Status = "No installed interfaces support configuration check.",
+                        Status = "No installed interfaces support status reporting.",
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     }
                 };

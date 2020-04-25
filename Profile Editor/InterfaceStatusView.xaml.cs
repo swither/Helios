@@ -2,9 +2,9 @@
 
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
-    public partial class Checklist : Grid
+    public partial class InterfaceStatusView : Grid
     {
-        public Checklist()
+        public InterfaceStatusView()
         {
             InitializeComponent();
         }

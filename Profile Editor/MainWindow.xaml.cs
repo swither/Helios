@@ -74,7 +74,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             InitializeComponent();
 
-            ChecklistPanel.DataContext = new ChecklistViewModel(_configurationCheck);
+            InterfaceStatusPanel.DataContext = new InterfaceStatusViewModel(_configurationCheck);
             DockManager.ActiveContentChanged += DockManager_ActiveDocumentChanged;
             NewProfile();
 
@@ -620,7 +620,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void ConfigurationCheck_Triggered(object sender, EventArgs e)
         {
             // REVISIT: this is expensive.  add tracking whether it is currently closed or hidden, so we don't have to search?
-            ShowCurrentLayoutAnchorable(ChecklistPanel);
+            ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
         }
 
         private void LoadVisual(HeliosVisual visual)
@@ -900,10 +900,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void GoThere_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            ChecklistSection section = (ChecklistSection)(e.Parameter);
-            if (section.Data.HasEditor)
+            InterfaceStatusViewSection viewSection = (InterfaceStatusViewSection)(e.Parameter);
+            if (viewSection.Data.HasEditor)
             {
-                AddNewDocument(section.Data.Interface);
+                AddNewDocument(viewSection.Data.Interface);
             }
         }
 
@@ -929,9 +929,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             ShowCurrentLayoutAnchorable(ToolboxPanel);
         }
 
-        private void Show_Checklist(object sender, RoutedEventArgs e)
+        private void Show_InterfaceStatus(object sender, RoutedEventArgs e)
         {
-            ShowCurrentLayoutAnchorable(ChecklistPanel);
+            ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
         }
 
         /// <summary>

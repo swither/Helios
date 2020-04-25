@@ -158,7 +158,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 }
             }
 
-            // create our current config for configuration check
+            // create our current config for status reporting
             UpdateConfiguration();
 
             // view model updates (this class provides simple view model support)

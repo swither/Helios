@@ -76,8 +76,8 @@
     <Compile Include="BindingsPanel.xaml.cs">
       <DependentUpon>BindingsPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Checklist.xaml.cs">
-      <DependentUpon>Checklist.xaml</DependentUpon>
+    <Compile Include="InterfaceStatusView.xaml.cs">
+      <DependentUpon>InterfaceStatusView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
@@ -174,7 +174,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Checklist.xaml">
+    <Page Include="InterfaceStatusView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

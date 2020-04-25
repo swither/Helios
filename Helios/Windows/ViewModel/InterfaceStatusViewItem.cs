@@ -3,15 +3,15 @@
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
     /// <summary>
-    /// A view model for StatusReportItem viewed in the configuration check (Checklist) view
+    /// A view model for StatusReportItem viewed in the Interface Status view
     ///
     /// Not implemented as HeliosViewModel because StatusReportItem (the model) is not a Helios NotificationObject
     /// </summary>
-    public class ChecklistItem : DependencyObject
+    public class InterfaceStatusViewItem : DependencyObject
     {
         private StatusReportItem item;
 
-        public ChecklistItem(StatusReportItem item)
+        public InterfaceStatusViewItem(StatusReportItem item)
         {
             this.item = item;
         }

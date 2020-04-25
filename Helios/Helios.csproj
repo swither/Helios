@@ -498,10 +498,10 @@
     <Compile Include="Windows\InstallationDialogs.cs" />
     <Compile Include="Windows\RelayCommand.cs" />
     <Compile Include="Windows\ShowModalParameter.cs" />
-    <Compile Include="Windows\ViewModel\ChecklistItem.cs" />
-    <Compile Include="Windows\ViewModel\ChecklistSection.cs" />
-    <Compile Include="Windows\ViewModel\ChecklistViewModel.cs" />
-    <Compile Include="Windows\ViewModel\MockChecklist.cs" />
+    <Compile Include="Windows\ViewModel\InterfaceStatusViewItem.cs" />
+    <Compile Include="Windows\ViewModel\InterfaceStatusViewSection.cs" />
+    <Compile Include="Windows\ViewModel\InterfaceStatusViewModel.cs" />
+    <Compile Include="Windows\ViewModel\MockInterfaceStatusView.cs" />
     <Compile Include="Windows\ViewModel\Share.cs" />
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
     <Compile Include="Windows\ViewModel\ViewModelCollection.cs" />
