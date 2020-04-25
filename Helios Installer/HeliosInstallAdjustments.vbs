@@ -43,10 +43,16 @@ else
    ' special handling for development builds
    Dim devBuild
    Set devBuild = New RegExp
-   devBuild.Pattern = ".\..\.1...\..+"
+   devBuild.Pattern = "[0-9]+\.[0-9]+\.1...\.[0-9]+"
    if devBuild.Test(version) then
      upgradeCode = heliosDevUpgrade
-     Execute database, "DELETE FROM Shortcut"
+
+     Execute database, "DELETE FROM Shortcut WHERE `Directory_` = 'DesktopFolder'"
+     Execute database, "UPDATE Shortcut SET `Name` = 'CONTRO~1|Dev Control Center Debug' WHERE `Name` = 'CONTRO~1|Control Center Debug'"
+     Execute database, "UPDATE Shortcut SET `Name` = 'PROFIL~1|Dev Profile Editor Debug' WHERE `Name` = 'PROFIL~1|Profile Editor Debug'"
+     Execute database, "UPDATE Shortcut SET `Name` = 'HELIOS~2|Dev Helios Profile Editor' WHERE `Name` = 'HELIOS~2|Helios Profile Editor'"
+     Execute database, "UPDATE Shortcut SET `Name` = 'HELIOS~4|Dev Helios Control Center' WHERE `Name` = 'HELIOS~4|Helios Control Center'"
+
      Execute database, "UPDATE Property SET `Value` = '" & heliosDevUpgrade & "' WHERE `Property` = 'UpgradeCode'"
      Execute database, "UPDATE Property SET `Value` = 'HeliosDev' WHERE `Property` = 'ProductName'"
    end if
