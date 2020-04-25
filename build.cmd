@@ -1,5 +1,41 @@
 @set VERSION=%1
 
+@REM make sure clean working directory
+
+@REM step 1: untracked files
+@REM result code not set correctly on windows it seems, so we have to check output
+@set LSFILES=
+@set gituntracked=git ls-files --exclude-standard --others
+@FOR /F %%i IN ('%gituntracked%') DO @set LSFILES=%%i
+@if "%LSFILES%" NEQ "" (
+	@git status --porcelain
+	echo Untracked files in working directory.  Update your gitignore or commit files to git before building.
+	exit /b %errorlevel%
+)
+
+@REM step 2: staged files
+@git diff-index --quiet --cached HEAD --
+@if %errorlevel% neq 0 (
+	@git status --porcelain
+	echo Unfinished commit in index.  Complete commit or stash changes before building.
+	exit /b %errorlevel%
+)
+
+@REM step 3: unstaged modifications 
+@git diff-files --quiet
+@if %errorlevel% neq 0 (
+	@git status --porcelain
+	echo Working directory is not clean.  Stash changes before building.
+	exit /b %errorlevel%
+)
+
+@REM create tag, make sure it is unique
+git tag %1
+@if %errorlevel% neq 0 (
+	echo Failed to place git tag.  Ensure you used a unique major.minor.build.revision number
+	exit /b %errorlevel%
+)
+
 @REM build with version stamps
 MSBuild.exe -binaryLogger:LogFile=clean.binlog -clp:WarningsOnly -warnAsMessage:MSB4078 -p:Configuration=Release;Platform=x64 -t:Clean Helios.sln
 @rmdir /s /q bin
