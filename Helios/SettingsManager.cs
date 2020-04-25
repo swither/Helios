@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios
     using System.IO;
     using System.Xml;
 
-    internal class SettingsManager : ISettingsManager2
+    public class SettingsManager : ISettingsManager2
     {
         public event EventHandler<EventArgs> Synchronized;
 
@@ -30,7 +30,7 @@ namespace GadrocsWorkshop.Helios
         {
             public string Name;
             public string Value;
-            public bool IsDirty;
+            public bool IsOurChange;
         }
 
         private class SettingsColleciton : KeyedCollection<string, Setting>
@@ -84,6 +84,11 @@ namespace GadrocsWorkshop.Helios
 
         private string _settingsFile;
         private GroupCollection _settings = null;
+
+        /// <summary>
+        /// if set to false, any attempt to write the settings is an error
+        /// </summary>
+        public bool Writable { get; set; }
 
         public SettingsManager(string settingsFile)
         {
@@ -179,6 +184,11 @@ namespace GadrocsWorkshop.Helios
         {
             LoadSettings();
 
+            if (!Writable)
+            {
+                throw new AccessViolationException("SettingsManager is not writable in this application; the settings file is presumably shared with another application that writes it");
+            }
+
             // Delete tmp file if exists
             if (File.Exists(_settingsFile))
             {
@@ -224,14 +234,14 @@ namespace GadrocsWorkshop.Helios
             {
                 setting = settingGroup.Settings[name];
                 setting.Value = value;
-                setting.IsDirty = true;
+                setting.IsOurChange = true;
             }
             else
             {
                 setting = new Setting();
                 setting.Name = name;
                 setting.Value = value;
-                setting.IsDirty = true;
+                setting.IsOurChange = true;
                 settingGroup.Settings.Add(setting);
             }
 
@@ -322,6 +332,7 @@ namespace GadrocsWorkshop.Helios
             SaveSettings();
         }
 
+        // WARNING: this is a temporary solution for the major design flaw that two processes are both writing overwiting the same settings file
         public bool SynchronizeSettings(DateTime? since)
         {
             try
@@ -339,19 +350,23 @@ namespace GadrocsWorkshop.Helios
                 {
                     foreach (Setting setting in group.Settings)
                     {
-                        if (setting.IsDirty)
+                        if (setting.IsOurChange)
                         {
+                            // this value was written by us in this session.  another program would not know we changed
+                            // this value and will erase it, so we have to restore it every time we synchronize
                             changed = true;
                             Group groupFromDisk = fromDisk.GetOrCreateGroup(group.Name);
                             if (groupFromDisk.Settings.Contains(setting.Name))
                             {
                                 groupFromDisk.Settings[setting.Name].Value = setting.Value;
+                                groupFromDisk.Settings[setting.Name].IsOurChange = true;
                             }
                             else
                             {
                                 Setting merged = new Setting();
                                 merged.Name = setting.Name;
                                 merged.Value = setting.Value;
+                                merged.IsOurChange = true;
                                 groupFromDisk.Settings.Add(merged);
                             }
                         }

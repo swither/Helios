@@ -4,6 +4,10 @@
         xmlns:local="clr-namespace:GadrocsWorkshop.Helios.ControlCenter"
         xmlns:statusViewer="clr-namespace:GadrocsWorkshop.Helios.ControlCenter.StatusViewer"
         xmlns:heliosWindows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+        mc:Ignorable="d" 
         Title="Helios Control Center"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         SizeToContent="Height" Width="504" 
@@ -72,13 +76,13 @@
                     <StackPanel Grid.Row="0" Grid.Column="0">
                         <TextBlock Text="PREFS" Style="{StaticResource TopLabel}" Height="Auto"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox x:Name="PrefsCheckBox" Style="{StaticResource HeliosSwitchStyle}" IsChecked="true"/>
+                        <CheckBox x:Name="PrefsCheckBox" Style="{StaticResource HeliosSwitchStyle}" IsChecked="false"/>
                         <TextBlock Text="OFF" Style="{StaticResource UpLabel}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1">
                         <TextBlock Text="CONSOLE" Style="{StaticResource TopLabel}" Height="Auto"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox x:Name="StatusCheckBox" Style="{StaticResource HeliosSwitchStyle}" IsChecked="true"/>
+                        <CheckBox x:Name="StatusCheckBox" Style="{StaticResource HeliosSwitchStyle}" IsChecked="false"/>
                         <TextBlock Text="OFF" Style="{StaticResource UpLabel}"/>
                     </StackPanel>
                 </Grid>
@@ -118,7 +122,7 @@
                 <Button Canvas.Left="323" Canvas.Top="82" Height="50" x:Name="NextButton" Width="50" Style="{StaticResource HeliosNextButtonStyle}" Command="local:ControlCenterCommands.NextProfile" />
                 <TextBlock Canvas.Left="0" Canvas.Top="240" Width="504" Text="HELIOS CONTROL CENTER" Style="{StaticResource BaseLabel}" FontSize="22"/>
             </Canvas>
-            <Canvas Name="PreferencesCanvas" Margin="0" Height="320" Width="504" Style="{StaticResource CollapsePrefs}">
+            <Canvas DataContext="{Binding Preferences}" Name="PreferencesCanvas" Margin="0" Height="320" Width="504" Style="{StaticResource CollapsePrefs}">
                 <Image Source="PreferencesBackground.png" />
                 <Thumb Name="PrefsDragThumb" Width="504" Height="320" Opacity="0" DragDelta="MoveThumb_DragDelta" Canvas.Left="0" Canvas.Top="0" />
                 <Grid>
@@ -137,25 +141,28 @@
                     <StackPanel Grid.Row="0" Grid.Column="0">
                         <TextBlock Text="START MINIMIZED" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Name="MinimizeCheckBox" Style="{StaticResource HeliosSwitchStyle}" Checked="MinimizeCheckBox_Checked" Unchecked="MinimizeCheckBox_Unchecked" />
+                        <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding StartMinimized}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1">
                         <TextBlock Text="START AT LOGIN" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Name="AutoStartCheckBox" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoStartCheckBox_Checked" Unchecked="AutoStartCheckBox_Unchecked" />
+                        <CheckBox Name="AutoStartCheckBox" Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding AutoStart}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="2">
                         <TextBlock Text="HIDE ON PROFILE START" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Name="AutoHideCheckBox" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoHideCheckBox_Checked" Unchecked="AutoHideCheckBox_Unchecked" />
+                        <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding AutoHide}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
+                    <!-- , diag:PresentationTraceSources.TraceLevel=High -->
                     <StackPanel Grid.Row="0" Grid.Column="3">
                         <TextBlock Text="PROFILE AUTOSTART" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Name="ProfileAutoStartCheckBox" ToolTipService.ToolTip="Automatically start matching profile if plane type changes." Style="{StaticResource HeliosSwitchStyle}" Checked="ProfileAutoStartCheckBox_Checked" Unchecked="ProfileAutoStartCheckBox_Unchecked" />
+                        <CheckBox IsChecked="{Binding ProfileAutoStart}"
+                                  ToolTipService.ToolTip="Automatically start matching profile if plane type changes." 
+                                  Style="{StaticResource HeliosSwitchStyle}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <Grid Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2">
@@ -177,25 +184,25 @@
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="CLEAR" Style="{StaticResource UpLabel}"/>
                         <Button Grid.Row="2" Grid.Column="0" Width="36" Height="36" Name="SetHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="SetHotkey_Click" />
                         <Button Grid.Row="2" Grid.Column="2" Width="36" Height="36" Name="ClearHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="ClearHotkey_Click" />
-                        <TextBlock Panel.ZIndex="2" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="13,11,13,11" Style="{StaticResource BaseDisplayText}" FontSize="20" Text="{Binding HotKeyDescription}" TextAlignment="Center" TextWrapping="Wrap" />
+                        <TextBlock Panel.ZIndex="2" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="13,11,13,11" Style="{StaticResource BaseDisplayText}" FontSize="20" Text="{Binding HotKeyDescription, ElementName=HeliosWindow}" TextAlignment="Center" TextWrapping="Wrap" />
                         <Border Panel.ZIndex="1" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,8,10,8" CornerRadius="3" BorderBrush="#FF454545" BorderThickness="2" Background="#FF001500" />
                     </Grid>
                     <StackPanel Grid.Row="1" Grid.Column="0">
                         <TextBlock Text="PREFLIGHT CHECK" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Name="PreflightCheckBox" Style="{StaticResource HeliosSwitchStyle}" Checked="PreflightCheckBox_Checked" Unchecked="PreflightCheckBox_Unchecked" />
+                        <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding PreflightCheck}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1" Visibility="Hidden">
                         <TextBlock Text="TDB Next" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Name="TBD2" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoStartCheckBox_Checked" Unchecked="AutoStartCheckBox_Unchecked" />
+                        <CheckBox Style="{StaticResource HeliosSwitchStyle}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="2" Visibility="Hidden">
                         <TextBlock Text="TDB Next" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Name="TBD3" Style="{StaticResource HeliosSwitchStyle}" Checked="AutoStartCheckBox_Checked" Unchecked="AutoStartCheckBox_Unchecked" />
+                        <CheckBox Style="{StaticResource HeliosSwitchStyle}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" BorderThickness="1" CornerRadius="4" Padding="2" Style="{StaticResource BorderInFontColor}">
@@ -214,16 +221,19 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="TOUCHSCREEN 2ND CLICK SUPPRESSION" Style="{StaticResource TopLabel}"/>
                         <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
                             <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                            <CheckBox Name="TouchscreenCheckBox" ToolTipService.ToolTip="Suppress mouse clicks after touch click if you appear to get double touches from a touchscreen." Style="{StaticResource HeliosSwitchStyle}" Checked="TouchscreenCheckBox_Checked" Unchecked="TouchscreenCheckBox_Unchecked" />
+                            <CheckBox Name="TouchscreenCheckBox" ToolTipService.ToolTip="Suppress mouse clicks after touch click if you appear to get double touches from a touchscreen." Style="{StaticResource HeliosSwitchStyle}" Unchecked="TouchscreenCheckBox_Unchecked" />
                             <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                             <TextBlock x:Name="TouchScreenDelayTitle" Text="IGNORE 2ND CLICK FOR" Style="{StaticResource UpLabel}" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
                             <Border CornerRadius="3" BorderBrush="#FF454545" BorderThickness="1" Background="#FF001500" Padding="0" Width="56" Height="18" Margin="4,0,0,0" >
-                                <TextBlock x:Name="TouchscreenDelayTextBlock" Style="{StaticResource BaseDisplayText}" FontSize="12" Padding="0,0,2,0" Text="0 ms" VerticalAlignment="Center" TextAlignment="Right"/>
+                                <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource BaseDisplayText}" FontSize="12" Padding="0,0,2,0" Text="{Binding SuppressMouseAfterTouchDuration}" VerticalAlignment="Center" TextAlignment="Right"/>
+                                <TextBlock Style="{StaticResource BaseDisplayText}" FontSize="12" Padding="0,0,2,0" Text=" ms" VerticalAlignment="Center" TextAlignment="Left"/>
+                                </StackPanel>
                             </Border>
                         </StackPanel>
-                        <Slider Grid.Row="2" Grid.Column="1" Margin="0,0,9,0" x:Name="TouchScreenDelaySlider" Minimum="0" Maximum="1000" TickFrequency="200" TickPlacement="BottomRight" ValueChanged="TouchScreenDelaySlider_ValueChanged" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
+                        <Slider Grid.Row="2" Grid.Column="1" Margin="0,0,9,0" Value="{Binding SuppressMouseAfterTouchDuration}" Minimum="0" Maximum="1000" TickFrequency="200" TickPlacement="BottomRight" IsEnabled="{Binding IsChecked, ElementName=TouchscreenCheckBox}" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
                     </Grid>
                 </Grid>
             </Canvas>

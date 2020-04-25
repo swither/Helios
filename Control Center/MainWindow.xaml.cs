@@ -44,12 +44,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private DispatcherTimer _dispatcherTimer;
         private List<MonitorWindow> _windows = new List<MonitorWindow>();
-        private long _lastTick = 0;
+        private long _lastTick;
 
         private WindowInteropHelper _helper;
-        private bool _prefsShown = false;
+        private bool _prefsShown;
 
-        private HotKey _hotkey = null;
+        private HotKey _hotkey;
 
         // current status message to display
         private StatusValue _status = StatusValue.Empty;
@@ -58,8 +58,19 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         private string _lastProfileHint = "";
         private string _lastDriverStatus = "";
 
+        // our writable preferences
+        public SettingsManager PreferencesFile { get; }
+
+        // model for our preferences
+        public Preferences Preferences { get; }
+
         public MainWindow()
         {
+            PreferencesFile = new SettingsManager(Path.Combine(ConfigManager.DocumentPath, "ControlCenterPreferences.xml"))
+            {
+                Writable = true
+            };
+            Preferences = new Preferences(PreferencesFile); 
             InitializeComponent();
 
             // this is gross, but correct:  this time is before any read access to settings, meaning before we load them
@@ -71,10 +82,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             // Display a dynamic splash panel with release and credits
             displaySplash(4000);
 
-            PrefsCheckBox.IsChecked = false;
-            StatusCheckBox.IsChecked = false;
-            MinimizeCheckBox.IsChecked = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "StartMinimized", false);
-            if (MinimizeCheckBox.IsChecked == true)
+            if (Preferences.StartMinimized)
             {
                 Minimize();
             }
@@ -83,10 +91,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 Maximize();
             }
 
-            // if true, Control Center will automatically start the same profile as is being run by the export script
-            ProfileAutoStartCheckBox.IsChecked = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "ProfileAutoStart", true);
-
-            LoadProfileList(ConfigManager.SettingsManager.LoadSetting("ControlCenter", "LastProfile", ""));
+            LoadProfileList(PreferencesFile.LoadSetting("ControlCenter", "LastProfile", ""));
             if (_profileIndex == -1 && _profiles.Count > 0)
             {
                 _profileIndex = 0;
@@ -100,21 +105,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 SelectedProfileName = "- No Profiles Available -";
             }
 
-            if (ConfigManager.SettingsManager.IsSettingAvailable("ControlCenter", "TouchScreenMouseSuppressionPeriod"))
-            {
-                TouchScreenDelaySlider.Value = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "TouchScreenMouseSuppressionPeriod", 0);
-                if (TouchScreenDelaySlider.Value > 0)
-                {
-                    TouchscreenCheckBox.IsChecked = true;
-                    TouchScreenDelaySlider.IsEnabled = true;
-                }
-                else
-                {
-                    TouchscreenCheckBox.IsChecked = false;
-                    TouchScreenDelaySlider.IsEnabled = false;
-                }
-            }
-
+            // fix up UI state that isn't implemented as bindings
+            TouchscreenCheckBox.IsChecked = (Preferences.SuppressMouseAfterTouchDuration > 0);
             try
             {
                 RegistryKey pathKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
@@ -122,7 +114,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 {
                     if (pathKey.GetValue("Helios") != null)
                     {
-                        AutoStartCheckBox.IsChecked = true;
+                        Preferences.AutoStart = true;
                     }
                     pathKey.Close();
                 }
@@ -131,12 +123,10 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             {
                 AutoStartCheckBox.IsChecked = false;
                 AutoStartCheckBox.IsEnabled = false;
-                AutoStartCheckBox.ToolTip = "Unable to read/write registry for auto start.  Try running Control Center as an administrator.";
+                AutoStartCheckBox.ToolTip = "Unable to read/write registry to enable auto start.  Control Center may require administrator rights for this feature.";
                 ConfigManager.LogManager.LogError("Error checking for auto start.", e);
             }
 
-            AutoHideCheckBox.IsChecked = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "AutoHide", false);
-            PreflightCheckBox.IsChecked = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "PreflightCheck", true);
             StatusMessage = StatusValue.RunningVersion;
         }
 
@@ -544,7 +534,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
 
             ActiveProfile.Dispatcher = Dispatcher;
-            if (PreflightCheckBox.IsChecked == true)
+            if (Preferences.PreflightCheck)
             {
                 if (!PerformReadyCheck())
                 {
@@ -579,15 +569,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 {
                     if (monitor.Children.Count > 0 || monitor.FillBackground || !String.IsNullOrWhiteSpace(monitor.BackgroundImage))
                     {
-                        if (ConfigManager.SettingsManager.IsSettingAvailable("ControlCenter", "TouchScreenMouseSuppressionPeriod"))
-                        {
-                            monitor.SuppressMouseAfterTouchDuration = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "TouchScreenMouseSuppressionPeriod", 0);
-                        }
-                        else
-                        {
-                            monitor.SuppressMouseAfterTouchDuration = 0;
-                        }
-                        ConfigManager.LogManager.LogDebug("Creating window (Monitor=\"" + monitor.Name + "\")" + " with Touchscreen 2nd Trigger suppression delay set to " + Convert.ToString(monitor.SuppressMouseAfterTouchDuration) + " msec.");
+                        monitor.SuppressMouseAfterTouchDuration = Preferences.SuppressMouseAfterTouchDuration;
+                        ConfigManager.LogManager.LogDebug("Creating window (Monitor=\"" + monitor.Name + "\")" + " with touchscreen mouse event suppression delay set to " + Convert.ToString(monitor.SuppressMouseAfterTouchDuration) + " msec.");
                         MonitorWindow window = new MonitorWindow(monitor, true);
                         window.Show();
                         _windows.Add(window);
@@ -599,28 +582,15 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 }
             }
 
-            //App app = Application.Current as App;
-            //if (app == null || (app != null && !app.DisableTouchKit))
-            //{
-            //    try
-            //    {
-            //        EGalaxTouch.CaptureTouchScreens(_windows);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        ConfigManager.LogManager.LogError("Error capturing touchkit screens.", ex);
-            //    }
-            //}
-
             // success, consider this the most recently run profile for its tags (usually just the aircraft types supported)
             foreach (string tag in ActiveProfile.Tags)
             {
-                ConfigManager.SettingsManager.SaveSetting("RecentByTag", tag, ActiveProfile.Path);
+                PreferencesFile.SaveSetting("RecentByTag", tag, ActiveProfile.Path);
             }
 
             StatusMessage = StatusValue.Running;
 
-            if (AutoHideCheckBox.IsChecked == true)
+            if (Preferences.AutoHide)
             {
                 Minimize();
             }
@@ -628,7 +598,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             {
                 NativeMethods.BringWindowToTop(_helper.Handle);
             }
-
         }
 
         private void Profile_DriverStatusReceived(object sender, DriverStatus e)
@@ -658,12 +627,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     Status = $"Simulator is '{_lastProfileHint}'"
                 });
             }
-            if (ProfileAutoStartCheckBox.IsChecked == false)
+            if (!Preferences.ProfileAutoStart)
             {
                 return;
             }
             ConfigManager.LogManager.LogDebug($"received profile hint with tag '{e.Tag}'");
-            string mostRecent = ConfigManager.SettingsManager.LoadSetting("RecentByTag", e.Tag, null);
+            string mostRecent = PreferencesFile.LoadSetting("RecentByTag", e.Tag, null);
             if (mostRecent == null)
             {
                 ConfigManager.LogManager.LogInfo($"received profile hint with tag '{e.Tag}' but no matching profile has been loaded; cannot auto load");
@@ -854,6 +823,28 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
         }
 
+        private bool PerformReadyCheck()
+        {
+            bool success = true;
+            foreach (StatusReportItem status in ActiveProfile.PerformReadyCheck())
+            {
+                if (status.Severity == StatusReportItem.SeverityCode.Error)
+                {
+                    success = false;
+                }
+                StatusViewer.AddItem(status);
+            }
+            StatusCanvas.StatusLines.ScrollToBottom();
+            if (!success)
+            {
+                StatusMessage = StatusValue.FailedPreflight;
+
+                // preflight only:  we automatically pop up the status view
+                StatusCheckBox.IsChecked = true;
+            }
+            return success;
+        }
+
         #endregion
 
         #region Windows Event Handlers
@@ -862,14 +853,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         {
             Left = Left + e.HorizontalChange;
             Top = Top + e.VerticalChange;
-        }
-
-        private void TouchScreenDelaySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs < double > e)
-        {
-            Int16 delayValue = Convert.ToInt16(e.NewValue);
-            string msg = String.Format(" {0} ms", delayValue);
-            this.TouchscreenDelayTextBlock.Text = msg;
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "TouchScreenMouseSuppressionPeriod", Convert.ToString(delayValue));
         }
 
         private void PowerButton_Unchecked(object sender, RoutedEventArgs e)
@@ -897,12 +880,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             IntPtr hwnd = new WindowInteropHelper(this).Handle;
             NativeMethods.GetWindowPlacement(hwnd, out wp);
 
-            //Properties.Settings.Default.ControlCenterPlacement = wp;
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "WindowLocation", wp.normalPosition);
+            //Properties.PreferencesFile.Default.ControlCenterPlacement = wp;
+            PreferencesFile.SaveSetting("ControlCenter", "WindowLocation", wp.normalPosition);
 
             if (ActiveProfile != null && _profileIndex >= 0 && _profileIndex < _profiles.Count)
             {
-                ConfigManager.SettingsManager.SaveSetting("ControlCenter", "LastProfile", _profiles[_profileIndex]);
+                PreferencesFile.SaveSetting("ControlCenter", "LastProfile", _profiles[_profileIndex]);
             }
 
             Properties.Settings.Default.Save();
@@ -931,31 +914,47 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 // Note - if window was closed on a monitor that is now disconnected from the computer,
                 //        SetWindowPlacement will place the window onto a visible monitor.
 
-                if (ConfigManager.SettingsManager.IsSettingAvailable("ControlCenter", "WindowLocation"))
+                if (PreferencesFile.IsSettingAvailable("ControlCenter", "WindowLocation"))
                 {
                     WINDOWPLACEMENT wp = new WINDOWPLACEMENT();
-                    wp.normalPosition = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "WindowLocation", new RECT(0, 0, (int)Width, (int)Height));
+                    wp.normalPosition = PreferencesFile.LoadSetting("ControlCenter", "WindowLocation",
+                        new RECT(0, 0, (int) Width, (int) Height));
                     wp.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
                     wp.flags = 0;
-                    wp.showCmd = (wp.showCmd == NativeMethods.SW_SHOWMINIMIZED ? NativeMethods.SW_SHOWNORMAL : wp.showCmd);
+                    wp.showCmd = (wp.showCmd == NativeMethods.SW_SHOWMINIMIZED
+                        ? NativeMethods.SW_SHOWNORMAL
+                        : wp.showCmd);
                     IntPtr hwnd = new WindowInteropHelper(this).Handle;
                     NativeMethods.SetWindowPlacement(hwnd, ref wp);
                 }
 
-                ModifierKeys mods = (ModifierKeys)Enum.Parse(typeof(ModifierKeys), ConfigManager.SettingsManager.LoadSetting("ControlCenter", "HotKeyModifiers", "None"));
-                Keys hotKey = (Keys)Enum.Parse(typeof(Keys), ConfigManager.SettingsManager.LoadSetting("ControlCenter", "HotKey", "None"));
+                if (!Enum.TryParse(Preferences.HotKeyModifiers, out ModifierKeys mods))
+                {
+                    HotKeyDescription = "None";
+                    return;
+                }
+                if (!Enum.TryParse(Preferences.HotKey, out Keys hotKey))
+                {
+                    HotKeyDescription = "None";
+                    return;
+                }
                 if (hotKey != Keys.None)
                 {
                     _hotkey = new HotKey(mods, hotKey, this);
                     _hotkey.HotKeyPressed += new Action<HotKey>(HotKeyPressed);
-                    HotKeyDescription = KeyboardEmulator.ModifierKeysToString(_hotkey.KeyModifier) + _hotkey.Key.ToString();
+                    HotKeyDescription = KeyboardEmulator.ModifierKeysToString(_hotkey.KeyModifier) +
+                                        _hotkey.Key.ToString();
                 }
                 else
                 {
                     HotKeyDescription = "None";
                 }
             }
-            catch { }
+            catch (System.Exception ex)
+            {
+                ConfigManager.LogManager.LogError("exception thrown during hotkey initialization", ex);
+                RemoveHotkey();
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -973,7 +972,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             Height = _prefsShown ? 277+320 : 277;
             Width = 504;
 
-            if (Environment.OSVersion.Version.Major > 5 && ConfigManager.SettingsManager.LoadSetting("ControlCenter", "AeroWarning", true))
+            if (Environment.OSVersion.Version.Major > 5 && PreferencesFile.LoadSetting("ControlCenter", "AeroWarning", true))
             {
                 bool aeroEnabled;
                 NativeMethods.DwmIsCompositionEnabled(out aeroEnabled);
@@ -985,7 +984,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
                     if (warningDialog.DisplayAgainCheckbox.IsChecked == true)
                     {
-                        ConfigManager.SettingsManager.SaveSetting("ControlCenter", "AeroWarning", false);
+                        PreferencesFile.SaveSetting("ControlCenter", "AeroWarning", false);
                     }
                 }
             }
@@ -1003,115 +1002,18 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         }
 
-        #endregion
-
-        #region Preferences
-
-        private void AutoStartCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            RegistryKey pathKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
-            pathKey.SetValue("Helios", "\"" + System.IO.Path.Combine(ConfigManager.ApplicationPath, "ControlCenter.exe") + "\"");
-            pathKey.Close();
-        }
-
-        private void MinimizeCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "StartMinimized", true);
-        }
-
-        private void AutoStartCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            RegistryKey pathKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
-            pathKey.DeleteValue("Helios", false);
-            pathKey.Close();
-        }
-
-        private void ProfileAutoStartCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "ProfileAutoStart", true);
-        }
-
-        private void ProfileAutoStartCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "ProfileAutoStart", false);
-        }
-
-        private void MinimizeCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "StartMinimized", false);
-        }
-
-        private void AutoHideCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "AutoHide", true);
-        }
-
-        private void AutoHideCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "AutoHide", false);
-        }
-
-        private void TouchscreenCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            // don't save anything, because the slider has to be set to non-zero to enable feature
-            TouchScreenDelaySlider.IsEnabled = true;
-        }
-
-        private void TouchscreenCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "TouchScreenMouseSuppressionPeriod", "0");
-            TouchScreenDelaySlider.Value = 0;
-            TouchScreenDelaySlider.IsEnabled = false;
-        }
-        private void TBDCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            //ConfigManager.SettingsManager.SaveSetting("ControlCenter", "AutoHide", true);
-        }
-
-        private void TBDCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            //ConfigManager.SettingsManager.SaveSetting("ControlCenter", "AutoHide", false);
-        }
-
         private void HideButton_Clicked(object sender, RoutedEventArgs e)
         {
             Minimize();
         }
 
-        private void PreflightCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "PreflightCheck", true);
-            if (ActiveProfile != null)
-            {
-                PerformReadyCheck();
-            }
-        }
+        #endregion
 
-        private void PreflightCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "PreflightCheck", false);
-        }
+        #region Preferences
 
-        private bool PerformReadyCheck()
+        private void TouchscreenCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            bool success = true;
-            foreach (StatusReportItem status in ActiveProfile.PerformReadyCheck())
-            {
-                if (status.Severity == StatusReportItem.SeverityCode.Error)
-                {
-                    success = false;
-                }
-                StatusViewer.AddItem(status);
-            }
-            StatusCanvas.StatusLines.ScrollToBottom();
-            if (!success)
-            {
-                StatusMessage = StatusValue.FailedPreflight;
-
-                // preflight only:  we automatically pop up the status view
-                StatusCheckBox.IsChecked = true;
-            }
-            return success;
+            Preferences.SuppressMouseAfterTouchDuration = 0;
         }
 
         private void SetHotkey_Click(object sender, RoutedEventArgs e)
@@ -1127,25 +1029,29 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
 
             _hotkey = new HotKey(detector.Modifiers, detector.Key, _helper.Handle);
-            _hotkey.HotKeyPressed += new Action<HotKey>(HotKeyPressed);
+            _hotkey.HotKeyPressed += HotKeyPressed;
 
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "HotKeyModifiers", detector.Modifiers.ToString());
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "HotKey", detector.Key.ToString());
-
+            Preferences.HotKeyModifiers = detector.Modifiers.ToString();
+            Preferences.HotKey = detector.Key.ToString();
             HotKeyDescription = KeyboardEmulator.ModifierKeysToString(_hotkey.KeyModifier) + _hotkey.Key.ToString();
         }
 
         private void ClearHotkey_Click(object sender, RoutedEventArgs e)
         {
+            RemoveHotkey();
+        }
+
+        private void RemoveHotkey()
+        {
             if (_hotkey != null)
             {
+                _hotkey.HotKeyPressed -= HotKeyPressed;
                 _hotkey.UnregisterHotKey();
                 _hotkey.Dispose();
             }
 
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "HotKeyModifiers", ModifierKeys.None.ToString());
-            ConfigManager.SettingsManager.SaveSetting("ControlCenter", "HotKey", Keys.None.ToString());
-
+            Preferences.HotKeyModifiers = ModifierKeys.None.ToString();
+            Preferences.HotKey = Keys.None.ToString();
             HotKeyDescription = "None";
         }
 

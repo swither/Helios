@@ -39,5 +39,11 @@ namespace GadrocsWorkshop.Helios
         /// if set, interfaces should attempt to connect to remote servers for runtime operation
         /// </summary>
         public bool ConnectToServers { get; set; } = false;
+
+        /// <summary>
+        /// if set, this application is allowed to write to the global Helios SettingsManager, rather than just
+        /// read from it
+        /// </summary>
+        public bool SettingsAreWritable { get; set; } = true;
     }
 }

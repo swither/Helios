@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
     /// </summary>
     public partial class App : Application, ISingleInstanceApp
     {
-        private const string InstanceUniqueName = "HeliosApplicationInstanceMutex";
+        private const string INSTANCE_UNIQUE_NAME = "HeliosApplicationInstanceMutex";
         private string _startupProfile = null;
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         [System.STAThreadAttribute()]
         public static void Main()
         {
-            if (SingleInstance<App>.InitializeAsFirstInstance(InstanceUniqueName))
+            if (SingleInstance<App>.InitializeAsFirstInstance(INSTANCE_UNIQUE_NAME))
             {
                 GadrocsWorkshop.Helios.ControlCenter.App app = new GadrocsWorkshop.Helios.ControlCenter.App();
                 app.InitializeComponent();
@@ -79,7 +79,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             HeliosInit.Initialize(documentPath, "ControlCenter.log", options.LogLevel, new HeliosApplication
             {
                 ShowDesignTimeControls = false,
-                ConnectToServers = true
+                ConnectToServers = true,
+                SettingsAreWritable = false
             });
 
             // need to defer exit until after we initialize Helios or our main window will crash

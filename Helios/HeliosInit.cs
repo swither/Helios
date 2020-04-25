@@ -60,7 +60,12 @@ namespace GadrocsWorkshop.Helios
             Assembly execAssembly = Assembly.GetExecutingAssembly();
             ConfigManager.LogManager.Log("Helios Version " + execAssembly.GetName().Version);
 
-            ConfigManager.SettingsManager = new SettingsManager(Path.Combine(ConfigManager.DocumentPath, "HeliosSettings.xml"));
+            ConfigManager.Application = application ?? new HeliosApplication();
+            ConfigManager.SettingsManager =
+                new SettingsManager(Path.Combine(ConfigManager.DocumentPath, "HeliosSettings.xml"))
+                {
+                    Writable = ConfigManager.Application.SettingsAreWritable
+                };
             ConfigManager.UndoManager = new UndoManager();
             ConfigManager.ProfileManager = new ProfileManager();
             ConfigManager.ImageManager = new ImageManager(ConfigManager.ImagePath);
@@ -68,7 +73,6 @@ namespace GadrocsWorkshop.Helios
 
             ConfigManager.ModuleManager = new ModuleManager(ConfigManager.ApplicationPath);
             ConfigManager.TemplateManager = new TemplateManager(ConfigManager.TemplatePath, ConfigManager.PanelTemplatePath);
-            ConfigManager.Application = application ?? new HeliosApplication();
             
             ConfigManager.LogManager.LogDebug("Searching for Helios modules in libraries");
 

@@ -63,6 +63,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Preferences.cs" />
     <Compile Include="StatusViewer\ConsoleStatus.cs" />
     <Compile Include="StatusViewer\ShareConsoleStatus.cs" />
     <Compile Include="StatusViewer\StatusViewer.cs" />
