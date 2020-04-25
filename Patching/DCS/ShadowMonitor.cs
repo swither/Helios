@@ -146,26 +146,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 LoadSettings();
                 KeyChanged?.Invoke(this, new KeyChangeEventArgs(oldKey, newKey));
             }
-
-            // need to update all viewports on this monitor
-            foreach (ShadowVisual child in _children.Values)
-            {
-                UpdateChild(child);
-            }
-        }
-
-        private void UpdateChild(ShadowVisual node)
-        {
-            if (node.IsViewport)
-            {
-                // the viewport may have changed as a result
-                // XXX what goes here?
-            }
-
-            foreach (ShadowVisual child in node.Children.Values)
-            {
-                UpdateChild(child);
-            }
         }
 
         internal bool AddViewport()
