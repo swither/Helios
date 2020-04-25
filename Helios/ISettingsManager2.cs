@@ -13,6 +13,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 
 namespace GadrocsWorkshop.Helios
@@ -35,5 +36,18 @@ namespace GadrocsWorkshop.Helios
         /// <param name="group"></param>
         /// <param name="name"></param>
         void DeleteSetting(string group, string name);
+
+        /// <summary>
+        /// load any settings from disk that were made by another program since the
+        /// specified time, merge our changes and write it back
+        /// </summary>
+        /// <param name="since">the time we last synchronized or null</param>
+        /// <returns>true if changes were loaded</returns>
+        bool SynchronizeSettings(System.DateTime? since);
+
+        /// <summary>
+        /// fired when SynchronizeSettings results in a change to the settings
+        /// </summary>
+        event EventHandler<EventArgs> Synchronized;
     }
 }

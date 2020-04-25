@@ -33,6 +33,26 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
         private InstallationLocations()
         {
+            LoadAll();
+            if (ConfigManager.SettingsManager is ISettingsManager2 settings)
+            {
+                settings.Synchronized += Settings_Synchronized;
+            }
+        }
+
+        private void Settings_Synchronized(object sender, EventArgs e)
+        {
+            IList<InstallationLocation> removed = Items.ToList();
+            Items.Clear();
+            foreach (InstallationLocation location in removed)
+            {
+                Removed?.Invoke(this, new LocationEvent(location));
+            }
+            LoadAll();
+        }
+
+        private void LoadAll()
+        {
             // load from settings XML
             foreach (InstallationLocation item in InstallationLocation.ReadSettings())
             {

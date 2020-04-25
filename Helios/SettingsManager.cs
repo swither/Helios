@@ -15,6 +15,7 @@
 
 namespace GadrocsWorkshop.Helios
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -23,10 +24,13 @@ namespace GadrocsWorkshop.Helios
 
     internal class SettingsManager : ISettingsManager2
     {
+        public event EventHandler<EventArgs> Synchronized;
+
         private class Setting
         {
             public string Name;
             public string Value;
+            public bool IsDirty;
         }
 
         private class SettingsColleciton : KeyedCollection<string, Setting>
@@ -60,6 +64,22 @@ namespace GadrocsWorkshop.Helios
             {
                 return item.Name;
             }
+
+            internal Group GetOrCreateGroup(string groupName)
+            {
+                Group retValue;
+                if (Contains(groupName))
+                {
+                    retValue = this[groupName];
+                }
+                else
+                {
+                    retValue = new Group();
+                    retValue.Name = groupName;
+                    Add(retValue);
+                }
+                return retValue;
+            }
         }
 
         private string _settingsFile;
@@ -79,67 +99,9 @@ namespace GadrocsWorkshop.Helios
                 return;
             }
 
-            // start with empty settings
-            _settings = new GroupCollection();
-
             try
             {
-                if (File.Exists(_settingsFile))
-                {
-                    XmlReaderSettings settings = new XmlReaderSettings();
-                    settings.IgnoreComments = true;
-                    settings.IgnoreWhitespace = true;
-
-                    TextReader reader = new StreamReader(_settingsFile);
-                    XmlReader xmlReader = XmlReader.Create(reader, settings);
-
-                    try
-                    {
-                        xmlReader.ReadStartElement("HeliosSettings");
-                        if (!xmlReader.IsEmptyElement)
-                        {
-                            while (xmlReader.NodeType != XmlNodeType.EndElement)
-                            {
-                                xmlReader.ReadStartElement("Group");
-                                string name = xmlReader.ReadElementString("Name");
-                                Group group = GetGroup(name);
-
-                                if (!xmlReader.IsEmptyElement)
-                                {
-                                    xmlReader.ReadStartElement("Settings");
-                                    while (xmlReader.NodeType != XmlNodeType.EndElement)
-                                    {
-                                        Setting setting = new Setting();
-
-                                        xmlReader.ReadStartElement("Setting");
-                                        setting.Name = xmlReader.ReadElementString("Name");
-                                        setting.Value = xmlReader.ReadElementString("Value");
-                                        xmlReader.ReadEndElement();
-
-                                        group.Settings.Add(setting);
-                                    }
-                                    xmlReader.ReadEndElement();
-                                }
-                                else
-                                {
-                                    xmlReader.Read();
-                                }
-                                xmlReader.ReadEndElement();
-                            }
-                        }
-                        else
-                        {
-                            xmlReader.Read();
-                        }
-
-                        xmlReader.ReadEndElement();
-                    }
-                    finally
-                    {
-                        xmlReader.Close();
-                        reader.Close();
-                    }
-                }
+                _settings = LoadSettingsFile();
             } 
             catch (System.Exception ex)
             {
@@ -147,6 +109,70 @@ namespace GadrocsWorkshop.Helios
                 // reset to defaults (empty settings) and let it overwrite the settings file when we next save
                 _settings = new GroupCollection();
             }
+        }
+
+        private GroupCollection LoadSettingsFile()
+        {
+            // start with empty settings
+            GroupCollection settingsCollection = new GroupCollection();
+            if (File.Exists(_settingsFile))
+            {
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.IgnoreComments = true;
+                settings.IgnoreWhitespace = true;
+
+                TextReader reader = new StreamReader(_settingsFile);
+                XmlReader xmlReader = XmlReader.Create(reader, settings);
+
+                try
+                {
+                    xmlReader.ReadStartElement("HeliosSettings");
+                    if (!xmlReader.IsEmptyElement)
+                    {
+                        while (xmlReader.NodeType != XmlNodeType.EndElement)
+                        {
+                            xmlReader.ReadStartElement("Group");
+                            string name = xmlReader.ReadElementString("Name");
+                            Group group = settingsCollection.GetOrCreateGroup(name);
+
+                            if (!xmlReader.IsEmptyElement)
+                            {
+                                xmlReader.ReadStartElement("Settings");
+                                while (xmlReader.NodeType != XmlNodeType.EndElement)
+                                {
+                                    Setting setting = new Setting();
+
+                                    xmlReader.ReadStartElement("Setting");
+                                    setting.Name = xmlReader.ReadElementString("Name");
+                                    setting.Value = xmlReader.ReadElementString("Value");
+                                    xmlReader.ReadEndElement();
+                                    group.Settings.Add(setting);
+                                }
+
+                                xmlReader.ReadEndElement();
+                            }
+                            else
+                            {
+                                xmlReader.Read();
+                            }
+
+                            xmlReader.ReadEndElement();
+                        }
+                    }
+                    else
+                    {
+                        xmlReader.Read();
+                    }
+
+                    xmlReader.ReadEndElement();
+                }
+                finally
+                {
+                    xmlReader.Close();
+                    reader.Close();
+                }
+            }
+            return settingsCollection;
         }
 
         private void SaveSettings()
@@ -188,38 +214,24 @@ namespace GadrocsWorkshop.Helios
             writer.Close();
         }
 
-        private Group GetGroup(string groupName)
-        {
-            Group retValue;
-            if (_settings.Contains(groupName))
-            {
-                retValue = _settings[groupName];
-            }
-            else
-            {
-                retValue = new Group();
-                retValue.Name = groupName;
-                _settings.Add(retValue);
-            }
-            return retValue;
-        }
-
         public void SaveSetting(string group, string name, string value)
         {
             LoadSettings();
 
-            Group settingGroup = GetGroup(group);
+            Group settingGroup = _settings.GetOrCreateGroup(group);
             Setting setting;
             if (settingGroup.Settings.Contains(name))
             {
                 setting = settingGroup.Settings[name];
                 setting.Value = value;
+                setting.IsDirty = true;
             }
             else
             {
                 setting = new Setting();
                 setting.Name = name;
                 setting.Value = value;
+                setting.IsDirty = true;
                 settingGroup.Settings.Add(setting);
             }
 
@@ -230,7 +242,7 @@ namespace GadrocsWorkshop.Helios
         {
             LoadSettings();
 
-            Group settingGroup = GetGroup(group);
+            Group settingGroup = _settings.GetOrCreateGroup(group);
             Setting setting;
             if (settingGroup.Settings.Contains(name))
             {
@@ -247,7 +259,7 @@ namespace GadrocsWorkshop.Helios
         {
             LoadSettings();
 
-            Group settingGroup = GetGroup(group);
+            Group settingGroup = _settings.GetOrCreateGroup(group);
             Setting setting;
             if (settingGroup.Settings.Contains(name))
             {
@@ -266,7 +278,7 @@ namespace GadrocsWorkshop.Helios
         {
             LoadSettings();
 
-            Group settingGroup = GetGroup(group);
+            Group settingGroup = _settings.GetOrCreateGroup(group);
             Setting setting;
             if (settingGroup.Settings.Contains(name))
             {
@@ -289,33 +301,78 @@ namespace GadrocsWorkshop.Helios
         {
             LoadSettings();
 
-            Group settingGroup = GetGroup(group);
+            Group settingGroup = _settings.GetOrCreateGroup(group);
             return settingGroup.Settings.Contains(name);
         }
 
-        /// <summary>
-        /// ISettingsManager2: enumerate all keys for group
-        /// </summary>
-        /// <param name="group"></param>
-        /// <returns></returns>
+        #region ISettingsManager2
+
         public IEnumerable<string> EnumerateSettingNames(string group)
         {
             LoadSettings();
-            Group settingGroup = GetGroup(group);
+            Group settingGroup = _settings.GetOrCreateGroup(group);
             return settingGroup.Settings.Keys;
         }
 
-        /// <summary>
-        /// ISettingsManager2: delete key from group
-        /// </summary>
-        /// <param name="group"></param>
-        /// <param name="name"></param>
         public void DeleteSetting(string group, string name)
         {
             LoadSettings();
-            Group settingGroup = GetGroup(group);
+            Group settingGroup = _settings.GetOrCreateGroup(group);
             settingGroup.Settings.Remove(name);
             SaveSettings();
         }
+
+        public bool SynchronizeSettings(DateTime? since)
+        {
+            try
+            {
+                if (since.HasValue)
+                {
+                    if (File.GetLastWriteTime(_settingsFile) < since.Value)
+                    {
+                        return false;
+                    }
+                }
+                GroupCollection fromDisk = LoadSettingsFile();
+                bool changed = false;
+                foreach (Group group in _settings)
+                {
+                    foreach (Setting setting in group.Settings)
+                    {
+                        if (setting.IsDirty)
+                        {
+                            changed = true;
+                            Group groupFromDisk = fromDisk.GetOrCreateGroup(group.Name);
+                            if (groupFromDisk.Settings.Contains(setting.Name))
+                            {
+                                groupFromDisk.Settings[setting.Name].Value = setting.Value;
+                            }
+                            else
+                            {
+                                Setting merged = new Setting();
+                                merged.Name = setting.Name;
+                                merged.Value = setting.Value;
+                                groupFromDisk.Settings.Add(merged);
+                            }
+                        }
+                    }
+                }
+                _settings = fromDisk;
+                if (changed)
+                {
+                    SaveSettings();
+                }
+                Synchronized?.Invoke(this, EventArgs.Empty);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                ConfigManager.LogManager.LogError($"the settings file '{_settingsFile}' has become corrupted; writing new file from settings we have in memory", ex);
+                SaveSettings();
+                return false;
+            }
+        }
+
+        #endregion
     }
 }

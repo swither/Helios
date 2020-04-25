@@ -62,7 +62,11 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         {
             InitializeComponent();
 
-            ConfigManager.LogManager.LogInfo("Initializing Main Window");
+            // this is gross, but correct:  this time is before any read access to settings, meaning before we load them
+            SettingsLoadTime = DateTime.Now;
+            
+            // starting
+            ConfigManager.LogManager.LogDebug("Control Center initializing");
 
             // Display a dynamic splash panel with release and credits
             displaySplash(4000);
@@ -348,6 +352,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 }
 
                 // try to load the profile, setting SelectedProfileName in the process
+                SettingsLoadTime = DateTime.Now;
+                (ConfigManager.SettingsManager as ISettingsManager2)?.SynchronizeSettings(null);
                 LoadProfile(profileToLoad);
 
                 if (ActiveProfile != null)
@@ -369,17 +375,33 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void StartProfile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            bool settingsChanged = false;
+            if (ConfigManager.SettingsManager is ISettingsManager2 settings)
+            {
+                DateTime checkTime = DateTime.Now;
+                settingsChanged = settings.SynchronizeSettings(SettingsLoadTime);
+                SettingsLoadTime = checkTime;
+            }
 
             if (ActiveProfile != null)
             {
                 if (ActiveProfile.IsStarted)
                 {
-                    return;
+                    if (!settingsChanged)
+                    {
+                        return;
+                    }
+                    ConfigManager.LogManager.LogInfo("Stopping profile due to external settings changes");
+                    StopProfile();
                 }
 
                 StatusViewer.ResetCautionLight();
-                if (File.GetLastWriteTime(ActiveProfile.Path) > ActiveProfile.LoadTime)
+                if (settingsChanged || File.GetLastWriteTime(ActiveProfile.Path) > ActiveProfile.LoadTime)
                 {
+                    if (settingsChanged)
+                    {
+                        ConfigManager.LogManager.LogInfo("Reloading profile due to external settings changes");
+                    }
                     LoadProfile(ActiveProfile.Path);
                 }
             }
@@ -391,6 +413,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             
             StartProfile();
         }
+
+        public DateTime? SettingsLoadTime { get; set; }
 
         public void StopProfile_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -514,93 +538,95 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void StartProfile()
         {
-            if (ActiveProfile != null && !ActiveProfile.IsStarted)
+            if (ActiveProfile == null || ActiveProfile.IsStarted)
             {
-                ActiveProfile.Dispatcher = Dispatcher;
-                if (PreflightCheckBox.IsChecked == true)
+                return;
+            }
+
+            ActiveProfile.Dispatcher = Dispatcher;
+            if (PreflightCheckBox.IsChecked == true)
+            {
+                if (!PerformReadyCheck())
                 {
-                    if (!PerformReadyCheck())
-                    {
-                        // this is already logged as an error because we set the StatusMessage to an error type
-                        ConfigManager.LogManager.LogDebug("Aborted start up of Profile due to failed preflight check.");
-                        return;
-                    }
+                    // this is already logged as an error because we set the StatusMessage to an error type
+                    ConfigManager.LogManager.LogDebug("Aborted start up of Profile due to failed preflight check.");
+                    return;
                 }
+            }
 
-                ActiveProfile.ControlCenterShown += Profile_ShowControlCenter;
-                ActiveProfile.ControlCenterHidden += Profile_HideControlCenter;
-                ActiveProfile.ProfileStopped += Profile_ProfileStopped;
-                ActiveProfile.ProfileHintReceived += Profile_ProfileHintReceived;
-                ActiveProfile.DriverStatusReceived += Profile_DriverStatusReceived;
-                ActiveProfile.ClientChanged += Profile_ClientChanged;
+            ActiveProfile.ControlCenterShown += Profile_ShowControlCenter;
+            ActiveProfile.ControlCenterHidden += Profile_HideControlCenter;
+            ActiveProfile.ProfileStopped += Profile_ProfileStopped;
+            ActiveProfile.ProfileHintReceived += Profile_ProfileHintReceived;
+            ActiveProfile.DriverStatusReceived += Profile_DriverStatusReceived;
+            ActiveProfile.ClientChanged += Profile_ClientChanged;
 
-                ActiveProfile.Start();
+            ActiveProfile.Start();
 
-                if (_dispatcherTimer != null)
+            if (_dispatcherTimer != null)
+            {
+                _dispatcherTimer.Stop();
+            }
+
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 33);
+            _dispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
+            _dispatcherTimer.Start();
+
+            foreach (Monitor monitor in ActiveProfile.Monitors)
+            {
+                try
                 {
-                    _dispatcherTimer.Stop();
-                }
-
-                _dispatcherTimer = new DispatcherTimer();
-                _dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 33);
-                _dispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
-                _dispatcherTimer.Start();
-
-                foreach (Monitor monitor in ActiveProfile.Monitors)
-                {
-                    try
+                    if (monitor.Children.Count > 0 || monitor.FillBackground || !String.IsNullOrWhiteSpace(monitor.BackgroundImage))
                     {
-                        if (monitor.Children.Count > 0 || monitor.FillBackground || !String.IsNullOrWhiteSpace(monitor.BackgroundImage))
+                        if (ConfigManager.SettingsManager.IsSettingAvailable("ControlCenter", "TouchScreenMouseSuppressionPeriod"))
                         {
-                            if (ConfigManager.SettingsManager.IsSettingAvailable("ControlCenter", "TouchScreenMouseSuppressionPeriod"))
-                            {
-                                monitor.SuppressMouseAfterTouchDuration = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "TouchScreenMouseSuppressionPeriod", 0);
-                            }
-                            else
-                            {
-                                monitor.SuppressMouseAfterTouchDuration = 0;
-                            }
-                            ConfigManager.LogManager.LogDebug("Creating window (Monitor=\"" + monitor.Name + "\")" + " with Touchscreen 2nd Trigger suppression delay set to " + Convert.ToString(monitor.SuppressMouseAfterTouchDuration) + " msec.");
-                            MonitorWindow window = new MonitorWindow(monitor, true);
-                            window.Show();
-                            _windows.Add(window);
+                            monitor.SuppressMouseAfterTouchDuration = ConfigManager.SettingsManager.LoadSetting("ControlCenter", "TouchScreenMouseSuppressionPeriod", 0);
                         }
+                        else
+                        {
+                            monitor.SuppressMouseAfterTouchDuration = 0;
+                        }
+                        ConfigManager.LogManager.LogDebug("Creating window (Monitor=\"" + monitor.Name + "\")" + " with Touchscreen 2nd Trigger suppression delay set to " + Convert.ToString(monitor.SuppressMouseAfterTouchDuration) + " msec.");
+                        MonitorWindow window = new MonitorWindow(monitor, true);
+                        window.Show();
+                        _windows.Add(window);
                     }
-                    catch (Exception ex)
-                    {
-                        ConfigManager.LogManager.LogError("Error creating monitor window (Monitor=\"" + monitor.Name + "\")", ex);
-                    }
                 }
-
-                //App app = Application.Current as App;
-                //if (app == null || (app != null && !app.DisableTouchKit))
-                //{
-                //    try
-                //    {
-                //        EGalaxTouch.CaptureTouchScreens(_windows);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        ConfigManager.LogManager.LogError("Error capturing touchkit screens.", ex);
-                //    }
-                //}
-
-                // success, consider this the most recently run profile for its tags (usually just the aircraft types supported)
-                foreach (string tag in ActiveProfile.Tags)
+                catch (Exception ex)
                 {
-                    ConfigManager.SettingsManager.SaveSetting("RecentByTag", tag, ActiveProfile.Path);
+                    ConfigManager.LogManager.LogError("Error creating monitor window (Monitor=\"" + monitor.Name + "\")", ex);
                 }
+            }
 
-                StatusMessage = StatusValue.Running;
+            //App app = Application.Current as App;
+            //if (app == null || (app != null && !app.DisableTouchKit))
+            //{
+            //    try
+            //    {
+            //        EGalaxTouch.CaptureTouchScreens(_windows);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        ConfigManager.LogManager.LogError("Error capturing touchkit screens.", ex);
+            //    }
+            //}
 
-                if (AutoHideCheckBox.IsChecked == true)
-                {
-                    Minimize();
-                }
-                else
-                {
-                    NativeMethods.BringWindowToTop(_helper.Handle);
-                }
+            // success, consider this the most recently run profile for its tags (usually just the aircraft types supported)
+            foreach (string tag in ActiveProfile.Tags)
+            {
+                ConfigManager.SettingsManager.SaveSetting("RecentByTag", tag, ActiveProfile.Path);
+            }
+
+            StatusMessage = StatusValue.Running;
+
+            if (AutoHideCheckBox.IsChecked == true)
+            {
+                Minimize();
+            }
+            else
+            {
+                NativeMethods.BringWindowToTop(_helper.Handle);
             }
 
         }
@@ -762,16 +788,13 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void LoadProfile(string path)
         {
-            if (ActiveProfile == null || (ActiveProfile != null && ActiveProfile.LoadTime < Directory.GetLastWriteTime(ActiveProfile.Path)))
-            {
-                StatusMessage = StatusValue.Loading;
+            StatusMessage = StatusValue.Loading;
 
-                // pump main thread to update UI
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)delegate { });
+            // pump main thread to update UI
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)delegate { });
 
-                // now do the load that might take a while
-                ActiveProfile = ConfigManager.ProfileManager.LoadProfile(path, Dispatcher);
-            }
+            // now do the load that might take a while
+            ActiveProfile = ConfigManager.ProfileManager.LoadProfile(path, Dispatcher);
 
             if (ActiveProfile != null)
             {
@@ -978,11 +1001,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
             VersionChecker.CheckVersion();
 
-        }
-
-        protected override void OnInitialized(EventArgs e)
-        {
-            base.OnInitialized(e);
         }
 
         #endregion
