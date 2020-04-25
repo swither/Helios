@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Text.RegularExpressions;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -116,7 +118,7 @@ namespace GadrocsWorkshop.Helios
         private void WriteLogMessage(LogLevel level, string message, Exception exception)
         {
 #if DEBUG
-            Console.WriteLine($"{createTimeStamp()} {level.ToString()}: {message}");
+            Console.WriteLine($"{CreateTimeStamp()} {level.ToString()}: {message}");
 #endif
             string timeStamp = null;
             if (_level >= level)
@@ -128,11 +130,11 @@ namespace GadrocsWorkshop.Helios
             if (level < LogLevel.Debug)
             {
                 // use timestamp from file for correlation, if available
-                DispatchToConsumers(timeStamp ?? createTimeStamp(), level, message, exception);
+                DispatchToConsumers(timeStamp ?? CreateTimeStamp(), level, message, exception);
             }
         }
 
-        private static string createTimeStamp()
+        private static string CreateTimeStamp()
         {
             return DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
         }
@@ -159,7 +161,7 @@ namespace GadrocsWorkshop.Helios
                     using (errorWriter)
                     {
                         // because we get this timestamp under lock, messages will be in order in the file
-                        string timeStamp = createTimeStamp();
+                        string timeStamp = CreateTimeStamp();
 
                         // write to file
                         errorWriter.Write(timeStamp);
@@ -215,7 +217,7 @@ namespace GadrocsWorkshop.Helios
             }
             writer.WriteLine("Exception Message:" + exception.Message);
             writer.WriteLine("Stack Trace:");
-            writer.WriteLine(exception.StackTrace);
+            WriteStackTrace(writer, exception);
 
             ReflectionTypeLoadException le = exception as ReflectionTypeLoadException;
             if (le != null)
@@ -230,6 +232,21 @@ namespace GadrocsWorkshop.Helios
             {
                 writer.WriteLine();
                 WriteException(writer, exception.InnerException);
+            }
+        }
+
+        private static void WriteStackTrace(StreamWriter writer, Exception exception)
+        {
+            Regex buidPathExpression = new Regex("[A-Z]:\\\\.*\\\\Helios\\\\");
+            string trace = exception.StackTrace;
+            Match buildPathMatch = buidPathExpression.Match(trace);
+            if (buildPathMatch.Success)
+            {
+                writer.WriteLine(trace.Replace(buildPathMatch.Groups[0].Value, ""));
+            }
+            else
+            {
+                writer.WriteLine(trace);
             }
         }
     }

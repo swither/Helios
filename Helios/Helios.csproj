@@ -477,6 +477,7 @@
     <Compile Include="Util\CommandLineOptions.cs" />
     <Compile Include="Util\DCS\MockInstallationLocations.cs" />
     <Compile Include="Util\EnumBooleanConverter.cs" />
+    <Compile Include="Windows\ExceptionViewer.cs" />
     <Compile Include="Util\HeliosUndoBatch.cs" />
     <Compile Include="Interfaces\Common\InterfaceStatus.cs" />
     <Compile Include="RunningVersion.cs" />

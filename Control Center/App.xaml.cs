@@ -13,8 +13,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CommandLine;
-using CommandLine.Text;
+using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.ControlCenter
 {
@@ -43,14 +42,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         {
             if (SingleInstance<App>.InitializeAsFirstInstance(InstanceUniqueName))
             {
-                //SplashScreen splashScreen = null;
-
-                //splashScreen = new SplashScreen("splash_logo.png");
-                //splashScreen.Show(false);
                 GadrocsWorkshop.Helios.ControlCenter.App app = new GadrocsWorkshop.Helios.ControlCenter.App();
                 app.InitializeComponent();
-                //Thread.Sleep(1000);
-                //splashScreen.Close(TimeSpan.FromMilliseconds(500));
                 app.Run();
                 SingleInstance<App>.Cleanup();
             }
@@ -69,6 +62,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            Current.Dispatcher.UnhandledException += App_DispatcherUnhandledException;
 
             CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
 
@@ -111,13 +105,9 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             return exitCode == 0;
         }
 
-        // XXX re-enable this and test
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            System.Windows.MessageBox.Show(string.Format("An error occured: {0}", e.Exception.Message), "Error");
-            e.Handled = true;
-            //ConfigManager.LogManager.LogError("Unhandled Exception", e.Exception);
-            //e.Handled = false;
+            ExceptionViewer.DisplayUnhandledException(e);
         }
     }
 }

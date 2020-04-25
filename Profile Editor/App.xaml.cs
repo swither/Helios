@@ -15,6 +15,8 @@
 
 
 // assign an alias to this namespace so we can refer to it without the space is the assembly name
+
+using GadrocsWorkshop.Helios.Windows;
 using System.Windows.Markup;
 
 [assembly: XmlnsDefinition("http://Helios.local/ProfileEditor", "GadrocsWorkshop.Helios.ProfileEditor")]
@@ -46,6 +48,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            Current.Dispatcher.UnhandledException += App_DispatcherUnhandledException;
 
             CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
 
@@ -78,10 +81,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             ConfigManager.LogManager.LogInfo("Starting Editor");
         }
 
-        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            System.Windows.MessageBox.Show(string.Format("An error occured: {0}", e.Exception.Message), "Error");
-            e.Handled = true;
+            ExceptionViewer.DisplayUnhandledException(e);
         }
     }
 }
