@@ -138,11 +138,13 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void displaySplash(Int32 splashDelay)
         {
+#if !DEBUG
             About aboutDialog = new About();
             aboutDialog.InitializeComponent();
             aboutDialog.Show();
             System.Threading.Thread.Sleep(splashDelay);
             aboutDialog.Close();
+#endif
         }
 
         private void ComposeStatusMessage(string firstLine)

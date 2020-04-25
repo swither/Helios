@@ -15,12 +15,14 @@ namespace GenerateTestMonitorSetup
 
         private class Config
         {
-            public int main_left = 1080;
-            public int main_top = 240;
+            private static readonly int MAIN_LEFT = 1080;
+            private static readonly int MAIN_TOP = 0;
+            public int main_left = MAIN_LEFT;
+            public int main_top = MAIN_TOP;
             public int main_width = 2560;
             public int main_height = 1440;
-            public int grid_left = 1080 + 2560;
-            public int grid_top = 240;
+            public int grid_left = MAIN_LEFT + 2560;
+            public int grid_top = MAIN_TOP;
             public int cell_width = 200;
             public int cell_height = 200;
         };
@@ -55,7 +57,7 @@ namespace GenerateTestMonitorSetup
             // also update helios overlay for labels
             XmlDocument heliosProfile = null;
             string profilePath = null;
-            foreach (string documentsFolder in new string[] { "HeliosTesting", "Helios" })
+            foreach (string documentsFolder in new string[] { "HeliosDev", "HeliosTesting", "Helios" })
             {
                 profilePath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), documentsFolder, "Profiles", "test_all_viewports.hpf");
                 if (File.Exists(profilePath))
@@ -164,6 +166,8 @@ namespace GenerateTestMonitorSetup
             }
             string text = string.Join("\n", lines);
             string outputPath = Path.Combine(GadrocsWorkshop.Helios.Util.KnownFolders.SavedGames, "DCS", "Config", "MonitorSetup", "test_all_viewports.lua");
+            File.WriteAllText(outputPath, text);
+            outputPath = Path.Combine(GadrocsWorkshop.Helios.Util.KnownFolders.SavedGames, "DCS.OpenBeta", "Config", "MonitorSetup", "test_all_viewports.lua");
             File.WriteAllText(outputPath, text);
         }
     }

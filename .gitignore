@@ -46,3 +46,4 @@ attribution_*.txt
 /Helios/TimeStamp.g.cs
 /Lua/DCS/Scripts/Helios/HeliosExport16.lua
 /Lua/runExportLua.ps1
+/publish.cmd

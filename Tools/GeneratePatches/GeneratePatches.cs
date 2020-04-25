@@ -105,7 +105,8 @@ namespace GeneratePatches
             List<DiffMatchPatch.Patch> patches = googleDiff.patch_make(diffs);
             using (StreamWriter streamWriter = new StreamWriter(outputPath, false, Encoding.UTF8))
             {
-                streamWriter.Write(googleDiff.patch_toText(patches));
+                string patchText = googleDiff.patch_toText(patches);
+                streamWriter.Write(patchText);
             }
         }
 
@@ -138,7 +139,7 @@ namespace GeneratePatches
             string configPath = Path.Combine(dcsRoot, $".{configFile}");
             if (!File.Exists(configPath))
             {
-                string sourcePath = ToolsCommon.FileSystem.FindNearestDirectory("Setup\\DCS") + configFile;
+                string sourcePath = ToolsCommon.FileSystem.FindNearestDirectory("Tools\\GeneratePatches\\Setup\\DCS") + configFile;
                 string config = File.ReadAllText(sourcePath);
                 File.WriteAllText(configPath, config);
             }
