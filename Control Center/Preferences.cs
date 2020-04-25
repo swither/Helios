@@ -34,6 +34,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             _suppressMouseAfterTouchDuration = LoadSetting("SuppressMouseAfterTouchDuration", 0);
             _hotKey = LoadSetting("HotKey", Key.None.ToString());
             _hotKeyModifiers = LoadSetting("HotKeyModifiers", ModifierKeys.None.ToString());
+            _splashScreen = LoadSetting("SplashScreen", true);
 
             // NOTE: do not try to implement auto start in registry even if enabled, we may not have rights
             _autoStart = LoadSetting("AutoStart", false);
@@ -244,6 +245,28 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 _hotKey = value;
                 _preferences.SaveSetting(GROUP_NAME, "HotKey", value);
                 OnPropertyChanged("HotKey", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// backing field for property SplashScreen, contains
+        /// true if the splash screen on Control Center startup is enabled
+        /// </summary>
+        private bool _splashScreen;
+
+        /// <summary>
+        /// true if the splash screen on Control Center startup is enabled
+        /// </summary>
+        public bool SplashScreen
+        {
+            get => _splashScreen;
+            set
+            {
+                if (_splashScreen == value) return;
+                bool oldValue = _splashScreen;
+                _splashScreen = value;
+                _preferences.SaveSetting(GROUP_NAME, "SplashScreen", value);
+                OnPropertyChanged("SplashScreen", oldValue, value, true);
             }
         }
     }

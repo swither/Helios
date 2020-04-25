@@ -59,6 +59,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         private string _lastDriverStatus = "";
 
         // our writable preferences
+        // NOTE: we have readonly access to the global helios settings being written by Profile Editor
         public SettingsManager PreferencesFile { get; }
 
         // model for our preferences
@@ -79,8 +80,11 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             // starting
             ConfigManager.LogManager.LogDebug("Control Center initializing");
 
-            // Display a dynamic splash panel with release and credits
-            displaySplash(4000);
+            if (Preferences.SplashScreen)
+            {
+                // Display a dynamic splash panel with release and credits
+                DisplaySplash(4000);
+            }
 
             if (Preferences.StartMinimized)
             {
@@ -130,15 +134,13 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             StatusMessage = StatusValue.RunningVersion;
         }
 
-        private void displaySplash(Int32 splashDelay)
+        private void DisplaySplash(Int32 splashDelay)
         {
-#if !DEBUG
             About aboutDialog = new About();
             aboutDialog.InitializeComponent();
             aboutDialog.Show();
             System.Threading.Thread.Sleep(splashDelay);
             aboutDialog.Close();
-#endif
         }
 
         private void ComposeStatusMessage(string firstLine)
