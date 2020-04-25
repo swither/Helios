@@ -30,7 +30,8 @@ namespace GadrocsWorkshop.Helios.Windows
         public InstallationPromptResult DangerPrompt(string title, string message, IList<StatusReportItem> details)
         {
             // XXX create a custom dialog to explore the details
-            MessageBoxResult response = MessageBox.Show(Window.GetWindow(_host), message, title, MessageBoxButton.OKCancel);
+            MessageBoxResult response = MessageBox.Show(Window.GetWindow(_host), message, title,
+                MessageBoxButton.OKCancel, MessageBoxImage.Warning);
             if (response == MessageBoxResult.Cancel)
             {
                 return InstallationPromptResult.Cancel;
@@ -41,7 +42,7 @@ namespace GadrocsWorkshop.Helios.Windows
         public void Failure(string title, string message, IList<StatusReportItem> details)
         {
             // XXX create a custom dialog to explore the details
-            MessageBox.Show(Window.GetWindow(_host), message, title);
+            MessageBox.Show(Window.GetWindow(_host), message, title, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         public void Success(string title, string message, IList<StatusReportItem> details)

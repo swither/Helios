@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.UDPInterface;
+using GadrocsWorkshop.Helios.Util;
+using GadrocsWorkshop.Helios.Util.DCS;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,11 +23,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using GadrocsWorkshop.Helios.UDPInterface;
-using GadrocsWorkshop.Helios.Util;
-using GadrocsWorkshop.Helios.Util.DCS;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
@@ -411,49 +410,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
         #endregion
 
-#if false
-        public bool RestoreConfig()
-        {
-            string exportLuaPath = System.IO.Path.Combine(KnownFolders.SavedGames, "Scripts", "Export.lua");
-            string backupFile = exportLuaPath + ".back";
-
-            if (File.Exists(exportLuaPath))
-            {
-                File.Delete(exportLuaPath);
-            }
-
-            if (File.Exists(backupFile))
-            {
-                File.Move(backupFile, exportLuaPath);
-                File.Delete(backupFile);
-            }
-
-            IsUpToDate = CheckConfig();
-
-            return true;
-        }
-#endif
-
-#if false
-        string backupFile = exportLuaPath + ".back";
-        if (!File.Exists(backupFile))
-        {
-            File.Move(exportLuaPath, backupFile);
-        }
-        File.Delete(exportLuaPath);
-
-        StreamWriter propertiesFile = File.CreateText(exportLuaPath);
-        propertiesFile.Write(_exportLuaStub);
-        propertiesFile.Close();
-
-        catch (Exception e)
-        {
-            ConfigManager.LogManager.LogError($"Could not create Export.lua '{exportLuaPath}'", e);
-            throw;
-        }
-        IsUpToDate = CheckConfig();
-#endif
-
         // view model functionality is embedded in this model class
         private void UpdateViewModel()
         {
@@ -494,6 +450,31 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 ModuleFormatInfo moduleInfo = ExportModuleFormatInfo[_parent.ExportModuleFormat];
                 List<StatusReportItem> report = new List<StatusReportItem>();
+
+                // pass1: get permissions
+                foreach (InstallationLocation location in InstallationLocations.Singleton.Active)
+                {
+                    if (_generateExportLoader)
+                    {
+                        string exportStubPath = location.ExportStubPath;
+                        if (File.Exists(exportStubPath))
+                        {
+                            string contents = ReadFile(exportStubPath);
+                            if (contents != _exportStub)
+                            {
+                                InstallationPromptResult response = callbacks.DangerPrompt("Overwrite Export.lua",
+                                    $"Helios is about to overwrite the Export.lua script \nat {exportStubPath}\nThis file could have been created by third party software or a previous version.  Please make sure you have saved this file if you still need its contents.", new List<StatusReportItem>());
+                                if (response == InstallationPromptResult.Cancel)
+                                {
+                                    // abort
+                                    return InstallationResult.Canceled;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // pass2: do the writes
                 foreach (InstallationLocation location in InstallationLocations.Singleton.Active)
                 {
                     // create deepest folder
@@ -503,12 +484,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     }
 
                     // write all the generated files
-                    WriteFile(location.ExportStubPath, _exportStub);
-                    report.Add(new StatusReportItem
+                    if (_generateExportLoader)
                     {
-                        Status = $"Wrote Export.Lua stub for {location.SavedGamesName}",
-                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
-                    });
+                        string exportStubPath = location.ExportStubPath;
+                        WriteFile(exportStubPath, _exportStub);
+                        report.Add(new StatusReportItem
+                        {
+                            Status = $"Wrote Export.Lua stub for {location.SavedGamesName}",
+                            Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                        });
+                    }
+
+                    // main export script is required
                     File.WriteAllText(location.ExportMainPath(EXPORT_MAIN_NAME), _exportMain);
                     report.Add(new StatusReportItem
                     {
@@ -518,6 +505,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
                     if (string.IsNullOrEmpty(_exportModuleText))
                     {
+                        // not embedded module, we are done
                         continue;
                     }
 
@@ -1006,25 +994,5 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private bool LocalMachineIsRemoteHelios() => false;
 
         #endregion
-
-#if false
-        string backupFile = exportLuaPath + ".back";
-        if (!File.Exists(backupFile))
-        {
-            File.Move(exportLuaPath, backupFile);
-        }
-        File.Delete(exportLuaPath);
-
-        StreamWriter propertiesFile = File.CreateText(exportLuaPath);
-        propertiesFile.Write(_exportLuaStub);
-        propertiesFile.Close();
-
-        catch (Exception e)
-        {
-            ConfigManager.LogManager.LogError($"Could not create Export.lua '{exportLuaPath}'", e);
-            throw;
-        }
-        IsUpToDate = CheckConfig();
-#endif
     }
 }
