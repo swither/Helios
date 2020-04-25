@@ -159,6 +159,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             if (node.IsViewport)
             {
                 // the viewport may have changed as a result
+                // XXX what goes here?
             }
 
             foreach (ShadowVisual child in node.Children.Values)

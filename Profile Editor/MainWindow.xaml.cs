@@ -1102,14 +1102,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             _systemDefaultLayout = systemDefaultLayoutWriter.ToString();
         }
 
-        private void Donate_Click_Gadroc(object sender, RoutedEventArgs e)
+        private void Donate_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2MMREAY3KDXJ6");
+            System.Diagnostics.Process.Start("https://github.com/BlueFinBima/Helios/wiki/Donations");
         }
-        private void Donate_Click_Current(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://bluefinbima.github.io/helios/donate/");
-        }
+
 
         private void Explorer_ItemDeleting(object sender, ItemDeleteEventArgs e)
         {
