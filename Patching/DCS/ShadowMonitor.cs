@@ -106,12 +106,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public string Key { get; private set; }
 
-
         private void LoadSettings()
         {
-            Included = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, Key, true);
-            Main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_Main", false);
-            UserInterface = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_UserInterface",
+            _included = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, Key, true);
+            _main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_Main", false);
+            _userInterface = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_UserInterface",
                 false);
         }
 
