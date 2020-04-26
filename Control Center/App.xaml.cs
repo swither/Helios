@@ -13,7 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.ControlCenter.StatusViewer;
 using GadrocsWorkshop.Helios.Windows;
+using NLog;
 
 namespace GadrocsWorkshop.Helios.ControlCenter
 {
@@ -61,6 +63,10 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            NLog.LogManager.Setup().SetupExtensions(s =>
+                s.RegisterTarget<StatusViewerLogTarget>("StatusViewer")
+            );
+
             base.OnStartup(e);
             Current.Dispatcher.UnhandledException += App_DispatcherUnhandledException;
 
@@ -88,6 +94,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             {
                 Current.Shutdown();
             }
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            HeliosInit.OnShutdown();
+            base.OnExit(e);
         }
 
         public bool SignalExternalCommandLineArgs(IList<string> args)

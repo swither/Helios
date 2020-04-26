@@ -35,11 +35,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private Color _fillColor = Colors.Red;
         private TypeConverter _colorConverter = TypeDescriptor.GetConverter(typeof(Color));
         private HeliosValue _fillValue;
-
-       
-
-
-
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public RectangleFill()
             : base("Rectangle Fill", new Size(25, 100))
@@ -62,7 +58,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             catch
             {
-                ConfigManager.LogManager.LogWarning("Rectangle error converting color value. (Name=\"" + Name + "\", Value=\"" + e.Value.StringValue + "\")");
+                Logger.Warn("Rectangle error converting color value. (Name=\"" + Name + "\", Value=\"" + e.Value.StringValue + "\")");
             }            
         }
 

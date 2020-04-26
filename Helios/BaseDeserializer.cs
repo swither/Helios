@@ -22,6 +22,7 @@ namespace GadrocsWorkshop.Helios
         private delegate object CreateObjectDelegate(string type, string typeId);
         private CreateObjectDelegate _objectCreator;
         private Dispatcher _dispatcher;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public BaseDeserializer(Dispatcher dispatcher)
         {
@@ -50,7 +51,7 @@ namespace GadrocsWorkshop.Helios
                     HeliosVisual visual = ConfigManager.ModuleManager.CreateControl(typeId);
                     if (visual == null)
                     {
-                        ConfigManager.LogManager.LogError("Ignoring control not supported by this version of Helios: " + typeId);
+                        Logger.Error("Ignoring control not supported by this version of Helios: " + typeId);
                         return null;
                     }
                     visual.Dispatcher = _dispatcher;
@@ -60,7 +61,7 @@ namespace GadrocsWorkshop.Helios
                     HeliosInterfaceDescriptor descriptor = ConfigManager.ModuleManager.InterfaceDescriptors[typeId];
                     if (descriptor == null)
                     {
-                        ConfigManager.LogManager.LogError("Ignoring interface not supported by this version of Helios: " + typeId);
+                        Logger.Error("Ignoring interface not supported by this version of Helios: " + typeId);
                         return null;
                     }
                     HeliosInterface heliosInterface = descriptor != null ? descriptor.CreateInstance() : null;

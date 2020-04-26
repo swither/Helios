@@ -26,6 +26,8 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     internal class ModuleManager : IModuleManager
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private string _applicationPath;
         private byte[] _publicKey;
 
@@ -37,7 +39,7 @@ namespace GadrocsWorkshop.Helios
 
         internal ModuleManager(string applicationPath)
         {
-            ConfigManager.LogManager.LogDebug($"Helios will search for Helios modules in {applicationPath}");
+            Logger.Debug($"Helios will search for Helios modules in {applicationPath}");
             _applicationPath = applicationPath;
 
             Assembly appAssembly = Assembly.GetEntryAssembly();
@@ -159,28 +161,28 @@ namespace GadrocsWorkshop.Helios
                             HeliosControlAttribute controlAttribute = attribute as HeliosControlAttribute;
                             if (controlAttribute != null)
                             {
-                                ConfigManager.LogManager.LogDebug("Control found " + type.Name);
+                                Logger.Debug("Control found " + type.Name);
                                 _controlDescriptors.Add(new HeliosDescriptor(type, controlAttribute));
                             }
 
                             HeliosInterfaceAttribute interfaceAttribute = attribute as HeliosInterfaceAttribute;
                             if (interfaceAttribute != null)
                             {
-                                ConfigManager.LogManager.LogDebug("Interface found " + type.Name);
+                                Logger.Debug("Interface found " + type.Name);
                                 _interfaceDescriptors.Add(new HeliosInterfaceDescriptor(type, interfaceAttribute));
                             }
 
                             HeliosUnitConverterAttribute converterAttribute = attribute as HeliosUnitConverterAttribute;
                             if (converterAttribute != null)
                             {
-                                ConfigManager.LogManager.LogDebug("Converter found " + type.Name);
+                                Logger.Debug("Converter found " + type.Name);
                                 _converters.Add((BindingValueUnitConverter)Activator.CreateInstance(type));
                             }
 
                             HeliosPropertyEditorAttribute editorAttribute = attribute as HeliosPropertyEditorAttribute;
                             if (editorAttribute != null)
                             {
-                                ConfigManager.LogManager.LogDebug("Property editor found " + type.Name);
+                                Logger.Debug("Property editor found " + type.Name);
                                 HeliosPropertyEditorDescriptorCollection editors;
                                 if (_propertyEditors.ContainsKey(editorAttribute.TypeIdentifier))
                                 {
@@ -200,11 +202,11 @@ namespace GadrocsWorkshop.Helios
                 }
                 catch (ReflectionTypeLoadException e)
                 {
-                    ConfigManager.LogManager.LogError("Failed reflecting assembly " + asm.FullName, e);
+                    Logger.Error(e, "Failed reflecting assembly " + asm.FullName);
                 }
                 catch (Exception e)
                 {
-                    ConfigManager.LogManager.LogError("Failed adding module " + asm.FullName, e);
+                    Logger.Error(e, "Failed adding module " + asm.FullName);
                 }
             }
         }

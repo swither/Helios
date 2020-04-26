@@ -42,6 +42,7 @@ namespace GadrocsWorkshop.Helios
         private MonitorCollection _monitors = new MonitorCollection();
         private HeliosInterfaceCollection _interfaces = new HeliosInterfaceCollection();
         private HashSet<string> _tags = new HashSet<string>();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public HeliosProfile() : this(true)
         {
@@ -316,11 +317,11 @@ namespace GadrocsWorkshop.Helios
         {
             if (!IsStarted)
             {
-                ConfigManager.LogManager.LogInfo("Profile starting. (Name=\"" + Name + "\")");
+                Logger.Info("Profile starting. (Name=\"" + Name + "\")");
                 OnProfileStarted();
                 IsStarted = true;
                 RequestProfileSupport();
-                ConfigManager.LogManager.LogInfo("Profile started. (Name=\"" + Name + "\")");
+                Logger.Info("Profile started. (Name=\"" + Name + "\")");
             }
         }
 
@@ -348,7 +349,7 @@ namespace GadrocsWorkshop.Helios
 
         public void Reset()
         {
-            ConfigManager.LogManager.LogInfo("Profile reseting. (Name=\"" + Name + "\")");
+            Logger.Info("Profile reseting. (Name=\"" + Name + "\")");
             foreach (Monitor monitor in Monitors)
             {
                 monitor.Reset();
@@ -358,17 +359,17 @@ namespace GadrocsWorkshop.Helios
             {
                 heliosInterface.Reset();
             }
-            ConfigManager.LogManager.LogInfo("Profile reset completed. (Name=\"" + Name + "\")");
+            Logger.Info("Profile reset completed. (Name=\"" + Name + "\")");
         }
 
         public void Stop()
         {
             if (IsStarted)
             {
-                ConfigManager.LogManager.LogInfo("Profile stopping. (Name=\"" + Name + "\")");
+                Logger.Info("Profile stopping. (Name=\"" + Name + "\")");
                 OnProfileStopped();
                 IsStarted = false;
-                ConfigManager.LogManager.LogInfo("Profile stopped. (Name=\"" + Name + "\")");
+                Logger.Info("Profile stopped. (Name=\"" + Name + "\")");
             }
         }
 

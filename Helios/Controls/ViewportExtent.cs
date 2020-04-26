@@ -12,6 +12,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private const string DEFAULT_TEXT = "Label";
         private const string DEFAULT_VIEWPORT_NAME = "";
         private string _viewportName = DEFAULT_VIEWPORT_NAME;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public ViewportExtent()
             : base(DEFAULT_NAME)
@@ -69,7 +70,7 @@ namespace GadrocsWorkshop.Helios.Controls
                     default:
                         // ignore unsupported settings
                         string discard = reader.ReadElementString(reader.Name);
-                        ConfigManager.LogManager.LogWarning($"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
+                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
                         break;
                 }
             }

@@ -24,6 +24,8 @@ namespace GadrocsWorkshop.Helios
 
     public class SettingsManager : ISettingsManager2
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public event EventHandler<EventArgs> Synchronized;
 
         private class Setting
@@ -92,7 +94,7 @@ namespace GadrocsWorkshop.Helios
 
         public SettingsManager(string settingsFile)
         {
-            ConfigManager.LogManager.LogDebug($"Helios will load settings from {Util.Anonymizer.Anonymize(settingsFile)}");
+            Logger.Debug($"Helios will load settings from {Util.Anonymizer.Anonymize(settingsFile)}");
             _settingsFile = settingsFile;
         }
 
@@ -110,7 +112,7 @@ namespace GadrocsWorkshop.Helios
             } 
             catch (System.Exception ex)
             {
-                ConfigManager.LogManager.LogError($"the settings file '{_settingsFile}' cannot be read; all settings will be reset", ex);
+                Logger.Error(ex, $"the settings file '{_settingsFile}' cannot be read; all settings will be reset");
                 // reset to defaults (empty settings) and let it overwrite the settings file when we next save
                 _settings = new GroupCollection();
             }
@@ -382,7 +384,7 @@ namespace GadrocsWorkshop.Helios
             }
             catch (System.Exception ex)
             {
-                ConfigManager.LogManager.LogError($"the settings file '{_settingsFile}' has become corrupted; writing new file from settings we have in memory", ex);
+                Logger.Error(ex, $"the settings file '{_settingsFile}' has become corrupted; writing new file from settings we have in memory");
                 SaveSettings();
                 return false;
             }

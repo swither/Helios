@@ -39,6 +39,7 @@ namespace GadrocsWorkshop.Helios.Controls
         protected Color _backgroundColor = Color.FromArgb(0xff, 0, 0, 0);
         protected Dictionary<string, string> _parserDictionary = new Dictionary<string, string>(); // the list of input -> output string modifications
         protected TextFormat _textFormat = new TextFormat();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public TextDisplayRect(string name, System.Windows.Size nativeSize) :
             base(name, nativeSize)
@@ -274,7 +275,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 return;
             double scale = current.Height / previous.Height;
             TextFormat.FontSize = Clamp(scale * TextFormat.FontSize, 1, 100);
-            // ConfigManager.LogManager.LogWarning("Font Size " + TextFormat.FontSize);
+            // Logger.Warn("Font Size " + TextFormat.FontSize);
         }
 
         public override void Reset()

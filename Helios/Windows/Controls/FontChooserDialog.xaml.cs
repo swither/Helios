@@ -33,6 +33,8 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
     /// </summary>
     public partial class FontChooserDialog : Window
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private List<FontFamilyListItem> _fontFamilys;
         private ObservableCollection<TypefaceListItem> _typefaces = new ObservableCollection<TypefaceListItem>();
         
@@ -86,7 +88,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                         }
                         catch (Exception e)
                         {
-                            ConfigManager.LogManager.LogError("FontChooserDialog encountered bad font, font is now excluded. (Font Source=\"" + family.Source + "\")", e);
+                            Logger.Error(e, "FontChooserDialog encountered bad font, font is now excluded. (Font Source=\"" + family.Source + "\")");
                         }
                     }
                     _fontFamilys.Sort();

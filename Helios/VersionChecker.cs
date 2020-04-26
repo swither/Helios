@@ -25,6 +25,8 @@ namespace GadrocsWorkshop.Helios
 
     public static class VersionChecker
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private static Version _runningVersion;
         private static Version _lastseenVersion;
         private static Version _currentNetVersion;
@@ -94,11 +96,11 @@ namespace GadrocsWorkshop.Helios
                 {
                     string message =
                         $"this is a development prototype build that expired on {_timeBombTime.ToLongDateString()}";
-                    ConfigManager.LogManager.LogError(message);
+                    Logger.Error(message);
                     MessageBox.Show(message, "Please get a new Development build of Helios");
                     Application.Current.Shutdown();
                 }
-                ConfigManager.LogManager.LogInfo($"this is a development prototype build that will expire on {_timeBombTime.ToLongDateString()}");
+                Logger.Info($"this is a development prototype build that will expire on {_timeBombTime.ToLongDateString()}");
                 return;
             }
             if (!string.IsNullOrWhiteSpace(_currentVersion) && _runningVersion != null)
@@ -126,7 +128,7 @@ namespace GadrocsWorkshop.Helios
                 }
                 catch (Exception e)
                 {
-                    ConfigManager.LogManager.LogError("Version Checker: Error comparing versions", e);
+                    Logger.Error(e, "Version Checker: Error comparing versions");
                 }
             }
         }
@@ -158,7 +160,7 @@ namespace GadrocsWorkshop.Helios
             }
             catch (Exception e)
             {
-                ConfigManager.LogManager.LogError("Version Checker: Error reading running version. ", e);
+                Logger.Error(e, "Version Checker: Error reading running version. ");
             }
         }
 
@@ -220,7 +222,7 @@ namespace GadrocsWorkshop.Helios
             }
             catch (Exception e)
             {
-                ConfigManager.LogManager.LogError("Version Checker: Error retrieving current version.", e);
+                Logger.Error(e, "Version Checker: Error retrieving current version.");
                 return _runningVersion;
             }
             return ToVersion(_currentVersion);

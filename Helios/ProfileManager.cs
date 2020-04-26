@@ -23,6 +23,8 @@ namespace GadrocsWorkshop.Helios
 
     internal class ProfileManager : IProfileManager
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         internal ProfileManager()
         {
         }
@@ -77,7 +79,7 @@ namespace GadrocsWorkshop.Helios
             }
             catch (Exception e)
             {
-                ConfigManager.LogManager.LogError("Error saving profile", e);
+                Logger.Error(e, "Error saving profile");
                 return false;
             }
         }
@@ -135,7 +137,7 @@ namespace GadrocsWorkshop.Helios
             }
             catch (Exception e)
             {
-                ConfigManager.LogManager.LogError("Error loading profile " + path, e);
+                Logger.Error(e, "Error loading profile " + path);
                 profile = null;
             }
 

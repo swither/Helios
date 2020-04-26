@@ -26,6 +26,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
     [HeliosInterface("Helios.Base.ProfileInterface", "Profile", null, typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
     public class ProfileInterface : HeliosInterface, IStatusReportNotify, IResetMonitorsObserver
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         // observers of our status report that need to be told when we change status
         private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
 
@@ -61,7 +63,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             }
             catch (Exception ex)
             {
-                ConfigManager.LogManager.LogError("Error caught launching external application (path=\"" + e.Value.StringValue + "\")", ex);
+                Logger.Error(ex, "Error caught launching external application (path=\"" + e.Value.StringValue + "\")");
             }
         }
 

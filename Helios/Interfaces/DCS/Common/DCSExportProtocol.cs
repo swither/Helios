@@ -9,6 +9,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private readonly Dispatcher _dispatcher;
         private readonly RetriedRequest _requestExport;
         private DCSExportModuleFormat _requestedExports;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public class RetriedRequest
         {
@@ -21,6 +22,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             private string _description = "";
 
             private readonly int _retryLimit;
+            private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
             public RetriedRequest(BaseUDPInterface udp, Dispatcher dispatcher)
             {
@@ -48,12 +50,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 _description = description;
                 if (_udp.CanSend)
                 {
-                    ConfigManager.LogManager.LogDebug($"sending {_description}");
+                    Logger.Debug($"sending {_description}");
                     _udp.SendData(_request);
                 }
                 else
                 {
-                    ConfigManager.LogManager.LogDebug(
+                    Logger.Debug(
                         $"cannot send {_description} because UDP transport is not ready or does not know remote endpoint");
                 }
 
@@ -62,7 +64,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             public void Restart()
             {
-                ConfigManager.LogManager.LogDebug($"restarting {_description} with up to {_retryLimit} retries");
+                Logger.Debug($"restarting {_description} with up to {_retryLimit} retries");
                 _retries = 0;
                 _timer.Start();
             }
@@ -87,7 +89,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     // no answer after max retries; the export script is either not there or does not support the command
                     // we are using (normal case if some other Export script is used, so not fatal)
                     // REVISIT: could have advanced setting to say this is entirely different script and just don't even try
-                    ConfigManager.LogManager.LogInfo($"giving up on {_description} after {_retries} attempts");
+                    Logger.Info($"giving up on {_description} after {_retries} attempts");
                     _timer.Stop();
                     return;
                 }
@@ -96,13 +98,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 {
                     if (_udp.CanSend)
                     {
-                        ConfigManager.LogManager.LogDebug($"retrying {_description}");
+                        Logger.Debug($"retrying {_description}");
                         _udp.SendData(_request);
                         _retries++;
                     }
                     else
                     {
-                        ConfigManager.LogManager.LogDebug(
+                        Logger.Debug(
                             $"cannot retry {_description} because UDP transport is not ready or does not know remote endpoint");
                     }
                 }

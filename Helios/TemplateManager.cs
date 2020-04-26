@@ -26,6 +26,8 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class TemplateManager : ITemplateManager
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private HeliosTemplateCollection _userTemplates = new HeliosTemplateCollection();
         private List<HeliosTemplate> _moduleTemplates = new List<HeliosTemplate>();
 
@@ -33,8 +35,8 @@ namespace GadrocsWorkshop.Helios
 
         internal TemplateManager(string userTemplateDirectory, string userPanelTemplateDirectory)
         {
-            ConfigManager.LogManager.LogDebug($"Helios will load user templates from {Util.Anonymizer.Anonymize(userTemplateDirectory)}");
-            ConfigManager.LogManager.LogDebug($"Helios will load user panel templates from {Util.Anonymizer.Anonymize(userPanelTemplateDirectory)}");
+            Logger.Debug($"Helios will load user templates from {Util.Anonymizer.Anonymize(userTemplateDirectory)}");
+            Logger.Debug($"Helios will load user panel templates from {Util.Anonymizer.Anonymize(userPanelTemplateDirectory)}");
 
             _userTemplateDirectory = userTemplateDirectory;
 
@@ -68,20 +70,20 @@ namespace GadrocsWorkshop.Helios
             string templatesDirectory = Path.Combine(ConfigManager.ApplicationPath, "Templates", moduleName);
             if (Directory.Exists(templatesDirectory))
             {
-                ConfigManager.LogManager.LogDebug($"Loading module templates for module '{moduleName}' from '{templatesDirectory}'");
+                Logger.Debug($"Loading module templates for module '{moduleName}' from '{Util.Anonymizer.Anonymize(templatesDirectory)}'");
                 LoadTemplateDirectory(_moduleTemplates, templatesDirectory, false);
             }
             string pluingTemplatesDirectory = Path.Combine(ConfigManager.ApplicationPath, "Plugins", "Templates", moduleName);
             if (Directory.Exists(pluingTemplatesDirectory))
             {
-                ConfigManager.LogManager.LogDebug($"Loading module templates for plugin '{moduleName}' from '{pluingTemplatesDirectory}'");
+                Logger.Debug($"Loading module templates for plugin '{moduleName}' from '{pluingTemplatesDirectory}'");
                 LoadTemplateDirectory(_moduleTemplates, pluingTemplatesDirectory, false);
             }
         }
 
         private void PopulateUserTemplatesCollection()
         {
-            ConfigManager.LogManager.LogDebug("Loading user templates from documents folder");
+            Logger.Debug("Loading user templates from documents folder");
             LoadTemplateDirectory(_userTemplates, _userTemplateDirectory, true);
         }
 
@@ -97,7 +99,7 @@ namespace GadrocsWorkshop.Helios
                     string key = indexed.GetKeyForItem(template);
                     if (indexed.ContainsKey(key))
                     {
-                        ConfigManager.LogManager.LogError($"ignored duplicate template '{Util.Anonymizer.Anonymize(templateFile)}' already loaded from another location");
+                        Logger.Error($"ignored duplicate template '{Util.Anonymizer.Anonymize(templateFile)}' already loaded from another location");
                         continue;
                     }
                 }

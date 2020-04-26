@@ -28,6 +28,8 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
     /// </summary>
     public partial class TextFormatButton : UserControl
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public TextFormatButton()
         {
             InitializeComponent();
@@ -75,7 +77,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 
 
                 dialog.Owner = Window.GetWindow(this);
-                Nullable<bool> results = dialog.ShowDialog();
+                bool? results = dialog.ShowDialog();
                 if (results != null && results == true)
                 {
                     ConfigManager.UndoManager.StartBatch();
@@ -106,9 +108,9 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                     ConfigManager.UndoManager.CloseBatch();
                 }
             }
-            catch (Exception re)
+            catch (Exception ex)
             {
-                ConfigManager.LogManager.LogError("Error opening text format editor.", re);
+                Logger.Error(ex, "Error opening text format editor.");
             }
         }
     }

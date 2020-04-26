@@ -35,6 +35,9 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="NLua, Version=1.4.29.0, Culture=neutral, PublicKeyToken=6a194c04b9c89217, processorArchitecture=MSIL">
       <HintPath>..\packages\NLua.1.4.29\lib\net45\NLua.dll</HintPath>
     </Reference>
@@ -47,10 +50,15 @@
       <HintPath>..\packages\SharpDX.DirectInput.4.2.0\lib\net45\SharpDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -77,6 +85,7 @@
       <DependentUpon>ViewportExtentBehaviorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ViewportExtentRenderer.cs" />
+    <Compile Include="Util\OnceLogger.cs" />
     <Compile Include="HeliosApplication.cs" />
     <Compile Include="IInstallation.cs" />
     <Compile Include="Interfaces\Capabilities\IExtendedDescription.cs" />
@@ -507,12 +516,16 @@
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
     <Compile Include="Windows\ViewModel\ViewModelCollection.cs" />
     <None Include="Images\A-10\readme.md" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="_Documents\Licenses\AvalonDock\LICENSE.txt" />
     <Content Include="_Documents\Licenses\CommandLineParser\LICENSE.txt" />
     <Content Include="_Documents\Licenses\EOSSharp\LICENSE.txt" />
     <Content Include="_Documents\Licenses\GoogleDiffMatchPatch\LICENSE.txt" />
     <Content Include="_Documents\Licenses\hidsharp\LICENSE.txt" />
     <Content Include="_Documents\Licenses\KeraLua\LICENSE.txt" />
+    <Content Include="_Documents\Licenses\NLog\LICENSE.txt" />
     <Content Include="_Documents\Licenses\NLua\LICENSE.txt" />
     <Content Include="_Documents\Licenses\Phidget\License.txt" />
     <Content Include="_Documents\Licenses\SharpDX.DirectInput\LICENSE.txt" />
@@ -884,6 +897,7 @@
     <Content Include="Templates\Base\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="_Documents\Licenses\VC_redist.x64.exe\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf" />
     <Resource Include="Gauges\M2000C\Common\needleA.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>

@@ -81,6 +81,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             ConfigManager.LogManager.LogInfo("Starting Editor");
         }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            HeliosInit.OnShutdown();
+            base.OnExit(e);
+        }
+
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             ExceptionViewer.DisplayUnhandledException(e);

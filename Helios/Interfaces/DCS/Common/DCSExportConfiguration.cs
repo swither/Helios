@@ -138,6 +138,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         private string _moduleFolderGuess;
 
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public DCSExportConfiguration(DCSInterface parent)
         {
             _parent = parent;
@@ -528,7 +530,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
             catch (Exception ex)
             {
-                ConfigManager.LogManager.LogError("Failed to write DCS Export scripts due to error", ex);
+                Logger.Error(ex, "Failed to write DCS Export scripts due to error");
                 callbacks.Failure("Failed to write DCS Export scripts due to error", ex.StackTrace,
                     new List<StatusReportItem>());
                 return InstallationResult.Fatal;
@@ -585,7 +587,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     report.Add(result);
                     if (!result.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate))
                     {
-                        ConfigManager.LogManager.LogDebug(result.Status);
+                        Logger.Debug(result.Status);
                         Status = StatusCodes.OutOfDate;
                         // don't test the remaining items
                         return report;
@@ -779,9 +781,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
             catch (Exception ex)
             {
-                ConfigManager.LogManager.LogError(
-                    $"failed to load interface-specific functions for {_parent.VehicleName} from '{_parent.ExportFunctionsPath}'",
-                    ex);
+                Logger.Error(ex, $"failed to load interface-specific functions for {_parent.VehicleName} from '{_parent.ExportFunctionsPath}'");
                 throw;
             }
         }

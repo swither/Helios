@@ -31,10 +31,11 @@ namespace GadrocsWorkshop.Helios
     public class ImageManager : IImageManager
     {
         private string _documentImagePath;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         internal ImageManager(string userImagePath)
         {
-            ConfigManager.LogManager.LogDebug($"Helios will load user images from {Util.Anonymizer.Anonymize(userImagePath)}");
+            Logger.Debug($"Helios will load user images from {Util.Anonymizer.Anonymize(userImagePath)}");
             _documentImagePath = userImagePath;
         }
 
@@ -264,7 +265,7 @@ namespace GadrocsWorkshop.Helios
             }
             catch (Exception e)
             {
-                ConfigManager.LogManager.LogError("Error loading image. (Filename=\"" + uri.ToString() + "\")", e);
+                Logger.Error(e, "Error loading image. (Filename=\"" + uri.ToString() + "\")");
                 return false;
             }
         }

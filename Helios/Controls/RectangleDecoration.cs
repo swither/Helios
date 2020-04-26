@@ -32,6 +32,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private Color _borderColor = Colors.Black;
         private Color _fillColor = Colors.Green;
         private TypeConverter _colorConverter = TypeDescriptor.GetConverter(typeof(Color));
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public RectangleDeocration()
             : base("Rectangle", new Size(100, 100))
@@ -50,7 +51,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             catch
             {
-                ConfigManager.LogManager.LogWarning("Rectangle error converting color value. (Name=\"" + Name + "\", Value=\"" + e.Value.StringValue + "\")");
+                Logger.Warn("Rectangle error converting color value. (Name=\"" + Name + "\", Value=\"" + e.Value.StringValue + "\")");
             }            
         }
 

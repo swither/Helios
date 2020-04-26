@@ -26,13 +26,14 @@ namespace GadrocsWorkshop.Helios
     public struct DefaultInputBinding
     {
         public string ChildName, InterfaceTriggerName, DeviceActionName;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public DefaultInputBinding(string childName, string interfaceTriggerName, string deviceActionName)
         {
             ChildName = childName;
             InterfaceTriggerName = interfaceTriggerName;
             DeviceActionName = deviceActionName;
-            ConfigManager.LogManager.LogInfo("Default Input Binding: Trigger " + interfaceTriggerName + " to action " + deviceActionName + " for child " + childName);
+            Logger.Info("Default Input Binding: Trigger " + interfaceTriggerName + " to action " + deviceActionName + " for child " + childName);
         }
     }
 
@@ -40,13 +41,14 @@ namespace GadrocsWorkshop.Helios
     public struct DefaultOutputBinding
     {
         public string ChildName, DeviceTriggerName, InterfaceActionName;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public DefaultOutputBinding(string childName, string deviceTriggerName, string interfaceActionName)
         {
             ChildName = childName;
             DeviceTriggerName = deviceTriggerName;
             InterfaceActionName = interfaceActionName;
-            ConfigManager.LogManager.LogInfo("Default Output Binding: Trigger " + deviceTriggerName + " to action " + interfaceActionName + " for child " + childName);
+            Logger.Info("Default Output Binding: Trigger " + deviceTriggerName + " to action " + interfaceActionName + " for child " + childName);
         }
     }
 
@@ -58,7 +60,7 @@ namespace GadrocsWorkshop.Helios
         protected string _defaultInterfaceName; // default name of the interface to be used
         protected string _defaultBindingName;   // the name of the default binding in the interface
         protected HeliosInterface _defaultInterface;
-
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public CompositeVisual(string name, Size nativeSize)
             : base(name, nativeSize)
@@ -225,7 +227,7 @@ namespace GadrocsWorkshop.Helios
             }
             if (!Profile.Interfaces.ContainsKey(_defaultInterfaceName))
             {
-                ConfigManager.LogManager.LogError("Cannot find default interface " + _defaultInterfaceName);
+                Logger.Error("Cannot find default interface " + _defaultInterfaceName);
                 return;
             }
             _defaultInterface = Profile.Interfaces[_defaultInterfaceName];
@@ -235,22 +237,22 @@ namespace GadrocsWorkshop.Helios
             {
                 if (!Children.ContainsKey(defaultBinding.ChildName))
                 {
-                    ConfigManager.LogManager.LogError("Cannot find child " + defaultBinding.ChildName);
+                    Logger.Error("Cannot find child " + defaultBinding.ChildName);
                     continue;
                 }
-                ConfigManager.LogManager.LogDebug("Auto binding child " + defaultBinding.ChildName);
+                Logger.Debug("Auto binding child " + defaultBinding.ChildName);
                 HeliosVisual child = Children[defaultBinding.ChildName];
                 if (!child.Actions.ContainsKey(defaultBinding.DeviceActionName))
                 {
-                    ConfigManager.LogManager.LogError("Cannot find action " + defaultBinding.DeviceActionName);
+                    Logger.Error("Cannot find action " + defaultBinding.DeviceActionName);
                     continue;
                 }
                 if (!_defaultInterface.Triggers.ContainsKey(defaultBinding.InterfaceTriggerName))
                 {
-                    ConfigManager.LogManager.LogError("Cannot find interface trigger " + defaultBinding.InterfaceTriggerName);
+                    Logger.Error("Cannot find interface trigger " + defaultBinding.InterfaceTriggerName);
                     continue;
                 }
-                ConfigManager.LogManager.LogDebug("Auto binding trigger " + defaultBinding.InterfaceTriggerName + " to " + defaultBinding.DeviceActionName);
+                Logger.Debug("Auto binding trigger " + defaultBinding.InterfaceTriggerName + " to " + defaultBinding.DeviceActionName);
                 child.OutputBindings.Add(CreateNewBinding(_defaultInterface.Triggers[defaultBinding.InterfaceTriggerName],
                     child.Actions[defaultBinding.DeviceActionName]));
 
@@ -264,21 +266,21 @@ namespace GadrocsWorkshop.Helios
             {
                 if (!Children.ContainsKey(defaultBinding.ChildName))
                 {
-                    ConfigManager.LogManager.LogError("Cannot find child " + defaultBinding.ChildName);
+                    Logger.Error("Cannot find child " + defaultBinding.ChildName);
                     continue;
                 }
                 HeliosVisual child = Children[defaultBinding.ChildName];
                 if (!child.Triggers.ContainsKey(defaultBinding.DeviceTriggerName))
                 {
-                    ConfigManager.LogManager.LogError("Cannot find trigger " + defaultBinding.DeviceTriggerName);
+                    Logger.Error("Cannot find trigger " + defaultBinding.DeviceTriggerName);
                     continue;
                 }
                 if (!_defaultInterface.Actions.ContainsKey(defaultBinding.InterfaceActionName))
                 {
-                    ConfigManager.LogManager.LogError("Cannot find action " + defaultBinding.InterfaceActionName);
+                    Logger.Error("Cannot find action " + defaultBinding.InterfaceActionName);
                     continue;
                 }
-                ConfigManager.LogManager.LogDebug("Child Output binding trigger " + defaultBinding.DeviceTriggerName + " to " + defaultBinding.InterfaceActionName);
+                Logger.Debug("Child Output binding trigger " + defaultBinding.DeviceTriggerName + " to " + defaultBinding.InterfaceActionName);
                 child.OutputBindings.Add(CreateNewBinding(child.Triggers[defaultBinding.DeviceTriggerName],
                                       _defaultInterface.Actions[defaultBinding.InterfaceActionName]));
                 //            child.OutputBindings.Add(

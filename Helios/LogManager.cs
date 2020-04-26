@@ -43,26 +43,11 @@ namespace GadrocsWorkshop.Helios
 
     public class LogManager
     {
-        private string _logFile;
-        private LogLevel _level = LogLevel.Info;
-        private HashSet<ILogConsumer> _consumers = new HashSet<ILogConsumer>();
         private System.Object _lock = new System.Object();
 
-        public LogManager(string path, LogLevel level)
+        public LogManager(LogLevel level)
         {
-            _logFile = path;
-            _level = level;
         }
-
-        #region Properties
-
-        public LogLevel LogLevel
-        {
-            get { return _level; }
-            set { _level = value; }
-        }
-
-        #endregion
 
         public void LogDebug(string message)
         {
@@ -99,38 +84,36 @@ namespace GadrocsWorkshop.Helios
             WriteLogMessage(LogLevel.Info, message, null);
         }
 
-        public void RegisterConsumer(ILogConsumer consumer)
-        {
-            lock (_lock)
-            {
-                _consumers.Add(consumer);
-            }
-        }
-
-        public void DeregisterConsumer(ILogConsumer consumer)
-        {
-            lock (_lock)
-            {
-                _consumers.Remove(consumer);
-            }
-        }
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private void WriteLogMessage(LogLevel level, string message, Exception exception)
         {
-#if DEBUG
-            Console.WriteLine($"{CreateTimeStamp()} {level.ToString()}: {message}");
-#endif
-            string timeStamp = null;
-            if (_level >= level)
+            switch (level)
             {
-                timeStamp = WriteToFile(level, message, exception);
-            } 
- 
-            // after writing to file, also send all non-debug messages to consumers
-            if (level < LogLevel.Debug)
-            {
-                // use timestamp from file for correlation, if available
-                DispatchToConsumers(timeStamp ?? CreateTimeStamp(), level, message, exception);
+                case LogLevel.All:
+                    Logger.Info(message);
+                    break;
+                case LogLevel.Error:
+                    if (exception != null)
+                    {
+                        Logger.Error(exception, message);
+                    }
+                    else
+                    {
+                        Logger.Error(message);
+                    }
+                    break;
+                case LogLevel.Warning:
+                    Logger.Warn(message);
+                    break;
+                case LogLevel.Info:
+                    Logger.Info(message);
+                    break;
+                case LogLevel.Debug:
+                    Logger.Debug(message);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }
         }
 
@@ -139,79 +122,9 @@ namespace GadrocsWorkshop.Helios
             return DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
         }
 
-        private string WriteToFile(LogLevel level, string message, Exception exception)
-        {
-            lock (_lock)
-            {
-                try
-                {
-                    FileInfo errorFile = new FileInfo(_logFile);
-
-                    StreamWriter errorWriter;
-
-                    if (errorFile.Exists)
-                    {
-                        errorWriter = errorFile.AppendText();
-                    }
-                    else
-                    {
-                        errorWriter = errorFile.CreateText();
-                    }
-
-                    using (errorWriter)
-                    {
-                        // because we get this timestamp under lock, messages will be in order in the file
-                        string timeStamp = CreateTimeStamp();
-
-                        // write to file
-                        errorWriter.Write(timeStamp);
-                        errorWriter.Write(" - ");
-                        errorWriter.Write(level.ToString());
-                        errorWriter.Write(" - ");
-                        errorWriter.WriteLine(message);
-
-                        if (exception != null)
-                        {
-                            WriteException(errorWriter, exception);
-                        }
-                        return timeStamp;
-                    }
-                }
-                catch (Exception)
-                {
-                    // Nothing to do but go on.
-                    return null;
-                }
-            }
-        }
-
-        private void DispatchToConsumers(string timeStamp, LogLevel level, string message, Exception exception)
-        {
-            // all we do under lock here is schedule async code
-            lock (_lock)
-            {
-                // no exception handling here, since messages aren't handled on this stack
-                foreach (ILogConsumer consumer in _consumers)
-                {
-                    // note: exceptions here will bring down the application
-                    consumer.Dispatcher.InvokeAsync(() =>
-                    {
-                        try
-                        {
-                            consumer.WriteLogMessage(timeStamp, level, message, exception);
-                        }
-                        catch (Exception ex)
-                        {
-                            WriteToFile(LogLevel.Error, "log consumer failed to write message", ex);
-                        }
-                    }, DispatcherPriority.ApplicationIdle);
-                }
-            }
-        }
-
         private void WriteException(StreamWriter writer, Exception exception)
         {
-            if (exception.Source != null && exception.Source.Length > 0)
+            if (!string.IsNullOrEmpty(exception.Source))
             {
                 writer.WriteLine("Exception Source:" + exception.Source);
             }
@@ -219,8 +132,7 @@ namespace GadrocsWorkshop.Helios
             writer.WriteLine("Stack Trace:");
             WriteStackTrace(writer, exception);
 
-            ReflectionTypeLoadException le = exception as ReflectionTypeLoadException;
-            if (le != null)
+            if (exception is ReflectionTypeLoadException le)
             {
                 foreach (Exception e2 in le.LoaderExceptions)
                 {

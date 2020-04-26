@@ -10,9 +10,9 @@ namespace GadrocsWorkshop.Helios.Util
     /// </summary>
     public class CommandLineOptions
     {
-        [Option('l', "loglevel", Required = false, Default = LogLevel.Warning,
+        [Option('l', "loglevel", Required = false, Default = LogLevel.Info,
             HelpText = "Set log level [Debug, Info, Warning, Error].")]
-        public LogLevel LogLevel { get; set; } = LogLevel.Warning;
+        public LogLevel LogLevel { get; set; } = LogLevel.Info;
 
         [Option('d', "documents", Required = false, Default = "Helios", HelpText = "Set the Documents folder name to use.")]
         public string DocumentPath { get; set; } = "Helios";

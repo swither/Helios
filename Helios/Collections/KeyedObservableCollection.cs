@@ -20,6 +20,7 @@ namespace GadrocsWorkshop.Helios.Collections
     public abstract class KeyedObservableCollection<K,T> : NoResetObservablecollection<T>
     {
         private Dictionary<K, T> _dictionary = new Dictionary<K, T>();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         protected override void OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -86,7 +87,7 @@ namespace GadrocsWorkshop.Helios.Collections
                 }
                 else
                 {
-                    ConfigManager.LogManager.LogError("Duplicate item keys in collection, some data may be lost.");
+                    Logger.Error("Duplicate item keys in collection, some data may be lost.");
                 }
             }
         }

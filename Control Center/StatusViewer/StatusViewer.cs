@@ -21,11 +21,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GadrocsWorkshop.Helios.Windows;
+using NLog;
 
 namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
 {
     // model and view model for the status viewer
-    public class StatusViewer: DependencyObject, ILogConsumer
+    public class StatusViewer: DependencyObject
     {
         // about two lines of status message are allowed, the rest will be cut if from log
         private const int STATUS_LIMIT = 120;
@@ -74,7 +75,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             Items = new ObservableCollection<StatusViewerItem>();
 
             // register as a log consumer (NOTE: we never deregister)
-            ConfigManager.LogManager.RegisterConsumer(this);
+            StatusViewerLogTarget.Parent = this;
         }
 
         /// <summary>
@@ -195,20 +196,21 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             CautionLightVisibility = Visibility.Hidden;
         }
 
-        public void WriteLogMessage(string timeStamp, LogLevel level, string message, Exception exception)
+        public void WriteLogMessage(LogEventInfo eventInfo, string message)
         {
             StatusReportItem.SeverityCode code;
-            switch (level)
+            if (eventInfo.Level == NLog.LogLevel.Warn)
             {
-                case LogLevel.Warning:
-                    code = StatusReportItem.SeverityCode.Warning;
-                    break;
-                case LogLevel.Error:
-                    code = StatusReportItem.SeverityCode.Error;
-                    break;
-                default:
-                    // don't include info messages
-                    return;
+                code = StatusReportItem.SeverityCode.Warning;
+            }
+            else if (eventInfo.Level == NLog.LogLevel.Error)
+            {
+                code = StatusReportItem.SeverityCode.Error;
+            }
+            else
+            {
+                // don't include info messages
+                return;
             }
             if (_uniqueLogMessages.Contains(message))
             {
@@ -243,13 +245,13 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             {
                 recommendation = "Log message was shortened.  See application log for details.";
             }
-            if (exception != null)
+            if (eventInfo.Exception != null)
             {
-                recommendation = $"An exception was thrown: '{exception.Message}'.  You should file a bug.";
+                recommendation = $"An exception was thrown: '{eventInfo.Exception.Message}'.  You should file a bug.";
             }
             StatusReportItem item = new StatusReportItem()
             {
-                TimeStamp = timeStamp,
+                TimeStamp = eventInfo.TimeStamp.ToString("MM/dd/yyyy hh:mm:ss.fff tt"),
                 Severity = code,
                 Status = trimmedMessage,
                 Recommendation = recommendation

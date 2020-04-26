@@ -24,6 +24,7 @@ namespace GadrocsWorkshop.Helios
         List<HeliosDescriptor> _controlDescriptors = new List<HeliosDescriptor>();
         Dictionary<string, HeliosDescriptor> _typeIdentifiers = new Dictionary<string, HeliosDescriptor>();
         Dictionary<Type, HeliosDescriptor> _types = new Dictionary<Type, HeliosDescriptor>();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public HeliosDescriptor this[string typeIdentifier]
         {
@@ -61,7 +62,7 @@ namespace GadrocsWorkshop.Helios
             }
             catch (Exception e)
             {
-                ConfigManager.LogManager.LogError("Failed to add Helios Item: " + item.Name, e);
+                Logger.Error(e, "Failed to add Helios Item {Item}", item?.Name);
             }
         }
 

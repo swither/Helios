@@ -32,6 +32,8 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class KeyboardEmulator
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         // selected keyboard layout for mapping of characters to key codes
         private static IntPtr _hkl;
 
@@ -155,7 +157,7 @@ namespace GadrocsWorkshop.Helios
             }
             foreach (IntPtr hkl in hkls)
             {
-                ConfigManager.LogManager.LogDebug($"KeyboardEmulator: keyboard layout 0x{((UInt32)hkl):X8} detected (not necessarily active)");
+                Logger.Debug($"KeyboardEmulator: keyboard layout 0x{((UInt32)hkl):X8} detected (not necessarily active)");
                 if ((((UInt32)hkl) & 0xffff0000) == 0x04090000)
                 {
                     return hkl;
@@ -202,7 +204,7 @@ namespace GadrocsWorkshop.Helios
                 if (value)
                 {
                     _hkl = FindQwertyLayout() ?? _defaultLayout;
-                    ConfigManager.LogManager.LogInfo($"KeyboardEmulator: keyboard layout 0x{((UInt32)_hkl):X8} selected for forced QWERTY mode");
+                    Logger.Info($"KeyboardEmulator: keyboard layout 0x{((UInt32)_hkl):X8} selected for forced QWERTY mode");
                 }
                 else
                 {

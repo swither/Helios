@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -44,6 +46,7 @@ namespace GadrocsWorkshop.Helios
         private static Object _sTracingSource = null;
         private static bool _sTraceLoop = false;
 #endif
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public HeliosBinding()
         {
@@ -367,7 +370,7 @@ namespace GadrocsWorkshop.Helios
                 if (!_sTracesReported.Contains(Description))
                 {
                     string loopType = _executing ? "Hard" : "Soft";
-                    ConfigManager.LogManager.LogInfo($"{loopType} binding loop detected; Object {target.Name} may have triggered itself");
+                    Logger.Info($"{loopType} binding loop detected; Object {target.Name} may have triggered itself");
                     _sTraceLoop = true;
                     _sTracesReported.Add(Description);
                 }
@@ -381,7 +384,7 @@ namespace GadrocsWorkshop.Helios
         {
             if (_sTraceLoop)
             {
-                ConfigManager.LogManager.LogInfo($"  binding loop includes {Description}");
+                Logger.Info($"  binding loop includes {Description}");
             }
             HeliosObject source = (_triggerSource.Target as IBindingTrigger).Source;
             if (source._tracing)
@@ -392,7 +395,7 @@ namespace GadrocsWorkshop.Helios
                     if (_sTraceLoop)
                     {
                         _sTraceLoop = false;
-                        ConfigManager.LogManager.LogInfo("  binding loop trace complete");
+                        Logger.Info("  binding loop trace complete");
                     }
                     _sTracingSource = null;
                 }
@@ -409,133 +412,136 @@ namespace GadrocsWorkshop.Helios
         }
 #endif
 
+        private static readonly Util.OnceLogger TriggeredLogger = new Util.OnceLogger(Logger);
+
         public void OnTriggerFired(object trigger, HeliosTriggerEventArgs e)
         {
-            if (IsActive)
+            if (!IsActive)
             {
-                TraceTriggerFired();
-                if (_executing)
+                return;
+            }
+
+            string loggingId = ((IBindingTrigger)_triggerSource.Target).TriggerID;
+            TraceTriggerFired();
+            if (_executing)
+            {
+                Logger.Warn("Binding loop condition detected, binding aborted. (Binding=\"" +
+                                                    Description + "\")");
+                EndTraceTriggerFired();
+                return;
+            }
+
+            TriggeredLogger.InfoOnceUnlessDebugging(loggingId, "Binding triggered. (Binding={Description}, Value={Value})", Description, e.Value.StringValue);
+            try
+            {
+                _executing = true;
+                BindingValue value = BindingValue.Empty;
+                //LuaInterpreter["TriggerValue"] = e.Value.NaitiveValue;
+                switch (e.Value.NaitiveType)
                 {
-                    ConfigManager.LogManager.LogWarning("Binding loop condition detected, binding aborted. (Binding=\"" + Description + "\")");
+                    case BindingValueType.Boolean:
+                        LuaInterpreter["TriggerValue"] = e.Value.BoolValue;
+                        break;
+                    case BindingValueType.String:
+                        LuaInterpreter["TriggerValue"] = e.Value.StringValue;
+                        break;
+                    case BindingValueType.Double:
+                        LuaInterpreter["TriggerValue"] = e.Value.DoubleValue;
+                        break;
                 }
-                else
+
+                if (HasCondition)
                 {
-                    if (ConfigManager.LogManager.LogLevel >= LogLevel.Info)
-                    {
-                        ConfigManager.LogManager.LogInfo("Binding triggered. (Binding=\"" + Description + "\", Value=\"" + e.Value.StringValue + "\")");
-                    }
                     try
                     {
-                        _executing = true;
-                        BindingValue value = BindingValue.Empty;
-                        //LuaInterpreter["TriggerValue"] = e.Value.NaitiveValue;
-                        switch (e.Value.NaitiveType)
+                        object[] conditionReturnValues = LuaInterpreter.DoString(_condition);
+                        if (conditionReturnValues.Length >= 1)
                         {
-                            case BindingValueType.Boolean:
-                                LuaInterpreter["TriggerValue"] = e.Value.BoolValue;
-                                break;
-                            case BindingValueType.String:
-                                LuaInterpreter["TriggerValue"] = e.Value.StringValue;
-                                break;
-                            case BindingValueType.Double:
-                                LuaInterpreter["TriggerValue"] = e.Value.DoubleValue;
-                                break;
-                        }
-
-                        if (HasCondition)
-                        {
-                            try
+                            BindingValue returnValue = CreateBindingValue(conditionReturnValues[0]);
+                            if (returnValue.BoolValue == false)
                             {
-                                object[] conditionReturnValues = LuaInterpreter.DoString(_condition);
-                                if (conditionReturnValues.Length >= 1)
+                                if (Logger.IsDebugEnabled)
                                 {
-                                    BindingValue returnValue = CreateBindingValue(conditionReturnValues[0]);
-                                    if (returnValue.BoolValue == false)
-                                    {
-                                        if (ConfigManager.LogManager.LogLevel >= LogLevel.Debug)
-                                        {
-                                            ConfigManager.LogManager.LogDebug("Binding condition evaluated to false, binding aborted. (Binding=\"" + Description + "\")");
-                                        }
-                                        EndTraceTriggerFired();
-                                        return;
-                                    }
+                                    Logger.Debug("Binding condition evaluated to false, binding aborted. (Binding=\"" + Description + "\")");
                                 }
-                            }
-                            catch (LuaScriptException luaException)
-                            {
-                                ConfigManager.LogManager.LogWarning("Binding condition lua error. (Error=\"" + luaException.Message + "\", Condition Script=\"" + Condition + "\", Binding=\"" + Description + "\")");
-                            }
-                            catch (Exception conditionException)
-                            {
-                                ConfigManager.LogManager.LogError("Binding condition has thown an unhandled exception. (Binding=\"" + Description + "\", Condition=\"" + Condition + "\")", conditionException);
                                 EndTraceTriggerFired();
                                 return;
                             }
                         }
-
-                        switch (ValueSource)
-                        {
-                            case BindingValueSources.StaticValue:
-                                value = _value;
-                                break;
-                            case BindingValueSources.TriggerValue:
-                                if (_needsConversion && _converter != null)
-                                {
-                                    value = _converter.Convert(e.Value, Trigger.Unit, Action.Unit);
-                                    if (ConfigManager.LogManager.LogLevel >= LogLevel.Debug)
-                                    {
-                                        ConfigManager.LogManager.LogDebug("Binding converted value. (Binding=\"" + Description + "\", Original Value=\"" + e.Value.StringValue + "\", New Value=\"" + value.StringValue + "\")");
-                                    }
-                                }
-                                else
-                                {
-                                    value = e.Value;
-                                }
-                                break;
-                            case BindingValueSources.LuaScript:
-                                try
-                                {
-                                    object[] returnValues = LuaInterpreter.DoString(Value);
-                                    if ((returnValues != null) && (returnValues.Length >= 1))
-                                    {
-                                        value = CreateBindingValue(returnValues[0]);
-                                        if (ConfigManager.LogManager.LogLevel >= LogLevel.Debug)
-                                        {
-                                            ConfigManager.LogManager.LogDebug("Binding value lua script evaluated (Binding=\"" + Description + "\", Expression=\"" + Value + "\", TriggerValue=\"" + LuaInterpreter["TriggerValue"] + "\", ReturnValue=\"" + returnValues[0] + "\")");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        ConfigManager.LogManager.LogWarning("Binding value lua script did not return a value. (Binding=\"" + Description + "\", Expression=\"" + Value + "\", TriggerValue=\"" + LuaInterpreter["TriggerValue"] + "\")");
-                                    }
-                                }
-                                catch (LuaScriptException luaException)
-                                {
-                                    ConfigManager.LogManager.LogWarning("Binding value lua error. (Error=\"" + luaException.Message + "\", Value Script=\"" + Value + "\", Binding=\"" + Description + "\")");
-                                }
-                                catch (Exception valueException)
-                                {
-                                    // these are exceptions thrown by the Lua implementation
-                                    ConfigManager.LogManager.LogError("Binding value lua script has thown an unhandled exception. (Binding=\"" + Description + "\", Value Script=\"" + Value + "\")", valueException);
-                                }
-                                break;
-                        }
-                        if(Action.Target.Dispatcher == null) {
-                            // if we don't have a dispatcher, likely because this is a composite device, we use the dispatcher object from the owner of the trigger
-                            // this seems to work and was the best I could come up with, but it is very much a kludge because I could not work out the proper way
-                            // to have a dispatcher created for Actions
-                            Action.Target.Dispatcher = Trigger.Owner.Dispatcher;
-                        }
-                        Action.Target.Dispatcher.Invoke(new Action<BindingValue, bool>(Execute), value, BypassCascadingTriggers);
                     }
-                    catch (Exception ex)
+                    catch (LuaScriptException luaException)
                     {
-                        ConfigManager.LogManager.LogError("Binding threw unhandled exception. (Binding=\"" + Description + "\")", ex);
+                        Logger.Warn("Binding condition lua error. (Error=\"" + luaException.Message + "\", Condition Script=\"" + Condition + "\", Binding=\"" + Description + "\")");
                     }
-                    _executing = false;
+                    catch (Exception conditionException)
+                    {
+                        Logger.Error(conditionException, "Binding condition has thown an unhandled exception. (Binding=\"" + Description + "\", Condition=\"" + Condition + "\")");
+                        EndTraceTriggerFired();
+                        return;
+                    }
                 }
-                EndTraceTriggerFired();
+
+                switch (ValueSource)
+                {
+                    case BindingValueSources.StaticValue:
+                        value = _value;
+                        break;
+                    case BindingValueSources.TriggerValue:
+                        if (_needsConversion && _converter != null)
+                        {
+                            value = _converter.Convert(e.Value, Trigger.Unit, Action.Unit);
+                            if (Logger.IsDebugEnabled)
+                            {
+                                Logger.Debug("Binding converted value. (Binding=\"" + Description + "\", Original Value=\"" + e.Value.StringValue + "\", New Value=\"" + value.StringValue + "\")");
+                            }
+                        }
+                        else
+                        {
+                            value = e.Value;
+                        }
+                        break;
+                    case BindingValueSources.LuaScript:
+                        try
+                        {
+                            object[] returnValues = LuaInterpreter.DoString(Value);
+                            if ((returnValues != null) && (returnValues.Length >= 1))
+                            {
+                                value = CreateBindingValue(returnValues[0]);
+                                if (Logger.IsDebugEnabled)
+                                {
+                                    Logger.Debug("Binding value lua script evaluated (Binding=\"" + Description + "\", Expression=\"" + Value + "\", TriggerValue=\"" + LuaInterpreter["TriggerValue"] + "\", ReturnValue=\"" + returnValues[0] + "\")");
+                                }
+                            }
+                            else
+                            {
+                                Logger.Warn("Binding value lua script did not return a value. (Binding=\"" + Description + "\", Expression=\"" + Value + "\", TriggerValue=\"" + LuaInterpreter["TriggerValue"] + "\")");
+                            }
+                        }
+                        catch (LuaScriptException luaException)
+                        {
+                            Logger.Warn("Binding value lua error. (Error=\"" + luaException.Message + "\", Value Script=\"" + Value + "\", Binding=\"" + Description + "\")");
+                        }
+                        catch (Exception valueException)
+                        {
+                            // these are exceptions thrown by the Lua implementation
+                            Logger.Error(valueException, "Binding value lua script has thown an unhandled exception. (Binding=\"" + Description + "\", Value Script=\"" + Value + "\")");
+                        }
+                        break;
+                }
+                if(Action.Target.Dispatcher == null) {
+                    // if we don't have a dispatcher, likely because this is a composite device, we use the dispatcher object from the owner of the trigger
+                    // this seems to work and was the best I could come up with, but it is very much a kludge because I could not work out the proper way
+                    // to have a dispatcher created for Actions
+                    Action.Target.Dispatcher = Trigger.Owner.Dispatcher;
+                }
+                Action.Target.Dispatcher.Invoke(new Action<BindingValue, bool>(Execute), value, BypassCascadingTriggers);
             }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Binding threw unhandled exception. (Binding=\"" + Description + "\")");
+            }
+            _executing = false;
+            EndTraceTriggerFired();
         }
 
         private void Execute(BindingValue value, bool bypass)

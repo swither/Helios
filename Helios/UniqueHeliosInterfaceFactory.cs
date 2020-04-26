@@ -23,13 +23,15 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class UniqueHeliosInterfaceFactory : HeliosInterfaceFactory
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public override List<HeliosInterface> GetInterfaceInstances(HeliosInterfaceDescriptor descriptor, HeliosProfile profile)
         {
             List<HeliosInterface> interfaces = new List<HeliosInterface>();
 
             if (descriptor == null)
             {
-                ConfigManager.LogManager.LogWarning("Descriptor is null passed into UniqueHeliosInterfaceFactory.GetInterfaceInstances.");
+                Logger.Warn("Descriptor is null passed into UniqueHeliosInterfaceFactory.GetInterfaceInstances.");
             }
             else
             {
@@ -38,13 +40,13 @@ namespace GadrocsWorkshop.Helios
                     HeliosInterface newInterface = (HeliosInterface)Activator.CreateInstance(descriptor.InterfaceType);
                     if (newInterface == null)
                     {
-                        ConfigManager.LogManager.LogWarning("New interface is null.");
+                        Logger.Warn("New interface is null.");
                     }
                     interfaces.Add(newInterface);
                 }
                 else
                 {
-                    ConfigManager.LogManager.LogInfo("Unique interface already exists in profile " + descriptor.Name + ". Type: " + descriptor.InterfaceType.BaseType.Name);
+                    Logger.Debug("Unique interface already exists in profile " + descriptor.Name + ". Type: " + descriptor.InterfaceType.BaseType.Name);
                 }
             }
 

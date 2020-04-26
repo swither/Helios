@@ -22,6 +22,7 @@ namespace GadrocsWorkshop.Helios
     {
         private int _dpi = 0;
         //private MonitorCollection _displayCollection = null;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Properties
 
@@ -31,12 +32,12 @@ namespace GadrocsWorkshop.Helios
             {
                 if (_dpi == 0)
                 {
-                    ConfigManager.LogManager.LogDebug("Helios is measuring screen DPI");
+                    Logger.Debug("Helios is measuring screen DPI");
                     IntPtr desktopHwnd = IntPtr.Zero;
                     IntPtr desktopDC = NativeMethods.GetDC(desktopHwnd);
                     _dpi = NativeMethods.GetDeviceCaps(desktopDC, 88 /*LOGPIXELSX*/);
                     NativeMethods.ReleaseDC(desktopHwnd, desktopDC);
-                    ConfigManager.LogManager.LogDebug($"Helios has determined screen DPI is {_dpi}");
+                    Logger.Debug($"Helios has determined screen DPI is {_dpi}");
                 }
                 return _dpi;
             }
@@ -85,7 +86,7 @@ namespace GadrocsWorkshop.Helios
                 }
                 catch (Exception ex)
                 {
-                    ConfigManager.LogManager.LogError("Exception thrown enumerating display devices.", ex);
+                    Logger.Error(ex, "Exception thrown enumerating display devices.");
                 }
 
                 return displayCollection;

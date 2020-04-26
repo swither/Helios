@@ -31,6 +31,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     {
         private const string SETTINGS_GROUP = "DCSInterface";
         private const DCSExportModuleFormat DEFAULT_EXPORT_MODULE_FORMAT = DCSExportModuleFormat.HeliosDriver16;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// backing field for ExportModuleFormat
@@ -277,7 +278,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 if (new Regex("[\\d\\w_-]+").IsMatch(e.Text))
                 {
-                    ConfigManager.LogManager.LogError("DCS interface received advertisement for unsupported export module format '{e.Text}' from export script");
+                    Logger.Error("DCS interface received advertisement for unsupported export module format '{e.Text}' from export script");
                 }
                 _remoteModuleFormat = null;
             }
@@ -328,7 +329,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             if (IsSynchronized)
             {
                 // we think we are synchronized
-                ConfigManager.LogManager.LogInfo($"DCS interface received data for missing function (Key=\"{id}\"); we think export is running module of type '{_remoteModuleFormat}'");
+                Logger.Info($"DCS interface received data for missing function (Key=\"{id}\"); we think export is running module of type '{_remoteModuleFormat}'");
             }
         }
 
@@ -372,7 +373,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         break;
                     default:
                         string discard = reader.ReadElementString(reader.Name);
-                        ConfigManager.LogManager.LogWarning(
+                        Logger.Warn(
                             $"Ignored unsupported DCS Interface setting '{reader.Name}' with value '{discard}'");
                         break;
                 }

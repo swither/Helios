@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using NLog;
+
 namespace GadrocsWorkshop.Helios
 {
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -27,6 +29,8 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public static class HeliosInit
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public static void Initialize(string docPath, string logFileName, LogLevel logLevel, HeliosApplication application = null)
         {
             // check OS and build
@@ -42,23 +46,14 @@ namespace GadrocsWorkshop.Helios
             // Create documents directory if it does not exist
             ConfigManager.DocumentPath = docPath;
 
-            string logPath = Path.Combine(ConfigManager.DocumentPath, logFileName);
+            // start up logging
+            InitializeNLog(logLevel);
 
-            string backupName = logPath + ".bak";
-            if (File.Exists(backupName))
-            {
-                File.Delete(backupName);
-            }
-
-            if (File.Exists(logPath))
-            {
-                File.Move(logPath, backupName);
-            }
-
-            ConfigManager.LogManager = new LogManager(logPath, logLevel);
+            // create this legacy interface for other DLLs that don't have access to NLog
+            ConfigManager.LogManager = new LogManager(logLevel);
 
             Assembly execAssembly = Assembly.GetExecutingAssembly();
-            ConfigManager.LogManager.Log("Helios Version " + execAssembly.GetName().Version);
+            Logger.Info("Helios Version " + execAssembly.GetName().Version);
 
             ConfigManager.Application = application ?? new HeliosApplication();
             ConfigManager.SettingsManager =
@@ -74,7 +69,7 @@ namespace GadrocsWorkshop.Helios
             ConfigManager.ModuleManager = new ModuleManager(ConfigManager.ApplicationPath);
             ConfigManager.TemplateManager = new TemplateManager(ConfigManager.TemplatePath, ConfigManager.PanelTemplatePath);
             
-            ConfigManager.LogManager.LogDebug("Searching for Helios modules in libraries");
+            Logger.Debug("Searching for Helios modules in libraries");
 
             LoadModule(Assembly.GetExecutingAssembly());
 
@@ -100,15 +95,56 @@ namespace GadrocsWorkshop.Helios
 
             if (RenderCapability.Tier == 0)
             {
-                ConfigManager.LogManager.LogWarning("Hardware rendering is not available on this machine.  Helios will consume large amounts of CPU.");
+                Logger.Warn("Hardware rendering is not available on this machine.  Helios will consume large amounts of CPU.");
             }
+        }
+
+        private static void InitializeNLog(LogLevel logLevel)
+        {
+            // tell NLog config where to log
+            GlobalDiagnosticsContext.Set("documentsPath", ConfigManager.DocumentPath);
+
+            // tell NLog config the log level
+            NLog.LogLevel nlogLevel;
+            bool badLogLevel = false;
+            switch (logLevel)
+            {
+                case LogLevel.All:
+                case LogLevel.Error:
+                    nlogLevel = NLog.LogLevel.Error;
+                    break;
+                case LogLevel.Warning:
+                    nlogLevel = NLog.LogLevel.Warn;
+                    break;
+                case LogLevel.Info:
+                    nlogLevel = NLog.LogLevel.Info;
+                    break;
+                case LogLevel.Debug:
+                    nlogLevel = NLog.LogLevel.Debug;
+                    break;
+                default:
+                    nlogLevel = NLog.LogLevel.Info;
+                    badLogLevel = true;
+                    break;
+            }
+
+            GlobalDiagnosticsContext.Set("logLevel", nlogLevel.ToString());
+
+            // now that we are configured, we can log this
+            if (badLogLevel)
+            {
+                Logger.Warn("Log level {Level} is not valid for command line selection; Info level used instead", logLevel);
+            }
+
+            NLog.LogManager.Configuration = NLog.LogManager.Configuration?.Reload();
+            NLog.LogManager.Flush();
         }
 
         private static void LoadModule(string moduleFileName)
         {
             if (File.Exists(moduleFileName))
             {
-                ConfigManager.LogManager.LogDebug($"Loading library: '{moduleFileName}'");
+                Logger.Debug($"Loading library: '{moduleFileName}'");
                 try
                 {
                     Assembly asm = Assembly.LoadFrom(moduleFileName);
@@ -118,12 +154,12 @@ namespace GadrocsWorkshop.Helios
                     }
                     else
                     {
-                        ConfigManager.LogManager.LogWarning($"Failed to load library '{moduleFileName}'");
+                        Logger.Warn($"Failed to load library '{moduleFileName}'");
                     }
                 }
                 catch (Exception e)
                 {
-                    ConfigManager.LogManager.LogError($"Failed to load library '{moduleFileName}' due to error", e);
+                    Logger.Error(e, $"Failed to load library '{moduleFileName}' due to error");
                 }
             }
         }
@@ -131,7 +167,7 @@ namespace GadrocsWorkshop.Helios
         private static void LoadModule(Assembly asm)
         {
             string moduleName = asm.GetName().Name;
-            ConfigManager.LogManager.LogDebug($"Helios is searching for Helios components in library '{moduleName}'");
+            Logger.Debug($"Helios is searching for Helios components in library '{moduleName}'");
             ((ModuleManager)ConfigManager.ModuleManager).RegisterModule(asm);
 
             string directoryName = moduleName;
@@ -142,10 +178,22 @@ namespace GadrocsWorkshop.Helios
             }
             else
             {
-                ConfigManager.LogManager.LogDebug($"No Helios-specific module attribute in library '{directoryName}'; using default path based on library name");
+                Logger.Debug($"No Helios-specific module attribute in library '{directoryName}'; using default path based on library name");
             }
 
             ((TemplateManager)ConfigManager.TemplateManager).LoadModuleTemplates(directoryName);
+        }
+
+        /// <summary>
+        /// flush logs and do anything else Helios wants to do before exit
+        ///
+        /// WARNING: this method is not guaranteed to get called since there are many ways to
+        /// exit an application, some of them not allowing us time to call it.  It may also
+        /// be called more than once.
+        /// </summary>
+        public static void OnShutdown()
+        {
+            NLog.LogManager.Shutdown();
         }
     }
 }

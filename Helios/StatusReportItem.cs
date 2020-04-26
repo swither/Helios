@@ -22,6 +22,8 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class StatusReportItem
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// This severity code mirrors the log levels where names are the same.
         ///

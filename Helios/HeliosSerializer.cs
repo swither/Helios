@@ -28,6 +28,8 @@ namespace GadrocsWorkshop.Helios
     public class HeliosSerializer : BaseDeserializer
     {
         private HeliosBindingCollection _skipbindings = new HeliosBindingCollection();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public HeliosSerializer(Dispatcher dispatcher)
             : base(dispatcher)
         {
@@ -236,7 +238,7 @@ namespace GadrocsWorkshop.Helios
             }
             else
             {
-                ConfigManager.LogManager.LogWarning("Dangling bindings found during save.");
+                Logger.Warn("Dangling bindings found during save.");
             }
         }
 
@@ -303,7 +305,7 @@ namespace GadrocsWorkshop.Helios
                 }
             } else
             {
-                ConfigManager.LogManager.LogError("Binding Source Reference Unresolved: " + xmlReader.GetAttribute("Source"));
+                Logger.Error("Binding Source Reference Unresolved: " + xmlReader.GetAttribute("Source"));
             }
             xmlReader.Read();
 
@@ -327,7 +329,7 @@ namespace GadrocsWorkshop.Helios
             }
             else
             {
-                ConfigManager.LogManager.LogError("Binding Target Reference Unresolved: " + xmlReader.GetAttribute("Target"));
+                Logger.Error("Binding Target Reference Unresolved: " + xmlReader.GetAttribute("Target"));
             }
             xmlReader.Read();
             switch (xmlReader.Name)

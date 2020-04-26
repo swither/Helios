@@ -27,6 +27,8 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
     public class BaseUDPInterface : HeliosInterface
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         // const during lifetime, no access control required
         private readonly AsyncCallback _socketDataCallback;
         private static readonly System.Text.Encoding _iso_8859_1 = System.Text.Encoding.GetEncoding("iso-8859-1");  // This is the locale of the lua exports program
@@ -421,7 +423,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                         }
                         else
                         {
-                            ConfigManager.LogManager.LogError("UDP interface created duplicate function ID. (Interface=\"" + Name + "\", Function ID=\"" + element.ID + "\")");
+                            Logger.Error("UDP interface created duplicate function ID. (Interface=\"" + Name + "\", Function ID=\"" + element.ID + "\")");
                         }
                     }
                 }
@@ -490,11 +492,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
             do
             {
-                // this message drowns the console output, so only send it if requested
-                if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
-                {
-                    ConfigManager.LogManager.LogDebug("UDP interface waiting for socket data. (Interface=\"" + Name + "\")");
-                }
+                Logger.Debug("UDP interface waiting for socket data on {Inteface}.", Name);
                 try
                 {
                     ReceiveContext.Message message = context.BeginWrite();
@@ -505,7 +503,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 {
                     if (!HandleSocketException(se, out context.socket))
                     {
-                        ConfigManager.LogManager.LogError("UDP interface unable to recover from socket reset, no longer receiving data. (Interface=\"" + Name + "\")");
+                        Logger.Error("UDP interface unable to recover from socket reset, no longer receiving data. (Interface=\"" + Name + "\")");
                         break;
                     }
                     // else retry forever
@@ -612,10 +610,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             if (owned.Length > 1)
             {
-                if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
-                {
-                    ConfigManager.LogManager.LogDebug($"received {owned.Length} UDP messages in batch");
-                }
+                Logger.Debug("received {MessageCount} UDP messages in batch", owned.Length);
             }
 
             // REVISIT: could skip ahead if this batch contains a client change
@@ -630,17 +625,16 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     continue;
                 }
 
-                // check log level first, so we don't create the extra strings and don't drown the console in debug builds
-                if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
+                if (Logger.IsDebugEnabled)
                 {
-                    ConfigManager.LogManager.LogDebug("UDP Interface received packet. (Interface=\"" + Name + "\", Packet=\"" + _iso_8859_1.GetString(message.data, 0, message.bytesReceived) + "\")");
+                    Logger.Debug("UDP Interface received packet on {Interface}: {Packet}.", Name, _iso_8859_1.GetString(message.data, 0, message.bytesReceived));
                 }
 
                 // handle client restart or change in client
                 String packetClientID = _iso_8859_1.GetString(message.data, 0, 8);
                 if (!_main.ClientID.Equals(packetClientID))
                 { 
-                    ConfigManager.LogManager.LogInfo("UDP interface new client connected, sending data reset command. (Interface=\"" + Name + "\", Client=\"" + _main.Client.ToString() + "\", Client ID=\"" + packetClientID + "\")");
+                    Logger.Info("UDP interface new client connected, sending data reset command. (Interface=\"" + Name + "\", Client=\"" + _main.Client.ToString() + "\", Client ID=\"" + packetClientID + "\")");
                     string fromValue = _main.ClientID;
                     _main.ClientID = packetClientID;
                     OnClientChanged(fromValue, packetClientID);
@@ -661,7 +655,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     {
                         // if DISCONNECT is formatted as a valid message with a value, we get here, otherwise we
                         // handled it in HandleShortMessage
-                        ConfigManager.LogManager.LogDebug("UDP interface received disconnect message from simulator.");
+                        Logger.Debug("UDP interface received disconnect message from simulator.");
                         _main.DisconnectedTrigger.FireTrigger(BindingValue.Empty);
                     }
                     else
@@ -676,7 +670,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
         protected virtual void OnUnrecognizedFunction(string id, string value)
         {
-            ConfigManager.LogManager.LogWarning($"UDP interface received data for missing function. (Key=\"{id}\")");
+            Logger.Warn($"UDP interface received data for missing function. (Key=\"{id}\")");
         }
 
 
@@ -686,11 +680,11 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             // Special case for legacy Disconnect
             if (RecString.Contains("DISCONNECT"))
             {
-                ConfigManager.LogManager.LogInfo("UDP interface disconnect from Lua.");
+                Logger.Info("UDP interface disconnect from Lua.");
                 _main.DisconnectedTrigger.FireTrigger(BindingValue.Empty);
                 return;
             }
-            ConfigManager.LogManager.LogWarning("UDP interface short packet received. (Interface=\"" + Name + "\")");
+            Logger.Warn("UDP interface short packet received. (Interface=\"" + Name + "\")");
         }
 
         // WARNING: called on both Main and Socket threads, depending on where the failure occurred
@@ -705,8 +699,8 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 }
                 catch (SocketException secondException)
                 {
-                    ConfigManager.LogManager.LogError("UDP interface threw exception (Interface=\"" + Name + "\")", se);
-                    ConfigManager.LogManager.LogError("UDP interface then threw exception reopening socket; cannot continue. (Interface=\"" + Name + "\")", secondException);
+                    Logger.Error("UDP interface threw exception (Interface=\"" + Name + "\")", se);
+                    Logger.Error("UDP interface then threw exception reopening socket; cannot continue. (Interface=\"" + Name + "\")", secondException);
                     newSocket = null;
                     return false;
                 }
@@ -714,7 +708,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
             else
             {
-                ConfigManager.LogManager.LogError("UDP interface threw unhandled exception handling socket reset. (Interface=\"" + Name + "\")", se);
+                Logger.Error("UDP interface threw unhandled exception handling socket reset. (Interface=\"" + Name + "\")", se);
                 newSocket = null;
                 return false;
             }
@@ -726,7 +720,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             {
                 if ((_main.Client != null) && (_main.ClientID != ClientChange.NO_CLIENT))
                 {
-                    ConfigManager.LogManager.LogDebug("UDP interface sending data. (Interface=\"" + Name + "\", Data=\"" + data + "\")");
+                    Logger.Debug("UDP interface sending data on {Interface}: {Packet}.", Name, data);
                     SendContext context = new SendContext();
                     context.dataBuffer = _iso_8859_1.GetBytes(data + "\n");
                     Socket socket = _shared.ServerSocket;
@@ -736,12 +730,12 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             catch (SocketException se)
             {
                 // just ignore
-                ConfigManager.LogManager.LogDebug($"UDP interface threw handled socket exception '{se.Message}' while sending data. (Interface=\"" + Name + "\", Data=\"" + data + "\")");
+                Logger.Debug($"UDP interface threw handled socket exception \"{se.Message}\" while sending data. (Interface=\"" + Name + "\", Data=\"" + data + "\")");
                 HandleSocketException(se, out Socket unused);
             }
             catch (Exception e)
             {
-                ConfigManager.LogManager.LogError("UDP interface threw exception sending data. (Interface=\"" + Name + "\")", e);
+                Logger.Error(e, "UDP interface threw exception sending data on {Interface}.", Name);
             }
         }
 
@@ -797,7 +791,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
         void Profile_ProfileStarted(object sender, EventArgs e)
         {
-            ConfigManager.LogManager.LogDebug("UDP interface starting. (Interface=\"" + Name + "\")");
+            Logger.Debug("UDP interface {Interface} starting.", Name);
             Socket serverSocket = null;
             try
             {
@@ -807,8 +801,8 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
             catch (System.Net.Sockets.SocketException se)
             {
-                ConfigManager.LogManager.LogError("UDP interface startup error. (Interface=\"" + Name + "\")");
-                ConfigManager.LogManager.LogError("UDP Socket Exception on Profile Start.  " + se.Message, se);
+                Logger.Error("UDP interface startup error. (Interface=\"" + Name + "\")");
+                Logger.Error("UDP Socket Exception on Profile Start.  " + se.Message, se);
             }
 
             // 10 seconds for Delayed Startup
@@ -821,14 +815,14 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             OnProfileStarted();
 
             // start delayed start timer
-            ConfigManager.LogManager.LogDebug("Starting startup timer.");
+            Logger.Debug("Starting startup timer.");
             timer.Start();
 
             // we continue to run even if we cannot receive
             if (serverSocket != null)
             {
                 // now go active
-                ConfigManager.LogManager.LogDebug("Starting UDP receiver.");
+                Logger.Debug("Starting UDP receiver.");
                 WaitForData(new ReceiveContext() { socket = serverSocket });
             }
         }
@@ -846,7 +840,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
         private void OnDelayedStartup()
         { 
-            ConfigManager.LogManager.LogDebug("Delayed startup timer triggered.");
+            Logger.Debug("Delayed startup timer triggered.");
             _main.ProfileLoadedTrigger.FireTrigger(BindingValue.Empty);
         }
 

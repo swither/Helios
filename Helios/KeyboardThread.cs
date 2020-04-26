@@ -26,6 +26,8 @@ namespace GadrocsWorkshop.Helios
 
     class KeyboardThread
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private readonly Thread _thread;
         private Socket _clientsocket;
         public Queue<NativeMethods.INPUT> _events = new Queue<NativeMethods.INPUT>();
@@ -165,7 +167,7 @@ namespace GadrocsWorkshop.Helios
                     }
                     else
                     {
-                        ConfigManager.LogManager.LogError("Keyboard Thread unable to Bind TCP port: " + se.Message, se);
+                        Logger.Error("Keyboard Thread unable to Bind TCP port: " + se.Message, se);
                     }
                 }
             }
@@ -214,7 +216,7 @@ namespace GadrocsWorkshop.Helios
                             }
                             else
                             {
-                                ConfigManager.LogManager.LogError("Keyboard Thread unable to recover from socket exception on Receive(): " + se.Message, se);
+                                Logger.Error("Keyboard Thread unable to recover from socket exception on Receive(): " + se.Message, se);
                             }
                         }
                     }

@@ -6,11 +6,14 @@ namespace GadrocsWorkshop.Helios.Windows
 {
     public class ExceptionViewer
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public static void DisplayUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
             DisplayException(e.Exception);
-            // now we crash
-            ConfigManager.LogManager.LogError($"Unhandled exception occurred.  {e.Exception.Source} will exit.", e.Exception);
+            // now we exit
+            Logger.Error(e.Exception, $"Unhandled exception occurred.  {e.Exception.Source} will exit.");
+            HeliosInit.OnShutdown();
         }
 
         public static void DisplayException(Exception ex)
