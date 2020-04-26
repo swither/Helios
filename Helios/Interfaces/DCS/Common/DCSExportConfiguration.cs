@@ -511,13 +511,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         continue;
                     }
 
-                    string vehicle = _parent.ImpersonatedVehicleName ?? _parent.VehicleName;
+                    string baseName = GenerateModuleBaseName();
                     File.WriteAllText(
-                        location.ExportModulePath(moduleInfo.ModuleLocation, vehicle),
+                        location.ExportModulePath(moduleInfo.ModuleLocation, baseName),
                         _exportModuleText);
                     report.Add(new StatusReportItem
                     {
-                        Status = $"Wrote {moduleInfo.DisplayName} for {vehicle} to {location.SavedGamesName}",
+                        Status = $"Wrote {moduleInfo.DisplayName} for {baseName} to {location.SavedGamesName}",
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     });
                 }
@@ -952,10 +952,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     throw new ArgumentOutOfRangeException();
             }
 
-            string exportModulePath = location.ExportModulePath(moduleInfo.ModuleLocation,
-                _parent.ExportModuleBaseName ??
-                _parent.ImpersonatedVehicleName ?? 
-                _parent.VehicleName);
+            string exportModulePath = location.ExportModulePath(moduleInfo.ModuleLocation, GenerateModuleBaseName());
             if (!File.Exists(exportModulePath))
             {
                 return new StatusReportItem
@@ -987,6 +984,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 Severity = StatusReportItem.SeverityCode.Error
             };
         }
+
+        private string GenerateModuleBaseName() =>
+            _parent.ExportModuleBaseName ??
+            _parent.ImpersonatedVehicleName ?? 
+            _parent.VehicleName;
 
         // XXX if address is localhost, false
         // XXX if address is broadcast or multicast, true
