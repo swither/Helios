@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Splash
             Version runningVersion = VersionChecker.RunningVersion;
             VersionBlock.Text = runningVersion.Major.ToString() + "." + runningVersion.Minor.ToString() + "." + runningVersion.Build.ToString() + "." + runningVersion.Revision.ToString("0000");
             ContributionBlock.Text = string.Join("; ", Authors);
-            ContributionBlock.Text = ContributionBlock.Text + string.Join("; ", Contributors);
+            ContributionBlock.Text = ContributionBlock.Text + "; " + string.Join("; ", Contributors);
             StatusBlock.Text = RunningVersion.IsDevelopmentPrototype ? "Development Prototype" : "Released";
             base.OnActivated(e);
         }
