@@ -123,7 +123,7 @@
                 <Button Canvas.Left="323" Canvas.Top="82" Height="50" x:Name="NextButton" Width="50" Style="{StaticResource HeliosNextButtonStyle}" Command="local:ControlCenterCommands.NextProfile" />
                 <TextBlock Canvas.Left="0" Canvas.Top="240" Width="504" Text="HELIOS CONTROL CENTER" Style="{StaticResource BaseLabel}" FontSize="22"/>
             </Canvas>
-            <Canvas DataContext="{Binding Preferences}" Name="PreferencesCanvas" Margin="0" Height="320" Width="504" >
+            <Canvas DataContext="{Binding Preferences}" Name="PreferencesCanvas" Margin="0" Height="320" Width="504" Style="{StaticResource CollapsePrefs}" >
                 <Image Source="PreferencesBackground.png" />
                 <Thumb Name="PrefsDragThumb" Width="504" Height="320" Opacity="0" DragDelta="MoveThumb_DragDelta" Canvas.Left="0" Canvas.Top="0" />
                 <Grid>
