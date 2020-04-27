@@ -67,5 +67,8 @@
   <ItemGroup>
     <Content Include="readme.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Empty.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
