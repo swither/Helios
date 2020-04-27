@@ -1,38 +1,50 @@
-@set VERSION=%1
+@if "%1" == "test" (
+	@set VERSION="1.6.1000.0"
+) else (
+	@set VERSION=%1
 
-@REM make sure clean working directory
+	@REM create tag, make sure it is unique
+	git tag %1
+	@if %errorlevel% neq 0 (
+		echo Failed to place git tag.  Ensure you used a unique major.minor.build.revision number
+		exit /b %errorlevel%
+	)
 
-@REM step 1: untracked files
-@REM result code not set correctly on windows it seems, so we have to check output
-@set LSFILES=
-@set gituntracked=git ls-files --exclude-standard --others
-@FOR /F %%i IN ('%gituntracked%') DO @set LSFILES=%%i
-@if "%LSFILES%" NEQ "" (
-	@git status --porcelain
-	echo Untracked files in working directory.  Update your gitignore or commit files to git before building.
-	exit /b %errorlevel%
+	@REM make sure clean working directory
+
+	@REM step 1: untracked files
+	@REM result code not set correctly on windows it seems, so we have to check output
+	@set LSFILES=
+	@set gituntracked=git ls-files --exclude-standard --others
+	@FOR /F %%i IN ('%gituntracked%') DO @set LSFILES=%%i
+	@if "%LSFILES%" NEQ "" (
+		@git status --porcelain
+		echo Untracked files in working directory.  Update your gitignore or commit files to git before building.
+		exit /b %errorlevel%
+	)
+
+	@REM step 2: staged files
+	@git diff-index --quiet --cached HEAD --
+	@if %errorlevel% neq 0 (
+		@git status --porcelain
+		echo Unfinished commit in index.  Complete commit or stash changes before building.
+		exit /b %errorlevel%
+	)
+
+	@REM step 3: unstaged modifications 
+	@git diff-files --quiet
+	@if %errorlevel% neq 0 (
+		@git status --porcelain
+		echo Working directory is not clean.  Stash changes before building.
+		exit /b %errorlevel%
+	)
+
+	set errorlevel=0
 )
 
-@REM step 2: staged files
-@git diff-index --quiet --cached HEAD --
+@REM check for error exit from if scope
 @if %errorlevel% neq 0 (
-	@git status --porcelain
-	echo Unfinished commit in index.  Complete commit or stash changes before building.
-	exit /b %errorlevel%
-)
-
-@REM step 3: unstaged modifications 
-@git diff-files --quiet
-@if %errorlevel% neq 0 (
-	@git status --porcelain
-	echo Working directory is not clean.  Stash changes before building.
-	exit /b %errorlevel%
-)
-
-@REM create tag, make sure it is unique
-git tag %1
-@if %errorlevel% neq 0 (
-	echo Failed to place git tag.  Ensure you used a unique major.minor.build.revision number
+	echo error %errorlevel%
 	exit /b %errorlevel%
 )
 
