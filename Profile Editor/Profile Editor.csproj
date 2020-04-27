@@ -285,11 +285,6 @@
       <Name>Helios</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Patching\Patching.csproj">
-      <Project>{85e85bdf-eb98-4440-bc7d-52cd44176bd9}</Project>
-      <Name>Patching</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ToolbarGraphics\AlignBottom.png" />

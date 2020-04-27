@@ -63,11 +63,6 @@
       <Project>{efc42b48-44dd-4066-81f4-60c0d8104f7b}</Project>
       <Name>GoogleDiffMatchPatch</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\GenerateSimulatorViewportTemplates\GenerateSimulatorViewportTemplates.csproj">
-      <Project>{d17e62cb-e81a-412e-931b-cd4456151c40}</Project>
-      <Name>GenerateSimulatorViewportTemplates</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="DCS\MonitorSetupEditor.xaml">
@@ -92,6 +87,6 @@
   <Import Project="..\HeliosPlugin.targets" />
   <PropertyGroup>
     <PreBuildEvent>
-</PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

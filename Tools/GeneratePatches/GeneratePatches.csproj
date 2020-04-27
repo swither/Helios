@@ -45,10 +45,6 @@
     <Content Include="Setup\DCS\readme.md" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Patching\Patching.csproj">
-      <Project>{85e85bdf-eb98-4440-bc7d-52cd44176bd9}</Project>
-      <Name>Patching</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\ThirdParty\diff-match-patch\GoogleDiffMatchPatch.csproj">
       <Project>{efc42b48-44dd-4066-81f4-60c0d8104f7b}</Project>
       <Name>GoogleDiffMatchPatch</Name>
