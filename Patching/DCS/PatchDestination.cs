@@ -73,7 +73,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        public PatchList SelectPatches(string patchesPath, string patchSet)
+        public PatchList SelectPatches(string patchesPath, string patchSet, ref string selectedVersion)
         {
             PatchList patches = new PatchList();
             if (!Directory.Exists(patchesPath))
@@ -85,28 +85,46 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             foreach (string versionPath in Directory.EnumerateDirectories(patchesPath, "???_???_?????_*", SearchOption.TopDirectoryOnly))
             {
                 string directoryVersion = Path.GetFileName(versionPath);
+                // ReSharper disable once AssignNullToNotNullAttribute versionPath is returned from directory enumeration and can't be null
                 string patchSetPath = Path.Combine(versionPath, patchSet);
                 if (!Directory.Exists(patchSetPath))
                 {
                     // patch set not included in this update
                     continue;
                 }
-                if (directoryVersion.CompareTo(Version) > 0)
+                if (string.Compare(directoryVersion, Version, StringComparison.InvariantCulture) > 0)
                 {
                     // patches are only for later version of DCS
                     continue;
                 }
-                if (directoryVersion.CompareTo(candidateVersion) > 0)
+                if (string.Compare(directoryVersion, candidateVersion, StringComparison.InvariantCulture) > 0)
                 {
+                    if (selectedVersion != null)
+                    {
+                        // we already committed to a particular patch version
+                        if (selectedVersion != directoryVersion)
+                        {
+                            continue;
+                        }
+                    }
                     candidateVersion = directoryVersion;
                     candidatePatchSetPath = patchSetPath;
                 }
             }
             if (candidatePatchSetPath == "")
             {
-                ConfigManager.LogManager.LogWarning($"current version of DCS {DisplayVersion} is not supported by any installed {patchSet} patch set");
+                if (selectedVersion != null)
+                {
+                    ConfigManager.LogManager.LogInfo($"no additional {patchSet} patches for DCS {DisplayVersion} from {Util.Anonymizer.Anonymize(patchesPath)} based on selected patch version {selectedVersion}");
+                }
+                else
+                {
+                    ConfigManager.LogManager.LogInfo($"current version of DCS {DisplayVersion} is not supported by any installed {patchSet} patch set from {Util.Anonymizer.Anonymize(patchesPath)}");
+                }
                 return patches;
             }
+            ConfigManager.LogManager.LogInfo($"loading {patchSet} patches for DCS {DisplayVersion} from {Util.Anonymizer.Anonymize(patchesPath)} using version {candidateVersion} of the patches");
+
             foreach (string patchPath in Directory.EnumerateFiles(candidatePatchSetPath, "*.gpatch", SearchOption.AllDirectories))
             {
                 PatchFile patch = new PatchFile
@@ -116,6 +134,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 patch.Load(patchPath);
                 patches.Add(patch);
             }
+            selectedVersion = candidateVersion;
             return patches;
         }
     }

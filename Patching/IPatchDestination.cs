@@ -17,6 +17,13 @@
         bool TryGetSource(string targetPath, out string source);
         bool TryWritePatched(string targetPath, string patched);
 
-        PatchList SelectPatches(string patchesPath, string patchSet);
+        /// <summary>
+        /// finds all applicable patches from a specfic patches folder
+        /// </summary>
+        /// <param name="patchesPath">the root folder for Patches</param>
+        /// <param name="patchSet">the patch set, such as 'Viewports'</param>
+        /// <param name="selectedVersion">returns the selected version, if any.  If set before calling this method, only that version will be considered.</param>
+        /// <returns>a patchlist that may be empty if no matches were found</returns>
+        PatchList SelectPatches(string patchesPath, string patchSet, ref string selectedVersion);
     }
 }
