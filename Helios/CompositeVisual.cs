@@ -220,19 +220,19 @@ namespace GadrocsWorkshop.Helios
             if (!DesignMode)
                 return;
 
-            /// grab the default interface, if it exists
+            // grab the default interface, if it exists
             if (_defaultInterfaceName == "")
             {
                 return;
             }
             if (!Profile.Interfaces.ContainsKey(_defaultInterfaceName))
             {
-                Logger.Error("Cannot find default interface " + _defaultInterfaceName);
+                Logger.Info("Cannot find default interface " + _defaultInterfaceName);
                 return;
             }
             _defaultInterface = Profile.Interfaces[_defaultInterfaceName];
 
-            /// looping for all default input bindings to assign the value
+            // looping for all default input bindings to assign the value
             foreach (DefaultInputBinding defaultBinding in _defaultInputBindings)
             {
                 if (!Children.ContainsKey(defaultBinding.ChildName))
@@ -261,7 +261,7 @@ namespace GadrocsWorkshop.Helios
                 //        child.Actions[defaultBinding.DeviceActionName]));
             }
 
-            /// now looping for all default output bindings to assign the value
+            // now looping for all default output bindings to assign the value
             foreach (DefaultOutputBinding defaultBinding in _defaultOutputBindings)
             {
                 if (!Children.ContainsKey(defaultBinding.ChildName))
@@ -717,9 +717,9 @@ namespace GadrocsWorkshop.Helios
                 PositionTwoImage = positionTwoImage,
                 PositionThreeImage = positionThreeImage,
                 SwitchType = defaultType,
-                Name = componentName
+                Name = componentName,
+                ClickType = clickType
             };
-            toggle.ClickType = clickType;
             if (horizontal)
             {
                 toggle.Rotation = HeliosVisualRotation.CW;
@@ -863,16 +863,18 @@ namespace GadrocsWorkshop.Helios
             }
             foreach (IBindingAction action in device.Actions)
             {
-                if (action.Name != "hidden")
+                if (action.Name == "hidden")
                 {
-                    AddAction(action, action.Device);
-                    // Create the automatic input bindings for the IFEI_Gauge sub component
-                    AddDefaultInputBinding(
-                        childName: name,
-                        deviceActionName: action.ActionVerb + "." + action.Device,
-                        interfaceTriggerName: name + "." + action.Device + ".changed"
-                        );
+                    continue;
                 }
+
+                AddAction(action, action.Device);
+                // Create the automatic input bindings for the IFEI_Gauge sub component
+                AddDefaultInputBinding(
+                    childName: name,
+                    deviceActionName: action.ActionVerb + "." + action.Device,
+                    interfaceTriggerName: name + "." + action.Device + ".changed"
+                );
             }
             return device;
         }
@@ -902,34 +904,17 @@ namespace GadrocsWorkshop.Helios
             }
             foreach (IBindingAction action in gauge.Actions)
             {
-                if (action.Name != "hidden")
+                if (action.Name == "hidden")
                 {
-                    //string _actionName = action.Device;
-                    //if (_actionName == "")
-                    //{
-                    //    _actionName = action.Name;
-                    //}
-                    AddAction(action, action.Device);
-                    AddDefaultInputBinding(
-                        childName: componentName,
-                        interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
-                        deviceActionName: action.Device + "." + action.ActionVerb + "." + action.Name
-                        );
-
-                    // previously working (mostly)
-                    //AddDefaultInputBinding(
-                    //    childName: name,
-                    //    interfaceTriggerName: name + "." + interfaceElementName + ".changed",
-                    //    deviceActionName: action.ActionVerb + "." + _actionName
-                    //    );
-
-                    //AddDefaultInputBinding(
-                    //    childName: componentName,
-                    //    interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
-                    //    deviceActionName: "set.value");
-
-
+                    continue;
                 }
+
+                AddAction(action, action.Device);
+                AddDefaultInputBinding(
+                    childName: componentName,
+                    interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
+                    deviceActionName: action.Device + "." + action.ActionVerb + "." + action.Name
+                );
             }
             return gauge;
         }
