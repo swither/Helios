@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+
 namespace GadrocsWorkshop.Helios
 {
     using System.Windows.Media;
@@ -35,5 +38,36 @@ namespace GadrocsWorkshop.Helios
         
         string MakeImagePathRelative(string filename);
         string MakeImagePathAbsolute(string fileName);
+    }
+
+    public class ImageLoadEventArgs : EventArgs
+    {
+        public ImageLoadEventArgs(string path)
+        {
+            Path = path;
+        }
+
+        public string Path { get; }
+    }
+
+    /// <summary>
+    /// Version 2 of IImageManager interface
+    /// </summary>
+    public interface IImageManager2: IImageManager
+    {
+        event EventHandler<ImageLoadEventArgs> ImageLoadSuccess;
+        event EventHandler<ImageLoadEventArgs> ImageLoadFailure;
+
+        /// <summary>
+        /// discard any previous image load failures; to be called when switching to a new profile
+        /// or other context where previous failures would not be relevant to ReplayCurrentFailures
+        /// </summary>
+        void ClearFailureTracking();
+
+        /// <summary>
+        /// replays all failed image loads since the last call to ClearFailureTracking
+        /// </summary>
+        /// <param name="imageLoadFailureHandler"></param>
+        void ReplayCurrentFailures(Action<object, ImageLoadEventArgs> imageLoadFailureHandler);
     }
 }

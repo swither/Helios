@@ -25,10 +25,6 @@ namespace GadrocsWorkshop.Helios
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        internal ProfileManager()
-        {
-        }
-
         public bool SaveProfile(HeliosProfile profile)
         {            
             try
@@ -91,18 +87,20 @@ namespace GadrocsWorkshop.Helios
 
         public HeliosProfile LoadProfile(string path, Dispatcher dispatcher)
         {
+            if (ConfigManager.ImageManager is IImageManager2 imageManager2)
+            {
+                imageManager2.ClearFailureTracking();
+            }
             HeliosProfile profile = null;
-
             try
             {
-
                 if (File.Exists(path))
                 {
-                    bool rewrite = false;
-
-                    profile = new HeliosProfile(false);
-                    profile.Path = path;
-                    profile.Name = Path.GetFileNameWithoutExtension(path);
+                    profile = new HeliosProfile(false)
+                    {
+                        Path = path, 
+                        Name = Path.GetFileNameWithoutExtension(path)
+                    };
 
                     XmlReaderSettings settings = new XmlReaderSettings();
                     settings.IgnoreComments = true;
@@ -128,11 +126,6 @@ namespace GadrocsWorkshop.Helios
 
                     profile.IsDirty = false;
                     profile.LoadTime = Directory.GetLastWriteTime(path);
-
-                    if (rewrite)
-                    {
-                        SaveProfile(profile);
-                    }
                 }
             }
             catch (Exception e)

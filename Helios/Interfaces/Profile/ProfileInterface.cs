@@ -17,11 +17,11 @@ using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Profile
 {
+    using GadrocsWorkshop.Helios.ComponentModel;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
-    using GadrocsWorkshop.Helios.ComponentModel;
+    using System.Windows;
 
     [HeliosInterface("Helios.Base.ProfileInterface", "Profile", null, typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
     public class ProfileInterface : HeliosInterface, IStatusReportNotify, IResetMonitorsObserver
@@ -30,6 +30,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         // observers of our status report that need to be told when we change status
         private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
+
+        // failed image load paths we know about, so that we can recognize when a load success changes the status
+        private HashSet<string> _failedImagePaths;
 
         public ProfileInterface()
             : base("Profile")
@@ -53,6 +56,52 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             HeliosAction launchApplication = new HeliosAction(this, "", "", "launch application", "Launches an external application", "Full path to appliation or document you want to launch or URL to a web page.", BindingValueUnits.Text);
             launchApplication.Execute += LaunchApplication_Execute;
             Actions.Add(launchApplication);
+        }
+
+        protected override void AttachToProfileOnMainThread()
+        {
+            base.AttachToProfileOnMainThread();
+            if (!(ConfigManager.ImageManager is IImageManager2 images))
+            {
+                return;
+            }
+
+            _failedImagePaths = new HashSet<string>();
+            images.ReplayCurrentFailures(Images_ImageLoadFailure);
+
+            images.ImageLoadSuccess += Images_ImageLoadSuccess;
+            images.ImageLoadFailure += Images_ImageLoadFailure;
+        }
+
+        private void Images_ImageLoadFailure(object sender, ImageLoadEventArgs e)
+        {
+            _failedImagePaths?.Add(e.Path);
+            if (_failedImagePaths == null)
+            {
+                // this is normal state during profile loading, before we have initialized on main thread
+                return;
+            }
+            Application.Current.Dispatcher.Invoke(InvalidateStatusReport);
+        }
+
+        private void Images_ImageLoadSuccess(object sender, ImageLoadEventArgs e)
+        {
+            if (_failedImagePaths?.Remove(e.Path) ?? false)
+            {
+                Application.Current.Dispatcher.Invoke(InvalidateStatusReport);
+            }
+        }
+
+        protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
+        {
+            base.DetachFromProfileOnMainThread(oldProfile);
+            if (!(ConfigManager.ImageManager is IImageManager2 images))
+            {
+                return;
+            }
+
+            images.ImageLoadSuccess -= Images_ImageLoadSuccess;
+            images.ImageLoadFailure -= Images_ImageLoadFailure;
         }
 
         void LaunchApplication_Execute(object action, HeliosActionEventArgs e)
@@ -126,6 +175,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                 return;
             }
             IList<StatusReportItem> newReport = new List<StatusReportItem>();
+            CheckResetMonitors(newReport);
+            CheckMissingimages(newReport);
+            PublishStatusReport(newReport);
+        }
+
+        private void CheckMissingimages(IList<StatusReportItem> newReport)
+        {
+            foreach (string path in _failedImagePaths)
+            {
+                newReport.Add(new StatusReportItem
+                {
+                    Status = $"An image used in this Profile's controls could not be loaded from '{path}'",
+                    Recommendation = "Install missing images or correct image paths in controls, then reload profile.",
+                    Severity = StatusReportItem.SeverityCode.Warning,
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                });
+            }
+        }
+
+        private void CheckResetMonitors(IList<StatusReportItem> newReport)
+        {
             if (Profile != null)
             {
                 if (Profile.IsValidMonitorLayout)
@@ -143,13 +213,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                         Status = "The monitor arrangement saved in this profile does not match this computer",
                         Recommendation = "Perform Reset Monitors from the Profile menu",
                         Severity = StatusReportItem.SeverityCode.Error,
-                        Link = StatusReportItem.ProfileEditor,
-                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                        Link = StatusReportItem.ProfileEditor
                     });
-
                 }
             }
-            PublishStatusReport(newReport);
         }
 
         public void PublishStatusReport(IList<StatusReportItem> statusReport)

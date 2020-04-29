@@ -693,7 +693,6 @@ namespace GadrocsWorkshop.Helios
 
         public void DeserializeProfile(HeliosProfile profile, XmlReader xmlReader)
         {
-
             profile.Monitors.Clear();
             DeserializeMonitors(profile.Monitors, xmlReader);
 
