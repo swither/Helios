@@ -61,15 +61,6 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="AdvancedGroup" TargetType="{x:Type Control}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Setter Property="Margin" Value="0,0,0,12"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsChecked, ElementName=ShowAdvanced}" Value="True">
-                    <Setter Property="UIElement.Visibility" Value="Visible"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
         <Style x:Key="BasicGroup" TargetType="{x:Type Control}">
             <Setter Property="Margin" Value="0,0,0,12"/>
         </Style>
@@ -119,59 +110,7 @@
                 <TextBlock Grid.Column="1" Grid.Row="5" Style="{StaticResource Documentation}" Text="Number of times per second that instrument gauges will be exported (minimum of 4)."/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="DCS Export Files Output" Style="{StaticResource BasicGroup}">
-            <Grid Height="Auto">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="120"/>
-                    <!-- primary labels -->
-                    <ColumnDefinition Width="*"/>
-                    <!-- primary controls and long messages-->
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="Advanced"/>
-                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                    <!-- shielded from stretching -->
-                    <CheckBox VerticalAlignment="Center" x:Name="ShowAdvanced" IsChecked="false"/>
-                </StackPanel>
-                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}">Select this to show advanced configuration options.</TextBlock>
-
-                <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Status"/>
-                <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Your DCS configuration is up to date.</TextBlock>
-                    <!-- let's not do this? <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120">Remove DCS Setup</Button> -->
-                </Grid>
-                <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must configure DCS installation locations before you can configure this interface.</TextBlock>
-                </Grid>
-                <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">An updated export script and associated files must be installed to support this profile in DCS.</TextBlock>
-                    <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Style="{StaticResource InterfaceEditorButton}">Setup DCS</Button>
-                </Grid>
-            </Grid>
-        </GroupBox>
-        <GroupBox Header="DCS Export Files Output (Advanced)" Style="{StaticResource AdvancedGroup}">
+        <Expander Header="DCS Export.Lua Output (Advanced)" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
             <Grid Height="Auto">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="120"/>
@@ -215,8 +154,8 @@
                     </StackPanel>
                 </GroupBox>
             </Grid>
-        </GroupBox>
-        <GroupBox Header="Profile-Specific Settings (Advanced)" Style="{StaticResource AdvancedGroup}">
+        </Expander>
+        <Expander Header="Profile-Specific Settings (Advanced)" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="120"/>
@@ -271,8 +210,8 @@
                     <TextBlock Style="{StaticResource Documentation}">This third-party export module cannot be created by Helios.  You can attach a file here for inclusion into the Profile and automatic installation.</TextBlock>
                 </WrapPanel>
             </Grid>
-        </GroupBox>
-        <GroupBox Header="Global DCS-related Settings (Advanced)" Style="{StaticResource AdvancedGroup}">
+        </Expander>
+        <Expander Header="Global DCS-related Settings (Advanced)" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="120"/>
@@ -305,6 +244,48 @@
                     <TextBox Grid.Column="5" VerticalAlignment="Center" Width="40" Margin="0,0,12,0" Style="{StaticResource HideIfNoPhantomFix}" Text="{Binding Path=PhantomFix.TopPosition}"/>
                 </Grid>
                 <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource Documentation}" Text="When checked, Helios Control Center will periodically move the DCS window to the specified location on the main screen."/>
+            </Grid>
+        </Expander>
+        <GroupBox Header="DCS Export Files Output" Style="{StaticResource BasicGroup}">
+            <Grid Height="Auto">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="120"/>
+                    <!-- primary labels -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- primary controls and long messages-->
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Status"/>
+                <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Your DCS configuration is up to date.</TextBlock>
+                    <!-- let's not do this? <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120">Remove DCS Setup</Button> -->
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must configure DCS installation locations before you can configure this interface.</TextBlock>
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">An updated export script and associated files must be installed to support this profile in DCS.</TextBlock>
+                    <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Style="{StaticResource InterfaceEditorButton}">Setup DCS</Button>
+                </Grid>
             </Grid>
         </GroupBox>
     </StackPanel>
