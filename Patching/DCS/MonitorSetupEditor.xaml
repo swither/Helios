@@ -1,13 +1,9 @@
 ﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Patching.DCS.MonitorSetupEditor"
                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                                 xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
-                                 xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
-                                 xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
-                                 xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+                                 xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
+                                 xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
                                  x:Name="MonitorSetupWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
     <FrameworkElement.Resources>
         <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
@@ -121,7 +117,9 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" BorderBrush="Transparent" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Border"  
+                                BorderBrush="Transparent" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                ToolTipService.ShowOnDisabled="True">
                             <!-- these paths are from free for commercial use, no attribution required icons -->
                             <Canvas Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Canvas>
@@ -174,6 +172,7 @@
                                 <Setter TargetName="AircraftPath4" Property="Fill" Value="#FF231F20"/>
                                 <Setter TargetName="AircraftPath5" Property="Fill" Value="#FF231F20"/>
                                 <Setter TargetName="AircraftPath6" Property="Fill" Value="#FF231F20"/>
+                                <Setter TargetName="Border" Property="ToolTip" Value="This monitor is used for DCS 3D Views"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
@@ -185,6 +184,7 @@
                                 <Setter TargetName="AircraftPath4" Property="Fill" Value="#20231F20"/>
                                 <Setter TargetName="AircraftPath5" Property="Fill" Value="#20231F20"/>
                                 <Setter TargetName="AircraftPath6" Property="Fill" Value="#20231F20"/>
+                                <Setter TargetName="Border" Property="ToolTip" Value="Click here to use this monitor for DCS 3D Views"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -196,18 +196,20 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" BorderBrush="Transparent" Background="Transparent">
-                            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Name="AppIcon" FontFamily="Segoe MDL2 Assets" FontSize="36" FontWeight="UltraBold" Content="&#xE71D;"/>
+                        <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" BorderBrush="Transparent" Background="Transparent" Name="Border" ToolTipService.ShowOnDisabled="True">
+                            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Name="AppIcon" FontFamily="Segoe MDL2 Assets" FontSize="36" FontWeight="UltraBold" Content="&#xE71D;"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="AppIcon" Property="Foreground" Value="#FF231F20"/>
+                                <Setter TargetName="Border" Property="ToolTip" Value="This monitor is used for the DCS User Interface and Menus"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="IsChecked" Value="False"/>
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="AppIcon" Property="Foreground" Value="#20231F20"/>
+                                <Setter TargetName="Border" Property="ToolTip" Value="Click here to use this monitor for DCS User Interface and Menus"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

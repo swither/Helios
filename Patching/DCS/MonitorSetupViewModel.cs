@@ -186,6 +186,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     ui.Add(monitor);
                 }
 
+                // REVISIT: we could have handled this in MonitorViewModel, but we already have to
+                // update the geometry when viewports change
                 if (monitor.HasContent)
                 {
                     monitor.SetCanExclude(false,

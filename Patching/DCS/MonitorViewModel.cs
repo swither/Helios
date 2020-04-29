@@ -23,6 +23,26 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // changes to the Helios monitor geometry
             monitor.MonitorChanged += Monitor_MonitorChanged;
+
+            // changes to our model
+            monitor.PropertyChanged += Monitor_PropertyChanged;
+        }
+
+        // handle local view logic not involving other monitors
+        // global logic is in MonitorSetupViewModel
+        private void Monitor_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Main":
+                case "UserInterface":
+                    if (!HasContent)
+                    {
+                        Data.Included = false;
+                        UpdateIncludedNarrative();
+                    }
+                    break;
+            }
         }
 
         // not automatically called because we are strongly referenced by event
