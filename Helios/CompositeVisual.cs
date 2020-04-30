@@ -822,8 +822,7 @@ namespace GadrocsWorkshop.Helios
             gauge.Top = posn.Y;
             gauge.Left = posn.X;
             gauge.Width = size.Width;
-            gauge.Height = size.Height;
-
+            gauge.Height = size.Height;
             string componentName = GetComponentName(name);
             gauge.Name = componentName;
 
