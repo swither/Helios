@@ -119,7 +119,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Keyboard
         public string Description => "Interface to send synthetic key strokes";
 
         public string RemovalNarrative =>
-            "Delete this interface and removes all of its bindings from the Profile, making it impossible to send keyboard input.";
+            "Delete this interface and remove all of its bindings from the Profile, making it impossible to send keyboard input.";
 
         #endregion
     }
