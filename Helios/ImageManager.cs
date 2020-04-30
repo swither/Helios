@@ -51,16 +51,11 @@ namespace GadrocsWorkshop.Helios
             _xamlFirewall = new XamlFirewall();
         }
 
-        /// <summary>
-        /// Loads an image file iterating through the profile subdirectories.
-        /// </summary>
-        /// <param name="path">the full URI for the image</param>
-        /// <returns></returns>
-        private ImageSource DoLoadImage(string path, int? width, int? height)
+        private ImageSource DoLoadImage(string uri, int? width, int? height)
         {
             // parse as URI and check for existence of file, return Uri for resource that exists
             // or null (note: resource is not necesarily allowed to be read)
-            Uri imageUri = GetImageUri(path);
+            Uri imageUri = GetImageUri(uri);
             if (imageUri == null)
             {
                 return null;
@@ -72,7 +67,7 @@ namespace GadrocsWorkshop.Helios
                 return null;
             }
 
-            if (path.EndsWith(".xaml"))
+            if (uri.EndsWith(".xaml"))
             {
                 return imageUri.Scheme == "pack" ? LoadXamlResource(imageUri, width, height) : LoadXamlFile(imageUri, width, height);
             }
@@ -309,9 +304,9 @@ namespace GadrocsWorkshop.Helios
                 return fileName;
             }
 
-            // If the file is an absolute position.
             if (Path.IsPathRooted(fileName))
             {
+                // absolute file path, we can check this
                 if (File.Exists(fileName))
                 {
                     return fileName;
@@ -324,6 +319,7 @@ namespace GadrocsWorkshop.Helios
                     int closingIndex = fileName.IndexOf('}');
                     if (closingIndex > -1)
                     {
+                        // reference to an assembly by name, convert to pack URI
                         string assembly = fileName.Substring(1, closingIndex - 1);
                         return "pack://application:,,,/" + assembly + ";component" +
                                fileName.Substring(closingIndex + 1);
@@ -354,6 +350,11 @@ namespace GadrocsWorkshop.Helios
                     return false;
                 }
                 Stream resourceStream = streamResourceInfo.Stream;
+                if (resourceStream.Length < 1)
+                {
+                    resourceStream.Close();
+                    return false;
+                }
                 resourceStream.Close();
                 return true;
             }
@@ -364,10 +365,10 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public ImageSource LoadImage(string path)
+        public ImageSource LoadImage(string uri)
         {
-            ImageSource result = DoLoadImage(path, null, null);
-            OnImageLoad(path, result);
+            ImageSource result = DoLoadImage(uri, null, null);
+            OnImageLoad(uri, result);
             return result;
         }
 
@@ -389,10 +390,10 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public ImageSource LoadImage(string path, int width, int height)
+        public ImageSource LoadImage(string uri, int width, int height)
         {
-            ImageSource result = DoLoadImage(path, width, height);
-            OnImageLoad(path, result);
+            ImageSource result = DoLoadImage(uri, width, height);
+            OnImageLoad(uri, result);
             return result;
         }
 

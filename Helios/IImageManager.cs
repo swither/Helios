@@ -23,18 +23,18 @@ namespace GadrocsWorkshop.Helios
     public interface IImageManager
     {
         /// <summary>
-        /// Loads an image file iterating through the profile subdirectories.
+        /// Loads an image file from the specified URI.
         /// </summary>
-        /// <param name="filename"></param>
+        /// <param name="uri">Can be a file system path, a pack URI, or a special uri of form {assembly}/relativePath</param>
         /// <returns></returns>
-        ImageSource LoadImage(string path);
+        ImageSource LoadImage(string uri);
 
         /// <summary>
         /// Loads an image file iterating through the profile subdirectories.
         /// </summary>
-        /// <param name="filename"></param>
+        /// <param name="uri">Can be a file system path, a pack URI, or a special uri of form {assembly}/relativePath</param>
         /// <returns></returns>
-        ImageSource LoadImage(string path, int width, int height);
+        ImageSource LoadImage(string uri, int width, int height);
         
         string MakeImagePathRelative(string filename);
         string MakeImagePathAbsolute(string fileName);
