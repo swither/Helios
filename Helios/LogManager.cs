@@ -18,35 +18,15 @@ using System.Text.RegularExpressions;
 namespace GadrocsWorkshop.Helios
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
-    using System.Windows.Threading;
-
-    public interface ILogConsumer
-    {
-        /// <summary>
-        /// write calls will be asynchronously scheduled on this
-        /// </summary>
-        Dispatcher Dispatcher { get; }
-
-        /// <summary>
-        /// Callback scheduled on dispatcher provided.  Debug messages
-        /// are not scheduled at all.
-        /// </summary>
-        /// <param name="timeStamp">the same timestamp used in the primary log file</param>
-        /// <param name="level">always LogLevel.Info or higher</param>
-        /// <param name="message"></param>
-        /// <param name="exception">an exception that is being logged or null</param>
-        void WriteLogMessage(string timeStamp, LogLevel level, string message, Exception exception);
-    }
 
     public class LogManager
     {
-        private System.Object _lock = new System.Object();
-
         public LogManager(LogLevel level)
         {
+            _ = level;
+            // no code, log level is managed via NLog
         }
 
         public void LogDebug(string message)
@@ -117,11 +97,13 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        // XXX remove these after reviewing our logging of exceptions via NLog 
         private static string CreateTimeStamp()
         {
             return DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
         }
 
+        // XXX remove these after reviewing our logging of exceptions via NLog 
         private void WriteException(StreamWriter writer, Exception exception)
         {
             if (!string.IsNullOrEmpty(exception.Source))
@@ -147,11 +129,12 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        // XXX remove these after reviewing our logging of exceptions via NLog 
         private static void WriteStackTrace(StreamWriter writer, Exception exception)
         {
-            Regex buidPathExpression = new Regex("[A-Z]:\\\\.*\\\\Helios\\\\");
+            Regex buildPathExpression = new Regex("[A-Z]:\\\\.*\\\\Helios\\\\");
             string trace = exception.StackTrace;
-            Match buildPathMatch = buidPathExpression.Match(trace);
+            Match buildPathMatch = buildPathExpression.Match(trace);
             if (buildPathMatch.Success)
             {
                 writer.WriteLine(trace.Replace(buildPathMatch.Groups[0].Value, ""));

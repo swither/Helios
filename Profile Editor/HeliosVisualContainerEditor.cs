@@ -1099,7 +1099,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
                 StringReader reader = new StringReader(Clipboard.GetText());
                 XmlReader xmlReader = XmlReader.Create(reader, settings);
-                HeliosSerializer serialzier = new HeliosSerializer(editor.Dispatcher);
+                HeliosSerializer serializer = new HeliosSerializer(editor.Dispatcher);
 
                 ConfigManager.UndoManager.StartBatch();
 
@@ -1107,7 +1107,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 string copyRoot = xmlReader.ReadElementString("CopyRoot");
 
                 HeliosVisualCollection newControls = new HeliosVisualCollection();
-                serialzier.DeserializeControls(newControls, xmlReader);
+                foreach (string progress in serializer.DeserializeControls(newControls, xmlReader))
+                {
+                    ConfigManager.LogManager.LogDebug($"Paste operation {progress}");
+                };
 
                 List<HeliosVisual> localObjects = new List<HeliosVisual>();
                 foreach (HeliosVisual control in newControls)
@@ -1115,7 +1118,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     localObjects.Add(control);
                 }
 
-                HeliosBindingCollection bindings = serialzier.DeserializeBindings(editor.VisualContainer, copyRoot, localObjects, xmlReader);
+                // load all these now, instead of streaming enumeration (just for ease of debugging really)
+                IList<HeliosBinding> bindings = serializer.DeserializeBindings(editor.VisualContainer, copyRoot, localObjects, xmlReader).ToList();
 
                 xmlReader.ReadEndElement();
                 newControls.Clear();

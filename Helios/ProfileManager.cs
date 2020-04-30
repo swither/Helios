@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -21,7 +23,7 @@ namespace GadrocsWorkshop.Helios
     using System.Windows.Threading;
     using System.Xml;
 
-    internal class ProfileManager : IProfileManager
+    internal class ProfileManager : IProfileManager2
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -82,59 +84,84 @@ namespace GadrocsWorkshop.Helios
 
         public HeliosProfile LoadProfile(string path)
         {
-            return LoadProfile(path, null);
+            try
+            {
+                HeliosProfile profile = LoadProfile(path, null, out IEnumerable<string> loadingWork);
+                foreach (string progress in loadingWork)
+                {
+                    Logger.Debug(progress);
+                }
+                return profile;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error loading profile " + path);
+                return null;
+            }
         }
 
         public HeliosProfile LoadProfile(string path, Dispatcher dispatcher)
+        {
+            throw new NotImplementedException();
+        }
+
+        public HeliosProfile LoadProfile(string path, out IEnumerable<string> loadingWork)
+        {
+            return LoadProfile(path, null, out loadingWork);
+        }
+
+        private HeliosProfile LoadProfile(string path, Dispatcher dispatcher, out IEnumerable<string> loadingWork)
         {
             if (ConfigManager.ImageManager is IImageManager2 imageManager2)
             {
                 imageManager2.ClearFailureTracking();
             }
-            HeliosProfile profile = null;
-            try
+
+            if (!File.Exists(path))
             {
-                if (File.Exists(path))
-                {
-                    profile = new HeliosProfile(false)
-                    {
-                        Path = path, 
-                        Name = Path.GetFileNameWithoutExtension(path)
-                    };
-
-                    XmlReaderSettings settings = new XmlReaderSettings();
-                    settings.IgnoreComments = true;
-                    settings.IgnoreWhitespace = true;
-
-                    TextReader reader = new StreamReader(path);
-                    XmlReader xmlReader = XmlReader.Create(reader, settings);
-
-                    HeliosSerializer deserializer = new HeliosSerializer(dispatcher);
-                    int profileVersion = deserializer.GetProfileVersion(xmlReader);
-
-                    if (profileVersion != 3)
-                    {
-                        profile.IsInvalidVersion = true;
-                    }
-                    else
-                    {
-                        deserializer.DeserializeProfile(profile, xmlReader);
-                    }
-
-                    xmlReader.Close();
-                    reader.Close();
-
-                    profile.IsDirty = false;
-                    profile.LoadTime = Directory.GetLastWriteTime(path);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e, "Error loading profile " + path);
-                profile = null;
+                loadingWork = new string[0];
+                return null;
             }
 
+            HeliosProfile profile = new HeliosProfile(false)
+            {
+                Path = path,
+                Name = Path.GetFileNameWithoutExtension(path),
+                IsDirty = false,
+                // ReSharper disable once AssignNullToNotNullAttribute file exists asserted above
+                LoadTime = Directory.GetLastWriteTime(path)
+            };
+            loadingWork = LoadingWork(profile, dispatcher);
             return profile;
         }
+
+        private IEnumerable<string> LoadingWork(HeliosProfile profile, Dispatcher dispatcher)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreWhitespace = true;
+
+            TextReader reader = new StreamReader(profile.Path);
+            XmlReader xmlReader = XmlReader.Create(reader, settings);
+
+            HeliosSerializer deserializer = new HeliosSerializer(dispatcher);
+            int profileVersion = deserializer.GetProfileVersion(xmlReader);
+
+            if (profileVersion != 3)
+            {
+                profile.IsInvalidVersion = true;
+            }
+            else
+            {
+                foreach (string progress in deserializer.DeserializeProfile(profile, xmlReader))
+                {
+                    yield return progress;
+                }
+            }
+
+            xmlReader.Close();
+            reader.Close();
+        }
     }
+
 }

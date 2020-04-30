@@ -779,11 +779,11 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         {
             StatusMessage = StatusValue.Loading;
 
-            // pump main thread to update UI
+            // pump UI events to update UI (NOTE: we are the main thread)
             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)delegate { });
 
             // now do the load that might take a while
-            ActiveProfile = ConfigManager.ProfileManager.LoadProfile(path, Dispatcher);
+            ActiveProfile = ConfigManager.ProfileManager.LoadProfile(path);
 
             if (ActiveProfile != null)
             {

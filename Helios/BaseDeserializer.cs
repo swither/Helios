@@ -15,32 +15,15 @@
 
 namespace GadrocsWorkshop.Helios
 {
-    using System.Windows.Threading;
+    using System.Windows;
 
     public class BaseDeserializer
     {
-        private delegate object CreateObjectDelegate(string type, string typeId);
-        private CreateObjectDelegate _objectCreator;
-        private Dispatcher _dispatcher;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-        public BaseDeserializer(Dispatcher dispatcher)
-        {
-            _objectCreator = new CreateObjectDelegate(DispCreateNewObject);
-            _dispatcher = dispatcher;
-        }
-
-        protected Dispatcher Dispatcher
-        { get { return _dispatcher; } }
 
         #region Object Creation Methods
 
         protected object CreateNewObject(string type, string typeId)
-        {
-            return Dispatcher.Invoke(_objectCreator, type, typeId);
-        }
-
-        private object DispCreateNewObject(string type, string typeId)
         {
             switch (type)
             {
@@ -54,7 +37,7 @@ namespace GadrocsWorkshop.Helios
                         Logger.Error("Ignoring control not supported by this version of Helios: " + typeId);
                         return null;
                     }
-                    visual.Dispatcher = _dispatcher;
+                    visual.Dispatcher = Application.Current.Dispatcher;
                     return visual;
 
                 case "Interface":
@@ -67,7 +50,7 @@ namespace GadrocsWorkshop.Helios
                     HeliosInterface heliosInterface = descriptor != null ? descriptor.CreateInstance() : null;
                     if (heliosInterface != null)
                     {
-                        heliosInterface.Dispatcher = _dispatcher;
+                        heliosInterface.Dispatcher = Application.Current.Dispatcher;
                     }                    
                     return heliosInterface;
 

@@ -42,10 +42,21 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
     /// <summary>
+    /// we may refactor profile loading into here if we can untangle it enough
+    /// for now, it just hosts an extra logger with a civilized name
+    /// </summary>
+    internal class ProfileLoader
+    {
+        internal static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+    }
+
+    /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
+    { 
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Internal Class used to track open documents
         /// </summary>
@@ -513,7 +524,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 dlg.Title = "Open Profile";
 
                 // Show open file dialog box
-                Nullable<bool> result = dlg.ShowDialog(this);
+                bool? result = dlg.ShowDialog(this);
 
                 // Process open file dialog box results
                 if (result == true)
@@ -528,48 +539,53 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             StatusBarMessage = "Loading Profile...";
             GetLoadingAdorner();
 
+            // create profile
             string systemLayoutText = _systemDefaultLayout;
-            System.Threading.Thread t = new System.Threading.Thread(delegate()
+            HeliosProfile profile = ConfigManager.ProfileManager.LoadProfile(path, out IEnumerable<string> loadingWork);
+
+            // now load profile components in little chunks, because it may take a while
+            foreach (string progress in loadingWork)
             {
-                HeliosProfile profile = ConfigManager.ProfileManager.LoadProfile(path, Dispatcher);
+                // pump the UI
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action) delegate { });
+                ProfileLoader.Logger.Debug(progress);
+            }
 
-                ConfigManager.UndoManager.ClearHistory();
+            // everything is considered clean now
+            ConfigManager.UndoManager.ClearHistory();
 
-                // Load the graphics so everything is more responsive after load
-                if (profile != null)
+            // Load the graphics so everything is more responsive after load
+            if (profile != null)
+            {
+                foreach (Monitor monitor in profile.Monitors)
                 {
-                    foreach (Monitor monitor in profile.Monitors)
-                    {
-                        LoadVisual(monitor);
-                    }
-
-                    // NOTE: only install profile if not null (i.e. load succeeded)
-                    Dispatcher.Invoke(DispatcherPriority.Send, (System.Threading.SendOrPostCallback)delegate { SetValue(ProfileProperty, profile); }, profile);
-
-                    string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
-                    if (File.Exists(layoutFileName))
-                    {
-                        if (LayoutIsComplete(systemLayoutText, layoutFileName))
-                        {
-                            Dispatcher.Invoke(DispatcherPriority.Background, (LayoutDelegate)_layoutSerializer.Deserialize, layoutFileName);
-                        }
-                    }
-                } 
-                else
-                {
-                    // XXX need a popup here
-                    ConfigManager.LogManager.LogError($"Failed to load profile '{path}'; continuing with previously loaded profile");
+                    LoadVisual(monitor);
                 }
 
-                Dispatcher.Invoke(DispatcherPriority.Background, new Action(RemoveLoadingAdorner));
-                Dispatcher.Invoke(DispatcherPriority.Background, (System.Threading.SendOrPostCallback)delegate { SetValue(StatusBarMessageProperty, ""); }, "");
-                Dispatcher.Invoke(DispatcherPriority.Background, new Action(OnProfileChangeComplete));
+                // NOTE: only install profile if not null (i.e. load succeeded)
+                SetValue(ProfileProperty, profile);
 
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-            });
-            t.Start();
+                string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
+                if (File.Exists(layoutFileName))
+                {
+                    if (LayoutIsComplete(systemLayoutText, layoutFileName))
+                    {
+                        _layoutSerializer.Deserialize(layoutFileName);
+                    }
+                }
+            } 
+            else
+            {
+                // XXX need a popup here
+                ConfigManager.LogManager.LogError($"Failed to load profile '{path}'; continuing with previously loaded profile");
+            }
 
+            RemoveLoadingAdorner();
+            SetValue(StatusBarMessageProperty, "");
+            OnProfileChangeComplete();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
 

@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios
         private static ITemplateManager _templateManager;
         private static IImageManager _imageManager;
         private static IModuleManager _moduleManager;
-        private static IProfileManager _profileManager;
+        private static IProfileManager2 _profileManager;
         private static DisplayManager _displayManager;
         private static UndoManager _undoManager;
         private static LogManager _logManager;
@@ -44,7 +44,7 @@ namespace GadrocsWorkshop.Helios
         static ConfigManager()
         {
             string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            _applicationPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            _applicationPath = Path.GetDirectoryName(assemblyLocation);
         }
 
         #region Properties
@@ -113,7 +113,7 @@ namespace GadrocsWorkshop.Helios
                 _moduleManager = value;
             }
         }
-        public static IProfileManager ProfileManager
+        public static IProfileManager2 ProfileManager
         {
             get
             {

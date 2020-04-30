@@ -31,8 +31,16 @@ namespace GadrocsWorkshop.Helios
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public HeliosSerializer(Dispatcher dispatcher)
-            : base(dispatcher)
+            : base()
         {
+            // we don't use this any more since all loading is done on main thread
+            _ = dispatcher;
+        }
+
+        public HeliosSerializer()
+            : base()
+        {
+            // no code
         }
 
         #region Monitors
@@ -55,18 +63,22 @@ namespace GadrocsWorkshop.Helios
             xmlWriter.WriteEndElement();
         }
 
-        public Monitor DeserializeMonitor(XmlReader xmlReader)
+        public IEnumerable<string> DeserializeMonitor(MonitorCollection destination, XmlReader xmlReader, int monitorNumber)
         {
             xmlReader.ReadStartElement("Monitor");
             Monitor display = (Monitor)CreateNewObject("Monitor", "");
             display.ReadXml(xmlReader);
-            DeserializeControls(display.Children, xmlReader);
+            foreach (string progress in DeserializeControls(display.Children, xmlReader))
+            {
+                yield return progress;
+            }
             xmlReader.ReadEndElement();
-
-            return display;
+            display.Name = "Monitor " + monitorNumber;
+            destination.Add(display);
+            yield return $"loaded {display.Name}";
         }
 
-        public void DeserializeMonitors(MonitorCollection destination, XmlReader xmlReader)
+        public IEnumerable<string> DeserializeMonitors(MonitorCollection destination, XmlReader xmlReader)
         {
             int i = 1;
             if (xmlReader.Name.Equals("Monitors"))
@@ -76,14 +88,9 @@ namespace GadrocsWorkshop.Helios
                     xmlReader.ReadStartElement("Monitors");
                     while (xmlReader.NodeType != XmlNodeType.EndElement)
                     {
-                        Monitor display = DeserializeMonitor(xmlReader);
-                        if (display != null)
+                        foreach (string progress in DeserializeMonitor(destination, xmlReader, i++))
                         {
-                            display.Name = "Monitor " + i++;
-                            if (display != null)
-                            {
-                                destination.Add(display);
-                            }
+                            yield return progress;
                         }
                     }
                     xmlReader.ReadEndElement();
@@ -93,6 +100,8 @@ namespace GadrocsWorkshop.Helios
                     xmlReader.Read();
                 }
             }
+
+            yield return "loaded monitors";
         }
 
         #endregion
@@ -131,7 +140,7 @@ namespace GadrocsWorkshop.Helios
             xmlWriter.WriteEndElement();  // Controls
         }
 
-        public HeliosVisual DeserializeControl(XmlReader xmlReader)
+        public IEnumerable<string> DeserializeControl(HeliosVisualCollection controls, XmlReader xmlReader)
         {
             TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
 
@@ -156,30 +165,33 @@ namespace GadrocsWorkshop.Helios
                 {
                     xmlReader.ReadStartElement("Control");
                     control.ReadXml(xmlReader);
-                    DeserializeControls(control.Children, xmlReader);
+                    foreach (string progress in DeserializeControls(control.Children, xmlReader))
+                    {
+                        yield return progress;
+                    };
                     xmlReader.ReadEndElement();
                 }
                 control.Name = name;
+                controls.Add(control);
+                yield return $"loaded {control.TypeIdentifier}";
             }
             else
             {
                 xmlReader.Skip();
+                yield return "failed to load a control";
             }
-
-            return control;
         }
 
-        public void DeserializeControls(HeliosVisualCollection controls, XmlReader xmlReader)
+        public IEnumerable<string> DeserializeControls(HeliosVisualCollection controls, XmlReader xmlReader)
         {
             if (!xmlReader.IsEmptyElement)
             {
                 xmlReader.ReadStartElement("Children");
                 while (xmlReader.NodeType != XmlNodeType.EndElement)
                 {
-                    HeliosVisual control = DeserializeControl(xmlReader);
-                    if (control != null)
+                    foreach (string progress in DeserializeControl(controls, xmlReader))
                     {
-                        controls.Add(control);
+                        yield return progress;
                     }
                 }
                 xmlReader.ReadEndElement();
@@ -358,19 +370,17 @@ namespace GadrocsWorkshop.Helios
             return binding;
         }
 
-        private HeliosBindingCollection DeserializeBindings(HeliosProfile profile, HeliosVisual root, string copyRoot, List<HeliosVisual> localObjects, XmlReader xmlReader)
+        private IEnumerable<HeliosBinding> DeserializeBindings(HeliosProfile profile, HeliosVisual root, string copyRoot, List<HeliosVisual> localObjects, XmlReader xmlReader)
         {
-            HeliosBindingCollection bindings = new HeliosBindingCollection();
-
             if (!xmlReader.IsEmptyElement)
             {
                 xmlReader.ReadStartElement("Bindings");
                 while (xmlReader.NodeType != XmlNodeType.EndElement)
                 {
                     HeliosBinding binding = DeserializeBinding(profile, root, copyRoot, localObjects, xmlReader);
-                    if (binding != null && binding.Action != null && binding.Trigger != null)
+                    if (binding?.Action != null && binding.Trigger != null)
                     {
-                        bindings.Add(binding);
+                        yield return binding;
                     }
                 }
                 xmlReader.ReadEndElement();
@@ -379,16 +389,14 @@ namespace GadrocsWorkshop.Helios
             {
                 xmlReader.Read();
             }
-
-            return bindings;
         }
 
-        public HeliosBindingCollection DeserializeBindings(HeliosProfile profile, List<HeliosVisual> localObjects, XmlReader xmlReader)
+        public IEnumerable<HeliosBinding> DeserializeBindings(HeliosProfile profile, List<HeliosVisual> localObjects, XmlReader xmlReader)
         {
             return DeserializeBindings(profile, null, null, localObjects, xmlReader);
         }
 
-        public HeliosBindingCollection DeserializeBindings(HeliosVisual root, string copyRoot, List<HeliosVisual> localObjects, XmlReader xmlReader)
+        public IEnumerable<HeliosBinding> DeserializeBindings(HeliosVisual root, string copyRoot, List<HeliosVisual> localObjects, XmlReader xmlReader)
         {
             return DeserializeBindings(root.Profile, root, copyRoot, localObjects, xmlReader);
         }
@@ -588,13 +596,13 @@ namespace GadrocsWorkshop.Helios
             xmlWriter.WriteEndElement(); // Interface
         }
 
-        public HeliosInterface DeserializeInterface(XmlReader xmlReader)
+        public IEnumerable<string> DeserializeInterface(HeliosInterfaceCollection destination, XmlReader xmlReader)
         {
             string interfaceType = xmlReader.GetAttribute("TypeIdentifier");
             HeliosInterface heliosInterface = (HeliosInterface)CreateNewObject("Interface", interfaceType);
             if (heliosInterface != null)
             {
-                String name = xmlReader.GetAttribute("Name");
+                string name = xmlReader.GetAttribute("Name");
                 if (xmlReader.IsEmptyElement)
                 {
                     xmlReader.Read();
@@ -606,13 +614,14 @@ namespace GadrocsWorkshop.Helios
                     xmlReader.ReadEndElement();
                 }
                 heliosInterface.Name = name;
+                destination.Add(heliosInterface);
+                yield return $"loaded {heliosInterface.TypeIdentifier} {heliosInterface.Name}";
             }
             else
             {
                 xmlReader.Skip();
+                yield return "failed to load interface";
             }
-
-            return heliosInterface;
         }
 
         public void SerializeInterfaces(HeliosInterfaceCollection interfaces, XmlWriter xmlWriter)
@@ -625,17 +634,16 @@ namespace GadrocsWorkshop.Helios
             xmlWriter.WriteEndElement(); // Interfaces
         }
 
-        public void DeserializeInterfaces(HeliosInterfaceCollection destination, XmlReader xmlReader)
+        public IEnumerable<string> DeserializeInterfaces(HeliosInterfaceCollection destination, XmlReader xmlReader)
         {
             if (!xmlReader.IsEmptyElement)
             {
                 xmlReader.ReadStartElement("Interfaces");
                 while (xmlReader.NodeType != XmlNodeType.EndElement)
                 {
-                    HeliosInterface heliosInterface = DeserializeInterface(xmlReader);
-                    if (heliosInterface != null)
+                    foreach (string progress in DeserializeInterface(destination, xmlReader))
                     {
-                        destination.Add(heliosInterface);
+                        yield return progress;
                     }
                 }
                 xmlReader.ReadEndElement();
@@ -644,6 +652,8 @@ namespace GadrocsWorkshop.Helios
             {
                 xmlReader.Read();
             }
+
+            yield return "loaded interfaces";
         }
 
         #endregion
@@ -665,7 +675,7 @@ namespace GadrocsWorkshop.Helios
                 SerializeBindings(heliosInterface.OutputBindings, xmlWriter);
             }
 
-            foreach (HeliosVisual visual in profile.Monitors)
+            foreach (Monitor visual in profile.Monitors)
             {
                 SerializeBindings(visual, xmlWriter);
             }
@@ -691,21 +701,38 @@ namespace GadrocsWorkshop.Helios
             return 0;
         }
 
-        public void DeserializeProfile(HeliosProfile profile, XmlReader xmlReader)
+        /// <summary>
+        /// enumeration reports a string status item for each significant portion of work
+        ///
+        /// caller can choose to deserialize profile in parallel with other work by enumerating
+        /// this enumeration, since profile deserializing suspends after each item
+        /// </summary>
+        /// <param name="profile"></param>
+        /// <param name="xmlReader"></param>
+        /// <returns></returns>
+        public IEnumerable<string> DeserializeProfile(HeliosProfile profile, XmlReader xmlReader)
         {
             profile.Monitors.Clear();
-            DeserializeMonitors(profile.Monitors, xmlReader);
+            foreach (string progress in DeserializeMonitors(profile.Monitors, xmlReader))
+            {
+                yield return progress;
+            }
 
             profile.Interfaces.Clear();
-            DeserializeInterfaces(profile.Interfaces, xmlReader);
+            foreach (string progress in DeserializeInterfaces(profile.Interfaces, xmlReader))
+            {
+                yield return progress;
+            }
 
             foreach (HeliosBinding binding in DeserializeBindings(profile, new List<HeliosVisual>(), xmlReader))
             {
                 binding.Trigger.Source.OutputBindings.Add(binding);
                 binding.Action.Target.InputBindings.Add(binding);
+                yield return $"loaded binding {binding.Description}";
             }
 
             xmlReader.ReadEndElement();
+            yield return "loaded profile";
         }
 
         #endregion
