@@ -13,6 +13,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
 using GadrocsWorkshop.Helios.Windows;
@@ -160,6 +161,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         public static readonly DependencyProperty CurrentEditorProperty =
             DependencyProperty.Register("CurrentEditor", typeof(HeliosEditorDocument), typeof(MainWindow), new PropertyMetadata(null));
 
+        /// <summary>
+        /// true if Closing event has been raised
+        /// </summary>
+        private bool _bClosing;
+
         #endregion
 
         #region Event Handlers
@@ -246,6 +252,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             if (e.Cancel == false)
             {
+                Logger.Debug("Profile Editor main window has raised OnClosing and is going down");
+                _bClosing = true;
                 ConfigManager.UndoManager.ClearHistory();
 
                 // Persist window placement details to application settings
@@ -400,30 +408,24 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         
         private HeliosEditorDocument CreateDocumentEditor(HeliosObject profileObject)
         {
-            HeliosEditorDocument editor = null;
-
-            if (profileObject is Monitor)
+            switch (profileObject)
             {
-                editor = new MonitorDocument((Monitor)profileObject);
-            }
-            else if (profileObject is HeliosPanel)
-            {
-                editor = new PanelDocument((HeliosPanel)profileObject);
-            }
-            else if (profileObject is HeliosInterface)
-            {
-                editor = ConfigManager.ModuleManager.CreateInterfaceEditor((HeliosInterface)profileObject, Profile);
-                if (editor != null)
+                case Monitor monitor:
+                    return new MonitorDocument(monitor);
+                case HeliosPanel panel:
+                    return new PanelDocument(panel);
+                case HeliosInterface heliosInterface:
                 {
-                    editor.Style = App.Current.Resources["InterfaceEditor"] as Style;
+                    HeliosEditorDocument editor = ConfigManager.ModuleManager.CreateInterfaceEditor(heliosInterface, Profile);
+                    if (editor != null)
+                    {
+                        editor.Style = Application.Current.Resources["InterfaceEditor"] as Style;
+                    }
+                    return editor;
                 }
+                default:
+                    throw new ArgumentException(@"Cannot create a editor document for profileobject requested.", nameof(profileObject));
             }
-            else
-            {
-                throw new ArgumentException("Cannot create a editor document for profileobject requested.", "profileObject");
-            }
-
-            return editor;
         }
 
         private object CreateDocumentContent(HeliosEditorDocument editor)
@@ -546,8 +548,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // now load profile components in little chunks, because it may take a while
             foreach (string progress in loadingWork)
             {
-                // pump the UI
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action) delegate { });
+                if (!PumpUserInterface())
+                {
+                    return;
+                }
+                 
+                // log progress
                 ProfileLoader.Logger.Debug(progress);
             }
 
@@ -560,6 +566,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 foreach (Monitor monitor in profile.Monitors)
                 {
                     LoadVisual(monitor);
+                    if (!PumpUserInterface())
+                    {
+                        return;
+                    }
                 }
 
                 // NOTE: only install profile if not null (i.e. load succeeded)
@@ -588,6 +598,33 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             GC.WaitForPendingFinalizers();
         }
 
+
+        /// <summary>
+        /// pump the UI and abort if the our window is closing or the Dispatcher is going down
+        /// </summary>
+        /// <returns>false if we are exiting</returns>
+        private bool PumpUserInterface()
+        {
+            // first check if our window is being closed, because we will exit if we pump the UI in that state
+            if (_bClosing)
+            {
+                // Profile Editor main window canceling work because window is closing
+                // NOTE: logger is dead at this point
+                return false;
+            }
+
+            // now pump the UI or find out that the Dispatcher is null or dead
+            bool bRunning = false;
+            Dispatcher?.Invoke(() => { bRunning = true; }, DispatcherPriority.ApplicationIdle);
+            if (_bClosing || !bRunning)
+            {
+                // Profile Editor main window canceling work because window is closing or application is shut down
+                // NOTE: logger is dead at this point
+                return false;
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// tries to determine if a given layout file will abandon any controls if loaded, by comparing
@@ -641,17 +678,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void LoadVisual(HeliosVisual visual)
         {
-            Dispatcher.Invoke(DispatcherPriority.Background, new Action<HeliosVisual, Dispatcher>(PreLoadrenderer), visual, Dispatcher);
+            visual.Renderer.Dispatcher = Dispatcher;
+            visual.Renderer.Refresh();
             foreach (HeliosVisual control in visual.Children)
             {
+                if (!PumpUserInterface())
+                {
+                    return;
+                }
                 LoadVisual(control);
             }
-        }
-
-        private void PreLoadrenderer(HeliosVisual visual, Dispatcher dispatcher)
-        {
-            visual.Renderer.Dispatcher = dispatcher;
-            visual.Renderer.Refresh();
         }
 
         private bool SaveProfile()
@@ -660,13 +696,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             {
                 return SaveAsProfile();
             }
-            else
-            {
-                WriteProfile(Profile);
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                return true;
-            }
+
+            WriteProfile(Profile);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            return true;
         }
 
         private void WriteProfile(HeliosProfile profile)
