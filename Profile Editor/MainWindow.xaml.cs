@@ -394,7 +394,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 document.Content = CreateDocumentContent(editor);
                 // Since a new LayoutRoot object is created upon de-serialization, the Child LayoutDocumentPane no longer belongs to the LayoutRoot 
                 // therefore the LayoutDocumentPane 'DocumentPane' must be referred to dynamically
-                // change added by yzfanimal
                 LayoutDocumentPane documentPane = DockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
                 documentPane?.Children.Add(document);
                 document.Closed += Document_Closed;
@@ -434,14 +433,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             {
                 return editor;
             }
-            else
-            {
-                ScrollViewer scroller = new ScrollViewer();
-                scroller.Content = editor;
-                scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-                scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-                return scroller;
-            }
+
+            ScrollViewer scroller = new ScrollViewer();
+            scroller.Content = editor;
+            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            return scroller;
         }
 
         void Document_Closed(object sender, EventArgs e)
@@ -496,43 +493,43 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private bool CheckSave()
         {
-            if (ConfigManager.UndoManager.CanUndo || (Profile != null && Profile.IsDirty))
-            {
-                MessageBoxResult result = MessageBox.Show(this, "There are changes to the current profile.  If you continue without saving your changes, they will be lost.  Would you like to save the current profile?", "Save Changes", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Yes)
-                {
-                    return SaveProfile();
-                }
-                return (result != MessageBoxResult.Cancel);
-            }
-            else
+            if (!ConfigManager.UndoManager.CanUndo && (Profile == null || !Profile.IsDirty))
             {
                 return true;
             }
+
+            MessageBoxResult result = MessageBox.Show(this, "There are changes to the current profile.  If you continue without saving your changes, they will be lost.  Would you like to save the current profile?", "Save Changes", MessageBoxButton.YesNoCancel);
+            if (result == MessageBoxResult.Yes)
+            {
+                return SaveProfile();
+            }
+            return (result != MessageBoxResult.Cancel);
         }
 
         private void OpenProfile()
         {
-            if (CheckSave())
+            if (!CheckSave())
             {
-                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-                dlg.FileName = Profile.Name; // Default file name
-                dlg.DefaultExt = ".hpf"; // Default file extension
-                dlg.Filter = "Helios Profiles (.hpf)|*.hpf"; // Filter files by extension
-                dlg.InitialDirectory = ConfigManager.ProfilePath;
-                dlg.ValidateNames = true;
-                dlg.AddExtension = true;
-                dlg.Multiselect = false;
-                dlg.Title = "Open Profile";
+                return;
+            }
 
-                // Show open file dialog box
-                bool? result = dlg.ShowDialog(this);
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.FileName = Profile.Name; // Default file name
+            dlg.DefaultExt = ".hpf"; // Default file extension
+            dlg.Filter = "Helios Profiles (.hpf)|*.hpf"; // Filter files by extension
+            dlg.InitialDirectory = ConfigManager.ProfilePath;
+            dlg.ValidateNames = true;
+            dlg.AddExtension = true;
+            dlg.Multiselect = false;
+            dlg.Title = "Open Profile";
 
-                // Process open file dialog box results
-                if (result == true)
-                {
-                    LoadProfile(dlg.FileName);
-                }
+            // Show open file dialog box
+            bool? result = dlg.ShowDialog(this);
+
+            // Process open file dialog box results
+            if (result == true)
+            {
+                LoadProfile(dlg.FileName);
             }
         }
 
@@ -634,7 +631,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// <returns></returns>
         private static bool LayoutIsComplete(string systemLayoutText, string layoutFileName)
         {
-            // WARNING: called on a worker thread
             Regex contentId = new Regex("ContentId=\"([^\"]+)\"", RegexOptions.Compiled);
             string layout = File.ReadAllText(layoutFileName);
             foreach (Match match in contentId.Matches(systemLayoutText))
@@ -722,6 +718,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
                 if (File.Exists(layoutFileName))
                 {
+                    // ReSharper disable once AssignNullToNotNullAttribute file exists asserted above
                     File.Delete(layoutFileName);
                 }
                 Dispatcher.Invoke(DispatcherPriority.Background, (LayoutDelegate)_layoutSerializer.Serialize, layoutFileName);
@@ -747,7 +744,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             dlg.Title = "Save Profile As";
 
             // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
+            bool? result = dlg.ShowDialog();
 
             // Process save file dialog box results
             if (result == true)
@@ -860,21 +857,23 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             try
             {
-                Nullable<bool> result = dialog.ShowDialog();
-                if (result == true && dialog.SelectedInterface != null)
+                bool? result = dialog.ShowDialog();
+                if (result != true || dialog.SelectedInterface == null)
                 {
-                    string name = dialog.SelectedInterface.Name;
-                    int count = 0;
-                    while (Profile.Interfaces.ContainsKey(name))
-                    {
-                        name = dialog.SelectedInterface.Name + " " + ++count;
-                    }
-                    dialog.SelectedInterface.Name = name;
-
-                    ConfigManager.UndoManager.AddUndoItem(new InterfaceAddUndoEvent(Profile, dialog.SelectedInterface));
-                    Profile.Interfaces.Add(dialog.SelectedInterface);
-                    AddNewDocument(dialog.SelectedInterface);
+                    return;
                 }
+
+                string name = dialog.SelectedInterface.Name;
+                int count = 0;
+                while (Profile.Interfaces.ContainsKey(name))
+                {
+                    name = dialog.SelectedInterface.Name + " " + ++count;
+                }
+                dialog.SelectedInterface.Name = name;
+
+                ConfigManager.UndoManager.AddUndoItem(new InterfaceAddUndoEvent(Profile, dialog.SelectedInterface));
+                Profile.Interfaces.Add(dialog.SelectedInterface);
+                AddNewDocument(dialog.SelectedInterface);
             }
             catch (Exception ex)
             {
