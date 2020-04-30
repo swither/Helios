@@ -128,15 +128,21 @@ namespace GadrocsWorkshop.Helios
                         break;
                     }
 
-                    if (components[2] != "Images" && components[2] != "Gauges")
+                    switch (components[2])
                     {
-                        Logger.Warn(
-                            "pack reference into assembly disallowed because it does not target 'Images' or 'Gauges' folder: {URI}",
-                            Anonymizer.Anonymize(imageUri));
-                        break;
+                        case "Images":
+                        case "Gauges":
+                            return true;
+                        case "Interfaces":
+                            // it is possible that this was only ever used in a single BMS-centric template
+                            return imageUri.AbsolutePath.EndsWith("*.png");
+                        default:
+                            Logger.Warn(
+                                "pack reference into assembly disallowed because it does not target 'Images' or 'Gauges' folder or a PNG file in 'Interfaces': {URI}",
+                                Anonymizer.Anonymize(imageUri));
+                            break;
                     }
-
-                    return true;
+                    break;
 
                 case "file":
                     Logger.Debug("attempt to load image from local file");

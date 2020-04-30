@@ -160,8 +160,6 @@
     <Compile Include="Interfaces\DCS\Common\EnumComboBoxConverter.cs" />
     <Compile Include="Interfaces\Capabilities\IProfileAwareInterface.cs" />
     <Compile Include="Interfaces\DCS\Common\SilentValueConsumer.cs" />
-    <Compile Include="Interfaces\Falcon\BMS\BMSLightBits2.cs" />
-    <Compile Include="Interfaces\Falcon\HeliosValueWithCorrectedDeviceName.cs" />
     <Compile Include="NonClickableZone.cs" />
     <Compile Include="Collections\HeliosObjectCollection.cs" />
     <Compile Include="Collections\KeyedObservableCollection.cs" />
@@ -520,6 +518,14 @@
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
     <Compile Include="Windows\ViewModel\ViewModelCollection.cs" />
     <None Include="Images\A-10\readme.md" />
+    <None Include="Interfaces\Falcon\readme.md" />
+    <Content Include="Interfaces\Falcon\OpenFalcon\ded.png" />
+    <Content Include="Interfaces\Falcon\OpenFalcon\hud.png" />
+    <Content Include="Interfaces\Falcon\OpenFalcon\mfd_left.png" />
+    <Content Include="Interfaces\Falcon\OpenFalcon\mfd_right.png" />
+    <Content Include="Interfaces\Falcon\OpenFalcon\pfl.png" />
+    <Content Include="Interfaces\Falcon\OpenFalcon\rwr.png" />
+    <Content Include="Interfaces\Falcon\RWR\rwr_bezel.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -725,45 +731,6 @@
     <Compile Include="Interfaces\Eos\EosServo.cs" />
     <Compile Include="Interfaces\Eos\EosStepper.cs" />
     <Compile Include="Interfaces\Eos\EosTextOutput.cs" />
-    <Compile Include="Interfaces\Falcon\AlliedForces\AlliedForcesDataExporter.cs" />
-    <Compile Include="Interfaces\Falcon\AlliedForces\FlightData.cs" />
-    <Compile Include="Interfaces\Falcon\BMS\BMSFalconDataExporter.cs" />
-    <Compile Include="Interfaces\Falcon\BMS\BMSLightBits.cs" />
-    <Compile Include="Interfaces\Falcon\BMS\BMSLightBits3.cs" />
-    <Compile Include="Interfaces\Falcon\BMS\FlightData.cs" />
-    <Compile Include="Interfaces\Falcon\BMS\FlightData2.cs" />
-    <Compile Include="Interfaces\Falcon\FalconCallbackValueEditor.xaml.cs">
-      <DependentUpon>FalconCallbackValueEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interfaces\Falcon\FalconDataExporter.cs" />
-    <Compile Include="Interfaces\Falcon\FalconIntefaceEditor.xaml.cs">
-      <DependentUpon>FalconIntefaceEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interfaces\Falcon\FalconInterface.cs" />
-    <Compile Include="Interfaces\Falcon\FalconKeyCallback.cs" />
-    <Compile Include="Interfaces\Falcon\FalconKeyCallbackFilter.cs" />
-    <Compile Include="Interfaces\Falcon\FalconKeyFile.cs" />
-    <Compile Include="Interfaces\Falcon\FalconTypes.cs" />
-    <Compile Include="Interfaces\Falcon\HsiBits.cs" />
-    <Compile Include="Interfaces\Falcon\LightBits.cs" />
-    <Compile Include="Interfaces\Falcon\LightBits2.cs" />
-    <Compile Include="Interfaces\Falcon\LightBits3.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\DED.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\FlightData.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\FlightData2.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\HUD.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\LeftMFD.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\OpenFalconDataExporter.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\OpenFalconTextureDisplay.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\OpenFalconTextureDisplayRenderer.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\PFL.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\RightMFD.cs" />
-    <Compile Include="Interfaces\Falcon\OpenFalcon\RWR.cs" />
-    <Compile Include="Interfaces\Falcon\RadarContact.cs" />
-    <Compile Include="Interfaces\Falcon\RadarSymbols.cs" />
-    <Compile Include="Interfaces\Falcon\RWR\RWR.cs" />
-    <Compile Include="Interfaces\Falcon\RWR\RWRRenderer.cs" />
-    <Compile Include="Interfaces\Falcon\TextLines.cs" />
     <Compile Include="Interfaces\Keyboard\KeyboardInterface.cs" />
     <Compile Include="Interfaces\Keyboard\KeyboardInterfaceEditor.xaml.cs">
       <DependentUpon>KeyboardInterfaceEditor.xaml</DependentUpon>
@@ -2657,14 +2624,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Interfaces\Falcon\FalconCallbackValueEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interfaces\Falcon\FalconIntefaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Interfaces\Keyboard\KeyboardInterfaceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -2934,14 +2893,6 @@
     <Resource Include="Images\General\missing_image.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
-    <Resource Include="Interfaces\Falcon\OpenFalcon\hud.png" />
-    <Resource Include="Interfaces\Falcon\OpenFalcon\mfd_left.png" />
-    <Resource Include="Interfaces\Falcon\OpenFalcon\mfd_right.png" />
-    <Resource Include="Interfaces\Falcon\OpenFalcon\pfl.png" />
-    <Resource Include="Interfaces\Falcon\OpenFalcon\rwr.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\A-10\adj-down.png" />
     <Resource Include="Images\A-10\adj-norm.png" />
     <Resource Include="Images\A-10\adj-up.png" />
@@ -3070,9 +3021,6 @@
     <Resource Include="Images\A-10\ufc_vrocker_blank.png" />
     <Resource Include="Images\A-10\ufc_vrocker_blank_down.png" />
     <Resource Include="Images\A-10\ufc_vrocker_blank_up.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Interfaces\Falcon\RWR\rwr_bezel.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Gauges\A-10\ADI\adi_bezel.png" />

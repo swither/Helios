@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios
     using System.ComponentModel;
     using System.Runtime.InteropServices;
 
-    class NativeMethods
+    public class NativeMethods
     {
         private NativeMethods()
         {
@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios
         [Serializable]
         [StructLayout(LayoutKind.Sequential)]
         [TypeConverter(typeof(RectConverter))]
-        internal struct Rect
+        public struct Rect
         {
             public int Left;
             public int Top;

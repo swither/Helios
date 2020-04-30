@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A7237E1E-B363-491D-9B78-BD46CCE689AA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GadrocsWorkshop.Helios.Interfaces.Falcon</RootNamespace>
+    <AssemblyName>HeliosFalcon</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlliedForces\AlliedForcesDataExporter.cs" />
+    <Compile Include="AlliedForces\FlightData.cs" />
+    <Compile Include="BMS\BMSFalconDataExporter.cs" />
+    <Compile Include="BMS\BMSLightBits.cs" />
+    <Compile Include="BMS\BMSLightBits2.cs" />
+    <Compile Include="BMS\BMSLightBits3.cs" />
+    <Compile Include="BMS\FlightData.cs" />
+    <Compile Include="BMS\FlightData2.cs" />
+    <Compile Include="FalconCallbackValueEditor.xaml.cs">
+      <DependentUpon>FalconCallbackValueEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FalconDataExporter.cs" />
+    <Compile Include="FalconIntefaceEditor.xaml.cs">
+      <DependentUpon>FalconIntefaceEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FalconInterface.cs" />
+    <Compile Include="FalconKeyCallback.cs" />
+    <Compile Include="FalconKeyCallbackFilter.cs" />
+    <Compile Include="FalconKeyFile.cs" />
+    <Compile Include="FalconTypes.cs" />
+    <Compile Include="HeliosValueWithCorrectedDeviceName.cs" />
+    <Compile Include="HsiBits.cs" />
+    <Compile Include="LightBits.cs" />
+    <Compile Include="LightBits2.cs" />
+    <Compile Include="LightBits3.cs" />
+    <Compile Include="OpenFalcon\DED.cs" />
+    <Compile Include="OpenFalcon\FlightData.cs" />
+    <Compile Include="OpenFalcon\FlightData2.cs" />
+    <Compile Include="OpenFalcon\HUD.cs" />
+    <Compile Include="OpenFalcon\LeftMFD.cs" />
+    <Compile Include="OpenFalcon\OpenFalconDataExporter.cs" />
+    <Compile Include="OpenFalcon\OpenFalconTextureDisplay.cs" />
+    <Compile Include="OpenFalcon\OpenFalconTextureDisplayRenderer.cs" />
+    <Compile Include="OpenFalcon\PFL.cs" />
+    <Compile Include="OpenFalcon\RightMFD.cs" />
+    <Compile Include="OpenFalcon\RWR.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RadarContact.cs" />
+    <Compile Include="RadarSymbols.cs" />
+    <Compile Include="RWR\RWR.cs" />
+    <Compile Include="RWR\RWRRenderer.cs" />
+    <Compile Include="TextLines.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Helios\Helios.csproj">
+      <Project>{e5abe3f5-46ec-46d1-9330-d42311471a93}</Project>
+      <Name>Helios</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="RWR\rwr_bezel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="OpenFalcon\ded.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="OpenFalcon\hud.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="OpenFalcon\mfd_left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="OpenFalcon\mfd_right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="OpenFalcon\pfl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="OpenFalcon\rwr.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="FalconCallbackValueEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FalconIntefaceEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <Import Project="..\HeliosPlugin.targets" />
+</Project>
