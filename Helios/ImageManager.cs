@@ -41,11 +41,14 @@ namespace GadrocsWorkshop.Helios
         public event EventHandler<ImageLoadEventArgs> ImageLoadSuccess;
         public event EventHandler<ImageLoadEventArgs> ImageLoadFailure;
 
+        private readonly XamlFirewall _xamlFirewall;
+
         internal ImageManager(string userImagePath)
         {
             Logger.Debug($"Helios will load user images from {Anonymizer.Anonymize(userImagePath)}");
             _documentImagePath = userImagePath;
             _documentImageUri = new Uri(userImagePath);
+            _xamlFirewall = new XamlFirewall();
         }
 
         /// <summary>
@@ -71,14 +74,7 @@ namespace GadrocsWorkshop.Helios
 
             if (path.EndsWith(".xaml"))
             {
-                if (imageUri.Scheme != "pack")
-                {
-                    // REVISIT: can we make this safe?  can we tell the difference between XAML containing code
-                    // and XAML just containing drawings?
-                    Logger.Warn(" loading XAML drawings from file system instead of resource DLLs is not currently allowed");
-                    return null;
-                }
-                return LoadXaml(imageUri, width, height);
+                return imageUri.Scheme == "pack" ? LoadXamlResource(imageUri, width, height) : LoadXamlFile(imageUri, width, height);
             }
 
             Logger.Debug("image being loaded from {URI}", Anonymizer.Anonymize(imageUri));
@@ -149,7 +145,8 @@ namespace GadrocsWorkshop.Helios
                         !imageUri.AbsolutePath.StartsWith(_documentImageUri.AbsolutePath))
                     {
                         Logger.Warn(
-                            "file system reference to location other than user images disallowed for security reasons: {URI}",
+                            "images references must be contained in user image files location {Required}; {URI} disallowed",
+                            Anonymizer.Anonymize(_documentImagePath),
                             Anonymizer.Anonymize(imageUri));
                         break;
                     }
@@ -166,36 +163,66 @@ namespace GadrocsWorkshop.Helios
             return false;
         }
 
-        private static ImageSource LoadXaml(Uri imageUri, int? width, int? height)
+        private static ImageSource LoadXamlResource(Uri imageUri, int? width, int? height)
         {
-            Logger.Debug("image being loaded as vector drawing from {URI}", Anonymizer.Anonymize(imageUri));
-            Stream xamlStream = Application.GetResourceStream(imageUri).Stream;
-
-            if (xamlStream == null)
+            Logger.Debug("XAML being loaded as vector drawing from trusted resource {URI}", Anonymizer.Anonymize(imageUri));
+            StreamResourceInfo streamResourceInfo = Application.GetResourceStream(imageUri);
+            if (streamResourceInfo == null)
             {
-                Logger.Error("image in vector drawing format not found at {URI}", Anonymizer.Anonymize(imageUri));
+                // these are supposed to be in our assembly, so log as error
+                Logger.Error("could not resolve XAML image at {URI}", Anonymizer.Anonymize(imageUri));
                 return null;
             }
-
+            Stream xamlStream = streamResourceInfo.Stream;
+            if (xamlStream == null)
+            {
+                // these are supposed to be in our assembly, so log as error
+                Logger.Error("XAML image not found at {URI}", Anonymizer.Anonymize(imageUri));
+                return null;
+            }
             using (xamlStream)
             {
                 Canvas canvas = (Canvas) XamlReader.Load(xamlStream);
-                int scaledWidth = width.HasValue ? Math.Max(1, width.Value) : (int) canvas.Width;
-                int scaledHeight = height.HasValue ? Math.Max(1, height.Value) : (int) canvas.Height;
-                RenderTargetBitmap render =
-                    new RenderTargetBitmap(scaledWidth, scaledHeight, 96d, 96d, PixelFormats.Pbgra32);
-                if (width.HasValue || height.HasValue)
-                {
-                    double scaleX = canvas.Width > 0 ? scaledWidth / canvas.Width : 1.0;
-                    double scaleY = canvas.Height > 0 ? scaledHeight / canvas.Height : 1.0;
-                    canvas.RenderTransform = new ScaleTransform(scaleX, scaleY);
-                }
-
-                canvas.Measure(new Size(canvas.Width, canvas.Height));
-                canvas.Arrange(new Rect(new Size(canvas.Width, canvas.Height)));
-                render.Render(canvas);
-                return render;
+                return RenderXaml(canvas, width, height);
             }
+        }
+
+        private ImageSource LoadXamlFile(Uri imageUri, int? width, int? height)
+        {
+            Logger.Debug("XAML being loaded as vector drawing from {URI}", Anonymizer.Anonymize(imageUri));
+            using (Stream xamlStream = new FileStream(imageUri.AbsolutePath, FileMode.Open))
+            {
+                try
+                {
+                    Canvas canvas = _xamlFirewall.LoadXamlDefensively<Canvas>(xamlStream);
+                    return RenderXaml(canvas, width, height);
+                }
+                catch (XamlFirewall.DisallowedElementException ex)
+                {
+                    Logger.Error("attempt to load XAML {URI} that did not contain simple drawing code denied. {Element} is not allowed.",
+                        imageUri, ex.ElementName);
+                    return null;
+                }
+            }
+        }
+
+        private static ImageSource RenderXaml(Canvas canvas, int? width, int? height)
+        {
+            int scaledWidth = width.HasValue ? Math.Max(1, width.Value) : (int) canvas.Width;
+            int scaledHeight = height.HasValue ? Math.Max(1, height.Value) : (int) canvas.Height;
+            RenderTargetBitmap render =
+                new RenderTargetBitmap(scaledWidth, scaledHeight, 96d, 96d, PixelFormats.Pbgra32);
+            if (width.HasValue || height.HasValue)
+            {
+                double scaleX = canvas.Width > 0 ? scaledWidth / canvas.Width : 1.0;
+                double scaleY = canvas.Height > 0 ? scaledHeight / canvas.Height : 1.0;
+                canvas.RenderTransform = new ScaleTransform(scaleX, scaleY);
+            }
+
+            canvas.Measure(new Size(canvas.Width, canvas.Height));
+            canvas.Arrange(new Rect(new Size(canvas.Width, canvas.Height)));
+            render.Render(canvas);
+            return render;
         }
 
         private Uri GetImageUri(string path)

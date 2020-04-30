@@ -15,7 +15,6 @@
 
 namespace GadrocsWorkshop.Helios.Windows.Controls
 {
-    using System;
     using System.Windows;
     using System.Windows.Controls;
 
@@ -47,20 +46,22 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.CheckFileExists = true;
-            ofd.CheckPathExists = true;
-            ofd.DereferenceLinks = true;
-            ofd.Multiselect = false;
-            ofd.ValidateNames = true;
-            ofd.Filter = "Images Files (*.gif, *.jpg, *.jpe, *.png, *.bmp, *.dib, *.tif, *.wmf, *.pcx, *.tga)|*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.wmf;*.pcx;*.tga";
-            ofd.Title = "Select Image";
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                CheckFileExists = true,
+                CheckPathExists = true,
+                DereferenceLinks = true,
+                Multiselect = false,
+                ValidateNames = true,
+                Filter = "Images Files (*.gif, *.jpg, *.jpe, *.png, *.bmp, *.dib, *.tif, *.wmf, *.pcx, *.tga, *.xaml)|*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.wmf;*.pcx;*.tga;*.xaml",
+                Title = "Select Image"
+            };
 
             ofd.CustomPlaces.Add(new FileDialogCustomPlace(ConfigManager.ImagePath));
             
             string path = ConfigManager.ImageManager.MakeImagePathAbsolute(ImageFilename);
 
-            if (path == null || path.Length == 0 || !path.StartsWith(ConfigManager.ImagePath))
+            if (string.IsNullOrEmpty(path) || !path.StartsWith(ConfigManager.ImagePath))
             {
                 ofd.InitialDirectory = ConfigManager.ImagePath;
             }
@@ -70,7 +71,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 ofd.FileName = path;
             }
 
-            Nullable<bool> result = ofd.ShowDialog(Window.GetWindow(this));
+            bool? result = ofd.ShowDialog(Window.GetWindow(this));
 
             if (result == true)
             {
