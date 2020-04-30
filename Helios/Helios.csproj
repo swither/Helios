@@ -519,13 +519,13 @@
     <Compile Include="Windows\ViewModel\ViewModelCollection.cs" />
     <None Include="Images\A-10\readme.md" />
     <None Include="Interfaces\Falcon\readme.md" />
-    <Content Include="Interfaces\Falcon\OpenFalcon\ded.png" />
-    <Content Include="Interfaces\Falcon\OpenFalcon\hud.png" />
-    <Content Include="Interfaces\Falcon\OpenFalcon\mfd_left.png" />
-    <Content Include="Interfaces\Falcon\OpenFalcon\mfd_right.png" />
-    <Content Include="Interfaces\Falcon\OpenFalcon\pfl.png" />
-    <Content Include="Interfaces\Falcon\OpenFalcon\rwr.png" />
-    <Content Include="Interfaces\Falcon\RWR\rwr_bezel.png" />
+    <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
+    <Resource Include="Interfaces\Falcon\OpenFalcon\hud.png" />
+    <Resource Include="Interfaces\Falcon\OpenFalcon\mfd_left.png" />
+    <Resource Include="Interfaces\Falcon\OpenFalcon\mfd_right.png" />
+    <Resource Include="Interfaces\Falcon\OpenFalcon\pfl.png" />
+    <Resource Include="Interfaces\Falcon\OpenFalcon\rwr.png" />
+    <Resource Include="Interfaces\Falcon\RWR\rwr_bezel.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -868,6 +868,9 @@
     </Compile>
     <Compile Include="Windows\Controls\TypefaceListItem.cs" />
     <Content Include="Templates\Base\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-16\RWR Bezel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="_Documents\Licenses\VCRedist\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf" />

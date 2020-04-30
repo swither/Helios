@@ -130,13 +130,15 @@ namespace GadrocsWorkshop.Helios
                             return true;
                         case "Interfaces":
                             // it is possible that this was only ever used in a single BMS-centric template
-                            return imageUri.AbsolutePath.EndsWith("*.png");
-                        default:
-                            Logger.Warn(
-                                "pack reference into assembly disallowed because it does not target 'Images' or 'Gauges' folder or a PNG file in 'Interfaces': {URI}",
-                                Anonymizer.Anonymize(imageUri));
+                            if (imageUri.AbsolutePath.EndsWith(".png"))
+                            {
+                                return true;
+                            }
                             break;
                     }
+                    Logger.Warn(
+                        "pack reference into assembly disallowed because it does not target 'Images' or 'Gauges' folder or a PNG file in 'Interfaces': {URI}",
+                        Anonymizer.Anonymize(imageUri));
                     break;
 
                 case "file":

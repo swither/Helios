@@ -1,0 +1,9 @@
+﻿<ControlTemplate>
+  <Name>RWR Bezel</Name><Category>F-16 Parts</Category><TypeIdentifier>Helios.Base.Image</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <Image>{Helios}/Interfaces/Falcon/RWR/rwr_bezel.png</Image><Alignment>Centered</Alignment>
+      <CornerRadius>0</CornerRadius><Location>146,50</Location><Size>400,387</Size><Hidden>False</Hidden>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>
