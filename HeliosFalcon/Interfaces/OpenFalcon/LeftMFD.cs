@@ -18,24 +18,24 @@ using GadrocsWorkshop.Helios.ComponentModel;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
 {
-    [HeliosControl("Helios.Falcon.MFDRight", "MFD (Right)", "Open Falcon Textures", typeof(OpenFalconTextureDisplayRenderer))]
-    public class RightMFD : OpenFalconTextureDisplay
+    [HeliosControl("Helios.Falcon.MFDLeft", "MFD (Left)", "Open Falcon Textures", typeof(OpenFalconTextureDisplayRenderer))]
+    public class LeftMFD : OpenFalconTextureDisplay
     {
-        private static readonly Rect _defaultRect = new Rect(265, 182, 175, 175);
+        private static readonly Rect _defaultRect = new Rect(265, 5, 175, 175);
 
-        public RightMFD()
-            : base("MFD (Right)", new Size(485, 502))
+        public LeftMFD()
+            : base("MFD (Left)", new Size(485, 502))
         {
         }
 
         protected override OpenFalconTextureDisplay.FalconTextures Texture
         {
-            get { return OpenFalconTextureDisplay.FalconTextures.MFDRight; }
+            get { return OpenFalconTextureDisplay.FalconTextures.MFDLeft; }
         }
 
         internal override string DefaultImage
         {
-            get { return "{HeliosFalcon}/OpenFalcon/mfd_right.png"; }
+            get { return "{HeliosFalcon}/Images/OpenFalcon/mfd_left.png"; }
         }
 
         protected override Rect DefaultRect

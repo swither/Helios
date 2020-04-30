@@ -18,24 +18,24 @@ using GadrocsWorkshop.Helios.ComponentModel;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
 {
-    [HeliosControl("Helios.Falcon.HUD", "HUD", "Open Falcon Textures", typeof(OpenFalconTextureDisplayRenderer))]
-    public class HUD : OpenFalconTextureDisplay
+    [HeliosControl("Helios.Falcon.DED", "DED", "Open Falcon Textures", typeof(OpenFalconTextureDisplayRenderer))]
+    public class DED : OpenFalconTextureDisplay
     {
-        private static readonly Rect _defaultRect = new Rect(5, 5, 255, 255);
+        private static readonly Rect _defaultRect = new Rect(5, 270, 160, 63);
 
-        public HUD()
-            : base("HUD", new Size(255, 255))
+        public DED()
+            : base("DED", new Size(367, 138))
         {
         }
 
         protected override OpenFalconTextureDisplay.FalconTextures Texture
         {
-            get { return OpenFalconTextureDisplay.FalconTextures.HUD; }
+            get { return OpenFalconTextureDisplay.FalconTextures.DED; }
         }
 
         internal override string DefaultImage
         {
-            get { return "{HeliosFalcon}/OpenFalcon/hud.png"; }
+            get { return "{HeliosFalcon}/Images/OpenFalcon/ded.png"; }
         }
 
         protected override Rect DefaultRect

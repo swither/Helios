@@ -18,24 +18,24 @@ using GadrocsWorkshop.Helios.ComponentModel;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
 {
-    [HeliosControl("Helios.Falcon.DED", "DED", "Open Falcon Textures", typeof(OpenFalconTextureDisplayRenderer))]
-    public class DED : OpenFalconTextureDisplay
+    [HeliosControl("Helios.Falcon.PFL", "PFL", "Open Falcon Textures", typeof(OpenFalconTextureDisplayRenderer))]
+    public class PFL : OpenFalconTextureDisplay
     {
-        private static readonly Rect _defaultRect = new Rect(5, 270, 160, 63);
+        private static readonly Rect _defaultRect = new Rect(5, 345, 150, 70);
 
-        public DED()
-            : base("DED", new Size(367, 138))
+        public PFL()
+            : base("PFL", new Size(160, 63))
         {
         }
 
         protected override OpenFalconTextureDisplay.FalconTextures Texture
         {
-            get { return OpenFalconTextureDisplay.FalconTextures.DED; }
+            get { return OpenFalconTextureDisplay.FalconTextures.PFL; }
         }
 
         internal override string DefaultImage
         {
-            get { return "{HeliosFalcon}/OpenFalcon/ded.png"; }
+            get { return "{HeliosFalcon}/Images/OpenFalcon/pfl.png"; }
         }
 
         protected override Rect DefaultRect

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using GadrocsWorkshop.Helios.ComponentModel;
 
@@ -9,9 +8,9 @@ using GadrocsWorkshop.Helios.ComponentModel;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("HeliosFalcon")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Helios Falcon Simulators Support")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Helios")]
 [assembly: AssemblyProduct("HeliosFalcon")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]

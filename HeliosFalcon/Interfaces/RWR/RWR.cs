@@ -20,7 +20,7 @@ using GadrocsWorkshop.Helios.ComponentModel;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
 {
-    [HeliosControl("Helios.Falcon.RWR", "Block 50/52 RWR", "F-16", typeof(RWRRenderer))] 
+    [HeliosControl("Helios.Falcon.RWR", "Block 50/52 RWR", "Falcon Simulator", typeof(RWRRenderer))] 
     public class RWR : HeliosVisual
     {
         private bool _on;
@@ -29,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
         private RadarContact[] _contacts;
         private bool _flash4Hz;
 
-        private string _bezelImage = "{HeliosFalcon}/RWR/rwr_bezel.png";
+        private string _bezelImage = "{HeliosFalcon}/Images/RWR/rwr_bezel.png";
 
         public RWR()
             : base("RWR", new Size(400, 387))
