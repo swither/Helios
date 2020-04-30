@@ -14,14 +14,16 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using Microsoft.Win32;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
     [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconIntefaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    public class FalconInterface : HeliosInterface
+    public class FalconInterface : HeliosInterface, IReadyCheck, IStatusReportNotify, IExtendedDescription
     {
         private FalconTypes _falconType;
         private string _falconPath;
@@ -31,6 +33,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private FalconDataExporter _dataExporter;
 
         private FalconKeyFile _callbacks = new FalconKeyFile("");
+        private HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
 
         public FalconInterface()
             : base("Falcon")
@@ -100,6 +103,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     }
 
                     OnPropertyChanged("FalconType", oldValue, value, true);
+                    InvalidateStatusReport();
                 }
             }
         }
@@ -183,27 +187,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             }
         }
 
-        internal RadarContact[] RadarContacts
-        {
-            get
-            {
-                if (_dataExporter != null)
-                {
-                    return _dataExporter.RadarContacts;
-                }
-                return null;
-            }
-        }
+        internal RadarContact[] RadarContacts => _dataExporter?.RadarContacts;
 
         #endregion
 
         public BindingValue GetValue(string device, string name)
         {
-            if (_dataExporter != null)
-            {
-                return _dataExporter.GetValue(device, name);
-            }
-            return BindingValue.Empty;
+            return _dataExporter?.GetValue(device, name) ?? BindingValue.Empty;
         }
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
@@ -227,26 +217,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
-            if (_dataExporter != null)
-            {
-                _dataExporter.CloseData();
-            }
+            _dataExporter?.CloseData();
         }
 
         void Profile_ProfileTick(object sender, EventArgs e)
         {
-            if (_dataExporter != null)
-            {                
-                _dataExporter.PollData();
-            }
+            _dataExporter?.PollData();
         }
 
         void Profile_ProfileStarted(object sender, EventArgs e)
         {
-            if (_dataExporter != null)
-            {
-                _dataExporter.InitData();
-            }
+            _dataExporter?.InitData();
         }
 
         void PressAction_Execute(object action, HeliosActionEventArgs e)
@@ -286,5 +267,51 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             writer.WriteElementString("KeyFile", KeyFileName);
             writer.WriteElementString("CockpitDatFile", CockpitDatFile);
         }
+
+        #region IReadyCheck
+        public IEnumerable<StatusReportItem> PerformReadyCheck()
+        {
+            // XXX perform integrity check.  any warnings will light caution on Control Center
+            // XXX any error will block control center from starting profile unless user selects to disable ready check
+            yield return new StatusReportItem
+            {
+                Status = $"Selected Falcon interface driver is {FalconType}",
+                Severity = StatusReportItem.SeverityCode.Info,
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+            };
+        }
+        #endregion
+        
+        #region IStatusReportNotify
+        public void Subscribe(IStatusReportObserver observer)
+        {
+            _observers.Add(observer);
+        }
+
+        public void Unsubscribe(IStatusReportObserver observer)
+        {
+            _observers.Remove(observer);
+        }
+
+        public void PublishStatusReport(IList<StatusReportItem> statusReport)
+        {
+            foreach (IStatusReportObserver observer in _observers)
+            {
+                observer.ReceiveStatusReport(Name, Description, statusReport);
+            }
+        }
+
+        public void InvalidateStatusReport()
+        {
+            List<StatusReportItem> newReport = new List<StatusReportItem>();
+            newReport.AddRange(PerformReadyCheck());
+            PublishStatusReport(newReport);
+        }
+        #endregion
+        
+        #region IExtendedDescription
+        public string Description => $"Interface to {FalconType}";
+        public string RemovalNarrative => $"Delete this interface and remove all of its bindings from the Profile";
+        #endregion
     }
 }
