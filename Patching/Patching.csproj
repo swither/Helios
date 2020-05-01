@@ -43,6 +43,7 @@
     </Compile>
     <Compile Include="DCS\MonitorSetup.cs" />
     <Compile Include="DCS\MonitorViewModel.cs" />
+    <Compile Include="DCS\PatchVersion.cs" />
     <Compile Include="DCS\ShadowMonitor.cs" />
     <Compile Include="DCS\ShadowVisual.cs" />
     <Compile Include="DCS\ViewportViewModel.cs" />

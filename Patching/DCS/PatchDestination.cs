@@ -1,21 +1,20 @@
 ﻿using GadrocsWorkshop.Helios.Util.DCS;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     public class PatchDestination : IPatchDestination
     {
-        private string _dcsRoot = "NOTFOUND";
-        private static System.Text.Encoding _utf8WithoutBom = new System.Text.UTF8Encoding(false);
+        private readonly string _dcsRoot;
+        private static readonly System.Text.Encoding Utf8WithoutBom = new System.Text.UTF8Encoding(false);
 
         public PatchDestination(InstallationLocation location)
         {
             _dcsRoot = location.Path;
-            if (!System.Version.TryParse(location.Version, out Version parsed)) {
-                throw new System.Exception("invalid version format read from DCS autoupdate file; update Helios to support current DCS version");
-            }
-            Version = $"{parsed.Major:000}_{parsed.Minor:000}_{parsed.Build:00000}_{parsed.Revision:00000}";
+            Version = PatchVersion.SortableString(location.Version);
             DisplayVersion = location.Version;
         }
 
@@ -24,8 +23,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public string RootFolder => _dcsRoot;
 
-        public string Version { get; private set; } = "002_005_00005_41371";
-        public string DisplayVersion { get; private set; } = "2.5.5.41371";
+        public string Version { get; }
+        public string DisplayVersion { get; }
 
         public bool TryGetSource(string targetPath, out string source)
         {
@@ -35,7 +34,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 source = null;
                 return false;
             }
-            using (StreamReader streamReader = new StreamReader(path, _utf8WithoutBom))
+            using (StreamReader streamReader = new StreamReader(path, Utf8WithoutBom))
             {
                 source = streamReader.ReadToEnd();
                 return true;
@@ -66,7 +65,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 ConfigManager.LogManager.LogError($"attempt to write back a patched file to a non-existing location: '{path}'");
                 return false;
             }
-            using (StreamWriter streamWriter = new StreamWriter(path, false, _utf8WithoutBom))
+            using (StreamWriter streamWriter = new StreamWriter(path, false, Utf8WithoutBom))
             {
                 streamWriter.Write(patched);
                 return true;

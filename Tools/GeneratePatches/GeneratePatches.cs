@@ -1,15 +1,20 @@
-﻿using LibGit2Sharp;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using CommandLine;
+using DiffMatchPatch;
+using GadrocsWorkshop.Helios.Patching.DCS;
+using LibGit2Sharp;
+using Newtonsoft.Json;
+using ToolsCommon;
+using Diff = DiffMatchPatch.Diff;
+using Patch = DiffMatchPatch.Patch;
 
 namespace GeneratePatches
 {
-    class GeneratePatches
+    internal class GeneratePatches
     {
         public class CommonOptions
         {
@@ -17,46 +22,55 @@ namespace GeneratePatches
             public string DcsRoot { get; set; }
         }
 
-        [Verb("init", HelpText = "Initialize a git repo in the DCS installation and save all configuration lua under git for comparison later.")]
-        class InitOptions: CommonOptions
+        [Verb("init",
+            HelpText =
+                "Initialize a git repo in the DCS installation and save all configuration lua under git for comparison later.")]
+        public class InitOptions : CommonOptions
         {
             // nothing
         }
 
-        [Verb("generate", HelpText = "Generate patches for all differences between current working directory and last git commit of DCS files.")]
-        class GenerateOptions: CommonOptions
+        [Verb("generate",
+            HelpText =
+                "Generate patches for all differences between current working directory and last git commit of DCS files.")]
+        public class GenerateOptions : CommonOptions
         {
-            [Option('p', "patchset", Required = false, Default = "Viewports", HelpText = "Name of patch set to generate.")]
+            [Option('p', "patchset", Required = false, Default = "Viewports",
+                HelpText = "Name of patch set to generate.")]
             public string PatchSet { get; set; }
 
-            [Option('o', "outputpath", Required = false, Default = null, HelpText = "Path to 'Patches' folder.  If not specified, will find nearest folder 'Patches' in directory tree above.")]
+            [Option('o', "outputpath", Required = false, Default = null,
+                HelpText =
+                    "Path to 'Patches' folder.  If not specified, will find nearest folder 'Patches' in directory tree above.")]
             public string OutputPath { get; set; }
         }
 
         private class AutoUpdateConfig
         {
-            [JsonProperty("version")]
-            public string Version { get; private set; }
+            [JsonProperty("version")] public string Version { get; private set; }
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var result = Parser.Default.ParseArguments<InitOptions, GenerateOptions>(args)
+            ParserResult<object> result = Parser.Default.ParseArguments<InitOptions, GenerateOptions>(args)
                 .WithParsed<InitOptions>(options => { InitializeRepo(options.DcsRoot); })
-                .WithParsed<GenerateOptions>(options => { UpdatePatches(options.DcsRoot, options.PatchSet, options.OutputPath); });
+                .WithParsed<GenerateOptions>(options =>
+                {
+                    UpdatePatches(options.DcsRoot, options.PatchSet, options.OutputPath);
+                });
         }
 
         private static void UpdatePatches(string dcsRoot, string patchSet, string outputPath)
         {
             // determine DCS version
             string autoUpdatePath = Path.Combine(dcsRoot, "autoupdate.cfg");
-            string versionString = JsonConvert.DeserializeObject<AutoUpdateConfig>(File.ReadAllText(autoUpdatePath)).Version;
-            System.Version parsed = System.Version.Parse(versionString);
-            string dcsVersion = $"{parsed.Major:000}_{parsed.Minor:000}_{parsed.Build:00000}_{parsed.Revision:00000}";
+            string versionString = JsonConvert.DeserializeObject<AutoUpdateConfig>(File.ReadAllText(autoUpdatePath))
+                .Version;
+            string dcsVersion = PatchVersion.SortableString(versionString);
 
             // now build patches based on files changed in repo
-            string patchesPath = outputPath ?? ToolsCommon.FileSystem.FindNearestDirectory("Patches");
-            System.Console.WriteLine($"writing patches for {dcsVersion} to {patchesPath}");
+            string patchesPath = outputPath ?? FileSystem.FindNearestDirectory("Patches");
+            Console.WriteLine($"writing patches for {dcsVersion} to {patchesPath}");
             using (Repository repo = new Repository(dcsRoot))
             {
                 foreach (StatusEntry item in repo.RetrieveStatus(new StatusOptions()))
@@ -71,16 +85,19 @@ namespace GeneratePatches
                         {
                             source = content.ReadToEnd();
                         }
+
                         string workingPath = Path.Combine(repo.Info.WorkingDirectory, item.FilePath);
                         using (var content = new StreamReader(workingPath, Encoding.UTF8))
                         {
                             target = content.ReadToEnd();
                         }
 
-                        string patchPath = Path.Combine(patchesPath, "DCS", dcsVersion, patchSet, $"{item.FilePath}.gpatch");
-                        string reversePath = Path.Combine(patchesPath, "DCS", dcsVersion, patchSet, $"{item.FilePath}.grevert");
+                        string patchPath = Path.Combine(patchesPath, "DCS", dcsVersion, patchSet,
+                            $"{item.FilePath}.gpatch");
+                        string reversePath = Path.Combine(patchesPath, "DCS", dcsVersion, patchSet,
+                            $"{item.FilePath}.grevert");
                         string outputDirectoryPath = Path.GetDirectoryName(patchPath);
-                        if (!Directory.Exists(outputDirectoryPath))
+                        if (outputDirectoryPath != null && !Directory.Exists(outputDirectoryPath))
                         {
                             Directory.CreateDirectory(outputDirectoryPath);
                         }
@@ -96,13 +113,12 @@ namespace GeneratePatches
         {
             // NOTE: do our own diffs so we just do semantic cleanup. 
             // We don't want to optimize for efficiency.
-            DiffMatchPatch.diff_match_patch googleDiff = new DiffMatchPatch.diff_match_patch();
-            List<DiffMatchPatch.Diff> diffs;
-            diffs = googleDiff.diff_main(source, target);
+            diff_match_patch googleDiff = new diff_match_patch();
+            List<Diff> diffs = googleDiff.diff_main(source, target);
             googleDiff.diff_cleanupSemantic(diffs);
 
             // write patch
-            List<DiffMatchPatch.Patch> patches = googleDiff.patch_make(diffs);
+            List<Patch> patches = googleDiff.patch_make(diffs);
             using (StreamWriter streamWriter = new StreamWriter(outputPath, false, Encoding.UTF8))
             {
                 string patchText = googleDiff.patch_toText(patches);
@@ -119,6 +135,7 @@ namespace GeneratePatches
                 InitializeGitConfig(dcsRoot, "gitignore");
                 InitializeGitConfig(dcsRoot, "gitattributes");
             }
+
             using (Repository repo = new Repository(dcsRoot))
             {
                 Commands.Stage(repo, "*");
@@ -137,12 +154,14 @@ namespace GeneratePatches
         private static void InitializeGitConfig(string dcsRoot, string configFile)
         {
             string configPath = Path.Combine(dcsRoot, $".{configFile}");
-            if (!File.Exists(configPath))
+            if (File.Exists(configPath))
             {
-                string sourcePath = ToolsCommon.FileSystem.FindNearestDirectory("Tools\\GeneratePatches\\Setup\\DCS") + configFile;
-                string config = File.ReadAllText(sourcePath);
-                File.WriteAllText(configPath, config);
+                return;
             }
+
+            string sourcePath = FileSystem.FindNearestDirectory("Tools\\GeneratePatches\\Setup\\DCS") + configFile;
+            string config = File.ReadAllText(sourcePath);
+            File.WriteAllText(configPath, config);
         }
     }
 }
