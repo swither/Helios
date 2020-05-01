@@ -75,20 +75,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         private void Images_ImageLoadFailure(object sender, ImageLoadEventArgs e)
         {
-            _failedImagePaths?.Add(e.Path);
             if (_failedImagePaths == null)
             {
-                // this is normal state during profile loading, before we have initialized on main thread
+                // this is normal state during profile loading
                 return;
             }
-            Application.Current.Dispatcher.Invoke(InvalidateStatusReport);
+            _failedImagePaths.Add(e.Path);
+            InvalidateStatusReport();
         }
 
         private void Images_ImageLoadSuccess(object sender, ImageLoadEventArgs e)
         {
             if (_failedImagePaths?.Remove(e.Path) ?? false)
             {
-                Application.Current.Dispatcher.Invoke(InvalidateStatusReport);
+                InvalidateStatusReport();
             }
         }
 

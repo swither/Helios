@@ -573,7 +573,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 ParseReceived(context);
 
                 // pass ownership to main thread, process synchronously
-                Dispatcher.Invoke(new Action(() => this.DispatchReceived(context)), System.Windows.Threading.DispatcherPriority.Send);
+                Dispatcher.Invoke(() => DispatchReceived(context), System.Windows.Threading.DispatcherPriority.Send);
             }
 
             // start next receive

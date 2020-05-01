@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
+
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using GadrocsWorkshop.Helios.Windows.Controls;
@@ -178,22 +180,21 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             if (e.Property == ProfileProperty)
             {
-                HeliosProfile oldProfile = e.OldValue as HeliosProfile;
-                if (oldProfile != null)
+                if (e.OldValue is HeliosProfile oldProfile)
                 {
-                    oldProfile.Monitors.CollectionChanged -= new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Monitors_CollectionChanged);
+                    oldProfile.Monitors.CollectionChanged -= Monitors_CollectionChanged;
                 }
 
                 if (Profile != null)
                 {
-                    Profile.Monitors.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Monitors_CollectionChanged);
+                    Profile.Monitors.CollectionChanged += Monitors_CollectionChanged;
                 }
 
-                Dispatcher.Invoke(new Action(UpdateMonitors));
+                Dispatcher.Invoke(UpdateMonitors);
             }
             else if (e.Property == ShowPanelsProperty)
             {
-                foreach (HeliosVisualView panelView in _children)
+                foreach (HeliosVisualView panelView in _children.OfType<HeliosVisualView>())
                 {
                     panelView.Visibility = ShowPanels ? Visibility.Visible : Visibility.Hidden;
                 }
@@ -202,7 +203,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             base.OnPropertyChanged(e);
         }
 
-        void Monitors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Monitors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove || e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace)
             {

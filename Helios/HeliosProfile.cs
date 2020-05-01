@@ -50,8 +50,8 @@ namespace GadrocsWorkshop.Helios
 
         public HeliosProfile(bool autoAddInterfaces)
         {
-            _monitors.CollectionChanged += new NotifyCollectionChangedEventHandler(Monitors_CollectionChanged);
-            _interfaces.CollectionChanged += new NotifyCollectionChangedEventHandler(Interfaces_CollectionChanged);
+            _monitors.CollectionChanged += Monitors_CollectionChanged;
+            _interfaces.CollectionChanged += Interfaces_CollectionChanged;
 
             int i = 1;
             foreach (Monitor display in ConfigManager.DisplayManager.Displays)
@@ -297,32 +297,26 @@ namespace GadrocsWorkshop.Helios
 
         public void ShowControlCenter()
         {
-            EventHandler handler = ControlCenterShown;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            ControlCenterShown?.Invoke(this, EventArgs.Empty);
         }
 
         public void HideControlCenter()
         {
-            EventHandler handler = ControlCenterHidden;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            ControlCenterHidden?.Invoke(this, EventArgs.Empty);
         }
 
         public void Start()
         {
-            if (!IsStarted)
+            if (IsStarted)
             {
-                Logger.Info("Profile starting. (Name=\"" + Name + "\")");
-                OnProfileStarted();
-                IsStarted = true;
-                RequestProfileSupport();
-                Logger.Info("Profile started. (Name=\"" + Name + "\")");
+                return;
             }
+
+            Logger.Info("Profile starting. (Name=\"" + Name + "\")");
+            OnProfileStarted();
+            IsStarted = true;
+            RequestProfileSupport();
+            Logger.Info("Profile started. (Name=\"" + Name + "\")");
         }
 
         public void RequestProfileSupport()
@@ -340,11 +334,7 @@ namespace GadrocsWorkshop.Helios
 
         protected virtual void OnProfileStarted()
         {
-            EventHandler handler = ProfileStarted;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            ProfileStarted?.Invoke(this, EventArgs.Empty);
         }
 
         public void Reset()
@@ -375,11 +365,7 @@ namespace GadrocsWorkshop.Helios
 
         protected virtual void OnProfileStopped()
         {
-            EventHandler handler = ProfileStopped;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            ProfileStopped?.Invoke(this, EventArgs.Empty);
         }
 
         public void Tick()
@@ -389,11 +375,7 @@ namespace GadrocsWorkshop.Helios
 
         protected virtual void OnProfileTick()
         {
-            EventHandler handler = ProfileTick;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            ProfileTick?.Invoke(this, EventArgs.Empty);
         }
 
         private void Interfaces_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -458,7 +440,7 @@ namespace GadrocsWorkshop.Helios
             ClientChanged?.Invoke(this, e);
         }
 
-        void Monitors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Monitors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add ||
                 e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace)
@@ -483,11 +465,9 @@ namespace GadrocsWorkshop.Helios
             _layoutChecked = false;
         }
 
-        void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            HeliosObject child = sender as HeliosObject;
-            PropertyNotificationEventArgs args = e as PropertyNotificationEventArgs;
-            if (child != null && args != null)
+            if (sender is HeliosObject child && e is PropertyNotificationEventArgs args)
             {
                 OnPropertyChanged(child.Name, args);
             }

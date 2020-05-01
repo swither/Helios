@@ -156,6 +156,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
         {
+            oldProfile.Monitors.CollectionChanged -= Monitors_CollectionChanged;
             base.DetachFromProfileOnMainThread(oldProfile);
             _geometryChangeTimer.Stop();
             Clear();

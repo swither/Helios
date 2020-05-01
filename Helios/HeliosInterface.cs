@@ -31,22 +31,14 @@ namespace GadrocsWorkshop.Helios
         {
             base.OnProfileChanged(oldProfile);
 
-            // WARNING: this method is called on the profile loading thread when
-            // loading a saved profile, and otherwise on main thread when adding
-            // an interface to a running profile
             if (oldProfile != null)
             {
-                // deinitialize on main thread
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    DetachFromProfileOnMainThread(oldProfile);
-                });
+                DetachFromProfileOnMainThread(oldProfile);
             }
 
             if (Profile != null)
             {
-                // initialize on main thread
-                System.Windows.Application.Current.Dispatcher.Invoke(AttachToProfileOnMainThread);
+                AttachToProfileOnMainThread();
             }
         }
 
