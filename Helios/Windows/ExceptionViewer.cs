@@ -10,26 +10,25 @@ namespace GadrocsWorkshop.Helios.Windows
 
         public static void DisplayUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
-            DisplayException(e.Exception);
-            // now we exit
             Logger.Error(e.Exception, $"Unhandled exception occurred.  {e.Exception.Source} will exit.");
+            DisplayException(e.Exception);
+            
+            // prepare for exit
             HeliosInit.OnShutdown();
         }
 
         public static void DisplayException(Exception ex)
         {
-            string message;
-            Regex buidPathExpression = new Regex("[A-Z]:\\\\.*\\\\Helios\\\\");
+            string message = ex.Message;
+            Regex buildPathExpression = new Regex("[A-Z]:\\\\.*\\\\Helios(Dev)?\\\\");
             string trace = ex.StackTrace;
-            Match buildPathMatch = buidPathExpression.Match(trace);
+            Match buildPathMatch = buildPathExpression.Match(trace);
             if (buildPathMatch.Success)
             {
-                message = trace.Replace(buildPathMatch.Groups[0].Value, "");
+                message += "\n" + trace.Replace(buildPathMatch.Groups[0].Value, "");
             }
-            else
-            {
-                message = ex.Message;
-            }
+
+            // XXX try to use a custom dialog that supports selecting text and maybe the file bug action
 
             System.Windows.MessageBox.Show(
                 $"Unhandled exception occurred.  Please file a bug:\n{message}",
