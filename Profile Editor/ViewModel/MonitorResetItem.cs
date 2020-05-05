@@ -90,7 +90,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             }
         }
 
-        public void Reset()
+        public IEnumerable<string> Reset()
         {
             Monitor display = ConfigManager.DisplayManager.Displays[_oldId];
 
@@ -112,32 +112,35 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 if (Scale)
                 {
                     ScaleControl(visual, scale);
+                    yield return $"scaled {visual.TypeIdentifier} {visual.Name}";
                 }
                 else
                 {
                     CheckBounds(visual, OldMonitor);
+                    yield return $"checked bounds of {visual.TypeIdentifier} {visual.Name}";
                 }
             }
         }
 
-        public void RemoveControls()
+        public IEnumerable<string> RemoveControls()
         {
             HeliosVisual[] children = OldMonitor.Children.ToArray();
             foreach (HeliosVisual visual in children)
             {
                 _controls.Add(visual);
                 OldMonitor.Children.Remove(visual);
+                yield return $"lifted {visual.TypeIdentifier} {visual.Name}";
             }
         }
 
-        public void PlaceControls(Monitor newMonitor)
+        public IEnumerable<string> PlaceControls(Monitor newMonitor)
         {
             double scale = Math.Min(newMonitor.Width / _oldWidth, newMonitor.Height / _oldHeight);
             foreach (HeliosVisual visual in _controls)
             {
                 // Make sure name is unique
                 int i = 1;
-                String name = visual.Name;
+                string name = visual.Name;
                 while (newMonitor.Children.ContainsKey(name))
                 {
                     name = visual.Name + " " + i++;
@@ -149,10 +152,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 if (Scale)
                 {
                     ScaleControl(visual, scale);
+                    yield return $"placed and scaled {visual.TypeIdentifier} {visual.Name}";
                 }
                 else
                 {
                     CheckBounds(visual, newMonitor);
+                    yield return $"placed and checked bounds of {visual.TypeIdentifier} {visual.Name}";
                 }
             }
         }
