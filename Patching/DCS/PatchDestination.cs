@@ -41,6 +41,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
+        public bool TrySaveOriginal(string targetPath)
+        {
+            string backupAbsolute = LocateFile(BackupPath(targetPath));
+            if (File.Exists(backupAbsolute))
+            {
+                return true;
+            }
+            File.Copy(LocateFile(targetPath), backupAbsolute, true);
+            return true;
+        }
+
         private string LocateFile(string targetPath)
         {
             return Path.Combine(_dcsRoot, targetPath);
@@ -56,7 +67,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             // XXX implement
             return true;
-        }
+        }  
 
         public bool TryWritePatched(string targetPath, string patched)
         {
@@ -70,6 +81,22 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 streamWriter.Write(patched);
                 return true;
             }
+        }
+
+        public bool TryRestoreOriginal(string targetPath)
+        {
+            string backupAbsolute = LocateFile(BackupPath(targetPath));
+            if (!File.Exists(backupAbsolute))
+            {
+                return false;
+            }
+            File.Copy(backupAbsolute, LocateFile(targetPath), true);
+            return true;
+        }
+
+        private string BackupPath(string targetPath)
+        {
+            return $"{targetPath}.{Version}";
         }
 
         public PatchList SelectPatches(string patchesPath, string patchSet, ref string selectedVersion)

@@ -13,8 +13,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using GadrocsWorkshop.Helios.Util;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching
@@ -96,6 +98,15 @@ namespace GadrocsWorkshop.Helios.Patching
                         // any destination being incompatible counts
                         Status = StatusCodes.Incompatible;
                         return;
+                    case StatusCodes.ResetRequired:
+                        // any destination being dirty counts
+                        Status = StatusCodes.ResetRequired;
+                        return;
+                    case StatusCodes.NoLocations:
+                    case StatusCodes.ResetMonitorsRequired:
+                    case StatusCodes.ProfileSaveRequired:
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(status.Status), status.Status, null);
                 }
             }
             Status = newStatus;
@@ -189,6 +200,54 @@ namespace GadrocsWorkshop.Helios.Patching
             }
 
             callbacks.Success($"{_patchSetDescription} installation success", "All patches installed successfully", results);
+            return InstallationResult.Success;
+        }
+
+
+        public InstallationResult Uninstall(IInstallationCallbacks callbacks)
+        {
+            List<StatusReportItem> results = new List<StatusReportItem>();
+
+            // revert patches, by either restoring original file or reverse patching
+            foreach (PatchDestinationViewModel item in _destinations.Values)
+            {
+                bool failed = false;
+                string message = "";
+                if (!item.Enabled)
+                {
+                    continue;
+                }
+                StatusCodes newStatus = StatusCodes.OutOfDate;
+                foreach (StatusReportItem result in item.Patches.Revert(item.Destination))
+                {
+                    result.Log(ConfigManager.LogManager);
+                    results.Add(result);
+                    if (result.Severity >= StatusReportItem.SeverityCode.Error)
+                    {
+                        if (!failed)
+                        {
+                            // keep first message
+                            message = $"{result.Status}\n{result.Recommendation}";
+                        }
+                        failed = true;
+                        newStatus = StatusCodes.Incompatible;
+                    }
+                }
+                item.Status = newStatus;
+                if (!failed)
+                {
+                    continue;
+                }
+
+                message +=
+                    $"\nPlease execute 'bin\\dcs_updater.exe repair' in your {item.Destination.LongDescription} to restore to original files";
+                callbacks.Failure($"{_patchSetDescription} revert failed", message, results);
+                return InstallationResult.Fatal;
+            }
+
+            UpdateStatus();
+
+            callbacks.Success($"{_patchSetDescription} installation success", "All patches reverted successfully", results);
             return InstallationResult.Success;
         }
 

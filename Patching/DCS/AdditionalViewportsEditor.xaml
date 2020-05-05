@@ -36,6 +36,19 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="PartialStyle" TargetType="{x:Type Panel}">
+            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static util:StatusCodes.ResetRequired}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Visible"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style x:Key="CannotApplyStyle" TargetType="{x:Type Panel}">
             <Setter Property="UIElement.Visibility" Value="Collapsed"/>
             <Style.Triggers>
@@ -122,6 +135,17 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">The patches to install additional viewports are not compatible with this version of DCS.  
                         You will need a more recent version of Helios or additional patch files.</TextBlock>
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource PartialStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">The patches for additional viewports are partially installed or may have failed to install.</TextBlock>
+                    <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Style="{StaticResource InterfaceEditorButton}">Revert Patches</Button>
                 </Grid>
                 <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                     <Grid.ColumnDefinitions>

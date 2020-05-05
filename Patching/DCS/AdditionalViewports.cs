@@ -95,7 +95,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 .Select(location => new PatchDestination(location) as IPatchDestination))
             {
                 PatchList patches = PatchList.LoadPatches(destination, "Viewports");
-                if (patches.Count < 1)
+                if (patches.IsEmpty())
                 {
                     yield return new StatusReportItem
                     {

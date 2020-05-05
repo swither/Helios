@@ -106,8 +106,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void Remove_Click(object sender, RoutedEventArgs e)
         {
-            // XXX revert patches where applicable
-            MessageBox.Show("Unimplemented");
+            Patching?.Uninstall(_installationDialogs);
+            _parent.InvalidateStatusReport();
         }
 
         #endregion

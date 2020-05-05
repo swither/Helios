@@ -39,17 +39,35 @@ namespace GadrocsWorkshop.Helios.Patching
 
         internal void CheckApplied()
         {
+            bool notInstalled = false;
+            bool installed = false;
             foreach (StatusReportItem result in Patches.Verify(Destination))
             {
                 // don't log these results, because Verify considers being out of date to be an error
                 if (result.Severity > StatusReportItem.SeverityCode.Warning)
                 {
-                    Status = StatusCodes.OutOfDate;
-                    return;
+                    // errors indicate patch needs work
+                    notInstalled = true;
+                }
+                else
+                {
+                    // any indication other than error means patch is installed
+                    installed = true;
                 }
             }
-            // if we survive verifying all patches, it is up to date
-            Status = StatusCodes.UpToDate;
+
+            if (installed && notInstalled)
+            {
+                Status = StatusCodes.ResetRequired;
+            }
+            else if (installed)
+            {
+                Status = StatusCodes.UpToDate;
+            }
+            else
+            {
+                Status = StatusCodes.OutOfDate;
+            }
         }
     }
 }
