@@ -69,8 +69,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             };
 
 
-            // emit extra viewports
-            foreach (ShadowVisual viewPort in _parent.Viewports)
+            // emit extra viewports in canonical order, so we can compare files later
+            foreach (ShadowVisual viewPort in _parent.Viewports.OrderBy(v => v.Viewport.ViewportName))
             {
                 Rect rect = MonitorSetup.VisualToRect(viewPort.Visual);
                 rect.Offset(viewPort.Monitor.Left, viewPort.Monitor.Top);
