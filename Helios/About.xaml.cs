@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Splash
     public partial class About : Window
     {
         public static readonly string[] Authors = { "Gadroc", "BlueFinBima" };
-        public static readonly string[] Contributors = { "derammo", "CaptZeen", "KiwiLostInMelb", "Phar71", "damien022", "Will Hartsell", "Cylution", "Rachmaninoff", "yzfanimal", "BeamRider" };
+        public static readonly string[] Contributors = { "derammo", "CaptZeen", "KiwiLostInMelb", "Phar71", "damien022", "Will Hartsell", "Cylution", "Rachmaninoff", "yzfanimal", "WillianG83", "wheelchock", "BeamRider", "Jabbers" };
 
         public About()
         {
