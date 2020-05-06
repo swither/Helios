@@ -13,12 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Linq;
-
 namespace GadrocsWorkshop.Helios.Splash
 {
     using System;
-    using System.Reflection;
     using System.Windows;
     using System.Windows.Input;
 
@@ -27,8 +24,8 @@ namespace GadrocsWorkshop.Helios.Splash
     /// </summary>
     public partial class About : Window
     {
-        public static readonly string[] Authors = { "Gadroc", "BlueFinBima" };
-        public static readonly string[] Contributors = { "derammo", "CaptZeen", "KiwiLostInMelb", "Phar71", "damien022", "Will Hartsell", "Cylution", "Rachmaninoff", "yzfanimal", "WillianG83", "wheelchock", "BeamRider", "Jabbers" };
+        public static readonly string[] Authors = { "Gadroc", "BlueFinBima", "derammo" };
+        public static readonly string[] Contributors = { "CaptZeen", "KiwiLostInMelb", "Phar71", "damien022", "Will Hartsell", "Cylution", "Rachmaninoff", "yzfanimal", "WillianG83", "wheelchock", "BeamRider", "Jabbers" };
 
         public About()
         {
