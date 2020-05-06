@@ -4,6 +4,7 @@
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
                                  xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
                                  xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
+                                 xmlns:profileEditor="http://Helios.local/ProfileEditor"
                                  x:Name="MonitorSetupWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
     <FrameworkElement.Resources>
         <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
@@ -454,6 +455,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must complete 'Reset Monitors' before configuring monitor setup.</TextBlock>
+                        <Button Grid.Row="0" Grid.Column="1" Command="profileEditor:ProfileEditorCommands.ResetMonitors" Style="{StaticResource InterfaceEditorButton}">Reset Monitors</Button>
                     </Grid>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource ProfileSaveRequiredStyle}">
                         <Grid.ColumnDefinitions>
@@ -464,6 +466,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must save the profile at least once before configuring monitor setup.</TextBlock>
+                        <Button Grid.Row="0" Grid.Column="1" Command="Save" Style="{StaticResource InterfaceEditorButton}">Save Profile</Button>
                     </Grid>
                     <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                         <Grid.ColumnDefinitions>

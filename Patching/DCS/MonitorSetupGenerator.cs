@@ -452,7 +452,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     Status = "This version of Helios does not select the monitor setup in DCS directly",
                     Recommendation =
-                        $"Using DCS, please set 'Monitors' in the 'System' options to '{GenerateShortName()}'",
+                        $"Using DCS, please set 'Monitors' in the 'System' options to 'H_{GenerateShortName()}'",
                     Severity = StatusReportItem.SeverityCode.Info,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
