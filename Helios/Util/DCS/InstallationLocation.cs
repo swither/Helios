@@ -24,7 +24,8 @@ namespace GadrocsWorkshop.Helios.Util.DCS
                 InstallationLocation location =
                     new InstallationLocation(System.IO.Path.Combine(path, AUTO_UPDATE_CONFIG))
                     {
-                        IsEnabled = settings.LoadSetting(SETTINGS_GROUP, path, false)
+                        IsEnabled = settings.LoadSetting(SETTINGS_GROUP, path, false),
+                        Loaded = true
                     };
                 yield return location;
             }
@@ -99,11 +100,20 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         private static void OnChangeEnabled(DependencyObject target, DependencyPropertyChangedEventArgs e)
         {
             InstallationLocation location = (InstallationLocation) target;
+            if (!location.Loaded)
+            {
+                return;
+            }
             location.UpdateSettings();
             location.NotifyChangeEnabled();
         }
 
         #region Properties
+
+        /// <summary>
+        /// true if we are done initializing and should process events
+        /// </summary>
+        private bool Loaded { get; set; }
 
         /// <summary>
         /// installation location absolute path
