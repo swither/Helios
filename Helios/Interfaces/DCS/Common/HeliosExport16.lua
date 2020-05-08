@@ -17,8 +17,7 @@ local helios_private = {}
 log.write("HELIOS.EXPORT", log.INFO, "initializing Helios Export script")
 
 -- ========================= CONFIGURATION ======================================
--- This section will be configured by a combination of the Helios Profile Editor
--- and editing by the user.
+-- This section is configured by the DCS Interfaces in Helios Profile Editor
 
 -- address to which we send
 helios_private.host = "HELIOS_REPLACE_IPAddress"
@@ -28,6 +27,7 @@ helios_private.host = "HELIOS_REPLACE_IPAddress"
 helios_private.port = HELIOS_REPLACE_Port
 
 -- how many export intervals have to pass before we send low priority data again
+-- NOTE: this parameter has no configuration UI
 helios_private.exportLowTickInterval = 2
 
 -- seconds between ticks (high priority export interval)
@@ -35,13 +35,16 @@ helios_impl.exportInterval = HELIOS_REPLACE_ExportInterval
 
 -- maximum number of seconds without us sending anything
 -- NOTE: Helios needs us to send something to discover our UDP client port number
+-- NOTE: this parameter has no configuration UI
 helios_impl.announceInterval = 3.0
 
--- seconds between announcements immeidately after change in vehicle, to give
+-- seconds between announcements immediately after change in vehicle, to give
 -- Helios a chance to discover us after it restarts its interface
+-- NOTE: this parameter has no configuration UI
 helios_impl.fastAnnounceInterval = 0.1
 
 -- seconds after change in vehicle to use fast announcements
+-- NOTE: this parameter has no configuration UI
 helios_impl.fastAnnounceDuration = 1.0
 
 -- Module names are different from internal self names, so this table translates them
@@ -265,6 +268,12 @@ function helios_impl.init()
     helios_private.clientSocket:settimeout(.001) -- blocking, but for a very short time
 
     log.write("HELIOS.EXPORT", log.DEBUG, "loaded")
+
+    log.write(
+        "HELIOS.EXPORT",
+        log.INFO,
+        string.format("Helios Export Script will send to %s on port %d", helios_private.host, helios_private.port)
+	)
 end
 
 function helios_impl.unload()
@@ -297,6 +306,7 @@ function helios_impl.dispatchCommand(command)
     elseif helios_private.driver.processInput ~= nil then
         -- delegate commands other than 'P'
         helios_private.driver.processInput(command)
+        helios_private.state.receiveCount = helios_private.state.receiveCount + 1
     elseif commandCode == "R" then
         -- reset command from Helios requests that we consider all values dirty
         helios_private.resetCachedValues()
@@ -307,10 +317,12 @@ function helios_impl.dispatchCommand(command)
         if type(targetDevice) == "table" then
             targetDevice:performClickableAction(commandArgs[2], commandArgs[3])
         end
+        helios_private.state.receiveCount = helios_private.state.receiveCount + 1
     end
 end
 
--- load the export driver for the vehicle (DCS info name of the vehicle) and driver short name, not including .lua extension
+-- load an export driver of the given type for the current vehicle
+-- the driverType is currently always HeliosDriver16
 function helios_impl.loadDriver(driverType)
     if driverType == nil then
         error("missing driver type in request to load driver; program error")
@@ -326,6 +338,10 @@ function helios_impl.loadDriver(driverType)
     if helios_impl.driverType == "HeliosDriver16" then
         -- do nothing
         log.write("HELIOS.EXPORT", log.INFO, string.format("driver '%s' for '%s' is already loaded", helios_impl.driverType, currentSelfName))
+        return currentSelfName
+    elseif currentSelfName == "" then
+        -- no vehicle, use empty driver
+        helios_impl.installDriver(driver, newDriverType)
         return currentSelfName
     else
         -- now try to load specific driver
@@ -373,6 +389,7 @@ function helios_impl.loadDriver(driverType)
 end
 
 -- load the module for the current vehicle, even if we previously loaded a driver
+-- the driverType is currently always CaptZeenModule1
 function helios_impl.loadModule(driverType)
     if driverType == nil then
         error("missing driver type in request to load module; program error")
@@ -436,6 +453,13 @@ end
 helios_private.socketLibrary = nil -- lazy init
 
 function helios_private.clearState()
+    if (helios_private.state ~= nil and helios_private.state.sendCount ~= nil) then
+        log.write(
+            "HELIOS.EXPORT", 
+            log.INFO, 
+            string.format("sent %d updates and received %d commands since last reporting", helios_private.state.sendCount, helios_private.state.receiveCount))
+    end
+    
     helios_private.state = {}
 
     helios_private.state.packetSize = 0
@@ -450,6 +474,10 @@ function helios_private.clearState()
 
     -- ticks of fast announcement remaining
     helios_private.state.fastAnnounceTicks = helios_impl.fastAnnounceDuration / helios_impl.exportInterval
+
+    -- sent updates and received commands, just for reporting
+    helios_private.state.sendCount = 0
+    helios_private.state.receiveCount = 0
 end
 
 function helios_private.processArguments(device, arguments)
@@ -477,7 +505,9 @@ function helios_private.doSend(id, value)
 end
 
 function helios_private.flush()
-    if #helios_private.state.sendStrings > 0 then
+    local toSend = #helios_private.state.sendStrings
+    if toSend > 0 then
+        helios_private.state.sendCount = helios_private.state.sendCount + toSend
         local packet = helios_private.simID .. table.concat(helios_private.state.sendStrings, ":") .. "\n"
         helios_private.socketLibrary.try(helios_private.clientSocket:sendto(packet, helios_private.host, helios_private.port))
         helios_private.state.lastSend = helios_private.clock
@@ -541,18 +571,14 @@ function helios_private.handleSelfNameChange(selfName)
         log.INFO,
         string.format("changed vehicle from '%s' to '%s'", helios_private.previousSelfName, selfName)
     )
-    helios_private.previousSelfName = selfName
 
-    -- no matter what, the current driver is done
-    helios_private.clearState()
-    helios_impl.installDriver(helios_private.createDriver(), "")
+    helios_private.previousSelfName = selfName
+    helios_impl.moduleName = nil
 
     -- load module when present
-    -- load driver when no module present
-    -- load driver also when told to do so by Helios later
     selfName = helios_impl.loadModule("CaptZeenModule1");
     if (helios_impl.moduleName == nil) then
-        -- try driver or give up
+        -- load driver or install fallback driver
         selfName = helios_impl.loadDriver("HeliosDriver16");
     end
 
@@ -591,7 +617,7 @@ local helios_modules_udp = {
 local helios_modules_util = {
 }
 
--- creates a wrapper around a Helios Module to make it act as a Helios Driver
+-- creates a wrapper around a Capt Zeen Module to make it act as a Helios Driver
 function helios_impl.createModuleDriver(selfName, moduleName)
     local driver = helios_private.createDriver()
     driver.moduleName = moduleName
@@ -615,7 +641,7 @@ function helios_impl.createModuleDriver(selfName, moduleName)
         result = _G[moduleName] -- luacheck: no global
     end
 
-    -- check result for nil, since driver may not have returned anything
+    -- check result for nil, since module may not have returned anything
     if success and result == nil then
         success = false
         result = string.format("module %s did not create module object %s; incompatible with this export script",
@@ -668,6 +694,7 @@ function helios_impl.createModuleDriver(selfName, moduleName)
     return driver
 end
 
+-- REVISIT: this will all be replaced by a sandbox
 helios_modules_udp.Send = helios.send -- same signature
 helios_modules_udp.Flush = helios_private.flush -- same signature
 helios_modules_udp.ResetChangeValues = helios_private.resetCachedValues -- same signature
