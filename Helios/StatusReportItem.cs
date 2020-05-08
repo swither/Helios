@@ -88,6 +88,14 @@ namespace GadrocsWorkshop.Helios
         public string Recommendation { get; set; }
 
         /// <summary>
+        /// in the event that the status message was shortened or cleaned up, this 
+        /// property will have the original full text, which is not safe for UI display
+        /// and should only be used for logging or sharing purposes
+        /// </summary>
+        [JsonProperty("FullText", NullValueHandling = NullValueHandling.Ignore)]
+        public string FullText { get; set; }
+        
+        /// <summary>
         /// If this is not null and a consumer of this data has the capability of generating
         /// references or links, this value should be parsed and presented as a link to the
         /// specified entities. 

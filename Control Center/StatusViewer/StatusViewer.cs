@@ -241,9 +241,11 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                 }
             }
             string recommendation = null;
+            string fullText = null;
             if (trimmedMessage.Length < message.Length)
             {
                 recommendation = "Log message was shortened.  See application log for details.";
+                fullText = message;
             }
             if (eventInfo.Exception != null)
             {
@@ -254,7 +256,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                 TimeStamp = eventInfo.TimeStamp.ToString("MM/dd/yyyy hh:mm:ss.fff tt"),
                 Severity = code,
                 Status = trimmedMessage,
-                Recommendation = recommendation
+                Recommendation = recommendation,
+                FullText = fullText
             };
             AddItem(item);
         }
