@@ -13,14 +13,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Windows.Controls;
-
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     using GadrocsWorkshop.Helios;
     using GadrocsWorkshop.Helios.Windows;
     using GadrocsWorkshop.Helios.Windows.Controls;
-    using System.Windows;
 
     /// <summary>
     /// This interface editor allows generation of a DCS Monitor Setup by presenting a view of installed monitors
@@ -29,13 +26,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     /// </summary>
     public partial class MonitorSetupEditor : HeliosInterfaceEditor
     {
-        private readonly InstallationDialogs _installationDialogs;
         private MonitorSetupViewModel _model;
 
         public MonitorSetupEditor()
         {
             InitializeComponent();
-            _installationDialogs = new InstallationDialogs(this);
         }
 
         /// <summary>
@@ -64,25 +59,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             DataContext = null;
         }
 
-#region Commands
-        private void Configure_Click(object sender, RoutedEventArgs e)
-        {
-            _model?.Data.Install(_installationDialogs);
-        }
-
-        private void Remove_Click(object sender, RoutedEventArgs e)
-        {
-            // XXX revert patches where applicable
-        }
-
         public override void Closed()
         {
             Dispose();
             base.Closed();
         }
-
-#endregion
-
-
     }
 }

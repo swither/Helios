@@ -136,6 +136,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private string _currentProfileName;
 
+        /// <summary>
+        /// backing field for property GenerateCombined, contains
+        /// true if this profile uses the combined monitor setup file
+        /// </summary>
+        private bool _generateCombined = true;
+
         #endregion
 
         public MonitorSetup()
@@ -176,13 +182,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // register for changes
             Profile.Monitors.CollectionChanged += Monitors_CollectionChanged;
             Profile.PropertyChanged += Profile_PropertyChanged;
-
-            // see if we need to start over if too much has changed
-            CheckMonitorSettings();
-
-            // read initial state and register for all changes,
-            // must run on main thread because dependency objects are created
-            // when loaded from a saved profile, this is called on the loader thread
         }
 
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
@@ -268,15 +267,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ScheduleGeometryChange();
         }
 
-
         private void Profile_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case "Name":
+                case nameof(Profile.Name):
+                    // WARNING: Path is changed before Name is set, so don't do this update on the change of "Path"
                     CurrentProfileName = string.IsNullOrWhiteSpace(Profile.Path) ? null : Profile.Name;
                     break;
-                case "Path":
+                case nameof(Profile.Path):
                     InvalidateStatusReport();
                     break;
             }
@@ -494,17 +493,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// changes to our windows monitors will abandon settings for monitors that have
         /// changed locations or have been removed.
         /// </summary>
-        /// <returns>true if any settings were deleted</returns>
-        private bool CheckMonitorSettings()
+        private void CheckMonitorSettings()
         {
             if (!Profile.IsValidMonitorLayout)
             {
                 // hasn't been reset yet, these monitors aren't the ones will will use
-                return true;
+                return;
             }
-
-            // clean up settings for monitors that are not existing any more or are phantoms from unreset profiles
-            bool changesMade = false;
 
             // get the list of real monitors and all their serialized settings names
             HashSet<string> displayKeys = new HashSet<string>();
@@ -513,22 +508,47 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 displayKeys.UnionWith(ShadowMonitor.GetAllKeys(monitor));
             }
 
-            // get the list of configured monitors in the settings file
-            ISettingsManager2 settingsManager2 = ConfigManager.SettingsManager as ISettingsManager2;
-            List<string> stableKeys = settingsManager2.EnumerateSettingNames(SETTINGS_GROUP).ToList();
-
-            // compare
-            foreach (string key in stableKeys)
+            if (!(ConfigManager.SettingsManager is ISettingsManager2 settings))
             {
-                if (!displayKeys.Contains(key))
-                {
-                    ConfigManager.LogManager.LogDebug($"removed setting '{key}' that does not refer to a real monitor");
-                    settingsManager2.DeleteSetting(SETTINGS_GROUP, key);
-                    changesMade = true;
-                }
+                return;
             }
 
-            return changesMade;
+            // get the list of configured monitors in the settings file
+            List<string> stableKeys = settings.EnumerateSettingNames(SETTINGS_GROUP).ToList();
+
+            // clean up settings for monitors that are not existing any more or are phantoms from unreset profiles
+            foreach (string key in stableKeys.Where(key => !displayKeys.Contains(key)))
+            {
+                ConfigManager.LogManager.LogDebug($"removed setting '{key}' that does not refer to a real monitor");
+                settings.DeleteSetting(SETTINGS_GROUP, key);
+            }
+        }
+
+        /// <summary>
+        /// Calculate a key/hash that identifies a set of monitors and their assignment to
+        /// Main and UI views.  Any change to the monitor setup that is not an extra viewport
+        /// will change this value.
+        /// </summary>
+        private string CalculateMonitorLayoutKey()
+        {
+            if (!Profile.IsValidMonitorLayout)
+            {
+                return null;
+            }
+
+            IEnumerable<string> keys = Monitors
+                .OrderBy(m => m.Monitor.Left)
+                .ThenBy(m => m.Monitor.Top)
+                .Select(CalculateMonitorKey);
+
+            return string.Join(", ", keys);
+        }
+
+        private static string CalculateMonitorKey(ShadowMonitor shadow)
+        {
+            string main = shadow.Main ? " MAIN" : "";
+            string ui = shadow.UserInterface ? " UI" : "";
+            return $"{shadow.Monitor.Left} {shadow.Monitor.Top} {shadow.Monitor.Width} {shadow.Monitor.Height}{main}{ui}";
         }
 
         private void UpdateAllGeometry()
@@ -538,15 +558,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             AutoSelectUserInterfaceView();
             UpdateGlobalOffset();
             UpdateResolution();
+            MonitorLayoutKey = CalculateMonitorLayoutKey();
         }
 
         #region Properties
-
-        /// <summary>
-        /// backing field for property GenerateCombined, contains
-        /// true if this profile uses the combined monitor setup file
-        /// </summary>
-        private bool _generateCombined = true;
 
         /// <summary>
         /// true if this profile uses the combined monitor setup file
@@ -591,7 +606,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-
         /// <summary>
         /// the name of the combined monitor setup that needs to be selected in DCS
         /// </summary>
@@ -621,6 +635,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 OnPropertyChanged("CurrentProfileName", oldValue, value, true);
             }
         }
+
+        internal string MonitorLayoutKey { get; private set; }
 
         #endregion
 

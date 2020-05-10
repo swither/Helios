@@ -5,6 +5,7 @@
         Unknown,
         OK,
         NotGenerated,
-        Conflict
+        Conflict,
+        OutOfDate
     }
 }

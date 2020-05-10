@@ -28,11 +28,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 })
                 {
                 Status = ViewportSetupFileStatus.NotGenerated,
-                ProblemShortDescription = "has no current monitor setup data",
+                ProblemShortDescription = "has no current viewport data",
                 ProblemNarrative =  $"DCS Monitor Setup has to be configured in profile 'F-A3_not_generated_profile' before it can be combined"
 
-        }
-    };
+                }
+            };
             Excluded = new ObservableCollection<ViewportSetupFileViewModel>()
             {
                 new ViewportSetupFileViewModel("A-B1_separate_profile", new ViewportSetupFile

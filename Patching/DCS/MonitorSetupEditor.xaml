@@ -472,7 +472,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">Monitor setup files need to be reconfigured.</TextBlock>
-                        <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Style="{StaticResource InterfaceEditorButton}">Configure</Button>
+                        <Button Grid.Row="0" Grid.Column="1" Command="{Binding ConfigureCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource InterfaceEditorButton}">Configure</Button>
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource ResetMonitorsRequiredStyle}">
                         <Grid.ColumnDefinitions>

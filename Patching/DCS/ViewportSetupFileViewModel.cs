@@ -86,6 +86,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             // copy the viewports data without replacing the Data object
             Data.Clear();
+            Data.MonitorLayoutKey = localViewports.MonitorLayoutKey;
             IList<StatusReportItem> _ = Data.Merge(ProfileName, localViewports).ToList();
         }
     }

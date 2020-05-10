@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
@@ -18,6 +19,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private readonly Dictionary<ShadowVisual, ViewportViewModel> _viewports =
             new Dictionary<ShadowVisual, ViewportViewModel>();
+
+        /// <summary>
+        /// backing field for property ConfigureCommand, contains
+        /// command handlers for "configure monitor setups"
+        /// </summary>
+        private ICommand _configureCommand;
 
         internal MonitorSetupViewModel(MonitorSetup data) : base(data)
         {
@@ -277,7 +284,134 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Status = newStatus;
         }
 
+        private void Configure(object parameter)
+        {
+            // need a host in the visual tree for our dialog boxes, so it is passed as the parameter
+            // REVISIT: use our modal dialog command and an implementation of IInstallationCallbacks with
+            // a custom dialog instead (this should be a general replacement for InstallationDialogs(...)
+            InstallationDialogs installationDialogs = new InstallationDialogs((DependencyObject)parameter);
+
+            // gather information about warnings and get consent to install anyway, if applicable
+            List<StatusReportItem> items = new List<StatusReportItem>();
+            List<string> lines = new List<string>();
+            int fill = 0;
+            foreach (ViewportSetupFileViewModel model in CombinedMonitorSetup.Combined)
+            {
+                items.AddRange(GatherWarnings(model)
+                    .Where(i => i.Severity >= StatusReportItem.SeverityCode.Warning));
+            }
+
+            if (items.Count > fill)
+            {
+                // need a header
+                lines.Add("Problems will exist in the combined Monitor Setup 'Helios':");
+                lines.Add("");
+                lines.AddRange(items
+                    .Select(i => i.Status));
+                fill = items.Count;
+            }
+
+            if (!Data.GenerateCombined)
+            {
+                items.AddRange(GatherWarnings(CombinedMonitorSetup.CurrentViewportSetup)
+                    .Where(i => i.Severity >= StatusReportItem.SeverityCode.Warning));
+            }
+
+            if (items.Count > fill)
+            {
+                // need a header
+                if (fill > 0)
+                {
+                    lines.Add("");
+                }
+                lines.Add("Problems will exist in the separate Monitor Setup for the current profile:");
+                lines.Add("");
+                lines.AddRange(items
+                    .Skip(fill)
+                    .Select(i => i.Status));
+                fill = items.Count;
+            }
+
+            if (fill > 0)
+            {
+                lines.Add("");
+                lines.Add("You can generate the Monitor Setup anyway and just use it with those limitations.");
+                if (items.Any(i => !i.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate)))
+                {
+                    lines.Add("");
+                    lines.Add("The Monitor Setup will work but it will be considered out of date until you resolve these problems, so Profile Editor will continue to prompt you to generate it again.");
+                }
+
+                // present
+                InstallationPromptResult result = installationDialogs.DangerPrompt("Incomplete Monitor Setup",
+                    string.Join("\n", lines),
+                    items);
+                if (result == InstallationPromptResult.Cancel)
+                {
+                    // don't do it
+                    return;
+                }
+            }
+            // install
+            Data.Install(installationDialogs);
+        }
+
+        private IEnumerable<StatusReportItem> GatherWarnings(ViewportSetupFileViewModel model)
+        {
+            switch (model.Status)
+            {
+                case ViewportSetupFileStatus.OK:
+                    break;
+                case ViewportSetupFileStatus.Unknown:
+                case ViewportSetupFileStatus.NotGenerated:
+                    yield return new StatusReportItem
+                    {
+                        Status =
+                            $"Viewport information for profile '{model.ProfileName}' will not be included because it is not available.",
+                        Severity = StatusReportItem.SeverityCode.Warning
+                    };
+                    break;
+                case ViewportSetupFileStatus.Conflict:
+                    yield return new StatusReportItem
+                    {
+                        Status =
+                            $"At least one viewports for profile '{model.ProfileName}' conflicts with other viewports in the combined monitor setup:",
+                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    };
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{model.ProblemNarrative}.",
+                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    };
+                    break;
+                case ViewportSetupFileStatus.OutOfDate:
+                    yield return new StatusReportItem
+                    {
+                        Status =
+                            $"Viewports for profile '{model.ProfileName}' may be in the wrong location because the saved information is out of date.",
+                        Severity = StatusReportItem.SeverityCode.Warning
+                    };
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         #region Properties
+
+        /// <summary>
+        /// command handlers for "configure monitor setups"
+        /// </summary>
+        public ICommand ConfigureCommand
+        {
+            get
+            {
+                _configureCommand = _configureCommand ?? new RelayCommand(Configure);
+                return _configureCommand;
+            }
+        }
 
         public StatusCodes Status
         {

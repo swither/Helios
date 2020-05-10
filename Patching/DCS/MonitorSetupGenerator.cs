@@ -252,7 +252,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             List<string> lines = new List<string>
             {
                 // NOTE: why do we need to run this string through a local function?  does this create a ref somehow or prevent string interning?
-                "_  = function(p) return p; end;",
+                "_  = function(p) return p end",
                 $"name = _('{template.MonitorSetupName}')",
                 $"description = 'Generated from {template.SourcesList}'"
             };
@@ -277,7 +277,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private IEnumerable<StatusReportItem> UpdateLocalViewports(MonitorSetupTemplate template)
         {
-            _localViewports = new ViewportSetupFile();
+            _localViewports = new ViewportSetupFile
+            {
+                MonitorLayoutKey = _parent.MonitorLayoutKey
+            };
             foreach (ShadowVisual shadow in _parent.Viewports)
             {
                 Rect rect = MonitorSetup.VisualToRect(shadow.Visual);
@@ -292,16 +295,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 yield return new StatusReportItem
                 {
-                    Status = "The monitor setup data for this profile does not exist",
+                    Status = "The viewport data for this profile does not exist",
                     Recommendation = $"Configure {_parent.Name}"
                 };
             }
-            else if (!saved.Viewports.OrderBy(e => e.Key).SequenceEqual(_localViewports.Viewports.OrderBy(e => e.Key)))
+            else if (saved.MonitorLayoutKey != _localViewports.MonitorLayoutKey
+                     || !saved.Viewports.OrderBy(e => e.Key)
+                         .SequenceEqual(_localViewports.Viewports.OrderBy(e => e.Key)))
             {
-                // the viewport rectangles in order must be equal
+                // monitor layout key and the viewport rectangles in order must be equal
                 yield return new StatusReportItem
                 {
-                    Status = "The monitor setup data for this profile is out of date",
+                    Status = "The viewport data for this profile is out of date",
                     Recommendation = $"Configure {_parent.Name}"
                 };
             }
@@ -320,11 +325,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
             else
             {
-                _allViewports = new ViewportSetupFile();
+                _allViewports = new ViewportSetupFile
+                {
+                    MonitorLayoutKey = _parent.MonitorLayoutKey
+                };
                 foreach (string name in _parent.Combined.CalculateCombinedSetupNames())
                 {
                     if (name == template.ProfileName)
                     {
+                        // this is the current profile so we take the data from where we generate it instead
+                        // of from a file
                         foreach (StatusReportItem item in _allViewports.Merge(name, _localViewports))
                         {
                             yield return item;
@@ -339,10 +349,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         yield return new StatusReportItem
                         {
                             Status =
-                                $"Could not include the viewports for Helios profile '{name}' because not generated monitor setup data was found",
+                                $"Could not include the viewports for Helios profile '{name}' because no generated viewport data was found",
                             Recommendation =
                                 $"Configure DCS Monitor Setup for Helios profile '{name}', then configure DCS Monitor Setup for current Helios profile",
-                            Severity = StatusReportItem.SeverityCode.Error,
+                            Severity = StatusReportItem.SeverityCode.Warning,
                             Link = StatusReportItem.ProfileEditor
                         };
                         continue;
@@ -491,11 +501,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         "UI should have disabled monitor setup without a profile name; implementation error");
                 }
 
-                MonitorSetupTemplate sharedTemplate = CreateSharedTemplate();
+                // create template for combined monitor setup
+                MonitorSetupTemplate combinedTemplate = CreateCombinedTemplate();
 
                 // gather all the results into a list to enumerate the yield returns
                 List<StatusReportItem> results =
-                    new List<StatusReportItem>(EnumerateMonitorSetupFiles(InstallFile, sharedTemplate));
+                    new List<StatusReportItem>(EnumerateMonitorSetupFiles(InstallFile, combinedTemplate));
                 if (!_parent.GenerateCombined)
                 {
                     // add the same tests for separate monitor setup
@@ -517,7 +528,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     // REVISIT we should have simulated first to gather warnings and errors so we can show a danger prompt
                 }
 
-                _parent.Combined.Save(sharedTemplate.ProfileName, _localViewports);
+                _parent.Combined.Save(combinedTemplate.ProfileName, _localViewports);
 
                 callbacks.Success(
                     "Monitor setup generation successful",
@@ -617,7 +628,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // calculate shared monitor config
             // and see if it is up to date in all locations
-            MonitorSetupTemplate combinedTemplate = CreateSharedTemplate();
+            MonitorSetupTemplate combinedTemplate = CreateCombinedTemplate();
             string monitorSetupName = combinedTemplate.MonitorSetupName;
             foreach (StatusReportItem item in UpdateMonitorSetupVerbose(combinedTemplate))
             {
@@ -696,7 +707,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        private MonitorSetupTemplate CreateSharedTemplate() =>
+        private MonitorSetupTemplate CreateCombinedTemplate() =>
             new MonitorSetupTemplate(
                 _parent.CombinedMonitorSetupName,
                 _parent.CurrentProfileName,

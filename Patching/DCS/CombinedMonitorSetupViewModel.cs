@@ -19,67 +19,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private ICommand _combineCommand;
 
         /// <summary>
-        /// command handlers for "add monitor setup to combined monitor setup"
-        /// </summary>
-        public ICommand CombineCommand
-        {
-            get
-            {
-                _combineCommand = _combineCommand ?? new RelayCommand(
-                    parameter => { Combine((ViewportSetupFileViewModel) parameter); },
-                    parameter =>
-                        parameter != null && ((ViewportSetupFileViewModel) parameter).Status !=
-                        ViewportSetupFileStatus.NotGenerated);
-                return _combineCommand;
-            }
-        }
-
-        /// <summary>
         /// backing field for property ExcludeCommand, contains
         /// command handlers for "remove monitor setup from set of combined monitor setups"
         /// </summary>
         private ICommand _excludeCommand;
 
         /// <summary>
-        /// command handlers for "remove monitor setup from set of combined monitor setups"
-        /// </summary>
-        public ICommand ExcludeCommand
-        {
-            get
-            {
-                _excludeCommand = _excludeCommand ?? new RelayCommand(parameter =>
-                {
-                    Exclude((ViewportSetupFileViewModel) parameter);
-                });
-                return _excludeCommand;
-            }
-        }
-
-        /// <summary>
         /// backing field for property DeleteCommand, contains
         /// command handlers for "delete generated monitor setup file"
         /// </summary>
         private ICommand _deleteCommand;
-
-        /// <summary>
-        /// reference to the only set of viewports we update right now
-        /// </summary>
-        private ViewportSetupFileViewModel _currentViewportSetup;
-
-        /// <summary>
-        /// command handlers for "delete generated monitor setup file"
-        /// </summary>
-        public ICommand DeleteCommand
-        {
-            get
-            {
-                _deleteCommand = _deleteCommand ?? new RelayCommand(
-                    parameter => { Delete((ViewportSetupFileViewModel) parameter); },
-                    parameter => parameter != null && !((ViewportSetupFileViewModel) parameter).IsCurrentProfile
-                );
-                return _deleteCommand;
-            }
-        }
 
         public CombinedMonitorSetupViewModel(MonitorSetup data) : base(data)
         {
@@ -94,7 +43,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     // the current profile must not have missing data, because we will calculate viewports and we need
                     // a data object to hold them
-                    setupFile = new ViewportSetupFile();
+                    setupFile = new ViewportSetupFile
+                    {
+                        MonitorLayoutKey = "uninitialized"
+                    };
                 }
 
                 ViewportSetupFileViewModel model = new ViewportSetupFileViewModel(name, setupFile);
@@ -141,14 +93,20 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return;
             }
 
-            _currentViewportSetup.SetData(e.LocalViewports);
+            CurrentViewportSetup.SetData(e.LocalViewports);
 
             // recalculate every status, in case of new or resolved conflicts
+            CalculateStatus();
+        }
+
+        private void CalculateStatus()
+        {
             // XXX this is n-squared times log-n, where n = total viewports in the system
             foreach (ViewportSetupFileViewModel loaded in Combined)
             {
                 CalculateStatus(loaded);
             }
+
             foreach (ViewportSetupFileViewModel loaded in Excluded)
             {
                 CalculateStatus(loaded);
@@ -171,7 +129,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private void HandleProfileNameChange()
         {
-            string oldName = _currentViewportSetup.ProfileName;
+            string oldName = CurrentViewportSetup.ProfileName;
             string newName = Data.CurrentProfileName;
             Debug.Assert(oldName != newName);
 
@@ -212,29 +170,29 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void ResetCurrentMonitorSetupSelection()
         {
-            if (_currentViewportSetup.ProfileName == null)
+            if (CurrentViewportSetup.ProfileName == null)
             {
                 // special entry for unsaved profile, just remove it
-                if (Combined.Contains(_currentViewportSetup))
+                if (Combined.Contains(CurrentViewportSetup))
                 {
-                    Combined.Remove(_currentViewportSetup);
+                    Combined.Remove(CurrentViewportSetup);
                 }
-                else if (Excluded.Contains(_currentViewportSetup))
+                else if (Excluded.Contains(CurrentViewportSetup))
                 {
-                    Excluded.Remove(_currentViewportSetup);
+                    Excluded.Remove(CurrentViewportSetup);
                 }
             }
             else
             {
                 // keep it, but this is no longer the special entry for current
-                _currentViewportSetup.IsCurrentProfile = false;
+                CurrentViewportSetup.IsCurrentProfile = false;
             }
         }
 
         private void ConfigureCurrentProfile(ViewportSetupFileViewModel model)
         {
             model.IsCurrentProfile = true;
-            _currentViewportSetup = model;
+            CurrentViewportSetup = model;
 
             // now fix up inconsistencies
             if (Data.Combined.IsCombined(model.ProfileName) == Data.GenerateCombined)
@@ -256,10 +214,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             // the current profile must not have missing data, because we will calculate viewports and we need
             // a data object to hold them
-            ViewportSetupFile data = Data.Combined.Load(Data.CurrentProfileName) ?? new ViewportSetupFile();
+            ViewportSetupFile data = Data.Combined.Load(Data.CurrentProfileName) ?? new ViewportSetupFile
+            {
+                MonitorLayoutKey = "uninitialized"
+            };
 
             // create new item
-            _currentViewportSetup =
+            CurrentViewportSetup =
                 new ViewportSetupFileViewModel(Data.CurrentProfileName, data)
                 {
                     IsCurrentProfile = true
@@ -267,12 +228,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             if (Data.GenerateCombined)
             {
                 Data.Combined.SetCombined(Data.CurrentProfileName);
-                AddCombined(_currentViewportSetup);
+                AddCombined(CurrentViewportSetup);
             }
             else
             {
                 Data.Combined.SetExcluded(Data.CurrentProfileName);
-                AddExcluded(_currentViewportSetup);
+                AddExcluded(CurrentViewportSetup);
             }
         }
 
@@ -286,10 +247,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             if (model.Data == null)
             {
+                // the local profile may not have data yet, but that is ok.  for any merged profiles, we need the data
                 if (!model.IsCurrentProfile)
                 {
                     model.Status = ViewportSetupFileStatus.NotGenerated;
-                    model.ProblemShortDescription = "does not have current Monitor Setup data";
+                    model.ProblemShortDescription = "does not have current viewport data";
                     model.ProblemNarrative =
                         $"DCS Monitor Setup has to be configured in profile '{model.ProfileName}' before it can be combined";
                     return;
@@ -297,6 +259,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
             else
             {
+                // check compatibility
+                if (model.Data.MonitorLayoutKey != Data.MonitorLayoutKey)
+                {
+                    model.Status = ViewportSetupFileStatus.OutOfDate;
+                    model.ProblemShortDescription = "stored viewport data does not match monitor layout";
+                    model.ProblemNarrative =
+                        $"DCS Monitor Setup should be configured in profile '{model.ProfileName}' to adjust to the current monitor layout";
+                    return;
+                }
+
                 // search for conflicts
                 foreach (KeyValuePair<string, Rect> viewport in model.Data.Viewports)
                 {
@@ -336,7 +308,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             Excluded.Remove(model);
             Data.Combined.SetCombined(model.ProfileName);
-            if (model == _currentViewportSetup)
+            if (model == CurrentViewportSetup)
             {
                 using (new HeliosUndoBatch())
                 {
@@ -353,7 +325,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             Combined.Remove(model);
             Data.Combined.SetExcluded(model.ProfileName);
-            if (model == _currentViewportSetup)
+            if (model == CurrentViewportSetup)
             {
                 using (new HeliosUndoBatch())
                 {
@@ -376,14 +348,19 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void AddExcluded(ViewportSetupFileViewModel model)
         {
             Excluded.Add(model);
-            CalculateStatus(model);
+            CalculateStatus();
         }
 
         private void AddCombined(ViewportSetupFileViewModel model)
         {
             Combined.Add(model);
-            CalculateStatus(model);
+            CalculateStatus();
         }
+
+        /// <summary>
+        /// reference to the only set of viewports we update right now
+        /// </summary>
+        internal ViewportSetupFileViewModel CurrentViewportSetup { get; private set; }
 
         public ObservableCollection<ViewportSetupFileViewModel> Combined
         {
@@ -404,6 +381,52 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static readonly DependencyProperty ExcludedProperty =
             DependencyProperty.Register("Excluded", typeof(ObservableCollection<ViewportSetupFileViewModel>),
                 typeof(MonitorSetupViewModel), new PropertyMetadata(null));
+
+        /// <summary>
+        /// command handlers for "add monitor setup to combined monitor setup"
+        /// </summary>
+        public ICommand CombineCommand
+        {
+            get
+            {
+                _combineCommand = _combineCommand ?? new RelayCommand(
+                    parameter => { Combine((ViewportSetupFileViewModel)parameter); },
+                    parameter =>
+                        parameter != null && ((ViewportSetupFileViewModel)parameter).Status !=
+                        ViewportSetupFileStatus.NotGenerated);
+                return _combineCommand;
+            }
+        }
+
+        /// <summary>
+        /// command handlers for "remove monitor setup from set of combined monitor setups"
+        /// </summary>
+        public ICommand ExcludeCommand
+        {
+            get
+            {
+                _excludeCommand = _excludeCommand ?? new RelayCommand(parameter =>
+                {
+                    Exclude((ViewportSetupFileViewModel)parameter);
+                });
+                return _excludeCommand;
+            }
+        }
+
+        /// <summary>
+        /// command handlers for "delete generated monitor setup file"
+        /// </summary>
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                _deleteCommand = _deleteCommand ?? new RelayCommand(
+                    parameter => { Delete((ViewportSetupFileViewModel)parameter); },
+                    parameter => parameter != null && !((ViewportSetupFileViewModel)parameter).IsCurrentProfile
+                );
+                return _deleteCommand;
+            }
+        }
 
         private class UndoExclude : IUndoItem
         {

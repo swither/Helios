@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.RightsManagement;
 using System.Windows;
 using Newtonsoft.Json;
 
@@ -12,11 +13,31 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     /// </summary>
     public class ViewportSetupFile : NotificationObject
     {
+        /// <summary>
+        /// This string uniquely identifies the monitor layout that was active when these
+        /// viewports were generated.  Using these viewports with a different monitor layout
+        /// may result in invalid configurations.
+        /// </summary>
+        [JsonProperty("MonitorLayoutKey")]
+        public string MonitorLayoutKey { get; internal set; }
+
         [JsonProperty("Viewports")] 
         public Dictionary<string, Rect> Viewports { get; } = new Dictionary<string, Rect>();
 
         internal IEnumerable<StatusReportItem> Merge(string name, ViewportSetupFile from)
         {
+            if (MonitorLayoutKey != from.MonitorLayoutKey)
+            {
+                yield return new StatusReportItem
+                {
+                    Status = $"The saved viewport information from profile '{name}' does not match the current monitor layout",
+                    Recommendation =
+                        $"Configure DCS Monitor Setup for profile '{name}' to update the merged viewport data",
+                    Severity = StatusReportItem.SeverityCode.Warning,
+                    Link = StatusReportItem.ProfileEditor,
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
             foreach (KeyValuePair<string, Rect> viewport in from.Viewports)
             {
                 if (!Viewports.TryGetValue(viewport.Key, out Rect existingRect))
