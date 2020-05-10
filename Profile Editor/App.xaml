@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor"
              xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
              xmlns:heliosUtil="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
+             xmlns:windows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <SolidColorBrush x:Key="WindowBackground" Color="#f5f5f5" />
@@ -11,6 +12,14 @@
         <SolidColorBrush x:Key="StatusBarBackground" Color="#FFF4F7FC" />
         <SolidColorBrush x:Key="GrayText" Color="#FF808080" />
         <SolidColorBrush x:Key="EmptySpaceBetweenWhiteItems" Color="#FFA6A6A6"/>
+
+        <!-- keep windows ScrollViewer from eating scrolling interaction when it doesn't need to scroll and
+             let ancestors scroll instead -->
+        <Style TargetType="{x:Type ScrollViewer}">
+            <Style.Setters>
+                <Setter Property="windows:ScrollViewerHelper.FixScrolling" Value="True" />
+            </Style.Setters>
+        </Style>
 
         <Style x:Key="TextBlockBase" TargetType="TextBlock">
         </Style>

@@ -508,6 +508,7 @@
     <Compile Include="Windows\HeliosViewModel.cs" />
     <Compile Include="Windows\InstallationDialogs.cs" />
     <Compile Include="Windows\RelayCommand.cs" />
+    <Compile Include="Windows\ScrollViewerHelper.cs" />
     <Compile Include="Windows\SharedCommands.cs" />
     <Compile Include="Windows\ShowModalParameter.cs" />
     <Compile Include="Windows\ViewModelCollection.cs" />

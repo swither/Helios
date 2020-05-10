@@ -97,7 +97,7 @@
                 </Grid>
             </Border>
         </DataTemplate>
-        <Style x:Key="ScrollViewerStyle" TargetType="ScrollViewer">
+        <Style x:Key="ScrollViewerStyle" TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ScrollViewer}}">
             <Setter Property="Padding" Value="0,0,0,9" />
             <Setter Property="Margin" Value="0,6,0,12" />
             <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
