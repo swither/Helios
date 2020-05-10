@@ -793,6 +793,10 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             Logger.Debug("UDP interface {Interface} starting.", Name);
             Socket serverSocket = null;
+
+            // hook for descendants to initialize for a profile start before we receive traffic
+            OnProfileStarted();
+
             try
             {
                 _main.Client = new IPEndPoint(IPAddress.Any, 0);
@@ -810,9 +814,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             timer.AutoReset = false; // only once
             timer.Elapsed += OnStartupTimer;
             _main.StartupTimer = timer;
-
-            // hook for descendants
-            OnProfileStarted();
 
             // start delayed start timer
             Logger.Debug("Starting startup timer.");
