@@ -298,7 +298,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void AlertMessage_ValueReceived(object sender, NetworkTriggerValue.Value e)
         {
-            Logger.Error("Error received from Export.lua: {AlertMessage}", e.Text);
+            string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text));
+            Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
         }
 
         public override void Reset()

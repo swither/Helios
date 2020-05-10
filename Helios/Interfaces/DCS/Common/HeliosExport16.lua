@@ -249,9 +249,11 @@ end
 function helios_impl.init()
     log.write("HELIOS.EXPORT", log.DEBUG, "loading")
 
-    -- load socket library
-    log.write("HELIOS.EXPORT", log.DEBUG, "loading luasocket")
+    -- load lusocket libraries
+    log.write("HELIOS.EXPORT", log.DEBUG, "loading luasocket socket library")
     helios_private.socketLibrary = require("socket")
+    log.write("HELIOS.EXPORT", log.DEBUG, "loading luasocket mime library")
+    helios_private.mimeLibrary = require("mime")
 
     -- Simulation id
     log.write("HELIOS.EXPORT", log.DEBUG, "setting simulation ID")
@@ -414,8 +416,7 @@ function helios_impl.loadModule(driverType)
     end
     local modulePath = string.format("%sScripts\\Helios\\Mods\\%s.lua", lfs.writedir(), moduleName)
     if (lfs.attributes(modulePath) ~= nil) then
-        -- use export-everything module for this aircraft
-        -- NOTE: this makes us compatible with Capt Zeen profiles
+        -- create wrapper around module to give it a driver interface
         local driver = helios_impl.createModuleDriver(currentSelfName, moduleName)
         if driver ~= nil then
             helios_impl.installDriver(driver, driverType)
@@ -620,7 +621,7 @@ function helios_private.sendAlert(message)
     if helios_private.clock >= helios_private.state.nextAlert then
         helios_private.state.nextAlert = helios_private.clock + helios_impl.alertInterval
         log.write('HELIOS EXPORT', log.DEBUG, string.format("sending error alert message at event time %f", helios_private.clock))
-        helios_private.doSend("ALERT_MESSAGE", message)
+        helios_private.doSend("ALERT_MESSAGE", (helios_private.mimeLibrary.b64(message)))
         helios_private.flush()
     end
 end
@@ -690,9 +691,9 @@ function helios_impl.createModuleDriver(selfName, moduleName)
     end
 
     if not success then
-        log.write('HELIOS EXPORT', log.DEBUG, string.format("could not create module driver '%s' for '%s'", moduleName, selfName))
-        log.write('HELIOS EXPORT', log.DEBUG, result)
-        helios_private.sendAlert(result)
+        log.write('HELIOS EXPORT', log.INFO, string.format("could not create module driver '%s' for '%s'", moduleName, selfName))
+        log.write('HELIOS EXPORT', log.INFO, result)
+        helios_private.sendAlert(string.format("failed to load module '%s': %s", moduleName, result))
         return nil
     end
 
