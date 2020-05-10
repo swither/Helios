@@ -22,29 +22,47 @@ namespace GadrocsWorkshop.Helios.Util
 {
     internal class OnceLogger
     {
-        private Logger logger;
-        private static HashSet<string> IdsLogged = new HashSet<string>();
+        private readonly Logger _logger;
+        private readonly HashSet<string> _idsLogged = new HashSet<string>();
 
         public OnceLogger(Logger logger)
         {
-            this.logger = logger;
+            this._logger = logger;
         }
 
         internal void InfoOnceUnlessDebugging(string loggingId, string message, params object[] args)
         {
-            if (logger.IsDebugEnabled)
+            if (_logger.IsDebugEnabled)
             {
                 // log always in debug
-                logger.Info(message, args);
+                _logger.Info(message, args);
                 return;
             }
 
-            if (IdsLogged.Add(loggingId))
+            if (_idsLogged.Add(loggingId))
             {
                 // log once if logging at info
-                List<object> modifiedArgs = new List<object> { "This event is logged only once" };
+                List<object> modifiedArgs = new List<object> { "InfoOnce" };
                 modifiedArgs.AddRange(args);
-                logger.Info($"{{Once}} {message}", modifiedArgs.ToArray());
+                _logger.Info($"{{Once}} {message}", modifiedArgs.ToArray());
+            }
+        }
+
+        internal void WarnOnceUnlessDebugging(string loggingId, string message, params object[] args)
+        {
+            if (_logger.IsDebugEnabled)
+            {
+                // log always in debug
+                _logger.Warn(message, args);
+                return;
+            }
+
+            if (_idsLogged.Add(loggingId))
+            {
+                // log once if logging at info
+                List<object> modifiedArgs = new List<object> { "WarnOnce" };
+                modifiedArgs.AddRange(args);
+                _logger.Warn($"{{Once}} {message}", modifiedArgs.ToArray());
             }
         }
     }

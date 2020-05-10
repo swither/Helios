@@ -94,6 +94,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             activeDriver.ValueReceived += ActiveDriver_ValueReceived;
             AddFunction(new NetworkTrigger(this, "ALIVE", "Heartbeat",
                 "Received periodically if there is no other data received"));
+            NetworkTriggerValue alertMessage = new NetworkTriggerValue(this, "ALERT_MESSAGE", "AlertMessage",
+                "Export driver running on DCS.", "Most recent alert message");
+            AddFunction(alertMessage);
+            alertMessage.ValueReceived += AlertMessage_ValueReceived; ;
         }
 
         #region Events
@@ -290,6 +294,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private void ActiveVehicle_ValueReceived(object sender, NetworkTriggerValue.Value e)
         {
             ProfileHintReceived?.Invoke(this, new ProfileHint {Tag = e.Text});
+        }
+
+        private void AlertMessage_ValueReceived(object sender, NetworkTriggerValue.Value e)
+        {
+            Logger.Error("Error received from Export.lua: {AlertMessage}", e.Text);
         }
 
         public override void Reset()

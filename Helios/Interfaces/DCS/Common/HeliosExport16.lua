@@ -47,6 +47,11 @@ helios_impl.fastAnnounceInterval = 0.1
 -- NOTE: this parameter has no configuration UI
 helios_impl.fastAnnounceDuration = 1.0
 
+-- minimum seconds between alert messages
+-- if additional errors occur within this interval after an alert has been sent,
+-- then the error is logged but no alert is sent
+helios_impl.alertInterval = 5.0
+
 -- Module names are different from internal self names, so this table translates them
 -- without instantiating every module.  Planes must be entered into this table to be
 -- able to use modules from the Scripts\Mods directory.
@@ -96,6 +101,8 @@ function helios_impl.LuaExportStop()
 end
 
 function helios_impl.LuaExportActivityNextEvent(timeNow)
+    log.write("HELIOS.EXPORT", log.DEBUG, string.format("next event at %f", timeNow))
+
     helios_private.clock = timeNow
     local nextEvent = timeNow + helios_impl.exportInterval
 
@@ -381,6 +388,7 @@ function helios_impl.loadDriver(driverType)
             string.format("failed to load driver '%s' for '%s'; disabling interface", driverType, currentSelfName)
         )
         log.write("HELIOS.EXPORT", log.WARNING, result)
+        helios_private.sendAlert(result)
     end
 
     -- actually install the driver
@@ -468,6 +476,9 @@ function helios_private.clearState()
 
     -- event time of last message sent
     helios_private.state.lastSend = 0
+
+    -- future event time when we are allowed to send an alert if an error occurs
+    helios_private.state.nextAlert = 0
 
     -- Frame counter for non important data
     helios_private.state.tickCount = 0
@@ -604,6 +615,16 @@ function helios_private.processExports()
     end
 end
 
+--- send a failure message to Helios, if allowed by rate control
+function helios_private.sendAlert(message)
+    if helios_private.clock >= helios_private.state.nextAlert then
+        helios_private.state.nextAlert = helios_private.clock + helios_impl.alertInterval
+        log.write('HELIOS EXPORT', log.DEBUG, string.format("sending error alert message at event time %f", helios_private.clock))
+        helios_private.doSend("ALERT_MESSAGE", message)
+        helios_private.flush()
+    end
+end
+
 -- ========================= MODULE COMPATIBILITY LAYER ==========================
 -- These functions make this script compatible with Capt Zeen Helios modules.
 -- Simply place the modules in the Scripts/Helios/Mods folder and make sure they
@@ -671,6 +692,7 @@ function helios_impl.createModuleDriver(selfName, moduleName)
     if not success then
         log.write('HELIOS EXPORT', log.DEBUG, string.format("could not create module driver '%s' for '%s'", moduleName, selfName))
         log.write('HELIOS EXPORT', log.DEBUG, result)
+        helios_private.sendAlert(result)
         return nil
     end
 
@@ -781,12 +803,20 @@ function helios_private.chainHook(functionName)
             log.write("HELIOS.EXPORT", log.ERROR, string.format("error return from Helios implementation of '%s'", functionName))
             if type(result) == "string" then
                 log.write("HELIOS.EXPORT", log.ERROR, result)
+                helios_private.sendAlert(functionName..result)
             end
         end
-        -- chain to next if it isn't our safety stub left over from reload
+        -- chain to next export script, if any
         local nextHandler = helios_private.previousHooks[functionName]
         if nextHandler ~= nil then
-            nextHandler()
+            success, result = pcall(nextHandler)
+            if not success then
+                log.write("HELIOS.EXPORT", log.ERROR, string.format("error return from chained third-party implementation of '%s'", functionName))
+                if type(result) == "string" then
+                    log.write("HELIOS.EXPORT", log.ERROR, result)
+                    helios_private.sendAlert("thirdparty "..functionName..result)
+                end
+            end
         end
     end
 end
@@ -806,19 +836,27 @@ function LuaExportActivityNextEvent(timeNow)
     if success then
         timeNext = result
     else
-        log.write("HELIOS.EXPORT", log.ERROR, string.format("error return from Helios implementation of 'LuaExportActivityNextEvent'"))
+        log.write("HELIOS.EXPORT", log.ERROR, "error return from Helios implementation of 'LuaExportActivityNextEvent'")
         if type(result) == "string" then
             log.write("HELIOS.EXPORT", log.ERROR, result)
+            helios_private.sendAlert("LuaExportActivityNextEvent "..result)
         end
     end
 
-    -- chain to next and keep closest event time that requires wake up
-    -- chain only if it isn't our safety stub left over from reload
+    -- chain to next export script, if any, and keep closest event time that requires wake up
     local nextHandler = helios_private.previousHooks.LuaExportActivityNextEvent
     if nextHandler ~= nil then
-        local timeOther = nextHandler(timeNow)
-        if timeOther < timeNext then
-            timeNext = timeOther
+        success, result = pcall(nextHandler, timeNow)
+        if not success then
+            log.write("HELIOS.EXPORT", log.ERROR, "error return from chained third-party implementation of 'LuaExportActivityNextEvent'")
+            if type(result) == "string" then
+                log.write("HELIOS.EXPORT", log.ERROR, result)
+                helios_private.sendAlert("thirdparty LuaExportActivityNextEvent "..result)
+            end
+        else
+            if result < timeNext then
+                timeNext = result
+            end
         end
     end
     return timeNext
