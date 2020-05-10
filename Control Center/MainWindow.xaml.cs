@@ -91,10 +91,15 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
             else
             {
-                // add the list of contributors to the console instead
+                // add the list of authors and contributors to the console instead
                 StatusViewer.AddItem(new StatusReportItem {
-                    Status = $"Contributors: {string.Join(", ", About.Authors.Union(About.Contributors))}",
+                    Status = $"Authors: {string.Join(", ", About.Authors)}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate });
+                StatusViewer.AddItem(new StatusReportItem
+                {
+                    Status = $"Contributors: {string.Join(", ", About.Contributors)}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
             }
 
             if (Preferences.StartMinimized)

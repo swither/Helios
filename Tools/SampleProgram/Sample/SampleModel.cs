@@ -4,9 +4,10 @@ namespace net.derammo.Helios.SampleProgram.Sample
 {
     /// <summary>
     /// Helios notification object supports IPropertyNotification and automatically creates undo
-    /// items for any property changes
+    /// items for any property changes if it is in the tree of Helios objects that are part of
+    /// the profile.
     /// </summary>
-    public class SampleModel : NotificationObject
+    public partial class SampleModel : NotificationObject
     {
         #region Private
 
@@ -29,6 +30,11 @@ namespace net.derammo.Helios.SampleProgram.Sample
         private object _someOtherThing = new object();
 
         #endregion
+
+        public SampleModel()
+        {
+            // no code
+        }
 
         #region Properties
 

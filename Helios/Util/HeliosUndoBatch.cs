@@ -6,12 +6,12 @@ namespace GadrocsWorkshop.Helios.Util
     {
         public HeliosUndoBatch()
         {
-            ConfigManager.UndoManager.StartBatch();
+            ConfigManager.UndoManager?.StartBatch();
         }
 
         public void Dispose()
         {
-            ConfigManager.UndoManager.CloseBatch();
+            ConfigManager.UndoManager?.CloseBatch();
         }
     }
 }

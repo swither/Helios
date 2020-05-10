@@ -3,6 +3,7 @@ using System.IO;
 
 namespace GoogleDiff
 {
+    // XXX port to command line and allow diff between any files or stdin or git previous commit
     class GoogleDiff
     {
         /// <summary>

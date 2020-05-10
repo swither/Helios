@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
+
 namespace GadrocsWorkshop.Helios.Splash
 {
     using System;
@@ -25,7 +27,28 @@ namespace GadrocsWorkshop.Helios.Splash
     public partial class About : Window
     {
         public static readonly string[] Authors = { "Gadroc", "BlueFinBima", "derammo" };
-        public static readonly string[] Contributors = { "CaptZeen", "KiwiLostInMelb", "Phar71", "damien022", "Will Hartsell", "Cylution", "Rachmaninoff", "yzfanimal", "WillianG83", "wheelchock", "BeamRider", "Jabbers" };
+
+        // these will be listed alphabetically from now on
+        public static string[] Contributors =>
+            ContributorsArray.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase).ToArray();
+
+        // raw contributor list, currently in order but does not need to be
+        private static readonly string[] ContributorsArray = 
+        {
+            "BeamRider",
+            "CaptZeen",
+            "Cylution",
+            "damien022",
+            "Jabbers",
+            "KiwiLostInMelb",
+            "Phar71",
+            "Rachmaninoff",
+            "wheelchock",
+            "Will Hartsell",
+            "WillianG83",
+            "yzfanimal",
+            "ZoeESummers"
+        };
 
         public About()
         {
@@ -37,7 +60,8 @@ namespace GadrocsWorkshop.Helios.Splash
             Version runningVersion = VersionChecker.RunningVersion;
             VersionBlock.Text = runningVersion.Major.ToString() + "." + runningVersion.Minor.ToString() + "." + runningVersion.Build.ToString() + "." + runningVersion.Revision.ToString("0000");
             ContributionBlock.Text = string.Join("; ", Authors);
-            ContributionBlock.Text = ContributionBlock.Text + "; " + string.Join("; ", Contributors);
+            ContributionBlock.Text = ContributionBlock.Text + "; " + string.Join("; ", 
+                Contributors);
             StatusBlock.Text = RunningVersion.IsDevelopmentPrototype ? "Development Prototype" : "Released";
             base.OnActivated(e);
         }

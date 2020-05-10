@@ -12,12 +12,12 @@ using ToolsCommon;
 
 namespace EditViewports
 {
-    class EditViewports
+    internal class EditViewports
     {
-        private static Regex _viewportHandling = new Regex("dofile.*ViewportHandling.lua", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private static Regex _tryFindAssignedViewport = new Regex("try_find_assigned_viewport\\(\"([^\"]*)\"(?:, *\"(.*)\")?\\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex ViewportHandling = new Regex("dofile.*ViewportHandling.lua", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex TryFindAssignedViewport = new Regex("try_find_assigned_viewport\\(\"([^\"]*)\"(?:, *\"(.*)\")?\\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             string jsonPath;
             if (args.Length < 1)
@@ -33,6 +33,10 @@ namespace EditViewports
 
             // get DCS location from the Helios utility that manages DCS install locations (have to use Profile Editor to configure it, either running dev build or start with --documents HeliosDev)
             string documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HeliosDev");
+            if (!Directory.Exists(documentPath))
+            {
+                documentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Helios");
+            }
             HeliosInit.Initialize(documentPath, "EditViewports.log", LogLevel.Debug);
 
             InstallationLocations locations = InstallationLocations.Singleton;
@@ -100,7 +104,7 @@ namespace EditViewports
         private static string EditCode(ViewportTemplate template, Viewport viewport, string source)
         {
             string patched = source;
-            if (!_viewportHandling.IsMatch(source))
+            if (!ViewportHandling.IsMatch(source))
             {
                 Debug.WriteLine($"adding viewport handling to '{viewport.RelativeInitFilePath}'");
                 EnsureCrLf(ref patched);
@@ -109,7 +113,7 @@ namespace EditViewports
 
             // XXX this is wrong.  if there are multiple viewports defined in the same file, we need to 
             // XXX use original viewport name to disambiguate and edit each separately
-            Match assigned = _tryFindAssignedViewport.Match(source);
+            Match assigned = TryFindAssignedViewport.Match(source);
             if (!assigned.Success)
             {
                 Debug.WriteLine($"adding viewport selection to '{viewport.RelativeInitFilePath}'");
@@ -119,17 +123,7 @@ namespace EditViewports
             else
             {
                 Debug.WriteLine($"changing viewport selection in '{viewport.RelativeInitFilePath}'");
-                string abstractName;
-                if (assigned.Groups[2].Success)
-                {
-                    // use existing abstract name
-                    abstractName = assigned.Groups[2].Value;
-                }
-                else
-                {
-                    // use existing exact name as abstract name
-                    abstractName = assigned.Groups[1].Value;
-                }
+                string abstractName = assigned.Groups[assigned.Groups[2].Success ? 2 : 1].Value;
                 patched = patched.Replace(assigned.Groups[0].Value, $"try_find_assigned_viewport(\"{template.ViewportPrefix}_{viewport.ViewportName}\", \"{abstractName}\")");
             }
 
