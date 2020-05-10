@@ -508,7 +508,9 @@
     <Compile Include="Windows\HeliosViewModel.cs" />
     <Compile Include="Windows\InstallationDialogs.cs" />
     <Compile Include="Windows\RelayCommand.cs" />
+    <Compile Include="Windows\SharedCommands.cs" />
     <Compile Include="Windows\ShowModalParameter.cs" />
+    <Compile Include="Windows\ViewModelCollection.cs" />
     <Compile Include="Windows\ViewModel\InterfaceStatusViewItem.cs" />
     <Compile Include="Windows\ViewModel\InterfaceStatusViewSection.cs" />
     <Compile Include="Windows\ViewModel\InterfaceStatusViewModel.cs" />
@@ -516,7 +518,6 @@
     <Compile Include="Windows\ViewModel\MockInterfaceStatusView.cs" />
     <Compile Include="Windows\ViewModel\Share.cs" />
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
-    <Compile Include="Windows\ViewModel\ViewModelCollection.cs" />
     <None Include="Images\A-10\readme.md" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />

@@ -47,3 +47,4 @@ attribution_*.txt
 /Lua/DCS/Scripts/Helios/HeliosExport16.lua
 /Lua/runExportLua.ps1
 /publish.cmd
+/MonitorSetup.code-workspace

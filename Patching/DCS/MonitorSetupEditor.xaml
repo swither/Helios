@@ -4,8 +4,17 @@
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
                                  xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
                                  xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
-                                 xmlns:profileEditor="http://Helios.local/ProfileEditor"
-                                 x:Name="MonitorSetupWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
+                                 xmlns:dcs="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
+                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                 xmlns:windows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
+                                 mc:Ignorable="d"
+                                 d:DesignHeight="1200" d:DesignWidth="800"
+                                 d:DataContext="{d:DesignInstance Type=dcs:MonitorSetupViewModel, IsDesignTimeCreatable=False}"
+                                 x:Name="MonitorSetupWindow" 
+                                 Height="Auto" Width="Auto" 
+                                 Background="{StaticResource ToolBackground}" 
+                                 Padding="5">
     <FrameworkElement.Resources>
         <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
             <Setter Property="UIElement.Visibility" Value="Collapsed"/>
@@ -29,19 +38,6 @@
                     </MultiDataTrigger.Conditions>
                     <MultiDataTrigger.Setters>
                         <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="MonitorSetupAllowedStyle" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="UIElement.Visibility" Value="Visible"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.ResetMonitorsRequired}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Collapsed"/>
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
             </Style.Triggers>
@@ -114,6 +110,33 @@
         <Style x:Key="BasicGroup" TargetType="{x:Type Control}">
             <Setter Property="Margin" Value="0,0,0,12"/>
         </Style>
+        <Style x:Key="MonitorLayoutGroup" TargetType="{x:Type Control}" BasedOn="{StaticResource BasicGroup}">
+            <Setter Property="UIElement.Visibility" Value="Visible"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.ResetMonitorsRequired}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="HideIfNotSavedStyle" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="Visibility" Value="Visible"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.ProfileSaveRequired}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+        
         <Style TargetType="{x:Type CheckBox}" x:Key="AircraftCheckbox">
             <Setter Property="Template">
                 <Setter.Value>
@@ -254,148 +277,173 @@
     </FrameworkElement.Resources>
     <StackPanel>
         <heliosDcs:InstallationLocationsGroup/>
-        <GroupBox Header="DCS Monitor Setup" Style="{StaticResource BasicGroup}">
+        <GroupBox Header="Monitor Layout" Style="{StaticResource MonitorLayoutGroup}">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="120"/>
+                    <!-- primary labels -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- primary controls and long messages-->
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="In-Game View"/>
+                <ScrollViewer Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <!-- monitors -->
+                        <ItemsControl HorizontalAlignment="Left" 
+                                      ItemsSource="{Binding Monitors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}"/>
+                                    <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}"/>
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
+                                        <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="SkyBlue" Style="{StaticResource IsMainStyle}"/>
+                                        <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
+                                        <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" IsChecked="{Binding Path=Data.Main}" IsEnabled="{Binding CanBeRemovedFromMain}" Style="{StaticResource AircraftCheckbox}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                            <!-- viewports -->
+                        <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Viewports}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas IsHitTestVisible="False" Opacity="0.2" Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}"/>
+                                    <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}"/>
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Red" Fill="Red"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- DCS resolution -->
+                        <Canvas>
+                            <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0" Width="{Binding ScaledResolutionWidth}" Height="{Binding ScaledResolutionHeight}" Style="{StaticResource ResolutionFrame}"/>
+                        </Canvas>
+
+                        <!-- DCS main view -->
+                        <Canvas Panel.ZIndex="-1">
+                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledMain.Left}" Canvas.Top="{Binding Path=ScaledMain.Top}" Width="{Binding Path=ScaledMain.Width}" Height="{Binding Path=ScaledMain.Height}" Stroke="SkyBlue">
+                                <Rectangle.Fill>
+                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                        <VisualBrush.Visual>
+                                            <Grid Background="Transparent">
+                                                <Path Data="M 0 0 L 10 10" Stroke="SkyBlue"/>
+                                            </Grid>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+                    </Grid>
+                </ScrollViewer>
+                <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Menus / Loading"/>
+
+                <ScrollViewer Grid.Row="3" Grid.Column="1" HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <!-- monitors2 -->
+                        <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}"/>
+                                    <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}"/>
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
+                                        <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="LightGray" Style="{StaticResource IsUserInterfaceStyle}"/>
+                                        <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
+                                        <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Path=Data.UserInterface}" IsEnabled="{Binding CanBeRemovedFromUserInterface}" Style="{StaticResource UserInterfaceCheckbox}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- DCS resolution -->
+                        <Canvas>
+                            <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0" Width="{Binding ScaledResolutionWidth}" Height="{Binding ScaledResolutionHeight}"
+                                       Style="{StaticResource ResolutionFrame}" />
+                        </Canvas>
+
+                        <!-- DCS UI view -->
+                        <Canvas Panel.ZIndex="-1">
+                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}" Canvas.Top="{Binding Path=ScaledUserInterface.Top}" Width="{Binding Path=ScaledUserInterface.Width}" Height="{Binding Path=ScaledUserInterface.Height}" Stroke="LightGray">
+                                <Rectangle.Fill>
+                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                        <VisualBrush.Visual>
+                                            <Grid Background="Transparent">
+                                                <Path Data="M 0 0 L 10 10" Stroke="LightGray"/>
+                                            </Grid>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+                    </Grid>
+                </ScrollViewer>
+                <Label Grid.Row="5" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Resolution"/>
+                <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Rectangle Margin="0,6,3,0" Height="14" Width="40" VerticalAlignment="Center" Style="{StaticResource ResolutionFrame}"/>
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Padding="3" Content="="/>
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,0,3" Content="{Binding Path=Data.Resolution.X}"/>
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,0,3" Content="x"/>
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,3,3" Content="{Binding Path=Data.Resolution.Y}"/>
+                </StackPanel>
+                <WrapPanel Grid.Row="6" Grid.Column="1" Orientation="Vertical">
+                    <TextBlock Style="{StaticResource Documentation}">Minimum resolution that must be selected in DCS Options.</TextBlock>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If this resolution is not available in DCS, you can choose any larger resolution.</TextBlock>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If you are technical or very brave, you can hack DCS options.lua to add this as a custom resolution.</TextBlock>
+                </WrapPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="DCS Monitor Setup File Output" Style="{StaticResource BasicGroup}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Disabled">
-                <Grid Style="{StaticResource MonitorSetupAllowedStyle}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" MinWidth="120"/>
-                        <!-- primary labels -->
-                        <ColumnDefinition Width="*"/>
-                        <!-- primary controls and long messages-->
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="In-Game View" MinHeight="24"/>
-                    
-                    <!-- monitors -->
-                    <ItemsControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" 
-                                  ItemsSource="{Binding Monitors}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
-                                    <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="SkyBlue" Style="{StaticResource IsMainStyle}"/>
-                                    <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
-                                    <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" IsChecked="{Binding Path=Data.Main}" IsEnabled="{Binding CanBeRemovedFromMain}" Style="{StaticResource AircraftCheckbox}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <!-- viewports -->
-                    <ItemsControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" ItemsSource="{Binding Viewports}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas IsHitTestVisible="False" Opacity="0.2" Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Red" Fill="Red"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <!-- DCS resolution -->
-                    <Canvas Grid.Row="1" Grid.Column="1">
-                        <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0" Width="{Binding ScaledResolutionWidth}" Height="{Binding ScaledResolutionHeight}" Style="{StaticResource ResolutionFrame}"/>
-                    </Canvas>
-
-                    <!-- DCS main view -->
-                    <Canvas Panel.ZIndex="-1"  Grid.Row="1" Grid.Column="1">
-                        <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledMain.Left}" Canvas.Top="{Binding Path=ScaledMain.Top}" Width="{Binding Path=ScaledMain.Width}" Height="{Binding Path=ScaledMain.Height}" Stroke="SkyBlue">
-                            <Rectangle.Fill>
-                                <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
-                                    <VisualBrush.Visual>
-                                        <Grid Background="Transparent">
-                                            <Path Data="M 0 0 L 10 10" Stroke="SkyBlue"/>
-                                        </Grid>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                    </Canvas>
-
-                    <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="Menus / Loading" MinHeight="24"/>
-                    
-                    <!-- monitors2 -->
-                    <ItemsControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
-                                    <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="LightGray" Style="{StaticResource IsUserInterfaceStyle}"/>
-                                    <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
-                                    <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Path=Data.UserInterface}" IsEnabled="{Binding CanBeRemovedFromUserInterface}" Style="{StaticResource UserInterfaceCheckbox}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <!-- DCS resolution -->
-                    <Canvas Grid.Row="3" Grid.Column="1">
-                        <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0" Width="{Binding ScaledResolutionWidth}" Height="{Binding ScaledResolutionHeight}"
-                                   Style="{StaticResource ResolutionFrame}" />
-                    </Canvas>
-
-                    <!-- DCS UI view -->
-                    <Canvas Panel.ZIndex="-1"  Grid.Row="3" Grid.Column="1">
-                        <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}" Canvas.Top="{Binding Path=ScaledUserInterface.Top}" Width="{Binding Path=ScaledUserInterface.Width}" Height="{Binding Path=ScaledUserInterface.Height}" Stroke="LightGray">
-                            <Rectangle.Fill>
-                                <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
-                                    <VisualBrush.Visual>
-                                        <Grid Background="Transparent">
-                                            <Path Data="M 0 0 L 10 10" Stroke="LightGray"/>
-                                        </Grid>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                    </Canvas>
-
-                </Grid>
-                </ScrollViewer>
-                <Grid Grid.Row="1">
+                <WrapPanel Grid.Row="1" Style="{StaticResource HideIfNotSavedStyle}">
+                    <!-- wrapped only to use proper data context for "Status" in style -->
+                    <dcs:CombinedMonitorSetupControl DataContext="{Binding CombinedMonitorSetup}"/>
+                </WrapPanel>
+                <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <!-- primary labels -->
                         <ColumnDefinition Width="Auto" MinWidth="120"/>
@@ -405,37 +453,17 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="10"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Margin="0,10,0,0" Content="Resolution" MinHeight="24"/>
-                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=Data.Resolution.X}"/>
-                        <TextBlock VerticalAlignment="Center" Text="x"/>
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=Data.Resolution.Y}"/>
-                    </StackPanel>
-                    <WrapPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
-                        <TextBlock Style="{StaticResource Documentation}">Minimum resolution that must be selected in DCS Options.</TextBlock>
-                        <!-- Style="{StaticResource MonitorSetupAllowedStyle}"-->
-                        <WrapPanel Orientation="Horizontal" Visibility="Collapsed">
-                            <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}" Text="This resolution is shown in the diagrams above as this rectangle: "/>
-                            <Rectangle Margin="0,6,0,0" Width="40" Height="12" VerticalAlignment="Center" Style="{StaticResource ResolutionFrame}"/>
-                        </WrapPanel>
-                        <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If this resolution is not available in DCS, you can choose any larger resolution.</TextBlock>
-                        <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If you are technical or very brave, you can hack DCS options.lua to add this as a custom resolution.</TextBlock>
-                    </WrapPanel>
-
-                    <Label Grid.Row="4" Grid.Column="0" Content="Status" Style="{StaticResource InterfaceEditorLabel}"/>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
+                    <Label Grid.Row="1" Grid.Column="0" Content="Status" Style="{StaticResource InterfaceEditorLabel}"/>
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Monitor setup files are up to date.</TextBlock>
                     </Grid>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -446,7 +474,7 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">Monitor setup files need to be reconfigured.</TextBlock>
                         <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Style="{StaticResource InterfaceEditorButton}">Configure</Button>
                     </Grid>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource ResetMonitorsRequiredStyle}">
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource ResetMonitorsRequiredStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -455,9 +483,9 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must complete 'Reset Monitors' before configuring monitor setup.</TextBlock>
-                        <Button Grid.Row="0" Grid.Column="1" Command="profileEditor:ProfileEditorCommands.ResetMonitors" Style="{StaticResource InterfaceEditorButton}">Reset Monitors</Button>
+                        <Button Grid.Row="0" Grid.Column="1" Command="windows:SharedCommands.ResetMonitors" Style="{StaticResource InterfaceEditorButton}">Reset Monitors</Button>
                     </Grid>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource ProfileSaveRequiredStyle}">
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource ProfileSaveRequiredStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -468,7 +496,7 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must save the profile at least once before configuring monitor setup.</TextBlock>
                         <Button Grid.Row="0" Grid.Column="1" Command="Save" Style="{StaticResource InterfaceEditorButton}">Save Profile</Button>
                     </Grid>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>

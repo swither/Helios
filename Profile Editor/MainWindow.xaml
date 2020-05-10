@@ -17,7 +17,7 @@
         <CommandBinding Command="ApplicationCommands.Undo" CanExecute="OnCanExecuteUndo" Executed="OnExecuteUndo" />
         <CommandBinding Command="ApplicationCommands.Redo" CanExecute="OnCanExecuteRedo" Executed="OnExecuteRedo" />
         <CommandBinding Command="local:ProfileEditorCommands.AddInterface" Executed="AddInterface_Executed" />
-        <CommandBinding Command="local:ProfileEditorCommands.ResetMonitors" Executed="ResetMonitors_Executed" />
+        <CommandBinding Command="heliosWindows:SharedCommands.ResetMonitors" Executed="ResetMonitors_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.SaveLayout" Executed="SaveLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.LoadLayout" Executed="LoadLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.RestoreDefaultLayout" Executed="RestoreDefaultLayout_Executed" />
@@ -54,7 +54,7 @@
                 <Separator />
                 <MenuItem Header="_Add Interface" Command="local:ProfileEditorCommands.AddInterface" />
                 <Separator />
-                <MenuItem Header="_Reset Monitors" Command="local:ProfileEditorCommands.ResetMonitors">
+                <MenuItem Header="_Reset Monitors" Command="heliosWindows:SharedCommands.ResetMonitors">
                     <MenuItem.ToolTip>Resets this profiles monitor configuration to match the current system configuration.</MenuItem.ToolTip>
                 </MenuItem>
                 <Separator />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
@@ -41,6 +42,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public event EventHandler<ShadowViewportEventArgs> ViewportAdded;
         public event EventHandler<ShadowViewportEventArgs> ViewportRemoved;
 
+        /// <summary>
+        /// fired when new viewport configuration is calculated
+        /// </summary>
+        public event EventHandler<UpdatedViewportsEventArgs> UpdatedViewports;
+
         #endregion
 
         #region Constant
@@ -71,6 +77,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             public Vector GlobalOffset { get; }
         }
 
+        public class UpdatedViewportsEventArgs : EventArgs
+        {
+            public UpdatedViewportsEventArgs(ViewportSetupFile localViewports)
+            {
+                LocalViewports = localViewports;
+            }
+
+            public ViewportSetupFile LocalViewports { get; }
+        }
+
         #endregion
 
         #region Private
@@ -88,7 +104,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private readonly Dictionary<HeliosVisual, ShadowVisual> _viewports =
             new Dictionary<HeliosVisual, ShadowVisual>();
 
-        private MonitorSetupGenerator _config;
+        private MonitorSetupGenerator _renderer;
 
         /// <summary>
         /// timer to delay execution of change in geometry because we sometimes receive thousands of events,
@@ -108,6 +124,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private Vector _resolution;
 
+        /// <summary>
+        /// backing field for property CombinedMonitorSetupName, contains
+        /// the name of the combined monitor setup that needs to be selected in DCS
+        /// </summary>
+        private string _combinedMonitorSetupName = "Helios";
+
+        /// <summary>
+        /// backing field for property CurrentProfileName, contains
+        /// short name of profile currently being edited
+        /// </summary>
+        private string _currentProfileName;
+
         #endregion
 
         public MonitorSetup()
@@ -125,6 +153,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             base.AttachToProfileOnMainThread();
 
             // real initialization, not just a test instantiation
+            Combined.Initialize();
+            CurrentProfileName = string.IsNullOrWhiteSpace(Profile.Path) ? null : Profile.Name;
             _geometryChangeTimer = new DispatcherTimer(
                 TimeSpan.FromMilliseconds(100),
                 DispatcherPriority.Normal,
@@ -133,7 +163,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 IsEnabled = false
             };
-            _config = new MonitorSetupGenerator(this);
+            _renderer = new MonitorSetupGenerator(this);
 
             // recursively walk profile and track every visual
             foreach (Monitor monitor in Profile.Monitors)
@@ -145,6 +175,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // register for changes
             Profile.Monitors.CollectionChanged += Monitors_CollectionChanged;
+            Profile.PropertyChanged += Profile_PropertyChanged;
 
             // see if we need to start over if too much has changed
             CheckMonitorSettings();
@@ -157,7 +188,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
         {
             oldProfile.Monitors.CollectionChanged -= Monitors_CollectionChanged;
+            oldProfile.PropertyChanged -= Profile_PropertyChanged;
+
             base.DetachFromProfileOnMainThread(oldProfile);
+
             _geometryChangeTimer.Stop();
             Clear();
         }
@@ -232,6 +266,20 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // recalculate, delayed
             ScheduleGeometryChange();
+        }
+
+
+        private void Profile_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Name":
+                    CurrentProfileName = string.IsNullOrWhiteSpace(Profile.Path) ? null : Profile.Name;
+                    break;
+                case "Path":
+                    InvalidateStatusReport();
+                    break;
+            }
         }
 
         /// <summary>
@@ -398,12 +446,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public override void ReadXml(XmlReader reader)
         {
-            // nothing in the profile
+            switch (reader.Name)
+            {
+                case "GenerateCombined":
+                    TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
+                    string text = reader.ReadElementString("GenerateCombined");
+                    _generateCombined = (bc.ConvertFromInvariantString(text) as bool?) ?? false;
+                    break;
+            }
         }
 
         public override void WriteXml(XmlWriter writer)
         {
-            // nothing in the profile
+            if (!_generateCombined)
+            {
+                TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
+                writer.WriteElementString("GenerateCombined", bc.ConvertToInvariantString(false));
+            }
         }
 
         /// <summary>
@@ -483,6 +542,32 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         #region Properties
 
+        /// <summary>
+        /// backing field for property GenerateCombined, contains
+        /// true if this profile uses the combined monitor setup file
+        /// </summary>
+        private bool _generateCombined = true;
+
+        /// <summary>
+        /// true if this profile uses the combined monitor setup file
+        /// </summary>
+        public bool GenerateCombined
+        {
+            get => _generateCombined;
+            set
+            {
+                if (_generateCombined == value) return;
+                bool oldValue = _generateCombined;
+                _generateCombined = value;
+                OnPropertyChanged("GenerateCombined", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// functionality supporting combined monitor setups
+        /// </summary>
+        internal CombinedMonitorSetup Combined { get; } = new CombinedMonitorSetup();
+
         internal IEnumerable<ShadowMonitor> Monitors => _monitors.Values;
 
         internal IEnumerable<ShadowVisual> Viewports => _viewports.Values;
@@ -506,6 +591,37 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
+
+        /// <summary>
+        /// the name of the combined monitor setup that needs to be selected in DCS
+        /// </summary>
+        public string CombinedMonitorSetupName
+        {
+            get => _combinedMonitorSetupName;
+            set
+            {
+                if (_combinedMonitorSetupName != null && _combinedMonitorSetupName == value) return;
+                string oldValue = _combinedMonitorSetupName;
+                _combinedMonitorSetupName = value;
+                OnPropertyChanged("CombinedMonitorSetupName", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// short name of profile currently being edited
+        /// </summary>
+        public string CurrentProfileName
+        {
+            get => _currentProfileName;
+            set
+            {
+                if (_currentProfileName != null && _currentProfileName == value) return;
+                string oldValue = _currentProfileName;
+                _currentProfileName = value;
+                OnPropertyChanged("CurrentProfileName", oldValue, value, true);
+            }
+        }
+
         #endregion
 
         #region IExtendedDescription
@@ -521,14 +637,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         #region IInstallation
 
         // all we have right now is the monitor setup file generator
-        public InstallationResult Install(IInstallationCallbacks callbacks) => _config.Install(callbacks);
+        public InstallationResult Install(IInstallationCallbacks callbacks) => _renderer.Install(callbacks);
 
         #endregion
 
         #region IReadyCheck
 
         // all we have right now is the monitor setup file generator
-        public IEnumerable<StatusReportItem> PerformReadyCheck() => _config.PerformReadyCheck();
+        public IEnumerable<StatusReportItem> PerformReadyCheck() => _renderer.PerformReadyCheck();
 
         #endregion
 
@@ -574,7 +690,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             // actually enumerate the report now and store it
-            List<StatusReportItem> newReport = _config.PerformReadyCheck().ToList();
+            List<StatusReportItem> newReport = _renderer.PerformReadyCheck().ToList();
+            
+            // send newly calculated viewports data to any observers (such as combined monitor setup view model)
+            UpdatedViewports?.Invoke(this, new UpdatedViewportsEventArgs(_renderer.LocalViewports));
+
+            // publish report
             PublishStatusReport(newReport);
         }
 

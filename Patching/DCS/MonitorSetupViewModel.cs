@@ -21,13 +21,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         internal MonitorSetupViewModel(MonitorSetup data) : base(data)
         {
-            Data.GeometryChangeDelayed += Data_GeometryChangeDelayed;
-            Data.GlobalOffsetChanged += Data_GlobalOffsetChanged;
-            Data.MonitorAdded += Data_MonitorAdded;
-            Data.MonitorRemoved += Data_MonitorRemoved;
-            Data.ViewportAdded += Data_ViewportAdded;
-            Data.ViewportRemoved += Data_ViewportRemoved;
-
+            CombinedMonitorSetup = new CombinedMonitorSetupViewModel(Data);
             Monitors = new ObservableCollection<MonitorViewModel>();
             Viewports = new ObservableCollection<ViewportViewModel>();
 
@@ -43,7 +37,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             UpdateAllGeometry();
 
-            // register for status changes and get latest report
+            // register for changes and get latest report
+            Data.GeometryChangeDelayed += Data_GeometryChangeDelayed;
+            Data.GlobalOffsetChanged += Data_GlobalOffsetChanged;
+            Data.MonitorAdded += Data_MonitorAdded;
+            Data.MonitorRemoved += Data_MonitorRemoved;
+            Data.ViewportAdded += Data_ViewportAdded;
+            Data.ViewportRemoved += Data_ViewportRemoved;
             Data.Subscribe(this);
             Data.InvalidateStatusReport();
         }
@@ -148,6 +148,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         public void Dispose()
         {
+            CombinedMonitorSetup.Dispose();
             Data.Unsubscribe(this);
             Data.GeometryChangeDelayed -= Data_GeometryChangeDelayed;
             Data.GlobalOffsetChanged -= Data_GlobalOffsetChanged;
@@ -379,6 +380,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             DependencyProperty.Register("Scale", typeof(double), typeof(MonitorSetupViewModel),
                 new PropertyMetadata(0.075, OnScaleChange));
 
+        public CombinedMonitorSetupViewModel CombinedMonitorSetup { get; }
         #endregion
     }
 }

@@ -57,9 +57,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        // XXX eliminate if we dont need an events
         private void Dispose()
         {
+            _model?.Dispose();
             _model = null;
             DataContext = null;
         }

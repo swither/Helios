@@ -18,8 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-// XXX promote to Helios
-namespace GadrocsWorkshop.Helios.Windows.ViewModel
+namespace GadrocsWorkshop.Helios.Windows
 {
     /// <summary>
     /// a collection of view model items created for each element in the
