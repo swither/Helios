@@ -203,7 +203,7 @@
             <ItemsControl Background="{StaticResource EmptySpaceBetweenWhiteItems}"  ItemsSource="{Binding Source={StaticResource sortByInterfaceName}}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="9,9,9,0" Padding="3" CornerRadius="6" BorderThickness="0" Background="White">
+                        <Border Margin="9,9,9,0" Padding="3,3,3,12" CornerRadius="6" BorderThickness="0" Background="White">
                             <Grid Background="White">
                                 <Grid.ColumnDefinitions>
                                     <!-- left controls -->
@@ -220,7 +220,6 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="12"/>
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Green" Content="&#xE930;" Style="{StaticResource SuccessVisible}" ToolTip="{Binding StatusNarrative}"/>
                                 <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}" ToolTip="{Binding StatusNarrative}"/>
@@ -262,7 +261,7 @@
                                         </ItemsControl>
                                     </Expander.Content>
                                 </Expander>
-                                <Button Grid.Row="5" Grid.Column="2" Content="&#xE74D;" Command="heliosViewModel:InterfaceStatusViewModel.DeleteInterfaceCommand" CommandParameter="{Binding Path=Data.Interface}" Template="{StaticResource FontIconButton}" ToolTip="{Binding Path=RemovalNarrative}"/>
+                                <Button Grid.Row="4" Grid.Column="2" VerticalAlignment="Bottom" Content="&#xE74D;" Command="heliosViewModel:InterfaceStatusViewModel.DeleteInterfaceCommand" CommandParameter="{Binding Path=Data.Interface}" Template="{StaticResource FontIconButton}" ToolTip="{Binding Path=RemovalNarrative}"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

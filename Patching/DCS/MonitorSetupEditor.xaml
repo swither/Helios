@@ -146,6 +146,11 @@
                                 ToolTipService.ShowOnDisabled="True">
                             <!-- these paths are from free for commercial use, no attribution required icons -->
                             <Canvas Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Canvas.RenderTransform>
+                                    <ScaleTransform 
+                                        ScaleX="{Binding Path=DataContext.IconScale, ElementName=MonitorSetupWindow}" 
+                                        ScaleY="{Binding Path=DataContext.IconScale, ElementName=MonitorSetupWindow}"/>
+                                </Canvas.RenderTransform>
                                 <Canvas>
                                     <Canvas.RenderTransform>
                                         <MatrixTransform Matrix="0.05 0 0 0.05 -20 -10"/>
@@ -221,7 +226,15 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
                         <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" BorderBrush="Transparent" Background="Transparent" Name="Border" ToolTipService.ShowOnDisabled="True">
-                            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Name="AppIcon" FontFamily="Segoe MDL2 Assets" FontSize="36" FontWeight="UltraBold" Content="&#xE71D;"/>
+                            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Name="AppIcon" FontFamily="Segoe MDL2 Assets" FontSize="36" FontWeight="UltraBold" Content="&#xE71D;">
+                                <Label.RenderTransform>
+                                    <ScaleTransform
+                                        CenterX="14"
+                                        CenterY="14"
+                                        ScaleX="{Binding PresentationTraceSources.TraceLevel=High, Path=DataContext.IconScale, ElementName=MonitorSetupWindow}" 
+                                        ScaleY="{Binding PresentationTraceSources.TraceLevel=High, Path=DataContext.IconScale, ElementName=MonitorSetupWindow}"/>
+                                </Label.RenderTransform>                            
+                            </Label>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
@@ -294,7 +307,10 @@
                     <ColumnDefinition Width="*"/>
                     <!-- primary controls and long messages-->
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="In-Game View"/>
+                <Grid Grid.Row="1" Grid.Column="0">
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Content="In-Game View"/>
+                    <Slider HorizontalAlignment="Right" Margin="6" Orientation="Vertical" Value="{Binding Scale}" Minimum="0.04" Maximum="0.18" LargeChange="0.01" SmallChange="0.005"/>
+                </Grid>
                 <ScrollViewer Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Disabled">
                     <Grid>
                         <!-- monitors -->
@@ -323,7 +339,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                            <!-- viewports -->
+                        <!-- viewports -->
                         <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Viewports}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>

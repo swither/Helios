@@ -14,6 +14,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     internal class MonitorSetupViewModel : HeliosViewModel<MonitorSetup>, IStatusReportObserver
     {
+        private const double DEFAULT_SCALE = 0.075;
+
         private readonly Dictionary<ShadowMonitor, MonitorViewModel> _monitors =
             new Dictionary<ShadowMonitor, MonitorViewModel>();
 
@@ -28,6 +30,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         internal MonitorSetupViewModel(MonitorSetup data) : base(data)
         {
+            Scale = ConfigManager.SettingsManager.LoadSetting("DCSMonitorSetupPreferences", "Scale", DEFAULT_SCALE);
             CombinedMonitorSetup = new CombinedMonitorSetupViewModel(Data);
             Monitors = new ObservableCollection<MonitorViewModel>();
             Viewports = new ObservableCollection<ViewportViewModel>();
@@ -58,6 +61,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private static void OnScaleChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             MonitorSetupViewModel model = (MonitorSetupViewModel)d;
+            if (model.Monitors == null)
+            {
+                // initial setting of scale during load
+                return;
+            }
+
+            ConfigManager.SettingsManager.SaveSetting("DCSMonitorSetupPreferences", "Scale", model.Scale);
+
             foreach (MonitorViewModel monitor in model._monitors.Values)
             {
                 monitor.Update(model.Scale);
@@ -67,6 +78,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 viewport.Update(model.Scale);
             }
+
+            model.UpdateBounds();
         }
 
         private void ProtectLastMonitor(List<MonitorViewModel> monitors, Action<MonitorViewModel, bool> setter)
@@ -252,6 +265,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ScaledTotalHeight = totalBounds.Height;
             ScaledMain = mainBounds;
             ScaledUserInterface = uiBounds;
+            IconScale = (Scale - 0.02) * 0.3 / 0.02;
         }
 
         public void ReceiveStatusReport(string name, string description, IList<StatusReportItem> statusReport)
@@ -512,7 +526,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public static readonly DependencyProperty ScaleProperty =
             DependencyProperty.Register("Scale", typeof(double), typeof(MonitorSetupViewModel),
-                new PropertyMetadata(0.075, OnScaleChange));
+                new PropertyMetadata(DEFAULT_SCALE, OnScaleChange));
+
+        public double IconScale
+        {
+            get => (double)GetValue(IconScaleProperty);
+            set => SetValue(IconScaleProperty, value);
+        }
+
+        public static readonly DependencyProperty IconScaleProperty =
+            DependencyProperty.Register("IconScale", typeof(double), typeof(MonitorSetupViewModel), new PropertyMetadata(1.0));
 
         public CombinedMonitorSetupViewModel CombinedMonitorSetup { get; }
         #endregion
