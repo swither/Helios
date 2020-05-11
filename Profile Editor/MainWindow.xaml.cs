@@ -901,7 +901,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             DataTemplate template = parameter.DataTemplate ?? (DataTemplate)host.TryFindResource(new DataTemplateKey(parameter.Content.GetType()));
 
             // display the dialog appropriate to the content
-            Window generic = new DialogWindow
+            Window generic = new DefaultDialogWindow
             {
                 ContentTemplate = template, 
                 Content = parameter.Content

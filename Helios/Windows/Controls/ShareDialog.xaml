@@ -7,8 +7,11 @@
              xmlns:heliosWindows="clr-namespace:GadrocsWorkshop.Helios.Windows"
              xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel"
              mc:Ignorable="d"
+             local:DialogWindow.DialogInitialWidth="600"
+             local:DialogWindow.DialogMaxHeight="Infinity"
+             local:DialogWindow.DialogMaxWidth="Infinity"
              d:DataContext="{d:DesignInstance d:Type=viewModel:ShareInterfaceStatus}"
-             d:DesignHeight="100" d:DesignWidth="640">
+             d:DesignHeight="300" d:DesignWidth="640">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
@@ -22,7 +25,7 @@
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.RowSpan="7" Background="{StaticResource EmptySpaceBetweenWhiteItems}" HorizontalScrollBarVisibility="Auto">
+    <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.RowSpan="7" Background="{StaticResource EmptySpaceBetweenWhiteItems}" HorizontalScrollBarVisibility="Disabled">
         <Grid Background="White" Margin="6" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

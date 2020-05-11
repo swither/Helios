@@ -488,6 +488,7 @@
     <Compile Include="Util\DCS\MockInstallationLocations.cs" />
     <Compile Include="Util\EnumBooleanConverter.cs" />
     <Compile Include="Util\XamlFirewall.cs" />
+    <Compile Include="Windows\Controls\DialogWindow.cs" />
     <Compile Include="Windows\ExceptionViewer.cs" />
     <Compile Include="Util\HeliosUndoBatch.cs" />
     <Compile Include="Interfaces\Common\InterfaceStatus.cs" />
@@ -495,8 +496,8 @@
     <Compile Include="Windows\Controls\FilePicker.xaml.cs">
       <DependentUpon>FilePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Controls\DialogWindow.xaml.cs">
-      <DependentUpon>DialogWindow.xaml</DependentUpon>
+    <Compile Include="Windows\Controls\DefaultDialogWindow.xaml.cs">
+      <DependentUpon>DefaultDialogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Controls\ImagePicker.xaml.cs">
       <DependentUpon>ImagePicker.xaml</DependentUpon>
@@ -2665,7 +2666,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Controls\DialogWindow.xaml">
+    <Page Include="Windows\Controls\DefaultDialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
