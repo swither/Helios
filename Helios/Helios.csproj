@@ -87,6 +87,11 @@
     <Compile Include="Controls\ViewportExtentRenderer.cs" />
     <Compile Include="Interfaces\Capabilities\IReadyCheck.cs" />
     <Compile Include="Interfaces\Capabilities\IViewportProvider.cs" />
+    <Page Include="Styles\Editor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="Util\DesignTimeEditorResources.cs" />
     <Compile Include="Util\OnceLogger.cs" />
     <Compile Include="HeliosApplication.cs" />
     <Compile Include="IInstallation.cs" />
@@ -488,6 +493,7 @@
     <Compile Include="Util\DCS\MockInstallationLocations.cs" />
     <Compile Include="Util\EnumBooleanConverter.cs" />
     <Compile Include="Util\XamlFirewall.cs" />
+    <Compile Include="Windows\BindingProxy.cs" />
     <Compile Include="Windows\Controls\DialogWindow.cs" />
     <Compile Include="Windows\ExceptionViewer.cs" />
     <Compile Include="Util\HeliosUndoBatch.cs" />

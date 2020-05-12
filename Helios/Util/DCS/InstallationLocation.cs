@@ -17,8 +17,11 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
         internal static IEnumerable<InstallationLocation> ReadSettings()
         {
-            // crash if this system  has a settings manager that does not support this interface
-            ISettingsManager2 settings = (ISettingsManager2) ConfigManager.SettingsManager;
+            // this is called in design mode, so we gracefully deal with lack of settings manager
+            if (!(ConfigManager.SettingsManager is ISettingsManager2 settings))
+            {
+                yield break;
+            }
             foreach (string path in settings.EnumerateSettingNames(SETTINGS_GROUP))
             {
                 InstallationLocation location =

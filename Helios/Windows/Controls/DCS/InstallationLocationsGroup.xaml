@@ -9,22 +9,28 @@
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
     <Grid.Resources>
-        <Style x:Key="InstallerGroupStyle" TargetType="{x:Type Expander}" BasedOn="{StaticResource GroupBoxWithExpanderStyle}">
-            <Setter Property="Margin" Value="0,0,0,12"/>
-        </Style>
-        <Style x:Key="NoLocationsStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status, ElementName=InstallationLocations}" Value="{x:Static util:StatusCodes.NoLocations}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="InstallerGroupStyle" TargetType="{x:Type Expander}" BasedOn="{StaticResource GroupBoxWithExpanderStyle}">
+                <Setter Property="Margin" Value="0,0,0,12"/>
+            </Style>
+            <Style x:Key="NoLocationsStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="UIElement.Visibility" Value="Hidden"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status, ElementName=InstallationLocations}" Value="{x:Static util:StatusCodes.NoLocations}"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
     </Grid.Resources>
     <Expander Style="{StaticResource InstallerGroupStyle}" IsExpanded="{Binding GroupIsExpanded, ElementName=InstallationLocations}"  Header="DCS Installations to Update">
         <Grid>
@@ -40,7 +46,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Content="Locations"/>
-            <local:InstallationLocationsControl x:Name="InstallationLocations" Grid.Row="1" Grid.Column="1"/>
+            <local:InstallationLocationsControl x:Name="InstallationLocations" Grid.Row="1" Grid.Column="1" Background="{StaticResource EmptySpaceBetweenWhiteItems}"/>
             <Grid Grid.Row="2" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -49,8 +55,8 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"  Foreground="Red" Style="{StaticResource NoLocationsStyle}">Add at least one enabled DCS installation location.</TextBlock>
-                <Button Grid.Row="0" Grid.Column="1" Command="local:InstallationLocationsControl.AddInstallationLocationCommand" CommandTarget="{Binding ElementName=InstallationLocations}" Margin="0,0,6,6" Width="120" Height="24">Add Location</Button>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,12,0" VerticalAlignment="Center" TextWrapping="Wrap"  Foreground="Red" Style="{StaticResource NoLocationsStyle}">Add at least one enabled DCS installation location.</TextBlock>
+                <Button Grid.Row="0" Grid.Column="1" Command="local:InstallationLocationsControl.AddInstallationLocationCommand" CommandTarget="{Binding ElementName=InstallationLocations}" Style="{StaticResource InterfaceEditorButton}">Add Location</Button>
             </Grid>
         </Grid>
     </Expander>
