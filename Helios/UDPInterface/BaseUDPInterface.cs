@@ -492,7 +492,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
             do
             {
-                Logger.Debug("UDP interface waiting for socket data on {Inteface}.", Name);
+                Logger.Debug("UDP interface waiting for socket data on {Interface}.", Name);
                 try
                 {
                     ReceiveContext.Message message = context.BeginWrite();
