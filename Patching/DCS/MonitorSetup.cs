@@ -1,18 +1,15 @@
-﻿using System;
+﻿using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
-using GadrocsWorkshop.Helios.ComponentModel;
-using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 
-// XXX missing feature: allow specifying a shared monitor config and merging into it
-// XXX missing feature: support explicit view ports for MAIN and UI
-
+// REVISIT missing feature: support explicit view ports for MAIN and UI
 // REVISIT factor out ShadowModel (IShadowVisualParent) into field?
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
@@ -52,7 +49,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         #region Constant
 
         /// <summary>
-        /// magic names of viewports that indicate that a viewport should be part of the main view rectangle (XXX unimplemented)
+        /// magic names of viewports that indicate that a viewport should be part of the main view rectangle (REVISIT unimplemented)
         /// </summary>
         private static readonly HashSet<string> _mainViewNames =
             new HashSet<string>(StringComparer.CurrentCultureIgnoreCase)
@@ -394,7 +391,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private void AutoSelectMainView()
         {
-            // XXX add support for explicit main and UI view viewports, which will require updates to the editor also
+            // REVISIT add support for explicit main and UI view viewports, which will require updates to the editor also
             if (_monitors.Values.Any(m => m.Main))
             {
                 // got at least one
@@ -417,7 +414,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private void AutoSelectUserInterfaceView()
         {
-            // XXX add support for explicit main and UI view viewports, which will require updates to the editor also
+            // REVISIT add support for explicit main and UI view viewports, which will require updates to the editor also
             if (_monitors.Values.Any(m => m.UserInterface))
             {
                 // got at least one

@@ -101,7 +101,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void CalculateStatus()
         {
-            // XXX this is n-squared times log-n, where n = total viewports in the system
+            // REVISIT PERFORMANCE this is n-squared times log-n, where n = total viewports in the system
             foreach (ViewportSetupFileViewModel loaded in Combined)
             {
                 CalculateStatus(loaded);

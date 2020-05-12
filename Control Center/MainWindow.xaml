@@ -200,10 +200,10 @@
                         <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding SplashScreen}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.Column="2" Visibility="Hidden">
-                        <TextBlock Text="TDB Next" Style="{StaticResource TopLabel}"/>
+                    <StackPanel Grid.Row="1" Grid.Column="2">
+                        <TextBlock Text="HIGH QUALITY BITMAPS" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Style="{StaticResource HeliosSwitchStyle}"/>
+                        <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding HighQualityBitmapScaling}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" BorderThickness="1" CornerRadius="4" Padding="2" Style="{StaticResource BorderInFontColor}">

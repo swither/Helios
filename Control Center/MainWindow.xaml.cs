@@ -329,6 +329,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         // no need for dependency property, this is constant
         public StatusViewer.StatusViewer StatusViewer { get; } = new StatusViewer.StatusViewer();
+
         #endregion
 
         private void Minimize()
@@ -596,7 +597,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     {
                         monitor.SuppressMouseAfterTouchDuration = Preferences.SuppressMouseAfterTouchDuration;
                         ConfigManager.LogManager.LogDebug("Creating window (Monitor=\"" + monitor.Name + "\")" + " with touchscreen mouse event suppression delay set to " + Convert.ToString(monitor.SuppressMouseAfterTouchDuration) + " msec.");
-                        MonitorWindow window = new MonitorWindow(monitor, true);
+                        MonitorWindow window = new MonitorWindow(monitor, Preferences.HighQualityBitmapScaling, true);
                         window.Show();
                         _windows.Add(window);
                     }

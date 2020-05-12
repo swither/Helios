@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Windows
                 message += "\n" + trace.Replace(buildPathMatch.Groups[0].Value, "");
             }
 
-            // XXX try to use a custom dialog that supports selecting text and maybe the file bug action
+            // XXX try to use a custom dialog that supports selecting text and maybe share dialog
 
             System.Windows.MessageBox.Show(
                 $"Unhandled exception occurred.  Please file a bug:\n{message}",
