@@ -558,8 +558,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             } 
             else
             {
-                // XXX need a popup here
                 Logger.Error($"Failed to load profile '{path}'; continuing with previously loaded profile");
+                MessageBox.Show(
+                    "Profile Editor will continuing with the previously loaded profile.  Please inspect the Profile Editor logs and file a bug if appropriate.",
+                    $"Failed to load profile '{path}'",
+                    MessageBoxButton.OK);
             }
 
             RemoveLoadingAdorner();

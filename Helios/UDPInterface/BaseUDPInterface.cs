@@ -300,7 +300,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
 
             // buffers for datagrams received on one context switch
-            // XXX tune size
+            // REVISIT: create an array of counters for sizes actually used, use to tune size under heavy load
             private Message[] _messages = new Message[10];
 
             // number of buffers filled

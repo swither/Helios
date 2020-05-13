@@ -110,11 +110,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             Configuration.Install(new InstallationDialogs(this));
         }
 
-        private void Remove_Click(object sender, RoutedEventArgs e)
-        {
-            // XXX consider removing this _configuration.RestoreConfig();
-        }
-
         #endregion
 
         #region Properties

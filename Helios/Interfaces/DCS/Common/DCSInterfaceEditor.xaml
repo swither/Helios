@@ -269,7 +269,6 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Your DCS configuration is up to date.</TextBlock>
-                    <!-- let's not do this? <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120">Remove DCS Setup</Button> -->
                 </Grid>
                 <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                     <Grid.ColumnDefinitions>

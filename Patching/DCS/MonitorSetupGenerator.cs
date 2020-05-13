@@ -283,10 +283,22 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             };
             foreach (ShadowVisual shadow in _parent.Viewports)
             {
+                string name = shadow.Viewport.ViewportName;
+                if (_localViewports.Viewports.ContainsKey(name))
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"The viewport '{name}' exists more than once in this profile.  Each viewport must have a unique name.",
+                        Recommendation = $"Rename one of the duplicated viewports with name '{name}' in this profile",
+                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    };
+                    continue;
+                }
                 Rect rect = MonitorSetup.VisualToRect(shadow.Visual);
                 rect.Offset(shadow.Monitor.Left, shadow.Monitor.Top);
                 rect.Offset(_parent.GlobalOffset);
-                _localViewports.Viewports.Add(shadow.Viewport.ViewportName, rect);
+                _localViewports.Viewports.Add(name, rect);
             }
 
             // now check against our saved state, which we also have to update
@@ -618,7 +630,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         Recommendation =
                             "Add an Additional Viewports interface or configure the viewport extent not to require patches",
                         Link = StatusReportItem.ProfileEditor,
-                        Severity = StatusReportItem.SeverityCode.Error
+                        Severity = StatusReportItem.SeverityCode.Error,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate 
                     };
                 }
             }

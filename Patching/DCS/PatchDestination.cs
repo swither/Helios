@@ -59,13 +59,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public bool TryLock()
         {
-            // XXX implement
+            // REVISIT what sort of locking can we reasonably do?
             return true;
         }
 
         public bool TryUnlock()
         {
-            // XXX implement
+            // REVISIT what sort of locking can we reasonably do?
             return true;
         }  
 
