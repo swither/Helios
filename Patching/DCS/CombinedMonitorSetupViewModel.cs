@@ -1,6 +1,21 @@
-﻿using System;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -113,7 +128,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void Data_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -149,6 +164,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 AddExcluded(model);
                 return;
             }
+
             model = Excluded.FirstOrDefault(m => m.ProfileName == newName);
             if (model != null)
             {
@@ -164,6 +180,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 AddCombined(model);
                 return;
             }
+
             // not found
             AddCurrentProfile();
         }
@@ -390,9 +407,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             get
             {
                 _combineCommand = _combineCommand ?? new RelayCommand(
-                    parameter => { Combine((ViewportSetupFileViewModel)parameter); },
+                    parameter => { Combine((ViewportSetupFileViewModel) parameter); },
                     parameter =>
-                        parameter != null && ((ViewportSetupFileViewModel)parameter).Status !=
+                        parameter != null && ((ViewportSetupFileViewModel) parameter).Status !=
                         ViewportSetupFileStatus.NotGenerated);
                 return _combineCommand;
             }
@@ -407,7 +424,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 _excludeCommand = _excludeCommand ?? new RelayCommand(parameter =>
                 {
-                    Exclude((ViewportSetupFileViewModel)parameter);
+                    Exclude((ViewportSetupFileViewModel) parameter);
                 });
                 return _excludeCommand;
             }
@@ -421,8 +438,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             get
             {
                 _deleteCommand = _deleteCommand ?? new RelayCommand(
-                    parameter => { Delete((ViewportSetupFileViewModel)parameter); },
-                    parameter => parameter != null && !((ViewportSetupFileViewModel)parameter).IsCurrentProfile
+                    parameter => { Delete((ViewportSetupFileViewModel) parameter); },
+                    parameter =>
+                        parameter != null && !((ViewportSetupFileViewModel) parameter).IsCurrentProfile
                 );
                 return _deleteCommand;
             }
@@ -446,6 +464,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     // parent is disposed
                     return;
                 }
+
                 _parent.Exclude(_model);
             }
 
@@ -456,6 +475,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     // parent is disposed
                     return;
                 }
+
                 _parent.Combine(_model);
             }
         }
@@ -478,6 +498,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     // parent is disposed
                     return;
                 }
+
                 _parent.Combine(_model);
             }
 
@@ -488,6 +509,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     // parent is disposed
                     return;
                 }
+
                 _parent.Exclude(_model);
             }
         }

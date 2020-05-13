@@ -1,5 +1,21 @@
-﻿using System;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace GadrocsWorkshop.Helios.Patching
@@ -11,12 +27,12 @@ namespace GadrocsWorkshop.Helios.Patching
         public static PatchList LoadPatches(IPatchDestination destination, string patchSet)
         {
             // load user-provided patches from documents folder
-            string userPatchesPath = System.IO.Path.Combine(ConfigManager.DocumentPath, "Patches", "DCS");
+            string userPatchesPath = Path.Combine(ConfigManager.DocumentPath, "Patches", "DCS");
             string selectedVersion = null;
             PatchList patches = destination.SelectPatches(userPatchesPath, patchSet, ref selectedVersion);
 
             // load pre-installed patches from Helios installation folder
-            string installedPatchesPath = System.IO.Path.Combine(ConfigManager.ApplicationPath, "Plugins", "Patches", "DCS");
+            string installedPatchesPath = Path.Combine(ConfigManager.ApplicationPath, "Plugins", "Patches", "DCS");
             PatchList patches2 = destination.SelectPatches(installedPatchesPath, patchSet, ref selectedVersion);
 
             // index patches by target path
@@ -27,15 +43,10 @@ namespace GadrocsWorkshop.Helios.Patching
             return patches;
         }
 
-        public IEnumerable<StatusReportItem> SimulateApply(IPatchDestination destination)
-        {
-            return DoApply(destination, Mode.Simulate);
-        }
+        public IEnumerable<StatusReportItem> SimulateApply(IPatchDestination destination) =>
+            DoApply(destination, Mode.Simulate);
 
-        public IEnumerable<StatusReportItem> Apply(IPatchDestination destination)
-        {
-            return DoApply(destination, Mode.Apply);
-        }
+        public IEnumerable<StatusReportItem> Apply(IPatchDestination destination) => DoApply(destination, Mode.Apply);
 
         public IEnumerable<StatusReportItem> Verify(IPatchDestination destination)
         {
@@ -44,18 +55,21 @@ namespace GadrocsWorkshop.Helios.Patching
                 yield return new StatusReportItem
                 {
                     Status = $"cannot acquire lock on {destination.LongDescription} to verify patches",
-                    Recommendation = $"close any programs that are holding a lock on this location",
+                    Recommendation = "close any programs that are holding a lock on this location",
                     Severity = StatusReportItem.SeverityCode.Error
                 };
                 yield break;
             }
+
             foreach (PatchFile patch in _patches)
             {
                 if (!destination.TryGetSource(patch.TargetPath, out string source))
                 {
-                    ConfigManager.LogManager.LogDebug($"{patch.TargetPath} does not exist in {destination.LongDescription}; patch does not apply");
+                    ConfigManager.LogManager.LogDebug(
+                        $"{patch.TargetPath} does not exist in {destination.LongDescription}; patch does not apply");
                     continue;
                 }
+
                 if (patch.IsApplied(source))
                 {
                     yield return new StatusReportItem
@@ -70,28 +84,27 @@ namespace GadrocsWorkshop.Helios.Patching
                     yield return new StatusReportItem
                     {
                         Status = $"{destination.Description} {patch.TargetPath} is missing some patches",
-                        Recommendation = $"Apply patches",
+                        Recommendation = "Apply patches",
                         Link = StatusReportItem.ProfileEditor,
                         Severity = StatusReportItem.SeverityCode.Error
                     };
                 }
             }
+
             if (!destination.TryUnlock())
             {
-                ConfigManager.LogManager.LogError($"cannot release lock on {destination.LongDescription} after verifying patches");
+                ConfigManager.LogManager.LogError(
+                    $"cannot release lock on {destination.LongDescription} after verifying patches");
             }
         }
 
-        internal bool IsEmpty()
-        {
-            return !_patches.Any();
-        }
+        internal bool IsEmpty() => !_patches.Any();
 
         private enum Mode
         {
             Simulate,
             Apply
-        };
+        }
 
         private IEnumerable<StatusReportItem> DoApply(IPatchDestination destination, Mode mode)
         {
@@ -112,16 +125,18 @@ namespace GadrocsWorkshop.Helios.Patching
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
+
             if (!destination.TryLock())
             {
                 yield return new StatusReportItem
                 {
                     Status = $"cannot acquire lock on {destination.LongDescription} to {verb} patches",
-                    Recommendation = $"close any programs that are holding a lock on this location",
+                    Recommendation = "close any programs that are holding a lock on this location",
                     Severity = StatusReportItem.SeverityCode.Error
                 };
                 yield break;
             }
+
             foreach (PatchFile patch in _patches)
             {
                 if (!destination.TryGetSource(patch.TargetPath, out string source))
@@ -150,7 +165,8 @@ namespace GadrocsWorkshop.Helios.Patching
                     yield return new StatusReportItem
                     {
                         Status = $"{destination.Description} {failureStatus}",
-                        Recommendation = "please install a newer Helios distribution or patches with support for this DCS version",
+                        Recommendation =
+                            "please install a newer Helios distribution or patches with support for this DCS version",
                         Severity = StatusReportItem.SeverityCode.Error
                     };
                     destination.TryUnlock();
@@ -188,6 +204,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 // success result
                 yield return status;
             }
+
             if (!destination.TryUnlock())
             {
                 yield return new StatusReportItem
@@ -206,11 +223,12 @@ namespace GadrocsWorkshop.Helios.Patching
                 yield return new StatusReportItem
                 {
                     Status = $"cannot acquire lock on {destination.LongDescription} to revert patches",
-                    Recommendation = $"close any programs that are holding a lock on this location",
+                    Recommendation = "close any programs that are holding a lock on this location",
                     Severity = StatusReportItem.SeverityCode.Error
                 };
                 yield break;
             }
+
             foreach (PatchFile patch in _patches)
             {
                 if (!destination.TryGetSource(patch.TargetPath, out string source))
@@ -253,7 +271,7 @@ namespace GadrocsWorkshop.Helios.Patching
                         Severity = StatusReportItem.SeverityCode.Error
                     };
                 }
-                
+
                 if (!WriteBack(destination, patch, patched, "reverting", out StatusReportItem status))
                 {
                     yield return status;
@@ -269,13 +287,14 @@ namespace GadrocsWorkshop.Helios.Patching
                 yield return new StatusReportItem
                 {
                     Status = $"cannot release lock on {destination.LongDescription} after reverting patches",
-                    Recommendation = $"please restart and try the revert patches process again",
+                    Recommendation = "please restart and try the revert patches process again",
                     Severity = StatusReportItem.SeverityCode.Error
                 };
             }
         }
 
-        private static bool WriteBack(IPatchDestination destination, PatchFile patch, string patched, string verbing, out StatusReportItem status)
+        private static bool WriteBack(IPatchDestination destination, PatchFile patch, string patched, string verbing,
+            out StatusReportItem status)
         {
             if (destination.TryWritePatched(patch.TargetPath, patched))
             {

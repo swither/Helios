@@ -1,4 +1,19 @@
-﻿using System;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -288,13 +303,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"The viewport '{name}' exists more than once in this profile.  Each viewport must have a unique name.",
+                        Status =
+                            $"The viewport '{name}' exists more than once in this profile.  Each viewport must have a unique name.",
                         Recommendation = $"Rename one of the duplicated viewports with name '{name}' in this profile",
                         Severity = StatusReportItem.SeverityCode.Warning,
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     };
                     continue;
                 }
+
                 Rect rect = MonitorSetup.VisualToRect(shadow.Visual);
                 rect.Offset(shadow.Monitor.Left, shadow.Monitor.Top);
                 rect.Offset(_parent.GlobalOffset);
@@ -631,7 +648,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                             "Add an Additional Viewports interface or configure the viewport extent not to require patches",
                         Link = StatusReportItem.ProfileEditor,
                         Severity = StatusReportItem.SeverityCode.Error,
-                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate 
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     };
                 }
             }

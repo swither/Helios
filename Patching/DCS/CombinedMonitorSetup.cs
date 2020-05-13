@@ -1,8 +1,22 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
@@ -31,6 +45,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 Directory.CreateDirectory(folder);
                 return;
             }
+
             foreach (string path in Directory.EnumerateFiles(folder, "*.hvpf.json"))
             {
                 KnownViewportSetupNames.Add(Path.GetFileName(path).Replace(".hvpf.json", ""));
@@ -43,11 +58,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 return null;
             }
+
             string path = LocateFile(viewportSetupName);
             if (!File.Exists(path))
             {
                 return null;
             }
+
             string content = File.ReadAllText(path);
             return JsonConvert.DeserializeObject<ViewportSetupFile>(content);
         }
@@ -65,6 +82,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 return;
             }
+
             string path = LocateFile(viewportSetupName);
             if (File.Exists(path))
             {
@@ -72,10 +90,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        public bool IsCombined(string viewportSetupName)
-        {
-            return null != viewportSetupName && ConfigManager.SettingsManager.LoadSetting(GROUP_NAME, viewportSetupName, false);
-        }
+        public bool IsCombined(string viewportSetupName) => null != viewportSetupName &&
+                                                            ConfigManager.SettingsManager.LoadSetting(GROUP_NAME,
+                                                                viewportSetupName, false);
 
         internal void SetCombined(string viewportSetupName)
         {
@@ -83,6 +100,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 return;
             }
+
             ConfigManager.SettingsManager.SaveSetting(GROUP_NAME, viewportSetupName, true);
         }
 
@@ -92,6 +110,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 return;
             }
+
             if (ConfigManager.SettingsManager is ISettingsManager2 settings)
             {
                 settings.DeleteSetting(GROUP_NAME, viewportSetupName);
@@ -114,6 +133,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 return settings.EnumerateSettingNames(GROUP_NAME);
             }
+
             return new string[0];
         }
     }

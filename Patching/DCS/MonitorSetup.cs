@@ -1,5 +1,18 @@
-﻿using GadrocsWorkshop.Helios.ComponentModel;
-using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -8,6 +21,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 
 // REVISIT missing feature: support explicit view ports for MAIN and UI
 // REVISIT factor out ShadowModel (IShadowVisualParent) into field?
@@ -49,7 +64,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         #region Constant
 
         /// <summary>
-        /// magic names of viewports that indicate that a viewport should be part of the main view rectangle (REVISIT unimplemented)
+        /// magic names of viewports that indicate that a viewport should be part of the main view rectangle (REVISIT
+        /// unimplemented)
         /// </summary>
         private static readonly HashSet<string> _mainViewNames =
             new HashSet<string>(StringComparer.CurrentCultureIgnoreCase)
@@ -264,7 +280,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ScheduleGeometryChange();
         }
 
-        private void Profile_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void Profile_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -447,7 +463,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 case "GenerateCombined":
                     TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
                     string text = reader.ReadElementString("GenerateCombined");
-                    _generateCombined = (bc.ConvertFromInvariantString(text) as bool?) ?? false;
+                    _generateCombined = bc.ConvertFromInvariantString(text) as bool? ?? false;
                     break;
             }
         }
@@ -545,7 +561,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             string main = shadow.Main ? " MAIN" : "";
             string ui = shadow.UserInterface ? " UI" : "";
-            return $"{shadow.Monitor.Left} {shadow.Monitor.Top} {shadow.Monitor.Width} {shadow.Monitor.Height}{main}{ui}";
+            return
+                $"{shadow.Monitor.Left} {shadow.Monitor.Top} {shadow.Monitor.Width} {shadow.Monitor.Height}{main}{ui}";
         }
 
         private void UpdateAllGeometry()
@@ -568,7 +585,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             get => _generateCombined;
             set
             {
-                if (_generateCombined == value) return;
+                if (_generateCombined == value)
+                {
+                    return;
+                }
+
                 bool oldValue = _generateCombined;
                 _generateCombined = value;
                 OnPropertyChanged("GenerateCombined", oldValue, value, true);
@@ -611,7 +632,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             get => _combinedMonitorSetupName;
             set
             {
-                if (_combinedMonitorSetupName != null && _combinedMonitorSetupName == value) return;
+                if (_combinedMonitorSetupName != null && _combinedMonitorSetupName == value)
+                {
+                    return;
+                }
+
                 string oldValue = _combinedMonitorSetupName;
                 _combinedMonitorSetupName = value;
                 OnPropertyChanged("CombinedMonitorSetupName", oldValue, value, true);
@@ -626,7 +651,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             get => _currentProfileName;
             set
             {
-                if (_currentProfileName != null && _currentProfileName == value) return;
+                if (_currentProfileName != null && _currentProfileName == value)
+                {
+                    return;
+                }
+
                 string oldValue = _currentProfileName;
                 _currentProfileName = value;
                 OnPropertyChanged("CurrentProfileName", oldValue, value, true);
@@ -704,7 +733,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // actually enumerate the report now and store it
             List<StatusReportItem> newReport = _renderer.PerformReadyCheck().ToList();
-            
+
             // send newly calculated viewports data to any observers (such as combined monitor setup view model)
             UpdatedViewports?.Invoke(this, new UpdatedViewportsEventArgs(_renderer.LocalViewports));
 

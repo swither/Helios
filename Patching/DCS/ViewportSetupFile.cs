@@ -1,6 +1,19 @@
-﻿using System;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
-using System.Security.RightsManagement;
 using System.Windows;
 using Newtonsoft.Json;
 
@@ -21,8 +34,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         [JsonProperty("MonitorLayoutKey")]
         public string MonitorLayoutKey { get; internal set; }
 
-        [JsonProperty("Viewports")] 
-        public Dictionary<string, Rect> Viewports { get; } = new Dictionary<string, Rect>();
+        [JsonProperty("Viewports")] public Dictionary<string, Rect> Viewports { get; } = new Dictionary<string, Rect>();
 
         internal IEnumerable<StatusReportItem> Merge(string name, ViewportSetupFile from)
         {
@@ -30,7 +42,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 yield return new StatusReportItem
                 {
-                    Status = $"The saved viewport information from profile '{name}' does not match the current monitor layout",
+                    Status =
+                        $"The saved viewport information from profile '{name}' does not match the current monitor layout",
                     Recommendation =
                         $"Configure DCS Monitor Setup for profile '{name}' to update the merged viewport data",
                     Severity = StatusReportItem.SeverityCode.Warning,
@@ -38,6 +51,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
+
             foreach (KeyValuePair<string, Rect> viewport in from.Viewports)
             {
                 if (!Viewports.TryGetValue(viewport.Key, out Rect existingRect))

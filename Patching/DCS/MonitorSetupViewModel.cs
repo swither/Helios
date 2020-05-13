@@ -1,4 +1,19 @@
-﻿using System;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -60,7 +75,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private static void OnScaleChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            MonitorSetupViewModel model = (MonitorSetupViewModel)d;
+            MonitorSetupViewModel model = (MonitorSetupViewModel) d;
             if (model.Monitors == null)
             {
                 // initial setting of scale during load
@@ -303,7 +318,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // need a host in the visual tree for our dialog boxes, so it is passed as the parameter
             // REVISIT: use our modal dialog command and an implementation of IInstallationCallbacks with
             // a custom dialog instead (this should be a general replacement for InstallationDialogs(...)
-            InstallationDialogs installationDialogs = new InstallationDialogs((DependencyObject)parameter);
+            InstallationDialogs installationDialogs = new InstallationDialogs((DependencyObject) parameter);
 
             // gather information about warnings and get consent to install anyway, if applicable
             List<StatusReportItem> items = new List<StatusReportItem>();
@@ -338,6 +353,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     lines.Add("");
                 }
+
                 lines.Add("Problems will exist in the separate Monitor Setup for the current profile:");
                 lines.Add("");
                 lines.AddRange(items
@@ -353,7 +369,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (items.Any(i => !i.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate)))
                 {
                     lines.Add("");
-                    lines.Add("The Monitor Setup will work but it will be considered out of date until you resolve these problems, so Profile Editor will continue to prompt you to generate it again.");
+                    lines.Add(
+                        "The Monitor Setup will work but it will be considered out of date until you resolve these problems, so Profile Editor will continue to prompt you to generate it again.");
                 }
 
                 // present
@@ -366,6 +383,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     return;
                 }
             }
+
             // install
             Data.Install(installationDialogs);
         }
@@ -530,14 +548,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public double IconScale
         {
-            get => (double)GetValue(IconScaleProperty);
+            get => (double) GetValue(IconScaleProperty);
             set => SetValue(IconScaleProperty, value);
         }
 
         public static readonly DependencyProperty IconScaleProperty =
-            DependencyProperty.Register("IconScale", typeof(double), typeof(MonitorSetupViewModel), new PropertyMetadata(1.0));
+            DependencyProperty.Register("IconScale", typeof(double), typeof(MonitorSetupViewModel),
+                new PropertyMetadata(1.0));
 
         public CombinedMonitorSetupViewModel CombinedMonitorSetup { get; }
+
         #endregion
     }
 }
