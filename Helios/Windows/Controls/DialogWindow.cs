@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(node); i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(node, i);
-                if (new [] { DialogMaxWidthProperty, DialogMaxHeightProperty, DialogInitialWidthProperty }.Any(prop => !IsPropertyDefault(child, prop)))
+                if (new [] { DialogMaxWidthProperty, DialogMaxHeightProperty, DialogInitialWidthProperty, DialogInitialHeightProperty }.Any(prop => !IsPropertyDefault(child, prop)))
                 {
                     // has some property set, so process this element only
                     return ConfigureFrom(child);
@@ -75,7 +75,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             // change some stuff after the current measure/arrange/render cycle
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<FrameworkElement>(ConfigureFromChild), child);
 
-            return new Size(GetDialogInitialWidth(child), double.PositiveInfinity);
+            return new Size(GetDialogInitialWidth(child), GetDialogInitialHeight(child));
         }
 
         public static bool IsPropertyDefault(DependencyObject obj, DependencyProperty dp)
@@ -140,5 +140,25 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         public static readonly DependencyProperty DialogMaxHeightProperty =
             DependencyProperty.RegisterAttached("DialogMaxHeight", typeof(double), typeof(DialogWindow), new PropertyMetadata(800.0));
+
+
+        public static double GetDialogInitialHeight(DependencyObject obj)
+        {
+            return (double)obj.GetValue(DialogInitialHeightProperty);
+        }
+
+        /// <summary>
+        /// if set on a control in content displayed in a DialogWindow, then the DialogWindow will lay out to that height initially, but
+        /// not set a fixed width, so resizing is still possible
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="value"></param>
+        public static void SetDialogInitialHeight(DependencyObject obj, double value)
+        {
+            obj.SetValue(DialogInitialHeightProperty, value);
+        }
+
+        public static readonly DependencyProperty DialogInitialHeightProperty =
+            DependencyProperty.RegisterAttached("DialogInitialHeight", typeof(double), typeof(DialogWindow), new PropertyMetadata(800.0));
     }
 }

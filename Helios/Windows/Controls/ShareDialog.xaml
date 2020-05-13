@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
       xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel"
       mc:Ignorable="d"
+             local:DialogWindow.DialogInitialHeight="600"
              local:DialogWindow.DialogInitialWidth="600"
              local:DialogWindow.DialogMaxHeight="Infinity"
              local:DialogWindow.DialogMaxWidth="Infinity"
