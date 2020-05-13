@@ -111,22 +111,47 @@ namespace EditViewports
                 patched += $"dofile(LockOn_Options.common_script_path..\"ViewportHandling.lua\")\r\n";
             }
 
-            // XXX this is wrong.  if there are multiple viewports defined in the same file, we need to 
-            // XXX use original viewport name to disambiguate and edit each separately
-            Match assigned = TryFindAssignedViewport.Match(source);
-            if (!assigned.Success)
+            // if there are multiple viewports defined in the same file, we need to 
+            // use original viewport name to disambiguate and edit each separately
+            MatchCollection matches = TryFindAssignedViewport.Matches(source);
+            Match assigned = null;
+
+            switch (matches.Count)
             {
-                Debug.WriteLine($"adding viewport selection to '{viewport.RelativeInitFilePath}'");
-                EnsureCrLf(ref patched);
-                patched += $"try_find_assigned_viewport(\"{template.ViewportPrefix}_{viewport.ViewportName}\", \"{viewport.ViewportName}\")\r\n";
-            }
-            else
-            {
-                Debug.WriteLine($"changing viewport selection in '{viewport.RelativeInitFilePath}'");
-                string abstractName = assigned.Groups[assigned.Groups[2].Success ? 2 : 1].Value;
-                patched = patched.Replace(assigned.Groups[0].Value, $"try_find_assigned_viewport(\"{template.ViewportPrefix}_{viewport.ViewportName}\", \"{abstractName}\")");
+                case 0:
+                    // nothing found, add new entry to end
+                    Debug.WriteLine($"adding viewport selection to '{viewport.RelativeInitFilePath}'");
+                    EnsureCrLf(ref patched);
+                    patched += $"try_find_assigned_viewport(\"{template.ViewportPrefix}_{viewport.ViewportName}\", \"{viewport.ViewportName}\")\r\n";
+                    return patched;
+                case 1:
+                    // only a single viewport accessed, ignore name mismatch
+                    assigned = matches[0];
+                    break;
+                default:
+                    // ambiguity, match name of viewport or fail
+                    foreach (Match match in matches)
+                    {
+                        string existingName = match.Groups[match.Groups[2].Success ? 2 : 1].Value;
+                        if (!viewport.ViewportName.Equals(existingName))
+                        {
+                            continue;
+                        }
+
+                        // found the matching item we can update
+                        assigned = match;
+                        break;
+                    }
+                    break;
             }
 
+            if (assigned == null)
+            {
+                throw new Exception($"viewport '{viewport.ViewportName}' not found in file '{viewport.RelativeInitFilePath}' accessing multiple viewports; ambiguity cannot be resolved");
+            }
+            Debug.WriteLine($"changing viewport selection in '{viewport.RelativeInitFilePath}'");
+            string abstractName = assigned.Groups[assigned.Groups[2].Success ? 2 : 1].Value;
+            patched = patched.Replace(assigned.Groups[0].Value, $"try_find_assigned_viewport(\"{template.ViewportPrefix}_{viewport.ViewportName}\", \"{abstractName}\")");
             return patched;
         }
 
