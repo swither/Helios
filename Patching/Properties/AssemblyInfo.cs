@@ -23,11 +23,11 @@ using GadrocsWorkshop.Helios.ComponentModel;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Patching")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Helios Simulator Patching Support")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Patching")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright © 2020 Helios Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
