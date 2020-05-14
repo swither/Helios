@@ -173,6 +173,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         protected virtual void OnRemoved(HeliosVisual oldChild)
         {
+            if (!_children.ContainsKey(oldChild))
+            {
+                // this has happened before and it is unclear why
+                ConfigManager.LogManager.LogInfo(
+                    $"the Visual object {oldChild.Name} of type {oldChild.TypeIdentifier} was not found in the data used for tracking viewports and monitors; probable program error");
+                return;
+            }
             ShadowVisual shadow = _children[oldChild];
             shadow.Dispose();
             _children.Remove(oldChild);
