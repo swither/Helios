@@ -22,6 +22,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     {
         private readonly DCSInterface _dcsInterface;
 
+        // XXX externalize to a JSON file with the associated Capt Zeen module names so we can write the mappings into HeliosExport16 on generation
         public static ICollection<string> KnownVehicles { get; } = new SortedSet<string>
         {
             "A-10C", "AJS37", "AV8BNA", "Bf-109K-4", "C-101CC", "C-101EB", "Christen Eagle II", "F-14B", "F-16C_50",
@@ -29,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             "FW-190A8", "FW-190D9", "Hawk", "I-16", "Ka-50", "L-39C", "L-39ZA", "M-2000C", "Mi-8MT", "MiG-15bis",
             "MiG-19P", "MiG-21Bis", "NS430", "P-51D-30-NA",
             "P-51D", "SA342L", "SA342M", "SA342Minigun", "SA342Mistral", "SpitfireLFMkIX", "SpitfireLFMkIXCW", "TF-51D",
-            "UH-1H", "Yak-52",
+            "UH-1H", "Yak-52", "JF-17",
 
             // flaming cliffs, no special treatment so far
             "A-10A", "F-15C", "F-16A", "J-11A", "MiG-29A", "MiG-29G", "MiG-29S", "Su-25", "Su-25T", "Su-27", "Su-33",

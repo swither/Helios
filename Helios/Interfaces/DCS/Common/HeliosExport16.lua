@@ -87,7 +87,8 @@ local helios_module_names = {
     ["MiG-21Bis"] = "Helios_Mig21Bis",
     ["P-51D"] = "Helios_P51",
     ["TF-51D"] = "Helios_P51",
-    ["SA342"] = "Helios_SA342"
+    ["SA342"] = "Helios_SA342",
+    ["JF-17"] = "Helios_JF17"
 }
 
 -- ========================= HOOKS CALLED BY DCS =================================
