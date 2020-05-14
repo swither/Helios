@@ -404,6 +404,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     };
                     break;
                 case ViewportSetupFileStatus.Conflict:
+                    if (!Data.GenerateCombined)
+                    {
+                        // conflict does not matter if we have a separate file
+                        break;
+                    }
                     yield return new StatusReportItem
                     {
                         Status =
