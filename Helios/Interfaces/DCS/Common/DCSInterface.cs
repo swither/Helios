@@ -318,7 +318,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         protected override void OnProfileStopped()
         {
-            _protocol.Stop();
+            // our base classes aren't very logical, so sometimes we get called OnProfileStopped when the profile is not running
+            // so the _protocol may not be created
+            _protocol?.Stop();
             _protocol = null;
         }
 
