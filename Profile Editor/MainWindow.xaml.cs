@@ -15,6 +15,7 @@
 
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
+using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
 using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.ProfileEditor
@@ -828,28 +829,32 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void AddInterface_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            AddInterfaceDialog dialog = new AddInterfaceDialog(Profile);
+            AvailableInterfaces availableInterfaces = new AvailableInterfaces(Profile);
+            AddInterfaceDialog dialog = new AddInterfaceDialog();
+            dialog.DataContext = availableInterfaces;
             dialog.Owner = this;
 
             try
             {
                 bool? result = dialog.ShowDialog();
-                if (result != true || dialog.SelectedInterface == null)
+                if (result != true || availableInterfaces.SelectedInterface == null)
                 {
                     return;
                 }
-
-                string name = dialog.SelectedInterface.Name;
+                
+                // retrieve the interface instance, which may be created now or may already be in the item
+                HeliosInterface heliosInterface = availableInterfaces.SelectedInterface.HeliosInterface;
+                string name = heliosInterface.Name;
                 int count = 0;
                 while (Profile.Interfaces.ContainsKey(name))
                 {
-                    name = dialog.SelectedInterface.Name + " " + ++count;
+                    name = heliosInterface.Name + " " + ++count;
                 }
-                dialog.SelectedInterface.Name = name;
+                heliosInterface.Name = name;
 
-                ConfigManager.UndoManager.AddUndoItem(new InterfaceAddUndoEvent(Profile, dialog.SelectedInterface));
-                Profile.Interfaces.Add(dialog.SelectedInterface);
-                AddNewDocument(dialog.SelectedInterface);
+                ConfigManager.UndoManager.AddUndoItem(new InterfaceAddUndoEvent(Profile, heliosInterface));
+                Profile.Interfaces.Add(heliosInterface);
+                AddNewDocument(heliosInterface);
             }
             catch (Exception ex)
             {

@@ -91,6 +91,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Compile Include="Interfaces\Capabilities\IHeliosInterfaceFactoryAsync.cs" />
     <Compile Include="Interfaces\Common\StatusReportNotifyAsyncOnce.cs" />
     <Compile Include="Util\DesignTimeEditorResources.cs" />
     <Compile Include="Util\OnceLogger.cs" />

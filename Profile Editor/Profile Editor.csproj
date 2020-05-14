@@ -157,6 +157,7 @@
     <Compile Include="UndoEvents\DisplayOrderUndoItem.cs" />
     <Compile Include="UndoEvents\InterfaceAddUndoEvent.cs" />
     <Compile Include="UndoEvents\InterfaceDeleteUndoEvent.cs" />
+    <Compile Include="ViewModel\AvailableInterfaces.cs" />
     <Compile Include="ViewModel\DescriptorToolboxItem.cs" />
     <Compile Include="ViewModel\MonitorResetItem.cs" />
     <Compile Include="ViewModel\ProfileExplorerTreeItem.cs" />
