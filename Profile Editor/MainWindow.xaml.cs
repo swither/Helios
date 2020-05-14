@@ -590,7 +590,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             // now pump the UI or find out that the Dispatcher is null or dead
             bool bRunning = false;
-            Dispatcher?.Invoke(() => { bRunning = true; }, DispatcherPriority.ApplicationIdle);
+            Dispatcher?.Invoke(() => { bRunning = true; }, DispatcherPriority.ContextIdle);
             if (_bClosing || !bRunning)
             {
                 // Profile Editor main window canceling work because window is closing or application is shut down
