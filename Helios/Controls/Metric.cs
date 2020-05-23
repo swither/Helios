@@ -28,7 +28,7 @@
         protected ClickType _clickType = ClickType.Swipe;
         private CalibrationPointCollectionDouble _swipeCalibration;
         private double _swipeThreshold = 10;
-        private double _swipeSensitivity = 0d;
+        private double _sensitivity = 0d;
 
         private bool _clickableVertical = false;
         private bool _clickableHorizontal = false;
@@ -61,20 +61,20 @@
             }
         }
 
-        public double SwipeSensitivity
+        public double Sensitivity
         {
             get
             {
-                return _swipeSensitivity;
+                return _sensitivity;
             }
             set
             {
-                if ( !_swipeSensitivity.Equals( value ) )
+                if ( !_sensitivity.Equals( value ) )
                 {
-                    double oldValue = _swipeSensitivity;
-                    _swipeSensitivity = value;
-                    _swipeThreshold = SWIPE_SENSITIVY_BASE + (_swipeSensitivity * SWIPE_SENSITIVY_MODIFIER * -1);
-                    OnPropertyChanged( "SwipeSensitivity", oldValue, value, true );
+                    double oldValue = _sensitivity;
+                    _sensitivity = value;
+                    _swipeThreshold = SWIPE_SENSITIVY_BASE + (_sensitivity * SWIPE_SENSITIVY_MODIFIER * -1);
+                    OnPropertyChanged( "Sensitivity", oldValue, value, true );
                 }
             }
         }

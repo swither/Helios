@@ -159,7 +159,7 @@
         <Label Grid.Column="0" Grid.Row="26" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource SwipeLabelStyle}" Margin="0,32,0,-51">
             <Label.ToolTip>When set left it will take more rotation to switch a position to the right postions will move rapidly.</Label.ToolTip> Sensitivity
         </Label>
-        <Slider Grid.Column="1" Grid.Row="26" Margin="0,38,0,-51" Minimum="-1" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight" Value="{Binding Control.SwipeSensitivity}" Style="{StaticResource SwipeSliderStyle}" Grid.ColumnSpan="2" />
+        <Slider Grid.Column="1" Grid.Row="26" Margin="0,38,0,-51" Minimum="-1" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight" Value="{Binding Control.Sensitivity}" Style="{StaticResource SwipeSliderStyle}" Grid.ColumnSpan="2" />
 
         <Label Grid.Column="0" Grid.Row="26" FontSize="10" HorizontalAlignment="Right" Margin="0,67,0,-85" Style="{StaticResource OneOnOneLabelStyle}">
             <Label.ToolTip>When checked this control moves one on one with drag distance</Label.ToolTip> One on one

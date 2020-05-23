@@ -193,8 +193,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                         p._triggerList.Disconnect();
                     }
 
-                    p._actionsList = new ProfileExplorerTreeItem(newProfile, actionTypes);
-                    p._triggerList = new ProfileExplorerTreeItem(newProfile, triggerTypes);
+                    if (newProfile != null)
+                    {
+                        p._actionsList = new ProfileExplorerTreeItem(newProfile, actionTypes);
+                        p._triggerList = new ProfileExplorerTreeItem(newProfile, triggerTypes);
+                    }
+                    else
+                    {
+                        p._actionsList = null;
+                        p._triggerList = null;
+                    }
                     p._actionTriggerProfile = newProfile;
                 }
             }
