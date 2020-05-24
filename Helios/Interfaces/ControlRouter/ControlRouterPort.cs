@@ -71,6 +71,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         // the angle to which we set the bound control on the last update
         private double _lastAngle;
 
+        // just for debugging purposes, track how many pulses we have delivered
+        private double _pulsesSinceBinding;
+
         /// <summary>
         /// if the bound control moves more than this many degrees without us doing it,
         /// we assume some other control has moved it and re-bind to the control so we don't
@@ -124,7 +127,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
             Logger.Debug("received change by pulses of {Pulses}", e.Value.DoubleValue);
             if (_boundRotary != null)
             {
+                _pulsesSinceBinding += e.Value.DoubleValue;
                 _boundRotary.ControlAngle += e.Value.DoubleValue * 360d / _pulsesPerRevolution;
+                Logger.Debug("after {Pulses} pulses, set control to {Angle}", _pulsesSinceBinding, _boundRotary.ControlAngle);
             }
         }
 
@@ -173,6 +178,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
                 _initialAngle = _boundRotary?.ControlAngle ?? 0d;
                 _lastAngle = _initialAngle;
                 _initialInputValue = e.Value;
+                _pulsesSinceBinding = 0d;
             }
         }
 
