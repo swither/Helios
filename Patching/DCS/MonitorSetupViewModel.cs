@@ -44,13 +44,20 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private ICommand _configureCommand;
 
+        /// <summary>
+        /// true if we are done loaded and should process changes
+        /// </summary>
+        private bool _loaded;
+
         internal MonitorSetupViewModel(MonitorSetup data) : base(data)
         {
             Scale = ConfigManager.SettingsManager.LoadSetting("DCSMonitorSetupPreferences", "Scale", DEFAULT_SCALE);
             CombinedMonitorSetup = new CombinedMonitorSetupViewModel(Data);
             Monitors = new ObservableCollection<MonitorViewModel>();
             Viewports = new ObservableCollection<ViewportViewModel>();
-
+            SourceOfAdditionalViewports = Data.UsingViewportProvider
+                ? SourceOfAdditionalViewports.AdditionalViewportsInterface
+                : SourceOfAdditionalViewports.ThirdPartySolution;
             foreach (ShadowMonitor monitor in Data.Monitors)
             {
                 AddMonitor(monitor, Data.GlobalOffset);
@@ -62,6 +69,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             UpdateAllGeometry();
+            _loaded = true;
 
             // register for changes and get latest report
             Data.GeometryChangeDelayed += Data_GeometryChangeDelayed;
@@ -71,15 +79,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Data.ViewportAdded += Data_ViewportAdded;
             Data.ViewportRemoved += Data_ViewportRemoved;
             Data.Subscribe(this);
+
             Data.InvalidateStatusReport();
         }
 
         private static void OnScaleChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             MonitorSetupViewModel model = (MonitorSetupViewModel) d;
-            if (model.Monitors == null)
+            if (!model._loaded)
             {
-                // initial setting of scale during load
                 return;
             }
 
@@ -96,6 +104,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             model.UpdateBounds();
+        }
+
+        private static void OnSourceOfAdditionalViewportsChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            MonitorSetupViewModel model = (MonitorSetupViewModel)d;
+            if (!model._loaded)
+            {
+                return;
+            }
+            model.Data.UsingViewportProvider = ((SourceOfAdditionalViewports)e.NewValue) == SourceOfAdditionalViewports.AdditionalViewportsInterface;
         }
 
         private void ProtectLastMonitor(List<MonitorViewModel> monitors, Action<MonitorViewModel, bool> setter)
@@ -564,6 +582,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 new PropertyMetadata(1.0));
 
         public CombinedMonitorSetupViewModel CombinedMonitorSetup { get; }
+
+        public SourceOfAdditionalViewports SourceOfAdditionalViewports
+        {
+            get => (SourceOfAdditionalViewports) GetValue(SourceOfAdditionalViewportsProperty);
+            set => SetValue(SourceOfAdditionalViewportsProperty, value);
+        }
+
+        public static readonly DependencyProperty SourceOfAdditionalViewportsProperty =
+            DependencyProperty.Register("SourceOfAdditionalViewports", typeof(SourceOfAdditionalViewports),
+                typeof(MonitorSetupViewModel),
+                new PropertyMetadata(default(SourceOfAdditionalViewports), OnSourceOfAdditionalViewportsChange));
 
         #endregion
     }

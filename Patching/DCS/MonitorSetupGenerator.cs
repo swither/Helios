@@ -326,6 +326,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status = "The viewport data for this profile does not exist",
+                    Severity = StatusReportItem.SeverityCode.Error,
                     Recommendation = $"Configure {_parent.Name}"
                 };
             }
@@ -337,6 +338,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status = "The viewport data for this profile is out of date",
+                    Severity = StatusReportItem.SeverityCode.Error,
                     Recommendation = $"Configure {_parent.Name}"
                 };
             }
@@ -623,6 +625,19 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 .Select(shadow => shadow.Viewport)
                 .Where(v => v.RequiresPatches))
             {
+                if (!_parent.UsingViewportProvider)
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status =
+                            $"viewport '{viewport.ViewportName}' must be provided by third-party solution for additional viewports",
+                        Recommendation = 
+                            "Verify that your third-party viewport modifications match the viewport names for this profile",
+                        Flags = StatusReportItem.StatusFlags.Verbose |
+                                StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    };
+                    continue;
+                }
                 bool found = false;
                 foreach (IViewportProvider provider in viewportProviders)
                 {

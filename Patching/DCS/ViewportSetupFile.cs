@@ -44,7 +44,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status =
-                        $"The saved viewport information from profile '{name}' does not match the current monitor layout",
+                        $"The stored viewport data from profile '{name}' does not match the current monitor layout",
                     Recommendation =
                         $"Configure DCS Monitor Setup for profile '{name}' to update the merged viewport data",
                     Severity = StatusReportItem.SeverityCode.Warning,
