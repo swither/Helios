@@ -219,6 +219,7 @@
                 </WrapPanel>
             </Grid>
         </Expander>
+        <!--
         <Expander Header="Global DCS-related Settings (Advanced)" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -243,7 +244,6 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <!-- shielded from stretching -->
                         <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=PhantomFix.Enabled}"/>
                     </StackPanel>
                     <Label Grid.Column="2" HorizontalAlignment="Right" Content="Left Pixel" Style="{StaticResource HideIfNoPhantomFix}"/>
@@ -254,6 +254,7 @@
                 <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource Documentation}" Text="When checked, Helios Control Center will periodically move the DCS window to the specified location on the main screen."/>
             </Grid>
         </Expander>
+        -->
         <GroupBox Header="DCS Export Files Output" Style="{StaticResource BasicGroup}">
             <Grid Height="Auto">
                 <Grid.ColumnDefinitions>

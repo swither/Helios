@@ -213,7 +213,6 @@
     <Compile Include="Interfaces\DCS\Common\DCSPhantomMonitorFix.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSVehicleImpersonation.cs" />
     <Compile Include="Interfaces\DCS\Common\EditableComboBoxModel.cs" />
-    <Compile Include="Interfaces\DCS\Common\EnumComboBoxConverter.cs" />
     <Compile Include="Interfaces\Capabilities\IProfileAwareInterface.cs" />
     <Compile Include="Interfaces\DCS\Common\SilentValueConsumer.cs" />
     <Compile Include="NonClickableZone.cs" />
