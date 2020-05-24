@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
     // XXX this is something else entirely.  this should be replaced with AffineTransformImage descendants along with an input-only linear pot
-    [HeliosControl("Helios.Base.PotentiometerWithTranslate", "Linear Potentiometer", "Potentiometer", typeof( MetricRenderer ) )]
+    [HeliosControl("Helios.Base.PotentiometerWithTranslate", "Linear Potentiometer", "Potentiometers", typeof( MetricRenderer ) )]
     public class PotentiometerWithTranslate : Metric
     {
         private double _valueRotation = 0.0d;
