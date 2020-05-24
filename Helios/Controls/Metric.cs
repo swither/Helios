@@ -33,7 +33,7 @@
         private bool _clickableVertical = false;
         private bool _clickableHorizontal = false;
 
-        private bool _dragOneOnOne = false;
+        private bool _dragOneForOne = false;
 
         protected Metric ( string name, Size defaultSize )
             : base( name, defaultSize )
@@ -212,15 +212,15 @@
             }
         }
 
-        public bool DragOneOnOne
+        public bool DragOneForOne
         {
             get
             {
-                return _dragOneOnOne;
+                return _dragOneForOne;
             }
             set
             {
-                this._dragOneOnOne = value;
+                this._dragOneForOne = value;
             }
         }
 
@@ -303,7 +303,7 @@
         {
             if ( _mouseDown && _clickType == ClickType.Swipe )
             {
-                if ( DragOneOnOne )
+                if ( DragOneForOne )
                 {
                     double increment = 0;
                     PulseType type = PulseType.None;

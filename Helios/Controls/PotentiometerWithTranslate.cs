@@ -673,7 +673,7 @@ namespace GadrocsWorkshop.Helios.Controls
             writer.WriteElementString( "ClickableHorizontal", ClickableHorizontal.ToString( CultureInfo.InvariantCulture ) );
             writer.WriteElementString( "InvertedHorizontal", InvertedHorizontal.ToString( CultureInfo.InvariantCulture ) );
             writer.WriteElementString( "InvertedVertical", InvertedVertical.ToString( CultureInfo.InvariantCulture ) );
-            writer.WriteElementString( "DragOneOnOne", DragOneOnOne.ToString( CultureInfo.InvariantCulture ) );
+            writer.WriteElementString( "DragOneOnOne", DragOneForOne.ToString( CultureInfo.InvariantCulture ) );
 
             writer.WriteStartElement( "ClickType" );
             writer.WriteElementString( "Type", ClickType.ToString( ) );
@@ -712,7 +712,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 ClickableHorizontal = bool.Parse( reader.ReadElementString( "ClickableHorizontal" ) );
                 InvertedHorizontal = bool.Parse( reader.ReadElementString( "InvertedHorizontal" ) );
                 InvertedVertical = bool.Parse( reader.ReadElementString( "InvertedVertical" ) );
-                DragOneOnOne = bool.Parse( reader.ReadElementString( "DragOneOnOne" ) );
+                DragOneForOne = bool.Parse( reader.ReadElementString( "DragOneOnOne" ) );
             }
             catch
             {
