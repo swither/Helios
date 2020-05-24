@@ -133,6 +133,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             set
             {
                 Profile?.Unload();
+                if (Profile != null)
+                {
+                    // dont' show stale sources and bindings
+                    BindingsPanel.Clear();
+                }
                 SetValue(ProfileProperty, value);
             }
         }
