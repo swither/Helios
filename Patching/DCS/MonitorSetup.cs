@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,6 +12,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 using System;
 using System.Collections.Generic;
@@ -550,6 +551,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             IEnumerable<string> keys = Monitors
+                .Where(m => m.Included)
                 .OrderBy(m => m.Monitor.Left)
                 .ThenBy(m => m.Monitor.Top)
                 .Select(CalculateMonitorKey);
