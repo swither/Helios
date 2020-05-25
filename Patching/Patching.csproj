@@ -92,7 +92,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Patching\Additional Simulator Viewports\**">
+    <Content Include="Templates\Patching\Additional Simulator Viewports\*.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Patches\**">

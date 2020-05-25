@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("GenerateSimulatorViewportTemplates")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright 2020 Ammo Goettsch")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
