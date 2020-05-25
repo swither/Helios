@@ -99,7 +99,6 @@
     </Compile>
     <Compile Include="Controls\RotaryInteraction.cs" />
     <Compile Include="Controls\RotaryKnob.cs" />
-    <Compile Include="Controls\RotarySwitchRemoveMe.cs" />
     <Compile Include="Controls\ViewportExtentBehaviorEditor.xaml.cs">
       <DependentUpon>ViewportExtentBehaviorEditor.xaml</DependentUpon>
     </Compile>

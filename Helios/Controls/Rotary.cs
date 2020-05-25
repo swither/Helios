@@ -150,6 +150,8 @@ namespace GadrocsWorkshop.Helios.Controls
         // REVISIT: we don't currently advertise this visualization through IRotaryInteraction, because only one type supports it
         internal Point DragPoint => (_interaction as RadialRotaryInteraction)?.DragPoint ?? GenerateCenterPoint();
 
+        public override bool CanConsumeMouseWheel => _mouseWheelAction;
+
         #endregion
 
         private Point GenerateCenterPoint() => new Point(DisplayRectangle.Width / 2, DisplayRectangle.Height / 2);
