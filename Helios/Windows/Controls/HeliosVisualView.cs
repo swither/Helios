@@ -34,7 +34,6 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         public HeliosVisualView()
         {
             _children = new List<HeliosVisualView>();
-            PreviewMouseWheel += HandlePreviewMouseWheel;
         }
 
         #region Properties
@@ -558,20 +557,18 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         /// if ancestor or descendant control should be scrolling or otherwise processing it
         /// instead
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void HandlePreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
         {
-            HeliosVisualView view = sender as HeliosVisualView;
-            if (view != null && view.IsEnabled && (view.Visual?.CanConsumeMouseWheel ?? false))
+            if (IsEnabled && (Visual?.CanConsumeMouseWheel ?? false))
             {
                 // we want to process this mouse wheel interaction, but we have no default
                 // handler for preview mouse wheel, so we raise the event instead
                 e.Handled = true;
-                view.RaiseEvent(new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+                RaiseEvent(new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
                 {
                     RoutedEvent = MouseWheelEvent,
-                    Source = sender
+                    Source = this
                 });
             }
 
@@ -585,7 +582,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             MouseWheelEventArgs previewEventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
             {
                 RoutedEvent = UIElement.PreviewMouseWheelEvent,
-                Source = sender
+                Source = this
             };
             UIElement originalSource = e.OriginalSource as UIElement;
             ScrollViewerHelper.MouseWheelEventsOnStack.Add(previewEventArg);
@@ -605,20 +602,11 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             MouseWheelEventArgs eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
             {
                 RoutedEvent = MouseWheelEvent,
-                Source = sender
+                Source = this
             };
-            UIElement parent;
-            if (view != null)
-            {
-                // HeliosVisualView is not in the logical tree, so we navigate up the visual tree
-                parent = view.VisualParent as UIElement;
-            }
-            else
-            {
-                // propagate the normal way this event should work
-                parent = (sender as FrameworkElement)?.Parent as UIElement;
-            }
-            parent?.RaiseEvent(eventArg);
+
+            // HeliosVisualView is not in the logical tree, so we navigate up the visual tree
+            (VisualParent as UIElement)?.RaiseEvent(eventArg);
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
