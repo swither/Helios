@@ -38,8 +38,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using System.Windows.Input;
     using System.Windows.Interop;
     using System.Windows.Threading;
-    using Xceed.Wpf.AvalonDock.Layout;
-    using Xceed.Wpf.AvalonDock.Layout.Serialization;
+    using AvalonDock.Layout;
+    using AvalonDock.Layout.Serialization;
 
     /// <summary>
     /// we may refactor profile loading into here if we can untangle it enough

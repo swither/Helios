@@ -19,6 +19,9 @@
     <ApplicationIcon>Helios.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AvalonDock, Version=4.20.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dirkster.AvalonDock.4.20.0\lib\net40\AvalonDock.dll</HintPath>
+    </Reference>
     <Reference Include="CommandLine, Version=2.7.82.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.7.82\lib\net461\CommandLine.dll</HintPath>
     </Reference>
@@ -582,19 +585,19 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="_Documents\Licenses\AvalonDock\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\CommandLineParser\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\EOSSharp\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\GoogleDiffMatchPatch\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\HidSharp\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\KeraLua\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\LibGit2Sharp.NativeBinaries\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\LibGit2Sharp\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\NLog\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\NLua\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\Phidget\License.txt" />
-    <Content Include="_Documents\Licenses\SharpDX.DirectInput\LICENSE.txt" />
-    <Content Include="_Documents\Licenses\SharpDX\LICENSE.txt" />
+    <Content Include="Documents\Licenses\AvalonDock\LICENSE.txt" />
+    <Content Include="Documents\Licenses\CommandLineParser\LICENSE.txt" />
+    <Content Include="Documents\Licenses\EOSSharp\LICENSE.txt" />
+    <Content Include="Documents\Licenses\GoogleDiffMatchPatch\LICENSE.txt" />
+    <Content Include="Documents\Licenses\HidSharp\LICENSE.txt" />
+    <Content Include="Documents\Licenses\KeraLua\LICENSE.txt" />
+    <Content Include="Documents\Licenses\LibGit2Sharp.NativeBinaries\LICENSE.txt" />
+    <Content Include="Documents\Licenses\LibGit2Sharp\LICENSE.txt" />
+    <Content Include="Documents\Licenses\NLog\LICENSE.txt" />
+    <Content Include="Documents\Licenses\NLua\LICENSE.txt" />
+    <Content Include="Documents\Licenses\Phidget\License.txt" />
+    <Content Include="Documents\Licenses\SharpDX.DirectInput\LICENSE.txt" />
+    <Content Include="Documents\Licenses\SharpDX\LICENSE.txt" />
     <None Include="HeliosNotificationObject.cd" />
     <None Include="Gauges\GaugeTextDisplay.cs" />
     <Compile Include="Gauges\KA-50\EGT\EGT.cs" />
@@ -926,7 +929,7 @@
     <Content Include="Templates\Base\F-16\RWR Bezel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="_Documents\Licenses\VCRedist\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf" />
+    <None Include="Documents\Licenses\VCRedist\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf" />
     <Resource Include="Gauges\M2000C\Common\needleA.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
@@ -943,8 +946,8 @@
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions - New - Post.lua" />
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions - New - Pre.lua" />
     <Resource Include="Interfaces\DCS\Common\HeliosExport16.lua" />
-    <None Include="_Documents\Helios Release 1.4 Users Guide.docx" />
-    <Content Include="_Documents\Helios Release 1.4 Users Guide.pdf">
+    <None Include="Documents\Helios Release 1.4 Users Guide.docx" />
+    <Content Include="Documents\Helios Release 1.4 Users Guide.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -3301,10 +3304,16 @@
     <Content Include="Helios.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="_Documents\*.md">
+    <Content Include="Documents\changelog.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="_Documents\*.txt">
+    <Content Include="Documents\GNU Lesser General Public License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documents\Helios.M2000C.Read.Me.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documents\Helios.Read.Me.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
