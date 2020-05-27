@@ -478,18 +478,21 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (this.IsEnabled)
+            if (!IsEnabled)
             {
-                if (SuppressMouseClick())
-                {
-                    e.Handled = true;
-                    return;
-                }
-                Point location = e.GetPosition(this);
-                Visual.MouseDown(location);
-                CaptureMouse();
-                e.Handled = true;
+                return;
             }
+
+            if (SuppressMouseClick())
+            {
+                e.Handled = true;
+                return;
+            }
+
+            Point location = e.GetPosition(this);
+            Visual.MouseDown(location);
+            CaptureMouse();
+            e.Handled = true;
         }
 
         protected override void OnTouchDown(TouchEventArgs e)
@@ -620,6 +623,5 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 e.Handled = true;
             }
         }
-
     }
 }
