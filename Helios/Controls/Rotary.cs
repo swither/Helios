@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         private bool _mouseDown;
 
-        private ClickType _clickType = ClickType.Swipe;
+        private RotaryClickType _clickType = RotaryClickType.Swipe;
 
         private bool _mouseWheelAction = true;
 
@@ -63,17 +63,17 @@ namespace GadrocsWorkshop.Helios.Controls
 
         #region Properties
 
-        public ClickType ClickType
+        public RotaryClickType ClickType
         {
             get { return _clickType; }
             set
             {
                 if (!_clickType.Equals(value))
                 {
-                    ClickType oldValue = _clickType;
+                    RotaryClickType oldValue = _clickType;
                     _clickType = value;
                     OnPropertyChanged("ClickType", oldValue, value, true);
-                    if (value == ClickType.Radial)
+                    if (value == RotaryClickType.Radial)
                     {
                         VisualizeInteraction = true;
                     }
@@ -161,7 +161,7 @@ namespace GadrocsWorkshop.Helios.Controls
             _mouseDown = true;
             switch (_clickType)
             {
-                case ClickType.Touch:
+                case RotaryClickType.Touch:
                 {
                     TouchRotaryInteraction touchInteraction = 
                         new TouchRotaryInteraction(ControlAngle, GenerateCenterPoint(), location, Sensitivity);
@@ -173,11 +173,11 @@ namespace GadrocsWorkshop.Helios.Controls
                     }
                     break;
                 }
-                case ClickType.Swipe:
+                case RotaryClickType.Swipe:
                     _interaction =
                         new SwipeRotaryInteraction(ControlAngle, GenerateCenterPoint(), location, Sensitivity);
                     break;
-                case ClickType.Radial:
+                case RotaryClickType.Radial:
                     _interaction =
                         new RadialRotaryInteraction(ControlAngle, GenerateCenterPoint(), location, Sensitivity);
                     break;
@@ -231,7 +231,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
             _mouseDown = false;
 
-            if (_clickType == ClickType.Touch)
+            if (_clickType == RotaryClickType.Touch)
             {
                 if (Parent != null && Parent.Profile != null)
                 {
@@ -258,7 +258,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     case "ClickType":
                         reader.ReadStartElement("ClickType");
-                        ClickType = (ClickType)Enum.Parse(typeof(ClickType), reader.ReadElementString("Type"));
+                        ClickType = (RotaryClickType)Enum.Parse(typeof(RotaryClickType), reader.ReadElementString("Type"));
                         if (reader.Name == "Sensitivity")
                         {
                             Sensitivity = double.Parse(reader.ReadElementString("Sensitivity"), CultureInfo.InvariantCulture);
@@ -287,11 +287,11 @@ namespace GadrocsWorkshop.Helios.Controls
         // helper to writer XML for optional configuration that is shared across descendants
         protected virtual void WriteOptionalXml(XmlWriter writer)
         {
-            if (ClickType != ClickType.Swipe || Sensitivity != 0.0)
+            if (ClickType != RotaryClickType.Swipe || Sensitivity != 0.0)
             {
                 writer.WriteStartElement("ClickType");
                 writer.WriteElementString("Type", ClickType.ToString());
-                if (ClickType != ClickType.Touch)
+                if (ClickType != RotaryClickType.Touch)
                 {
                     writer.WriteElementString("Sensitivity", Sensitivity.ToString(CultureInfo.InvariantCulture));
                 }
@@ -301,7 +301,7 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 writer.WriteElementString("MouseWheel", MouseWheelAction.ToString(CultureInfo.InvariantCulture));
             }
-            if (VisualizeInteraction || ClickType == ClickType.Radial)
+            if (VisualizeInteraction || ClickType == RotaryClickType.Radial)
             {
                 writer.WriteElementString("VisualizeInteraction", VisualizeInteraction.ToString(CultureInfo.InvariantCulture));
             }
