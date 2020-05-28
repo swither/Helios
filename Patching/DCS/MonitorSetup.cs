@@ -460,7 +460,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public override void ReadXml(XmlReader reader)
         {
             TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
-            while (reader.NodeType == XmlNodeType.Element && reader.Name != "Children")
+            while (reader.NodeType == XmlNodeType.Element)
             {
                 switch (reader.Name)
                 {
