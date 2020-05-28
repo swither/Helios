@@ -1,0 +1,8 @@
+﻿@@ -1,16 +1,37 @@
++-- modified by Helios
+ %0D%0Astroke_thickne
+@@ -42,11 +42,67 @@
+ %3D 0.
+-8%0D%0A
++4%0D%0Astroke_fuzziness  %3D 0.2%0D%0A-- stroke_thickness  %3D 0.8%0D%0A-- 
+ stro
