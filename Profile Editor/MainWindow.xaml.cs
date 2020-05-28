@@ -763,7 +763,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            Splash.About dialog = new Splash.About {Owner = this};
+            About dialog = new About {Owner = this};
             dialog.ShowDialog();
         }
 

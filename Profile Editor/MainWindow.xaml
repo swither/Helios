@@ -5,7 +5,7 @@
         xmlns:heliosWindows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
         xmlns:heliosViewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel;assembly=Helios"
         xmlns:ad="https://github.com/Dirkster99/AvalonDock"
-        Title="{Binding ElementName=ProfileEditorWindow,Path=Profile.Name}" Height="900" Width="1400" Name="ProfileEditorWindow" Icon="Icon.png" Background="{StaticResource WindowBackground}">
+        Title="{Binding ElementName=ProfileEditorWindow,Path=Profile.Name}" Height="900" Width="1400" Name="ProfileEditorWindow" Icon="ProfileEditor.ico" Background="{StaticResource WindowBackground}">
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="New_Executed" />
         <CommandBinding Command="Open" Executed="Open_Executed" />

@@ -69,7 +69,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="About.xaml.cs">
+    <Compile Include="Windows\Controls\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="BaseDeserializer.cs" />
@@ -570,6 +570,8 @@
     <Compile Include="Windows\ViewModel\MockInterfaceStatusView.cs" />
     <Compile Include="Windows\ViewModel\Share.cs" />
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
+    <None Include="Assets\Helios_ADI.odg" />
+    <None Include="Assets\render.bat" />
     <None Include="Images\A-10\readme.md" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
@@ -582,6 +584,8 @@
     <Resource Include="Images\General\wire.png" />
     <Resource Include="Images\Custom\translate_rotate.png" />
     <Resource Include="Images\Custom\translate.png" />
+    <None Include="Assets\Helios_ADI.svg" />
+    <Resource Include="Images\General\HeliosSimplifiedIcon.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -809,7 +813,7 @@
     <Compile Include="Units\NozzlePositionUnit.cs" />
     <Compile Include="Util\DCS\InstallationLocation.cs" />
     <Compile Include="Util\DCS\InstallationLocations.cs" />
-    <Compile Include="VersionReminderForm.xaml.cs">
+    <Compile Include="Windows\Controls\VersionReminderForm.xaml.cs">
       <DependentUpon>VersionReminderForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\KnownFolders.cs" />
@@ -970,8 +974,7 @@
     <Resource Include="Interfaces\DCS\M2000C\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\Mi8Simple\ExportFunctions.lua" />
     <None Include="Fonts\Helios font registration.reg" />
-    <Resource Include="about.png" />
-    <Resource Include="Icon.png" />
+    <Resource Include="Images\General\HeliosIcon.png" />
     <Content Include="Fonts\Hornet IFEI.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -988,7 +991,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="About.xaml">
+    <Page Include="Windows\Controls\About.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -2675,7 +2678,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="VersionReminderForm.xaml">
+    <Page Include="Windows\Controls\VersionReminderForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
