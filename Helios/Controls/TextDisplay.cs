@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Globalization;
+
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -48,6 +51,8 @@ namespace GadrocsWorkshop.Helios.Controls
             _textFormat.HorizontalAlignment = TextHorizontalAlignment.Left;
             _textFormat.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(TextFormat_PropertyChanged);
             // _textFormat.FontFamily = FontManager.Instance.GetFontFamilyByName("SF Digital Readout");
+            _configuredFontSize = _textFormat.FontSize;
+            _referenceHeight = Height;
         }
 
         #region Properties
@@ -254,6 +259,12 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             set
             {
+                _referenceHeight = Height;
+                if (value == _configuredFontSize)
+                {
+                    return;
+                }
+                _configuredFontSize = value;
                 double oldValue = _textFormat.FontSize;
                 _textFormat.FontSize = value;
                 OnPropertyChanged("FontSize", oldValue, value, true);
@@ -261,6 +272,36 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
+        /// <summary>
+            /// backing field for property ScalingMode, contains
+            /// the selected automatic font size scaling mode
+            /// </summary>
+        private TextScalingMode _scalingMode;
+
+        /// <summary>
+        /// the font size we actually configured via the UI
+        /// </summary>
+        private double _configuredFontSize;
+
+        /// <summary>
+        /// the height this display had when the font size was configured
+        /// </summary>
+        private double _referenceHeight;
+
+        /// <summary>
+        /// the selected automatic font size scaling mode
+        /// </summary>
+        public TextScalingMode ScalingMode
+        {
+            get => _scalingMode;
+            set
+            {
+                if (_scalingMode == value) return;
+                TextScalingMode oldValue = _scalingMode;
+                _scalingMode = value;
+                OnPropertyChanged("ScalingMode", oldValue, value, true);
+            }
+        }
         #endregion
 
         void TextFormat_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -271,11 +312,30 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void PostUpdateRectangle(Rect previous, Rect current)
         {
-            if (previous.Height == 0)
-                return;
-            double scale = current.Height / previous.Height;
-            TextFormat.FontSize = Clamp(scale * TextFormat.FontSize, 1, 100);
-            // Logger.Warn("Font Size " + TextFormat.FontSize);
+            switch (ScalingMode)
+            {
+                case TextScalingMode.Height:
+                    if (_referenceHeight < 0.001)
+                    {
+                        TextFormat.FontSize = _configuredFontSize;
+                        break;
+                    }
+                    // avoid accumulating error from repeated resizing by calculating from a reference point
+                    TextFormat.FontSize = Clamp(_configuredFontSize * current.Height / _referenceHeight, 1, 300);
+                    break;
+                case TextScalingMode.None:
+                    return;
+                case TextScalingMode.Legacy:
+                    if (previous.Height != 0)
+                    {
+                        double scale = current.Height / previous.Height;
+                        TextFormat.FontSize = Clamp(scale * TextFormat.FontSize, 1, 100);
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            Logger.Debug("Font Size " + TextFormat.FontSize);
         }
 
         public override void Reset()
@@ -317,6 +377,10 @@ namespace GadrocsWorkshop.Helios.Controls
             writer.WriteElementString("ParserDictionary", ParserDictionary);
             writer.WriteElementString("UseBackground", boolConverter.ConvertToInvariantString(UseBackground));
             writer.WriteElementString("UseParserDictionary", boolConverter.ConvertToInvariantString(UseParseDictionary));
+            if (ScalingMode != TextScalingMode.Legacy)
+            {
+                writer.WriteElementString("ScalingMode", ScalingMode.ToString(CultureInfo.InvariantCulture));
+            }
             base.WriteXml(writer);
         }
 
@@ -339,10 +403,20 @@ namespace GadrocsWorkshop.Helios.Controls
             ParserDictionary = reader.ReadElementString("ParserDictionary");
             UseBackground = (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("UseBackground"));
             UseParseDictionary = (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("UseParserDictionary"));
+            if (reader.Name == "ScalingMode" && Enum.TryParse(reader.ReadElementString("ScalingMode"), out TextScalingMode configured))
+            {
+                ScalingMode = configured;
+            }
+            else
+            {
+                ScalingMode = TextScalingMode.Legacy;
+            }
             base.ReadXml(reader);
 
             // now the auto scaling has messed up our font size, so we restore it
             _textFormat.FontSize = fontSizeFromProfile;
+            _configuredFontSize = fontSizeFromProfile;
+            _referenceHeight = Height;
         }
 
         private double Clamp(double value, double min, double max)
