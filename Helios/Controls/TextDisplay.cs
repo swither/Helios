@@ -367,7 +367,6 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             TypeConverter colorConverter = TypeDescriptor.GetConverter(typeof(Color));
             TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
-            // writer.WriteElementString("OnImage", OnImage);
             writer.WriteStartElement("Font");
             _textFormat.WriteXml(writer);
             writer.WriteEndElement();
@@ -379,7 +378,7 @@ namespace GadrocsWorkshop.Helios.Controls
             writer.WriteElementString("UseParserDictionary", boolConverter.ConvertToInvariantString(UseParseDictionary));
             if (ScalingMode != TextScalingMode.Legacy)
             {
-                writer.WriteElementString("ScalingMode", ScalingMode.ToString(CultureInfo.InvariantCulture));
+                writer.WriteElementString("ScalingMode", ScalingMode.ToString());
             }
             base.WriteXml(writer);
         }
@@ -388,7 +387,6 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             TypeConverter colorConverter = TypeDescriptor.GetConverter(typeof(Color));
             TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
-            // OnImage = reader.ReadElementString("OnImage");
             reader.ReadStartElement("Font");
             _textFormat.ReadXml(reader);
 
