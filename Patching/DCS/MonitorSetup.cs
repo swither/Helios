@@ -479,9 +479,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     default:
                     {
                         // ignore unsupported settings
-                        string discard = reader.ReadElementString(reader.Name);
+                        string elementName = reader.Name;
+                        string discard = reader.ReadElementString(elementName);
                         ConfigManager.LogManager.LogWarning(
-                            $"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
+                            $"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
                         break;
                     }
                 }

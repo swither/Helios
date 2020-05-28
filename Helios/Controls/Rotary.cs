@@ -277,8 +277,9 @@ namespace GadrocsWorkshop.Helios.Controls
                         break;
                     default:
                         // ignore unsupported settings
-                        string discard = reader.ReadElementString(reader.Name);
-                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
+                        string elementName = reader.Name;
+                        string discard = reader.ReadElementString(elementName);
+                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
                         break;
                 }
             }
