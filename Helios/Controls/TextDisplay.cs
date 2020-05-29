@@ -49,9 +49,8 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             _textFormat.VerticalAlignment = TextVerticalAlignment.Center;
             _textFormat.HorizontalAlignment = TextHorizontalAlignment.Left;
-            _textFormat.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(TextFormat_PropertyChanged);
+            _textFormat.PropertyChanged += TextFormat_PropertyChanged;
             // _textFormat.FontFamily = FontManager.Instance.GetFontFamilyByName("SF Digital Readout");
-            _configuredFontSize = _textFormat.FontSize;
             _referenceHeight = Height;
         }
 
@@ -251,37 +250,11 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public double FontSize
-        {
-            get
-            {
-                return _textFormat.FontSize;
-            }
-            set
-            {
-                _referenceHeight = Height;
-                if (value == _configuredFontSize)
-                {
-                    return;
-                }
-                _configuredFontSize = value;
-                double oldValue = _textFormat.FontSize;
-                _textFormat.FontSize = value;
-                OnPropertyChanged("FontSize", oldValue, value, true);
-                Refresh();
-            }
-        }
-
         /// <summary>
-            /// backing field for property ScalingMode, contains
-            /// the selected automatic font size scaling mode
-            /// </summary>
-        private TextScalingMode _scalingMode;
-
-        /// <summary>
-        /// the font size we actually configured via the UI
+        /// backing field for property ScalingMode, contains
+        /// the selected automatic font size scaling mode
         /// </summary>
-        private double _configuredFontSize;
+        private TextScalingMode _scalingMode;
 
         /// <summary>
         /// the height this display had when the font size was configured
@@ -306,10 +279,20 @@ namespace GadrocsWorkshop.Helios.Controls
 
         void TextFormat_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == nameof(TextFormat.ConfiguredFontSize))
+            {
+                // track these for recalculation of automatic scaling
+                _referenceHeight = Height;
+            }
+
+            // invalidate entire TextFormat
             OnPropertyChanged("TextFormat", (PropertyNotificationEventArgs)e);
+
+            // recalculate rendering
             OnDisplayUpdate();
         }
 
+        // WARNING: this virtual method is called from the base constructor (indirectly)
         protected override void PostUpdateRectangle(Rect previous, Rect current)
         {
             switch (ScalingMode)
@@ -317,11 +300,13 @@ namespace GadrocsWorkshop.Helios.Controls
                 case TextScalingMode.Height:
                     if (_referenceHeight < 0.001)
                     {
-                        TextFormat.FontSize = _configuredFontSize;
+                        TextFormat.FontSize = TextFormat.ConfiguredFontSize;
                         break;
                     }
                     // avoid accumulating error from repeated resizing by calculating from a reference point
-                    TextFormat.FontSize = Clamp(_configuredFontSize * current.Height / _referenceHeight, 1, 300);
+                    Logger.Debug("scaling font based on new height {Height} versus reference {ReferenceSize} at height {ReferenceHeight}",
+                        current.Height, TextFormat.ConfiguredFontSize, _referenceHeight);
+                    TextFormat.FontSize = Clamp(TextFormat.ConfiguredFontSize * current.Height / _referenceHeight, 1, 2000);
                     break;
                 case TextScalingMode.None:
                     return;
@@ -390,10 +375,6 @@ namespace GadrocsWorkshop.Helios.Controls
             reader.ReadStartElement("Font");
             _textFormat.ReadXml(reader);
 
-            // save this size, because the automatic scaling will keep increasing it when we read the size of our rectangle
-            // and we get called back on PostUpdateRectangle
-            double fontSizeFromProfile = _textFormat.FontSize;
-
             reader.ReadEndElement();
             OnTextColor = (Color)colorConverter.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, reader.ReadElementString("OnTextColor"));
             BackgroundColor = (Color)colorConverter.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, reader.ReadElementString("BackgroundColor"));
@@ -412,8 +393,7 @@ namespace GadrocsWorkshop.Helios.Controls
             base.ReadXml(reader);
 
             // now the auto scaling has messed up our font size, so we restore it
-            _textFormat.FontSize = fontSizeFromProfile;
-            _configuredFontSize = fontSizeFromProfile;
+            _textFormat.FontSize = _textFormat.ConfiguredFontSize;
             _referenceHeight = Height;
         }
 
