@@ -11,6 +11,7 @@
              mc:Ignorable="d"
              d:DesignHeight="490" 
              d:DesignWidth="800"
+             Name="InterfaceStatusPanel"
              Background="{StaticResource EmptySpaceBetweenWhiteItems}"
              d:DataContext="{d:DesignInstance Type=heliosViewModel:MockInterfaceStatusViewModel, IsDesignTimeCreatable=true}">
     <Grid.Resources>
