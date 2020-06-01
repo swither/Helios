@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
@@ -29,6 +31,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private string _falconPath;
         private string _keyFile;
         private string _cockpitDatFile;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private FalconDataExporter _dataExporter;
 
@@ -38,9 +41,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public FalconInterface()
             : base("Falcon")
         {
-            FalconType = FalconTypes.OpenFalcon;
-            _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
-            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\OFKeystrokes.key");
+            FalconType = FalconTypes.BMS;
+            _dataExporter = new BMS.BMSFalconDataExporter(this);
+            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
 
             HeliosAction sendAction = new HeliosAction(this, "", "callback", "send", "Press and releases a keyboard callback for falcon.", "Callback name", BindingValueUnits.Text);
             sendAction.ActionBindingDescription = "send %value% callback for falcon.";
@@ -89,7 +92,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     {
                         case FalconTypes.BMS:
                             _dataExporter = new BMS.BMSFalconDataExporter(this);
-                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS.key");
+                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
                             break;
                         case FalconTypes.OpenFalcon:
                             _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
@@ -134,6 +137,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             }
         }
 
+
         public string CockpitDatFile
         {
             get
@@ -162,7 +166,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     switch (FalconType)
                     {
                         case FalconTypes.BMS:
-                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Benchmark Sims\Falcon BMS 4.32");
+                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Benchmark Sims\Falcon BMS 4.34");
                             break;
 
                         case FalconTypes.OpenFalcon:
@@ -256,9 +260,28 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         
         public override void ReadXml(XmlReader reader)
         {
-            FalconType = (FalconTypes)Enum.Parse(typeof(FalconTypes), reader.ReadElementString("FalconType"));
-            KeyFileName = reader.ReadElementString("KeyFile");
-            CockpitDatFile = reader.ReadElementString("CockpitDatFile");
+
+            while (reader.NodeType == XmlNodeType.Element)
+            {
+                switch (reader.Name)
+                {
+                    case "FalconType":
+                        FalconType = (FalconTypes)Enum.Parse(typeof(FalconTypes), reader.ReadElementString("FalconType"));
+                        break;
+                    case "KeyFile":
+                        KeyFileName = reader.ReadElementString("KeyFile");
+                        break;
+                    case "CockpitDatFile":
+                        CockpitDatFile = reader.ReadElementString("CockpitDatFile");
+                        break;
+                    default:
+                        // ignore unsupported settings
+                        string elementName = reader.Name;
+                        string discard = reader.ReadElementString(reader.Name);
+                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
+                        break;
+                }
+            }
         }
 
         public override void WriteXml(XmlWriter writer)

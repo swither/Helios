@@ -14,6 +14,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Diagnostics.Eventing;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Windows.Data;
 using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
@@ -98,9 +104,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("UHF", "Backup frequency digit 4", "Current Backup UHF frequency digit 4", "", BindingValueUnits.Numeric);
             AddValue("UHF", "Backup frequency digit 5,6", "Current Backup UHF frequency digit 5,6", "", BindingValueUnits.Numeric);
             AddValue("Altitude", "Cabin Altitude", "Current cabin altitude", "", BindingValueUnits.Numeric);
-            AddValue("Hydraulic", "Pressure A", "Current hydraulic pressure a", "", BindingValueUnits.Numeric);
-            AddValue("Hydraulic", "Pressure B", "Current hydraulic pressure b", "", BindingValueUnits.Numeric);
-            AddValue("Time", "Time", "Current tine in seconds", "(max 60 * 60 * 24)", BindingValueUnits.Numeric);
+            AddValue("Hydraulic", "Pressure A", "Current hydraulic pressure a", "", BindingValueUnits.PoundsPerSquareInch);
+            AddValue("Hydraulic", "Pressure B", "Current hydraulic pressure b", "", BindingValueUnits.PoundsPerSquareInch);
+            AddValue("Time", "Time", "Current tine in seconds", "(max 60 * 60 * 24)", BindingValueUnits.Seconds);
             AddValue("Engine", "fuel flow 2", "Current fuel flow to the engine 2.", "", BindingValueUnits.PoundsPerHour);
 
             //AltBits
@@ -115,6 +121,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("POWER", "main generator", "main generator is online", "True if online", BindingValueUnits.Boolean);
             AddValue("POWER", "standby generator", "standby generator is online", "True if online", BindingValueUnits.Boolean);
             AddValue("POWER", "Jetfuel starter", "JFS is running, can be used for magswitch", "True if running", BindingValueUnits.Boolean);
+
+            //Fuel
+            AddValue("Fuel", "fwd fuel", "Amount of fuel in the fwd tanks", "", BindingValueUnits.Pounds);
+            AddValue("Fuel", "aft fuel", "Amount of fuel in the aft tanks", "", BindingValueUnits.Pounds);
+            AddValue("Fuel", "total fuel", "Amount of total fuel", "", BindingValueUnits.Pounds);
+
+            //AV8B values
+            AddValue("AV8B", "vtol exhaust angle position", "angle of vtol exhaust", "", BindingValueUnits.Degrees);
+            //DED
+            AddValue("DED", "DED Line 1", "Data entry display line 1", "", BindingValueUnits.Text);
+            AddValue("DED", "DED Line 2", "Data entry display line 2", "", BindingValueUnits.Text);
+            AddValue("DED", "DED Line 3", "Data entry display line 3", "", BindingValueUnits.Text);
+            AddValue("DED", "DED Line 4", "Data entry display line 4", "", BindingValueUnits.Text);
+            AddValue("DED", "DED Line 5", "Data entry display line 5", "", BindingValueUnits.Text);
+
 
         }
 
@@ -173,11 +194,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Trim", "pitch trim", new BindingValue(_lastFlightData.TrimPitch));
                 SetValue("Trim", "yaw trim", new BindingValue(_lastFlightData.TrimYaw));
 
+                SetValue("Fuel", "fwd fuel", new BindingValue(_lastFlightData.fwd));
+                SetValue("Fuel", "aft fuel", new BindingValue(_lastFlightData.aft));
+                SetValue("Fuel", "total fuel", new BindingValue(_lastFlightData.total));
 
                 SetValue("Tacan", "ufc tacan chan", new BindingValue(_lastFlightData.UFCTChan));
                 SetValue("Tacan", "aux tacan chan", new BindingValue(_lastFlightData.AUXTChan));
 
                 ProcessContacts(_lastFlightData);
+                
+                //DED
+                SetValue("DED", "DED Line 1", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED,0,26)));
+                SetValue("DED", "DED Line 2", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26, 26)));
+                SetValue("DED", "DED Line 3", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*2, 26)));
+                SetValue("DED", "DED Line 4", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*3, 26)));
+                SetValue("DED", "DED Line 5", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*4, 26)));
+
             }
             if(_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
             {
@@ -213,11 +245,35 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Hydraulic", "Pressure B", new BindingValue(_lastFlightData2.hydPressureB));
                 SetValue("Time", "Time", new BindingValue(_lastFlightData2.currentTime));
 
+                //AV8B Values
+                SetValue("AV8B", "vtol exhaust angle position", new BindingValue(_lastFlightData2.vtolPos));
+
                 ProcessHsiBits(_lastFlightData.hsiBits, _lastFlightData.desiredCourse, _lastFlightData.bearingToBeacon, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits(_lastFlightData.lightBits);
                 ProcessLightBits2(_lastFlightData.lightBits2, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits3(_lastFlightData.lightBits3);
             }
+        }
+
+        internal string DecodeUserInterfaceText(byte[] buffer,int offset,int length)
+        {
+            var sanitized = new StringBuilder();
+            ASCIIEncoding ascii = new ASCIIEncoding();
+
+            // Decode the bytes
+            String decoded = ascii.GetString(buffer, offset, length);
+
+            foreach (var value in decoded)
+            {
+                var thisChar = value;
+                if (value == 0x01) thisChar = '\u2195';
+                if (value == 0x02) thisChar = '*';
+                if (value == 0x5E) thisChar = '\u00B0'; //degree symbol
+                sanitized.Append(thisChar);
+
+            }
+
+            return sanitized.ToString();
         }
 
         protected void ProcessLightBits(BMSLightBits bits)
