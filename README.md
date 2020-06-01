@@ -8,6 +8,8 @@ Helios 1.4 releases and information are separately distributed at https://github
 
 - [Download Release](https://github.com/HeliosVirtualCockpit/Helios/releases/latest) https://github.com/HeliosVirtualCockpit/Helios/releases/latest
 
+
+- [Developers: First build](https://github.com/HeliosVirtualCockpit/Helios/wiki/First-Build) https://github.com/HeliosVirtualCockpit/Helios/wiki/First-Build
 - [Project Wiki](https://github.com/HeliosVirtualCockpit/Helios/wiki) https://github.com/HeliosVirtualCockpit/Helios/wiki
 
 - [Support via Capt Zeen's Helios Discord](https://discord.gg/KHmkTXe) https://discord.gg/KHmkTXe
