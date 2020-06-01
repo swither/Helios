@@ -6,7 +6,7 @@ Helios 1.4 releases and information are separately distributed at https://github
 
 ## Links for Helios 1.6:
 
-- [Download Release](https://HeliosVirtualCockpit/Helios/releases/latest) https://HeliosVirtualCockpit/Helios/releases/latest
+- [Download Release](https://github.com/HeliosVirtualCockpit/Helios/releases/latest) https://HeliosVirtualCockpit/Helios/releases/latest
 
 - [Project Wiki](https://github.com/HeliosVirtualCockpit/Helios/wiki) https://github.com/HeliosVirtualCockpit/Helios/wiki
 
