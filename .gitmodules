@@ -1,3 +1,4 @@
-[submodule "ThirdParty/diff-match-patch"]
-	path = ThirdParty/diff-match-patch
-	url = https://github.com/derammo/diff-match-patch
+
+[submodule "Thirdparty/diff-match-patch"]
+	path = Thirdparty/diff-match-patch
+	url = https://github.com/HeliosVirtualCockpit/diff-match-patch
