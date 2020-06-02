@@ -121,7 +121,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             get => _impersonatedVehicleName;
             set
             {
+                if (_impersonatedVehicleName == value)
+                {
+                    return;
+                }
+
+                string oldValue = _impersonatedVehicleName;
                 _impersonatedVehicleName = value;
+                OnPropertyChanged(nameof(ImpersonatedVehicleName), oldValue, value, true);
+
                 foreach (IStatusReportObserver observer in _observers)
                 {
                     string newName = StatusName;
