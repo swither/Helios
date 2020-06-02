@@ -52,13 +52,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         public SelectionAdorner(HeliosVisualContainerEditor adornedElement)
             : base(adornedElement)
         {
+            if (adornedElement == null)
+            {
+                throw new Exception("timing bug encountered in processing selections; editor cannot be null");
+            }
             _children = new VisualCollection(this);
             _editor = adornedElement;
             _editor.SelectedItems.CollectionSizeChanged += new EventHandler(SelectedItems_PropertyChanged);
             _editor.GotKeyboardFocus += new KeyboardFocusChangedEventHandler(Editor_GotKeyboardFocus);
             _editor.LostKeyboardFocus += new KeyboardFocusChangedEventHandler(Editor_LostKeyboardFocus);
 
-            _drawFocus = Keyboard.FocusedElement.Equals(_editor);
+            _drawFocus = Keyboard.FocusedElement?.Equals(_editor) ?? false;
 
             SelectionBorderPen.DashStyle = DashStyles.Dash;
             SelectionResizeBrush.Opacity = 0.5d;
