@@ -25,5 +25,5 @@ copy "Helios Installer\Release\Helios Installer.msi" %SHARE_FOLDER%\%VERSION%\He
 
 REM collect and format log
 FOR /F %%i IN ('git rev-parse %VERSION%') DO @set COMMIT=%%i
-git log --date=short --tags --decorate-refs="1.*" --format="##### [%%h](https://github.com/BlueFinBima/Helios/commit/%%H) by %%an on %%ad %%d%%n%%w(0,4,4)%%B  %%n" %REFERENCE%.. > %SHARE_FOLDER%\%VERSION%\changes_%COMMIT%.md
+git log --date=short --tags --decorate-refs="1.*" --format="##### [%%h](https://github.com/BlueFinBima/Helios/commit/%%H) by %%an on %%ad %%d%%n%%w(0,4,4)%%B  %%n" %REFERENCE%..%VERSION% > %SHARE_FOLDER%\%VERSION%\changes_%COMMIT%.md
  
