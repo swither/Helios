@@ -367,7 +367,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             DocumentMeta meta = FindDocumentMeta(profileObject);
             if (meta != null)
             {
-                meta.document.IsSelected = true;
+                meta.document.IsActive = true;
                 return meta;
             }
 
@@ -381,7 +381,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             LayoutDocument document = new LayoutDocument
             {
                 Title = editor.Title,
-                IsSelected = true,
                 ContentId = HeliosSerializer.GetReferenceName(profileObject),
                 Content = CreateDocumentContent(editor)
             };
@@ -390,15 +389,15 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // therefore the LayoutDocumentPane 'DocumentPane' must be referred to dynamically
             LayoutDocumentPane documentPane = DockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
             documentPane?.Children.Add(document);
-            document.IsSelected = true;
+            document.IsActive = true;
             document.Closed += Document_Closed;
 
             meta = AddDocumentMeta(profileObject, document, editor);
             profileObject.PropertyChanged += DocumentObject_PropertyChanged;
-
+            
             return meta;
         }
-        
+
         private HeliosEditorDocument CreateDocumentEditor(HeliosObject profileObject)
         {
             switch (profileObject)
@@ -676,7 +675,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             LayoutAnchorable interfaceStatus = ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
             if (interfaceStatus != null)
             {
-                interfaceStatus.IsSelected = true;
+                interfaceStatus.IsActive = true;
             }
 #endif
         }
