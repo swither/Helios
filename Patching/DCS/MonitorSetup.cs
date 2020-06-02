@@ -554,6 +554,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // get the list of configured monitors in the settings file
             List<string> stableKeys = settings.EnumerateSettingNames(SETTINGS_GROUP).ToList();
 
+            if (!ConfigManager.Application.SettingsAreWritable)
+            {
+                // this is a readonly application, let another application (i.e. Profile Editor) clean this up
+                return;
+            }
+
             // clean up settings for monitors that are not existing any more or are phantoms from unreset profiles
             foreach (string key in stableKeys.Where(key => !displayKeys.Contains(key)))
             {
