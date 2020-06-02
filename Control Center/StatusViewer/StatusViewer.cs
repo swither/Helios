@@ -200,6 +200,11 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             CautionLightVisibility = Visibility.Hidden;
         }
 
+        /// <summary>
+        /// callback from NLog via our log target StatusViewerLogTarget
+        /// </summary>
+        /// <param name="eventInfo"></param>
+        /// <param name="message"></param>
         public void WriteLogMessage(LogEventInfo eventInfo, string message)
         {
             StatusReportItem.SeverityCode code;

@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         private IntPtr HWND_TOPMOST = new IntPtr(-1);
         private const long TOPMOST_TICK_COUNT = 3 * TimeSpan.TicksPerSecond;
 
-        private List<string> _profiles = new List<string>();
+        private readonly List<string> _profiles = new List<string>();
         private int _profileIndex = -1;
 
         private DispatcherTimer _dispatcherTimer;
@@ -90,7 +90,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
             else
             {
-                // add the list of authors and contributors to the console instead
+                // add the list of authors and contributors to the console instead, without adding to log
                 StatusViewer.AddItem(new StatusReportItem {
                     Status = $"Authors: {string.Join(", ", About.Authors)}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate });
@@ -190,20 +190,25 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             {
                 return;
             }
-            StatusViewer.AddItem(new StatusReportItem()
+
+            StatusReportItem statusReportItem = new StatusReportItem()
             {
                 Status = status
-            });
+            };
+            StatusViewer.AddItem(statusReportItem);
+            statusReportItem.Log(ConfigManager.LogManager);
         }
 
         private void ReportError(string status, string recommendation)
         {
-            StatusViewer.AddItem(new StatusReportItem()
+            StatusReportItem statusReportItem = new StatusReportItem()
             {
                 Severity = StatusReportItem.SeverityCode.Error,
                 Status = status,
                 Recommendation = recommendation
-            });
+            };
+            StatusViewer.AddItem(statusReportItem);
+            statusReportItem.Log(ConfigManager.LogManager);
         }
 
         // helper
@@ -459,10 +464,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         {
             ResetProfile();
             StatusViewer.ResetCautionLight();
-            StatusViewer.AddItem(new StatusReportItem()
-            {
-                Status = "Profile was manually reset."
-            });
+            ReportStatus("Profile was manually reset.");
         }
 
         private void OpenControlCenter_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -642,10 +644,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             if (oldValue != _lastDriverStatus)
             {
                 UpdateStatusMessage();
-                StatusViewer.AddItem(new StatusReportItem()
-                {
-                    Status = $"Simulator is running exports '{_lastDriverStatus}'"
-                });
+                // send only a simple status message to status viewer instead of whole status via ReportStatusToStatusViewer
+                ReportStatus($"Simulator is running exports '{_lastDriverStatus}'");
             }
         }
 
@@ -656,10 +656,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             if (oldValue != _lastProfileHint)
             {
                 UpdateStatusMessage();
-                StatusViewer.AddItem(new StatusReportItem()
-                {
-                    Status = $"Simulator is '{_lastProfileHint}'"
-                });
+                // send only a simple status message to status viewer instead of whole status via ReportStatusToStatusViewer
+                ReportStatus($"Simulator is '{_lastProfileHint}'");
             }
             if (!Preferences.ProfileAutoStart)
             {
@@ -838,7 +836,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         /// <summary>
         /// reload the list of profiles on disk and set the current selected index if
-        /// the given path matches references a file that still exists
+        /// the given path references a file that still exists
         /// </summary>
         /// <param name="currentProfilePath"></param>
         private void LoadProfileList(string currentProfilePath)
@@ -867,8 +865,9 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     success = false;
                 }
                 StatusViewer.AddItem(status);
+                status.Log(ConfigManager.LogManager);
             }
-            StatusCanvas.StatusLines.ScrollToBottom();
+            StatusCanvas.StatusLines?.ScrollToBottom();
             if (!success)
             {
                 StatusMessage = StatusValue.FailedPreflight;

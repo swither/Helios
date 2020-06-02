@@ -32,7 +32,7 @@
             <RowDefinition Height="64"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="12,8,0,8" CornerRadius="3" BorderBrush="#FF454545" BorderThickness="2" Background="#FF001500">
-            <ScrollViewer x:Name="StatusLines" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+            <ScrollViewer Name="StatusLines" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
                 <ListView Margin="0" Background="#FF001500"
                                       BorderThickness="0"
                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"

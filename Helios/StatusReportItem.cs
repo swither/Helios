@@ -141,20 +141,21 @@ namespace GadrocsWorkshop.Helios
 
                     break;
                 case SeverityCode.Warning:
-                    logManager.LogWarning(Status);
+                    // status of warning or error severity is still correct program behavior, so we log as info
+                    logManager.LogInfo(Status);
                     if (Recommendation != null)
                     {
-                        logManager.LogWarning(Recommendation);
+                        logManager.LogInfo(Recommendation);
                     }
 
                     break;
                 case SeverityCode.Error:
-                    logManager.LogError(Status);
+                    // status of warning or error severity is still correct program behavior, so we log as info
+                    logManager.LogInfo(Status);
                     if (Recommendation != null)
                     {
-                        logManager.LogError(Recommendation);
+                        logManager.LogInfo(Recommendation);
                     }
-
                     break;
             }
         }
