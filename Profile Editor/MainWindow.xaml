@@ -237,11 +237,13 @@
                                 </ad:LayoutAnchorable>
                             </ad:LayoutAnchorablePane>
                         </ad:LayoutPanel>
-                        <ad:LayoutAnchorablePaneGroup  Orientation="Vertical" DockWidth="300">
-                            <ad:LayoutAnchorablePane  >
+                        <ad:LayoutAnchorablePaneGroup Orientation="Vertical" DockWidth="300">
+                            <ad:LayoutAnchorablePane>
                                 <ad:LayoutAnchorable Title="Properties" Selector.IsSelected="True">
                                     <local:PropertyPanel x:Name="PropertiesPanel" PropertyEditors="{Binding ElementName=ProfileEditorWindow,Path=CurrentEditor.PropertyEditors,Mode=TwoWay}" />
                                 </ad:LayoutAnchorable>
+                            </ad:LayoutAnchorablePane>
+                            <ad:LayoutAnchorablePane>
                                 <ad:LayoutAnchorable Title="Layers">
                                     <local:LayersPanel x:Name="LayersPanel" Editor="{Binding ElementName=ProfileEditorWindow,Path=CurrentEditor}" />
                                 </ad:LayoutAnchorable>
