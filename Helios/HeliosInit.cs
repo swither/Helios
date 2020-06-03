@@ -20,7 +20,6 @@ namespace GadrocsWorkshop.Helios
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
     using System.Windows.Media;
@@ -34,15 +33,17 @@ namespace GadrocsWorkshop.Helios
 
         public static void Initialize(string docPath, string logFileName, LogLevel logLevel, HeliosApplication application = null)
         {
-            // check OS and build
-            if (!Environment.Is64BitOperatingSystem)
-            {
-                throw new PlatformNotSupportedException("Helios must be executed on a 64-bit Windows OS");
-            }
-            if (!Environment.Is64BitProcess)
-            {
-                throw new PlatformNotSupportedException("Helios must be executed as a 64-bit application");
-            }
+            #if ! HELIOS_32BIT
+                // check OS and build
+                if (!Environment.Is64BitOperatingSystem)
+                {
+                    throw new PlatformNotSupportedException("Helios must be executed on a 64-bit Windows OS");
+                }
+                if (!Environment.Is64BitProcess)
+                {
+                    throw new PlatformNotSupportedException("Helios must be executed as a 64-bit application");
+                }
+            #endif
 
             // Create documents directory if it does not exist
             ConfigManager.DocumentPath = docPath;
@@ -173,7 +174,7 @@ namespace GadrocsWorkshop.Helios
 
             string directoryName = moduleName;
             HeliosModuleAttribute[] moduleAttributes = (HeliosModuleAttribute[])asm.GetCustomAttributes(typeof(HeliosModuleAttribute), false);
-            if (moduleAttributes != null && moduleAttributes.Length > 0)
+            if (moduleAttributes.Length > 0)
             {
                 directoryName = moduleAttributes[0].Directory;
             }

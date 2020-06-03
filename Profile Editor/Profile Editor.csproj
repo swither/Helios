@@ -49,7 +49,6 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
@@ -313,9 +312,7 @@
     <Resource Include="Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ProfileEditor.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="ProfileEditor.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -333,7 +330,7 @@
     <Resource Include="about.png" />
   </ItemGroup>
   <ItemGroup />
-  <Import Project="..\Helios.targets" />
+  <Import Project="..\HeliosExecutable.targets" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>

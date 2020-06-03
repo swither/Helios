@@ -1,1 +1,1 @@
-msiexec /i "Helios Installer\Release\Helios Installer.msi" 
+msiexec /i "Helios Installer\Release\Helios.%VERSION%.msi" 

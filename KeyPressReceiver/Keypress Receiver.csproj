@@ -94,5 +94,5 @@
     <Resource Include="Helios.ico" />
     <Content Include="Text.ico" />
   </ItemGroup>
-  <Import Project="..\Helios.targets" />
+  <Import Project="..\HeliosExecutable.targets" />
 </Project>
