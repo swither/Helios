@@ -78,6 +78,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Caution", "cadc indicator", "CADC indicator lamp on the caution panel.", "True if lit", BindingValueUnits.Boolean);
             AddValue("General", "speed barke", "Indicates if the speed brake is deployed.", "True if speed breake is in any other position than stowed.", BindingValueUnits.Boolean);
 
+            AddValue("HSI", "desired course calculated", "Internally calculated value", "360 - current heading + desired course", BindingValueUnits.Degrees);
+            AddValue("HSI", "desired heading calculated", "Internally calculated value", "360 - current heading + desired heading", BindingValueUnits.Degrees);
             AddValue("HSI", "Outer marker indicator", "Outer marker indicator on HSI", "True if lit", BindingValueUnits.Boolean);
             AddValue("HSI", "Middle marker indicator", "Middle marker indicator on HSI", "True if lit", BindingValueUnits.Boolean);
 
@@ -163,6 +165,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("HSI", "current heading", new BindingValue(_lastFlightData.currentHeading));
                 SetValue("HSI", "desired course", new BindingValue(_lastFlightData.desiredCourse));
                 SetValue("HSI", "desired heading", new BindingValue(_lastFlightData.desiredHeading));
+                SetValue("HSI", "desired course calculated", new BindingValue(ClampDegrees((360 - _lastFlightData.currentHeading) + _lastFlightData.desiredCourse)));
+                SetValue("HSI", "desired heading calculated", new BindingValue(ClampDegrees((360 - _lastFlightData.currentHeading) + _lastFlightData.desiredHeading)));
 
                 float deviation = _lastFlightData.courseDeviation % 180;
                 SetValue("HSI", "course deviation", new BindingValue(deviation / _lastFlightData.deviationLimit));
@@ -489,6 +493,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             if (value < min) return min;
             if (value > max) return max;
             return value;
+        }
+
+        private double ClampDegrees(double input)
+        {
+            while (input < 0d)
+            {
+                input += 360d;
+            }
+            while (input > 360d)
+            {
+                input -= 360d;
+            }
+            return input;
         }
 
         internal override void CloseData()
