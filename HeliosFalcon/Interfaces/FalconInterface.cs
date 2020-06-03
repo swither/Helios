@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
@@ -254,10 +255,35 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             if (_callbacks.HasCallback(e.Value.StringValue))
             {
-                _callbacks[e.Value.StringValue].Press();
+                if (WindowFocused(_falconType))
+                {
+                    _callbacks[e.Value.StringValue].Press();
+                }
             }
         }
         
+        bool WindowFocused(FalconTypes type)
+        {
+            bool result = false;
+
+            if(type == FalconTypes.BMS)
+            {
+                System.Diagnostics.Process[] bms = System.Diagnostics.Process.GetProcessesByName("Falcon BMS");
+                if(bms.Length > 0)
+                {
+                    System.IntPtr hWnd = bms[0].MainWindowHandle;
+                    if(SetForegroundWindow(hWnd))
+                    {
+                        result = true;
+                    }
+                }
+            }
+            return result;
+        }
+
+        [DllImport("user32.dll")]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
+
         public override void ReadXml(XmlReader reader)
         {
 
