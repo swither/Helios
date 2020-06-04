@@ -32,6 +32,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private string _falconPath;
         private string _keyFile;
         private string _cockpitDatFile;
+        private bool FocusAssist;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private FalconDataExporter _dataExporter;
@@ -300,6 +301,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "CockpitDatFile":
                         CockpitDatFile = reader.ReadElementString("CockpitDatFile");
                         break;
+                    case "FocusAssist":
+                        FocusAssist = Convert.ToBoolean(reader.ReadElementString("FocusAssist"));
+                        break;
                     default:
                         // ignore unsupported settings
                         string elementName = reader.Name;
@@ -315,6 +319,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             writer.WriteElementString("FalconType", FalconType.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
             writer.WriteElementString("CockpitDatFile", CockpitDatFile);
+            writer.WriteElementString("FocusAssist", Convert.ToString(FocusAssist));
         }
 
         #region IReadyCheck
