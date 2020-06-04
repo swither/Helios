@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
@@ -32,7 +31,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private string _falconPath;
         private string _keyFile;
         private string _cockpitDatFile;
-        private bool _focusAssist;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private FalconDataExporter _dataExporter;
@@ -71,16 +69,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         #region Properties
 
-        public bool FocusAssist
-        {
-            get { return _focusAssist; }
-            set
-            {
-                var oldValue = _focusAssist;
-                _focusAssist = value;
-                OnPropertyChanged("FocusAssist", oldValue, value, true);
-            }
-        }
         public FalconTypes FalconType
         {
             get
@@ -248,7 +236,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         void PressAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (WindowFocused(_falconType))
+            if (_callbacks.HasCallback(e.Value.StringValue))
             {
                 _callbacks[e.Value.StringValue].Down();
             }
@@ -256,7 +244,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         void ReleaseAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (WindowFocused(_falconType))
+            if (_callbacks.HasCallback(e.Value.StringValue))
             {
                 _callbacks[e.Value.StringValue].Up();
             }
@@ -266,32 +254,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             if (_callbacks.HasCallback(e.Value.StringValue))
             {
-                if (WindowFocused(_falconType))
-                {
-                    _callbacks[e.Value.StringValue].Press();
-                }
+                _callbacks[e.Value.StringValue].Press();
             }
         }
         
-        bool WindowFocused(FalconTypes type)
-        {
-            bool result = false;
-
-            if(type == FalconTypes.BMS && _focusAssist)
-            {
-                System.Diagnostics.Process[] bms = System.Diagnostics.Process.GetProcessesByName("Falcon BMS");
-                if(bms.Length > 0)
-                {
-                    System.IntPtr hWnd = bms[0].MainWindowHandle;
-                   result = SetForegroundWindow(hWnd);
-                }
-            }
-            return result;
-        }
-
-        [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
-
         public override void ReadXml(XmlReader reader)
         {
 
@@ -308,9 +274,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "CockpitDatFile":
                         CockpitDatFile = reader.ReadElementString("CockpitDatFile");
                         break;
-                    case "FocusAssist":
-                        FocusAssist = Convert.ToBoolean(reader.ReadElementString("FocusAssist"));
-                        break;
                     default:
                         // ignore unsupported settings
                         string elementName = reader.Name;
@@ -326,7 +289,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             writer.WriteElementString("FalconType", FalconType.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
             writer.WriteElementString("CockpitDatFile", CockpitDatFile);
-            writer.WriteElementString("FocusAssist", FocusAssist.ToString());
         }
 
         #region IReadyCheck
