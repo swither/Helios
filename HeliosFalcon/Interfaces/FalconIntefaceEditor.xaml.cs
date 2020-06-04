@@ -42,6 +42,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             ofd.Title = "Select Key File";
 
             ofd.FileName = ((FalconInterface)Interface).KeyFileName;
+
+            if (((FalconInterface) Interface).FalconType == FalconTypes.BMS)
+            {
+                ofd.InitialDirectory = ((FalconInterface)Interface).FalconPath + "\\User\\Config";
+            }
+            else
+            {
+                ofd.InitialDirectory = ((FalconInterface) Interface).FalconPath;
+            }
+
             Nullable<bool> result = ofd.ShowDialog(Window.GetWindow(this));
 
             if (result == true)
