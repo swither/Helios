@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private string _falconPath;
         private string _keyFile;
         private string _cockpitDatFile;
-        private bool FocusAssist;
+        private bool _focusAssist;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private FalconDataExporter _dataExporter;
@@ -71,6 +71,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         #region Properties
 
+        public bool FocusAssist
+        {
+            get { return _focusAssist; }
+            set
+            {
+                if (_focusAssist == false && value != false)
+                {
+                    var oldValue = _focusAssist;
+                    _focusAssist = value;
+                    OnPropertyChanged("FocusAssist", oldValue, value, true);
+                }
+            }
+        }
         public FalconTypes FalconType
         {
             get
@@ -267,16 +280,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             bool result = false;
 
-            if(type == FalconTypes.BMS)
+            if(type == FalconTypes.BMS && _focusAssist)
             {
                 System.Diagnostics.Process[] bms = System.Diagnostics.Process.GetProcessesByName("Falcon BMS");
                 if(bms.Length > 0)
                 {
                     System.IntPtr hWnd = bms[0].MainWindowHandle;
-                    if(SetForegroundWindow(hWnd))
-                    {
-                        result = true;
-                    }
+                   result = SetForegroundWindow(hWnd);
                 }
             }
             return result;
@@ -319,7 +329,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             writer.WriteElementString("FalconType", FalconType.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
             writer.WriteElementString("CockpitDatFile", CockpitDatFile);
-            writer.WriteElementString("FocusAssist", Convert.ToString(FocusAssist));
+            writer.WriteElementString("FocusAssist", FocusAssist.ToString());
         }
 
         #region IReadyCheck
