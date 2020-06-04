@@ -76,12 +76,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             get { return _focusAssist; }
             set
             {
-                if (_focusAssist == false && value != false)
-                {
-                    var oldValue = _focusAssist;
-                    _focusAssist = value;
-                    OnPropertyChanged("FocusAssist", oldValue, value, true);
-                }
+                var oldValue = _focusAssist;
+                _focusAssist = value;
+                OnPropertyChanged("FocusAssist", oldValue, value, true);
             }
         }
         public FalconTypes FalconType
@@ -251,7 +248,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         void PressAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (_callbacks.HasCallback(e.Value.StringValue))
+            if (WindowFocused(_falconType))
             {
                 _callbacks[e.Value.StringValue].Down();
             }
@@ -259,7 +256,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         void ReleaseAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (_callbacks.HasCallback(e.Value.StringValue))
+            if (WindowFocused(_falconType))
             {
                 _callbacks[e.Value.StringValue].Up();
             }
