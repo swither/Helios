@@ -43,7 +43,7 @@
                     <av:RowDefinition />
                 </av:Grid.RowDefinitions>
                 <av:TextBlock av:Grid.Column="0" av:Grid.Row="0" av:Grid.ColumnSpan="2" FontSize="11" Margin="4" FontStyle="Italic" TextWrapping="Wrap">
-                    <av:Run Text="Select which version of falc"/>
+                    <av:Run Text="Select which version of Falcon"/>
                     <av:Run Text="on you are running."/>
                 </av:TextBlock>
                 <av:Label av:Grid.Column="0" av:Grid.Row="1" Content="Falcon Version"/>
@@ -88,7 +88,6 @@
                 <local:FalconCallbackValueEditor av:Grid.Row="2" av:Grid.ColumnSpan="2" av:Grid.Column="1" Profile="{av:Binding Interface.Profile}" Margin="4,10,4,4" />
             </av:Grid>
         </av:GroupBox>
-        <av:Label x:Name="focusassist" Content="Focus Assist?" HorizontalAlignment="Left" Margin="-219,231.5,0,0" av:Grid.Row="2" VerticalAlignment="Top"/>
         <av:GroupBox av:Grid.Row="0" Header="Falcon Runtime" Margin="304,5,10,3.5">
             <av:Grid Margin="4">
                 <av:Grid.ColumnDefinitions>
@@ -99,8 +98,8 @@
                     <av:RowDefinition />
                     <av:RowDefinition />
                 </av:Grid.RowDefinitions>
-                <av:TextBlock av:Grid.Column="0" av:Grid.Row="0" av:Grid.ColumnSpan="2" FontSize="11" Margin="4" FontStyle="Italic" TextWrapping="Wrap" Text="bring focus to the Flacon BMS window before sending callbacks"/>
-                <av:CheckBox Content="Focus Assist?" HorizontalAlignment="Left" Margin="0,1,0,0" av:Grid.Row="1" VerticalAlignment="Top" IsChecked="{av:Binding Interface.FocusAssist}"/>
+                <av:TextBlock av:Grid.Column="0" av:Grid.Row="0" av:Grid.ColumnSpan="2" FontSize="11" Margin="4" FontStyle="Italic" TextWrapping="Wrap" Text="Bring focus to the Falcon window before sending callbacks"/>
+                <av:CheckBox Content="Focus Assist?" HorizontalAlignment="Left" Margin="0,1,0,0" av:Grid.Row="1" VerticalAlignment="Top" IsChecked="{av:Binding Path=Interface.FocusAssist, Mode=TwoWay}"/>
             </av:Grid>
         </av:GroupBox>
     </av:Grid>
