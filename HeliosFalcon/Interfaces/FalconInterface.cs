@@ -78,7 +78,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             {
                 var oldValue = _focusAssist;
                 _focusAssist = value;
-                OnPropertyChanged("FocusAssist", oldValue, value, true);
+                OnPropertyChanged("FocusAssist", oldValue, value, false);
             }
         }
         public FalconTypes FalconType
@@ -248,16 +248,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         void PressAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (WindowFocused(_falconType))
+            if (_callbacks.HasCallback(e.Value.StringValue))
             {
+                WindowFocused(_falconType);
                 _callbacks[e.Value.StringValue].Down();
             }
         }
 
         void ReleaseAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (WindowFocused(_falconType))
+            if (_callbacks.HasCallback(e.Value.StringValue))
             {
+                WindowFocused(_falconType);
                 _callbacks[e.Value.StringValue].Up();
             }
         }
@@ -266,27 +268,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             if (_callbacks.HasCallback(e.Value.StringValue))
             {
-                if (WindowFocused(_falconType))
-                {
-                    _callbacks[e.Value.StringValue].Press();
-                }
+                WindowFocused(_falconType);
+                _callbacks[e.Value.StringValue].Press();
             }
         }
         
-        bool WindowFocused(FalconTypes type)
+        void WindowFocused(FalconTypes type)
         {
-            bool result = false;
-
-            if(type == FalconTypes.BMS && _focusAssist)
+            if(type == FalconTypes.BMS && FocusAssist)
             {
                 System.Diagnostics.Process[] bms = System.Diagnostics.Process.GetProcessesByName("Falcon BMS");
                 if(bms.Length > 0)
                 {
                     System.IntPtr hWnd = bms[0].MainWindowHandle;
-                   result = SetForegroundWindow(hWnd);
+                   SetForegroundWindow(hWnd);
                 }
             }
-            return result;
         }
 
         [DllImport("user32.dll")]
