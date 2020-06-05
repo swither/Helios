@@ -124,6 +124,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         private void _changeValueByPulses_Execute(object action, HeliosActionEventArgs e)
         {
             ClaimControlIfAvailable(e);
+            if (Math.Abs(e.Value.DoubleValue) < 0.1)
+            {
+                // this represents no change
+                return;
+            }
             Logger.Debug("received change by pulses of {Pulses}", e.Value.DoubleValue);
             if (_boundRotary != null)
             {
