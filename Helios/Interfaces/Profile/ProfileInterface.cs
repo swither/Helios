@@ -13,6 +13,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
@@ -26,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
     using System.Windows;
 
     [HeliosInterface("Helios.Base.ProfileInterface", "Profile", null, typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
-    public class ProfileInterface : HeliosInterface, IStatusReportNotify, IResetMonitorsObserver
+    public class ProfileInterface : HeliosInterface, IStatusReportNotify, IResetMonitorsObserver, IReadyCheck
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -59,6 +60,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             launchApplication.Execute += LaunchApplication_Execute;
             Actions.Add(launchApplication);
 
+            // TODO declare triggers
+
             _statusReportNotify = new StatusReportNotifyAsyncOnce(CreateStatusReport, () => "Profile Interface", () => "Interface to Helios Control Center itself.");
         }
 
@@ -75,6 +78,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
             images.ImageLoadSuccess += Images_ImageLoadSuccess;
             images.ImageLoadFailure += Images_ImageLoadFailure;
+            Profile.ProfileStarted += Profile_ProfileStarted;
+            Profile.ProfileStopped += Profile_ProfileStopped;
+        }
+
+        private void Profile_ProfileStarted(object sender, EventArgs e)
+        {
+            // TODO start trigger
+        }
+
+        private void Profile_ProfileStopped(object sender, EventArgs e)
+        {
+            // TODO stop trigger
+        }
+
+        public override void Reset()
+        {
+            // TODO reset trigger
+            base.Reset();
         }
 
         private void Images_ImageLoadFailure(object sender, ImageLoadEventArgs e)
@@ -104,6 +125,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                 return;
             }
 
+            oldProfile.ProfileStopped -= Profile_ProfileStopped;
+            oldProfile.ProfileStarted -= Profile_ProfileStarted;
             images.ImageLoadSuccess -= Images_ImageLoadSuccess;
             images.ImageLoadFailure -= Images_ImageLoadFailure;
         }
@@ -182,6 +205,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             IList<StatusReportItem> newReport = new List<StatusReportItem>();
             CheckResetMonitors(newReport);
             CheckMissingimages(newReport);
+            CheckExecutablePaths(newReport);
             PublishStatusReport(newReport);
         }
 
@@ -224,6 +248,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             }
         }
 
+        /// <summary>
+        /// check configuration related to launching or stopping executables
+        /// </summary>
+        /// <param name="newReport"></param>
+        private void CheckExecutablePaths(IList<StatusReportItem> newReport)
+        {
+            // TODO if any launch or kill actions are configured, check paths and access
+            // TODO if incorrect, report warning or error (to stop launch) in StatusReportItem
+            // TODO if correct, report detail also in StatusReportItem
+        }
+
         public void PublishStatusReport(IList<StatusReportItem> statusReport)
         {
             _statusReportNotify.PublishStatusReport(statusReport);
@@ -232,6 +267,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
         public void NotifyResetMonitorsComplete()
         {
             InvalidateStatusReport();
+        }
+
+        public IEnumerable<StatusReportItem> PerformReadyCheck()
+        {
+            // NOTE: we don't have to check monitor reset because Control Center already does that
+            // NOTE: we don't have to check missing images because they will log warnings 
+            List<StatusReportItem> items = new List<StatusReportItem>();
+            CheckExecutablePaths(items);
+            return items;
         }
     }
 }
