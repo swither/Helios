@@ -21,7 +21,8 @@ REM don't do this yet, because github shows every tag as a release: git push ori
 
 REM publish installer file
 mkdir %SHARE_FOLDER%\%VERSION%
-copy "Helios Installer\Release\Helios Installer.msi" %SHARE_FOLDER%\%VERSION%\Helios.%VERSION%.msi 
+copy "Helios Installer\Release\*.msi" %SHARE_FOLDER%\%VERSION%\ 
+copy "Helios Installer\Release32\*.msi" %SHARE_FOLDER%\%VERSION%\ 
 
 REM collect and format log
 FOR /F %%i IN ('git rev-parse %VERSION%') DO @set COMMIT=%%i
