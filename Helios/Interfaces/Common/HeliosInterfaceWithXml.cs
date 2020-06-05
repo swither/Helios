@@ -28,27 +28,36 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
     /// <typeparam name="T">a default-constructable descendant of HeliosXmlModel</typeparam>
     public class HeliosInterfaceWithXml<T> : HeliosInterface where T : HeliosXmlModel, new()
     {
+        private T _model = new T();
+
         public HeliosInterfaceWithXml(string name) : base(name)
         {
             // no code in base
         }
 
-        public T Model { get; protected set; } = new T();
+        public T Model
+        {
+            get => _model;
+            protected set
+            {
+                if (_model != null)
+                {
+                    _model.PropertyChanged -= Configuration_PropertyChanged;
+                }
+                _model = value;
+                if (_model != null)
+                {
+                    // register to forward any configuration value changes after load
+                    _model.PropertyChanged += Configuration_PropertyChanged;
+                }
+
+            }
+        }
 
         protected override void OnPropertyChanged(PropertyNotificationEventArgs args)
         {
             if (args.PropertyName == nameof(Model))
             {
-                if (args.OldValue != null)
-                {
-                    ((T) args.OldValue).PropertyChanged -= Configuration_PropertyChanged;
-                }
-
-                if (args.NewValue != null)
-                {
-                    // register to forward any configuration value changes after load
-                    ((T)args.NewValue).PropertyChanged += Configuration_PropertyChanged;
-                }
             }
             base.OnPropertyChanged(args);
         }
