@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using GadrocsWorkshop.Helios.ComponentModel;
 
 namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
 {
@@ -36,7 +37,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
 
         public void CreateDefaultPorts(int numPorts)
         {
-            Ports.AddRange(Enumerable.Range(0, numPorts).Select(n => new ControlRouterPort($"Port {n}")));
+            List<ControlRouterPort> newPorts = Enumerable.Range(0, numPorts).Select(n => new ControlRouterPort($"Port {n}")).ToList();
+            newPorts.ForEach(p => p.PropertyChanged += Port_PropertyChanged);
+            Ports.AddRange(newPorts);
+        }
+
+        private void Port_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // forward changes to configuration properties as child property events so we get Undo support
+            OnPropertyChanged("Port", (PropertyNotificationEventArgs)e);
+        }
+
+        protected override void AfterDeserialization()
+        {
+            base.AfterDeserialization();
+            Ports.ForEach(p => p.PropertyChanged += Port_PropertyChanged);
         }
     }
 }
