@@ -74,7 +74,7 @@ namespace GadrocsWorkshop.Helios
         
         public void CheckVersion(bool forceDisplay = false)
         {
-            if (_developmentPrototype)
+            if (_developmentPrototype && !forceDisplay)
             {
                 // we don't auto upgrade, we just time out
                 CheckTimeBomb();
