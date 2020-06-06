@@ -25,6 +25,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             get;
             set;
-        }
+        } = new List<string>();
     }
 }
