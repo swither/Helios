@@ -16,6 +16,7 @@
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
 using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
+using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.ProfileEditor
@@ -534,7 +535,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             GetLoadingAdorner();
 
             // create profile
-            string systemLayoutText = _systemDefaultLayout;
             HeliosProfile profile = ConfigManager.ProfileManager.LoadProfile(path, out IEnumerable<string> loadingWork);
 
             // now load profile components in little chunks, because it may take a while
@@ -566,15 +566,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
                 // NOTE: only install profile if not null (i.e. load succeeded)
                 Profile = profile;
-
-                string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
-                if (File.Exists(layoutFileName))
-                {
-                    if (LayoutIsComplete(systemLayoutText, layoutFileName))
-                    {
-                        _layoutSerializer.Deserialize(layoutFileName);
-                    }
-                }
+                RestoreSavedLayout(profile);
             } 
             else
             {
@@ -593,6 +585,36 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             GC.WaitForPendingFinalizers();
         }
 
+        private void RestoreSavedLayout(HeliosProfile profile)
+        {
+            string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
+            if (File.Exists(layoutFileName))
+            {
+                try
+                {
+                    if (LayoutIsComplete(_systemDefaultLayout, layoutFileName))
+                    {
+                        _layoutSerializer.Deserialize(layoutFileName);
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "failed to restore saved layout from {Path}", Anonymizer.Anonymize(layoutFileName));
+                    // fall through to restore system default layout
+                }
+            }
+            RestoreDefaultLayout();
+        }
+
+        private void RestoreDefaultLayout()
+        {
+            // we need to close any editor documents before we deserialize the layout because they will be removed but not closed and
+            // then can never be recovered
+            CloseAllDocuments();
+            StringReader reader = new StringReader(_systemDefaultLayout);
+            _layoutSerializer.Deserialize(reader);
+        }
 
         /// <summary>
         /// pump the UI and abort if the our window is closing or the Dispatcher is going down
@@ -925,11 +947,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             {
                 File.Delete(_defaultLayoutFile);
             }
-            // we need to close any editor documents before we deserialize the layout because they will be removed but not closed and
-            // then can never be recovered
-            CloseAllDocuments();
-            StringReader reader = new StringReader(_systemDefaultLayout);
-            _layoutSerializer.Deserialize(reader);
+            RestoreDefaultLayout();
         }
 
         private void DialogShowModal_Executed(object sender, ExecutedRoutedEventArgs e)
