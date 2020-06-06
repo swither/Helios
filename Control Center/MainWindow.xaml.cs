@@ -246,7 +246,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     Version ver = Assembly.GetEntryAssembly().GetName().Version;
                     string message =
                         $"Helios {ver.Major.ToString()}.{ver.Minor.ToString()}.{ver.Build.ToString("0000")}.{ver.Revision.ToString("0000")}";
-                    message += $"\n{KnownLinks.GitRepoUrl() ?? "BlueFinBima fork"}";
+                    message += $"\n{KnownLinks.GitRepoUrl() ?? "HeliosVirtualCockpit fork"}";
                     updateInfoStatus(message);
                     break;
                 case StatusValue.ProfileVersionHigher:

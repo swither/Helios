@@ -26,7 +26,7 @@
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 If you encounter problems, please check for known issues here 
-https://github.com/BlueFinBima/helios/issues and if nothing appears to be 
+https://github.com/HeliosVirtualCockpit/helios/issues and if nothing appears to be 
 relevant then open a new issue.
   
 

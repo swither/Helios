@@ -1119,7 +1119,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void Donate_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/BlueFinBima/Helios/wiki/Donations");
+            System.Diagnostics.Process.Start("https://github.com/HeliosVirtualCockpit/Helios/wiki/Donations");
         }
 
         private void Explorer_ItemDeleting(object sender, ItemDeleteEventArgs e)
