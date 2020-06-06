@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("Control Center")]
 [assembly: AssemblyDescription("Helios Control Center")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("Control Center")]
-[assembly: AssemblyCopyright("Copyright © Craig Courtney 2015")]
+[assembly: AssemblyCopyright("Copyright (c) 2015 Craig Courtney, 2020 Helios Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

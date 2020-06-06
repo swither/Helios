@@ -22,9 +22,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ToolsCommon")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("ToolsCommon")]
-[assembly: AssemblyCopyright("Copyright 2020 Ammo Goettsch")]
+[assembly: AssemblyCopyright("Copyright (c) 2020 Ammo Goettsch")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

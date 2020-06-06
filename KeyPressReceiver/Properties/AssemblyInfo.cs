@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Keypress Receiver")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("Keypress Receiver")]
-[assembly: AssemblyCopyright("Copyright © 2019 Piet Van Nes")]
+[assembly: AssemblyCopyright("Copyright (c) 2019 Piet Van Nes")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

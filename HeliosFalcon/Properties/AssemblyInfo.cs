@@ -10,9 +10,9 @@ using GadrocsWorkshop.Helios.ComponentModel;
 [assembly: AssemblyTitle("HeliosFalcon")]
 [assembly: AssemblyDescription("Helios Falcon Simulators Support")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Helios")]
+[assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("HeliosFalcon")]
-[assembly: AssemblyCopyright("Copyright 2020 Helios Contributors")]
+[assembly: AssemblyCopyright("Copyright (c) 2020 Helios Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

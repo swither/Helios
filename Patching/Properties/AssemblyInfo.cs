@@ -26,9 +26,9 @@ using GadrocsWorkshop.Helios.ComponentModel;
 [assembly: AssemblyTitle("Patching")]
 [assembly: AssemblyDescription("Helios Simulator Patching Support")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("Patching")]
-[assembly: AssemblyCopyright("Copyright © 2020 Helios Contributors")]
+[assembly: AssemblyCopyright("Copyright (c) 2020 Helios Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

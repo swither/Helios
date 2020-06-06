@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DCS F/A-18C Resources")]
 [assembly: AssemblyDescription("Resources for Helios relating to Eagle Dynamics F/A-18C Module for DCS World")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("BlueFinBima")]
+[assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("Helios")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCopyright("Copyright (c) 2019 BlueFinBima")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
