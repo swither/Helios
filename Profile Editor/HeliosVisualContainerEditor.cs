@@ -43,7 +43,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private EditorMouseState _mouseState;     // Current mode for mouse interactions
         private Point _mouseDownPosition;   // Location (relative to this control) where mouse button was pressed
         private Vector _dragVector = new Vector(0d, 0d);  // Offset of current mouse position based off of mouse down position
-        private Point _virtualPanningPosition; // the relative location to which we have updated the panning, accumulates small changes until we step
+        private Point _panningOffset; // the scroller offsets when we started panning
 
         private SnapManager _snapManager = new SnapManager();
 
@@ -501,8 +501,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // we don't need this location, but keep it for debugging
             _mouseDownPosition = e.GetPosition(Window.GetWindow(this));
 
-            // this is the location for which we have updated the panning
-            _virtualPanningPosition = _mouseDownPosition;
+            // note the initial offsets of the scroller we will pan
+            ScrollViewer scroller = FindPanningScroller();
+            if (scroller == null)
+            {
+                _panningOffset.X = 0;
+                _panningOffset.Y = 0;
+            }
+            else
+            {
+                _panningOffset.X = scroller.HorizontalOffset;
+                _panningOffset.Y = scroller.VerticalOffset;
+            }
 
             // REVISIT set an adorner and clear it when we are done panning
 
@@ -555,6 +565,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void HandleMiddleMouseButtonPanning(MouseEventArgs e, Point currentPosition)
         {
+            ScrollViewer scroller = FindPanningScroller();
+            if (scroller == null)
+            {
+                return;
+            }
+            scroller.ScrollToHorizontalOffset(_panningOffset.X + _mouseDownPosition.X - currentPosition.X);
+            scroller.ScrollToVerticalOffset(_panningOffset.Y + _mouseDownPosition.Y - currentPosition.Y);
+        }
+
+        private ScrollViewer FindPanningScroller()
+        {
             // find a scrollviewer that can move horizontally and vertically, at least if shrunk enough
             ScrollViewer scroller = VisualAncestors
                 .OfType<ScrollViewer>()
@@ -562,37 +583,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                             (v.HorizontalScrollBarVisibility == ScrollBarVisibility.Visible))
                 .FirstOrDefault(v => (v.VerticalScrollBarVisibility == ScrollBarVisibility.Auto) ||
                                      (v.VerticalScrollBarVisibility == ScrollBarVisibility.Visible));
-            if (scroller == null)
-            {
-                return;
-            }
-
-            const double smallStep = 20d;
-            if (currentPosition.X > _virtualPanningPosition.X + smallStep)
-            {
-                // consume the X change
-                _virtualPanningPosition.X += smallStep;
-                scroller.LineRight();
-            }
-            else if (currentPosition.X < _virtualPanningPosition.X - smallStep)
-            {
-                // consume the X change
-                _virtualPanningPosition.X -= smallStep;
-                scroller.LineLeft();
-            }
-
-            if (currentPosition.Y > _virtualPanningPosition.Y + smallStep)
-            {
-                // consume the Y change
-                _virtualPanningPosition.Y += smallStep;
-                scroller.LineDown();
-            }
-            else if (currentPosition.Y < _virtualPanningPosition.Y - smallStep)
-            {
-                // consume the Y change
-                _virtualPanningPosition.Y -= smallStep;
-                scroller.LineUp();
-            }
+            return scroller;
         }
 
         private IEnumerable<UIElement> VisualAncestors
@@ -698,7 +689,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
-        #endregion
+#endregion
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -760,7 +751,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             return clampedValue;
         }
 
-        #region Command Handlers
+#region Command Handlers
 
         private static void Delete_CanExecute(object target, CanExecuteRoutedEventArgs e)
         {
@@ -1359,6 +1350,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
-        #endregion
+#endregion
     }
 }
