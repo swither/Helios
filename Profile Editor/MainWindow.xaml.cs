@@ -801,7 +801,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void NewVersionCheck_Click(object sender, RoutedEventArgs e)
         {
-            VersionChecker.CheckVersion();
+            ConfigManager.VersionChecker.CheckVersion(true);
         }
 
 #region Commands

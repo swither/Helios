@@ -29,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Util
 
             if (repo == null)
             {
-                repo = ConfigManager.SettingsManager.LoadSetting("Helios", "LastestGitHubDownloadUrl", null);
+                repo = ConfigManager.SettingsManager.LoadSetting("Helios", VersionChecker.GITHUB_DOWNLOAD_URL_SETTING, null);
             }
             else
             {
@@ -42,7 +42,7 @@ namespace GadrocsWorkshop.Helios.Util
             if (repo == null)
             {
                 // last resort
-                repo = "https://github.com/BlueFinBima/Helios/";
+                repo = "https://github.com/HeliosVirtualCockpit/Helios/";
             }
 
             Match match = new Regex("^https://github.com/[a-zA-Z0-9_]+/[a-zA-Z0-9_]+/").Match(repo);

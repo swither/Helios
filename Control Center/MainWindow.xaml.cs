@@ -1038,8 +1038,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 StartProfile();
             }
 
-            VersionChecker.CheckVersion();
-
+            ConfigManager.VersionChecker.CheckVersion();
         }
 
         private void HideButton_Clicked(object sender, RoutedEventArgs e)

@@ -112,6 +112,7 @@
     <Compile Include="Interfaces\Capabilities\IDynamicBindings.cs" />
     <Compile Include="Interfaces\Capabilities\IReadyCheck.cs" />
     <Compile Include="Interfaces\Capabilities\IViewportProvider.cs" />
+    <Compile Include="Windows\ViewModel\VersionCheckViewModel.cs" />
     <Page Include="Controls\PotentiometerWithTranslateAppearanceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -813,8 +814,8 @@
     <Compile Include="Units\NozzlePositionUnit.cs" />
     <Compile Include="Util\DCS\InstallationLocation.cs" />
     <Compile Include="Util\DCS\InstallationLocations.cs" />
-    <Compile Include="Windows\Controls\VersionReminderForm.xaml.cs">
-      <DependentUpon>VersionReminderForm.xaml</DependentUpon>
+    <Compile Include="Windows\Controls\VersionCheckWindow.xaml.cs">
+      <DependentUpon>VersionCheckWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\KnownFolders.cs" />
     <Compile Include="Util\Tokenizer.cs" />
@@ -2678,7 +2679,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Controls\VersionReminderForm.xaml">
+    <Page Include="Windows\Controls\VersionCheckWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
