@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -699,7 +700,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 .ReadResourceFile($"pack://application:,,,/Helios;component/Interfaces/DCS/Common/{EXPORT_MAIN_NAME}")
                 .Replace("HELIOS_REPLACE_IPAddress", IPAddress)
                 .Replace("HELIOS_REPLACE_Port", Port.ToString())
-                .Replace("HELIOS_REPLACE_ExportInterval", Math.Round(1d / Math.Max(4, ExportFrequency), 3).ToString());
+                .Replace("HELIOS_REPLACE_ExportInterval", Math.Round(1d / Math.Max(4, ExportFrequency), 3).ToString(CultureInfo.InvariantCulture));
         }
 
         private void UpdateModule()
