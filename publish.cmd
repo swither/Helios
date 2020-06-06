@@ -17,7 +17,7 @@ if %errorlevel% neq 0 (
 )
 
 REM publish tag
-REM don't do this yet, because github shows every tag as a release: git push origin %VERSION%
+git push origin %VERSION%
 
 REM publish installer file
 mkdir %SHARE_FOLDER%\%VERSION%
