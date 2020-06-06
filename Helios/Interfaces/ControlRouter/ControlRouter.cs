@@ -81,5 +81,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
             _mostRecentlySelected = null;
             return true;
         }
+
+        public override void Reset()
+        {
+            _mostRecentlySelected = null;
+            Model.Ports.ForEach(port => port.Reset());
+            base.Reset();
+        }
     }
 }
