@@ -28,6 +28,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         {
             get;
             set;
-        }
+        } = new List<string>();
     }
 }

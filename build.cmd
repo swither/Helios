@@ -1,8 +1,8 @@
 @echo off
 if "%1" == "test" (
-	set VERSION=1.6.1000.0
+	set HELIOS_BUILT_VERSION=1.6.1000.0
 ) else (
-	set VERSION=%1
+	set HELIOS_BUILT_VERSION=%1
 
 	REM make sure clean working directory
 
@@ -16,6 +16,8 @@ if "%1" == "test" (
 		echo Untracked files in working directory.  Update your gitignore or commit files to git before building.
 		exit /b 2
 	)
+	set LSFILES=
+	set gituntracked=
 
 	REM step 2: staged files
 	git diff-index --quiet --cached HEAD --
@@ -54,13 +56,13 @@ MSBuild.exe -binaryLogger:LogFile=clean32.binlog -clp:WarningsOnly -warnAsMessag
 rmdir /s /q bin
 
 REM build with version stamps
-MSBuild.exe -binaryLogger:LogFile=prebuild.binlog -clp:WarningsOnly -warnAsMessage:MSB4078 -p:version=%VERSION% -p:Configuration=Release;Platform=x64 BuildMeFirst.sln
-MSBuild.exe -binaryLogger:LogFile=build.binlog  -clp:WarningsOnly -warnAsMessage:MSB4078 -p:version=%VERSION% -p:Configuration=NoInstallers;Platform=x64 Helios.sln
+MSBuild.exe -binaryLogger:LogFile=prebuild.binlog -clp:WarningsOnly -warnAsMessage:MSB4078 -p:version=%HELIOS_BUILT_VERSION% -p:Configuration=Release;Platform=x64 BuildMeFirst.sln
+MSBuild.exe -binaryLogger:LogFile=build.binlog  -clp:WarningsOnly -warnAsMessage:MSB4078 -p:version=%HELIOS_BUILT_VERSION% -p:Configuration=NoInstallers;Platform=x64 Helios.sln
 if %errorlevel% neq 0 (
 	echo build of "NoInstallers|x64" failed.  Installers will not be built.
 	exit /b 1
 )
-MSBuild.exe -binaryLogger:LogFile=build32.binlog  -clp:WarningsOnly -warnAsMessage:MSB4078 -p:version=%VERSION% -p:Configuration=NoInstallers;Platform=AnyCPU32 Helios.sln
+MSBuild.exe -binaryLogger:LogFile=build32.binlog  -clp:WarningsOnly -warnAsMessage:MSB4078 -p:version=%HELIOS_BUILT_VERSION% -p:Configuration=NoInstallers;Platform=AnyCPU32 Helios.sln
 if %errorlevel% neq 0 (
 	echo build of "NoInstallers|AnyCPU32" failed.  Installers will not be built.
 	exit /b 1
@@ -70,11 +72,11 @@ REM modify installer projects to use correct version number in msi names that ge
 echo backing up "Helios Installer\Helios Installer.vdproj" to "Helios Installer\Helios Installer.vdproj.bak" 
 move "Helios Installer\Helios Installer.vdproj" "Helios Installer\Helios Installer.vdproj.bak"
 echo generating modified "Helios Installer\Helios Installer.vdproj" 
-powershell -Command "(gc 'Helios Installer\Helios Installer.vdproj.bak') -replace '1\.6\.1000\.0\.msi', '%VERSION%.msi' | Set-Content 'Helios Installer\Helios Installer.vdproj'"
+powershell -Command "(gc 'Helios Installer\Helios Installer.vdproj.bak') -replace '1\.6\.1000\.0\.msi', '%HELIOS_BUILT_VERSION%.msi' | Set-Content 'Helios Installer\Helios Installer.vdproj'"
 echo backing up "Helios Installer\Helios32bit Installer.vdproj" to "Helios Installer\Helios32bit Installer.vdproj.bak" 
 move "Helios Installer\Helios32bit Installer.vdproj" "Helios Installer\Helios32bit Installer.vdproj.bak"
 echo generating modified "Helios Installer\Helios32bit Installer.vdproj" 
-powershell -Command "(gc 'Helios Installer\Helios32bit Installer.vdproj.bak') -replace '1\.6\.1000\.0\.msi', '%VERSION%.msi' | Set-Content 'Helios Installer\Helios32bit Installer.vdproj'"
+powershell -Command "(gc 'Helios Installer\Helios32bit Installer.vdproj.bak') -replace '1\.6\.1000\.0\.msi', '%HELIOS_BUILT_VERSION%.msi' | Set-Content 'Helios Installer\Helios32bit Installer.vdproj'"
 
 REM build installers; this requires https://stackoverflow.com/questions/8648428/an-error-occurred-while-validating-hresult-8000000a/45580775#45580775
 devenv Helios.sln /Build "JustInstallers|x64"
@@ -88,13 +90,13 @@ move "Helios Installer\Helios32bit Installer.vdproj.bak" "Helios Installer\Helio
 
 REM fix up setup loaders
 echo renaming setup executables
-move "Helios Installer\Release\setup.exe" "Helios Installer\Release\Helios.%VERSION%.Setup.exe"
-move "Helios Installer\Release32\setup.exe" "Helios Installer\Release32\Helios32bit.%VERSION%.Setup.exe"
+move "Helios Installer\Release\setup.exe" "Helios Installer\Release\Helios.%HELIOS_BUILT_VERSION%.Setup.exe"
+move "Helios Installer\Release32\setup.exe" "Helios Installer\Release32\Helios32bit.%HELIOS_BUILT_VERSION%.Setup.exe"
 
 REM fix up installers
 pushd "Helios Installer\Release"
-cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios.%VERSION%.msi" %VERSION%
+cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
 popd
 pushd "Helios Installer\Release32"
-cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios32bit.%VERSION%.msi" %VERSION%
+cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios32bit.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
 popd

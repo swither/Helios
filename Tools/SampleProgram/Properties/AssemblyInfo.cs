@@ -23,9 +23,9 @@ using System.Windows;
 [assembly: AssemblyTitle("SampleProgram")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("SampleProgram")]
-[assembly: AssemblyCopyright("Copyright 2020 Ammo Goettsch")]
+[assembly: AssemblyCopyright("Copyright (c) 2020 Ammo Goettsch")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

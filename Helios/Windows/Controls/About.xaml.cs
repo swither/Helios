@@ -61,7 +61,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override void OnActivated(EventArgs e)
         {
-            Version runningVersion = VersionChecker.RunningVersion;
+            Version runningVersion = ConfigManager.VersionChecker.RunningVersion;
             VersionBlock.Text = runningVersion.Major.ToString() + "." + runningVersion.Minor.ToString() + "." + runningVersion.Build.ToString() + "." + runningVersion.Revision.ToString("0000");
             AuthorsBlock.Text = string.Join("; ", Authors);
             ContributionBlock.Text = string.Join("; ", Contributors);

@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Xml;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
@@ -82,7 +83,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             ExportFunctionsPath = exportFunctionsPath;
 
             // make sure we keep our list up to date and don't typo on the name of an export device
-            Debug.Assert(DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
+            Debug.Assert(null == exportDeviceName || DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
 
             // create handling for DCS export meta information we handle ourselves
             NetworkTriggerValue activeVehicle = new NetworkTriggerValue(this, "ACTIVE_VEHICLE", "ActiveVehicle",
@@ -132,7 +133,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
                 foreach (IStatusReportObserver observer in _observers)
                 {
-                    string newName = StatusName;
                     InvalidateStatusReport();
                 }
             }
@@ -409,6 +409,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             base.WriteXml(writer);
             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DCSExportModuleFormat));
 
+            // we could have configuration data that is not used and should not be persisted, so clean up if we can
+            // XXX remove this dispatch once we eliminate the profile writing thread
+            Application.Current.Dispatcher.Invoke(CleanBeforeWriting);
+
             if (ExportModuleFormat != DEFAULT_EXPORT_MODULE_FORMAT)
             {
                 // write new Xml only if configured, because it may break previous versions
@@ -443,6 +447,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             if (ImpersonatedVehicleName != null)
             {
                 writer.WriteElementString("ImpersonatedVehicleName", ImpersonatedVehicleName);
+            }
+        }
+
+        private void CleanBeforeWriting()
+        {
+            if (Configuration != null)
+            {
+                DCSExportConfiguration.ModuleFormatInfo moduleInfo = Configuration.ExportModuleFormatInfo[ExportModuleFormat];
+                if (!moduleInfo.CanBeAttached)
+                {
+                    ExportModuleBaseName = null;
+                    ExportModuleText = null;
+                }
             }
         }
 

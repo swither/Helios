@@ -72,11 +72,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 return;
             }
 
-            if (RunningVersion.IsDevelopmentPrototype)
-            {
-                // always run the check when in development build
-                VersionChecker.CheckVersion();
-            }
+            ConfigManager.VersionChecker.CheckVersion();
 
             // note that we started
             ConfigManager.LogManager.LogInfo("Starting Editor");

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
 using NLog;
 
 namespace GadrocsWorkshop.Helios
@@ -33,17 +34,8 @@ namespace GadrocsWorkshop.Helios
 
         public static void Initialize(string docPath, string logFileName, LogLevel logLevel, HeliosApplication application = null)
         {
-            #if ! HELIOS_32BIT
-                // check OS and build
-                if (!Environment.Is64BitOperatingSystem)
-                {
-                    throw new PlatformNotSupportedException("Helios must be executed on a 64-bit Windows OS");
-                }
-                if (!Environment.Is64BitProcess)
-                {
-                    throw new PlatformNotSupportedException("Helios must be executed as a 64-bit application");
-                }
-            #endif
+            // check OS and build
+            CheckPlatform();
 
             // Create documents directory if it does not exist
             ConfigManager.DocumentPath = docPath;
@@ -63,6 +55,7 @@ namespace GadrocsWorkshop.Helios
                 {
                     Writable = ConfigManager.Application.SettingsAreWritable
                 };
+            ConfigManager.VersionChecker = new VersionChecker();
             ConfigManager.UndoManager = new UndoManager();
             ConfigManager.ProfileManager = new ProfileManager();
             ConfigManager.ImageManager = new ImageManager(ConfigManager.ImagePath);
@@ -98,6 +91,20 @@ namespace GadrocsWorkshop.Helios
             if (RenderCapability.Tier == 0)
             {
                 Logger.Warn("Hardware rendering is not available on this machine.  Helios will consume large amounts of CPU.");
+            }
+        }
+
+        [Conditional("HELIOS_64BIT")]
+        private static void CheckPlatform()
+        {
+            if (!Environment.Is64BitOperatingSystem)
+            {
+                throw new PlatformNotSupportedException("Helios must be executed on a 64-bit Windows OS");
+            }
+
+            if (!Environment.Is64BitProcess)
+            {
+                throw new PlatformNotSupportedException("Helios must be executed as a 64-bit application");
             }
         }
 

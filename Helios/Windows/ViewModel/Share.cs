@@ -66,7 +66,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         {
             [JsonProperty("Product")] public string Product { get; } = Assembly.GetExecutingAssembly().GetName().Name;
 
-            [JsonProperty("Version")] public string Version { get; } = VersionChecker.RunningVersion.ToString();
+            [JsonProperty("Version")] public string Version { get; } = ConfigManager.VersionChecker.RunningVersion.ToString();
 
             [JsonProperty("Items")] public IList<TStatusItem> Items { get; internal set; }
 

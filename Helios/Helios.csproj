@@ -69,6 +69,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\TextScalingMode.cs" />
+    <Compile Include="Interfaces\DCS\Common\ExportConfigurationSection.xaml.cs">
+      <DependentUpon>ExportConfigurationSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\DCS\Common\ExportFilesOutputSection.xaml.cs">
+      <DependentUpon>ExportFilesOutputSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\DCS\Common\ExportLuaOutputSection.xaml.cs">
+      <DependentUpon>ExportLuaOutputSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\DCS\Common\PhantomMonitorFixSection.xaml.cs">
+      <DependentUpon>PhantomMonitorFixSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\DCS\Generic\GenericInterfaceEditor.xaml.cs">
+      <DependentUpon>GenericInterfaceEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Controls\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -112,6 +127,7 @@
     <Compile Include="Interfaces\Capabilities\IDynamicBindings.cs" />
     <Compile Include="Interfaces\Capabilities\IReadyCheck.cs" />
     <Compile Include="Interfaces\Capabilities\IViewportProvider.cs" />
+    <Compile Include="Windows\ViewModel\VersionCheckViewModel.cs" />
     <Page Include="Controls\PotentiometerWithTranslateAppearanceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -127,6 +143,26 @@
     <Page Include="Interfaces\ControlRouter\ControlRouterEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interfaces\DCS\Common\ExportConfigurationSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\DCS\Common\ExportFilesOutputSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\DCS\Common\ExportLuaOutputSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\DCS\Common\PhantomMonitorFixSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interfaces\DCS\Generic\GenericInterfaceEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Interfaces\Unsupported\UnsupportedInterfaceEditor.xaml">
       <SubType>Designer</SubType>
@@ -813,8 +849,8 @@
     <Compile Include="Units\NozzlePositionUnit.cs" />
     <Compile Include="Util\DCS\InstallationLocation.cs" />
     <Compile Include="Util\DCS\InstallationLocations.cs" />
-    <Compile Include="Windows\Controls\VersionReminderForm.xaml.cs">
-      <DependentUpon>VersionReminderForm.xaml</DependentUpon>
+    <Compile Include="Windows\Controls\VersionCheckWindow.xaml.cs">
+      <DependentUpon>VersionCheckWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\KnownFolders.cs" />
     <Compile Include="Util\Tokenizer.cs" />
@@ -2678,7 +2714,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Controls\VersionReminderForm.xaml">
+    <Page Include="Windows\Controls\VersionCheckWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

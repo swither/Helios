@@ -1,0 +1,92 @@
+<GroupBox x:Class="GadrocsWorkshop.Helios.Interfaces.DCS.Common.ExportFilesOutputSection"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d"
+    xmlns:common="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
+    d:DataContext="{d:DesignInstance Type=common:DCSInterfaceEditor}"
+    Header="DCS Export Files Output" 
+    Style="{StaticResource BasicGroup}">
+    <GroupBox.Resources>
+        <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
+            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.UpToDate}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Visible"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="OutOfDateStyle" TargetType="{x:Type Panel}">
+            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Visible"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
+            <Setter Property="UIElement.Visibility" Value="Hidden"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.NoLocations}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Visible"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+    </GroupBox.Resources>
+    <Grid Height="Auto">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="120"/>
+            <!-- primary labels -->
+            <ColumnDefinition Width="*"/>
+            <!-- primary controls and long messages-->
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Status"/>
+        <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Your DCS configuration is up to date.</TextBlock>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must configure DCS installation locations before you can configure this interface.</TextBlock>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">An updated export script and associated files must be installed to support this profile in DCS.</TextBlock>
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding ConfigureCommand}" Style="{StaticResource InterfaceEditorButton}">Setup DCS</Button>
+        </Grid>
+    </Grid>
+</GroupBox>

@@ -1,0 +1,86 @@
+﻿<Window x:Class="GadrocsWorkshop.Helios.Windows.Controls.VersionCheckWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
+        xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel"
+        mc:Ignorable="d" 
+        Title="Version Check" 
+        ResizeMode="NoResize" 
+        WindowStyle="ThreeDBorderWindow" 
+        Width="565"
+        Height="200"
+        ShowInTaskbar="False" 
+        WindowStartupLocation="Manual"
+        d:DataContext="{d:DesignInstance viewModel:VersionCheckViewModel, IsDesignTimeCreatable=true}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <!-- this glue is currently necessary because we aren't using ShowModalCommand -->
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" 
+                        CanExecute="CloseWindow_CanExec" 
+                        Executed="CloseWindow_Exec" />
+    </Window.CommandBindings>
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="TextBlockStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="0,6,6,0" />
+                <Setter Property="Padding" Value="3,3,3,0" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" MinWidth="120"/>
+            <ColumnDefinition Width="Auto" MinWidth="240"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Height="100" Width="100" Grid.Row="0" Grid.Column="0" Grid.RowSpan="5" VerticalAlignment="Top" Margin="12" Source="pack://application:,,,/Helios;component/Images/General/HeliosIcon.png"/>
+        <Label Grid.Row="1" Grid.Column="1" Content="Currently running version:" Style="{StaticResource InterfaceEditorLabel}"/>
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Data.CurrentVersion}" Style="{StaticResource TextBlockStyle}" />
+        <Label Grid.Row="2" Grid.Column="1" Content="Newest released version:" Style="{StaticResource InterfaceEditorLabel}"/>
+        <WrapPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
+            <TextBlock Text="{Binding Data.AvailableVersion}" Style="{StaticResource TextBlockStyle}"/>
+            <Button Template="{StaticResource FontIconButton}" Content="&#xE946;" Padding="0" Margin="0,2,0,-8" Command="{Binding OpenInBrowserCommand}" ToolTip="Open release notes in browser"/>
+        </WrapPanel>
+        <Label Grid.Row="3" Grid.Column="1" Content="Check again:" Style="{StaticResource InterfaceEditorLabel}"/>
+        <ComboBox Grid.Row="3" Grid.Column="2"
+            IsEditable="true"
+            IsReadOnly="true"
+            MinWidth="240"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            SelectedValuePath = "Tag"
+            SelectedValue ="{Binding SelectedReminder}">
+            <ComboBoxItem Content="Next Session" Tag="0"/>
+            <ComboBoxItem Content="in One Day" Tag="1"/>
+            <ComboBoxItem Content="in One Week" Tag="7"/>
+            <ComboBoxItem Content="in One Month" Tag="31"/>
+            <ComboBoxItem Content="Skip this release" Tag="Next"/>
+        </ComboBox>
+        <WrapPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal">
+            <Button Style="{StaticResource InterfaceEditorButton}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,20,0,0" 
+                    Command="{Binding CloseCommand}" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}" 
+                    Content="Close" 
+                    ToolTip="{Binding CloseNarrative}"/>
+            <Button Style="{StaticResource InterfaceEditorButton}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="20,20,0,0" IsDefault="true" 
+                    Command="{Binding DownloadCommand}" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}" 
+                    Content="Download" 
+                    ToolTip="{Binding DownloadNarrative}"/>
+        </WrapPanel>
+    </Grid>
+</Window>

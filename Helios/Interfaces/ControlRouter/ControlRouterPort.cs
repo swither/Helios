@@ -31,9 +31,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         [XmlAttribute("Name")]
         public string Name { get; set; }
 
-        // control interfaces we know how to use, set to non-null if bound to a control that supports them
-        private IRotaryControl _boundRotary;
-
         internal HeliosActionCollection Actions { get; } = new HeliosActionCollection();
         internal HeliosTriggerCollection Triggers { get; } = new HeliosTriggerCollection();
         internal HeliosValueCollection Values { get; } = new HeliosValueCollection();
@@ -61,6 +58,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
 
         // back reference to parent
         private ControlRouter _parent;
+
+        // control interfaces we know how to use, set to non-null if bound to a control that supports them
+        private IRotaryControl _boundRotary;
 
         // our target control's angle at time of binding
         private double _initialAngle;
@@ -119,6 +119,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
                 BindingValueUnits.Text);
             Values.Add(_controlName);
             Triggers.Add(_controlName);
+        }
+
+        /// <summary>
+        /// called on profile reset
+        /// </summary>
+        internal void Reset()
+        {
+            _boundRotary = null;
+            _pulsesSinceBinding = 0d;
+            _lastAngle = 0d;
+            _initialInputValue = null;
         }
 
         private void _changeValueByPulses_Execute(object action, HeliosActionEventArgs e)

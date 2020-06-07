@@ -169,6 +169,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
         public static HeliosApplication Application { get; internal set; }
+        public static VersionChecker VersionChecker { get; internal set; }
 
         #endregion
     }

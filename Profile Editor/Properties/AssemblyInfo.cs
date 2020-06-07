@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("Profile Editor")]
 [assembly: AssemblyDescription("Helios Profile Editor")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("Profile Editor")]
-[assembly: AssemblyCopyright("Copyright © Craig Courtney 2014")]
+[assembly: AssemblyCopyright("Copyright (c) 2014 Craig Courtney, 2020 Helios Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

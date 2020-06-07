@@ -35,10 +35,30 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public enum SeverityCode
         {
+            /// <summary>
+            /// Informational messages, to be displayed with no indication that this is a problem.
+            /// Usually, these items have no Recommendation, but if the Recommendation is present, then this
+            /// indicates an action the use should take but does not represent an unusual or dangerous
+            /// problem
+            /// </summary>
             Info,
+
+            /// <summary>
+            /// Warning indicates a problem that the user should correct.  It will be displayed in a disruptive
+            /// manner in the UI, but the program can continue to operate.
+            /// </summary>
             Warning,
+
+            /// <summary>
+            /// Error indicates a problem that must be corrected for correct operation.  If the user decides to
+            /// continue anyway, things may break.
+            /// </summary>
             Error,
-            None // no messages should be created at this level, in it used to filter out all messages
+
+            /// <summary>
+            /// no messages should be created at this level, in it used to filter out all messages
+            /// </summary>
+            None
         }
 
         // Uri components used in Links
@@ -69,17 +89,25 @@ namespace GadrocsWorkshop.Helios
         [Flags]
         public enum StatusFlags
         {
-            // no flags
+            /// <summary>
+            /// no flags 
+            /// </summary>
             None = 0,
 
-            // this status may be numerous or verbose and should be filtered in small status displays
+            /// <summary>
+            /// this status may be numerous or verbose and should be filtered in small status displays
+            /// </summary>
             Verbose = 1,
 
-            // this status indicates that some checked configuration item was up to date and does not need to regenerated
+            /// <summary>
+            /// this status indicates that some checked configuration item was up to date and does not need to regenerated
+            /// </summary>
             ConfigurationUpToDate = 2,
 
-            // the timestamp in this item is from a log, so correlation can be done
-            // otherwise the time stamp might be off by some milliseconds from related log entries
+            /// <summary>
+            /// the timestamp in this item is from a log, so correlation can be done
+            /// otherwise the time stamp might be off by some milliseconds from related log entries
+            /// </summary>
             TimeStampIsPrecise = 4
         }
 

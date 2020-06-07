@@ -18,7 +18,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    [HeliosInterface("Helios.DCS", "DCS Generic Interface", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.DCS", "DCS Generic Interface", typeof(GenericInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class GenericInterface : DCSInterface
     {
         #region Devices
@@ -32,16 +32,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
         private const string ROTARY_ENCODER = "9";
         private const string ROCKER_AABB = "10";
         private const string INDICATOR_PUSHBUTTON = "11";
-		private const string TOGGLE_SWITCH_B = "12";
+        private const string TOGGLE_SWITCH_B = "12";
 
         #endregion
 
         public GenericInterface()
-            : base("DCS Generic", "DCSGeneric", "pack://application:,,,/Helios;component/Interfaces/DCS/Generic/ExportFunctions.lua")
+            : base("DCS Generic", null, "pack://application:,,,/Helios;component/Interfaces/DCS/Generic/ExportFunctions.lua")
         {
-            ExportModuleFormat = DCSExportModuleFormat.CaptZeenModule1;
-            CanConfigureExportModuleFormat = false;
-
             for (int i = 1; i < 200; i++)   // 200 Network values
             {
                 Functions.Add(new NetworkValue(this, i.ToString(), "NetWork Values", "NetWorkValue_" + i.ToString(), "Float values from DCS", "", BindingValueUnits.Numeric, null));
@@ -65,14 +62,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
                 AddFunction(Switch.CreateToggleSwitch(this, TOGGLE_SWITCH, (3000 + i).ToString(), (index + i).ToString(), "1", "UP", "0", "DOWN", "Toggle Switch 1,0", "TSwitch_" + i.ToString(), "%1d"));
             }
 
-
             index = 4000;
             for (int i = 1; i < 250; i++)       // 250 Toggle Switch 1, -1
             {
                 AddFunction(Switch.CreateToggleSwitch(this, TOGGLE_SWITCH_B, (3000 + i).ToString(), (index + i).ToString(), "1", "UP", "-1", "DOWN", "Toggle Switch 1,-1", "TSwitch_B_" + i.ToString(), "%1d"));
             }
-
-
 
             index = 5000;
             for (int i = 1; i < 100; i++)    // 100 Threeway Switch 1,0,-1
@@ -194,6 +188,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
             {
                 AddFunction(new IndicatorPushButton(this, INDICATOR_PUSHBUTTON, (3000 + i).ToString(), (index + i).ToString(), "Indicator pushbutton", "Ind_PButton_" + i.ToString()));
             }
+        }
+
+        protected override void AttachToProfileOnMainThread()
+        {
+            base.AttachToProfileOnMainThread();
+
+            // for the generic interface, drivers cannot be generated but may be attached
+            Configuration.ExportModuleFormatInfo[DCSExportModuleFormat.HeliosDriver16] =
+                new DCSExportConfiguration.ModuleFormatInfo
+                {
+                    // capitalization for use in a sentence (not at the beginning)
+                    DisplayName = "Helios driver written by the user",
+                    ModuleLocation = "Drivers",
+                    CanBeAttached = true,
+                    CanGenerate = false
+                };
         }
     }
 }
