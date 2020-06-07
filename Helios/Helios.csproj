@@ -69,6 +69,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\TextScalingMode.cs" />
+    <Compile Include="Interfaces\DCS\Common\ExportConfigurationSection.xaml.cs">
+      <DependentUpon>ExportConfigurationSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\DCS\Common\ExportFilesOutputSection.xaml.cs">
+      <DependentUpon>ExportFilesOutputSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\DCS\Common\ExportLuaOutputSection.xaml.cs">
+      <DependentUpon>ExportLuaOutputSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\DCS\Common\PhantomMonitorFixSection.xaml.cs">
+      <DependentUpon>PhantomMonitorFixSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\DCS\Generic\GenericInterfaceEditor.xaml.cs">
+      <DependentUpon>GenericInterfaceEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Controls\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -128,6 +143,26 @@
     <Page Include="Interfaces\ControlRouter\ControlRouterEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interfaces\DCS\Common\ExportConfigurationSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\DCS\Common\ExportFilesOutputSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\DCS\Common\ExportLuaOutputSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\DCS\Common\PhantomMonitorFixSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interfaces\DCS\Generic\GenericInterfaceEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Interfaces\Unsupported\UnsupportedInterfaceEditor.xaml">
       <SubType>Designer</SubType>

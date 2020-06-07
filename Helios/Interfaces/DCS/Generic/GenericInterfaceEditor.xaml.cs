@@ -14,23 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 using GadrocsWorkshop.Helios.Windows;
 using GadrocsWorkshop.Helios.Windows.Controls;
 
-namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
+namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
 {
     /// <summary>
-    /// This DCS Interface editor can be used by descendants of DCSInterface that do not want to add any specific options.
-    /// Using this class will avoid duplicating the XAML.
+    /// This is a specialized DCS Interface Editor for the DCS Generic Interface
     ///
     /// NOTE: this class is its own DataContext
-    /// TODO: implement a content container into which specific options can be added.
     /// </summary>
-    public partial class DCSInterfaceEditor : HeliosInterfaceEditor
+    public partial class GenericInterfaceEditor : HeliosInterfaceEditor
     {
         protected DCSPhantomMonitorFixConfig _phantomFix;
 
@@ -40,16 +38,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         private ICommand _configureCommand;
 
-        static DCSInterfaceEditor()
+        static GenericInterfaceEditor()
         {
-            Type ownerType = typeof(DCSInterfaceEditor);
-            CommandManager.RegisterClassCommandBinding(ownerType,
+            CommandManager.RegisterClassCommandBinding(typeof(GenericInterfaceEditor),
                 new CommandBinding(AddDoFileCommand, AddDoFile_Executed));
-            CommandManager.RegisterClassCommandBinding(ownerType,
+            CommandManager.RegisterClassCommandBinding(typeof(GenericInterfaceEditor),
                 new CommandBinding(RemoveDoFileCommand, RemoveDoFile_Executed));
         }
 
-        public DCSInterfaceEditor()
+        public GenericInterfaceEditor()
         {
             DataContext = this;
             InitializeComponent();
@@ -140,7 +137,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public DCSExportConfiguration Configuration => (DCSExportConfiguration) GetValue(ConfigurationProperty);
 
         public static readonly DependencyProperty ConfigurationProperty =
-            DependencyProperty.Register("Configuration", typeof(DCSExportConfiguration), typeof(DCSInterfaceEditor),
+            DependencyProperty.Register("Configuration", typeof(DCSExportConfiguration), typeof(GenericInterfaceEditor),
                 new PropertyMetadata(null));
 
         /// <summary>
@@ -149,7 +146,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public DCSPhantomMonitorFixConfig PhantomFix => (DCSPhantomMonitorFixConfig) GetValue(PhantomFixProperty);
 
         public static readonly DependencyProperty PhantomFixProperty =
-            DependencyProperty.Register("PhantomFix", typeof(DCSPhantomMonitorFixConfig), typeof(DCSInterfaceEditor),
+            DependencyProperty.Register("PhantomFix", typeof(DCSPhantomMonitorFixConfig), typeof(GenericInterfaceEditor),
                 new PropertyMetadata(null));
 
         /// <summary>
@@ -160,7 +157,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public static readonly DependencyProperty VehicleImpersonationProperty =
             DependencyProperty.Register("VehicleImpersonation", typeof(DCSVehicleImpersonation),
-                typeof(DCSInterfaceEditor), new PropertyMetadata(null));
+                typeof(GenericInterfaceEditor), new PropertyMetadata(null));
 
         #endregion
     }

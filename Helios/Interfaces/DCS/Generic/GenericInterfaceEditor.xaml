@@ -1,4 +1,4 @@
-﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSInterfaceEditor"
+﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Interfaces.DCS.Generic.GenericInterfaceEditor"
                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,8 +8,9 @@
                                  xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS"
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
                                  xmlns:dcs="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
+                                 xmlns:generic="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Generic"
                                  mc:Ignorable="d"
-                                 d:DataContext="{d:DesignInstance Type=dcs:DCSInterfaceEditor}"
+                                 d:DataContext="{d:DesignInstance Type=generic:GenericInterfaceEditor}"
                                  Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
     <FrameworkElement.Resources>
         <ResourceDictionary>
@@ -18,14 +19,13 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <helios:EnumConverter Type="{x:Type dcs:DCSExportModuleFormat}" x:Key="ExportModuleFormatConverter"/>
         </ResourceDictionary>
     </FrameworkElement.Resources>
     <StackPanel>
         <heliosDcs:InstallationLocationsGroup/>
         <dcs:ExportConfigurationSection/>
         <dcs:ExportLuaOutputSection/>
-        <Expander Header="Profile-Specific Settings (Advanced)" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
+        <GroupBox Header="Generic Interface Configuration" Margin="0,0,0,12" Style="{StaticResource BasicGroup}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="120"/>
@@ -50,13 +50,17 @@
                     <ComboBox
                         VerticalContentAlignment="Center"
                         MinWidth="290"
-                        ItemsSource="{Binding Source={StaticResource ExportModuleFormatConverter}, Path=DisplayNames}"
-                        IsEnabled="{Binding Path=Interface.CanConfigureExportModuleFormat}"
-                        SelectedItem="{Binding Path=Interface.ExportModuleFormat, Converter={StaticResource ExportModuleFormatConverter}}" />
+                        SelectedValue="{Binding Interface.ExportModuleFormat}"
+                        SelectedValuePath="Tag">
+                        <ComboBox.Items>
+                            <!-- custom descriptions for this usage -->
+                            <ComboBoxItem Tag="{x:Static dcs:DCSExportModuleFormat.HeliosDriver16}" Content="Helios driver written by the user"/>
+                            <ComboBoxItem Tag="{x:Static dcs:DCSExportModuleFormat.CaptZeenModule1}" Content="Capt Zeen Module (Version 1) for Generic interface"/>
+                        </ComboBox.Items>
+                    </ComboBox>
                 </StackPanel>
                 <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}" 
                            Visibility="{Binding Path=Interface.CanConfigureExportModuleFormat, Converter={StaticResource BooleanToVisibilityConverter}}">If this profile uses a third-party export module not created by Helios, select the format of the module here.</TextBlock>
-
                 <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Content="DCS Vehicle"/>
                 <ComboBox 
                     Grid.Row="4" Grid.Column="1"
@@ -86,10 +90,7 @@
                     <TextBlock Style="{StaticResource Documentation}">This third-party export module cannot be created by Helios.  You can attach a file here for inclusion into the Profile and automatic installation.</TextBlock>
                 </WrapPanel>
             </Grid>
-        </Expander>
-        <!-- 
-        <dcs:PhantomMonitorFixSection/>
-        -->
+        </GroupBox>
         <dcs:ExportFilesOutputSection/>
     </StackPanel>
 </heliosSdk:HeliosInterfaceEditor>

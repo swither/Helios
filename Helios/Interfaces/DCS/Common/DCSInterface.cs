@@ -82,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             ExportFunctionsPath = exportFunctionsPath;
 
             // make sure we keep our list up to date and don't typo on the name of an export device
-            Debug.Assert(DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
+            Debug.Assert(null == exportDeviceName || DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
 
             // create handling for DCS export meta information we handle ourselves
             NetworkTriggerValue activeVehicle = new NetworkTriggerValue(this, "ACTIVE_VEHICLE", "ActiveVehicle",
@@ -132,7 +132,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
                 foreach (IStatusReportObserver observer in _observers)
                 {
-                    string newName = StatusName;
                     InvalidateStatusReport();
                 }
             }
@@ -408,6 +407,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             base.WriteXml(writer);
             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DCSExportModuleFormat));
+
+            // we could have configuration data that is not used and should not be persisted, so clean up if we can
+            if (Configuration != null)
+            {
+                DCSExportConfiguration.ModuleFormatInfo moduleInfo = Configuration.ExportModuleFormatInfo[ExportModuleFormat];
+                if (!moduleInfo.CanBeAttached)
+                {
+                    ExportModuleBaseName = null;
+                    ExportModuleText = null;
+                }
+            }
 
             if (ExportModuleFormat != DEFAULT_EXPORT_MODULE_FORMAT)
             {
