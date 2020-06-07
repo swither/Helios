@@ -92,14 +92,48 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         private void PerformDownload(object commandParameter)
         {
             CloseWindow(commandParameter);
-            if (Data.DownloadUrl == null || !Uri.TryCreate(Data.DownloadUrl, UriKind.Absolute, out Uri checkUri))
+            if (!IsValidUrl(Data.DownloadUrl))
             {
                 // don't start process
                 throw new Exception($"program error: version check found new version but did not determine a valid download URL: '{Data.DownloadUrl}'");
             }
-            _ = checkUri;
             System.Diagnostics.Process.Start(Data.DownloadUrl);
             ConfigManager.VersionChecker.HandleDowloadStarted(Data.DownloadUrl);
+        }
+
+        private static bool IsValidUrl(string dataDownloadUrl) => dataDownloadUrl != null && Uri.TryCreate(dataDownloadUrl, UriKind.Absolute, out Uri _);
+
+        /// <summary>
+        /// backing field for property OpenInBrowserCommand, contains
+        /// handlers for OpenInBrowser command
+        /// </summary>
+        private ICommand _openInBrowserCommand;
+
+        /// <summary>
+        /// handlers for OpenBrowser command
+        /// </summary>
+        public ICommand OpenInBrowserCommand
+        {
+            get
+            {
+                _openInBrowserCommand = _openInBrowserCommand ?? new RelayCommand(OpenNotes, CanOpenNotes);
+                return _openInBrowserCommand;
+            }
+        }
+
+        private bool CanOpenNotes(object obj)
+        {
+            return Data.NotesUrl != null;
+        }
+
+        private void OpenNotes(object obj)
+        {
+            if (!IsValidUrl(Data.NotesUrl))
+            {
+                // don't start process
+                throw new Exception($"program error: version check found new version but did not determine a valid release notes URL: '{Data.NotesUrl}'");
+            }
+            System.Diagnostics.Process.Start(Data.NotesUrl);
         }
 
         /// <summary>

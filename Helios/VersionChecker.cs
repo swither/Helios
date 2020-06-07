@@ -262,6 +262,12 @@ namespace GadrocsWorkshop.Helios
 
             public bool HasNewVersion => CurrentVersion.CompareTo(AvailableVersion) < 0;
 
+            public string NotesUrl
+            {
+                get; 
+                private set;
+            }
+
             /// <summary>
             /// check for a new version on github
             /// </summary>
@@ -290,6 +296,7 @@ namespace GadrocsWorkshop.Helios
                             string availableVersionString = Path.GetFileName(wrsp.ResponseUri.LocalPath);
                             DownloadUrl =
                                 $"{wrsp.ResponseUri.AbsoluteUri.Replace("/tag/", "/download/")}/Helios.Installer.{availableVersionString}.zip";
+                            NotesUrl = wrsp.ResponseUri.AbsoluteUri;
                             ConfigManager.SettingsManager.SaveSetting("Helios", GITHUB_DOWNLOAD_URL_SETTING,
                                 DownloadUrl);
                             return ToVersion(availableVersionString);

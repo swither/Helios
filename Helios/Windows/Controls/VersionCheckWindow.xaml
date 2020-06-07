@@ -30,10 +30,8 @@
     <Grid>
         <Grid.Resources>
             <Style x:Key="TextBlockStyle" TargetType="TextBlock">
-                <Setter Property="Margin" Value="0,5,6,0" />
-                <Setter Property="Padding" Value="3" />
-                <Setter Property="MinHeight" Value="24" />
-                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0,6,6,0" />
+                <Setter Property="Padding" Value="3,3,3,0" />
             </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -53,12 +51,16 @@
         <Label Grid.Row="1" Grid.Column="1" Content="Currently running version:" Style="{StaticResource InterfaceEditorLabel}"/>
         <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Data.CurrentVersion}" Style="{StaticResource TextBlockStyle}" />
         <Label Grid.Row="2" Grid.Column="1" Content="Newest released version:" Style="{StaticResource InterfaceEditorLabel}"/>
-        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Data.AvailableVersion}" Style="{StaticResource TextBlockStyle}"/>
+        <WrapPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
+            <TextBlock Text="{Binding Data.AvailableVersion}" Style="{StaticResource TextBlockStyle}"/>
+            <Button Template="{StaticResource FontIconButton}" Content="&#xE946;" Padding="0" Margin="0,2,0,-8" Command="{Binding OpenInBrowserCommand}" ToolTip="Open release notes in browser"/>
+        </WrapPanel>
         <Label Grid.Row="3" Grid.Column="1" Content="Check again:" Style="{StaticResource InterfaceEditorLabel}"/>
         <ComboBox Grid.Row="3" Grid.Column="2"
             IsEditable="true"
             IsReadOnly="true"
             MinWidth="240"
+            VerticalAlignment="Center"
             VerticalContentAlignment="Center"
             SelectedValuePath = "Tag"
             SelectedValue ="{Binding SelectedReminder}">
