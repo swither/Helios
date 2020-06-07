@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Xml;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
@@ -409,15 +410,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DCSExportModuleFormat));
 
             // we could have configuration data that is not used and should not be persisted, so clean up if we can
-            if (Configuration != null)
-            {
-                DCSExportConfiguration.ModuleFormatInfo moduleInfo = Configuration.ExportModuleFormatInfo[ExportModuleFormat];
-                if (!moduleInfo.CanBeAttached)
-                {
-                    ExportModuleBaseName = null;
-                    ExportModuleText = null;
-                }
-            }
+            // XXX remove this dispatch once we eliminate the profile writing thread
+            Application.Current.Dispatcher.Invoke(CleanBeforeWriting);
 
             if (ExportModuleFormat != DEFAULT_EXPORT_MODULE_FORMAT)
             {
@@ -453,6 +447,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             if (ImpersonatedVehicleName != null)
             {
                 writer.WriteElementString("ImpersonatedVehicleName", ImpersonatedVehicleName);
+            }
+        }
+
+        private void CleanBeforeWriting()
+        {
+            if (Configuration != null)
+            {
+                DCSExportConfiguration.ModuleFormatInfo moduleInfo = Configuration.ExportModuleFormatInfo[ExportModuleFormat];
+                if (!moduleInfo.CanBeAttached)
+                {
+                    ExportModuleBaseName = null;
+                    ExportModuleText = null;
+                }
             }
         }
 
