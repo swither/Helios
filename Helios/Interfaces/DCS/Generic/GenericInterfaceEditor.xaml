@@ -24,6 +24,18 @@
     <StackPanel>
         <heliosDcs:InstallationLocationsGroup/>
         <dcs:ExportConfigurationSection/>
+        <GroupBox Header="Caution" Style="{StaticResource BasicGroup}" BorderBrush="DarkOrange">
+            <WrapPanel Orientation="Vertical" Margin="6">
+                <TextBlock TextWrapping="Wrap">
+                    This is a generic interface intended to be used for communication between DCS and Helios when there is no interface for a particular DCS aircraft type.
+                </TextBlock>
+                <TextBlock TextWrapping="Wrap">
+                    The interface creates abstract functions which cannot be used without supporting code.  As such, it requires a higher level of understanding about how DCS exports work with Helios in order to implement profiles.</TextBlock>
+                <TextBlock Margin="0,6,0,0" FontStyle="Italic" TextWrapping="Wrap">
+                    Requests for inclusion of additional functionality can be made by creating an enhancement request issue on github.  The DCS Generic interface will be maintained to be backward compatible with previous revisions of the interface.
+                </TextBlock>
+            </WrapPanel>
+        </GroupBox>
         <dcs:ExportLuaOutputSection/>
         <GroupBox Header="Generic Interface Configuration" Margin="0,0,0,12" Style="{StaticResource BasicGroup}">
             <Grid>
