@@ -298,7 +298,7 @@
         "ProductVersion" = "8:1.0.0"
         "Manufacturer" = "8:Gadrocs Workshop"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:https://github.com/BlueFinBima/Helios/issues/"
+        "ARPHELPLINK" = "8:https://github.com/HeliosVirtualCockpit/Helios/issues/"
         "Title" = "8:Helios Keypress Receiver"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Gadroc's Workshop"
@@ -598,7 +598,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:The installer will guide you through the steps required to install [ProductName] [ProductVersion] from the BlueFinBima Project fork on your computer.  This version is a fork from the Open Source version of Gadroc's Helios, and has not been pulled back into that project as it appears dormant to pull requests.  The Keypress Receiver runs on the same PC as DCS, and allows key presses from the Helios Control Center to be sent to DCS over the network."
+                            "Value" = "8:The installer will guide you through the steps required to install [ProductName] [ProductVersion] on your computer.  This version is a fork from the Open Source version of Gadroc's Helios, and has not been pulled back into that project as it appears dormant to pull requests.  The Keypress Receiver runs on the same PC as DCS, and allows key presses from the Helios Control Center to be sent to DCS over the network."
                             "DefaultValue" = "8:#1203"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -655,7 +655,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:The installer will guide you through the steps required to install [ProductName] [ProductVersion] from the BlueFinBima Project fork on your computer.  This version is a fork from the Open Source version of Gadroc's Helios, and has not been pulled back into that project as it appears dormant to pull requests.  The Keypress Receiver runs on the same PC as DCS, and allows key presses from the Helios Control Center to be sent to DCS over the network."
+                            "Value" = "8:The installer will guide you through the steps required to install [ProductName] [ProductVersion] on your computer.  This version is a fork from the Open Source version of Gadroc's Helios, and has not been pulled back into that project as it appears dormant to pull requests.  The Keypress Receiver runs on the same PC as DCS, and allows key presses from the Helios Control Center to be sent to DCS over the network."
                             "DefaultValue" = "8:#1203"
                             "UsePlugInResources" = "11:TRUE"
                             }
