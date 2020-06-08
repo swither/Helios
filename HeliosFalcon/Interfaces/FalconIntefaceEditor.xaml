@@ -20,7 +20,7 @@
         <av:Style x:Key="TextueSettingsSidebar" BasedOn="{av:StaticResource {x:Type av:GroupBox}}" TargetType="{x:Type av:GroupBox}">
             <av:Setter Property="Visibility" Value="Collapsed" />
             <av:Style.Triggers>
-                <av:DataTrigger Binding="{av:Binding Interface.FalconType}" Value="BMS">
+                <av:DataTrigger Binding="{av:Binding Interface.FalconType}" Value="OpenFalcon">
                     <av:Setter Property="Visibility" Value="Visible" />
                 </av:DataTrigger>
             </av:Style.Triggers>
