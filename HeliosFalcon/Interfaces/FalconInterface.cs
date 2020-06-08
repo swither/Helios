@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private FalconDataExporter _dataExporter;
 
         private FalconKeyFile _callbacks = new FalconKeyFile("");
-        private HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
+        private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
 
         public FalconInterface()
             : base("Falcon")
