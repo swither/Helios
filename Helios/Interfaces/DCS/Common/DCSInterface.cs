@@ -130,11 +130,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 string oldValue = _impersonatedVehicleName;
                 _impersonatedVehicleName = value;
                 OnPropertyChanged(nameof(ImpersonatedVehicleName), oldValue, value, true);
-
-                foreach (IStatusReportObserver observer in _observers)
-                {
-                    InvalidateStatusReport();
-                }
+                InvalidateStatusReport();
             }
         }
 
