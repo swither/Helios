@@ -61,11 +61,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                                 int isKey = int.Parse(tokens[2]);
                                 if (isKey == 0)
                                 {
-                                    FalconKeyCallback callback = new FalconKeyCallback(callbackName);
-                                    callback.KeyCode = ConvertString(tokens[3]);
-                                    callback.Modifiers = ConvertString(tokens[4]);
-                                    callback.ComboKeyCode = ConvertString(tokens[5]);
-                                    callback.ComboModifiers = ConvertString(tokens[6]);
+                                    FalconKeyCallback callback = new FalconKeyCallback(callbackName)
+                                    {
+                                        KeyCode = ConvertString(tokens[3]),
+                                        Modifiers = ConvertString(tokens[4]),
+                                        ComboKeyCode = ConvertString(tokens[5]),
+                                        ComboModifiers = ConvertString(tokens[6])
+                                    };
                                     if (tokens.Length >= 9)
                                     {
                                         callback.Description = tokens[8];
