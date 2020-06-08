@@ -36,8 +36,7 @@ namespace GadrocsWorkshop.Helios
         public KeyboardThread(int keyDelay)
         {
             _keyDelay = keyDelay;
-            _thread = new Thread(Run);
-            _thread.IsBackground = true;
+            _thread = new Thread(Run) {IsBackground = true};
             _thread.Start();
         }
 
@@ -233,22 +232,22 @@ namespace GadrocsWorkshop.Helios
         }
         private bool HandleSocketException(SocketException se)
         {
-            SocketError _erCode = (SocketError)se.ErrorCode;
-            bool _retcode =false;
-            switch(_erCode)
+            SocketError erCode = (SocketError)se.ErrorCode;
+            bool retcode;
+            switch(erCode)
             {
                 case SocketError.ConnectionReset:
-                    _retcode = false;
+                    retcode = false;
                     break;
                 case SocketError.TimedOut:
-                    _retcode = true;
+                    retcode = true;
                     break;
                 default:
-                    _retcode = false;
+                    retcode = false;
                     break;
             }
 
-            return _retcode;
+            return retcode;
             
         }
     }
