@@ -26,8 +26,6 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class StatusReportItem
     {
-        private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
         /// <summary>
         /// This severity code mirrors the log levels where names are the same.
         /// Note: It should be a nested class of StatusReportItem, but WPF bindings require it to be

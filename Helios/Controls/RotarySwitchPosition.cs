@@ -21,8 +21,6 @@ namespace GadrocsWorkshop.Helios.Controls
         private int _index;
         private string _name;
         private double _rotation;
-        private HeliosTrigger _enterTrigger;
-        private HeliosTrigger _exitTrigger;
 
         public RotarySwitchPosition(HeliosObject rotarySwitch, int index, string name, double rotation)
         {
@@ -30,8 +28,8 @@ namespace GadrocsWorkshop.Helios.Controls
             _name = name;
             _rotation = rotation;
 
-            _enterTrigger = new HeliosTrigger(rotarySwitch, "", "position " + _index, "entered", "Fires when switch enters the " + _name + " position");
-            _exitTrigger = new HeliosTrigger(rotarySwitch, "", "position " + _index, "exited", "Fires when switch exits the " + _name + " position");
+            EnterTriggger = new HeliosTrigger(rotarySwitch, "", "position " + _index, "entered", "Fires when switch enters the " + _name + " position");
+            ExitTrigger = new HeliosTrigger(rotarySwitch, "", "position " + _index, "exited", "Fires when switch exits the " + _name + " position");
         }
 
         #region Properties
@@ -67,10 +65,10 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     string oldValue = _name;
                     _name = value;
-                    _enterTrigger.Name = "position " + _index;
-                    _exitTrigger.Name = "position " + _index;
-                    _enterTrigger.TriggerDescription = "Fires when switch enters the " + _name + " position";
-                    _exitTrigger.TriggerDescription = "Fires when switch exits the " + _name + " position";
+                    EnterTriggger.Name = "position " + _index;
+                    ExitTrigger.Name = "position " + _index;
+                    EnterTriggger.TriggerDescription = "Fires when switch enters the " + _name + " position";
+                    ExitTrigger.TriggerDescription = "Fires when switch exits the " + _name + " position";
                     OnPropertyChanged("Name", oldValue, value, true);
                 }
             }
@@ -93,15 +91,9 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public HeliosTrigger EnterTriggger
-        {
-            get { return _enterTrigger; }
-        }
+        public HeliosTrigger EnterTriggger { get; }
 
-        public HeliosTrigger ExitTrigger
-        {
-            get { return _exitTrigger; }
-        }
+        public HeliosTrigger ExitTrigger { get; }
 
         #endregion
     }

@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -46,9 +47,11 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
         {
             public override DataTemplate SelectTemplate(object item, DependencyObject container)
             {
-                StatusViewerItem listItem = item as StatusViewerItem;
-                FrameworkElement element = container as FrameworkElement;
-                if (listItem == null)
+                if (!(container is FrameworkElement element))
+                {
+                    return null;
+                }
+                if (!(item is StatusViewerItem listItem))
                 {
                     return null;
                 }
@@ -60,7 +63,18 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                         // these are incorrectly initialized
                         ConfigManager.LogManager.LogError(
                             $"received status report item with invalid severity: {listItem.Data.Severity} '{listItem.Data.Status}'; implementation error");
+                        // render using Error template
                         severity = StatusReportItem.SeverityCode.Error;
+                        break;
+                    case StatusReportItem.SeverityCode.Info:
+                        break;
+                    case StatusReportItem.SeverityCode.Warning:
+                        break;
+                    case StatusReportItem.SeverityCode.Error:
+                        break;
+                    // ReSharper disable once RedundantEmptySwitchSection 
+                    // new cases are explicitly allowed to have resources with matching names
+                    default:
                         break;
                 }
 

@@ -734,6 +734,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             StatusBarMessage = "Saving Profile...";
             GetLoadingAdorner();
 
+            // XXX can't save on another thread because of potential access to dependency properties (crashed in InstallLocations)
             System.Threading.Thread t = new System.Threading.Thread(delegate()
             {
                 if (!ConfigManager.ProfileManager.SaveProfile(profile))
