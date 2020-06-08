@@ -45,24 +45,30 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             _dataExporter = new BMS.BMSFalconDataExporter(this);
             KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
 
-            HeliosAction sendAction = new HeliosAction(this, "", "callback", "send", "Press and releases a keyboard callback for falcon.", "Callback name", BindingValueUnits.Text);
-            sendAction.ActionBindingDescription = "send %value% callback for falcon.";
-            sendAction.ActionInputBindingDescription = "send %value% callback";
-            sendAction.ValueEditorType = typeof(FalconCallbackValueEditor);
+            HeliosAction sendAction = new HeliosAction(this, "", "callback", "send", "Press and releases a keyboard callback for falcon.", "Callback name", BindingValueUnits.Text)
+            {
+                ActionBindingDescription = "send %value% callback for falcon.",
+                ActionInputBindingDescription = "send %value% callback",
+                ValueEditorType = typeof(FalconCallbackValueEditor)
+            };
             sendAction.Execute += new HeliosActionHandler(SendAction_Execute);
             Actions.Add(sendAction);
 
-            HeliosAction pressAction = new HeliosAction(this, "", "callback", "press", "Press a keyboard callback for falcon and leave it pressed.", "Callback name", BindingValueUnits.Text);
-            pressAction.ActionBindingDescription = "press %value% callback for falcon.";
-            pressAction.ActionInputBindingDescription = "press %value% callback";
-            pressAction.ValueEditorType = typeof(FalconCallbackValueEditor);
+            HeliosAction pressAction = new HeliosAction(this, "", "callback", "press", "Press a keyboard callback for falcon and leave it pressed.", "Callback name", BindingValueUnits.Text)
+            {
+                ActionBindingDescription = "press %value% callback for falcon.",
+                ActionInputBindingDescription = "press %value% callback",
+                ValueEditorType = typeof(FalconCallbackValueEditor)
+            };
             pressAction.Execute += new HeliosActionHandler(PressAction_Execute);
             Actions.Add(pressAction);
 
-            HeliosAction releaseAction = new HeliosAction(this, "", "callback", "release", "Releases a previously pressed keyboard callback for falcon.", "Callback name", BindingValueUnits.Text);
-            releaseAction.ActionBindingDescription = "release %value% callback for falcon.";
-            releaseAction.ActionInputBindingDescription = "release %value% callback";
-            releaseAction.ValueEditorType = typeof(FalconCallbackValueEditor);
+            HeliosAction releaseAction = new HeliosAction(this, "", "callback", "release", "Releases a previously pressed keyboard callback for falcon.", "Callback name", BindingValueUnits.Text)
+            {
+                ActionBindingDescription = "release %value% callback for falcon.",
+                ActionInputBindingDescription = "release %value% callback",
+                ValueEditorType = typeof(FalconCallbackValueEditor)
+            };
             releaseAction.Execute += new HeliosActionHandler(ReleaseAction_Execute);
             Actions.Add(releaseAction);
         }

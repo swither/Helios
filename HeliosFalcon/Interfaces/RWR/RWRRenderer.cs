@@ -80,7 +80,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
                     {
                         if (contact.Visible)
                         {
-                            double y = 0.0f;
+                            double y;
                             if (contact.Lethality > 1f)
                             {
                                 y = -((2.0f - contact.Lethality) * 178.0d);
@@ -415,13 +415,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
 
         protected override void OnRefresh()
         {
-            _format = new TextFormat();
-            _format.FontFamily = new FontFamily("Lucida Console Regular");
-            _format.FontSize = 12;
-            _format.FontStyle = FontStyles.Normal;
-            _format.FontWeight = FontWeights.Normal;
-            _format.VerticalAlignment = TextVerticalAlignment.Center;
-            _format.HorizontalAlignment = TextHorizontalAlignment.Center;
+            _format = new TextFormat
+            {
+                FontFamily = new FontFamily("Lucida Console Regular"),
+                FontSize = 12,
+                FontStyle = FontStyles.Normal,
+                FontWeight = FontWeights.Normal,
+                VerticalAlignment = TextVerticalAlignment.Center,
+                HorizontalAlignment = TextHorizontalAlignment.Center
+            };
 
             _scopeBrush = new SolidColorBrush(Color.FromRgb(0, 255, 0));
             _scopePen = new Pen(_scopeBrush, 1.5d);
@@ -434,11 +436,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
                 ImageSource image = ConfigManager.ImageManager.LoadImage(_rwr.BezelImage);
                 if (image != null)
                 {
-                    _bezelBrush = new ImageBrush(image);
-                    _bezelBrush.Stretch = Stretch.Fill;
-                    _bezelBrush.TileMode = TileMode.None;
-                    _bezelBrush.Viewport = new Rect(0d, 0d, 1d, 1d);
-                    _bezelBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+                    _bezelBrush = new ImageBrush(image)
+                    {
+                        Stretch = Stretch.Fill,
+                        TileMode = TileMode.None,
+                        Viewport = new Rect(0d, 0d, 1d, 1d),
+                        ViewportUnits = BrushMappingMode.RelativeToBoundingBox
+                    };
                 }
                 else
                 {
