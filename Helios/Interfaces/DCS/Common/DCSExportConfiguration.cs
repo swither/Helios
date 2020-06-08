@@ -181,10 +181,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             SubscribeToLocationChanges();
 
             // some properties in our parent object are relevant to us
-            _parent.PropertyChanged += _parent_PropertyChanged;
+            _parent.PropertyChanged += Parent_PropertyChanged;
         }
 
-        private void _parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

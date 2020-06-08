@@ -190,38 +190,34 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             base.OnActivated(e);
 
-            if (_initialLoad)
+            if (!_initialLoad)
             {
-                _initialLoad = false;
-                Helios.ProfileEditor.App app = Application.Current as Helios.ProfileEditor.App;
-                if (app != null && app.StartupProfile != null && System.IO.File.Exists(app.StartupProfile))
-                {
-                    LoadProfile(app.StartupProfile);
-                }
+                return;
+            }
+
+            _initialLoad = false;
+            if (Application.Current is App app && app.StartupProfile != null && File.Exists(app.StartupProfile))
+            {
+                LoadProfile(app.StartupProfile);
             }
         }
 
         void DockManager_ActiveDocumentChanged(object sender, EventArgs e)
         {
-            HeliosEditorDocument activeDocument = null;
-
             // Interface Editor documents are embeded in a scrollviewer.  Unwrap them if they are
             // the current content.
-            ScrollViewer viewer = DockManager.ActiveContent as ScrollViewer;
-            if (viewer != null)
+            HeliosEditorDocument activeDocument = DockManager.ActiveContent is ScrollViewer viewer
+                ? viewer.Content as HeliosEditorDocument
+                : DockManager.ActiveContent as HeliosEditorDocument;
+
+            if (activeDocument == null)
             {
-                activeDocument = viewer.Content as HeliosEditorDocument;
+                return;
             }
-            else
+
+            if (activeDocument != CurrentEditor)
             {
-                activeDocument = DockManager.ActiveContent as HeliosEditorDocument;
-            }            
-            if (activeDocument != null)
-            {
-                if (activeDocument != CurrentEditor)
-                {
-                    CurrentEditor = activeDocument;
-                }
+                CurrentEditor = activeDocument;
             }
         }
 
@@ -229,8 +225,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             if (e.Property == ProfileProperty)
             {
-                HeliosProfile oldProfile = e.OldValue as HeliosProfile;
-                if (oldProfile != null)
+                if (e.OldValue is HeliosProfile oldProfile)
                 {
                     oldProfile.PropertyChanged -= new PropertyChangedEventHandler(Profile_PropertyChanged);
                 }
@@ -252,8 +247,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         void Profile_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            PropertyNotificationEventArgs args = e as PropertyNotificationEventArgs;
-            if (args != null)
+            if (e is PropertyNotificationEventArgs args)
             {
                 ConfigManager.UndoManager.AddPropertyChange(sender, args);
             }
@@ -273,10 +267,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 ConfigManager.UndoManager.ClearHistory();
 
                 // Persist window placement details to application settings
-                NativeMethods.WINDOWPLACEMENT wp = new NativeMethods.WINDOWPLACEMENT();
                 IntPtr hwnd = new WindowInteropHelper(this).Handle;
-                NativeMethods.GetWindowPlacement(hwnd, out wp);
-
+                NativeMethods.GetWindowPlacement(hwnd, out NativeMethods.WINDOWPLACEMENT wp);
                 ConfigManager.SettingsManager.SaveSetting("ProfileEditor", "WindowLocation", wp.normalPosition);
 
                 // Close all open documents so they can clean up
@@ -299,10 +291,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             if (ConfigManager.SettingsManager.IsSettingAvailable("ProfileEditor", "WindowLocation"))
             {
-                NativeMethods.WINDOWPLACEMENT wp = new NativeMethods.WINDOWPLACEMENT();
-                wp.normalPosition = ConfigManager.SettingsManager.LoadSetting("ProfileEditor", "WindowLocation", new NativeMethods.RECT(0, 0, (int)Width, (int)Height));
-                wp.length = Marshal.SizeOf(typeof(NativeMethods.WINDOWPLACEMENT));
-                wp.flags = 0;
+                NativeMethods.WINDOWPLACEMENT wp = new NativeMethods.WINDOWPLACEMENT
+                {
+                    normalPosition = ConfigManager.SettingsManager.LoadSetting("ProfileEditor", "WindowLocation", new NativeMethods.RECT(0, 0, (int)Width, (int)Height)),
+                    length = Marshal.SizeOf(typeof(NativeMethods.WINDOWPLACEMENT)),
+                    flags = 0
+                };
                 wp.showCmd = (wp.showCmd == NativeMethods.SW_SHOWMINIMIZED ? NativeMethods.SW_SHOWNORMAL : wp.showCmd);
                 IntPtr hwnd = new WindowInteropHelper(this).Handle;
                 NativeMethods.SetWindowPlacement(hwnd, ref wp);
@@ -358,6 +352,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             return _documents.FirstOrDefault(meta => meta.document == document);
         }
 
+        // XXX: investigate why this was here and is no longer used
         private DocumentMeta FindDocumentMeta(HeliosEditorDocument editor)
         {
             return _documents.FirstOrDefault(meta => meta.editor == editor);
@@ -509,15 +504,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 return;
             }
 
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.FileName = Profile.Name; // Default file name
-            dlg.DefaultExt = ".hpf"; // Default file extension
-            dlg.Filter = "Helios Profiles (.hpf)|*.hpf"; // Filter files by extension
-            dlg.InitialDirectory = ConfigManager.ProfilePath;
-            dlg.ValidateNames = true;
-            dlg.AddExtension = true;
-            dlg.Multiselect = false;
-            dlg.Title = "Open Profile";
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                FileName = Profile.Name, // Default file name
+                DefaultExt = ".hpf", // Default file extension
+                Filter = "Helios Profiles (.hpf)|*.hpf", // Filter files by extension
+                InitialDirectory = ConfigManager.ProfilePath,
+                ValidateNames = true,
+                AddExtension = true,
+                Multiselect = false,
+                Title = "Open Profile"
+            };
 
             // Show open file dialog box
             bool? result = dlg.ShowDialog(this);
@@ -764,15 +761,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private bool SaveAsProfile()
         {
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = Profile.Name; // Default file name
-            dlg.DefaultExt = ".hpf"; // Default file extension
-            dlg.Filter = "Helios Profiles (.hpf)|*.hpf"; // Filter files by extension
-            dlg.InitialDirectory = ConfigManager.ProfilePath;
-            dlg.OverwritePrompt = true;
-            dlg.ValidateNames = true;
-            dlg.AddExtension = true;
-            dlg.Title = "Save Profile As";
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog
+            {
+                FileName = Profile.Name, // Default file name
+                DefaultExt = ".hpf", // Default file extension
+                Filter = "Helios Profiles (.hpf)|*.hpf", // Filter files by extension
+                InitialDirectory = ConfigManager.ProfilePath,
+                OverwritePrompt = true,
+                ValidateNames = true,
+                AddExtension = true,
+                Title = "Save Profile As"
+            };
 
             // Show save file dialog box
             bool? result = dlg.ShowDialog();
@@ -882,9 +881,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void AddInterface_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             AvailableInterfaces availableInterfaces = new AvailableInterfaces(Profile);
-            AddInterfaceDialog dialog = new AddInterfaceDialog();
-            dialog.DataContext = availableInterfaces;
-            dialog.Owner = this;
+            AddInterfaceDialog dialog = new AddInterfaceDialog
+            {
+                DataContext = availableInterfaces,
+                Owner = this
+            };
 
             try
             {
@@ -994,8 +995,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void DeleteInterface_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             // redirect delete received from check list to profile explorer
-            HeliosInterface heliosInterface = e.Parameter as HeliosInterface;
-            if (heliosInterface != null)
+            if (e.Parameter is HeliosInterface heliosInterface)
             {
                 ExplorerPanel.DeleteInterface(heliosInterface);
             }

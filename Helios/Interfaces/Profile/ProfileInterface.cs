@@ -257,6 +257,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             // TODO if any launch or kill actions are configured, check paths and access
             // TODO if incorrect, report warning or error (to stop launch) in StatusReportItem
             // TODO if correct, report detail also in StatusReportItem
+            _ = newReport;
         }
 
         public void PublishStatusReport(IList<StatusReportItem> statusReport)

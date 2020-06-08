@@ -344,7 +344,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected override void OnUnrecognizedFunction(string id, string value)
         {
             // don't log this as warning because our protocol includes times when we 
-            // receive data from the wrong module
+            // receive data from the wrong module and it is correct behavior
             if (IsSynchronized)
             {
                 // we think we are synchronized
@@ -356,11 +356,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// true if the export script is running the module we requested, as far as we know
         /// </summary>
         private bool IsSynchronized => _remoteModuleFormat.HasValue && _remoteModuleFormat == _exportModuleFormat;
-
-        /// <summary>
-        /// true if we have received a remote module format, so we know the other side is capable of this protocol
-        /// </summary>
-        private bool CanSynchronize => _remoteModuleFormat.HasValue;
 
         // WARNING: executed on LoadProfile thread
         public override void ReadXml(XmlReader reader)

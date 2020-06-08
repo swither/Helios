@@ -62,24 +62,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         #endregion
 
-        #region Constant
-
-        /// <summary>
-        /// magic names of viewports that indicate that a viewport should be part of the main view rectangle (REVISIT
-        /// unimplemented)
-        /// </summary>
-        private static readonly HashSet<string> _mainViewNames =
-            new HashSet<string>(StringComparer.CurrentCultureIgnoreCase)
-            {
-                "center",
-                "main"
-            };
+#region Constant
 
         internal const string SETTINGS_GROUP = "DCSMonitorSetup";
 
-        #endregion
+#endregion
 
-        #region Nested
+#region Nested
 
         public class GlobalOffsetEventArgs : EventArgs
         {
@@ -101,9 +90,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             public ViewportSetupFile LocalViewports { get; }
         }
 
-        #endregion
+#endregion
 
-        #region Private
+#region Private
 
         /// <summary>
         /// live inventory of our profile, indexed by monitor key
@@ -156,7 +145,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private bool _generateCombined = true;
 
-        #endregion
+#endregion
 
         public MonitorSetup()
             : base("DCS Monitor Setup")
@@ -607,7 +596,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             MonitorLayoutKey = CalculateMonitorLayoutKey();
         }
 
-        #region Properties
+#region Properties
 
         /// <summary>
         /// true if this profile uses the combined monitor setup file
@@ -718,9 +707,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 OnPropertyChanged("UsingViewportProvider", oldValue, value, true);
             }
         }
-        #endregion
+#endregion
 
-        #region IExtendedDescription
+#region IExtendedDescription
 
         public string Description =>
             "Utility interface that writes a DCS MonitorSetup Lua file to configure screen layout for the current profile.";
@@ -728,23 +717,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public string RemovalNarrative =>
             "Delete this interface to no longer let Helios manage the monitor setup file for this profile";
 
-        #endregion
+#endregion
 
-        #region IInstallation
+#region IInstallation
 
         // all we have right now is the monitor setup file generator
         public InstallationResult Install(IInstallationCallbacks callbacks) => _renderer.Install(callbacks);
 
-        #endregion
+#endregion
 
-        #region IReadyCheck
+#region IReadyCheck
 
         // all we have right now is the monitor setup file generator
         public IEnumerable<StatusReportItem> PerformReadyCheck() => _renderer.PerformReadyCheck();
 
-        #endregion
+#endregion
 
-        #region IShadowVisualParent
+#region IShadowVisualParent
 
         public double Scale
         {
@@ -764,9 +753,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public Vector GlobalOffset { get; private set; }
 
-        #endregion
+#endregion
 
-        #region IStatusReportNotify
+#region IStatusReportNotify
 
         public void Subscribe(IStatusReportObserver observer)
         {
@@ -807,6 +796,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public string StatusName => Name;
 
-        #endregion
+#endregion
     }
 }

@@ -47,7 +47,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// <summary>
         /// true if we are done loaded and should process changes
         /// </summary>
-        private bool _loaded;
+        private readonly bool _loaded;
 
         internal MonitorSetupViewModel(MonitorSetup data) : base(data)
         {
