@@ -282,7 +282,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         
         void WindowFocused(FalconTypes type)
         {
-            if(type == FalconTypes.BMS && FocusAssist)
+            if(type == FalconTypes.BMS && _focusAssist)
             {
                 System.Diagnostics.Process[] bms = System.Diagnostics.Process.GetProcessesByName("Falcon BMS");
                 if(bms.Length > 0)
