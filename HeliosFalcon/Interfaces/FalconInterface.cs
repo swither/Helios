@@ -285,7 +285,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             if(type == FalconTypes.BMS && _focusAssist)
             {
                 System.Diagnostics.Process[] bms = System.Diagnostics.Process.GetProcessesByName("Falcon BMS");
-                if(bms.Length > 0)
+                if(bms.Length == 1)
                 {
                     System.IntPtr hWnd = bms[0].MainWindowHandle;
                    SetForegroundWindow(hWnd);
