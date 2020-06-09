@@ -15,7 +15,7 @@
         WindowStyle="None" 
         ResizeMode="NoResize" 
         Name="HeliosWindow" 
-        Icon="Icon.png" 
+        Icon="pack://application:,,,/ControlCenter.ico" 
         Topmost="True" 
         Loaded="Window_Loaded" 
         ContentRendered="Window_Opened"
