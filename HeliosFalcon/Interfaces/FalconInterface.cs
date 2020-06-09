@@ -1,5 +1,4 @@
 ﻿//  Copyright 2014 Craig Courtney
-//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
@@ -33,6 +33,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private string _falconPath;
         private string _keyFile;
         private string _cockpitDatFile;
+        private bool _focusAssist;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private FalconDataExporter _dataExporter;
@@ -77,6 +78,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         #region Properties
 
+        public bool FocusAssist
+        {
+            get { return _focusAssist; }
+            set
+            {
+                var oldValue = _focusAssist;
+                _focusAssist = value;
+                OnPropertyChanged("FocusAssist", oldValue, value, true);
+            }
+        }
         public FalconTypes FalconType
         {
             get
@@ -301,6 +312,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "CockpitDatFile":
                         CockpitDatFile = reader.ReadElementString("CockpitDatFile");
                         break;
+                    case "FocusAssist":
+                        FocusAssist = Convert.ToBoolean(reader.ReadElementString("FocusAssist"));
+                        break;
                     default:
                         // ignore unsupported settings
                         string elementName = reader.Name;
@@ -316,6 +330,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             writer.WriteElementString("FalconType", FalconType.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
             writer.WriteElementString("CockpitDatFile", CockpitDatFile);
+            writer.WriteElementString("FocusAssist", FocusAssist.ToString());
         }
 
         #region IReadyCheck
