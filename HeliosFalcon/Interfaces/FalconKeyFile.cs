@@ -22,9 +22,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
     public class FalconKeyFile
     {
-        private string _fileName;
+        private readonly string _fileName;
         private bool _parsed = false;
-        private Dictionary<string, FalconKeyCallback> _callbacks = new Dictionary<string, FalconKeyCallback>();
+        private readonly Dictionary<string, FalconKeyCallback> _callbacks = new Dictionary<string, FalconKeyCallback>();
         private List<FalconKeyCallback> _callbackList;
 
         public FalconKeyFile(string keyFile)
@@ -61,11 +61,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                                 int isKey = int.Parse(tokens[2]);
                                 if (isKey == 0)
                                 {
-                                    FalconKeyCallback callback = new FalconKeyCallback(callbackName);
-                                    callback.KeyCode = ConvertString(tokens[3]);
-                                    callback.Modifiers = ConvertString(tokens[4]);
-                                    callback.ComboKeyCode = ConvertString(tokens[5]);
-                                    callback.ComboModifiers = ConvertString(tokens[6]);
+                                    FalconKeyCallback callback = new FalconKeyCallback(callbackName)
+                                    {
+                                        KeyCode = ConvertString(tokens[3]),
+                                        Modifiers = ConvertString(tokens[4]),
+                                        ComboKeyCode = ConvertString(tokens[5]),
+                                        ComboModifiers = ConvertString(tokens[6])
+                                    };
                                     if (tokens.Length >= 9)
                                     {
                                         callback.Description = tokens[8];
