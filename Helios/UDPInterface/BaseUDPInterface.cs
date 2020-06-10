@@ -367,13 +367,13 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
         }
 
-        private MainThreadAccess _main = new MainThreadAccess();
-        private SharedAccess _shared = new SharedAccess();
+        private readonly MainThreadAccess _main = new MainThreadAccess();
+        private readonly SharedAccess _shared = new SharedAccess();
 
         public BaseUDPInterface(string name)
             : base(name)
         {
-            _socketDataCallback = new AsyncCallback(OnDataReceived);
+            _socketDataCallback = OnDataReceived;
 
             _main.ConnectedTrigger = new HeliosTrigger(this, "", "", "Connected", "Fired on DCS connect.");
             Triggers.Add(_main.ConnectedTrigger);
@@ -502,12 +502,13 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 }
                 catch (SocketException se)
                 {
-                    if (!HandleSocketException(se, out context.socket))
+                    if (HandleSocketException(se, out context.socket))
                     {
-                        Logger.Error("UDP interface unable to recover from socket reset, no longer receiving data. (Interface=\"" + Name + "\")");
-                        break;
+                        // retry forever
+                        continue;
                     }
-                    // else retry forever
+                    Logger.Error("UDP interface unable to recover from socket reset, no longer receiving data. (Interface=\"" + Name + "\")");
+                    break;
                 }
             } while (true);
         }
@@ -518,67 +519,82 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         /// <param name="asyncResult"></param>
         private void OnDataReceived(IAsyncResult asyncResult)
         {
-            if (!_shared.Started)
-            {
-                // ignore, we shut down since requesting receive
-                return;
-            }
-            ReceiveContext context = asyncResult.AsyncState as ReceiveContext;
+            // WARNING: we must not throw out of this frame unless we are prepared to crash silently
             try
             {
-                ReceiveContext.Message message = context.ContinueWrite(0);
-                message.bytesReceived = context.socket.EndReceiveFrom(asyncResult, ref message.fromEndPoint);
-                context.EndWrite();
-            }
-            catch (SocketException se)
-            {
-                // NOTE: EndReceiveFrom isn't retriable, because the receive won't we valid after we reset socket
-                if (!HandleSocketException(se, out context.socket))
+                if (!_shared.Started)
                 {
-                    // no new receive attempt
+                    // ignore, we shut down since requesting receive
                     return;
                 }
 
-                // recovered with probably a new socket
-            }
-            // drain the socket, as much as allowed, to share the context switch to main
-            while ((context.socket.Available > 0) && (context.Length < context.Capacity))
-            {
-                ReceiveContext.Message message = context.BeginWrite();
-                message.bytesReceived = 0;
+                ReceiveContext context = asyncResult.AsyncState as ReceiveContext;
                 try
                 {
-                    message.bytesReceived = context.socket.ReceiveFrom(message.data, 0, message.data.Length, SocketFlags.None, ref message.fromEndPoint);
-                    if (message.bytesReceived > 0)
-                    {
-                        // if we did not receive anything or throw, we use this slot again
-                        context.EndWrite();
-                    }
+                    ReceiveContext.Message message = context.ContinueWrite(0);
+                    message.bytesReceived = context.socket.EndReceiveFrom(asyncResult, ref message.fromEndPoint);
+                    context.EndWrite();
                 }
                 catch (SocketException se)
                 {
-                    if (HandleSocketException(se, out context.socket))
+                    // NOTE: EndReceiveFrom isn't retriable, because the receive won't we valid after we reset socket
+                    if (!HandleSocketException(se, out context.socket))
                     {
-                        // recovered with probably a new socket
-                    } else {
-                        // dead, stop trying to drain
-                        break;
+                        // no new receive attempt
+                        return;
+                    }
+
+                    // recovered with probably a new socket
+                }
+
+                // drain the socket, as much as allowed, to share the context switch to main
+                while ((context.socket.Available > 0) && (context.Length < context.Capacity))
+                {
+                    ReceiveContext.Message message = context.BeginWrite();
+                    message.bytesReceived = 0;
+                    try
+                    {
+                        message.bytesReceived = context.socket.ReceiveFrom(message.data, 0, message.data.Length,
+                            SocketFlags.None, ref message.fromEndPoint);
+                        if (message.bytesReceived > 0)
+                        {
+                            // if we did not receive anything or throw, we use this slot again
+                            context.EndWrite();
+                        }
+                    }
+                    catch (SocketException se)
+                    {
+                        if (HandleSocketException(se, out context.socket))
+                        {
+                            // recovered with probably a new socket
+                        }
+                        else
+                        {
+                            // dead, stop trying to drain
+                            break;
+                        }
                     }
                 }
-            }
 
-            // it could be empty if all we did this iteration is throw and reset the socket 
-            if (context.Length > 0)
+                // it could be empty if all we did this iteration is throw and reset the socket 
+                if (context.Length > 0)
+                {
+                    // offload parsing from main thread to socket thread pool, without lock held
+                    ParseReceived(context);
+
+                    // pass ownership to main thread, process synchronously
+                    Dispatcher.Invoke(() => DispatchReceived(context),
+                        System.Windows.Threading.DispatcherPriority.Send);
+                }
+
+                // start next receive
+                WaitForData(_shared.FetchReceiveContext() ?? new ReceiveContext() {socket = _shared.ServerSocket});
+            }
+            catch (Exception ex)
             {
-                // offload parsing from main thread to socket thread pool, without lock held
-                ParseReceived(context);
-
-                // pass ownership to main thread, process synchronously
-                Dispatcher.Invoke(() => DispatchReceived(context), System.Windows.Threading.DispatcherPriority.Send);
+                Logger.Error(ex, "Fatal error in UDP socket listening worker thread; program will exit");
+                throw;
             }
-
-            // start next receive
-            WaitForData(_shared.FetchReceiveContext() ?? new ReceiveContext() { socket = _shared.ServerSocket });
         }
 
         private static void ParseReceived(ReceiveContext owned)
