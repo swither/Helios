@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
@@ -593,6 +594,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             catch (Exception ex)
             {
                 Logger.Error(ex, "Fatal error in UDP socket listening worker thread; program will exit");
+                ExceptionViewer.DisplayException(ex);
                 throw;
             }
         }

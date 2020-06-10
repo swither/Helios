@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Windows;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -134,7 +136,6 @@ namespace GadrocsWorkshop.Helios
 
         public void Run()
         {
-            // ToDo
             /* Kiwi.Lost.In.Melb@Gmail.com
              * Added functionality for a TCP server open on a static port of 9088 - yes needs to be in a config with edit screen but my WPF skills are NIL.
              * If there is a TCP client connected then it will send key presses to a PC running the receiver
@@ -146,90 +147,105 @@ namespace GadrocsWorkshop.Helios
              * The way I have done this is to just serialise the INPUT object and send over TCP. Seemed the easiest way to accomodate this feature quickly.
             */
 
-            // Only attempt to bind the keyboard server if not in the Profile Editor or similar editor application,
-            // and only if not disabled in undocumented setting
-            if (ConfigManager.Application.ConnectToServers && !ConfigManager.SettingsManager.LoadSetting("Helios", "DisableKeyboardServer", false)) 
+            try
             {
-                try
+                // Only attempt to bind the keyboard server if not in the Profile Editor or similar editor application,
+                // and only if not disabled in undocumented setting
+                if (ConfigManager.Application.ConnectToServers &&
+                    !ConfigManager.SettingsManager.LoadSetting("Helios", "DisableKeyboardServer", false))
                 {
-                    Socket Svrsocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 9088);
-                    Svrsocket.Bind(localEndPoint);
-                    Svrsocket.Listen(10);
-                    Svrsocket.BeginAccept(ConnectSocketAsync, Svrsocket);
-                }
-                catch (SocketException se)
-                {
-                    if (HandleSocketException(se))
+                    try
                     {
-                        // Socket read timeout - ignore
+                        Socket Svrsocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                        IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 9088);
+                        Svrsocket.Bind(localEndPoint);
+                        Svrsocket.Listen(10);
+                        Svrsocket.BeginAccept(ConnectSocketAsync, Svrsocket);
                     }
-                    else
+                    catch (SocketException se)
                     {
-                        Logger.Error("Keyboard Thread unable to Bind TCP port: " + se.Message, se);
+                        if (HandleSocketException(se))
+                        {
+                            // Socket read timeout - ignore
+                        }
+                        else
+                        {
+                            Logger.Error("Keyboard Thread unable to Bind TCP port: " + se.Message, se);
+                        }
+                    }
+                }
+
+                while (true)
+                {
+                    int sleepTime = 20; // Changed from Timeout.Infinite to just delay and recheck;
+                    lock (typeof(KeyboardThread))
+                    {
+                        if (_events.Count > 0)
+                        {
+                            sleepTime = _keyDelay;
+                            NativeMethods.INPUT keyEvent = _events.Dequeue();
+                            int size = Marshal.SizeOf(keyEvent);
+                            byte[] arr = new byte[size];
+                            IntPtr ptr = Marshal.AllocHGlobal(size);
+                            Marshal.StructureToPtr(keyEvent, ptr, true);
+                            Marshal.Copy(ptr, arr, 0, size);
+                            // Send via TCP - if no connection then send to the local PC
+                            if (!TCPSend(arr, size))
+                                NativeMethods.SendInput(1, new NativeMethods.INPUT[] {keyEvent},
+                                    Marshal.SizeOf(keyEvent));
+                            Marshal.FreeHGlobal(ptr);
+                        }
+                        else if (_clientsocket != null)
+                        {
+                            // check TCP read thread
+                            try
+                            {
+                                byte[] buffer = new byte[1024];
+                                _clientsocket.ReceiveTimeout = 1; // so we dont block - will cause an exception
+                                int readBytes = _clientsocket.Receive(buffer, buffer.Length, SocketFlags.None);
+                                if (readBytes != 0)
+                                {
+                                    String DataIn = System.Text.Encoding.ASCII.GetString(buffer, 0, readBytes);
+                                    if (DataIn.Contains("HEARTBEAT"))
+                                        // Send a response - a heatbeat is used because we dont always know when TCP disconnects
+                                        // This allows the client to know whether it is still in a connected state
+                                        TCPSend("HEARTBEAT");
+                                }
+                            }
+                            catch (SocketException se)
+                            {
+                                if (HandleSocketException(se))
+                                {
+                                    // Socket read timeout - ignore
+                                }
+                                else
+                                {
+                                    Logger.Error(
+                                        "Keyboard Thread unable to recover from socket exception on Receive(): " +
+                                        se.Message, se);
+                                }
+                            }
+                        }
+                    }
+
+                    try
+                    {
+                        Thread.Sleep(sleepTime);
+                    }
+                    catch (ThreadInterruptedException)
+                    {
+                        // NOOP
                     }
                 }
             }
-
-            while (true)
+            catch (Exception ex)
             {
-                int sleepTime = 20; // Changed from Timeout.Infinite to just delay and recheck;
-                lock (typeof(KeyboardThread))
-                {
-                    if (_events.Count > 0)
-                    {
-                        sleepTime = _keyDelay;
-                        NativeMethods.INPUT keyEvent = _events.Dequeue();
-                        int size = Marshal.SizeOf(keyEvent);
-                        byte[] arr = new byte[size];
-                        IntPtr ptr = Marshal.AllocHGlobal(size);
-                        Marshal.StructureToPtr(keyEvent, ptr, true);
-                        Marshal.Copy(ptr, arr, 0, size);
-                        // Send via TCP - if no connection then send to the local PC
-                        if (!TCPSend(arr, size))
-                            NativeMethods.SendInput(1, new NativeMethods.INPUT[] { keyEvent }, Marshal.SizeOf(keyEvent));
-                        Marshal.FreeHGlobal(ptr);
-                    }
-                    else if (_clientsocket != null)
-                    {
-                        // check TCP read thread
-                        try
-                        {
-                            byte[] buffer = new byte[1024];
-                            _clientsocket.ReceiveTimeout = 1; // so we dont block - will cause an exception
-                            int readBytes = _clientsocket.Receive(buffer, buffer.Length, SocketFlags.None);
-                            if (readBytes != 0)
-                            {
-                                String DataIn = System.Text.Encoding.ASCII.GetString(buffer, 0, readBytes);
-                                if (DataIn.Contains("HEARTBEAT"))
-                                    // Send a response - a heatbeat is used because we dont always know when TCP disconnects
-                                    // This allows the client to know whether it is still in a connected state
-                                    TCPSend("HEARTBEAT");
-                            }
-                        }
-                        catch (SocketException se)
-                        {
-                            if (HandleSocketException(se))
-                            {
-                                // Socket read timeout - ignore
-                            }
-                            else
-                            {
-                                Logger.Error("Keyboard Thread unable to recover from socket exception on Receive(): " + se.Message, se);
-                            }
-                        }
-                    }
-                }
-                try
-                {
-                    Thread.Sleep(sleepTime);
-                }
-                catch (ThreadInterruptedException)
-                {
-                    // NOOP
-                }
+                Logger.Error(ex, "Fatal error in keyboard thread; program will exit");
+                ExceptionViewer.DisplayException(ex);
+                throw;
             }
         }
+
         private bool HandleSocketException(SocketException se)
         {
             SocketError erCode = (SocketError)se.ErrorCode;
