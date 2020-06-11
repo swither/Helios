@@ -13,9 +13,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.ComponentModel;
 using System.Diagnostics;
-using NLog;
 
 namespace GadrocsWorkshop.Helios.Windows.Controls
 {
@@ -385,20 +383,22 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         {
             Size resultSize = new Size(1, 1);
 
-            if (Visual != null)
+            if (Visual == null)
             {
-                resultSize.Width = double.IsPositiveInfinity(availableSize.Width) ? Math.Max(1d, Visual.Width * ZoomFactor) : availableSize.Width;
-                resultSize.Height = double.IsPositiveInfinity(availableSize.Height) ? Math.Max(1d, Visual.Height * ZoomFactor) : availableSize.Height;
+                return resultSize;
+            }
 
-                double scale = Math.Min(resultSize.Height / Visual.Height, resultSize.Width / Visual.Width);
+            resultSize.Width = double.IsPositiveInfinity(availableSize.Width) ? Math.Max(1d, Visual.Width * ZoomFactor) : availableSize.Width;
+            resultSize.Height = double.IsPositiveInfinity(availableSize.Height) ? Math.Max(1d, Visual.Height * ZoomFactor) : availableSize.Height;
 
-                resultSize.Width = Visual.Width * scale;
-                resultSize.Height = Visual.Height * scale;
+            double scale = Math.Min(resultSize.Height / Math.Max(1, Visual.Height), resultSize.Width / Math.Max(1, Visual.Width));
 
-                foreach (HeliosVisualView child in Children)
-                {
-                    child.Measure(new Size(Math.Min(1, child.Visual.DisplayRectangle.Width) * scale, Math.Min(1, child.Visual.DisplayRectangle.Height) * scale));
-                }
+            resultSize.Width = Visual.Width * scale;
+            resultSize.Height = Visual.Height * scale;
+
+            foreach (HeliosVisualView child in Children)
+            {
+                child.Measure(new Size(Math.Max(1, child.Visual.DisplayRectangle.Width) * scale, Math.Max(1, child.Visual.DisplayRectangle.Height) * scale));
             }
 
             return resultSize;
@@ -406,19 +406,18 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (Visual != null)
+            if (Visual == null)
             {
-                double myWidth = DisplayRotation ? Visual.Width : Visual.Width;
-                double myHeight = DisplayRotation ? Visual.Height : Visual.Height;
+                return finalSize;
+            }
 
-                double scaleX = finalSize.Width / myWidth;
-                double scaleY = finalSize.Height / myHeight;
+            double scaleX = finalSize.Width / Math.Max(1, Visual.Width);
+            double scaleY = finalSize.Height / Math.Max(1, Visual.Height);
 
-                foreach (HeliosVisualView child in Children)
-                {
-                    Rect childRect = new Rect(child.Visual.DisplayRectangle.Left * scaleX, child.Visual.DisplayRectangle.Top * scaleY, child.Visual.DisplayRectangle.Width * scaleX, child.Visual.DisplayRectangle.Height * scaleY);
-                    child.Arrange(childRect);
-                }
+            foreach (HeliosVisualView child in Children)
+            {
+                Rect childRect = new Rect(child.Visual.DisplayRectangle.Left * scaleX, child.Visual.DisplayRectangle.Top * scaleY, child.Visual.DisplayRectangle.Width * scaleX, child.Visual.DisplayRectangle.Height * scaleY);
+                child.Arrange(childRect);
             }
 
             return finalSize;
