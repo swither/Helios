@@ -305,8 +305,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void AlertMessage_ValueReceived(object sender, NetworkTriggerValue.Value e)
         {
-            string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text));
-            Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
+            try
+            {
+                string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text));
+                Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
+            }
+            catch (FormatException ex)
+            {
+                Logger.Error(ex, "received ALERT message from Export.lua that contained invalid Base64 contents: {Raw}", e.Text);
+            }
         }
 
         public override void Reset()
