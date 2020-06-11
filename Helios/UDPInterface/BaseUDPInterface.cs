@@ -603,7 +603,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 // start next receive
                 WaitForData(serverSocket);
             }
-            catch (ObjectDisposedException ex)
+            catch (ObjectDisposedException)
             {
                 // this can happen because Windows does not support UDP half-close to wake up the
                 // async receiver, so we may actually try to read from the socket after it has been
@@ -823,7 +823,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         void Profile_ProfileStarted(object sender, EventArgs e)
         {
             Logger.Debug("UDP interface {Interface} starting.", Name);
-            Socket serverSocket = null;
 
             // hook for descendants to initialize for a profile start before we receive traffic
             OnProfileStarted();
