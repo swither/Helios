@@ -62,9 +62,8 @@ namespace GadrocsWorkshop.Helios.Controls
             AddRocker("Gain", "MFD Rocker", "V", 3, 390);
             AddRocker("Contrast", "MFD Rocker", "V", 406, 390);
 
-            Helios.Controls.Potentiometer _knob = new Helios.Controls.Potentiometer();
             AddPot("Brightness Knob", new Point(200,4), new Size(40,40));
-}
+        }
         #region Properties
 
         public override string BezelImage
@@ -86,26 +85,28 @@ namespace GadrocsWorkshop.Helios.Controls
         }
         private void AddPot(string name, Point posn, Size size)
         {
-            Helios.Controls.Potentiometer _knob = new Helios.Controls.Potentiometer();
-            _knob.Name = name;
-            _knob.KnobImage = "{AV-8B}/Images/Common Knob.png";
-            _knob.InitialRotation = 219;
-            _knob.RotationTravel = 291;
-            _knob.MinValue = 0;
-            _knob.MaxValue = 1;
-            _knob.InitialValue = 0;
-            _knob.StepValue = 0.1;
-            _knob.Top = posn.Y;
-            _knob.Left = posn.X;
-            _knob.Width = size.Width;
-            _knob.Height = size.Height;
+            Helios.Controls.Potentiometer knob = new Helios.Controls.Potentiometer
+            {
+                Name = name,
+                KnobImage = "{AV-8B}/Images/Common Knob.png",
+                InitialRotation = 219,
+                RotationTravel = 291,
+                MinValue = 0,
+                MaxValue = 1,
+                InitialValue = 0,
+                StepValue = 0.1,
+                Top = posn.Y,
+                Left = posn.X,
+                Width = size.Width,
+                Height = size.Height
+            };
 
-            Children.Add(_knob);
-            foreach (IBindingTrigger trigger in _knob.Triggers)
+            Children.Add(knob);
+            foreach (IBindingTrigger trigger in knob.Triggers)
             {
                 AddTrigger(trigger, name);
             }
-            AddAction(_knob.Actions["set.value"], name);
+            AddAction(knob.Actions["set.value"], name);
         }
         private void AddButton(string name, double x, double y, bool horizontal)
         {
