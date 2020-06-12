@@ -307,7 +307,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             try
             {
-                string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text));
+                // payload is Base64 with "+" used as padding instead of "=" to avoid Helios protocol
+                string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text.Replace('+', '=')));
                 Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
             }
             catch (FormatException ex)

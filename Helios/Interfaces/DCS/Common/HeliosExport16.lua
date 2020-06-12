@@ -644,7 +644,7 @@ function helios_private.sendAlert(message)
     if helios_private.clock >= helios_private.state.nextAlert then
         helios_private.state.nextAlert = helios_private.clock + helios_impl.alertInterval
         log.write('HELIOS EXPORT', log.DEBUG, string.format("sending error alert message at event time %f", helios_private.clock))
-        helios_private.doSend("ALERT_MESSAGE", (helios_private.mimeLibrary.b64(message)))
+        helios_private.doSend("ALERT_MESSAGE", (helios_private.mimeLibrary.b64(message)):gsub("=","+"))
         helios_private.flush()
     end
 end
