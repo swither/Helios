@@ -978,13 +978,9 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Resource>
-    <Resource Include="Interfaces\DCS\FA18C\ExportFunctions - New - Post.lua" />
-    <Resource Include="Interfaces\DCS\FA18C\ExportFunctions - New - Pre.lua" />
     <Resource Include="Images\Toggles\guard-up-empty.png" />
     <Resource Include="Images\Buttons\green-push-in.png">
     </Resource>
-    <Resource Include="Interfaces\DCS\AV8B\ExportFunctions - New - Post.lua" />
-    <Resource Include="Interfaces\DCS\AV8B\ExportFunctions - New - Pre.lua" />
     <Resource Include="Interfaces\DCS\Common\HeliosExport16.lua" />
     <None Include="Documents\Helios Release 1.4 Users Guide.docx" />
     <Content Include="Documents\Helios Release 1.4 Users Guide.pdf">
@@ -1002,7 +998,6 @@
     </Resource>
     <Resource Include="Interfaces\DCS\FC2\Export.lua" />
     <Resource Include="Interfaces\DCS\FC2\ExportFunctions.lua" />
-    <Resource Include="Interfaces\DCS\MiG21\Export.lua" />
     <Resource Include="Interfaces\DCS\MiG21\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\FA18C\ExportFunctions.lua" />

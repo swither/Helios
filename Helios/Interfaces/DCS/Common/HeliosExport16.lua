@@ -521,7 +521,11 @@ function helios_private.processArguments(device, arguments)
     end
     local lArgumentValue
     for lArgument, lFormat in pairs(arguments) do
-        lArgumentValue = string.format(lFormat, device:get_argument_value(lArgument))
+        success, lArgumentValue = pcall(string.format, lFormat, device:get_argument_value(lArgument))
+        if not success then
+            log.write("HELIOS.EXPORT", log.ERROR, string.format("argument %d has an invalid format string '%s'", lArgument, lFormat))
+            error(lArgumentValue)
+        end
         helios.send(lArgument, lArgumentValue)
     end
 end
