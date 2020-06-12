@@ -98,8 +98,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             AddVisualChild(_view);
 
             SelectedItems = new HeliosVisualCollection();
-            _zoomCalibration = new CalibrationPointCollectionDouble(-4d, 0.25d, 4d, 4d);
-            _zoomCalibration.Add(new CalibrationPointDouble(0d, 1d));
+            _zoomCalibration = new CalibrationPointCollectionDouble(-4d, 0.25d, 4d, 4d)
+            {
+                new CalibrationPointDouble(0d, 1d)
+            };
             SelectedItems.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(SelectedItems_CollectionChanged);
 
             DrawingGroup checkerGroup = new DrawingGroup();
@@ -565,6 +567,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void HandleMiddleMouseButtonPanning(MouseEventArgs e, Point currentPosition)
         {
+            _ = e;
             ScrollViewer scroller = FindPanningScroller();
             if (scroller == null)
             {
@@ -655,6 +658,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             ReleaseMouseCapture();
         }
 
+        // XXX investigate why this is unused
         private void ScaleVisuals(HeliosVisualCollection visuals, Rect selectionRectangle, Vector offset, double scaleX, double scaleY)
         {
             foreach (HeliosVisual visual in visuals)

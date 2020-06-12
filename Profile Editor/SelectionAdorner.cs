@@ -52,7 +52,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         public SelectionAdorner(HeliosVisualContainerEditor adornedElement)
             : base(adornedElement)
         {
-            if (adornedElement == null)
+            if (adornedElement.SelectedItems == null)
             {
                 throw new Exception("timing bug encountered in processing selections; editor cannot be null");
             }
@@ -299,8 +299,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             if (_isline)
             {
-                Helios.Controls.LineDecoration line = _editor.SelectedItems[0] as Helios.Controls.LineDecoration;
-
                 if (_editor.SnapManager.Action == SnapAction.LineStart)
                 {
                     _tempLine.Start = GetLineDragPoint(_tempLine.End, _editor.SnapManager.NewLocation);
