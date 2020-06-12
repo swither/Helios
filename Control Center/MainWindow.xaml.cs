@@ -245,7 +245,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 case StatusValue.RunningVersion:
                     Version ver = Assembly.GetEntryAssembly().GetName().Version;
                     string message =
-                        $"Helios {ver.Major.ToString()}.{ver.Minor.ToString()}.{ver.Build.ToString("0000")}.{ver.Revision.ToString("0000")}";
+                        $"Helios {ver.Major}.{ver.Minor}.{ver.Build:0000}.{ver.Revision:0000}";
                     message += $"\n{KnownLinks.GitRepoUrl() ?? "HeliosVirtualCockpit fork"}";
                     updateInfoStatus(message);
                     break;
@@ -884,8 +884,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void MoveThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {
-            Left = Left + e.HorizontalChange;
-            Top = Top + e.VerticalChange;
+            Left += e.HorizontalChange;
+            Top += e.VerticalChange;
         }
 
         private void PowerButton_Unchecked(object sender, RoutedEventArgs e)
@@ -893,9 +893,9 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             DispatcherTimer minimizeTimer = new DispatcherTimer(new TimeSpan(0, 0, 0, 0, 250), DispatcherPriority.Normal, TimedMinimize, Dispatcher);
         }
 
-        void TimedMinimize(object sender, EventArgs e)
+        private void TimedMinimize(object sender, EventArgs e)
         {
-            (sender as DispatcherTimer).Stop();
+            ((DispatcherTimer) sender).Stop();
             Dispatcher.Invoke(new Action(Close), null);
         }
 

@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#pragma warning disable IDE0054 // Use compound assignment
+
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -31,21 +33,15 @@ namespace GadrocsWorkshop.Helios.Controls
             InitializeComponent();
         }
 
-       
-
 		private void OnClick (object sender, RoutedEventArgs e)
 		{
 			CustomTape tape = Control as CustomTape;
-			if (tape != null)
-			{
-				tape.Reset();
-			}
-		}
+            tape?.Reset();
+        }
 
 		private void IncInitH(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.InitialHorizontal = tape.InitialHorizontal + 1;
 			}
@@ -53,16 +49,14 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void DecInitH(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.InitialHorizontal = tape.InitialHorizontal - 1;
 			}
 		}
 		private void IncMinH(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.MinHorizontal = tape.MinHorizontal + 1;
 			}
@@ -70,8 +64,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void DecMinH(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.MinHorizontal = tape.MinHorizontal - 1;
 			}
@@ -79,8 +72,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void IncMaxH (object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.HorizontalTravel = tape.HorizontalTravel+1;
 			}
@@ -88,19 +80,15 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void DecMaxH (object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.HorizontalTravel = tape.HorizontalTravel - 1;
 			}
 		}
 
-
-
-		private void IncInitV(object sender, RoutedEventArgs e)
+        private void IncInitV(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.InitialVertical = tape.InitialVertical + 1;
 			}
@@ -108,16 +96,14 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void DecInitV(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.InitialVertical = tape.InitialVertical - 1;
 			}
 		}
 		private void IncMinV(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.MinVertical = tape.MinVertical + 1;
 			}
@@ -125,8 +111,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void DecMinV(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.MinVertical = tape.MinVertical - 1;
 			}
@@ -134,8 +119,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void IncMaxV(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.VerticalTravel = tape.VerticalTravel + 1;
 			}
@@ -143,22 +127,15 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void DecMaxV(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.VerticalTravel = tape.VerticalTravel - 1;
 			}
 		}
 
-
-
-
-
-
-		private void IncInitR(object sender, RoutedEventArgs e)
+        private void IncInitR(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.InitialRotation = tape.InitialRotation + 1;
 			}
@@ -166,16 +143,14 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void DecInitR(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.InitialRotation = tape.InitialRotation - 1;
 			}
 		}
 		private void IncMinR(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.MinRotation = tape.MinRotation + 1;
 			}
@@ -183,8 +158,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void DecMinR(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.MinRotation = tape.MinRotation - 1;
 			}
@@ -192,8 +166,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void IncMaxR(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.RotationTravel = tape.RotationTravel + 1;
 			}
@@ -201,13 +174,10 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private void DecMaxR(object sender, RoutedEventArgs e)
 		{
-			CustomTape tape = Control as CustomTape;
-			if (tape != null)
+            if (Control is CustomTape tape)
 			{
 				tape.RotationTravel = tape.RotationTravel - 1;
 			}
 		}
-
-	
 	}
 }
