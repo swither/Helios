@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
     public partial class About : Window
     {
         // these are in order of being primary on the project
-        public static readonly string[] Authors = { "Gadroc", "BlueFinBima", "derammo" };
+        public static readonly string[] Authors = { "Gadroc", "derammo", "BlueFinBima" };
 
         // these will be listed alphabetically from now on
         public static string[] Contributors =>

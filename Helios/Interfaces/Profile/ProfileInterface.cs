@@ -22,8 +22,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using System;
+    using System.IO;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Text.RegularExpressions;
     using System.Windows;
 
     [HeliosInterface("Helios.Base.ProfileInterface", "Profile", null, typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
@@ -36,6 +38,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         // our implementation of IStatusReportNotify
         private readonly StatusReportNotifyAsyncOnce _statusReportNotify;
+
+        // definition for profile related triggers
+        private HeliosTrigger _profileStartedTrigger;
+        private HeliosTrigger _profileResetTrigger;
+        private HeliosTrigger _profileStoppedTrigger;
 
         public ProfileInterface()
             : base("Profile")
@@ -60,7 +67,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             launchApplication.Execute += LaunchApplication_Execute;
             Actions.Add(launchApplication);
 
-            // TODO declare triggers
+            HeliosAction killApplication = new HeliosAction(this, "", "", "kill application", "Kills an external process", "Process Image name of the process to be killed.", BindingValueUnits.Text);
+            killApplication.Execute += KillApplication_Execute;
+            Actions.Add(killApplication);
+
+            _profileStartedTrigger = new HeliosTrigger(this, "", "", "Started", "Fired when a profile is started.");
+            Triggers.Add(_profileStartedTrigger);
+
+           _profileResetTrigger = new HeliosTrigger(this, "", "", "Reset", "Fired when a profile has been reset.");
+            Triggers.Add(_profileResetTrigger);
+
+            _profileStoppedTrigger = new HeliosTrigger(this, "", "", "Stopped", "Fired when a profile is stopped.");
+            Triggers.Add(_profileStoppedTrigger);
 
             _statusReportNotify = new StatusReportNotifyAsyncOnce(CreateStatusReport, () => "Profile Interface", () => "Interface to Helios Control Center itself.");
         }
@@ -84,17 +102,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         private void Profile_ProfileStarted(object sender, EventArgs e)
         {
-            // TODO start trigger
+            _profileStartedTrigger.FireTrigger(BindingValue.Empty);
         }
 
         private void Profile_ProfileStopped(object sender, EventArgs e)
         {
-            // TODO stop trigger
+            _profileStoppedTrigger.FireTrigger(BindingValue.Empty);
         }
 
         public override void Reset()
         {
-            // TODO reset trigger
+            _profileResetTrigger.FireTrigger(BindingValue.Empty);
             base.Reset();
         }
 
@@ -133,13 +151,123 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         void LaunchApplication_Execute(object action, HeliosActionEventArgs e)
         {
+            // Arguments need to be split off from the incoming string, and both the
+            // application full path and the arguments could contain spaces.  
+            // The first un-double-quoted space is assumed to be the delimiter between 
+            // executable and argument.  
+            // 
+            // Once arguments have been split off, both the executable and arguments are 
+            // processed to expand environment variables which might introduce spaces.
+            //
+            // This process might break backward compatibility because existing launch actions
+            // could contain blanks and not be enclosed in double quotes
+            //
+
+            RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace;
+            MatchCollection _matches;
+            // Find out if we're launching a common executable for this machine
+            _matches = Regex.Matches(e.Value.StringValue, "(" + Environment.GetEnvironmentVariable("PATHEXT").Replace(";", "|").Replace(".", "\\.") + ")", options);
+            bool _exe = _matches.Count > 0 ? true : false;
+
+            string _expandedPath = e.Value.StringValue;
+            string _expandedArgs = "";
+            if (_exe)
+            {
+                // For executables launches, we resolve environment variables
+                Logger.Debug("Launch type determined to be an executable based on %PATHEXT% \"" + e.Value.StringValue + "\")");
+
+                _matches = Regex.Matches(e.Value.StringValue, "(?:\\\")([^\"]*)(?:\\\")");  // Extract anything which is enclosed in escaped double quotes
+                int _blank = e.Value.StringValue.IndexOf(" ");
+                if (_matches.Count == 0)
+                {
+                    //  There is nothing enclosed in double-quotes, so we assume the executable is before the first space and any arguments follow the first space
+
+                    if (_blank > 0)
+                    {
+                        _expandedPath = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(0, _blank));
+                        _expandedArgs = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(_blank + 1));
+                    }
+                    else
+                    {
+                        _expandedPath = Environment.ExpandEnvironmentVariables(e.Value.StringValue);
+                        _expandedArgs = "";
+                    }
+                }
+                else
+                {
+                    int _matchCursor = 0;
+                    foreach (Match _matchItem in _matches)
+                    {
+                        if (_matchItem.Equals(_matches[0]))
+                        {
+                            if (_matchItem.Index == 0)
+                            {
+                                _expandedPath = Environment.ExpandEnvironmentVariables(_matchItem.Groups[1].ToString());
+                                _matchCursor = _matchItem.Length;
+                            }
+                            else
+                            {
+                                _expandedPath = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(0, _blank));
+                                _expandedArgs = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(_blank, _matchItem.Index - _blank));
+                                _expandedArgs += " " + Environment.ExpandEnvironmentVariables(_matchItem.ToString());
+                                _matchCursor = _matchItem.Index + _matchItem.Length;
+                            }
+                        }
+                        else
+                        {
+                            if (_matchItem.Index == _matchCursor)
+                            {
+                                _expandedArgs += " " + Environment.ExpandEnvironmentVariables(_matchItem.ToString());
+                            }
+                            else
+                            {
+                                _expandedArgs += Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(_matchCursor, _matchItem.Index - _matchCursor));
+                                _matchCursor = _matchItem.Index + _matchItem.Length;
+                                _expandedArgs += " " + Environment.ExpandEnvironmentVariables(_matchItem.ToString());
+                            }
+                        }
+                        Logger.Debug("Double Quoted item found \"" + _matchItem.ToString() + "\"");
+                    }
+                }
+            }
             try
             {
-                Process.Start(e.Value.StringValue);
+                if (_exe)
+                {
+                    ProcessStartInfo _psi = new ProcessStartInfo();
+                    _psi.FileName = System.IO.Path.GetFileName(_expandedPath);
+                    _psi.WorkingDirectory = System.IO.Path.GetDirectoryName(_expandedPath);
+                    _psi.Arguments = _expandedArgs.Trim();
+                    _psi.UseShellExecute = true;
+                    _psi.RedirectStandardOutput = false;
+                    Process.Start(_psi);
+                }
+                else
+                {
+                    Logger.Debug("Launch type determined to be non-executable based on %PATHEXT% \"" + e.Value.StringValue + "\")");
+                    Process.Start(e.Value.StringValue);
+                }
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Error caught launching external application (path=\"" + e.Value.StringValue + "\")");
+                Logger.Error(ex,"Error caught launching external application (path=\"" + _expandedPath + "\") Exception " + ex.Message);
+            }
+        }
+
+        void KillApplication_Execute(object action, HeliosActionEventArgs e)
+        {
+            try
+            {
+                Process[] _localProcessesByName = Process.GetProcessesByName(e.Value.StringValue);
+                foreach (Process _proc in _localProcessesByName)
+                {
+                    Logger.Info("Killing process image name \"" + e.Value.StringValue + "\"");
+                    _proc.Kill();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Error caught during kill processing for process image name \"" + e.Value.StringValue + "\")");
             }
         }
 
@@ -243,20 +371,54 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                         Recommendation = "Perform Reset Monitors from the Profile menu",
                         Severity = StatusReportItem.SeverityCode.Error,
                         Link = StatusReportItem.ProfileEditor
+                        // TODO handle reporting tablet orientated incorrectly for the profile - ie profile width = screen height and profile height = screen width - the action would be to rotate the device rather than perform a monitor reset
                     });
                 }
             }
         }
 
         /// <summary>
-        /// check configuration related to launching or stopping executables
+        /// check configuration related to launching executables
         /// </summary>
         /// <param name="newReport"></param>
         private void CheckExecutablePaths(IList<StatusReportItem> newReport)
         {
-            // TODO if any launch or kill actions are configured, check paths and access
-            // TODO if incorrect, report warning or error (to stop launch) in StatusReportItem
-            // TODO if correct, report detail also in StatusReportItem
+            foreach(HeliosBinding _binding in OutputBindings)
+            {
+                if(_binding.Action.ActionID == "launch application")
+                {
+                    if (_binding.ValueSource == BindingValueSources.StaticValue && ValidateExecPath(_binding.Value))
+                    {
+                        newReport.Add(new StatusReportItem
+                        {
+                            Status = $"Item or application found (or cannot be checked) and is probably viable: '{_binding.OutputDescription}'",
+                            Recommendation = "No action necessary.",
+                            Severity = StatusReportItem.SeverityCode.Info,
+                            Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                        });
+                    }
+                    else
+                    {
+                        newReport.Add(new StatusReportItem
+                        {
+                            Status = $"Item or application not found on this machine and may not be launchable from '{_binding.OutputDescription}'",
+                            Recommendation = "Install missing application or local file then reload profile.",
+                            Severity = StatusReportItem.SeverityCode.Warning,
+                            Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                        });
+
+                    }
+                } else if(_binding.Action.ActionID == "kill application")
+                {
+                    newReport.Add(new StatusReportItem
+                    {
+                        Status = $"A kill action is contained in this profile for process name '{_binding.Value}'",
+                        Recommendation = "Ensure that this process being killed is expected.",
+                        Severity = StatusReportItem.SeverityCode.Info,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                    });
+                }
+            }
         }
 
         public void PublishStatusReport(IList<StatusReportItem> statusReport)
@@ -276,6 +438,120 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             List<StatusReportItem> items = new List<StatusReportItem>();
             CheckExecutablePaths(items);
             return items;
+        }
+
+        private bool ValidateExecPath(string _proposedPath){
+            //
+            // This attempts to validate the text which will eventually form part of a launch
+            // operation.
+            //
+            // The launch is shell based so in addition to an executable, the input could 
+            // also be a data file, arguments. It could also
+            // contain environment variables or be a UNC, rooted or relative path.
+            // We could also have received a URI just to complicate matters.
+            //
+            // The pre-flight does not attempt to validate arguments, but it takes a stab at
+            // validating the first file or URI
+            //
+
+            // Resolve environment variables
+            _proposedPath = Environment.ExpandEnvironmentVariables(_proposedPath);
+
+            RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace;
+            MatchCollection _matches;
+
+            _matches = Regex.Matches(_proposedPath, "(?:\\\")([^\"]*)(?:\\\")",options);  // Extract anything which is enclosed in escaped double quotes
+            int _blankPosition = _proposedPath.IndexOf(" ");                              // For uncomplicated launches, if there is a blank, it will denote the start of the argument(s) 
+            if (_matches.Count == 0 & _blankPosition <= 0)
+            {
+                // nothing enclosed in escaped double quotes
+                //
+                // parse assuming not a URI
+                try
+                {
+                    _proposedPath = Path.GetFullPath(_proposedPath);
+                }
+                catch (ArgumentException Ex)
+                {
+                    Logger.Debug("GetFullPath Parsing for \"" + _proposedPath + "\" threw exception \"" + Ex.ToString() + "\"");
+                    return false;
+                }
+                catch (NotSupportedException Ex)
+                {
+                    // If we have a URI and attempt to get the full path, then this is probably what caused us to be here
+                    Logger.Debug("GetFullPath Parsing for \"" + _proposedPath + "\" threw exception \"" + Ex.Message + "\"");
+                }
+                try
+                {
+                    Uri _uriCheck = new Uri(_proposedPath);
+                    if (_uriCheck.IsFile) return File.Exists(_proposedPath) ? true : false;
+                }
+                catch (Exception Ex)
+                {
+                    Logger.Debug("URI Parsing for \"" + _proposedPath + "\" threw exception \"" + Ex.ToString() + "\"");
+                    return false;
+                }
+            } else if (_matches.Count == 0)
+            {
+                //  There is nothing enclosed in double-quotes, so we assume the file to check is before the first blank
+                //
+                //  parse assuming not URI
+                try
+                {
+                    _proposedPath = Path.GetFullPath(_proposedPath.Substring(0, _blankPosition));
+                }
+                catch (ArgumentException Ex)
+                {
+                    Logger.Debug("GetFullPath Parsing for \"" + _proposedPath.Substring(0, _blankPosition) + "\" threw exception \"" + Ex.ToString() + "\"");
+                    return false;
+                }
+                catch (NotSupportedException Ex)
+                {
+                    // If we have a URI and attempt to get the full path, then this is probably what caused us to be here
+                    Logger.Debug("GetFullPath Parsing for \"" + _proposedPath.Substring(0, _blankPosition) + "\" threw exception \"" + Ex.Message + "\"");
+                }
+                try
+                {
+                    Uri _uriCheck = new Uri(Path.GetFullPath(_proposedPath));
+                    if (_uriCheck.IsFile) return File.Exists(_proposedPath) ? true : false;
+                }
+                catch (Exception Ex)
+                {
+                    Logger.Debug("URI Parsing for \"" + _proposedPath + "\" threw exception \"" + Ex.ToString() + "\"");
+                    return false;
+                }
+            }
+            else
+            {
+                // There is text enclosed in escaped double quotes and there are blank characters
+                //
+                // parse assuming not URI
+                try
+                {
+                    _proposedPath = Path.GetFullPath(_matches[0].Groups[1].ToString());
+                }
+                catch (ArgumentException Ex)
+                {
+                    Logger.Debug("GetFullPath Parsing for \"" + _matches[0].Groups[1].ToString() + "\" threw exception \"" + Ex.Message + "\"");
+                    return false;
+                }
+                catch(NotSupportedException Ex)
+                {
+                    // If we have a URI and attempt to get the full path, then this is probably what caused us to be here
+                    Logger.Debug("GetFullPath Parsing for \"" + _matches[0].Groups[1].ToString() + "\" threw exception \"" + Ex.Message + "\"");
+                }
+                try
+                {
+                    Uri _uriCheck = new Uri(_proposedPath);
+                    if (_uriCheck.IsFile) return File.Exists(_proposedPath) ? true : false;
+                }
+                catch (Exception Ex)
+                {
+                    Logger.Debug("URI Parsing for \"" + _matches[0].Groups[1].ToString() + "\" threw exception \""+ Ex.ToString() + "\"");
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

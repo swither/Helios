@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("Helios")]
-[assembly: AssemblyCopyright("Copyright (c) 2019 BlueFinBima")]
+[assembly: AssemblyCopyright("Copyright (c) 2019 BlueFinBima Project")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
