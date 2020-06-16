@@ -625,19 +625,19 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Documents\Licenses\AvalonDock\LICENSE.txt" />
-    <Content Include="Documents\Licenses\CommandLineParser\LICENSE.txt" />
-    <Content Include="Documents\Licenses\EOSSharp\LICENSE.txt" />
-    <Content Include="Documents\Licenses\GoogleDiffMatchPatch\LICENSE.txt" />
-    <Content Include="Documents\Licenses\HidSharp\LICENSE.txt" />
-    <Content Include="Documents\Licenses\KeraLua\LICENSE.txt" />
-    <Content Include="Documents\Licenses\LibGit2Sharp.NativeBinaries\LICENSE.txt" />
-    <Content Include="Documents\Licenses\LibGit2Sharp\LICENSE.txt" />
-    <Content Include="Documents\Licenses\NLog\LICENSE.txt" />
-    <Content Include="Documents\Licenses\NLua\LICENSE.txt" />
-    <Content Include="Documents\Licenses\Phidget\License.txt" />
-    <Content Include="Documents\Licenses\SharpDX.DirectInput\LICENSE.txt" />
-    <Content Include="Documents\Licenses\SharpDX\LICENSE.txt" />
+    <Content Include="Docs\Licenses\AvalonDock\LICENSE.txt" />
+    <Content Include="Docs\Licenses\CommandLineParser\LICENSE.txt" />
+    <Content Include="Docs\Licenses\EOSSharp\LICENSE.txt" />
+    <Content Include="Docs\Licenses\GoogleDiffMatchPatch\LICENSE.txt" />
+    <Content Include="Docs\Licenses\HidSharp\LICENSE.txt" />
+    <Content Include="Docs\Licenses\KeraLua\LICENSE.txt" />
+    <Content Include="Docs\Licenses\LibGit2Sharp.NativeBinaries\LICENSE.txt" />
+    <Content Include="Docs\Licenses\LibGit2Sharp\LICENSE.txt" />
+    <Content Include="Docs\Licenses\NLog\LICENSE.txt" />
+    <Content Include="Docs\Licenses\NLua\LICENSE.txt" />
+    <Content Include="Docs\Licenses\Phidget\License.txt" />
+    <Content Include="Docs\Licenses\SharpDX.DirectInput\LICENSE.txt" />
+    <Content Include="Docs\Licenses\SharpDX\LICENSE.txt" />
     <None Include="HeliosNotificationObject.cd" />
     <None Include="Gauges\GaugeTextDisplay.cs" />
     <Compile Include="Gauges\KA-50\EGT\EGT.cs" />
@@ -969,7 +969,7 @@
     <Content Include="Templates\Base\F-16\RWR Bezel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Documents\Licenses\VCRedist\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf" />
+    <None Include="Docs\Licenses\VCRedist\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf" />
     <Resource Include="Gauges\M2000C\Common\needleA.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
@@ -982,8 +982,8 @@
     <Resource Include="Images\Buttons\green-push-in.png">
     </Resource>
     <Resource Include="Interfaces\DCS\Common\HeliosExport16.lua" />
-    <None Include="Documents\Helios Release 1.4 Users Guide.docx" />
-    <Content Include="Documents\Helios Release 1.4 Users Guide.pdf">
+    <None Include="Docs\Helios Release 1.4 Users Guide.docx" />
+    <Content Include="Docs\Helios Release 1.4 Users Guide.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -996,7 +996,6 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Resource>
-    <Resource Include="Interfaces\DCS\FC2\Export.lua" />
     <Resource Include="Interfaces\DCS\FC2\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\MiG21\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions.lua" />
@@ -3338,16 +3337,16 @@
     <Content Include="Helios.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Documents\changelog.md">
+    <Content Include="Docs\changelog.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Documents\GNU Lesser General Public License.txt">
+    <Content Include="Docs\GNU Lesser General Public License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Documents\Helios.M2000C.Read.Me.txt">
+    <Content Include="Docs\Helios.M2000C.Read.Me.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Documents\Helios.Read.Me.txt">
+    <Content Include="Docs\Helios.Read.Me.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
