@@ -305,8 +305,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void AlertMessage_ValueReceived(object sender, NetworkTriggerValue.Value e)
         {
-            string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text));
-            Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
+            try
+            {
+                // payload is Base64 with "+" used as padding instead of "=" to avoid Helios protocol
+                string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text.Replace('+', '=')));
+                Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
+            }
+            catch (FormatException ex)
+            {
+                Logger.Error(ex, "received ALERT message from Export.lua that contained invalid Base64 contents: {Raw}", e.Text);
+            }
         }
 
         public override void Reset()
@@ -324,8 +332,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         protected override void OnProfileStopped()
         {
-            // our base classes aren't very logical, so sometimes we get called OnProfileStopped when the profile is not running
-            // so the _protocol may not be created
             _protocol?.Stop();
             _protocol = null;
         }

@@ -607,7 +607,7 @@
     <Compile Include="Windows\ViewModel\Share.cs" />
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
     <None Include="Assets\Helios_ADI.odg" />
-    <None Include="Assets\render.bat" />
+    <None Include="Assets\render.cmd" />
     <None Include="Images\A-10\readme.md" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />

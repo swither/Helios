@@ -70,7 +70,7 @@ namespace GadrocsWorkshop.Helios
 
             if (ConfigManager.Application.AllowPlugins)
             {
-                string pluginsFolder = Path.Combine("Plugins");
+                string pluginsFolder = Path.Combine(Path.GetDirectoryName(execAssembly.Location) ?? "", "Plugins");
                 if (Directory.Exists(pluginsFolder))
                 {
                     foreach (string pluginPath in Directory.EnumerateFiles(pluginsFolder, "*.dll", SearchOption.AllDirectories))

@@ -68,6 +68,7 @@ helios_impl.alertInterval = 5.0
 -- Module names are different from internal self names, so this table translates them
 -- without instantiating every module.  Planes must be entered into this table to be
 -- able to use modules from the Scripts\Mods directory.
+-- REVISIT: replace this mechanism with test loading and vehicle arrays
 local helios_module_names = {
     ["A-10C"] = "Helios_A10C",
     ["F-14B"] = "Helios_F14",
@@ -82,7 +83,11 @@ local helios_module_names = {
     ["AV8BNA"] = "Helios_Harrier",
     ["UH-1H"] = "Helios_Huey",
     ["Ka-50"] = "Helios_KA50",
+    -- legacy entry
     ["L-39"] = "Helios_L39",
+    -- valid aircraft for L39 module
+    ["L-39C"] = "Helios_L39",
+    ["L-39ZA"] = "Helios_L39",
     ["Mi-8MT"] = "Helios_MI8",
     ["MiG-21Bis"] = "Helios_Mig21Bis",
     ["P-51D"] = "Helios_P51",
@@ -422,6 +427,7 @@ function helios_impl.loadModule(driverType)
     log.write("HELIOS.EXPORT", log.DEBUG, string.format("attempt to load module for '%s'", currentSelfName))
     local moduleName = helios_module_names[currentSelfName]
     if moduleName == nil then
+        log.write("HELIOS.EXPORT", log.DEBUG, string.format("no matching module name for '%s' in table of modules known to export script", currentSelfName))
         return currentSelfName
     end
     if helios_impl.driverType == driverType then
@@ -433,9 +439,12 @@ function helios_impl.loadModule(driverType)
         -- create wrapper around module to give it a driver interface
         local driver = helios_impl.createModuleDriver(currentSelfName, moduleName)
         if driver ~= nil then
+            log.write("HELIOS.EXPORT", log.DEBUG, string.format("loaded module for '%s' from '%s'", currentSelfName, modulePath))
             helios_impl.installDriver(driver, driverType)
         end
         -- if we fail, we just leave the previous driver installed
+    else
+        log.write("HELIOS.EXPORT", log.DEBUG, string.format("no module file for '%s' at '%s'", currentSelfName, modulePath))
     end
     return currentSelfName
 end
@@ -635,7 +644,7 @@ function helios_private.sendAlert(message)
     if helios_private.clock >= helios_private.state.nextAlert then
         helios_private.state.nextAlert = helios_private.clock + helios_impl.alertInterval
         log.write('HELIOS EXPORT', log.DEBUG, string.format("sending error alert message at event time %f", helios_private.clock))
-        helios_private.doSend("ALERT_MESSAGE", (helios_private.mimeLibrary.b64(message)))
+        helios_private.doSend("ALERT_MESSAGE", (helios_private.mimeLibrary.b64(message)):gsub("=","+"))
         helios_private.flush()
     end
 end
