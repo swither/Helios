@@ -189,27 +189,29 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
         {
+            // stop updating shadow collections
             oldProfile.Monitors.CollectionChanged -= Monitors_CollectionChanged;
             oldProfile.PropertyChanged -= Profile_PropertyChanged;
 
             base.DetachFromProfileOnMainThread(oldProfile);
 
-            _geometryChangeTimer.Stop();
-            Clear();
-        }
+            // deallocate timer we allocate on Attach
+            _geometryChangeTimer?.Stop();
+            _geometryChangeTimer = null;
 
-        private void Clear()
-        {
+            // deallocate renderer we allocate on Attach
+            _renderer?.Dispose();
+            _renderer = null;
+
+            // clean up shadow collections
             foreach (ShadowMonitor shadow in _monitors.Values)
             {
                 shadow.Dispose();
             }
-
             foreach (ShadowVisual shadow in _viewports.Values)
             {
                 shadow.Dispose();
             }
-
             _monitors.Clear();
             _viewports.Clear();
         }
@@ -443,7 +445,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void ScheduleGeometryChange()
         {
             // eat all events for a short duration and process only once in case there are a lot of updates
-            _geometryChangeTimer.Start();
+            _geometryChangeTimer?.Start();
         }
 
         public override void ReadXml(XmlReader reader)
@@ -496,7 +498,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private void OnDelayedGeometryChange(object sender, EventArgs e)
         {
-            _geometryChangeTimer.Stop();
+            _geometryChangeTimer?.Stop();
             if (Profile == null)
             {
                 // although we turn off the timer when we are removed from the profile, this call is still
