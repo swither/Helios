@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Windows.Controls;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 using GadrocsWorkshop.Helios.Util;
 
@@ -884,6 +885,11 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void MoveThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {
+            if (e.Source is Slider)
+            {
+                // don't move the whole window
+                return;
+            }
             Left += e.HorizontalChange;
             Top += e.VerticalChange;
         }
