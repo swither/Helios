@@ -81,6 +81,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
             AddValue("HSI", "desired course calculated", "Internally calculated value", "360 - current heading + desired course", BindingValueUnits.Degrees);
             AddValue("HSI", "desired heading calculated", "Internally calculated value", "360 - current heading + desired heading", BindingValueUnits.Degrees);
+            AddValue("HSI", "bearing to beacon calculated", "Internally calculated value", "360 - current heading + bearing to beacon", BindingValueUnits.Degrees);
             AddValue("HSI", "Outer marker indicator", "Outer marker indicator on HSI", "True if lit", BindingValueUnits.Boolean);
             AddValue("HSI", "Middle marker indicator", "Middle marker indicator on HSI", "True if lit", BindingValueUnits.Boolean);
 
@@ -166,8 +167,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("HSI", "current heading", new BindingValue(_lastFlightData.currentHeading));
                 SetValue("HSI", "desired course", new BindingValue(_lastFlightData.desiredCourse));
                 SetValue("HSI", "desired heading", new BindingValue(_lastFlightData.desiredHeading));
-                SetValue("HSI", "desired course calculated", new BindingValue(ClampDegrees((360 - _lastFlightData.currentHeading) + _lastFlightData.desiredCourse)));
-                SetValue("HSI", "desired heading calculated", new BindingValue(ClampDegrees((360 - _lastFlightData.currentHeading) + _lastFlightData.desiredHeading)));
+                SetValue("HSI", "desired course calculated", new BindingValue(ClampDegrees(360 - _lastFlightData.currentHeading) + _lastFlightData.desiredCourse));
+                SetValue("HSI", "desired heading calculated", new BindingValue(ClampDegrees(360 - _lastFlightData.currentHeading) + _lastFlightData.desiredHeading));
+                SetValue("HSI", "bearing to beacon calculated", new BindingValue(ClampDegrees(360 - _lastFlightData.currentHeading) + _lastFlightData.bearingToBeacon));
 
                 float deviation = _lastFlightData.courseDeviation % 180;
                 SetValue("HSI", "course deviation", new BindingValue(deviation / _lastFlightData.deviationLimit));
