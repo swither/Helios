@@ -471,6 +471,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             if (CheckSave())
             {
+                if (ConfigManager.ImageManager is IImageManager2 imageManager2)
+                {
+                    imageManager2.ClearFailureTracking();
+                }
+
                 Profile = new HeliosProfile();
                 ConfigManager.UndoManager.ClearHistory();
 
