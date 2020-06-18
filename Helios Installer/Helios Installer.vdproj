@@ -1424,7 +1424,7 @@
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_312E0BCC01604AAD85019FD5F0FCCA34"
             {
             "Name" = "8:Control Center Debug"
-            "Arguments" = "8:-l debug"
+            "Arguments" = "8:-l Debug"
             "Description" = "8:Control Center with Loglevel Debug"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
@@ -1466,7 +1466,7 @@
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_53AFDF753B84467AB063EF6F037857AC"
             {
             "Name" = "8:Profile Editor Debug"
-            "Arguments" = "8:-l debug"
+            "Arguments" = "8:-l Debug"
             "Description" = "8:Profile Editor with Loglevel Debug"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"

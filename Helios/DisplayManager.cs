@@ -26,6 +26,8 @@ namespace GadrocsWorkshop.Helios
 
         #region Properties
 
+        // XXX there is now a correct API for this: https://docs.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor?redirectedfrom=MSDN
+        // XXX this really needs to be a property of a specific monitor
         public int DPI
         {
             get
