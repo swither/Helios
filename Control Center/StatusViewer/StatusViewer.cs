@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -43,6 +42,24 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
         private int _windowBase;
         private readonly int _windowSize;
 
+        /// <summary>
+        /// backing field for property ClearCommand, contains
+        /// handler for Clear action
+        /// </summary>
+        private ICommand _clearCommand;
+
+        /// <summary>
+        /// backing field for property ShareCommand, contains
+        /// handler for share action
+        /// </summary>
+        private ICommand _shareCommand;
+
+        /// <summary>
+        /// backing field for property BrowseCommand, contains
+        /// handlers for browse current item's link command
+        /// </summary>
+        private ICommand _browseCommand;
+
         public class StatusTemplateSelector : DataTemplateSelector
         {
             public override DataTemplate SelectTemplate(object item, DependencyObject container)
@@ -51,6 +68,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                 {
                     return null;
                 }
+
                 if (!(item is StatusViewerItem listItem))
                 {
                     return null;
@@ -94,11 +112,26 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             StatusViewerLogTarget.Parent = this;
         }
 
-        /// <summary>
-        /// backing field for property ClearCommand, contains
-        /// handler for Clear action
-        /// </summary>
-        private ICommand _clearCommand;
+        private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            StatusViewer viewer = (StatusViewer) d;
+            if (e.NewValue == null)
+            {
+                viewer.IsWebLink = false;
+                return;
+            }
+
+            StatusViewerItem item = (StatusViewerItem) (e.NewValue);
+            viewer.IsWebLink = (item.Data.Link?.Scheme ?? "") == "https";
+        }
+
+        public bool IsWebLink
+        {
+            get => (bool) GetValue(IsWebLinkProperty);
+            set => SetValue(IsWebLinkProperty, value);
+        }
+        public static readonly DependencyProperty IsWebLinkProperty =
+            DependencyProperty.Register("IsWebLink", typeof(bool), typeof(StatusViewer), new PropertyMetadata(false));
 
         /// <summary>
         /// handler for Clear action
@@ -111,12 +144,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                 return _clearCommand;
             }
         }
-
-        /// <summary>
-        /// backing field for property ShareCommand, contains
-        /// handler for share action
-        /// </summary>
-        private ICommand _shareCommand;
 
         /// <summary>
         /// handler for share action
@@ -143,6 +170,31 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                         parameter as IInputElement);
                 });
                 return _shareCommand;
+            }
+        }
+
+        /// <summary>
+        /// handlers for browse current item's link command
+        /// </summary>
+        public ICommand BrowseCommand
+        {
+            get
+            {
+                _browseCommand = _browseCommand ?? new RelayCommand(parameter =>
+                {
+                    if (SelectedItem?.Data.Link == null)
+                    {
+                        return;
+                    }
+
+                    if (SelectedItem.Data.Link.Scheme != "https")
+                    {
+                        return;
+                    }
+
+                    System.Diagnostics.Process.Start(SelectedItem.Data.Link.AbsoluteUri);
+                });
+                return _browseCommand;
             }
         }
 
@@ -316,5 +368,14 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
         public static readonly DependencyProperty ItemsProperty =
             DependencyProperty.Register("observableCollection", typeof(ObservableCollection<StatusViewerItem>),
                 typeof(StatusViewer), new PropertyMetadata(null));
+
+        public StatusViewerItem SelectedItem
+        {
+            get => (StatusViewerItem)GetValue(SelectedItemProperty);
+            set => SetValue(SelectedItemProperty, value);
+        }
+
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem",
+            typeof(StatusViewerItem), typeof(StatusViewer), new PropertyMetadata(null, OnSelectedItemChanged));
     }
 }

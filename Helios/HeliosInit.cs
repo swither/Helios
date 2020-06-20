@@ -55,7 +55,7 @@ namespace GadrocsWorkshop.Helios
                 {
                     Writable = ConfigManager.Application.SettingsAreWritable
                 };
-            ConfigManager.VersionChecker = new VersionChecker();
+            ConfigManager.VersionChecker = new VersionChecker(ConfigManager.SettingsManager, ConfigManager.Application.SettingsAreWritable);
             ConfigManager.UndoManager = new UndoManager();
             ConfigManager.ProfileManager = new ProfileManager();
             ConfigManager.ImageManager = new ImageManager(ConfigManager.ImagePath);

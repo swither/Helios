@@ -97,6 +97,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             // arm this to tell us if any interface reports status above a configured threshold
             _configurationCheck.Triggered += ConfigurationCheck_Triggered;
+
+            // on finish loading, check version
+            Loaded += PresentVersionCheck;
+        }
+
+        private static void PresentVersionCheck(object sender, RoutedEventArgs e)
+        {
+            // NOTE: don't open version check before main window is loaded, otherwise closing the dialog will kill the application since it will be the only window
+            ConfigManager.VersionChecker.CheckAvailableVersionsWithDialog(false, false);
+
+            ((MainWindow)sender).Loaded -= PresentVersionCheck;
         }
 
         void LayoutSerializer_LayoutSerializationCallback(object sender, LayoutSerializationCallbackEventArgs e)
@@ -806,7 +817,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void NewVersionCheck_Click(object sender, RoutedEventArgs e)
         {
-            ConfigManager.VersionChecker.CheckVersion(true);
+            ConfigManager.VersionChecker.CheckAvailableVersionsWithDialog(true, true);
         }
 
 #region Commands
@@ -1132,6 +1143,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             CloseProfileItem(e.DeletedItem);
         }
+
+
     }
 }
 

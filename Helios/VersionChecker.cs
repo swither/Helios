@@ -59,32 +59,39 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         private bool _reminderForNextRelease;
 
-        internal VersionChecker()
+        private readonly ISettingsManager _settings;
+
+        private readonly bool _settingsAreWritable;
+
+        internal VersionChecker(ISettingsManager settings, bool settingsAreWritable)
         {
+            _settings = settings;
+            _settingsAreWritable = settingsAreWritable;
             RunningVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version();
             if (Helios.RunningVersion.IsDevelopmentPrototype)
             {
                 _developmentPrototype = true;
                 _timeBombTime = TimeStamp.CompilationTimestampUtc.AddDays(30.0);
             }
-            _lastReturnedVersion = ToVersion(ConfigManager.SettingsManager.LoadSetting("Helios", "LastReturnedVersion", "0.0.0.0"));
-            _nextDateForVersionWarning = ConfigManager.SettingsManager.LoadSetting("Helios", "NextDateForVersionWarning", TodayString);
-            _reminderForNextRelease = ConfigManager.SettingsManager.LoadSetting("Helios", "ReminderForNextRelease", "0")=="1";
+            _lastReturnedVersion = ToVersion(_settings.LoadSetting("Helios", "LastReturnedVersion", "0.0.0.0"));
+            _nextDateForVersionWarning = _settings.LoadSetting("Helios", "NextDateForVersionWarning", TodayString);
+            _reminderForNextRelease = _settings.LoadSetting("Helios", "ReminderForNextRelease", "0")=="1";
         }
         
-        public void CheckVersion(bool forceDisplay = false)
+        public Check CheckAvailableVersion(bool forceCheckNow)
         {
-            if (_developmentPrototype && !forceDisplay)
+            if (_developmentPrototype && !forceCheckNow)
             {
                 // we don't auto upgrade, we just time out
                 CheckTimeBomb();
-                return;
+                return null;
             }
 
             if (RunningVersion == null)
             {
                 // no data
-                return;
+                Logger.Info("upgrade checks will not work since the current assembly does not have version info");
+                return null;
             }
 
             try
@@ -96,48 +103,95 @@ namespace GadrocsWorkshop.Helios
                 }
 
                 // first see if it is time to make a network request
-                if (!forceDisplay && string.Compare(NextDateForVersionWarning, today, StringComparison.Ordinal) > 0)
+                if (!forceCheckNow && string.Compare(NextDateForVersionWarning, today, StringComparison.Ordinal) > 0)
                 {
-                    return;
+                    Logger.Debug("no network request made, because the next check is not due until {DateText}", NextDateForVersionWarning);
+                    return null;
                 }
 
                 // go find the latest release
                 Check versionCheck = new Check(RunningVersion);
-
-                // if the dialog was explicitly requested or
-                // we have a new version and either
-                // the version is newer than the last time we offered it or
-                // the user has not selected the option to wait until the next release
-                // then display the dialog
-                if (!forceDisplay && (!versionCheck.HasNewVersion ||
-                                      (versionCheck.AvailableVersion.CompareTo(LastReturnedVersion) <= 0 &&
-                                       ReminderForNextRelease)))
+                if (versionCheck.DownloadUrl != null && _settingsAreWritable)
                 {
-                    return;
+                    _settings.SaveSetting("Helios", GITHUB_DOWNLOAD_URL_SETTING, versionCheck.DownloadUrl);
                 }
 
-                // we will now offer this version, so it is the new reference for "wait until next release"
-                LastReturnedVersion = versionCheck.AvailableVersion;
-
-                // reset (to 7 day checks)
-                ReminderForNextRelease = false;
-
-                // present dialog
-                VersionCheckWindow dialog = new VersionCheckWindow
-                {
-                    DataContext = new VersionCheckViewModel(versionCheck)
-                };
-                dialog.ShowDialog();
+                return versionCheck;
             }
             catch (Exception e)
             {
-                Logger.Error(e, "error comparing versions");
+                Logger.Error(e, "error during check for available versions");
+                return null;
             }
+        }
+
+        /// <summary>
+        /// interactively offer new versions, using and updating user preferences regarding notifications
+        /// </summary>
+        /// <param name="forceCheck"></param>
+        /// <param name="forceDisplay"></param>
+        public void CheckAvailableVersionsWithDialog(bool forceCheck, bool forceDisplay)
+        {
+            Check latest = CheckAvailableVersion(forceCheck);
+
+            if (!forceDisplay && !ShouldOfferNewVersion(latest))
+            {
+                return;
+            }
+
+            Logger.Debug("offering available version");
+            PresentVersionDialog(latest);
+        }
+
+        public bool ShouldOfferNewVersion(Check versionCheck)
+        {
+            if (versionCheck == null)
+            {
+                Logger.Debug("no fresh result from version check");
+                return false;
+            }
+
+            if (!versionCheck.HasNewVersion)
+            {
+                Logger.Debug("no new version to offer");
+                return false;
+            }
+
+            if (versionCheck.AvailableVersion.CompareTo(LastReturnedVersion) >= 0)
+            {
+                Logger.Debug("new version {Avaialable} is greater than most recently offered {Previous}",
+                    versionCheck.AvailableVersion, LastReturnedVersion);
+                return true;
+            }
+
+            if (ReminderForNextRelease)
+            {
+                Logger.Debug("user has declined new versions until next release");
+                return false;
+            }
+
+            return true;
+        }
+
+        private void PresentVersionDialog(Check versionCheck)
+        {
+            // we will now offer this version, so it is the new reference for "wait until next release"
+            LastReturnedVersion = versionCheck.AvailableVersion;
+
+            // reset (to 7 day checks)
+            ReminderForNextRelease = false;
+
+            // present dialog
+            VersionCheckWindow dialog = new VersionCheckWindow
+            {
+                DataContext = new VersionCheckViewModel(versionCheck)
+            };
+            dialog.ShowDialog();
         }
 
         internal void HandleDowloadStarted(string downloadUrl)
         {
-            ConfigManager.SettingsManager.LoadSetting("Helios", GITHUB_DOWNLOAD_URL_SETTING, downloadUrl);
+            _settings.LoadSetting("Helios", GITHUB_DOWNLOAD_URL_SETTING, downloadUrl);
 
             // if the user has downloaded the new version, set a nag if they have not installed it
             RemindInDays(0);
@@ -167,7 +221,10 @@ namespace GadrocsWorkshop.Helios
             set
             {
                 _nextDateForVersionWarning = value;
-                ConfigManager.SettingsManager.SaveSetting("Helios", "NextDateForVersionWarning", _nextDateForVersionWarning);
+                if (_settingsAreWritable)
+                {
+                    _settings.SaveSetting("Helios", "NextDateForVersionWarning", _nextDateForVersionWarning);
+                }
             }
         }
 
@@ -191,7 +248,10 @@ namespace GadrocsWorkshop.Helios
                     return;
                 }
                 _reminderForNextRelease = value;
-                ConfigManager.SettingsManager.SaveSetting("Helios", "ReminderForNextRelease", _reminderForNextRelease ? "1" : "0");
+                if (_settingsAreWritable)
+                {
+                    _settings.SaveSetting("Helios", "ReminderForNextRelease", _reminderForNextRelease ? "1" : "0");
+                }
                 if (value)
                 {
                     NextDateForVersionWarning = DateTime.Now.AddDays(7).ToString("yyyyMMdd");
@@ -211,7 +271,12 @@ namespace GadrocsWorkshop.Helios
                 {
                     return;
                 }
-                ConfigManager.SettingsManager.SaveSetting("Helios", "LastReturnedVersion", VersionToString(_lastReturnedVersion));
+
+                if (_settingsAreWritable)
+                {
+                    _settings.SaveSetting("Helios", "LastReturnedVersion", VersionToString(_lastReturnedVersion));
+                }
+
                 _lastReturnedVersion = value;
             }
         }
@@ -293,13 +358,13 @@ namespace GadrocsWorkshop.Helios
                     {
                         if (wrsp.StatusCode == HttpStatusCode.OK)
                         {
-                            string availableVersionString = Path.GetFileName(wrsp.ResponseUri.LocalPath);
-                            DownloadUrl =
-                                $"{wrsp.ResponseUri.AbsoluteUri.Replace("/tag/", "/download/")}/Helios.Installer.{availableVersionString}.zip";
+#if HELIOS_32BIT
+                            DownloadUrl = $"{wrsp.ResponseUri.AbsoluteUri.Replace("/tag/", "/download/")}/Helios32Bit_Installers.zip";
+#else
+                            DownloadUrl = $"{wrsp.ResponseUri.AbsoluteUri.Replace("/tag/", "/download/")}/Helios_Installers.zip";
+#endif
                             NotesUrl = wrsp.ResponseUri.AbsoluteUri;
-                            ConfigManager.SettingsManager.SaveSetting("Helios", GITHUB_DOWNLOAD_URL_SETTING,
-                                DownloadUrl);
-                            return ToVersion(availableVersionString);
+                            return ToVersion(Path.GetFileName(wrsp.ResponseUri.LocalPath));
                         }
                         else
                         {
