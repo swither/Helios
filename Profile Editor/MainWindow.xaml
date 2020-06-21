@@ -145,6 +145,8 @@
             <MenuItem Header="_Help">
                 <MenuItem Header="_About Helios" Click="About_Click" />
                 <MenuItem Header="_Check for New Version" Click="NewVersionCheck_Click" />
+                <MenuItem Header="_Release Notes" Click="ReleaseNotes_Click" />
+                <MenuItem Header="_Wiki" Click="Wiki_Click" />
                 <MenuItem Header="_Donate" Click="Donate_Click" />
             </MenuItem>
         </Menu>

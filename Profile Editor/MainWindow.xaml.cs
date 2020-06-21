@@ -1139,6 +1139,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             System.Diagnostics.Process.Start("https://github.com/HeliosVirtualCockpit/Helios/wiki/Donations");
         }
 
+        private void Wiki_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/HeliosVirtualCockpit/Helios/wiki");
+        }
+
+        private void ReleaseNotes_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/HeliosVirtualCockpit/Helios/wiki/Change-Log");
+        }
+
         private void Explorer_ItemDeleting(object sender, ItemDeleteEventArgs e)
         {
             CloseProfileItem(e.DeletedItem);
