@@ -39,6 +39,7 @@
     </Compile>
     <Compile Include="DCS\CombinedMonitorSetupViewModel.cs" />
     <Compile Include="DCS\CombinedMonitorSetupViewModel_DesignInstance.cs" />
+    <Compile Include="DCS\MonitorLayoutMode.cs" />
     <Compile Include="DCS\MonitorSetupTemplate.cs" />
     <Compile Include="DCS\SourceOfAdditionalViewports.cs" />
     <Compile Include="DCS\ViewportSetupFile.cs" />
