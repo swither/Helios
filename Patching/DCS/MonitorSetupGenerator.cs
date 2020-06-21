@@ -75,11 +75,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate;
 
         /// <summary>
-        /// generate the monitor setup file but do not write it out yet (verbose version that reports all main windows and monitors
-        /// also)
+        /// generate the monitor setup file but do not write it out yet 
         /// </summary>
         /// <returns></returns>
-        private IEnumerable<StatusReportItem> UpdateMonitorSetupVerbose(MonitorSetupTemplate template)
+        private IEnumerable<StatusReportItem> UpdateMonitorSetup(MonitorSetupTemplate template, bool verbose)
         {
             List<string> lines = CreateHeader(template);
 
@@ -108,7 +107,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     $"Monitor at Windows coordinates ({monitor.Monitor.Left},{monitor.Monitor.Top}) of size {monitor.Monitor.Width}x{monitor.Monitor.Height}";
                 if (!monitor.Included)
                 {
-                    yield return new StatusReportItem
+                    if (verbose) yield return new StatusReportItem
                     {
                         Status = $"{monitorDescription} is not included in monitor setup",
                         Flags = INFORMATIONAL
@@ -120,7 +119,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (monitor.Main)
                 {
                     mainView.Union(rect);
-                    yield return new StatusReportItem
+                    if (verbose) yield return new StatusReportItem
                     {
                         Status = $"{monitorDescription} is used for main view",
                         Flags = INFORMATIONAL
@@ -130,7 +129,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (monitor.UserInterface)
                 {
                     uiView.Union(rect);
-                    yield return new StatusReportItem
+                    if (verbose) yield return new StatusReportItem
                     {
                         Status = $"{monitorDescription} is used to display the DCS user interface",
                         Flags = INFORMATIONAL
@@ -140,7 +139,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (monitor.ViewportCount > 0)
                 {
                     string plural = monitor.ViewportCount > 1 ? "s" : "";
-                    yield return new StatusReportItem
+                    if (verbose) yield return new StatusReportItem
                     {
                         Status = $"{monitorDescription} has {monitor.ViewportCount} viewport{plural} from this profile",
                         Flags = INFORMATIONAL
@@ -148,11 +147,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 }
             }
 
-            mainView.Offset(_parent.GlobalOffset);
-            uiView.Offset(_parent.GlobalOffset);
+            // trim to rendered area in case of partial screens
+            mainView.Intersect(_parent.Rendered);
+            uiView.Intersect(_parent.Rendered);
+
+            // change to DCS coordinates (0,0 at top left of rect)
+            TranslateToDCS(ref mainView);
+            TranslateToDCS(ref uiView);
 
             CreateMainView(lines, mainView);
-            yield return new StatusReportItem
+            if (verbose) yield return new StatusReportItem
             {
                 Status =
                     $"MAIN = {{ x = {mainView.Left}, y = {mainView.Top}, width = {mainView.Width}, height = {mainView.Height} }}",
@@ -160,7 +164,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             };
 
             // check for separate UI view
-            yield return CreateUserInterfaceViewIfRequired(lines, mainView, uiView, out string uiViewName);
+            StatusReportItem uiStatus = CreateUserInterfaceViewIfRequired(lines, mainView, uiView, out string uiViewName);
+            if (verbose) yield return uiStatus;
 
             // set up required names for viewports (well-known to DCS)
             lines.Add($"UIMainView = {uiViewName}");
@@ -181,84 +186,25 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-
-        /// <summary>
-        /// generate the monitor setup file but do not write it out yet
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<StatusReportItem> UpdateMonitorSetup(MonitorSetupTemplate template)
+        private void TranslateToDCS(ref Rect windowsRect)
         {
-            List<string> lines = CreateHeader(template);
-
-            foreach (StatusReportItem item in GatherViewports(template))
-            {
-                yield return item;
-            }
-
-            // emit in sorted canonical order so we can compare files later
-            foreach (KeyValuePair<string, Rect> viewport in _allViewports.Viewports.OrderBy(p => p.Key))
-            {
-                string code = CreateViewport(lines, viewport);
-                yield return new StatusReportItem
-                {
-                    Status = $"{template.MonitorSetupFileBaseName}: {code}",
-                    Flags = INFORMATIONAL
-                };
-            }
-
-            // find main and ui view extents
-            Rect mainView = Rect.Empty;
-            Rect uiView = Rect.Empty;
-            foreach (ShadowMonitor monitor in _parent.Monitors)
-            {
-                if (!monitor.Included)
-                {
-                    continue;
-                }
-
-                Rect rect = MonitorSetup.VisualToRect(monitor.Monitor);
-                if (monitor.Main)
-                {
-                    mainView.Union(rect);
-                }
-
-                if (monitor.UserInterface)
-                {
-                    uiView.Union(rect);
-                }
-            }
-
-            mainView.Offset(_parent.GlobalOffset);
-            uiView.Offset(_parent.GlobalOffset);
-
-            CreateMainView(lines, mainView);
-
-            // check for separate UI view
-            CreateUserInterfaceViewIfRequired(lines, mainView, uiView, out string uiViewName);
-
-            // set up required names for viewports (well-known to DCS)
-            lines.Add($"UIMainView = {uiViewName}");
-            lines.Add("GU_MAIN_VIEWPORT = Viewports.Center");
-
-            foreach (string line in lines)
-            {
-                ConfigManager.LogManager.LogDebug(line);
-            }
-
-            if (template.Combined)
-            {
-                _combinedMonitorSetup = string.Join("\n", lines);
-            }
-            else
-            {
-                _monitorSetup = string.Join("\n", lines);
-            }
+            windowsRect.Offset(-_parent.Rendered.TopLeft.X, -_parent.Rendered.TopLeft.Y);
         }
 
-        private static string CreateViewport(List<string> lines, KeyValuePair<string, Rect> viewport)
+        private string CreateViewport(List<string> lines, KeyValuePair<string, Rect> viewport)
         {
+            Rect viewportRect = viewport.Value;
+            viewportRect.Intersect(_parent.Rendered);
+            if (viewportRect.Width < viewport.Value.Width || viewportRect.Height < viewport.Value.Height)
+            {
+                // viewports that aren't entire rendered do not work
+                string message = $"viewport '{viewport.Key}' not included in monitor setup because it is not entirely contained in rendered resolution";
+                ConfigManager.LogManager.LogInfo(message);
+                return $"--- {message}";
+            }
+            TranslateToDCS(ref viewportRect);
             string code =
-                $"{viewport.Key} = {{ x = {viewport.Value.Left}, y = {viewport.Value.Top}, width = {viewport.Value.Width}, height = {viewport.Value.Height} }}";
+                $"{viewport.Key} = {{ x = {viewportRect.Left}, y = {viewportRect.Top}, width = {viewportRect.Width}, height = {viewportRect.Height} }}";
             lines.Add(code);
             return code;
         }
@@ -315,7 +261,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
                 Rect rect = MonitorSetup.VisualToRect(shadow.Visual);
                 rect.Offset(shadow.Monitor.Left, shadow.Monitor.Top);
-                rect.Offset(_parent.GlobalOffset);
                 _localViewports.Viewports.Add(name, rect);
             }
 
@@ -690,7 +635,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // and see if it is up to date in all locations
             MonitorSetupTemplate combinedTemplate = CreateCombinedTemplate();
             string monitorSetupName = combinedTemplate.MonitorSetupName;
-            foreach (StatusReportItem item in UpdateMonitorSetupVerbose(combinedTemplate))
+            foreach (StatusReportItem item in UpdateMonitorSetup(combinedTemplate, true))
             {
                 yield return item;
             }
@@ -712,7 +657,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 MonitorSetupTemplate separateTemplate = CreateSeparateTemplate();
                 monitorSetupName = separateTemplate.MonitorSetupName;
-                foreach (StatusReportItem item in UpdateMonitorSetup(separateTemplate))
+                foreach (StatusReportItem item in UpdateMonitorSetup(separateTemplate, false))
                 {
                     yield return item;
                 }
@@ -731,11 +676,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // XXX check if monitor setup selected in DCS (should be a gentle message but error)
             // XXX check if correct monitor resolution selected in DCS (should be a gentle message but error)
+            string qualifier = _parent.MonitorLayoutMode == MonitorLayoutMode.FromTopLeftCorner ? "at least " : "";
             yield return new StatusReportItem
             {
                 Status = "This version of Helios does not select the Resolution in DCS directly",
                 Recommendation =
-                    $"Using DCS, please set 'Resolution' in the 'System' options to at least {_parent.Resolution.X}x{_parent.Resolution.Y}",
+                    $"Using DCS, please set 'Resolution' in the 'System' options to {qualifier}{_parent.Rendered.Width}x{_parent.Rendered.Height}",
                 Severity = StatusReportItem.SeverityCode.Info,
                 Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };

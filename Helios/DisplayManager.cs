@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -20,9 +22,8 @@ namespace GadrocsWorkshop.Helios
 
     public class DisplayManager
     {
-        private int _dpi = 0;
-        //private MonitorCollection _displayCollection = null;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private int _dpi;
 
         #region Properties
 
@@ -32,22 +33,24 @@ namespace GadrocsWorkshop.Helios
         {
             get
             {
-                if (_dpi == 0)
+                if (_dpi != 0)
                 {
-                    Logger.Debug("Helios is measuring screen DPI");
-                    IntPtr desktopHwnd = IntPtr.Zero;
-                    IntPtr desktopDC = NativeMethods.GetDC(desktopHwnd);
-                    _dpi = NativeMethods.GetDeviceCaps(desktopDC, 88 /*LOGPIXELSX*/);
-                    NativeMethods.ReleaseDC(desktopHwnd, desktopDC);
-                    Logger.Info($"Helios has determined screen DPI is {_dpi}");
+                    return _dpi;
                 }
+
+                Logger.Debug("Helios is measuring screen DPI");
+                IntPtr desktopHwnd = IntPtr.Zero;
+                IntPtr desktopDC = NativeMethods.GetDC(desktopHwnd);
+                _dpi = NativeMethods.GetDeviceCaps(desktopDC, 88 /*LOGPIXELSX*/);
+                NativeMethods.ReleaseDC(desktopHwnd, desktopDC);
+                Logger.Info($"Helios has determined screen DPI is {_dpi}");
                 return _dpi;
             }
         }
 
         public double ConvertPixels(int pixels)
         {
-            return pixels * 96 / DPI;
+            return Math.Round(pixels * 96.0 / DPI);
         }
 
         /// <summary>
@@ -71,19 +74,29 @@ namespace GadrocsWorkshop.Helios
                 {
                     for (uint id = 0; NativeMethods.EnumDisplayDevices(null, id, ref d, 0); id++)
                     {
-                        if (d.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.AttachedToDesktop))
+                        if (!d.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.AttachedToDesktop))
                         {
-                            NativeMethods.DEVMODE ds = new NativeMethods.DEVMODE();
-
-                            bool suc2 = NativeMethods.EnumDisplaySettings(d.DeviceName, NativeMethods.ENUM_CURRENT_SETTINGS, ref ds);
-
-                            Monitor di = new Monitor(ConvertPixels(ds.dmPositionX),
-                                                                ConvertPixels(ds.dmPositionY),
-                                                                ConvertPixels(ds.dmPelsWidth),
-                                                                ConvertPixels(ds.dmPelsHeight),
-                                                                ds.dmDisplayOrientation);
-                            displayCollection.Add(di);
+                            continue;
                         }
+
+                        NativeMethods.DEVMODE ds = new NativeMethods.DEVMODE();
+
+                        bool suc2 = NativeMethods.EnumDisplaySettings(d.DeviceName, NativeMethods.ENUM_CURRENT_SETTINGS, ref ds);
+                        if (!suc2)
+                        {
+                            Logger.Error("failed to enumerate current settings for display {InternalName}", d.DeviceName);
+                            continue;
+                        }
+                        Monitor di = new Monitor(ConvertPixels(ds.dmPositionX),
+                            ConvertPixels(ds.dmPositionY),
+                            ConvertPixels(ds.dmPelsWidth),
+                            ConvertPixels(ds.dmPelsHeight),
+                            ds.dmDisplayOrientation);
+                        displayCollection.Add(di);
+
+                        // check this assumption that we make throughout the code: we identify the main display by its coordinates being
+                        // 0,0 at the top left
+                        Debug.Assert(d.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.PrimaryDevice) == di.IsPrimaryDisplay);
                     }
                 }
                 catch (Exception ex)

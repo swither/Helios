@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
+using GadrocsWorkshop.Helios.Util;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -24,6 +27,7 @@ namespace GadrocsWorkshop.Helios
     /// <summary>
     /// The struct that contains the display information
     /// </summary>
+    [DebuggerDisplay("Monitor at {" + nameof(DisplayRectangle) + "}")]
     public class Monitor : HeliosVisualContainer
     {
         private MonitorRenderer _renderer;
@@ -32,9 +36,13 @@ namespace GadrocsWorkshop.Helios
         private Color _backgroundColor = Colors.DarkGray;
         private string _backgroundImageFile = "";
         private ImageAlignment _backgroundAlignment = ImageAlignment.Stretched;
-        private DisplayOrientation _orientation;
         private bool _alwaysOnTop = true;
-        private int _suppressMouseAfterTouchDuration = 0;  
+
+        /// <summary>
+        /// backing field for property Orientation, contains
+        /// the orientation of this monitor object
+        /// </summary>
+        private DisplayOrientation _orientation;
 
         public Monitor()
             : this(0, 0, 1024, 768, DisplayOrientation.DMDO_DEFAULT)
@@ -48,8 +56,8 @@ namespace GadrocsWorkshop.Helios
             Left = left;
             Width = width;
             Height = height;
-            _orientation = orientation;
-            if (Top == 0 && Left == 0)
+            Orientation = orientation;
+            if (IsPrimaryDisplay)
             {
                 _fillBackground = false;
             }
@@ -62,19 +70,26 @@ namespace GadrocsWorkshop.Helios
 
         #region Properties
 
-        public override string TypeIdentifier
+        public override string TypeIdentifier => "Helios.Monitor";
+
+        public double Right => Left + Width;
+
+        public double Bottom => Top + Height;
+
+        /// <summary>
+        /// the orientation of this monitor object
+        /// </summary>
+        public DisplayOrientation Orientation
         {
-            get
+            get => _orientation;
+            set
             {
-                return "Helios.Monitor";
+                if (_orientation == value) return;
+                DisplayOrientation oldValue = _orientation;
+                _orientation = value;
+                OnPropertyChanged("Orientation", oldValue, value, true);
             }
         }
-
-        public double Right { get { return Left + Width; } }
-
-        public double Bottom { get { return Top + Height; } }
-
-        public DisplayOrientation Orientation { get { return _orientation; } set { _orientation = value; } }
 
         public override HeliosVisualRenderer Renderer
         {
@@ -179,22 +194,30 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public int SuppressMouseAfterTouchDuration {
-            get => _suppressMouseAfterTouchDuration;
-            set => _suppressMouseAfterTouchDuration = value;
-        }
+        public int SuppressMouseAfterTouchDuration { get; set; }
+
+        public bool IsPrimaryDisplay => (Math.Abs(Top) < 0.00001 && Math.Abs(Left) < 0.00001);
 
         #endregion
+
+
+        public void CopyGeometry(Monitor display)
+        {
+            using (new HeliosUndoBatch())
+            {
+                Rectangle = display.Rectangle;
+                Orientation = display.Orientation;
+            }
+        }
 
         public override void ReadXml(XmlReader reader)
         {
             TypeConverter cc = TypeDescriptor.GetConverter(typeof(Color));
             TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
-            TypeConverter ic = TypeDescriptor.GetConverter(typeof(int));
 
             base.ReadXml(reader);
 
-            _orientation = (DisplayOrientation)Enum.Parse(typeof(DisplayOrientation), reader.ReadElementString("Orientation"));
+            Orientation = (DisplayOrientation)Enum.Parse(typeof(DisplayOrientation), reader.ReadElementString("Orientation"));
 
             // REVISIT: this assumes the order of XML elements and also assumes that there are no foreign elements present
             // and that all properties are located just ahead of the "Children" element
@@ -203,11 +226,6 @@ namespace GadrocsWorkshop.Helios
             {
                 _alwaysOnTop = (bool)bc.ConvertFromInvariantString(reader.ReadElementString("AlwaysOnTop"));
             }
-
-            //if (reader.Name.Equals("SuppressMouseAfterTouchDuration"))
-            //{
-            //    _suppressMouseAfterTouchDuration = (int)ic.ConvertFromInvariantString(reader.ReadElementString("SuppressMouseAfterTouchDuration"));
-            //}
 
             if (!reader.IsEmptyElement)
             {
@@ -230,6 +248,7 @@ namespace GadrocsWorkshop.Helios
                 {
                     FillBackground = false;
                 }
+
                 reader.ReadEndElement();
             }
             else
@@ -249,10 +268,6 @@ namespace GadrocsWorkshop.Helios
 
             writer.WriteElementString("Orientation", Orientation.ToString());
             writer.WriteElementString("AlwaysOnTop", bc.ConvertToInvariantString(AlwaysOnTop));
-            //if(_suppressMouseAfterTouchDuration > 0) //new parameter so only write if set to allow older Control Centers to load the profile if it is zero
-            //{
-            //    writer.WriteElementString("SuppressMouseAfterTouchDuration", ic.ConvertToInvariantString(_suppressMouseAfterTouchDuration));
-            //}
 
             writer.WriteStartElement("Background");
             if (!string.IsNullOrWhiteSpace(BackgroundImage))
@@ -265,19 +280,13 @@ namespace GadrocsWorkshop.Helios
             {
                 writer.WriteElementString("Color", cc.ConvertToInvariantString(BackgroundColor));
             }
+
             writer.WriteEndElement();
         }
 
         public override bool HitTest(Point location)
         {
-            if (FillBackground || !String.IsNullOrWhiteSpace(BackgroundImage))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return FillBackground || !String.IsNullOrWhiteSpace(BackgroundImage);
         }
 
         public override void MouseDown(Point location)

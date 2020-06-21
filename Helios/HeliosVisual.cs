@@ -76,7 +76,6 @@ namespace GadrocsWorkshop.Helios
             Actions.Add(_hiddenValue);
 
             Children.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Children_CollectionChanged);
-
         }
 
         /// <summary>
@@ -370,6 +369,40 @@ namespace GadrocsWorkshop.Helios
                     Refresh();
                     OnResized();
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// access to the entire Rect representing Top, Left, Width, and Height
+        /// setting this property only fires Moved and Resized once and does not fire the
+        /// property changes for Top, Left, Width, and Height
+        /// </summary>
+        public Rect Rectangle
+        {
+            get => _rectangle;
+            set
+            {
+                if (_rectangle == value)
+                {
+                    return;
+                }
+
+                Rect oldValue = _rectangle;
+                _rectangle = value;
+                UpdateRectangle();
+                Refresh();
+                if (Left != oldValue.Left || Top != oldValue.Top)
+                {
+                    OnMoved();
+                }
+                if (Width != oldValue.Width || Height != oldValue.Height)
+                {
+                    OnResized();
+                }
+
+                // now fire property change for undo support
+                OnPropertyChanged("Rectangle", oldValue, value, true);
             }
         }
 
