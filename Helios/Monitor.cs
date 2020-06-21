@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
+using GadrocsWorkshop.Helios.Util;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -24,6 +27,7 @@ namespace GadrocsWorkshop.Helios
     /// <summary>
     /// The struct that contains the display information
     /// </summary>
+    [DebuggerDisplay("Monitor at {" + nameof(DisplayRectangle) + "}")]
     public class Monitor : HeliosVisualContainer
     {
         private MonitorRenderer _renderer;
@@ -33,6 +37,12 @@ namespace GadrocsWorkshop.Helios
         private string _backgroundImageFile = "";
         private ImageAlignment _backgroundAlignment = ImageAlignment.Stretched;
         private bool _alwaysOnTop = true;
+
+        /// <summary>
+        /// backing field for property Orientation, contains
+        /// the orientation of this monitor object
+        /// </summary>
+        private DisplayOrientation _orientation;
 
         public Monitor()
             : this(0, 0, 1024, 768, DisplayOrientation.DMDO_DEFAULT)
@@ -66,7 +76,20 @@ namespace GadrocsWorkshop.Helios
 
         public double Bottom => Top + Height;
 
-        public DisplayOrientation Orientation { get; set; }
+        /// <summary>
+        /// the orientation of this monitor object
+        /// </summary>
+        public DisplayOrientation Orientation
+        {
+            get => _orientation;
+            set
+            {
+                if (_orientation == value) return;
+                DisplayOrientation oldValue = _orientation;
+                _orientation = value;
+                OnPropertyChanged("Orientation", oldValue, value, true);
+            }
+        }
 
         public override HeliosVisualRenderer Renderer
         {
@@ -176,6 +199,16 @@ namespace GadrocsWorkshop.Helios
         public bool IsPrimaryDisplay => (Math.Abs(Top) < 0.00001 && Math.Abs(Left) < 0.00001);
 
         #endregion
+
+
+        public void CopyGeometry(Monitor display)
+        {
+            using (new HeliosUndoBatch())
+            {
+                Rectangle = display.Rectangle;
+                Orientation = display.Orientation;
+            }
+        }
 
         public override void ReadXml(XmlReader reader)
         {
