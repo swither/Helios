@@ -82,6 +82,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private readonly InterfaceStatusScanner _configurationCheck = new InterfaceStatusScanner();
 
+        /// <summary>
+        /// true if trigger was fired since profile was changed
+        /// </summary>
+        private bool _triggered;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -696,23 +701,31 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// called when creating or loading a profile is complete
         /// </summary>
         private void OnProfileChangeComplete()
-        { 
+        {
+            DocumentMeta selected = _documents.FirstOrDefault(meta => meta.document.IsSelected) ?? _documents.FirstOrDefault();
+            if (selected != null)
+            {
+                selected.document.IsSelected = true;
+                selected.document.IsActive = true;
+            }
+            _triggered = false;
             _configurationCheck?.Reload(Profile);
         }
 
         private void ConfigurationCheck_Triggered(object sender, EventArgs e)
         {
-            // REVISIT: this is expensive.  add tracking whether it is currently closed or hidden, so we don't have to search?
-#if true
-            _ = ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
-#else
-            // XXX do this only on profile load if there are issues
+            if (_triggered)
+            {
+                // only do this once
+                return;
+            }
+
+            _triggered = true;
             LayoutAnchorable interfaceStatus = ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
             if (interfaceStatus != null)
             {
                 interfaceStatus.IsActive = true;
             }
-#endif
         }
 
         private void LoadVisual(HeliosVisual visual)

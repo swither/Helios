@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
     public class InterfaceStatusScanner : NotificationObject, IStatusReportObserver
     {
         public event EventHandler Triggered;
-
+        
         #region Private
 
         private static readonly string CONFIGURATION_GROUP = "ConfigurationCheck";
