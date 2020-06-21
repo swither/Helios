@@ -295,8 +295,8 @@
                                         <ScaleTransform
                                             CenterX="14"
                                             CenterY="14"
-                                            ScaleX="{Binding PresentationTraceSources.TraceLevel=High, Path=Data.IconScale, Source={StaticResource BindingProxy}}"
-                                            ScaleY="{Binding PresentationTraceSources.TraceLevel=High, Path=Data.IconScale, Source={StaticResource BindingProxy}}" />
+                                            ScaleX="{Binding Data.IconScale, Source={StaticResource BindingProxy}}"
+                                            ScaleY="{Binding Data.IconScale, Source={StaticResource BindingProxy}}" />
                                     </Label.RenderTransform>
                                 </Label>
                             </Border>
@@ -640,7 +640,7 @@
 
                 <Label Grid.Row="5" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Layout Mode" />
                 <ComboBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="280" MaxWidth="400" 
-                          ItemsSource="{Binding Source={StaticResource MonitorLayoutMode}, Path=DisplayNames}" 
+                          ItemsSource="{Binding DisplayNames, Source={StaticResource MonitorLayoutMode}}" 
                           SelectedItem="{Binding Data.MonitorLayoutMode, Converter={StaticResource MonitorLayoutMode}}" />
 
                 <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource Documentation}">
@@ -654,10 +654,10 @@
                                Style="{StaticResource ResolutionFrame}" />
                     <Label Style="{StaticResource InterfaceEditorLabel}" Padding="3" Content="=" />
                     <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,0,3"
-                           Content="{Binding Path=Data.Rendered.Width}" />
+                           Content="{Binding Path=ResolutionRectangle.Width}" />
                     <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,0,3" Content="x" />
                     <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,3,3"
-                           Content="{Binding Path=Data.Rendered.Height}" />
+                           Content="{Binding Path=ResolutionRectangle.Height}" />
                 </StackPanel>
                 <WrapPanel Grid.Row="9" Grid.Column="1" Orientation="Vertical">
                     <TextBlock Style="{StaticResource DocumentationTopLeftMode}">Minimum resolution that must be selected in DCS Options.</TextBlock>

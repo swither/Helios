@@ -228,6 +228,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             UpdateBounds();
             ProtectLastMonitor(mainMonitors, (m, value) => m.MainAssignmentCanBeChanged = value);
             ProtectLastMonitor(uiMonitors, (m, value) => m.UserInterfaceAssignmentCanBeChanged = value);
+            UpdateResolutionRectangle();
+        }
+
+        private void UpdateResolutionRectangle()
+        {
+            Rect resolution = Data.Rendered;
+            Data.Renderer.ConvertToDCS(ref resolution);
+            ResolutionRectangle = resolution;
         }
 
         private void ClassifyMonitors(out List<MonitorViewModel> mainMonitors, out List<MonitorViewModel> uiMonitors)
@@ -584,6 +592,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             DependencyProperty.Register("SourceOfAdditionalViewports", typeof(SourceOfAdditionalViewports),
                 typeof(MonitorSetupViewModel),
                 new PropertyMetadata(default(SourceOfAdditionalViewports), OnSourceOfAdditionalViewportsChange));
+
+        /// <summary>
+        /// The desktop rectangle (in DCS coordinates) that DCS will select for rendering, based on specifying its size as the "Resolution" parameter
+        /// </summary>
+        public Rect ResolutionRectangle
+        {
+            get => (Rect) GetValue(ResolutionRectangleProperty);
+            set => SetValue(ResolutionRectangleProperty, value);
+        }
+
+        public static readonly DependencyProperty ResolutionRectangleProperty = DependencyProperty.Register("ResolutionRectangle",
+            typeof(Rect), typeof(MonitorSetupViewModel), new PropertyMetadata(null));
 
         #endregion
     }

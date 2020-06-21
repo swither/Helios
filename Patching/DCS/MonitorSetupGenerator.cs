@@ -165,9 +165,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             mainView.Intersect(_parent.Rendered);
             uiView.Intersect(_parent.Rendered);
 
-            // change to DCS coordinates (0,0 at top left of rect)
-            TranslateToDCS(ref mainView);
-            TranslateToDCS(ref uiView);
+            // change to DCS coordinates (0,0 at top left of rect, physical pixels)
+            ConvertToDCS(ref mainView);
+            ConvertToDCS(ref uiView);
 
             CreateMainView(lines, mainView);
             if (verbose) yield return new StatusReportItem
@@ -200,9 +200,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        private void TranslateToDCS(ref Rect windowsRect)
+        internal void ConvertToDCS(ref Rect windowsRect)
         {
             windowsRect.Offset(-_parent.Rendered.TopLeft.X, -_parent.Rendered.TopLeft.Y);
+            windowsRect.Scale(ConfigManager.DisplayManager.PixelsPerDip, ConfigManager.DisplayManager.PixelsPerDip);
         }
 
         private bool TryCreateViewport(List<string> lines, KeyValuePair<string, Rect> viewport, out string code)
@@ -218,7 +219,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 code = null;
                 return false;
             }
-            TranslateToDCS(ref viewportRect);
+            ConvertToDCS(ref viewportRect);
             code = $"{viewport.Key} = {{ x = {viewportRect.Left}, y = {viewportRect.Top}, width = {viewportRect.Width}, height = {viewportRect.Height} }}";
             lines.Add(code);
             return true;

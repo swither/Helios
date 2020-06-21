@@ -702,6 +702,135 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             MonitorLayoutKey = CalculateMonitorLayoutKey();
         }
 
+        private void EnsureValidMonitorSelections()
+        {
+            // in case of changes to the monitor layout mode, scan all monitors and make sure our selections are valid
+            switch (_monitorLayoutMode)
+            {
+                case MonitorLayoutMode.FromTopLeftCorner:
+                    EnsureTopLeftLayout();
+                    break;
+                case MonitorLayoutMode.Column:
+                    EnsureColumnLayout();
+                    break;
+                case MonitorLayoutMode.Row:
+                    EnsureRowLayout();
+                    break;
+                case MonitorLayoutMode.PrimaryOnly:
+                    EnsurePrimaryLayout();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void EnsureTopLeftLayout()
+        {
+            // NOTE: always legal, just reset defaults
+            foreach (ShadowMonitor shadow in _monitors.Values)
+            {
+                shadow.Included = shadow.Included || shadow.HasContent;
+                shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
+            }
+        }
+
+        private void EnsureRowLayout()
+        {
+            Monitor primary = GetPrimaryMonitor();
+            if (primary == null)
+            {
+                // transient state during reset monitors can end up here
+                return;
+            }
+            // WARNING: Rect does not understand rectangles that extend to negative infinity
+            Rect allowed = new Rect(
+                new Point(double.MinValue, primary.DisplayRectangle.Top),
+                new Point(double.MaxValue, primary.DisplayRectangle.Bottom));
+            foreach (ShadowMonitor shadow in _monitors.Values)
+            {
+                Rect intersection = shadow.Monitor.DisplayRectangle;
+                intersection.Intersect(allowed);
+                // WARNING: IntersectsWith is true even if the intersection is a touch line of 0 height, so we can't use it
+                if (intersection.Height >= 1d)
+                {
+                    if (shadow.Monitor.Left <= primary.Left)
+                    {
+                        // cannot exclude main and area to the left of main
+                        shadow.Included = true;
+                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
+                    }
+                    else
+                    {
+                        shadow.Included = shadow.Included || shadow.HasContent;
+                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
+                    }
+                }
+                else
+                {
+                    // monitor is not part of row
+                    shadow.Lockout();
+                }
+            }
+        }
+
+        private void EnsureColumnLayout()
+        {
+            Monitor primary = GetPrimaryMonitor();
+            if (primary == null)
+            {
+                // transient state during reset monitors can end up here
+                return;
+            }
+            // WARNING: Rect does not understand rectangles that extend to negative infinity
+            Rect allowed = new Rect(
+                new Point(primary.DisplayRectangle.Left, double.MinValue),
+                new Point(primary.DisplayRectangle.Right, double.MaxValue));
+            foreach (ShadowMonitor shadow in _monitors.Values)
+            {
+                Rect intersection = shadow.Monitor.DisplayRectangle;
+                intersection.Intersect(allowed);
+                // WARNING: IntersectsWith is true even if the intersection is a touch line of 0 width, so we can't use it
+                if (intersection.Width >= 1d)
+                {
+                    if (shadow.Monitor.Top <= primary.Monitor.Top)
+                    {
+                        // cannot exclude main and area above main
+                        shadow.Included = true;
+                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
+                    }
+                    else
+                    {
+                        shadow.Included = shadow.Included || shadow.HasContent;
+                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
+                    }
+                }
+                else
+                {
+                    // monitor is not part of column
+                    shadow.Lockout();
+                }
+            }
+        }
+
+
+        private void EnsurePrimaryLayout()
+        {
+            foreach (ShadowMonitor shadow in _monitors.Values)
+            {
+                if (shadow.Monitor.IsPrimaryDisplay)
+                {
+                    // cannot exclude main
+                    shadow.Included = true;
+                    shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
+                }
+                else
+                {
+                    // monitor is not allowed
+                    shadow.Lockout();
+                }
+            }
+        }
+
         #region Properties
 
         /// <summary>
@@ -829,134 +958,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        private void EnsureValidMonitorSelections()
-        {
-            // in case of changes to the monitor layout mode, scan all monitors and make sure our selections are valid
-            switch (_monitorLayoutMode)
-            {
-                case MonitorLayoutMode.FromTopLeftCorner:
-                    EnsureTopLeftLayout();
-                    break;
-                case MonitorLayoutMode.Column:
-                    EnsureColumnLayout();
-                    break;
-                case MonitorLayoutMode.Row:
-                    EnsureRowLayout();
-                    break;
-                case MonitorLayoutMode.PrimaryOnly:
-                    EnsurePrimaryLayout();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void EnsureTopLeftLayout()
-        {
-            // NOTE: always legal, just reset defaults
-            foreach (ShadowMonitor shadow in _monitors.Values)
-            {
-                shadow.Included = shadow.Included || shadow.HasContent;
-                shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
-            }
-        }
-
-        private void EnsureRowLayout()
-        {
-            Monitor primary = GetPrimaryMonitor();
-            if (primary == null)
-            {
-                // transient state during reset monitors can end up here
-                return;
-            }
-            // WARNING: Rect does not understand rectangles that extend to negative infinity
-            Rect allowed = new Rect(
-                new Point(double.MinValue, primary.DisplayRectangle.Top),
-                new Point(double.MaxValue, primary.DisplayRectangle.Bottom)); 
-            foreach (ShadowMonitor shadow in _monitors.Values)
-            {
-                Rect intersection = shadow.Monitor.DisplayRectangle;
-                intersection.Intersect(allowed);
-                // WARNING: IntersectsWith is true even if the intersection is a touch line of 0 height, so we can't use it
-                if (intersection.Height >= 1d)
-                {
-                    if (shadow.Monitor.Left <= primary.Left)
-                    {
-                        // cannot exclude main and area to the left of main
-                        shadow.Included = true;
-                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
-                    }
-                    else
-                    {
-                        shadow.Included = shadow.Included || shadow.HasContent;
-                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
-                    }
-                }
-                else
-                {
-                    // monitor is not part of row
-                    shadow.Lockout();
-                }
-            }
-        }
-
-        private void EnsureColumnLayout()
-        {
-            Monitor primary = GetPrimaryMonitor();
-            if (primary == null)
-            {
-                // transient state during reset monitors can end up here
-                return;
-            }
-            // WARNING: Rect does not understand rectangles that extend to negative infinity
-            Rect allowed = new Rect(
-                new Point(primary.DisplayRectangle.Left, double.MinValue),
-                new Point(primary.DisplayRectangle.Right, double.MaxValue));
-            foreach (ShadowMonitor shadow in _monitors.Values)
-            {
-                Rect intersection = shadow.Monitor.DisplayRectangle;
-                intersection.Intersect(allowed);
-                // WARNING: IntersectsWith is true even if the intersection is a touch line of 0 width, so we can't use it
-                if (intersection.Width >= 1d)
-                {
-                    if (shadow.Monitor.Top <= primary.Monitor.Top)
-                    {
-                        // cannot exclude main and area above main
-                        shadow.Included = true;
-                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
-                    }
-                    else
-                    {
-                        shadow.Included = shadow.Included || shadow.HasContent;
-                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
-                    }
-                }
-                else
-                {
-                    // monitor is not part of column
-                    shadow.Lockout();
-                }
-            }
-        }
-
-
-        private void EnsurePrimaryLayout()
-        {
-            foreach (ShadowMonitor shadow in _monitors.Values)
-            {
-                if (shadow.Monitor.IsPrimaryDisplay)
-                {
-                    // cannot exclude main
-                    shadow.Included = true;
-                    shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
-                }
-                else
-                {
-                    // monitor is not allowed
-                    shadow.Lockout();
-                }
-            }
-        }
+        internal MonitorSetupGenerator Renderer => _renderer;
 
         #endregion
 
