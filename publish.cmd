@@ -28,6 +28,8 @@ REM collect and format log
 FOR /F %%i IN ('git rev-parse %HELIOS_BUILT_VERSION%') DO @set COMMIT=%%i
 git log --date=short --ancestry-path --decorate-refs="1.*" --format="##### [%%h](https://github.com/HeliosVirtualCockpit/Helios/commit/%%H) by %%an on %%ad %%d%%n%%w(0,4,4)%%B  %%n" %HELIOS_REFERENCE_TAG%..%HELIOS_BUILT_VERSION% > %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\changes_%COMMIT%.md
 
+if "%3" == "nogithub" goto end
+
 REM assemble the release assets for github (tar.exe included in Windows 10)
 if exist "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets" (
 	rmdir /s /q "..\Releases\Helios\%HELIOS_BUILT_VERSION%"
@@ -47,7 +49,6 @@ echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo Full change notes from previous releases here: https://github.com/HeliosVirtualCockpit/Helios/wiki/Change-Log >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 
 REM create draft on github (requires https://github.com/github/hub/releases/latest)
-REM goto end
 hub release create -d ^
 	-a "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip#Helios Installers" ^
 	-a "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip#Helios Installers for 32-bit Systems (untested)" ^
