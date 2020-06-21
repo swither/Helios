@@ -184,8 +184,7 @@
                         <ControlTemplate TargetType="{x:Type CheckBox}">
                             <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Border"
                                     BorderBrush="Transparent" Background="Transparent" VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    ToolTipService.ShowOnDisabled="True">
+                                    HorizontalAlignment="Center">
                                 <!-- these paths are from free for commercial use, no attribution required icons -->
                                 <Canvas VerticalAlignment="Center" HorizontalAlignment="Center">
                                     <Canvas.RenderTransform>
@@ -288,8 +287,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type CheckBox}">
                             <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"
-                                    BorderBrush="Transparent" Background="Transparent" Name="Border"
-                                    ToolTipService.ShowOnDisabled="True">
+                                    BorderBrush="Transparent" Background="Transparent" Name="Border">
                                 <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0"
                                        Name="AppIcon" FontFamily="Segoe MDL2 Assets" FontSize="36"
                                        FontWeight="UltraBold" Content="&#xE71D;">
@@ -504,7 +502,7 @@
                                     <Grid>
                                         <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}"
                                                   IsChecked="{Binding Path=Data.Main}"
-                                                  IsEnabled="{Binding CanBeRemovedFromMain}"
+                                                  IsEnabled="{Binding MainAssignmentCanBeChanged}"
                                                   Style="{StaticResource AircraftCheckbox}" />
                                         <CheckBox Style="{StaticResource MonitorIncludedCheckbox}" />
                                     </Grid>
@@ -622,7 +620,7 @@
                                                   VerticalAlignment="Center"
                                                   HorizontalAlignment="Center"
                                                   IsChecked="{Binding Path=Data.UserInterface}"
-                                                  IsEnabled="{Binding CanBeRemovedFromUserInterface}"
+                                                  IsEnabled="{Binding UserInterfaceAssignmentCanBeChanged}"
                                                   Style="{StaticResource UserInterfaceCheckbox}" />
                                     </Grid>
                                 </DataTemplate>

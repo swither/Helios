@@ -226,8 +226,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             ClassifyMonitors(out List<MonitorViewModel> mainMonitors, out List<MonitorViewModel> uiMonitors);
             UpdateBounds();
-            ProtectLastMonitor(mainMonitors, (m, value) => m.CanBeRemovedFromMain = value);
-            ProtectLastMonitor(uiMonitors, (m, value) => m.CanBeRemovedFromUserInterface = value);
+            ProtectLastMonitor(mainMonitors, (m, value) => m.MainAssignmentCanBeChanged = value);
+            ProtectLastMonitor(uiMonitors, (m, value) => m.UserInterfaceAssignmentCanBeChanged = value);
         }
 
         private void ClassifyMonitors(out List<MonitorViewModel> mainMonitors, out List<MonitorViewModel> uiMonitors)
