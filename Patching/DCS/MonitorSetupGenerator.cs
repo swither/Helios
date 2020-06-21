@@ -90,12 +90,26 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // emit in sorted canonical order so we can compare files later
             foreach (KeyValuePair<string, Rect> viewport in _allViewports.Viewports.OrderBy(p => p.Key))
             {
-                string code = CreateViewport(lines, viewport);
-                yield return new StatusReportItem
+                if (TryCreateViewport(lines, viewport, out string code))
                 {
-                    Status = $"{template.MonitorSetupFileBaseName}: {code}",
-                    Flags = INFORMATIONAL
-                };
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{template.MonitorSetupFileBaseName}: {code}",
+                        Flags = INFORMATIONAL
+                    };
+                }
+                else
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status =
+                            $"viewport '{viewport.Key}' was not included in monitor setup because it is not entirely contained in rendered resolution",
+                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Recommendation = "adjust the viewport location or the monitor layout",
+                        Link = StatusReportItem.ProfileEditor,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    };
+                }
             }
 
             // find main and ui view extents
@@ -191,7 +205,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             windowsRect.Offset(-_parent.Rendered.TopLeft.X, -_parent.Rendered.TopLeft.Y);
         }
 
-        private string CreateViewport(List<string> lines, KeyValuePair<string, Rect> viewport)
+        private bool TryCreateViewport(List<string> lines, KeyValuePair<string, Rect> viewport, out string code)
         {
             Rect viewportRect = viewport.Value;
             viewportRect.Intersect(_parent.Rendered);
@@ -200,13 +214,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 // viewports that aren't entire rendered do not work
                 string message = $"viewport '{viewport.Key}' not included in monitor setup because it is not entirely contained in rendered resolution";
                 ConfigManager.LogManager.LogInfo(message);
-                return $"--- {message}";
+                lines.Add($"--- {message}");
+                code = null;
+                return false;
             }
             TranslateToDCS(ref viewportRect);
-            string code =
-                $"{viewport.Key} = {{ x = {viewportRect.Left}, y = {viewportRect.Top}, width = {viewportRect.Width}, height = {viewportRect.Height} }}";
+            code = $"{viewport.Key} = {{ x = {viewportRect.Left}, y = {viewportRect.Top}, width = {viewportRect.Width}, height = {viewportRect.Height} }}";
             lines.Add(code);
-            return code;
+            return true;
         }
 
         private static List<string> CreateHeader(MonitorSetupTemplate template)
