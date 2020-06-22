@@ -343,6 +343,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             {
                 newReport.Add(new StatusReportItem
                 {
+                    // TODO: Provide information about where the missing image is used
                     Status = $"An image used in this Profile's controls could not be loaded from '{path}'",
                     Recommendation = "Install missing images or correct image paths in controls, then reload profile.",
                     Severity = StatusReportItem.SeverityCode.Warning,
@@ -412,8 +413,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                 {
                     newReport.Add(new StatusReportItem
                     {
-                        Status = $"A kill action is contained in this profile for process name '{_binding.Value}'",
-                        Recommendation = "Ensure that this process being killed is expected.",
+                        Status = $"A kill action is contained in this profile for process image name '{_binding.Value}'",
+                        Recommendation = "Ensure that the process being killed is expected and acceptable.",
                         Severity = StatusReportItem.SeverityCode.Info,
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
                     });
