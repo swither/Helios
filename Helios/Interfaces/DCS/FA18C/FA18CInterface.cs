@@ -13,6 +13,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#pragma warning disable IDE0051 // Remove unused private member: interfaces contain definitions we don't implement
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
 {
     using GadrocsWorkshop.Helios.ComponentModel;

@@ -64,18 +64,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         #region Constant
 
-        /// <summary>
-        /// magic names of viewports that indicate that a viewport should be part of the main view rectangle (REVISIT
-        /// unimplemented)
-        /// </summary>
-        private static readonly HashSet<string> _mainViewNames =
-            new HashSet<string>(StringComparer.CurrentCultureIgnoreCase)
-            {
-                "center",
-                "main"
-            };
-
-        internal const string SETTINGS_GROUP = "DCSMonitorSetup";
+        internal const string DISPLAYS_SETTINGS_GROUP = "DCSMonitorSetup";
+        internal const string PREFERENCES_SETTINGS_GROUP = "DCSMonitorSetupPreferences";
 
         #endregion
 
@@ -133,12 +123,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private double _scale = 0.1;
 
         /// <summary>
-        /// backing field for property Resolution, contains
-        /// the minimum DCS resolution required for this setup
-        /// </summary>
-        private Vector _resolution;
-
-        /// <summary>
         /// backing field for property CombinedMonitorSetupName, contains
         /// the name of the combined monitor setup that needs to be selected in DCS
         /// </summary>
@@ -156,6 +140,31 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private bool _generateCombined = true;
 
+        /// <summary>
+        /// backing field for property MonitorLayoutMode, contains
+        /// the currently selected method for mapping the DCS resolution to the desktop
+        /// </summary>
+        private MonitorLayoutMode _monitorLayoutMode;
+
+        /// <summary>
+        /// backing field for property UsingViewportProvider, contains
+        /// true if Helios IViewportProvider is the source of
+        /// additional viewports, and false if external solution is used
+        /// </summary>
+        private bool _usingViewportProvider = true;
+
+        /// <summary>
+        /// backing field for property Rendered, contains
+        /// The desktop rectangle (in Windows coordinates) that DCS will select for rendering, based on specifying its size as the "Resolution" parameter
+        /// </summary>
+        private Rect _rendered;
+
+        /// <summary>
+        /// if true, then we are currently processing a geometry change and making changes that could schedule
+        /// further geometry change timer calls, so we should suppress those
+        /// </summary>
+        private bool _geometryChanging;
+
         #endregion
 
         public MonitorSetup()
@@ -171,6 +180,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         protected override void AttachToProfileOnMainThread()
         {
             base.AttachToProfileOnMainThread();
+
+            // read persistent config
+            _monitorLayoutMode = ConfigManager.SettingsManager.LoadSetting(PREFERENCES_SETTINGS_GROUP,
+                "MonitorLayoutMode", MonitorLayoutMode.FromTopLeftCorner);
 
             // real initialization, not just a test instantiation
             Combined.Initialize();
@@ -200,27 +213,29 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
         {
+            // stop updating shadow collections
             oldProfile.Monitors.CollectionChanged -= Monitors_CollectionChanged;
             oldProfile.PropertyChanged -= Profile_PropertyChanged;
 
             base.DetachFromProfileOnMainThread(oldProfile);
 
-            _geometryChangeTimer.Stop();
-            Clear();
-        }
+            // deallocate timer we allocate on Attach
+            _geometryChangeTimer?.Stop();
+            _geometryChangeTimer = null;
 
-        private void Clear()
-        {
+            // deallocate renderer we allocate on Attach
+            _renderer?.Dispose();
+            _renderer = null;
+
+            // clean up shadow collections
             foreach (ShadowMonitor shadow in _monitors.Values)
             {
                 shadow.Dispose();
             }
-
             foreach (ShadowVisual shadow in _viewports.Values)
             {
                 shadow.Dispose();
             }
-
             _monitors.Clear();
             _viewports.Clear();
         }
@@ -391,15 +406,77 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// <summary>
         /// find the minimum required DCS resolution to contain all the configured content
         /// </summary>
-        private void UpdateResolution()
+        private void UpdateRenderedRectangle()
         {
             // NOTE: we need this for status reporting, so this can't be in view model only
             IList<ShadowMonitor> included = _monitors.Values.Where(m => m.Included).ToList();
-            Vector bottomRight = new Vector(
-                included.Select(m => m.Visual.Left + m.Visual.Width).Max<double>(),
-                included.Select(m => m.Visual.Top + m.Visual.Height).Max<double>());
-            bottomRight += GlobalOffset;
-            Resolution = bottomRight;
+            Point topLeft;
+            Point bottomRight;
+            switch (_monitorLayoutMode)
+            {
+                case MonitorLayoutMode.FromTopLeftCorner:
+                    bottomRight = new Point(
+                        included.Select(m => m.Visual.Left + m.Visual.Width).Max<double>(),
+                        included.Select(m => m.Visual.Top + m.Visual.Height).Max<double>());
+                    topLeft = new Point(0, 0);
+                    topLeft -= GlobalOffset;
+                    break;
+                case MonitorLayoutMode.Column:
+                {
+                    Monitor primary = GetPrimaryMonitor();
+                    if (primary == null)
+                    {
+                        // transient state during reset monitors can end up here
+                        return;
+                    }
+                    bottomRight = new Point(
+                        primary.Right,
+                        included.Select(m => m.Visual.Top + m.Visual.Height).Max<double>());
+                    topLeft = new Point(
+                        primary.Left,
+                        // NOTE: DCS will position at the minimum y coordinate, even if it doesn't end up using that monitor
+                        _monitors.Values.Select(m => m.Visual.Top).Min<double>());
+                    break;
+                }
+                case MonitorLayoutMode.Row:
+                {
+                    Monitor primary = GetPrimaryMonitor();
+                    if (primary == null)
+                    {
+                        // transient state during reset monitors can end up here
+                        return;
+                    }
+                    bottomRight = new Point(
+                        included.Select(m => m.Visual.Left + m.Visual.Width).Max<double>(),
+                        primary.Bottom);
+                    topLeft = new Point(
+                        // NOTE: DCS will position at the minimum x coordinate, even if it doesn't end up using that monitor
+                        _monitors.Values.Select(m => m.Visual.Left).Min<double>(),
+                        primary.Top);
+                    break;
+                }
+                case MonitorLayoutMode.PrimaryOnly:
+                {
+                    Monitor primary = GetPrimaryMonitor();
+                    if (primary == null)
+                    {
+                        // transient state during reset monitors can end up here
+                        return;
+                    }
+                    bottomRight = new Point(primary.Right, primary.Bottom);
+                    topLeft = new Point(primary.Left, primary.Top);
+                    break;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            Rendered = new Rect(topLeft, bottomRight);
+        }
+
+        private Monitor GetPrimaryMonitor()
+        {
+            return _monitors.Values.Select(shadow => shadow.Monitor).FirstOrDefault(m => m.IsPrimaryDisplay);
         }
 
         /// <summary>
@@ -453,8 +530,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void ScheduleGeometryChange()
         {
+            if (_geometryChanging)
+            {
+                // we are the source of whatever change caused us to call this, don't recurse
+                return;
+            }
+
             // eat all events for a short duration and process only once in case there are a lot of updates
-            _geometryChangeTimer.Start();
+            _geometryChangeTimer?.Start();
         }
 
         public override void ReadXml(XmlReader reader)
@@ -481,7 +564,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         // ignore unsupported settings
                         string elementName = reader.Name;
                         string discard = reader.ReadElementString(elementName);
-                        ConfigManager.LogManager.LogWarning(
+                            ConfigManager.LogManager.LogWarning(
                             $"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
                         break;
                     }
@@ -496,6 +579,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 writer.WriteElementString("GenerateCombined", bc.ConvertToInvariantString(false));
             }
+
             if (!_usingViewportProvider)
             {
                 writer.WriteElementString("UsingViewportProvider", bc.ConvertToInvariantString(false));
@@ -507,15 +591,24 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private void OnDelayedGeometryChange(object sender, EventArgs e)
         {
-            _geometryChangeTimer.Stop();
-            if (Profile == null)
+            // recursion prevention flag
+            _geometryChanging = true;
+            try
             {
-                // although we turn off the timer when we are removed from the profile, this call is still
-                // delivered late
-                return;
-            }
+                _geometryChangeTimer?.Stop();
+                if (Profile == null)
+                {
+                    // although we turn off the timer when we are removed from the profile, this call is still
+                    // delivered late
+                    return;
+                }
 
-            UpdateAllGeometry();
+                UpdateAllGeometry();
+            }
+            finally
+            {
+                _geometryChanging = false;
+            }
 
             // notify anyone configuring or monitoring us
             GeometryChangeDelayed?.Invoke(this, EventArgs.Empty);
@@ -552,7 +645,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             // get the list of configured monitors in the settings file
-            List<string> stableKeys = settings.EnumerateSettingNames(SETTINGS_GROUP).ToList();
+            List<string> stableKeys = settings.EnumerateSettingNames(DISPLAYS_SETTINGS_GROUP).ToList();
 
             if (!ConfigManager.Application.SettingsAreWritable)
             {
@@ -564,7 +657,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             foreach (string key in stableKeys.Where(key => !displayKeys.Contains(key)))
             {
                 ConfigManager.LogManager.LogDebug($"removed setting '{key}' that does not refer to a real monitor");
-                settings.DeleteSetting(SETTINGS_GROUP, key);
+                settings.DeleteSetting(DISPLAYS_SETTINGS_GROUP, key);
             }
         }
 
@@ -584,7 +677,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 .Where(m => m.Included)
                 .OrderBy(m => m.Monitor.Left)
                 .ThenBy(m => m.Monitor.Top)
-                .Select(CalculateMonitorKey);
+                .Select(CalculateMonitorKey)
+                .Append(_monitorLayoutMode.ToString());
 
             return string.Join(", ", keys);
         }
@@ -603,8 +697,138 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             AutoSelectMainView();
             AutoSelectUserInterfaceView();
             UpdateGlobalOffset();
-            UpdateResolution();
+            EnsureValidMonitorSelections();
+            UpdateRenderedRectangle();
             MonitorLayoutKey = CalculateMonitorLayoutKey();
+        }
+
+        private void EnsureValidMonitorSelections()
+        {
+            // in case of changes to the monitor layout mode, scan all monitors and make sure our selections are valid
+            switch (_monitorLayoutMode)
+            {
+                case MonitorLayoutMode.FromTopLeftCorner:
+                    EnsureTopLeftLayout();
+                    break;
+                case MonitorLayoutMode.Column:
+                    EnsureColumnLayout();
+                    break;
+                case MonitorLayoutMode.Row:
+                    EnsureRowLayout();
+                    break;
+                case MonitorLayoutMode.PrimaryOnly:
+                    EnsurePrimaryLayout();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void EnsureTopLeftLayout()
+        {
+            // NOTE: always legal, just reset defaults
+            foreach (ShadowMonitor shadow in _monitors.Values)
+            {
+                shadow.Included = shadow.Included || shadow.HasContent;
+                shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
+            }
+        }
+
+        private void EnsureRowLayout()
+        {
+            Monitor primary = GetPrimaryMonitor();
+            if (primary == null)
+            {
+                // transient state during reset monitors can end up here
+                return;
+            }
+            // WARNING: Rect does not understand rectangles that extend to negative infinity
+            Rect allowed = new Rect(
+                new Point(double.MinValue, primary.DisplayRectangle.Top),
+                new Point(double.MaxValue, primary.DisplayRectangle.Bottom));
+            foreach (ShadowMonitor shadow in _monitors.Values)
+            {
+                Rect intersection = shadow.Monitor.DisplayRectangle;
+                intersection.Intersect(allowed);
+                // WARNING: IntersectsWith is true even if the intersection is a touch line of 0 height, so we can't use it
+                if (intersection.Height >= 1d)
+                {
+                    if (shadow.Monitor.Left <= primary.Left)
+                    {
+                        // cannot exclude main and area to the left of main
+                        shadow.Included = true;
+                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
+                    }
+                    else
+                    {
+                        shadow.Included = shadow.Included || shadow.HasContent;
+                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
+                    }
+                }
+                else
+                {
+                    // monitor is not part of row
+                    shadow.Lockout();
+                }
+            }
+        }
+
+        private void EnsureColumnLayout()
+        {
+            Monitor primary = GetPrimaryMonitor();
+            if (primary == null)
+            {
+                // transient state during reset monitors can end up here
+                return;
+            }
+            // WARNING: Rect does not understand rectangles that extend to negative infinity
+            Rect allowed = new Rect(
+                new Point(primary.DisplayRectangle.Left, double.MinValue),
+                new Point(primary.DisplayRectangle.Right, double.MaxValue));
+            foreach (ShadowMonitor shadow in _monitors.Values)
+            {
+                Rect intersection = shadow.Monitor.DisplayRectangle;
+                intersection.Intersect(allowed);
+                // WARNING: IntersectsWith is true even if the intersection is a touch line of 0 width, so we can't use it
+                if (intersection.Width >= 1d)
+                {
+                    if (shadow.Monitor.Top <= primary.Monitor.Top)
+                    {
+                        // cannot exclude main and area above main
+                        shadow.Included = true;
+                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
+                    }
+                    else
+                    {
+                        shadow.Included = shadow.Included || shadow.HasContent;
+                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
+                    }
+                }
+                else
+                {
+                    // monitor is not part of column
+                    shadow.Lockout();
+                }
+            }
+        }
+
+
+        private void EnsurePrimaryLayout()
+        {
+            foreach (ShadowMonitor shadow in _monitors.Values)
+            {
+                if (shadow.Monitor.IsPrimaryDisplay)
+                {
+                    // cannot exclude main
+                    shadow.Included = true;
+                    shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
+                }
+                else
+                {
+                    // monitor is not allowed
+                    shadow.Lockout();
+                }
+            }
         }
 
         #region Properties
@@ -638,21 +862,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         internal IEnumerable<ShadowVisual> Viewports => _viewports.Values;
 
         /// <summary>
-        /// the minimum DCS resolution required for this setup
+        /// The desktop rectangle (in Windows coordinates) that DCS will select for rendering, based on specifying its size as the "Resolution" parameter, not persisted
         /// </summary>
-        public Vector Resolution
+        public Rect Rendered
         {
-            get => _resolution;
+            get => _rendered;
             set
             {
-                if (_resolution == value)
-                {
-                    return;
-                }
-
-                Vector oldValue = _resolution;
-                _resolution = value;
-                OnPropertyChanged("Resolution", oldValue, value, true);
+                if (_rendered == value) return;
+                Rect oldValue = _rendered;
+                _rendered = value;
+                OnPropertyChanged("Rendered", oldValue, value, false);
             }
         }
 
@@ -697,13 +917,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         internal string MonitorLayoutKey { get; private set; }
 
         /// <summary>
-        /// backing field for property UsingViewportProvider, contains
-        /// true if Helios IViewportProvider is the source of
-        /// additional viewports, and false if external solution is used
-        /// </summary>
-        private bool _usingViewportProvider = true;
-
-        /// <summary>
         /// true if Helios IViewportProvider is the source of
         /// additional viewports, and false if external solution is used
         /// </summary>
@@ -712,12 +925,41 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             get => _usingViewportProvider;
             set
             {
-                if (_usingViewportProvider == value) return;
+                if (_usingViewportProvider == value)
+                {
+                    return;
+                }
+
                 bool oldValue = _usingViewportProvider;
                 _usingViewportProvider = value;
                 OnPropertyChanged("UsingViewportProvider", oldValue, value, true);
             }
         }
+
+
+        /// <summary>
+        /// the currently selected method for mapping the DCS resolution to the desktop, global setting, so no Undo support
+        /// </summary>
+        public MonitorLayoutMode MonitorLayoutMode
+        {
+            get => _monitorLayoutMode;
+            set
+            {
+                if (_monitorLayoutMode == value)
+                {
+                    return;
+                }
+
+                MonitorLayoutMode oldValue = _monitorLayoutMode;
+                _monitorLayoutMode = value;
+                ConfigManager.SettingsManager.SaveSetting(PREFERENCES_SETTINGS_GROUP, "MonitorLayoutMode", _monitorLayoutMode);
+                ScheduleGeometryChange();
+                OnPropertyChanged("MonitorLayoutMode", oldValue, value, false);
+            }
+        }
+
+        internal MonitorSetupGenerator Renderer => _renderer;
+
         #endregion
 
         #region IExtendedDescription

@@ -97,12 +97,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             Monitor display = ConfigManager.DisplayManager.Displays[_oldId];
             double scale = ChooseScale(display);
 
-            // change the size of the monitor to match the local display
-            OldMonitor.Top = display.Top;
-            OldMonitor.Left = display.Left;
-            OldMonitor.Width = display.Width;
-            OldMonitor.Height = display.Height;
-            OldMonitor.Orientation = display.Orientation;
+            // atomically change the size of the monitor to match the local display
+            OldMonitor.CopyGeometry(display);
 
             // REVISIT: this does not invalidate the profile preview's image of the monitor
             // after the last height change, so it shows the wrong height (height of old monitor)

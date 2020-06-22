@@ -39,6 +39,7 @@
     </Compile>
     <Compile Include="DCS\CombinedMonitorSetupViewModel.cs" />
     <Compile Include="DCS\CombinedMonitorSetupViewModel_DesignInstance.cs" />
+    <Compile Include="DCS\MonitorLayoutMode.cs" />
     <Compile Include="DCS\MonitorSetupTemplate.cs" />
     <Compile Include="DCS\SourceOfAdditionalViewports.cs" />
     <Compile Include="DCS\ViewportSetupFile.cs" />
@@ -75,6 +76,7 @@
     <ProjectReference Include="..\ThirdParty\diff-match-patch\GoogleDiffMatchPatch.csproj">
       <Project>{efc42b48-44dd-4066-81f4-60c0d8104f7b}</Project>
       <Name>GoogleDiffMatchPatch</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

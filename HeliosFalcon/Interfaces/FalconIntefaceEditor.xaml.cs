@@ -45,13 +45,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             if (((FalconInterface) Interface).FalconType == FalconTypes.BMS)
             {
-                ofd.InitialDirectory = ((FalconInterface) Interface).FalconPath + "\\User\\Config";
+                ofd.InitialDirectory = ((FalconInterface)Interface).FalconPath + "\\User\\Config";
             }
             else
             {
-                ofd.InitialDirectory = ((FalconInterface)Interface).FalconPath;
+                ofd.InitialDirectory = ((FalconInterface) Interface).FalconPath;
             }
-
 
             Nullable<bool> result = ofd.ShowDialog(Window.GetWindow(this));
 

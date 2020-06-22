@@ -57,7 +57,7 @@ namespace EditViewports
         {
             if (jsonDirPath == null)
             {
-                jsonDirPath = FileSystem.FindNearestDirectory("ToolsCommon\\Data\\Viewports");
+                jsonDirPath = FileSystem.FindNearestDirectory("Tools\\ToolsCommon\\Data\\Viewports");
             }
 
             // open DCS installation location

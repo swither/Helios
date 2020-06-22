@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Windows.Controls;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 using GadrocsWorkshop.Helios.Util;
 
@@ -156,7 +157,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             aboutDialog.Close();
         }
 
-        private void ComposeStatusMessage(string firstLine)
+        private void ComposeStatusMessage(string firstLine, Uri _)
         {
             string message = firstLine;
             if (_lastProfileHint.Length > 0)
@@ -174,7 +175,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             Message = message;
         }
 
-        private void ComposeErrorMessage(string status, string recommendation)
+        private void ComposeErrorMessage(string status, string recommendation, Uri _)
         {
             // this multiline message does not combine with anything
             Message = $"{status} {recommendation}";
@@ -185,7 +186,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             Message = message;
         }
 
-        private void ReportStatus(string status) {
+        private void ReportStatus(string status, Uri link = null) {
             if (status.Length < 1)
             {
                 return;
@@ -193,19 +194,21 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
             StatusReportItem statusReportItem = new StatusReportItem()
             {
-                Status = status
+                Status = status,
+                Link = link
             };
             StatusViewer.AddItem(statusReportItem);
             statusReportItem.Log(ConfigManager.LogManager);
         }
 
-        private void ReportError(string status, string recommendation)
+        private void ReportError(string status, string recommendation, Uri link)
         {
             StatusReportItem statusReportItem = new StatusReportItem()
             {
                 Severity = StatusReportItem.SeverityCode.Error,
                 Status = status,
-                Recommendation = recommendation
+                Recommendation = recommendation,
+                Link = link
             };
             StatusViewer.AddItem(statusReportItem);
             statusReportItem.Log(ConfigManager.LogManager);
@@ -223,7 +226,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             UpdateStatusMessage(ReportStatus, ReportError, null);
         }
 
-        private void UpdateStatusMessage(Action<string> updateInfoStatus, Action<string, string> updateErrorStatus, Action<string> updatePopup)
+        private void UpdateStatusMessage(Action<string, Uri> updateInfoStatus, Action<string, string, Uri> updateErrorStatus, Action<string> updatePopup)
         {
             // centralize all these messages, because they all need to fit in the same space
             switch (_status)
@@ -231,39 +234,45 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 case StatusValue.Empty:
                 // fall through
                 case StatusValue.License:
-                    updateInfoStatus("");
+                    updateInfoStatus("", null);
                     break;
                 case StatusValue.Running:
-                    updateInfoStatus("Running Profile");
+                    updateInfoStatus("Running Profile", null);
                     break;
                 case StatusValue.Loading:
-                    updateInfoStatus("Loading Profile...");
+                    updateInfoStatus("Loading Profile...", null);
                     break;
                 case StatusValue.LoadError:
-                    updateInfoStatus("Error loading Profile");
+                    updateInfoStatus("Error loading Profile", null);
                     break;
                 case StatusValue.RunningVersion:
                     Version ver = Assembly.GetEntryAssembly().GetName().Version;
                     string message =
-                        $"Helios {ver.Major.ToString()}.{ver.Minor.ToString()}.{ver.Build.ToString("0000")}.{ver.Revision.ToString("0000")}";
+                        $"Helios {ver.Major}.{ver.Minor}.{ver.Build:0000}.{ver.Revision:0000}";
                     message += $"\n{KnownLinks.GitRepoUrl() ?? "HeliosVirtualCockpit fork"}";
-                    updateInfoStatus(message);
+                    updateInfoStatus(message, new Uri(KnownLinks.GitRepoUrl()));
                     break;
                 case StatusValue.ProfileVersionHigher:
                     updateErrorStatus(
                         "Cannot display this profile because it was created with a newer version of Helios.",
-                        "Please upgrade to the latest version.");
+                        "Please upgrade to the latest version.",
+                        null);
                     break;
                 case StatusValue.BadMonitorConfig:
                     updateErrorStatus(
                         "Cannot display this profile because it has an invalid monitor configuration.",
-                        "Please open the Helios Profile Editor and select reset monitors from the profile menu.");
+                        "Select reset monitors from the profile menu.",
+                        StatusReportItem.ProfileEditor);
                     break;
                 case StatusValue.FailedPreflight:
                     updateErrorStatus(
                         "Failed preflight check.",
-                        "Please resolve problems or disable preflight check in preferences."
+                        "Please resolve problems or disable preflight check in preferences.",
+                        null
                     );
+                    break;
+                case StatusValue.UpgradeAvailable:
+                    updateInfoStatus("New Helios version available; check Console for details", null);
                     break;
             }
         }
@@ -309,7 +318,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             RunningVersion,
             ProfileVersionHigher,
             BadMonitorConfig,
-            FailedPreflight
+            FailedPreflight,
+            UpgradeAvailable
         }
 
         public string Message
@@ -578,6 +588,10 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     ConfigManager.LogManager.LogDebug("Aborted start up of Profile due to failed preflight check.");
                     return;
                 }
+            }
+            else
+            {
+                ReportStatus("Preflight check is disabled.  Helios will not be able to ensure configuration is correct.");
             }
 
             ActiveProfile.ControlCenterShown += Profile_ShowControlCenter;
@@ -884,8 +898,13 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void MoveThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {
-            Left = Left + e.HorizontalChange;
-            Top = Top + e.VerticalChange;
+            if (e.Source is Slider)
+            {
+                // don't move the whole window
+                return;
+            }
+            Left += e.HorizontalChange;
+            Top += e.VerticalChange;
         }
 
         private void PowerButton_Unchecked(object sender, RoutedEventArgs e)
@@ -893,9 +912,9 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             DispatcherTimer minimizeTimer = new DispatcherTimer(new TimeSpan(0, 0, 0, 0, 250), DispatcherPriority.Normal, TimedMinimize, Dispatcher);
         }
 
-        void TimedMinimize(object sender, EventArgs e)
+        private void TimedMinimize(object sender, EventArgs e)
         {
-            (sender as DispatcherTimer).Stop();
+            ((DispatcherTimer) sender).Stop();
             Dispatcher.Invoke(new Action(Close), null);
         }
 
@@ -1038,7 +1057,31 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 StartProfile();
             }
 
-            ConfigManager.VersionChecker.CheckVersion();
+            VersionChecker.Check versionCheck = ConfigManager.VersionChecker.CheckAvailableVersion(false);
+            if (!ConfigManager.VersionChecker.ShouldOfferNewVersion(versionCheck))
+            {
+                return;
+            }
+
+            // can't use the interactive dialog, because this would require writing settings
+            StatusMessage = StatusValue.UpgradeAvailable;
+
+            StatusReportItem item = new StatusReportItem
+            {
+                Status = $"new version {versionCheck.AvailableVersion} is available",
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+            };
+            if (versionCheck.DownloadUrl != null)
+            {
+                item.Link = new Uri(versionCheck.DownloadUrl);
+                item.Recommendation = $"Use Profile Editor to check for new version or download directly from {versionCheck.DownloadUrl}";
+            }
+            else
+            {
+                item.Link = StatusReportItem.ProfileEditor;
+                item.Recommendation = "check for new version and download it";
+            }
+            StatusViewer.AddItem(item);
         }
 
         private void HideButton_Clicked(object sender, RoutedEventArgs e)

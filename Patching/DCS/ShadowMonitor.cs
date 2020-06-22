@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
@@ -51,6 +52,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     /// This class represents a Helios shadow being observed.
     /// It is the model class.
     /// </summary>
+    [DebuggerDisplay("Shadow for {" + nameof(Monitor) + "}")]
     public class ShadowMonitor : ShadowVisual
     {
         #region Delegates
@@ -73,6 +75,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             public string NewKey { get; }
         }
 
+        /// <summary>
+        /// operations that are currently valid on this monitor based on layout mode
+        /// </summary>
+        [Flags]
+        public enum PermissionsFlags
+        {
+            None = 0,
+            CanInclude = 1,
+            CanExclude = 2
+        }
         #endregion
 
         #region Private
@@ -124,9 +136,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void LoadSettings()
         {
-            _included = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, Key, true);
-            _main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_Main", false);
-            _userInterface = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.SETTINGS_GROUP,
+            _included = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, Key, true);
+            _main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_Main", false);
+            _userInterface = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP,
                 $"{Key}_UserInterface",
                 false);
         }
@@ -134,9 +146,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void DeleteSettings()
         {
             ISettingsManager2 settings2 = (ISettingsManager2) ConfigManager.SettingsManager;
-            settings2.DeleteSetting(MonitorSetup.SETTINGS_GROUP, Key);
-            settings2.DeleteSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_Main");
-            settings2.DeleteSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_UserInterface");
+            settings2.DeleteSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, Key);
+            settings2.DeleteSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_Main");
+            settings2.DeleteSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_UserInterface");
         }
 
         /// <summary>
@@ -186,6 +198,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             return false;
         }
 
+        internal void Lockout()
+        {
+            UserInterface = false;
+            Main = false;
+            Included = false;
+            Permissions = PermissionsFlags.CanExclude;
+        }
+
         internal int ViewportCount => _viewportCount;
 
         /// <summary>
@@ -203,7 +223,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
                 bool oldValue = _main;
                 _main = value;
-                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_Main", value);
+                if (ConfigManager.Application.SettingsAreWritable)
+                {
+                    ConfigManager.SettingsManager.SaveSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_Main", value);
+                }
+                else
+                {
+                    ConfigManager.LogManager.LogWarning($"unable to persist unexpected monitor setup override that does not match current settings: {Key} Main set to {value}");
+                }
                 OnPropertyChanged("Main", oldValue, value, true);
             }
         }
@@ -223,7 +250,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
                 bool oldValue = _userInterface;
                 _userInterface = value;
-                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, $"{Key}_UserInterface", value);
+                if (ConfigManager.Application.SettingsAreWritable)
+                {
+                    ConfigManager.SettingsManager.SaveSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_UserInterface", value);
+                }
+                else
+                {
+                    ConfigManager.LogManager.LogWarning($"unable to persist unexpected monitor setup override that does not match current settings: {Key} UserInterface set to {value}");
+                }
                 OnPropertyChanged("UserInterface", oldValue, value, true);
             }
         }
@@ -243,9 +277,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
                 bool oldValue = _included;
                 _included = value;
-                ConfigManager.SettingsManager.SaveSetting(MonitorSetup.SETTINGS_GROUP, Key, value);
+                if (ConfigManager.Application.SettingsAreWritable)
+                {
+                    ConfigManager.SettingsManager.SaveSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, Key, value);
+                }
+                else
+                {
+                    ConfigManager.LogManager.LogWarning($"unable to persist unexpected monitor setup override that does not match current settings: {Key} Included set to {value}");
+                }
                 OnPropertyChanged("Included", oldValue, value, true);
             }
         }
+
+        /// <summary>
+        /// allowable operations on this monitor, based on layout mode and geometry
+        /// </summary>
+        public PermissionsFlags Permissions { get; internal set; }
+
+        public bool HasContent => Main || UserInterface || ViewportCount > 0;
     }
 }

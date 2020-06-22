@@ -26,6 +26,8 @@ namespace GadrocsWorkshop.Helios
 
     public class EnumConverter : IValueConverter
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private Type type;
         private IDictionary displayValues;
         private IDictionary reverseValues;
@@ -53,34 +55,36 @@ namespace GadrocsWorkshop.Helios
 
         private void EnsureLoaded()
         {
-            if (displayValues == null)
+            if (displayValues != null)
             {
-                Type displayValuesType = typeof(Dictionary<,>).GetGenericTypeDefinition().MakeGenericType(type, typeof(string));
-                this.displayValues = (IDictionary)Activator.CreateInstance(displayValuesType);
+                return;
+            }
 
-                this.reverseValues =
-                    (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>)
-                        .GetGenericTypeDefinition()
-                        .MakeGenericType(typeof(string), type));
+            Type displayValuesType = typeof(Dictionary<,>).GetGenericTypeDefinition().MakeGenericType(type, typeof(string));
+            this.displayValues = (IDictionary)Activator.CreateInstance(displayValuesType);
 
-                var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static);
-                foreach (var field in fields)
+            this.reverseValues =
+                (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>)
+                    .GetGenericTypeDefinition()
+                    .MakeGenericType(typeof(string), type));
+
+            FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.Static);
+            foreach (FieldInfo field in fields)
+            {
+                DescriptionAttribute[] a = (DescriptionAttribute[])
+                    field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+                string displayString = GetDisplayStringValue(a);
+                object enumValue = field.GetValue(null);
+
+                if (displayString == null)
                 {
-                    DescriptionAttribute[] a = (DescriptionAttribute[])
-                        field.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-                    string displayString = GetDisplayStringValue(a);
-                    object enumValue = field.GetValue(null);
-
-                    if (displayString == null)
-                    {
-                        displayString = GetBackupDisplayStringValue(enumValue);
-                    }
-                    if (displayString != null)
-                    {
-                        displayValues.Add(enumValue, displayString);
-                        reverseValues.Add(displayString, enumValue);
-                    }
+                    displayString = GetBackupDisplayStringValue(enumValue);
+                }
+                if (displayString != null)
+                {
+                    displayValues.Add(enumValue, displayString);
+                    reverseValues.Add(displayString, enumValue);
                 }
             }
         }
@@ -133,12 +137,22 @@ namespace GadrocsWorkshop.Helios
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             EnsureLoaded();
+            Logger.Debug("attempting to convert from {Value} to {Type}", value, targetType);
+            if (!displayValues.Contains(value))
+            {
+                Logger.Debug("value {Value} of type {Type} was not found in mappings:", value, value.GetType());
+                foreach (DictionaryEntry displayValue in displayValues)
+                {
+                    Logger.Debug("{Source} of type {Type} -> {Target}", displayValue.Key, displayValue.Key.GetType(), displayValue.Value);
+                }
+            }
             return displayValues[value];
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             EnsureLoaded();
+            Logger.Debug("attempting to convert back from from {Value} to {Type}", value, targetType);
             return reverseValues[value];
         }
     }

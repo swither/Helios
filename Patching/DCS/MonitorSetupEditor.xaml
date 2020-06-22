@@ -148,16 +148,45 @@
                 </Style.Triggers>
             </Style>
 
+            <Style x:Key="DocumentationTopLeftMode" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Documentation}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Data.MonitorLayoutMode}"
+                                       Value="{x:Static dcs:MonitorLayoutMode.FromTopLeftCorner}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="DocumentationNotTopLeftMode" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Documentation}">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Data.MonitorLayoutMode}"
+                                       Value="{x:Static dcs:MonitorLayoutMode.FromTopLeftCorner}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+
             <Style TargetType="{x:Type CheckBox}" x:Key="AircraftCheckbox">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type CheckBox}">
                             <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Border"
                                     BorderBrush="Transparent" Background="Transparent" VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    ToolTipService.ShowOnDisabled="True">
+                                    HorizontalAlignment="Center">
                                 <!-- these paths are from free for commercial use, no attribution required icons -->
-                                <Canvas Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Canvas VerticalAlignment="Center" HorizontalAlignment="Center">
                                     <Canvas.RenderTransform>
                                         <ScaleTransform
                                             ScaleX="{Binding Path=Data.IconScale, Source={StaticResource BindingProxy}}"
@@ -258,8 +287,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type CheckBox}">
                             <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"
-                                    BorderBrush="Transparent" Background="Transparent" Name="Border"
-                                    ToolTipService.ShowOnDisabled="True">
+                                    BorderBrush="Transparent" Background="Transparent" Name="Border">
                                 <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0"
                                        Name="AppIcon" FontFamily="Segoe MDL2 Assets" FontSize="36"
                                        FontWeight="UltraBold" Content="&#xE71D;">
@@ -267,8 +295,8 @@
                                         <ScaleTransform
                                             CenterX="14"
                                             CenterY="14"
-                                            ScaleX="{Binding PresentationTraceSources.TraceLevel=High, Path=Data.IconScale, Source={StaticResource BindingProxy}}"
-                                            ScaleY="{Binding PresentationTraceSources.TraceLevel=High, Path=Data.IconScale, Source={StaticResource BindingProxy}}" />
+                                            ScaleX="{Binding Data.IconScale, Source={StaticResource BindingProxy}}"
+                                            ScaleY="{Binding Data.IconScale, Source={StaticResource BindingProxy}}" />
                                     </Label.RenderTransform>
                                 </Label>
                             </Border>
@@ -294,14 +322,13 @@
 
             <Style x:Key="MonitorIncludedCheckbox" TargetType="CheckBox">
                 <Setter Property="IsChecked" Value="{Binding Path=Data.Included}" />
-                <Setter Property="IsEnabled" Value="{Binding CanBeExcluded}" />
+                <Setter Property="IsEnabled" Value="{Binding InclusionCanBeChanged}" />
                 <Setter Property="ToolTip">
                     <Setter.Value>
-                        <TextBlock Text="{Binding Path=IncludedNarrative}" />
+                        <TextBlock Text="{Binding Path=InclusionNarrative}" />
                     </Setter.Value>
                 </Setter>
                 <Setter Property="ToolTipService.ShowOnDisabled" Value="true" />
-                <Setter Property="Panel.ZIndex" Value="10" />
                 <Setter Property="VerticalAlignment" Value="Top" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="6" />
@@ -322,10 +349,11 @@
             </Style>
 
             <Style x:Key="ResolutionFrame" TargetType="Rectangle">
-                <Setter Property="StrokeDashArray" Value="3" />
                 <Setter Property="Stroke" Value="Green" />
+                <Setter Property="StrokeThickness" Value="2" />
             </Style>
             <helios:EnumConverter Type="{x:Type dcs:SourceOfAdditionalViewports}" x:Key="SourceOfAdditionalViewports" />
+            <helios:EnumConverter Type="{x:Type dcs:MonitorLayoutMode}" x:Key="MonitorLayoutMode" />
         </ResourceDictionary>
     </FrameworkElement.Resources>
     <StackPanel>
@@ -338,6 +366,9 @@
                     <RowDefinition Height="10" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10"/>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -355,9 +386,46 @@
                 <ScrollViewer Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Auto"
                               VerticalScrollBarVisibility="Disabled">
                     <Grid>
+                        <!-- DCS resolution rectangle underlay -->
+                        <Canvas>
+                            <Rectangle Canvas.Left="{Binding ScaledRenderedRectangle.Left}" 
+                                       Canvas.Top="{Binding ScaledRenderedRectangle.Top}"
+                                       Width="{Binding ScaledRenderedRectangle.Width}"
+                                       Height="{Binding ScaledRenderedRectangle.Height}">
+                                <Rectangle.Fill>
+                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute"
+                                                 Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                        <VisualBrush.Visual>
+                                            <Grid Background="Transparent">
+                                                <Path Data="M 0 0 L 10 10" Stroke="LightGray" />
+                                            </Grid>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+
+                        <!-- DCS main view underlay -->
+                        <Canvas>
+                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledMain.Left}"
+                                       Canvas.Top="{Binding Path=ScaledMain.Top}"
+                                       Width="{Binding Path=ScaledMain.Width}"
+                                       Height="{Binding Path=ScaledMain.Height}" Stroke="Transparent">
+                                <Rectangle.Fill>
+                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute"
+                                                 Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                        <VisualBrush.Visual>
+                                            <Grid Background="Transparent">
+                                                <Path Data="M 0 0 L 10 10" Stroke="Red" />
+                                            </Grid>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+
                         <!-- monitors -->
-                        <ItemsControl HorizontalAlignment="Left"
-                                      ItemsSource="{Binding Monitors}">
+                        <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}" />
@@ -374,19 +442,23 @@
                                     <Grid>
                                         <Rectangle Width="{Binding Path=Rect.Width}"
                                                    Height="{Binding Path=Rect.Height}"
+                                                   Fill="White"
                                                    Style="{StaticResource DimIfNotIncluded}" />
-                                        <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}"
-                                                   Height="{Binding Path=Rect.Height}" Stroke="Transparent"
-                                                   Fill="SkyBlue" Style="{StaticResource IsMainStyle}" />
-                                        <CheckBox Style="{StaticResource MonitorIncludedCheckbox}" />
-                                        <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}"
-                                                  Panel.ZIndex="9" IsChecked="{Binding Path=Data.Main}"
-                                                  IsEnabled="{Binding CanBeRemovedFromMain}"
-                                                  Style="{StaticResource AircraftCheckbox}" />
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+
+                        <!-- DCS main view on top -->
+                        <Canvas>
+                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledMain.Left}"
+                                       Canvas.Top="{Binding Path=ScaledMain.Top}"
+                                       Width="{Binding Path=ScaledMain.Width}"
+                                       Height="{Binding Path=ScaledMain.Height}" 
+                                       Stroke="SkyBlue"
+                                       Fill="#8087CEEB">
+                            </Rectangle>
+                        </Canvas>
 
                         <!-- viewports -->
                         <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Viewports}">
@@ -412,40 +484,87 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <!-- DCS resolution -->
-                        <Canvas>
-                            <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0"
-                                       Width="{Binding ScaledResolutionWidth}"
-                                       Height="{Binding ScaledResolutionHeight}"
-                                       Style="{StaticResource ResolutionFrame}" />
-                        </Canvas>
+                        <!-- monitors user interface -->
+                        <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}"
+                                                  IsChecked="{Binding Path=Data.Main}"
+                                                  IsEnabled="{Binding MainAssignmentCanBeChanged}"
+                                                  Style="{StaticResource AircraftCheckbox}" />
+                                        <CheckBox Style="{StaticResource MonitorIncludedCheckbox}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                        <!-- DCS main view -->
-                        <Canvas Panel.ZIndex="-1">
-                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledMain.Left}"
-                                       Canvas.Top="{Binding Path=ScaledMain.Top}"
-                                       Width="{Binding Path=ScaledMain.Width}"
-                                       Height="{Binding Path=ScaledMain.Height}" Stroke="SkyBlue">
-                                <Rectangle.Fill>
-                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute"
-                                                 Viewbox="0,0,10,10" ViewboxUnits="Absolute">
-                                        <VisualBrush.Visual>
-                                            <Grid Background="Transparent">
-                                                <Path Data="M 0 0 L 10 10" Stroke="SkyBlue" />
-                                            </Grid>
-                                        </VisualBrush.Visual>
-                                    </VisualBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
+                        <!-- DCS resolution rectangle -->
+                        <Canvas>
+                            <Rectangle Canvas.Left="{Binding ScaledRenderedRectangle.Left}" 
+                                       Canvas.Top="{Binding ScaledRenderedRectangle.Top}"
+                                       Width="{Binding ScaledRenderedRectangle.Width}"
+                                       Height="{Binding ScaledRenderedRectangle.Height}"
+                                       Style="{StaticResource ResolutionFrame}" />
                         </Canvas>
                     </Grid>
                 </ScrollViewer>
+
                 <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}"
                        Content="Menus / Loading" />
 
                 <ScrollViewer Grid.Row="3" Grid.Column="1" HorizontalScrollBarVisibility="Auto"
                               VerticalScrollBarVisibility="Disabled">
                     <Grid>
+                        <!-- DCS resolution rectangle underlay -->
+                        <Canvas>
+                            <Rectangle Canvas.Left="{Binding ScaledRenderedRectangle.Left}" 
+                                       Canvas.Top="{Binding ScaledRenderedRectangle.Top}"
+                                       Width="{Binding ScaledRenderedRectangle.Width}"
+                                       Height="{Binding ScaledRenderedRectangle.Height}">
+                                <Rectangle.Fill>
+                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute"
+                                                 Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                        <VisualBrush.Visual>
+                                            <Grid Background="Transparent">
+                                                <Path Data="M 0 0 L 10 10" Stroke="LightGray" />
+                                            </Grid>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+                        
+                        <!-- DCS UI view underlay -->
+                        <Canvas>
+                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}"
+                                       Canvas.Top="{Binding Path=ScaledUserInterface.Top}"
+                                       Width="{Binding Path=ScaledUserInterface.Width}"
+                                       Height="{Binding Path=ScaledUserInterface.Height}" Stroke="Transparent">
+                                <Rectangle.Fill>
+                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute"
+                                                 Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                        <VisualBrush.Visual>
+                                            <Grid Background="Transparent">
+                                                <Path Data="M 0 0 L 10 10" Stroke="Red" />
+                                            </Grid>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+
                         <!-- monitors2 -->
                         <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
                             <ItemsControl.ItemsPanel>
@@ -464,65 +583,88 @@
                                     <Grid>
                                         <Rectangle Width="{Binding Path=Rect.Width}"
                                                    Height="{Binding Path=Rect.Height}"
+                                                   Fill="White"
                                                    Style="{StaticResource DimIfNotIncluded}" />
-                                        <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}"
-                                                   Height="{Binding Path=Rect.Height}" Stroke="Transparent"
-                                                   Fill="LightGray" Style="{StaticResource IsUserInterfaceStyle}" />
-                                        <CheckBox Style="{StaticResource MonitorIncludedCheckbox}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- DCS UI view on top -->
+                        <Canvas>
+                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}"
+                                       Canvas.Top="{Binding Path=ScaledUserInterface.Top}"
+                                       Fill="#80D3D3D3" 
+                                       Width="{Binding Path=ScaledUserInterface.Width}"
+                                       Height="{Binding Path=ScaledUserInterface.Height}" Stroke="LightGray">
+                            </Rectangle>
+                        </Canvas>
+                        
+                        <!-- monitors2 user interface -->
+                        <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
                                         <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}"
-                                                  Panel.ZIndex="9" VerticalAlignment="Center"
+                                                  VerticalAlignment="Center"
                                                   HorizontalAlignment="Center"
                                                   IsChecked="{Binding Path=Data.UserInterface}"
-                                                  IsEnabled="{Binding CanBeRemovedFromUserInterface}"
+                                                  IsEnabled="{Binding UserInterfaceAssignmentCanBeChanged}"
                                                   Style="{StaticResource UserInterfaceCheckbox}" />
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <!-- DCS resolution -->
+                        <!-- DCS resolution rectangle -->
                         <Canvas>
-                            <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0"
-                                       Width="{Binding ScaledResolutionWidth}"
-                                       Height="{Binding ScaledResolutionHeight}"
+                            <Rectangle Canvas.Left="{Binding ScaledRenderedRectangle.Left}" 
+                                       Canvas.Top="{Binding ScaledRenderedRectangle.Top}"
+                                       Width="{Binding ScaledRenderedRectangle.Width}"
+                                       Height="{Binding ScaledRenderedRectangle.Height}"
                                        Style="{StaticResource ResolutionFrame}" />
-                        </Canvas>
-
-                        <!-- DCS UI view -->
-                        <Canvas Panel.ZIndex="-1">
-                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}"
-                                       Canvas.Top="{Binding Path=ScaledUserInterface.Top}"
-                                       Width="{Binding Path=ScaledUserInterface.Width}"
-                                       Height="{Binding Path=ScaledUserInterface.Height}" Stroke="LightGray">
-                                <Rectangle.Fill>
-                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute"
-                                                 Viewbox="0,0,10,10" ViewboxUnits="Absolute">
-                                        <VisualBrush.Visual>
-                                            <Grid Background="Transparent">
-                                                <Path Data="M 0 0 L 10 10" Stroke="LightGray" />
-                                            </Grid>
-                                        </VisualBrush.Visual>
-                                    </VisualBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
                         </Canvas>
                     </Grid>
                 </ScrollViewer>
-                <Label Grid.Row="5" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Resolution" />
-                <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+
+                <Label Grid.Row="5" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Layout Mode" />
+                <ComboBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="280" MaxWidth="400" 
+                          ItemsSource="{Binding DisplayNames, Source={StaticResource MonitorLayoutMode}}" 
+                          SelectedItem="{Binding Data.MonitorLayoutMode, Converter={StaticResource MonitorLayoutMode}}" />
+
+                <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource Documentation}">
+                    Selects one of the ways in which DCS' "Resolution" rectangle can be mapped to the displays.  
+                    This setting is shared across all profiles on this computer.
+                </TextBlock>
+
+                <Label Grid.Row="8" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Resolution" />
+                <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <Rectangle Margin="0,6,3,0" Height="14" Width="40" VerticalAlignment="Center"
                                Style="{StaticResource ResolutionFrame}" />
                     <Label Style="{StaticResource InterfaceEditorLabel}" Padding="3" Content="=" />
                     <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,0,3"
-                           Content="{Binding Path=Data.Resolution.X}" />
+                           Content="{Binding Path=ResolutionRectangle.Width}" />
                     <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,0,3" Content="x" />
                     <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,3,3"
-                           Content="{Binding Path=Data.Resolution.Y}" />
+                           Content="{Binding Path=ResolutionRectangle.Height}" />
                 </StackPanel>
-                <WrapPanel Grid.Row="6" Grid.Column="1" Orientation="Vertical">
-                    <TextBlock Style="{StaticResource Documentation}">Minimum resolution that must be selected in DCS Options.</TextBlock>
-                    <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If this resolution is not available in DCS, you can choose any larger resolution.</TextBlock>
-                    <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If you are technical or very brave, you can hack DCS options.lua to add this as a custom resolution.</TextBlock>
+                <WrapPanel Grid.Row="9" Grid.Column="1" Orientation="Vertical">
+                    <TextBlock Style="{StaticResource DocumentationTopLeftMode}">Minimum resolution that must be selected in DCS Options.</TextBlock>
+                    <TextBlock Style="{StaticResource DocumentationNotTopLeftMode}">Exact resolution that must be selected in DCS Options.</TextBlock>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationTopLeftMode}">If this resolution is not available in DCS, you can choose any larger resolution.</TextBlock>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationTopLeftMode}">If you are technical or very brave, you can hack DCS options.lua to add this as a custom resolution.</TextBlock>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationNotTopLeftMode}">If this resolution is not available in DCS, you must either create a custom resolution by editing the DCS file "options.lua" or choose another layout here.</TextBlock>
                 </WrapPanel>
             </Grid>
         </GroupBox>

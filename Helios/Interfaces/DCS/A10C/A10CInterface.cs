@@ -23,6 +23,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
     public class A10CInterface : DCSInterface
     {
         #region Devices
+        // ReSharper disable InconsistentNaming
         private const string ELEC_INTERFACE = "1";
         private const string MFCD_LEFT = "2";
         private const string MFCD_RIGHT = "3";
@@ -51,6 +52,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         private const string SAI = "48";
         private const string LIGHT_SYSTEM = "49";
         private const string FIRE_SYSTEM = "50";
+        // ReSharper disable once UnusedMember.Local there are no known controls in this device
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "there are no known controls in this device")]
         private const string TACAN = "51";
         private const string STALL = "52";
         private const string ILS = "53";
@@ -65,10 +68,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 		private const string DVADR = "73";
 		private const string ACCELEROMETER = "72";
 		private const string TACAN_CTRL_PANEL = "74";
-		#endregion
+        // ReSharper restore InconsistentNaming
+        #endregion
 
-		#region Buttons
-		private const string BUTTON_1 = "3001";
+        #region Buttons
+        private const string BUTTON_1 = "3001";
         private const string BUTTON_2 = "3002";
         private const string BUTTON_3 = "3003";
         private const string BUTTON_4 = "3004";
@@ -135,8 +139,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         private const string BUTTON_65 = "3065";
         private const string BUTTON_66 = "3066";
         private const string BUTTON_67 = "3067";
-        private const string BUTTON_68 = "3068";
-        private const string BUTTON_69 = "3069";
         #endregion
 
         public A10CInterface()
@@ -167,31 +169,38 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 			#endregion
 
 			#region Engine Gauges
-			CalibrationPointCollectionDouble engineFanSpeedScale = new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 100d);
-            engineFanSpeedScale.Add(new CalibrationPointDouble(0.125d, 25d));
-            engineFanSpeedScale.Add(new CalibrationPointDouble(0.250d, 50d));
-            engineFanSpeedScale.Add(new CalibrationPointDouble(0.375d, 75d));
-            engineFanSpeedScale.Add(new CalibrationPointDouble(0.500d, 80d));
-            engineFanSpeedScale.Add(new CalibrationPointDouble(0.625d, 85d));
-            engineFanSpeedScale.Add(new CalibrationPointDouble(0.750d, 90d));
-            engineFanSpeedScale.Add(new CalibrationPointDouble(0.875d, 95d));
+
+            CalibrationPointCollectionDouble engineFanSpeedScale =
+                new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 100d)
+                {
+                    new CalibrationPointDouble(0.125d, 25d),
+                    new CalibrationPointDouble(0.250d, 50d),
+                    new CalibrationPointDouble(0.375d, 75d),
+                    new CalibrationPointDouble(0.500d, 80d),
+                    new CalibrationPointDouble(0.625d, 85d),
+                    new CalibrationPointDouble(0.750d, 90d),
+                    new CalibrationPointDouble(0.875d, 95d)
+                };
             AddFunction(new DualNetworkValue(this, "76", engineFanSpeedScale, "Left Engine", "Fan Speed", "Fan speed of engine.", "0-100", BindingValueUnits.RPMPercent));
             AddFunction(new DualNetworkValue(this, "77", engineFanSpeedScale, "Right Engine", "Fan Speed", "Fan speed of engine.", "0-100", BindingValueUnits.RPMPercent));
             AddFunction(new ScaledNetworkValue(this, "78", 100d, "Left Engine", "Core Speed", "Engine core speed as a percent of compressor RPM.", "0-100", BindingValueUnits.RPMPercent));
             AddFunction(new ScaledNetworkValue(this, "80", 100d, "Right Engine", "Core Speed", "Engine core speed as a percent of compressor RPM", "0-100", BindingValueUnits.RPMPercent));
             AddFunction(new ScaledNetworkValue(this, "84", 5000d, "Left Engine", "Fuel Flow", "Fuel flow to the engine", "", BindingValueUnits.PoundsPerHour));
             AddFunction(new ScaledNetworkValue(this, "85", 5000d, "Right Engine", "Fuel Flow", "Fuel flow to the engine", "", BindingValueUnits.PoundsPerHour));
-            CalibrationPointCollectionDouble engineTempScale = new CalibrationPointCollectionDouble(0.0d, 0.0d, 0.995d, 1100d);
-            engineTempScale.Add(new CalibrationPointDouble(0.005d, 100d));
-            engineTempScale.Add(new CalibrationPointDouble(0.095d, 200d));
-            engineTempScale.Add(new CalibrationPointDouble(0.183d, 300d));
-            engineTempScale.Add(new CalibrationPointDouble(0.275d, 400d));
-            engineTempScale.Add(new CalibrationPointDouble(0.365d, 500d));
-            engineTempScale.Add(new CalibrationPointDouble(0.463d, 600d));
-            engineTempScale.Add(new CalibrationPointDouble(0.560d, 700d));
-            engineTempScale.Add(new CalibrationPointDouble(0.657d, 800d));
-            engineTempScale.Add(new CalibrationPointDouble(0.759d, 900d));
-            engineTempScale.Add(new CalibrationPointDouble(0.855d, 1000d));
+            CalibrationPointCollectionDouble engineTempScale =
+                new CalibrationPointCollectionDouble(0.0d, 0.0d, 0.995d, 1100d)
+                {
+                    new CalibrationPointDouble(0.005d, 100d),
+                    new CalibrationPointDouble(0.095d, 200d),
+                    new CalibrationPointDouble(0.183d, 300d),
+                    new CalibrationPointDouble(0.275d, 400d),
+                    new CalibrationPointDouble(0.365d, 500d),
+                    new CalibrationPointDouble(0.463d, 600d),
+                    new CalibrationPointDouble(0.560d, 700d),
+                    new CalibrationPointDouble(0.657d, 800d),
+                    new CalibrationPointDouble(0.759d, 900d),
+                    new CalibrationPointDouble(0.855d, 1000d)
+                };
             AddFunction(new DualNetworkValue(this, "70", engineTempScale, "Left Engine", "Interstage Turbine Temperature", "", "", BindingValueUnits.Celsius));
             AddFunction(new DualNetworkValue(this, "73", engineTempScale, "Right Engine", "Interstage Turbine Temperature", "", "", BindingValueUnits.Celsius));
 			AddFunction(new NetworkValue(this, "71", "Left Engine", "Interstage Turbine Temp small needle", "Position of the needle.", "(0 to 1)", BindingValueUnits.Numeric));
@@ -210,27 +219,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 			AddFunction(Switch.CreateThreeWaySwitch(this, AAU34, BUTTON_2, "60", "1.0", "PNEU", "0.0", "NONE", "-1.0", "ELECT", "Altimeter", "ELECT/PNEU switch", "%0.1f"));
 
 			AddFunction(new PushButton(this, ACCELEROMETER, BUTTON_1, "904", "Accelerometer", "Push to set"));
-			CalibrationPointCollectionDouble accelerometerMainScale = new CalibrationPointCollectionDouble(0.0d, -5.0d, 1.0d, 10d);
-			AddFunction(new DualNetworkValue(this, "15", accelerometerMainScale, "Accelerometer", "Accelerometer", "Current gs", "", BindingValueUnits.Numeric));
-			CalibrationPointCollectionDouble accelerometerMinScale = new CalibrationPointCollectionDouble(0.0d, -5.0d, 1.0d, 10d);
-			AddFunction(new DualNetworkValue(this, "902", accelerometerMainScale, "Accelerometer", "Accelerometer Min", "Min Gs attained.", "", BindingValueUnits.Numeric));
-			CalibrationPointCollectionDouble accelerometerMaxScale = new CalibrationPointCollectionDouble(0.0d, -5.0d, 1.0d, 10d);
-			AddFunction(new DualNetworkValue(this, "903", accelerometerMainScale, "Accelerometer", "Accelerometer Max", "Max Gs attained.", "", BindingValueUnits.Numeric));
+			CalibrationPointCollectionDouble accelerometerScale = new CalibrationPointCollectionDouble(0.0d, -5.0d, 1.0d, 10d);
+			AddFunction(new DualNetworkValue(this, "15", accelerometerScale, "Accelerometer", "Accelerometer", "Current gs", "", BindingValueUnits.Numeric));
+			AddFunction(new DualNetworkValue(this, "902", accelerometerScale, "Accelerometer", "Accelerometer Min", "Min Gs attained.", "", BindingValueUnits.Numeric));
+			AddFunction(new DualNetworkValue(this, "903", accelerometerScale, "Accelerometer", "Accelerometer Max", "Max Gs attained.", "", BindingValueUnits.Numeric));
 
 			AddFunction(new Axis(this, AN_ALR69V, BUTTON_1, "16", 0.05d, 0.15d, 0.85d, "Misc", "RWR Adjust Display Brightness"));
 
-			CalibrationPointCollectionDouble airspeedScale = new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 550d);
-            airspeedScale.Add(new CalibrationPointDouble(0.14d, 100d));
+            CalibrationPointCollectionDouble airspeedScale =
+                new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 550d) {new CalibrationPointDouble(0.14d, 100d)};
             AddFunction(new DualNetworkValue(this, "48", airspeedScale, "IAS", "Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots));
 			AddFunction(new NetworkValue(this, "50", "IAS", "Pure Max Airspeed", "Position of the needle.", "(0 to 1)", BindingValueUnits.Numeric));
 
-			CalibrationPointCollectionDouble vviScale = new CalibrationPointCollectionDouble(-1.0d, -6000d, 1.0d, 6000d);
-            vviScale.Add(new CalibrationPointDouble(-0.5d, -2000d));
-            vviScale.Add(new CalibrationPointDouble(-0.29d, -1000d));
-            vviScale.Add(new CalibrationPointDouble(0.29d, 1000d));
-            vviScale.Add(new CalibrationPointDouble(0.5d, 2000d));
-			
-			AddFunction(new DualNetworkValue(this, "12", vviScale, "VVI", "Vertical Velocity", "Current vertical velocity of the aircraft.", "", BindingValueUnits.FeetPerMinute));
+            CalibrationPointCollectionDouble vviScale = new CalibrationPointCollectionDouble(-1.0d, -6000d, 1.0d, 6000d)
+            {
+                new CalibrationPointDouble(-0.5d, -2000d),
+                new CalibrationPointDouble(-0.29d, -1000d),
+                new CalibrationPointDouble(0.29d, 1000d),
+                new CalibrationPointDouble(0.5d, 2000d)
+            };
+
+            AddFunction(new DualNetworkValue(this, "12", vviScale, "VVI", "Vertical Velocity", "Current vertical velocity of the aircraft.", "", BindingValueUnits.FeetPerMinute));
 
 			AddFunction(new ScaledNetworkValue(this, "4", 30d, "AOA", "Angle of Attack", "Current angle of attack of the aircraft.", "", BindingValueUnits.Degrees));
             AddFunction(new FlagValue(this, "55", "AOA", "Off Flag", ""));
@@ -554,8 +563,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(Switch.CreateToggleSwitch(this, OXYGEN_SYSTEM, BUTTON_1, "603", "1", "On", "0", "Off", "Oxygen System", "Supply Lever", "%1d"));
             AddFunction(new ScaledNetworkValue(this, "274", 10d, "Oxygen System", "Volume", "Indicates the quantity of liquid oxygen in the regulator.", "", BindingValueUnits.Liters));
 
-            CalibrationPointCollectionDouble oxyPressureScale = new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 500d);
-            oxyPressureScale.Add(new CalibrationPointDouble(0.5d, 100d));
+            CalibrationPointCollectionDouble oxyPressureScale =
+                new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 500d) {new CalibrationPointDouble(0.5d, 100d)};
             AddFunction(new ScaledNetworkValue(this, "604", oxyPressureScale, "Oxygen System", "Pressure", "Current PSI of the regulator.", "", BindingValueUnits.PoundsPerSquareInch));
             AddFunction(new FlagValue(this, "600", "Oxygen System", "Breathflow", "Flashs with each breath."));
             #endregion
@@ -724,8 +733,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             #region ILS Control Panel
             AddFunction(Switch.CreateToggleSwitch(this, ILS, BUTTON_1, "247", "1", "On", "0", "Off", "ILS", "Power", "%1d"));
             AddFunction(new AbsoluteEncoder(this, ILS, BUTTON_2, BUTTON_2, "248", 0.05d, 0.0d, 0.3d, "ILS", "ILS Frequencey Mhz", false, "%0.1f"));
-            AddFunction(new AbsoluteEncoder(this, ILS, BUTTON_3, BUTTON_3, "250", 0.05d, 0.0d, 1d, "ILS", "ILS Frequencey Khz", false, "%0.1f"));
-            AddFunction(new Axis(this, ILS, BUTTON_5, "249", 0.1d, 0d, 1d, "ILS", "Volume"));
+            AddFunction(new AbsoluteEncoder(this, ILS, BUTTON_3, BUTTON_3, "249", 0.05d, 0.0d, 0.9d, "ILS", "ILS Frequencey Khz", false, "%0.1f"));
+            AddFunction(new Axis(this, ILS, BUTTON_5, "250", 0.1d, 0d, 1d, "ILS", "Volume"));
             AddFunction(new ILSFrequency(this));
             #endregion
 

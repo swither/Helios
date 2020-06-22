@@ -558,7 +558,7 @@ namespace GadrocsWorkshop.Helios
             /// <summary>The device is part of the desktop.</summary>
             AttachedToDesktop = 0x1,
             MultiDriver = 0x2,
-            /// <summary>The device is part of the desktop.</summary>
+            /// <summary>The device is selected as the main display.</summary>
             PrimaryDevice = 0x4,
             /// <summary>Represents a pseudo device used to mirror application drawing for remoting or other purposes.</summary>
             MirroringDriver = 0x8,
@@ -566,10 +566,15 @@ namespace GadrocsWorkshop.Helios
             VGACompatible = 0x16,
             /// <summary>The device is removable; it cannot be the primary display.</summary>
             Removable = 0x20,
+
+            UnsafeModesOn =  0x00080000,
+
+            TsCompatible =   0x00200000,
+
+            Disconnect =     0x02000000,
+            Remote =         0x04000000,
             /// <summary>The device has more display modes than its output devices support.</summary>
-            ModesPruned = 0x8000000,
-            Remote = 0x4000000,
-            Disconnect = 0x2000000
+            ModesPruned =    0x08000000
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]

@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
     public class FalconKeyCallback : IComparable<FalconKeyCallback>
     {
-        private static Dictionary<int, string> _keyCodes = new Dictionary<int, string>{
+        private static readonly Dictionary<int, string> _keyCodes = new Dictionary<int, string>{
             {1, "{ESCAPE}"},
             {2, "1"},
             {3, "2"},
@@ -123,7 +124,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             {221, "{APPS}"}
         };
 
-        private string _callbackName;
+        private readonly string _callbackName;
         private string _description;
         private int _keyCode;
         private int _modifiers;
@@ -323,7 +324,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         public override bool Equals(object obj)
         {
+#pragma warning disable IDE0019 // Use pattern matching
             FalconKeyCallback other = obj as FalconKeyCallback;
+#pragma warning restore IDE0019 // Use pattern matching
             if (other == null)
             {
                 return false;

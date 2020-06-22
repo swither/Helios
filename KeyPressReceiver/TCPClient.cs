@@ -114,8 +114,7 @@ namespace GadrocsWorkshop.Helios.KeyPressReceiver
                             continue;
                         }
                         String DataIn = System.Text.Encoding.ASCII.GetString(buffer, 0, readBytes);
-                        if (DataReceived != null)
-                            DataReceived(DataIn);
+                        DataReceived?.Invoke(DataIn);
                     }
                     catch (SocketException)
                     {
@@ -134,8 +133,7 @@ namespace GadrocsWorkshop.Helios.KeyPressReceiver
 
                             if (remoteIpEndPoint != null)
                             {
-                                if (StatusChanged != null)
-                                    StatusChanged(String.Format("Client disconnected from:{0}", remoteIpEndPoint.Address));
+                                StatusChanged?.Invoke(String.Format("Client disconnected from:{0}", remoteIpEndPoint.Address));
                             }
                             Clientsocket.Dispose();
                             Clientsocket = null;
@@ -151,8 +149,7 @@ namespace GadrocsWorkshop.Helios.KeyPressReceiver
                         IPEndPoint remoteIpEndPoint = Clientsocket.RemoteEndPoint as IPEndPoint;
                         if (remoteIpEndPoint != null)
                         {
-                            if (StatusChanged != null)
-                                StatusChanged(String.Format("Client disconnected from:{0}", remoteIpEndPoint.Address));
+                            StatusChanged?.Invoke(String.Format("Client disconnected from:{0}", remoteIpEndPoint.Address));
                         }
                         Clientsocket.Dispose();
                         Clientsocket = null;
@@ -219,18 +216,15 @@ namespace GadrocsWorkshop.Helios.KeyPressReceiver
             }
             catch (IOException)
             {
-                if (StatusChanged != null)
-                    StatusChanged(String.Format("{0} does not exist", Properties.Settings.Default.ServerAddress));
+                StatusChanged?.Invoke(String.Format("{0} does not exist", Properties.Settings.Default.ServerAddress));
             }
             catch (UnauthorizedAccessException)
             {
-                if (StatusChanged != null)
-                    StatusChanged(String.Format("{0} already in use", Properties.Settings.Default.ServerPort));
+                StatusChanged?.Invoke(String.Format("{0} already in use", Properties.Settings.Default.ServerPort));
             }
             catch (Exception ex)
             {
-                if (StatusChanged != null)
-                    StatusChanged(String.Format("{0}", ex.ToString()));
+                StatusChanged?.Invoke(String.Format("{0}", ex.ToString()));
                 Clientsocket.Dispose();
                 Clientsocket = null;
             }
@@ -242,8 +236,7 @@ namespace GadrocsWorkshop.Helios.KeyPressReceiver
             StopReading();
             if ((Clientsocket != null) && (Clientsocket.Connected)) { Clientsocket.Close(); }
             // Svrsocket.Close();
-            if (StatusChanged != null)
-                StatusChanged("connection closed");
+            StatusChanged?.Invoke("connection closed");
         }
 
         /// <summary> Get the status of the serial port. </summary>

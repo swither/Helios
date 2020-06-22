@@ -56,7 +56,7 @@ namespace GeneratePatches
 
             [Option('o', "outputpath", Required = false, Default = null,
                 HelpText =
-                    "Path to 'Patches' folder.  If not specified, will find nearest folder 'Patches' in directory tree above.")]
+                    "Path to 'Patches' folder.  If not specified, will find nearest folder 'Patching\\Patches' in directory tree above.")]
             public string OutputPath { get; set; }
         }
 
@@ -84,7 +84,7 @@ namespace GeneratePatches
             string dcsVersion = PatchVersion.SortableString(versionString);
 
             // now build patches based on files changed in repo
-            string patchesPath = outputPath ?? FileSystem.FindNearestDirectory("Patches");
+            string patchesPath = outputPath ?? FileSystem.FindNearestDirectory("Patching\\Patches");
             Console.WriteLine($"writing patches for {dcsVersion} to {patchesPath}");
             using (Repository repo = new Repository(dcsRoot))
             {

@@ -19,15 +19,43 @@ if %errorlevel% neq 0 (
 REM publish tag
 git push origin %HELIOS_BUILT_VERSION%
 
-REM publish installer file
+REM publish installer files to direct share for testers and developers
 mkdir %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%
 copy "Helios Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 copy "Helios Installer\Release32\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 
 REM collect and format log
 FOR /F %%i IN ('git rev-parse %HELIOS_BUILT_VERSION%') DO @set COMMIT=%%i
-git log --date=short --tags --decorate-refs="1.*" --format="##### [%%h](https://github.com/HeliosVirtualCockpit/Helios/commit/%%H) by %%an on %%ad %%d%%n%%w(0,4,4)%%B  %%n" %HELIOS_REFERENCE_TAG%..%HELIOS_BUILT_VERSION% > %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\changes_%COMMIT%.md
- 
+git log --date=short --ancestry-path --decorate-refs="1.*" --format="##### [%%h](https://github.com/HeliosVirtualCockpit/Helios/commit/%%H) by %%an on %%ad %%d%%n%%w(0,4,4)%%B  %%n" %HELIOS_REFERENCE_TAG%..%HELIOS_BUILT_VERSION% > %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\changes_%COMMIT%.md
+
+if "%3" == "nogithub" goto end
+
+REM assemble the release assets for github (tar.exe included in Windows 10)
+if exist "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets" (
+	rmdir /s /q "..\Releases\Helios\%HELIOS_BUILT_VERSION%"
+)
+mkdir ..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets
+tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip" -C "Helios Installer\Release" *.msi 
+tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip" -C "Helios Installer\Release32" *.msi
+echo Helios %HELIOS_BUILT_VERSION% > "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+echo # Release %HELIOS_BUILT_VERSION% >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+echo ## User Notes >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+echo [EDIT REQUIRED: create user-readable notes from following Developer Notes and then update the Change Notes in Wiki from these] >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+echo ## Developer Notes >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+cat %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\changes_%COMMIT%.md >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+echo Full change notes from previous releases here: https://github.com/HeliosVirtualCockpit/Helios/wiki/Change-Log >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+
+REM create draft on github (requires https://github.com/github/hub/releases/latest)
+hub release create -d ^
+	-a "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip#Helios Installers" ^
+	-a "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip#Helios Installers for 32-bit Systems (untested)" ^
+	-F "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md" ^
+	%HELIOS_BUILT_VERSION%
+
+:end
 REM clean up (except HELIOS_BUILT_VERSION)
 set HELIOS_REFERENCE_TAG=
 set HELIOS_SHARE_FOLDER=

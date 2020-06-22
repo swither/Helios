@@ -42,7 +42,7 @@ namespace GadrocsWorkshop.Helios.Patching
             {
                 if (!applied[i])
                 {
-                    status = $"failed to apply patch to {TargetPath}: {resultCodes[i].ToString()}";
+                    status = $"failed to apply patch to {TargetPath}: {resultCodes[i]}";
                     return false;
                 }
 
@@ -57,7 +57,7 @@ namespace GadrocsWorkshop.Helios.Patching
                         break;
                     default:
                         throw new Exception(
-                            $"patch should not have returned success with result code {resultCodes[i].ToString()}");
+                            $"patch should not have returned success with result code {resultCodes[i]}");
                 }
             }
 
@@ -82,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Patching
             {
                 if (!applied[i])
                 {
-                    status = $"failed to revert patch against {TargetPath}: {resultCodes[i].ToString()}";
+                    status = $"failed to revert patch against {TargetPath}: {resultCodes[i]}";
                     return false;
                 }
 
@@ -97,7 +97,7 @@ namespace GadrocsWorkshop.Helios.Patching
                         break;
                     default:
                         throw new Exception(
-                            $"reverse patch should not have returned success with result code {resultCodes[i].ToString()}");
+                            $"reverse patch should not have returned success with result code {resultCodes[i]}");
                 }
             }
 

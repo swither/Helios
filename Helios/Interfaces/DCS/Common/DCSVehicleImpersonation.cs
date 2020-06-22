@@ -45,11 +45,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             // instead of using a callback interface, we can use lambdas to bind specific values, so
             // we could have multiple combobox models supported by this class
-            ImpersonatedVehicleName = new EditableComboBoxModel();
-            ImpersonatedVehicleName.LoadItemSet = () => CreateItemSet();
-            ImpersonatedVehicleName.GetCurrentValue = () => _dcsInterface.ImpersonatedVehicleName;
-            ImpersonatedVehicleName.GetDefaultValue = () => _dcsInterface.VehicleName;
-            ImpersonatedVehicleName.SetCurrentValue = value => _dcsInterface.ImpersonatedVehicleName = value;
+            ImpersonatedVehicleName = new EditableComboBoxModel
+            {
+                LoadItemSet = CreateItemSet,
+                GetCurrentValue = () => _dcsInterface.ImpersonatedVehicleName,
+                GetDefaultValue = () => _dcsInterface.VehicleName,
+                SetCurrentValue = value => _dcsInterface.ImpersonatedVehicleName = value
+            };
             ImpersonatedVehicleName.Init();
             ImpersonatedVehicleName.NewItemAdded += OnItemAdded;
             SetValue(ImpersonatedVehicleNameProperty, ImpersonatedVehicleName);
@@ -72,7 +74,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             DependencyProperty.Register("ImpersonatedVehicleName", typeof(EditableComboBoxModel),
                 typeof(DCSVehicleImpersonation), new PropertyMetadata(null));
 
-        private SortedSet<string> CreateItemSet()
+        private static SortedSet<string> CreateItemSet()
         {
             SortedSet<string> vehicles = new SortedSet<string>(KnownVehicles);
             vehicles.Remove("DCSGeneric");

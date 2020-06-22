@@ -154,27 +154,25 @@ namespace Microsoft.Shell
         /// </summary>
         public delegate IntPtr MessageHandler(WM uMsg, IntPtr wParam, IntPtr lParam, out bool handled);
 
+#pragma warning disable IDE1006 // this code is by Microsoft
         [DllImport("shell32.dll", EntryPoint = "CommandLineToArgvW", CharSet = CharSet.Unicode)]
         private static extern IntPtr _CommandLineToArgvW([MarshalAs(UnmanagedType.LPWStr)] string cmdLine, out int numArgs);
 
-
         [DllImport("kernel32.dll", EntryPoint = "LocalFree", SetLastError = true)]
         private static extern IntPtr _LocalFree(IntPtr hMem);
-
+#pragma warning restore IDE1006
 
         public static string[] CommandLineToArgvW(string cmdLine)
         {
             IntPtr argv = IntPtr.Zero;
             try
             {
-                int numArgs = 0;
-
-                argv = _CommandLineToArgvW(cmdLine, out numArgs);
+                argv = _CommandLineToArgvW(cmdLine, out int numArgs);
                 if (argv == IntPtr.Zero)
                 {
                     throw new Win32Exception();
                 }
-                var result = new string[numArgs];
+                string[] result = new string[numArgs];
 
                 for (int i = 0; i < numArgs; i++)
                 {
@@ -186,10 +184,7 @@ namespace Microsoft.Shell
             }
             finally
             {
-
-                IntPtr p = _LocalFree(argv);
-                // Otherwise LocalFree failed.
-                // Assert.AreEqual(IntPtr.Zero, p);
+                _ = _LocalFree(argv);
             }
         }
 
@@ -374,11 +369,12 @@ namespace Microsoft.Shell
         {
             BinaryServerFormatterSinkProvider serverProvider = new BinaryServerFormatterSinkProvider();
             serverProvider.TypeFilterLevel = TypeFilterLevel.Full;
-            IDictionary props = new Dictionary<string, string>();
-
-            props["name"] = channelName;
-            props["portName"] = channelName;
-            props["exclusiveAddressUse"] = "false";
+            IDictionary props = new Dictionary<string, string>
+            {
+                ["name"] = channelName,
+                ["portName"] = channelName,
+                ["exclusiveAddressUse"] = "false"
+            };
 
             // Create the IPC Server channel with the channel properties
             channel = new IpcServerChannel(props, serverProvider);

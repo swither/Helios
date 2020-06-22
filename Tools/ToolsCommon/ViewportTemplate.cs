@@ -27,6 +27,7 @@ namespace ToolsCommon
         private static readonly Dictionary<string, string> _moduleCategories = new Dictionary<string, string>
         {
             // make these fit in with template / control categories in Helios UI
+            {"AV8BNA", "AV-8B"},
             {"F-16C", "F-16"},
             {"FA-18C", "F/A-18C"},
             {"HEATBLUR_F-14", "F-14"},

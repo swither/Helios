@@ -32,7 +32,6 @@ namespace GadrocsWorkshop.Helios
         {
             public string Name;
             public string Value;
-            public bool IsOurChange;
         }
 
         private class SettingsCollection : KeyedCollection<string, Setting>
@@ -188,7 +187,7 @@ namespace GadrocsWorkshop.Helios
 
             if (!Writable)
             {
-                throw new AccessViolationException("SettingsManager is not writable in this application; the settings file is presumably shared with another application that writes it");
+                throw new AccessViolationException("Implementation error: attempt to save settings, but SettingsManager is not writable in this application");
             }
 
             // Delete tmp file if exists
@@ -230,20 +229,23 @@ namespace GadrocsWorkshop.Helios
         {
             LoadSettings();
 
+            if (!Writable)
+            {
+                throw new AccessViolationException("Implementation error: attempt to write settings, but SettingsManager is not writable in this application");
+            }
+
             Group settingGroup = _settings.GetOrCreateGroup(group);
             Setting setting;
             if (settingGroup.Settings.Contains(name))
             {
                 setting = settingGroup.Settings[name];
                 setting.Value = value;
-                setting.IsOurChange = true;
             }
             else
             {
                 setting = new Setting();
                 setting.Name = name;
                 setting.Value = value;
-                setting.IsOurChange = true;
                 settingGroup.Settings.Add(setting);
             }
 
@@ -334,7 +336,11 @@ namespace GadrocsWorkshop.Helios
             SaveSettings();
         }
 
-        // WARNING: this is a temporary solution for the major design flaw that two processes are both writing overwiting the same settings file
+        /// <summary>
+        /// reset the settings to the state they have on disk, useful for process that does not write settings but needs current version
+        /// </summary>
+        /// <param name="since"></param>
+        /// <returns></returns>
         public bool SynchronizeSettings(DateTime? since)
         {
             try
@@ -346,39 +352,7 @@ namespace GadrocsWorkshop.Helios
                         return false;
                     }
                 }
-                GroupCollection fromDisk = LoadSettingsFile();
-                bool changed = false;
-                foreach (Group group in _settings)
-                {
-                    foreach (Setting setting in group.Settings)
-                    {
-                        if (setting.IsOurChange)
-                        {
-                            // this value was written by us in this session.  another program would not know we changed
-                            // this value and will erase it, so we have to restore it every time we synchronize
-                            changed = true;
-                            Group groupFromDisk = fromDisk.GetOrCreateGroup(group.Name);
-                            if (groupFromDisk.Settings.Contains(setting.Name))
-                            {
-                                groupFromDisk.Settings[setting.Name].Value = setting.Value;
-                                groupFromDisk.Settings[setting.Name].IsOurChange = true;
-                            }
-                            else
-                            {
-                                Setting merged = new Setting();
-                                merged.Name = setting.Name;
-                                merged.Value = setting.Value;
-                                merged.IsOurChange = true;
-                                groupFromDisk.Settings.Add(merged);
-                            }
-                        }
-                    }
-                }
-                _settings = fromDisk;
-                if (changed)
-                {
-                    SaveSettings();
-                }
+                _settings = LoadSettingsFile();
                 Synchronized?.Invoke(this, EventArgs.Empty);
                 return true;
             }

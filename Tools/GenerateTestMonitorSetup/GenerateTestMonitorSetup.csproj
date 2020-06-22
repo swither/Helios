@@ -32,10 +32,12 @@
     <ProjectReference Include="..\..\Helios\Helios.csproj">
       <Project>{e5abe3f5-46ec-46d1-9330-d42311471a93}</Project>
       <Name>Helios</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\ToolsCommon\ToolsCommon.csproj">
       <Project>{b81321db-0cd8-4e6d-843c-0461979eee9d}</Project>
       <Name>ToolsCommon</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\Helios.targets" />

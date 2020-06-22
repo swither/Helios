@@ -60,7 +60,6 @@ namespace GadrocsWorkshop.Helios.Controls
             AddThreeWayToggle("Heading", 1, 51, new Size(50, 100));
             AddThreeWayToggle("Course", 622, 50, new Size(50, 100));
 
-            Helios.Controls.RotarySwitch knob = new Helios.Controls.RotarySwitch();
             AddKnob("Mode Knob",new Point(336,37),new Size(60,60));
         }
 
@@ -118,26 +117,28 @@ namespace GadrocsWorkshop.Helios.Controls
         }
         private void AddKnob(string name, Point posn, Size size)
         {
-            Helios.Controls.Potentiometer _knob = new Helios.Controls.Potentiometer();
-            _knob.Name = name;
-            _knob.KnobImage = "{AV-8B}/Images/Common Knob.png";
-            _knob.InitialRotation = 219;
-            _knob.RotationTravel = 291;
-            _knob.MinValue = 0;
-            _knob.MaxValue = 1;
-            _knob.InitialValue = 0;
-            _knob.StepValue = 0.1;
-            _knob.Top = posn.Y;
-            _knob.Left = posn.X;
-            _knob.Width = size.Width;
-            _knob.Height = size.Height;
+            Helios.Controls.Potentiometer knob = new Helios.Controls.Potentiometer
+            {
+                Name = name,
+                KnobImage = "{AV-8B}/Images/Common Knob.png",
+                InitialRotation = 219,
+                RotationTravel = 291,
+                MinValue = 0,
+                MaxValue = 1,
+                InitialValue = 0,
+                StepValue = 0.1,
+                Top = posn.Y,
+                Left = posn.X,
+                Width = size.Width,
+                Height = size.Height
+            };
 
-            Children.Add(_knob);
-            foreach (IBindingTrigger trigger in _knob.Triggers)
+            Children.Add(knob);
+            foreach (IBindingTrigger trigger in knob.Triggers)
             {
                 AddTrigger(trigger, name);
             }
-            AddAction(_knob.Actions["set.value"], name);
+            AddAction(knob.Actions["set.value"], name);
         }
 
         private new void AddTrigger(IBindingTrigger trigger, string device)

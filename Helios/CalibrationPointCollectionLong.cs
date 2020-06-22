@@ -309,20 +309,12 @@ namespace GadrocsWorkshop.Helios
 
         private void OnCalibrationChanged()
         {
-            EventHandler handler = CalibrationChanged;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            CalibrationChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnCollectionChanged()
         {
-            NotifyCollectionChangedEventHandler handler = CollectionChanged;
-            if (handler != null)
-            {
-                handler(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            }
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public void Write(XmlWriter writer)
