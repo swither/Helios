@@ -86,6 +86,7 @@ namespace GeneratePatches
             // now build patches based on files changed in repo
             string patchesPath = outputPath ?? FileSystem.FindNearestDirectory("Patching\\Patches");
             Console.WriteLine($"writing patches for {dcsVersion} to {patchesPath}");
+            int nCount = 0;
             using (Repository repo = new Repository(dcsRoot))
             {
                 foreach (StatusEntry item in repo.RetrieveStatus(new StatusOptions()))
@@ -117,10 +118,17 @@ namespace GeneratePatches
                             Directory.CreateDirectory(outputDirectoryPath);
                         }
 
+                        Console.WriteLine($"writing patch {patchPath}");
                         WritePatch(source, target, patchPath);
                         WritePatch(target, source, reversePath);
+                        nCount++;
                     }
                 }
+            }
+
+            if (nCount == 0)
+            {
+                Console.WriteLine($"no patch files written, does {dcsRoot} not have any current changes in the working directory?");
             }
         }
 
@@ -147,9 +155,9 @@ namespace GeneratePatches
             if (!Directory.Exists(Path.Combine(dcsRoot, ".git")))
             {
                 Repository.Init(dcsRoot);
-                InitializeGitConfig(dcsRoot, "gitignore");
-                InitializeGitConfig(dcsRoot, "gitattributes");
             }
+            InitializeGitConfig(dcsRoot, "gitignore");
+            InitializeGitConfig(dcsRoot, "gitattributes");
 
             using (Repository repo = new Repository(dcsRoot))
             {

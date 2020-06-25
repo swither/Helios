@@ -102,6 +102,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeliosFalcon", "HeliosFalco
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Helios32bit Installer", "Helios Installer\Helios32bit Installer.vdproj", "{0955C887-5BB4-4C84-8F9D-27ED111B527D}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Tools Installer", "Tools Installer\Tools Installer.vdproj", "{3C06B585-FC4B-48D3-8867-0441FF757153}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AnyCPU = Debug|AnyCPU
@@ -777,6 +779,27 @@ Global
 		{0955C887-5BB4-4C84-8F9D-27ED111B527D}.Release|AnyCPU32.ActiveCfg = Release
 		{0955C887-5BB4-4C84-8F9D-27ED111B527D}.Release|AnyCPU32.Build.0 = Release
 		{0955C887-5BB4-4C84-8F9D-27ED111B527D}.Release|x64.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Debug|AnyCPU.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Debug|AnyCPU32.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Debug|AnyCPU32.Build.0 = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Debug|x64.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Development|AnyCPU.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Development|AnyCPU.Build.0 = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Development|AnyCPU32.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Development|AnyCPU32.Build.0 = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Development|x64.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Development|x64.Build.0 = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.JustInstallers|AnyCPU.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.JustInstallers|AnyCPU32.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.JustInstallers|x64.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.JustInstallers|x64.Build.0 = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.NoInstallers|AnyCPU.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.NoInstallers|AnyCPU32.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.NoInstallers|x64.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Release|AnyCPU.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Release|AnyCPU32.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Release|x64.ActiveCfg = Release
+		{3C06B585-FC4B-48D3-8867-0441FF757153}.Release|x64.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

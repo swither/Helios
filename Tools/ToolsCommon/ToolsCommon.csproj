@@ -33,21 +33,19 @@
     <Compile Include="ViewportTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\Viewports\ExistingViewportTemplates.json">
+    <Content Include="Data\Viewports\ExistingViewportTemplates.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Viewports\ViewportTemplates_002_005_00006_47404_00000.json">
+    </Content>
+    <Content Include="Data\Viewports\ViewportTemplates_002_005_00006_47404_00000.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Viewports\ViewportTemplates_002_005_00005_41371_00000.json">
+    </Content>
+    <Content Include="Data\Viewports\ViewportTemplates_002_005_00005_41371_00000.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Viewports\ViewportTemplates.json">
+    </Content>
+    <Content Include="Data\Viewports\ViewportTemplates.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Viewports\ViewportTemplates.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <None Include="Data\Viewports\ViewportTemplates.md" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\Helios.targets" />
