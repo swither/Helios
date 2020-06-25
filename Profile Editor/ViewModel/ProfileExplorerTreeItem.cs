@@ -56,7 +56,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 {
                     Children.Add(interfaces);
                 }
-                profile.Interfaces.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Interfaces_CollectionChanged);
+                profile.Interfaces.CollectionChanged += Interfaces_CollectionChanged;
             }
         }
 
@@ -180,7 +180,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 }
             }
 
-            visual.Children.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(VisualChildren_CollectionChanged);
+            visual.Children.CollectionChanged += VisualChildren_CollectionChanged;
         }
 
         public void Disconnect()
@@ -191,16 +191,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 case ProfileExplorerTreeItemType.Panel:
                 case ProfileExplorerTreeItemType.Visual:
                     HeliosVisual visual = ContextItem as HeliosVisual;
-                    visual.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(hobj_PropertyChanged);
-                    visual.Children.CollectionChanged -= new System.Collections.Specialized.NotifyCollectionChangedEventHandler(VisualChildren_CollectionChanged);
-                    visual.Triggers.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Triggers_CollectionChanged);
-                    visual.Actions.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Actions_CollectionChanged);
+                    visual.PropertyChanged -= HeliosObject_PropertyChanged;
+                    visual.Children.CollectionChanged -= VisualChildren_CollectionChanged;
+                    visual.Triggers.CollectionChanged += Triggers_CollectionChanged;
+                    visual.Actions.CollectionChanged += Actions_CollectionChanged;
                     break;
                 case ProfileExplorerTreeItemType.Interface:
                     HeliosInterface item = ContextItem as HeliosInterface;
-                    item.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(hobj_PropertyChanged);
-                    item.Triggers.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Triggers_CollectionChanged);
-                    item.Actions.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Actions_CollectionChanged);
+                    item.PropertyChanged -= HeliosObject_PropertyChanged;
+                    item.Triggers.CollectionChanged += Triggers_CollectionChanged;
+                    item.Actions.CollectionChanged += Actions_CollectionChanged;
                     break;
                 case ProfileExplorerTreeItemType.Action:
                     IBindingAction action = ContextItem as IBindingAction;
@@ -218,7 +218,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                     break;
                 case ProfileExplorerTreeItemType.Profile:
                     HeliosProfile profile = ContextItem as HeliosProfile;
-                    profile.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(hobj_PropertyChanged);
+                    profile.PropertyChanged -= HeliosObject_PropertyChanged;
                     break;
                 default:
                     break;
@@ -455,7 +455,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
         private void AddChild(HeliosObject hobj, ProfileExplorerTreeItemType includeTypes)
         {
-            hobj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(hobj_PropertyChanged);
+            hobj.PropertyChanged += HeliosObject_PropertyChanged;
 
             if (includeTypes.HasFlag(ProfileExplorerTreeItemType.Trigger))
             {
@@ -463,7 +463,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 {
                     AddTrigger(trigger, includeTypes);
                 }
-                hobj.Triggers.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Triggers_CollectionChanged);
+                hobj.Triggers.CollectionChanged += Triggers_CollectionChanged;
             }
 
             if (includeTypes.HasFlag(ProfileExplorerTreeItemType.Action))
@@ -472,16 +472,15 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 {
                     AddAction(action, includeTypes);
                 }
-                hobj.Actions.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Actions_CollectionChanged);
+                hobj.Actions.CollectionChanged += Actions_CollectionChanged;
             }
         }
 
-        void hobj_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void HeliosObject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            HeliosObject obj = _item as HeliosObject;
-            if (e.PropertyName.Equals("Name") && obj != null)
+            if (e.PropertyName.Equals("Name") && _item is HeliosObject obj)
             {
-                this.Name = obj.Name;
+                Name = obj.Name;
             }
         }
 
@@ -625,6 +624,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             return null;
         }
 
+        // XXX investigate why this is unused
         private bool HasChildObject(HeliosObject childObject)
         {
             return GetChildObject(childObject) != null;

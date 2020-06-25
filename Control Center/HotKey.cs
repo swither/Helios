@@ -102,8 +102,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void OnHotKeyPressed()
         {
-            if (HotKeyPressed != null)
-                HotKeyPressed(this);
+            HotKeyPressed?.Invoke(this);
         }
     }
 }

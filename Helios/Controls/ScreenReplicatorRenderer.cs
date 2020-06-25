@@ -37,44 +37,45 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            ScreenReplicator replicator = Visual as ScreenReplicator;
-            if (replicator != null)
-            {                
-                if (replicator.IsRunning)
-                {
-                    if (replicator.IsReplicating)
-                    {
-                        _screenBrush = CreateImageBrush(replicator);
-                    }
-                    else if (replicator.BlankOnStop)
-                    {
-                        _screenBrush = null;
-                    }
+            if (!(Visual is ScreenReplicator replicator))
+            {
+                return;
+            }
 
-                    if (_screenBrush != null)
-                    {
-                        drawingContext.DrawRectangle(_screenBrush, null, _displayRect);
-                    }
-                }
-                else
+            if (replicator.IsRunning)
+            {
+                if (replicator.IsReplicating)
                 {
-                    drawingContext.DrawRectangle(null, _inactivePen, _displayRect);
-                    _inactiveTextFormat.RenderText(drawingContext, _inactiveBrush, "Screen Replicator", _displayRect);
+                    _screenBrush = CreateImageBrush(replicator);
                 }
+                else if (replicator.BlankOnStop)
+                {
+                    _screenBrush = null;
+                }
+
+                if (_screenBrush != null)
+                {
+                    drawingContext.DrawRectangle(_screenBrush, null, _displayRect);
+                }
+            }
+            else
+            {
+                drawingContext.DrawRectangle(null, _inactivePen, _displayRect);
+                _inactiveTextFormat.RenderText(drawingContext, _inactiveBrush, "Screen Replicator", _displayRect);
             }
         }
 
         protected override void OnRefresh()
         {
-            ScreenReplicator replicator = Visual as ScreenReplicator;
             _inactiveBrush = Brushes.Yellow;
-            _inactivePen = new Pen(_inactiveBrush, 1d);
-            _inactivePen.DashStyle = DashStyles.Dash;
-            _inactiveTextFormat = new TextFormat();
-            _inactiveTextFormat.VerticalAlignment = TextVerticalAlignment.Center;
-            _inactiveTextFormat.VerticalAlignment = TextVerticalAlignment.Center;
+            _inactivePen = new Pen(_inactiveBrush, 1d) {DashStyle = DashStyles.Dash};
+            _inactiveTextFormat = new TextFormat
+            {
+                HorizontalAlignment = TextHorizontalAlignment.Center,
+                VerticalAlignment = TextVerticalAlignment.Center
+            };
 
-            if (replicator != null)
+            if (Visual is ScreenReplicator replicator)
             {
                 _displayRect.Width = replicator.Width;
                 _displayRect.Height = replicator.Height;

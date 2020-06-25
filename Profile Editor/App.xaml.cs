@@ -72,8 +72,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 return;
             }
 
-            ConfigManager.VersionChecker.CheckVersion();
-
             // note that we started
             ConfigManager.LogManager.LogInfo("Starting Editor");
         }

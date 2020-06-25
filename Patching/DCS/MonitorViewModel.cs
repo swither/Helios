@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System;
 using System.ComponentModel;
 using System.Windows;
 using GadrocsWorkshop.Helios.Windows;
@@ -24,7 +25,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     {
         #region Private
 
-        private string _canExcludeNarrative;
+        private string _includedNarrative;
+        private string _excludedNarrative;
         private Vector _globalOffset;
         private double _scale;
 
@@ -52,12 +54,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 case "Main":
                 case "UserInterface":
-                    if (!HasContent)
+                    if (Data.Permissions.HasFlag(ShadowMonitor.PermissionsFlags.CanExclude) && !Data.HasContent)
                     {
                         Data.Included = false;
-                        UpdateIncludedNarrative();
+                        UpdateInclusionNarrative();
                     }
-
                     break;
             }
         }
@@ -101,75 +102,103 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ConfigManager.LogManager.LogDebug($"scaled monitor view {GetHashCode()} for monitor setup UI is {Rect}");
         }
 
-        private void UpdateIncludedNarrative()
+        private void UpdateInclusionNarrative()
         {
-            IncludedNarrative = Data.Included
-                ? _canExcludeNarrative
-                : "This monitor is not being drawn on by DCS because it is excluded by this selection.";
-        }
-
-        internal void SetCanExclude(bool value, string narrative)
-        {
-            CanBeExcluded = value;
-            _canExcludeNarrative = narrative;
-            if (!Data.Included && !value)
-            {
-                Data.Included = true;
-            }
-
-            UpdateIncludedNarrative();
+            InclusionNarrative = Data.Included
+                ? _includedNarrative
+                : _excludedNarrative;
         }
 
         public Rect RawRect { get; set; }
-        public bool HasContent => Data.Main || Data.UserInterface || Data.ViewportCount > 0;
 
-        public static readonly DependencyProperty CanBeExcludedProperty =
-            DependencyProperty.Register("CanBeExcluded", typeof(bool), typeof(MonitorViewModel),
+        public static readonly DependencyProperty InclusionCanBeChangedProperty =
+            DependencyProperty.Register("InclusionCanBeChanged", typeof(bool), typeof(MonitorViewModel),
                 new PropertyMetadata(false));
 
-        public bool CanBeExcluded
+        public bool InclusionCanBeChanged
         {
-            get => (bool) GetValue(CanBeExcludedProperty);
-            set => SetValue(CanBeExcludedProperty, value);
+            get => (bool) GetValue(InclusionCanBeChangedProperty);
+            set => SetValue(InclusionCanBeChangedProperty, value);
         }
 
-        public static readonly DependencyProperty CanBeRemovedFromMainProperty =
-            DependencyProperty.Register("CanBeRemovedFromMain", typeof(bool), typeof(MonitorViewModel),
+        public static readonly DependencyProperty MainAssignmentCanBeChangedProperty =
+            DependencyProperty.Register("MainAssignmentCanBeChanged", typeof(bool), typeof(MonitorViewModel),
                 new PropertyMetadata(true));
 
-        public bool CanBeRemovedFromMain
+        public bool MainAssignmentCanBeChanged
         {
-            get => (bool) GetValue(CanBeRemovedFromMainProperty);
-            set => SetValue(CanBeRemovedFromMainProperty, value);
+            get => (bool) GetValue(MainAssignmentCanBeChangedProperty);
+            set => SetValue(MainAssignmentCanBeChangedProperty, value);
         }
 
-        public static readonly DependencyProperty CanBeRemovedFromUserInterfaceProperty =
-            DependencyProperty.Register("CanBeRemovedFromUserInterface", typeof(bool), typeof(MonitorViewModel),
+        public static readonly DependencyProperty UserInterfaceAssignmentCanBeChangedProperty =
+            DependencyProperty.Register("UserInterfaceAssignmentCanBeChanged", typeof(bool), typeof(MonitorViewModel),
                 new PropertyMetadata(true));
 
-        public bool CanBeRemovedFromUserInterface
+        public bool UserInterfaceAssignmentCanBeChanged
         {
-            get => (bool) GetValue(CanBeRemovedFromUserInterfaceProperty);
-            set => SetValue(CanBeRemovedFromUserInterfaceProperty, value);
+            get => (bool) GetValue(UserInterfaceAssignmentCanBeChangedProperty);
+            set => SetValue(UserInterfaceAssignmentCanBeChangedProperty, value);
         }
 
-        public static readonly DependencyProperty IncludedNarrativeProperty =
-            DependencyProperty.Register("IncludedNarrative", typeof(string), typeof(MonitorViewModel),
+        public static readonly DependencyProperty InclusionNarrativeProperty =
+            DependencyProperty.Register("InclusionNarrative", typeof(string), typeof(MonitorViewModel),
                 new PropertyMetadata(null));
 
-        public string IncludedNarrative
+        public string InclusionNarrative
         {
-            get => (string) GetValue(IncludedNarrativeProperty);
-            set => SetValue(IncludedNarrativeProperty, value);
+            get => (string) GetValue(InclusionNarrativeProperty);
+            set => SetValue(InclusionNarrativeProperty, value);
         }
 
         public static readonly DependencyProperty RectProperty =
             DependencyProperty.Register("Rect", typeof(Rect), typeof(MonitorViewModel), new PropertyMetadata(null));
 
+        /// <summary>
+        /// extent of monitor scaled for presentation in UI
+        /// </summary>
         public Rect Rect
         {
             get => (Rect) GetValue(RectProperty);
             set => SetValue(RectProperty, value);
+        }
+
+        internal void UpdateFromPermissions()
+        {
+            if (!Data.Permissions.HasFlag(ShadowMonitor.PermissionsFlags.CanInclude))
+            {
+                _includedNarrative = "UI Error: this monitor was supposed to be excluded due to monitor layout mode";
+                _excludedNarrative = "This monitor can not be included due to the current monitor layout mode.";
+                InclusionCanBeChanged = false;
+                UserInterfaceAssignmentCanBeChanged = false;
+                MainAssignmentCanBeChanged = false;
+            }
+            else 
+            {
+                UserInterfaceAssignmentCanBeChanged = true;
+                MainAssignmentCanBeChanged = true;
+                if (Data.HasContent)
+                {
+                    _includedNarrative = "This monitor must be included in the area drawn by DCS because there is content on it.";
+                    _excludedNarrative = "UI Error: this monitor was supposed to be included due to content on it";
+                    InclusionCanBeChanged = false;
+                }
+                else if (!Data.Permissions.HasFlag(ShadowMonitor.PermissionsFlags.CanExclude))
+                {
+                    _includedNarrative = Data.Monitor.IsPrimaryDisplay ? 
+                        "This monitor can not be excluded in the current monitor layout mode because it is configured as the primary display." : 
+                        "This monitor can not be excluded due to the current monitor layout mode.";
+                    _excludedNarrative = "UI Error: this monitor was supposed to be included due to monitor layout mode";
+                    InclusionCanBeChanged = false;
+                }
+                else
+                {
+                    _includedNarrative = "This monitor can be removed from the area drawn by DCS because it is empty.";
+                    _excludedNarrative = "This monitor can be added to the area drawn by DCS even though it currently does not contain any content.";
+                    InclusionCanBeChanged = true;
+                }
+            }
+            UpdateInclusionNarrative();
         }
     }
 }

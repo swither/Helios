@@ -20,6 +20,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // WARNING: monitor naming is 1-based but indexing and NewMonitor references are 0-based
             Monitor[] localMonitors = ConfigManager.DisplayManager.Displays.ToArray<Monitor>();
             yield return "acquired displays";
+            foreach (Monitor localMonitor in localMonitors)
+            {
+                Logger.Info("detected display of size {Width} x {Height}", localMonitor.Width, localMonitor.Height);
+            }
 
             // pass1: process all new and/or old monitors in order
             int existingMonitors = Math.Min(localMonitors.Length, profile.Monitors.Count);

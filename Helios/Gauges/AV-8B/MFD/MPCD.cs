@@ -63,7 +63,6 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddRocker("Gain", "MFD Rocker", "V", 6, 854, "Gain");
             AddRocker("Contrast", "MFD Rocker", "V", 857, 854, "Contrast");
 
-            Helios.Controls.Potentiometer _knob = new Helios.Controls.Potentiometer();
             AddPot("Brightness Knob", new Point(420,47), new Size(70,70), "Off/Brightness Control");
         }
         #region Properties
@@ -87,7 +86,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         }
         private void AddPot(string name, Point posn, Size size, string interfaceElementName)
         {
-            Potentiometer _knob = AddPot(
+            Potentiometer knob = AddPot(
                 name: name,
                 posn: posn,
                 size: size,
@@ -102,7 +101,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 interfaceElementName: interfaceElementName,
                 fromCenter: false
                 );
-            _knob.Name = _side + "_" + name;
+            knob.Name = _side + "_" + name;
         }
         private void AddButton(string name, double x, double y, Size size, bool horizontal, string interfaceElementName)
         {
@@ -118,10 +117,10 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 fromCenter: false
                 );
             if (horizontal)
-                {
-                    button.Image = "{AV-8B}/Images/MFD Button 1 UpH.png";
-                    button.PushedImage = "{AV-8B}/Images/MFD Button 1 DnH.png";
-                }
+            {
+                button.Image = "{AV-8B}/Images/MFD Button 1 UpH.png";
+                button.PushedImage = "{AV-8B}/Images/MFD Button 1 DnH.png";
+            }
             button.Name = _side + "_" + name;
         }
 

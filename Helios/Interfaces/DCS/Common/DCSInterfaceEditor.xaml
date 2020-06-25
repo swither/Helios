@@ -78,7 +78,7 @@
                     <heliosSdk:FilePicker
                         FileExtension="lua"
                         FileDescription="Lua module"
-                        Text="{Binding Path=Interface.ExportModuleBaseName, Mode=OneWay, PresentationTraceSources.TraceLevel=High}" 
+                        Text="{Binding Path=Interface.ExportModuleBaseName, Mode=OneWay}" 
                         SelectedFilePath="{Binding Path=Configuration.SelectedModuleFile, Mode=TwoWay}"
                         FolderGuess="{Binding Path=Configuration.ModuleFolderGuess}"/>
                 </WrapPanel>

@@ -55,7 +55,7 @@ namespace GadrocsWorkshop.Helios
                 {
                     Writable = ConfigManager.Application.SettingsAreWritable
                 };
-            ConfigManager.VersionChecker = new VersionChecker();
+            ConfigManager.VersionChecker = new VersionChecker(ConfigManager.SettingsManager, ConfigManager.Application.SettingsAreWritable);
             ConfigManager.UndoManager = new UndoManager();
             ConfigManager.ProfileManager = new ProfileManager();
             ConfigManager.ImageManager = new ImageManager(ConfigManager.ImagePath);
@@ -70,7 +70,7 @@ namespace GadrocsWorkshop.Helios
 
             if (ConfigManager.Application.AllowPlugins)
             {
-                string pluginsFolder = Path.Combine("Plugins");
+                string pluginsFolder = Path.Combine(Path.GetDirectoryName(execAssembly.Location) ?? "", "Plugins");
                 if (Directory.Exists(pluginsFolder))
                 {
                     foreach (string pluginPath in Directory.EnumerateFiles(pluginsFolder, "*.dll", SearchOption.AllDirectories))

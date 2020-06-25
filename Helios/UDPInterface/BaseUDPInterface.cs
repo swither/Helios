@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
@@ -233,16 +234,14 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             {
                 lock(Lock)
                 {
-                    if (_receiveContexts.Count > 0)
-                    {
-                        ReceiveContext context = _receiveContexts.Dequeue();
-                        context.socket = _socket;
-                        return context;
-                    }
-                    else
+                    if (_socket == null || _receiveContexts.Count <= 0)
                     {
                         return null;
                     }
+
+                    ReceiveContext context = _receiveContexts.Dequeue();
+                    context.socket = _socket;
+                    return context;
                 }
             }
 
@@ -367,13 +366,13 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
         }
 
-        private MainThreadAccess _main = new MainThreadAccess();
-        private SharedAccess _shared = new SharedAccess();
+        private readonly MainThreadAccess _main = new MainThreadAccess();
+        private readonly SharedAccess _shared = new SharedAccess();
 
         public BaseUDPInterface(string name)
             : base(name)
         {
-            _socketDataCallback = new AsyncCallback(OnDataReceived);
+            _socketDataCallback = OnDataReceived;
 
             _main.ConnectedTrigger = new HeliosTrigger(this, "", "", "Connected", "Fired on DCS connect.");
             Triggers.Add(_main.ConnectedTrigger);
@@ -479,18 +478,9 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
         }
 
-        /// <summary>
-        /// exclusive ownership of context is transfered to the callee
-        /// </summary>
-        /// <param name="context"></param>
-        private void WaitForData(ReceiveContext context)
+        private void WaitForData(Socket serverSocket)
         {
-            if ((!_shared.Started) || (context.socket == null))
-            {
-                // we are shut down
-                return;
-            }
-
+            ReceiveContext context = _shared.FetchReceiveContext() ?? new ReceiveContext() { socket = serverSocket };
             do
             {
                 Logger.Debug("UDP interface waiting for socket data on {Interface}.", Name);
@@ -502,12 +492,13 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 }
                 catch (SocketException se)
                 {
-                    if (!HandleSocketException(se, out context.socket))
+                    if (HandleSocketException(se, out context.socket))
                     {
-                        Logger.Error("UDP interface unable to recover from socket reset, no longer receiving data. (Interface=\"" + Name + "\")");
-                        break;
+                        // retry forever
+                        continue;
                     }
-                    // else retry forever
+                    Logger.Error("UDP interface unable to recover from socket reset, no longer receiving data. (Interface=\"" + Name + "\")");
+                    break;
                 }
             } while (true);
         }
@@ -518,67 +509,113 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         /// <param name="asyncResult"></param>
         private void OnDataReceived(IAsyncResult asyncResult)
         {
-            if (!_shared.Started)
-            {
-                // ignore, we shut down since requesting receive
-                return;
-            }
-            ReceiveContext context = asyncResult.AsyncState as ReceiveContext;
+            // WARNING: we must not throw out of this frame unless we are prepared to crash silently
             try
             {
-                ReceiveContext.Message message = context.ContinueWrite(0);
-                message.bytesReceived = context.socket.EndReceiveFrom(asyncResult, ref message.fromEndPoint);
-                context.EndWrite();
-            }
-            catch (SocketException se)
-            {
-                // NOTE: EndReceiveFrom isn't retriable, because the receive won't we valid after we reset socket
-                if (!HandleSocketException(se, out context.socket))
+                if (!_shared.Started)
                 {
-                    // no new receive attempt
+                    // ignore, we shut down since requesting receive
+                    Logger.Info("UDP socket closed; stopping receiver");
                     return;
                 }
 
-                // recovered with probably a new socket
-            }
-            // drain the socket, as much as allowed, to share the context switch to main
-            while ((context.socket.Available > 0) && (context.Length < context.Capacity))
-            {
-                ReceiveContext.Message message = context.BeginWrite();
-                message.bytesReceived = 0;
+                ReceiveContext context = asyncResult.AsyncState as ReceiveContext;
                 try
                 {
-                    message.bytesReceived = context.socket.ReceiveFrom(message.data, 0, message.data.Length, SocketFlags.None, ref message.fromEndPoint);
-                    if (message.bytesReceived > 0)
+                    ReceiveContext.Message message = context.ContinueWrite(0);
+                    message.bytesReceived = context.socket.EndReceiveFrom(asyncResult, ref message.fromEndPoint);
+                    if (message.bytesReceived == 0)
                     {
-                        // if we did not receive anything or throw, we use this slot again
-                        context.EndWrite();
+                        // socket has shut down or closed but not deallocated
+                        Logger.Info("UDP socket closing; stopping receiver");
+                        return;
                     }
+
+                    context.EndWrite();
                 }
                 catch (SocketException se)
                 {
-                    if (HandleSocketException(se, out context.socket))
+                    // NOTE: EndReceiveFrom isn't retriable, because the receive won't we valid after we reset socket
+                    if (!HandleSocketException(se, out context.socket))
                     {
-                        // recovered with probably a new socket
-                    } else {
-                        // dead, stop trying to drain
-                        break;
+                        // no new receive attempt
+                        return;
+                    }
+
+                    // recovered with probably a new socket
+                }
+
+                // drain the socket, as much as allowed, to share the context switch to main
+                while ((context.socket.Available > 0) && (context.Length < context.Capacity))
+                {
+                    ReceiveContext.Message message = context.BeginWrite();
+                    message.bytesReceived = 0;
+                    try
+                    {
+                        message.bytesReceived = context.socket.ReceiveFrom(message.data, 0, message.data.Length,
+                            SocketFlags.None, ref message.fromEndPoint);
+                        if (message.bytesReceived > 0)
+                        {
+                            // if we did not receive anything or throw, we use this slot again
+                            context.EndWrite();
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    catch (SocketException se)
+                    {
+                        if (HandleSocketException(se, out context.socket))
+                        {
+                            // recovered with probably a new socket
+                        }
+                        else
+                        {
+                            // dead, stop trying to drain
+                            break;
+                        }
                     }
                 }
-            }
 
-            // it could be empty if all we did this iteration is throw and reset the socket 
-            if (context.Length > 0)
+                // save this, because we are recycling the context
+                Socket contextSocket = context.socket;
+
+                // it could be empty if all we did this iteration is throw and reset the socket 
+                if (context.Length > 0)
+                {
+                    // offload parsing from main thread to socket thread pool, without lock held
+                    ParseReceived(context);
+
+                    // pass ownership to main thread, process synchronously
+                    Dispatcher.Invoke(() => DispatchReceived(context),
+                        System.Windows.Threading.DispatcherPriority.Send);
+                }
+
+                // check if we are still open
+                Socket serverSocket = _shared.ServerSocket;
+                if (serverSocket != contextSocket)
+                {
+                    Logger.Info("UDP socket closed while we were reading and dispatching; stopping receiver");
+                    return;
+                }
+
+                // start next receive
+                WaitForData(serverSocket);
+            }
+            catch (ObjectDisposedException)
             {
-                // offload parsing from main thread to socket thread pool, without lock held
-                ParseReceived(context);
-
-                // pass ownership to main thread, process synchronously
-                Dispatcher.Invoke(() => DispatchReceived(context), System.Windows.Threading.DispatcherPriority.Send);
+                // this can happen because Windows does not support UDP half-close to wake up the
+                // async receiver, so we may actually try to read from the socket after it has been
+                // hard closed
+                Logger.Info("Ignoring UDP receiver failure after closing socket");
             }
-
-            // start next receive
-            WaitForData(_shared.FetchReceiveContext() ?? new ReceiveContext() { socket = _shared.ServerSocket });
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Fatal error in UDP socket listening worker thread; program will exit");
+                ExceptionViewer.DisplayException(ex);
+                throw;
+            }
         }
 
         private static void ParseReceived(ReceiveContext owned)
@@ -693,6 +730,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             if ((SocketError)se.ErrorCode == SocketError.ConnectionReset)
             {
+                Logger.Debug("UDP receiver socket reset");
                 try
                 {
                     CloseSocket();
@@ -707,12 +745,9 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 }
                 return true;
             }
-            else
-            {
-                Logger.Error("UDP interface threw unhandled exception handling socket reset. (Interface=\"" + Name + "\")", se);
-                newSocket = null;
-                return false;
-            }
+            Logger.Error("UDP interface threw unhandled exception handling socket reset. (Interface=\"" + Name + "\")", se);
+            newSocket = null;
+            return false;
         }
 
         public void SendData(string data)
@@ -752,14 +787,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             // because we don't want to be an atypical user of the API
         }
 
-        void Profile_ProfileStopped(object sender, EventArgs e)
-        {
-            CloseSocket();
-            if (_main.StartupTimer != null)
-                _main.StartupTimer.Stop();
-        }
-
-
         // WARNING: called on both Main and Socket threads, depending on where a socket exception occurred
         private Socket OpenSocket()
         {
@@ -771,44 +798,34 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             socket.Bind(bindEndPoint);
             _shared.ServerSocket = socket;
 
+            // activate receiver
+            Logger.Debug("starting UDP receiver for newly opened socket");
+            WaitForData(socket);
+
             // we need to return this to the caller, so they don't rely on _shared.ServerSocket, in case it immediately gets changed by another thread
             return socket;
         }
 
         private void CloseSocket()
         {
-            Socket socket = null;
+            Socket socket;
+            Logger.Debug("removing UDP server socket from service");
             lock (_shared.Lock)
             {
                 socket = _shared.ServerSocket;
                 _shared.ServerSocket = null;
             }
-            // shutdown without holding lock
+            // hard closing socket because shutdown does not wake up async UDP receive on Windows
+            Logger.Debug("closing UDP server socket");
             socket?.Close();
-
-            // hook for descendants
-            OnProfileStopped();
         }
 
         void Profile_ProfileStarted(object sender, EventArgs e)
         {
             Logger.Debug("UDP interface {Interface} starting.", Name);
-            Socket serverSocket = null;
 
             // hook for descendants to initialize for a profile start before we receive traffic
             OnProfileStarted();
-
-            try
-            {
-                _main.Client = new IPEndPoint(IPAddress.Any, 0);
-                _main.ClientID = "";
-                serverSocket = OpenSocket();
-            }
-            catch (System.Net.Sockets.SocketException se)
-            {
-                Logger.Error("UDP interface startup error. (Interface=\"" + Name + "\")");
-                Logger.Error("UDP Socket Exception on Profile Start.  " + se.Message, se);
-            }
 
             // 10 seconds for Delayed Startup
             Timer timer = new Timer(10000);
@@ -820,13 +837,29 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             Logger.Debug("Starting startup timer.");
             timer.Start();
 
-            // we continue to run even if we cannot receive
-            if (serverSocket != null)
+            // now go active
+            try
             {
-                // now go active
-                Logger.Debug("Starting UDP receiver.");
-                WaitForData(new ReceiveContext() { socket = serverSocket });
+                _main.Client = new IPEndPoint(IPAddress.Any, 0);
+                _main.ClientID = "";
+                _ = OpenSocket();
             }
+            catch (System.Net.Sockets.SocketException se)
+            {
+                // NOTE: we continue to run even if we can't open sockets
+                Logger.Error("UDP interface startup error. (Interface=\"" + Name + "\")");
+                Logger.Error("UDP Socket Exception on Profile Start.  " + se.Message, se);
+            }
+        }
+
+        void Profile_ProfileStopped(object sender, EventArgs e)
+        {
+            CloseSocket();
+            if (_main.StartupTimer != null)
+                _main.StartupTimer.Stop();
+
+            // hook for descendants
+            OnProfileStopped();
         }
 
         /// <summary>

@@ -343,11 +343,7 @@ namespace GadrocsWorkshop.Helios
 
         private void OnCollectionChanged()
         {
-            NotifyCollectionChangedEventHandler handler = CollectionChanged;
-            if (handler != null)
-            {
-                handler(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            }
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public void Write(XmlWriter writer)

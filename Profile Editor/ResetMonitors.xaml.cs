@@ -16,34 +16,28 @@
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
-    using System;
     using System.Collections.Generic;
     using System.Windows;
 
     /// <summary>
-    /// Interaction logic for ResetMonitors.xaml
+    /// Reset Monitors dialog shows old and new layout of monitors and controls on them
     /// </summary>
     public partial class ResetMonitors : Window
     {
-        private HeliosProfile _profile;
-        private List<MonitorResetItem> _monitors;
-        private List<String> _newMonitors;
-
         public ResetMonitors(HeliosProfile profile)
         {
-            _profile = profile;
             HeliosProfile newProfile = new HeliosProfile();
 
-            _monitors = new List<MonitorResetItem>(profile.Monitors.Count);
+            MonitorResets = new List<MonitorResetItem>(profile.Monitors.Count);
             for (int i = 0; i < profile.Monitors.Count; i++)
             {
-                _monitors.Add(new MonitorResetItem(profile.Monitors[i], i, i < newProfile.Monitors.Count ? i : 0));
+                MonitorResets.Add(new MonitorResetItem(profile.Monitors[i], i, i < newProfile.Monitors.Count ? i : 0));
             }
 
-            _newMonitors = new List<String>(newProfile.Monitors.Count);
+            NewMonitors = new List<string>(newProfile.Monitors.Count);
             foreach (Monitor monitor in newProfile.Monitors)
             {
-                _newMonitors.Add(monitor.Name);
+                NewMonitors.Add(monitor.Name);
             }
 
             InitializeComponent();
@@ -52,15 +46,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             NewLayout.Profile = newProfile;
         }
 
-        public List<MonitorResetItem> MonitorResets
-        {
-            get { return _monitors; }
-        }
+        public List<MonitorResetItem> MonitorResets { get; }
 
-        public List<String> NewMonitors
-        {
-            get { return _newMonitors; }
-        }
+        public List<string> NewMonitors { get; }
 
         private void Cancel(object sender, RoutedEventArgs e)
         {

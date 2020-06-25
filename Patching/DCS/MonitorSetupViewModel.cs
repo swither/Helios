@@ -47,11 +47,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// <summary>
         /// true if we are done loaded and should process changes
         /// </summary>
-        private bool _loaded;
+        private readonly bool _loaded;
 
         internal MonitorSetupViewModel(MonitorSetup data) : base(data)
         {
-            Scale = ConfigManager.SettingsManager.LoadSetting("DCSMonitorSetupPreferences", "Scale", DEFAULT_SCALE);
+            Scale = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.PREFERENCES_SETTINGS_GROUP, "Scale",
+                DEFAULT_SCALE);
             CombinedMonitorSetup = new CombinedMonitorSetupViewModel(Data);
             Monitors = new ObservableCollection<MonitorViewModel>();
             Viewports = new ObservableCollection<ViewportViewModel>();
@@ -91,7 +92,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return;
             }
 
-            ConfigManager.SettingsManager.SaveSetting("DCSMonitorSetupPreferences", "Scale", model.Scale);
+            ConfigManager.SettingsManager.SaveSetting(MonitorSetup.PREFERENCES_SETTINGS_GROUP, "Scale", model.Scale);
 
             foreach (MonitorViewModel monitor in model._monitors.Values)
             {
@@ -106,14 +107,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             model.UpdateBounds();
         }
 
-        private static void OnSourceOfAdditionalViewportsChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnSourceOfAdditionalViewportsChange(DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
         {
-            MonitorSetupViewModel model = (MonitorSetupViewModel)d;
+            MonitorSetupViewModel model = (MonitorSetupViewModel) d;
             if (!model._loaded)
             {
                 return;
             }
-            model.Data.UsingViewportProvider = ((SourceOfAdditionalViewports)e.NewValue) == SourceOfAdditionalViewports.AdditionalViewportsInterface;
+
+            model.Data.UsingViewportProvider = ((SourceOfAdditionalViewports) e.NewValue) ==
+                                               SourceOfAdditionalViewports.AdditionalViewportsInterface;
             model.Data.InvalidateStatusReport();
         }
 
@@ -222,8 +226,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             ClassifyMonitors(out List<MonitorViewModel> mainMonitors, out List<MonitorViewModel> uiMonitors);
             UpdateBounds();
-            ProtectLastMonitor(mainMonitors, (m, value) => m.CanBeRemovedFromMain = value);
-            ProtectLastMonitor(uiMonitors, (m, value) => m.CanBeRemovedFromUserInterface = value);
+            ProtectLastMonitor(mainMonitors, (m, value) => m.MainAssignmentCanBeChanged = value);
+            ProtectLastMonitor(uiMonitors, (m, value) => m.UserInterfaceAssignmentCanBeChanged = value);
+            UpdateResolutionRectangle();
+        }
+
+        private void UpdateResolutionRectangle()
+        {
+            Rect resolution = Data.Rendered;
+            Data.Renderer.ConvertToDCS(ref resolution);
+            ResolutionRectangle = resolution;
         }
 
         private void ClassifyMonitors(out List<MonitorViewModel> mainMonitors, out List<MonitorViewModel> uiMonitors)
@@ -232,6 +244,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             List<MonitorViewModel> ui = new List<MonitorViewModel>();
             foreach (MonitorViewModel monitor in Monitors)
             {
+                monitor.UpdateFromPermissions();
+
                 if (monitor.Data.Main)
                 {
                     main.Add(monitor);
@@ -240,19 +254,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (monitor.Data.UserInterface)
                 {
                     ui.Add(monitor);
-                }
-
-                // REVISIT: we could have handled this in MonitorViewModel, but we already have to
-                // update the geometry when viewports change
-                if (monitor.HasContent)
-                {
-                    monitor.SetCanExclude(false,
-                        "This monitor must be included in the area drawn by DCS because there is content on it.");
-                }
-                else
-                {
-                    monitor.SetCanExclude(true,
-                        "This monitor can be removed from the area drawn by DCS because it is empty.");
                 }
             }
 
@@ -263,7 +264,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void UpdateBounds()
         {
             Rect totalBounds = new Rect(0, 0, 1, 1);
-            Rect bounds = new Rect(0, 0, 1, 1);
             Rect mainBounds = Rect.Empty;
             Rect uiBounds = Rect.Empty;
 
@@ -285,21 +285,29 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     continue;
                 }
 
-                // this Rect is already translated to DCS coordinates and scaled for screen display
-                bounds.Union(monitor.Rect);
-
                 // convert monitor coordinates to DCS coordinates and always include 0,0 in the union
                 // to calculate the resolution required by DCS
                 Rect rawDcsCoordinates = monitor.RawRect;
                 rawDcsCoordinates.Offset(Data.GlobalOffset);
             }
 
-            ScaledResolutionWidth = bounds.Width;
-            ScaledResolutionHeight = bounds.Height;
+            // update the rectangle showing where the DCS "Resolution" will be mapped
+            Rect rendered = Data.Rendered;
+            rendered.Offset(Data.GlobalOffset);
+            rendered.Scale(Scale, Scale);
+            ScaledRenderedRectangle = rendered;
+
+            // trim display areas to resolution rectangle
+            mainBounds.Intersect(rendered);
+            uiBounds.Intersect(rendered);
+
+            // other UI-scale markers
             ScaledTotalWidth = totalBounds.Width;
             ScaledTotalHeight = totalBounds.Height;
             ScaledMain = mainBounds;
             ScaledUserInterface = uiBounds;
+
+            // reasonable scale for Icons shown inside the screen rectangles
             IconScale = (Scale - 0.02) * 0.3 / 0.02;
         }
 
@@ -521,25 +529,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             DependencyProperty.Register("ScaledTotalHeight", typeof(double), typeof(MonitorSetupViewModel),
                 new PropertyMetadata(1.0));
 
-        public double ScaledResolutionWidth
+        public Rect ScaledRenderedRectangle
         {
-            get => (double) GetValue(ScaledResolutionWidthProperty);
-            set => SetValue(ScaledResolutionWidthProperty, value);
+            get => (Rect) GetValue(ScaledRenderedRectangleProperty);
+            set => SetValue(ScaledRenderedRectangleProperty, value);
         }
 
-        public static readonly DependencyProperty ScaledResolutionWidthProperty =
-            DependencyProperty.Register("ScaledResolutionWidth", typeof(double), typeof(MonitorSetupViewModel),
-                new PropertyMetadata(1.0));
-
-        public double ScaledResolutionHeight
-        {
-            get => (double) GetValue(ScaledResolutionHeightProperty);
-            set => SetValue(ScaledResolutionHeightProperty, value);
-        }
-
-        public static readonly DependencyProperty ScaledResolutionHeightProperty =
-            DependencyProperty.Register("ScaledResolutionHeight", typeof(double), typeof(MonitorSetupViewModel),
-                new PropertyMetadata(1.0));
+        public static readonly DependencyProperty ScaledRenderedRectangleProperty =
+            DependencyProperty.Register("ScaledRenderedRectangle", typeof(Rect), typeof(MonitorSetupViewModel),
+                new PropertyMetadata(null));
 
         public Rect ScaledMain
         {
@@ -594,6 +592,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             DependencyProperty.Register("SourceOfAdditionalViewports", typeof(SourceOfAdditionalViewports),
                 typeof(MonitorSetupViewModel),
                 new PropertyMetadata(default(SourceOfAdditionalViewports), OnSourceOfAdditionalViewportsChange));
+
+        /// <summary>
+        /// The desktop rectangle (in DCS coordinates) that DCS will select for rendering, based on specifying its size as the "Resolution" parameter
+        /// </summary>
+        public Rect ResolutionRectangle
+        {
+            get => (Rect) GetValue(ResolutionRectangleProperty);
+            set => SetValue(ResolutionRectangleProperty, value);
+        }
+
+        public static readonly DependencyProperty ResolutionRectangleProperty = DependencyProperty.Register("ResolutionRectangle",
+            typeof(Rect), typeof(MonitorSetupViewModel), new PropertyMetadata(null));
 
         #endregion
     }

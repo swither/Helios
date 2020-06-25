@@ -33,7 +33,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
     /// </summary>
     public partial class App : Application, ISingleInstanceApp
     {
-        private const string INSTANCE_UNIQUE_NAME = "HeliosApplicationInstanceMutex";
+        private const string InstanceUniqueName = "HeliosApplicationInstanceMutex";
+        private const string DevinstanceUniqueName = "HeliosDevApplicationInstanceMutex";
         private string _startupProfile = null;
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         [System.STAThreadAttribute()]
         public static void Main()
         {
-            if (SingleInstance<App>.InitializeAsFirstInstance(INSTANCE_UNIQUE_NAME))
+            if (SingleInstance<App>.InitializeAsFirstInstance(RunningVersion.IsDevelopmentPrototype?DevinstanceUniqueName:InstanceUniqueName))
             {
                 GadrocsWorkshop.Helios.ControlCenter.App app = new GadrocsWorkshop.Helios.ControlCenter.App();
                 app.InitializeComponent();
@@ -104,7 +105,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
-            CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), args.ToArray(), out int exitCode);
+            // NOTE: first argument is name of executable, as in native applications, when called this way, so we strip it off
+            CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), args.Skip(1).ToArray(), out int exitCode);
             if (options.Exit)
             {
                 ApplicationCommands.Close.Execute(null, Current.MainWindow);

@@ -42,13 +42,34 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
         private int _windowBase;
         private readonly int _windowSize;
 
+        /// <summary>
+        /// backing field for property ClearCommand, contains
+        /// handler for Clear action
+        /// </summary>
+        private ICommand _clearCommand;
+
+        /// <summary>
+        /// backing field for property ShareCommand, contains
+        /// handler for share action
+        /// </summary>
+        private ICommand _shareCommand;
+
+        /// <summary>
+        /// backing field for property BrowseCommand, contains
+        /// handlers for browse current item's link command
+        /// </summary>
+        private ICommand _browseCommand;
+
         public class StatusTemplateSelector : DataTemplateSelector
         {
             public override DataTemplate SelectTemplate(object item, DependencyObject container)
             {
-                StatusViewerItem listItem = item as StatusViewerItem;
-                FrameworkElement element = container as FrameworkElement;
-                if (listItem == null)
+                if (!(container is FrameworkElement element))
+                {
+                    return null;
+                }
+
+                if (!(item is StatusViewerItem listItem))
                 {
                     return null;
                 }
@@ -60,7 +81,18 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                         // these are incorrectly initialized
                         ConfigManager.LogManager.LogError(
                             $"received status report item with invalid severity: {listItem.Data.Severity} '{listItem.Data.Status}'; implementation error");
+                        // render using Error template
                         severity = StatusReportItem.SeverityCode.Error;
+                        break;
+                    case StatusReportItem.SeverityCode.Info:
+                        break;
+                    case StatusReportItem.SeverityCode.Warning:
+                        break;
+                    case StatusReportItem.SeverityCode.Error:
+                        break;
+                    // ReSharper disable once RedundantEmptySwitchSection 
+                    // new cases are explicitly allowed to have resources with matching names
+                    default:
                         break;
                 }
 
@@ -80,11 +112,26 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             StatusViewerLogTarget.Parent = this;
         }
 
-        /// <summary>
-        /// backing field for property ClearCommand, contains
-        /// handler for Clear action
-        /// </summary>
-        private ICommand _clearCommand;
+        private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            StatusViewer viewer = (StatusViewer) d;
+            if (e.NewValue == null)
+            {
+                viewer.IsWebLink = false;
+                return;
+            }
+
+            StatusViewerItem item = (StatusViewerItem) (e.NewValue);
+            viewer.IsWebLink = (item.Data.Link?.Scheme ?? "") == "https";
+        }
+
+        public bool IsWebLink
+        {
+            get => (bool) GetValue(IsWebLinkProperty);
+            set => SetValue(IsWebLinkProperty, value);
+        }
+        public static readonly DependencyProperty IsWebLinkProperty =
+            DependencyProperty.Register("IsWebLink", typeof(bool), typeof(StatusViewer), new PropertyMetadata(false));
 
         /// <summary>
         /// handler for Clear action
@@ -97,12 +144,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                 return _clearCommand;
             }
         }
-
-        /// <summary>
-        /// backing field for property ShareCommand, contains
-        /// handler for share action
-        /// </summary>
-        private ICommand _shareCommand;
 
         /// <summary>
         /// handler for share action
@@ -129,6 +170,31 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                         parameter as IInputElement);
                 });
                 return _shareCommand;
+            }
+        }
+
+        /// <summary>
+        /// handlers for browse current item's link command
+        /// </summary>
+        public ICommand BrowseCommand
+        {
+            get
+            {
+                _browseCommand = _browseCommand ?? new RelayCommand(parameter =>
+                {
+                    if (SelectedItem?.Data.Link == null)
+                    {
+                        return;
+                    }
+
+                    if (SelectedItem.Data.Link.Scheme != "https")
+                    {
+                        return;
+                    }
+
+                    System.Diagnostics.Process.Start(SelectedItem.Data.Link.AbsoluteUri);
+                });
+                return _browseCommand;
             }
         }
 
@@ -302,5 +368,14 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
         public static readonly DependencyProperty ItemsProperty =
             DependencyProperty.Register("observableCollection", typeof(ObservableCollection<StatusViewerItem>),
                 typeof(StatusViewer), new PropertyMetadata(null));
+
+        public StatusViewerItem SelectedItem
+        {
+            get => (StatusViewerItem)GetValue(SelectedItemProperty);
+            set => SetValue(SelectedItemProperty, value);
+        }
+
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem",
+            typeof(StatusViewerItem), typeof(StatusViewer), new PropertyMetadata(null, OnSelectedItemChanged));
     }
 }

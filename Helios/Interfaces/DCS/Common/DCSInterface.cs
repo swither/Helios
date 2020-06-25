@@ -130,11 +130,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 string oldValue = _impersonatedVehicleName;
                 _impersonatedVehicleName = value;
                 OnPropertyChanged(nameof(ImpersonatedVehicleName), oldValue, value, true);
-
-                foreach (IStatusReportObserver observer in _observers)
-                {
-                    InvalidateStatusReport();
-                }
+                InvalidateStatusReport();
             }
         }
 
@@ -309,8 +305,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void AlertMessage_ValueReceived(object sender, NetworkTriggerValue.Value e)
         {
-            string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text));
-            Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
+            try
+            {
+                // payload is Base64 with "+" used as padding instead of "=" to avoid Helios protocol
+                string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text.Replace('+', '=')));
+                Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
+            }
+            catch (FormatException ex)
+            {
+                Logger.Error(ex, "received ALERT message from Export.lua that contained invalid Base64 contents: {Raw}", e.Text);
+            }
         }
 
         public override void Reset()
@@ -328,8 +332,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         protected override void OnProfileStopped()
         {
-            // our base classes aren't very logical, so sometimes we get called OnProfileStopped when the profile is not running
-            // so the _protocol may not be created
             _protocol?.Stop();
             _protocol = null;
         }
@@ -348,7 +350,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected override void OnUnrecognizedFunction(string id, string value)
         {
             // don't log this as warning because our protocol includes times when we 
-            // receive data from the wrong module
+            // receive data from the wrong module and it is correct behavior
             if (IsSynchronized)
             {
                 // we think we are synchronized
@@ -360,11 +362,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// true if the export script is running the module we requested, as far as we know
         /// </summary>
         private bool IsSynchronized => _remoteModuleFormat.HasValue && _remoteModuleFormat == _exportModuleFormat;
-
-        /// <summary>
-        /// true if we have received a remote module format, so we know the other side is capable of this protocol
-        /// </summary>
-        private bool CanSynchronize => _remoteModuleFormat.HasValue;
 
         // WARNING: executed on LoadProfile thread
         public override void ReadXml(XmlReader reader)

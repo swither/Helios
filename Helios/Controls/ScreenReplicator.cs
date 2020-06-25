@@ -35,19 +35,16 @@ namespace GadrocsWorkshop.Helios.Controls
         private int _millisecondsPerReplication = 500;
         private int _lastReplication;
 
-        private HeliosAction _startReplicating;
-        private HeliosAction _stopReplicating;
-
         public ScreenReplicator()
             : base("Screen Shot Extractor", new Size(300, 300))
         {
-            _startReplicating = new HeliosAction(this, "", "", "start replication", "Start replicating the screen.");
-            _startReplicating.Execute += new HeliosActionHandler(StartReplicating_Execute);
-            Actions.Add(_startReplicating);
+            HeliosAction startReplicating = new HeliosAction(this, "", "", "start replication", "Start replicating the screen.");
+            startReplicating.Execute += StartReplicating_Execute;
+            Actions.Add(startReplicating);
 
-            _stopReplicating = new HeliosAction(this, "", "", "stop replication", "Stops replicating the screen.");
-            _stopReplicating.Execute += new HeliosActionHandler(StopReplicating_Execute);
-            Actions.Add(_stopReplicating);
+            HeliosAction stopReplicating = new HeliosAction(this, "", "", "stop replication", "Stops replicating the screen.");
+            stopReplicating.Execute += StopReplicating_Execute;
+            Actions.Add(stopReplicating);
         }
 
         void StartReplicating_Execute(object action, HeliosActionEventArgs e)

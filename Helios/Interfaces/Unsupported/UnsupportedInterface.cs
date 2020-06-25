@@ -31,8 +31,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Unsupported
         typeof(UnsupportedInterfaceFactory))]
     internal class UnsupportedInterface : HeliosInterface, IDynamicBindings, IExtendedDescription, IStatusReportNotify
     {
-        private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
         private XmlDocument _content;
 
         public const string TYPE_IDENTIFIER = "Helios.Base.UnsupportedInterface";

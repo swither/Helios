@@ -1,8 +1,8 @@
 -- Exports.Lua from Helios Mi-8 Simple interface
-function ProcessHighImportance(mainPanelDevice)
+function driver.processHighImportance(mainPanelDevice)
 	-- Send Altimeter Values	
 end
 
-function ProcessLowImportance(mainPanelDevice)
+function driver.processLowImportance(mainPanelDevice)
  
 end

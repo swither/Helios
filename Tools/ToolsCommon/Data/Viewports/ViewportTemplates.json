@@ -455,5 +455,34 @@
         "height": 163
       }
     ]
+  },
+  {
+    "templateName": "AV-8B",
+    "moduleId": "AV8BNA",
+    "isHeliosTemplate": true,
+    "viewports": [
+      {
+        "viewportName": "LEFT_MFCD",
+        "relativeInitFilePath": "Mods/aircraft/AV8BNA/Cockpit/MPCD/indicator/MPCD_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 266,
+        "y": 350,
+        "width": 334,
+        "height": 306
+      },
+      {
+        "viewportName": "RIGHT_MFCD",
+        "relativeInitFilePath": "Mods/aircraft/AV8BNA/Cockpit/MPCD/indicator/MPCD_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 1322,
+        "y": 350,
+        "width": 334,
+        "height": 306
+      }
+    ]
   }
 ]

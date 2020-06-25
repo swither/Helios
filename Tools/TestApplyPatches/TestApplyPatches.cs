@@ -192,7 +192,7 @@ namespace TestApplyPatches
             {
                 if (!applied[i])
                 {
-                    throw new Exception($"failed to apply {patches[i]}: {resultCodes[i].ToString()}");
+                    throw new Exception($"failed to apply {patches[i]}: {resultCodes[i]}");
                 }
 
                 switch (resultCodes[i])
@@ -206,7 +206,7 @@ namespace TestApplyPatches
                         break;
                     default:
                         throw new Exception(
-                            $"patch should not have returned success with result code {resultCodes[i].ToString()}");
+                            $"patch should not have returned success with result code {resultCodes[i]}");
                 }
             }
 

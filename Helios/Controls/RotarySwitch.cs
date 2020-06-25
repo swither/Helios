@@ -51,8 +51,8 @@ namespace GadrocsWorkshop.Helios.Controls
         private Color _labelColor = Colors.White;
         private readonly TextFormat _labelFormat = new TextFormat();
 
-        private HeliosValue _positionValue;
-        private HeliosValue _positionNameValue;
+        private readonly HeliosValue _positionValue;
+        private readonly HeliosValue _positionNameValue;
 
         private bool _isContinuous = false;
 
@@ -331,8 +331,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         void LabelFormat_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            PropertyNotificationEventArgs origArgs = e as PropertyNotificationEventArgs;
-            if (origArgs != null)
+            if (e is PropertyNotificationEventArgs origArgs)
             {
                 OnPropertyChanged("LabelFormat", origArgs);
             }

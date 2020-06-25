@@ -16,31 +16,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
     public class DualRocker : NetworkFunction
     {
-        private string _id;
-        private string _format;
-		private string _arg_name;
+        private readonly string _id;
+        private readonly string _format;
 
-		private string _position1Name;
-        private string _position2Name;
+        private readonly string _pushed1ActionData;
+        private readonly string _pushed2ActionData;
+        private readonly string _release1ActionData;
+        private readonly string _release2ActionData;
 
-        private string _pushed1ActionData;
-        private string _pushed2ActionData;
-        private string _release1ActionData;
-        private string _release2ActionData;
+        private readonly string _position1Value;
+        private readonly string _releaseValue;
+        private readonly string _position2Value;
 
-        private string _position1Value;
-        private string _releaseValue;
-        private string _position2Value;
+        private readonly HeliosTrigger _pushed1Trigger;
+        private readonly HeliosTrigger _pushed2Trigger;
+        private readonly HeliosTrigger _releasedTrigger;
 
-        private HeliosAction _push1Action;
-        private HeliosAction _push2Action;
-        private HeliosAction _releaseAction;
-
-        private HeliosTrigger _pushed1Trigger;
-        private HeliosTrigger _pushed2Trigger;
-        private HeliosTrigger _releasedTrigger;
-
-        private HeliosValue _value, _arg_value;
+        private readonly HeliosValue _value;
+        private readonly HeliosValue _argValue;
 
         private bool _release2 = false;
 
@@ -52,9 +45,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public DualRocker(BaseUDPInterface sourceInterface, string deviceId, string button1Id, string button2Id, string releaseButtonId, string releaseButton2Id, string argId, string device, string name, bool vertical, string push1Value, string push2Value, string releaseValue, string exportFormat)
             : base(sourceInterface)
         {
+            string position2Name;
+            string position1Name;
             _id = argId;
 			
-			_arg_name = "Argument Value of " + name;
+			string argName = "Argument Value of " + name;
 			_format = exportFormat;
 
             _position1Value = push1Value;
@@ -68,44 +63,44 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             if (vertical)
             {
-                _position1Name = "up";
-                _position2Name = "down";
+                position1Name = "up";
+                position2Name = "down";
             }
             else
             {
-                _position1Name = "left";
-                _position2Name = "right";
+                position1Name = "left";
+                position2Name = "right";
             }
 
 
-            _value = new HeliosValue(sourceInterface, new BindingValue(false), device, name, "Current position of this rocker.", "1=" + _position1Name + ", 2=released" + ", 3=" + _position2Name, BindingValueUnits.Numeric);
+            _value = new HeliosValue(sourceInterface, new BindingValue(false), device, name, "Current position of this rocker.", "1=" + position1Name + ", 2=released" + ", 3=" + position2Name, BindingValueUnits.Numeric);
             Values.Add(_value);
             Triggers.Add(_value);
 
-            _pushed1Trigger = new HeliosTrigger(sourceInterface, device, name, "pushed " + _position1Name, "Fired when this rocker is pushed " + _position1Name + " in the simulator.");
+            _pushed1Trigger = new HeliosTrigger(sourceInterface, device, name, "pushed " + position1Name, "Fired when this rocker is pushed " + position1Name + " in the simulator.");
             Triggers.Add(_pushed1Trigger);
-            _pushed2Trigger = new HeliosTrigger(sourceInterface, device, name, "pushed " + _position2Name, "Fired when this rocker is pushed " + _position2Name + " in the simulator.");
+            _pushed2Trigger = new HeliosTrigger(sourceInterface, device, name, "pushed " + position2Name, "Fired when this rocker is pushed " + position2Name + " in the simulator.");
             Triggers.Add(_pushed2Trigger);
 
             _releasedTrigger = new HeliosTrigger(sourceInterface, device, name, "released", "Fired when this rocker is released in the simulator.");
             Triggers.Add(_releasedTrigger);
 
-            _push1Action = new HeliosAction(sourceInterface, device, name, "push " + _position1Name, "Pushes this rocker " + _position1Name + " in the simulator");
-            _push1Action.Execute += new HeliosActionHandler(Push1Action_Execute);
-            Actions.Add(_push1Action);
+            HeliosAction push1Action = new HeliosAction(sourceInterface, device, name, "push " + position1Name, "Pushes this rocker " + position1Name + " in the simulator");
+            push1Action.Execute += new HeliosActionHandler(Push1Action_Execute);
+            Actions.Add(push1Action);
 
-            _push2Action = new HeliosAction(sourceInterface, device, name, "push " + _position2Name, "Pushes this rocker " + _position2Name + " in the simulator");
-            _push2Action.Execute += new HeliosActionHandler(Push2Action_Execute);
-            Actions.Add(_push2Action);
+            HeliosAction push2Action = new HeliosAction(sourceInterface, device, name, "push " + position2Name, "Pushes this rocker " + position2Name + " in the simulator");
+            push2Action.Execute += new HeliosActionHandler(Push2Action_Execute);
+            Actions.Add(push2Action);
 
-            _releaseAction = new HeliosAction(sourceInterface, device, name, "release", "Releases the rocker in the simulator.");
-            _releaseAction.Execute += new HeliosActionHandler(ReleaseAction_Execute);
-            Actions.Add(_releaseAction);
+            HeliosAction releaseAction = new HeliosAction(sourceInterface, device, name, "release", "Releases the rocker in the simulator.");
+            releaseAction.Execute += new HeliosActionHandler(ReleaseAction_Execute);
+            Actions.Add(releaseAction);
 
-			_arg_value = new HeliosValue(sourceInterface, BindingValue.Empty, device, _arg_name, "Argument value in DCS", "argument value", BindingValueUnits.Numeric);
+			_argValue = new HeliosValue(sourceInterface, BindingValue.Empty, device, argName, "Argument value in DCS", "argument value", BindingValueUnits.Numeric);
 
-			Values.Add(_arg_value);
-			Triggers.Add(_arg_value);
+			Values.Add(_argValue);
+			Triggers.Add(_argValue);
 		}
 
         void ReleaseAction_Execute(object action, HeliosActionEventArgs e)
@@ -139,19 +134,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 _value.SetValue(new BindingValue(1), false);
                 _pushed1Trigger.FireTrigger(BindingValue.Empty);
             }
-
             else if (value.Equals(_position2Value))
             {
                 _value.SetValue(new BindingValue(3), false);
-                _pushed1Trigger.FireTrigger(BindingValue.Empty);
+                _pushed2Trigger.FireTrigger(BindingValue.Empty);
             }
-
             else if (value.Equals(_releaseValue))
             {
                 _value.SetValue(new BindingValue(2), false);
                 _releasedTrigger.FireTrigger(BindingValue.Empty);
             }
-			_arg_value.SetValue(new BindingValue(value), false);
+			_argValue.SetValue(new BindingValue(value), false);
 		}
 
         public override ExportDataElement[] GetDataElements()
@@ -162,7 +155,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public override void Reset()
         {
             _value.SetValue(BindingValue.Empty, true);
-			_arg_value.SetValue(BindingValue.Empty, true);
+			_argValue.SetValue(BindingValue.Empty, true);
 		}
 
     }
