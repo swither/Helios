@@ -24,6 +24,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
@@ -115,6 +117,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private string _ipAddress;
 
         /// <summary>
+        /// Local IP address of the current machine
+        /// </summary>
+        private string _localIpAddress;
+
+        /// <summary>
         /// Export.lua update ticks per second
         /// </summary>
         private int _exportFrequency;
@@ -142,6 +149,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         private string _moduleFolderGuess;
 
+        /// <summary>
+        /// Indicates whether this is a remote instance of Helios Control Center
+        /// </summary>
+         private bool _localMachineIsRemoteHelios = false;
+
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public DCSExportConfiguration(DCSInterface parent)
@@ -149,7 +161,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _parent = parent;
 
             // get global configuration parameters that are not serialized to the profile
-            _ipAddress = _parent.LoadSetting("IPAddress", "127.0.0.1");
+            _ipAddress = _parent.LoadSetting("IPAddress", System.Net.IPAddress.Loopback.ToString());
             _exportFrequency = _parent.LoadSetting("ExportFrequency", 15);
             _generateExportLoader = _parent.LoadSetting("GenerateExportLoader", true);
             _exportModuleText = _parent.ExportModuleText;
@@ -337,6 +349,47 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 }
             }
         }
+
+        /// <summary>
+        /// IP address of the current machine.  If it is set to null, then we attempt to set it
+        /// to the first IPv4 address that can be found
+        /// This IP Address is not persisted
+        /// </summary>
+        public string LocalIPAddress
+        {
+            get => _localIpAddress;
+            set
+            {
+                string oldValue = "";
+                if (_localIpAddress == null && value != null
+                    || _localIpAddress != null && !_localIpAddress.Equals(value))
+                {
+                    oldValue = _localIpAddress;
+                    _localIpAddress = value;
+                }
+                else
+                {
+                    // if value is null, then we attempt to find the first interface
+                    // with an IPv4 address for the local machine and use this
+                    var host = Dns.GetHostEntry(Dns.GetHostName());
+                    foreach (var ip in host.AddressList)
+                    {
+                        if (ip.AddressFamily == AddressFamily.InterNetwork) // find an IPv4 address for this machine.  We only pass back the first one.
+                        {
+                            oldValue = _localIpAddress;
+                            _localIpAddress = ip.ToString();
+                            break;
+                        }
+                    }
+                    if (oldValue == "")
+                    {
+                        oldValue = _localIpAddress;
+                        _localIpAddress = System.Net.IPAddress.Loopback.ToString();
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Port number to which Export.lua will send UDP updates
@@ -616,16 +669,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // check IP address to see if the files are are checking are actually used
             if (LocalMachineIsRemoteHelios())
             {
+                LocalIPAddress = null;              // attempt to set IP address of this machine
                 yield return new StatusReportItem
                 {
                     Status =
-                        $"This computer may not be where DCS runs, because Exports are sent here via IP address {IPAddress}",
+                        $"This computer may not be where DCS runs, because Exports are sent here via IP address {LocalIPAddress}",
                     Recommendation =
-                        "Helios cannot check that the export files have been copied to your computer running DCS",
+                        "Helios cannot check that the export files have been correctly copied to the computer running DCS",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
-
             IList<InstallationLocation> installationLocations = InstallationLocations.Singleton.Active;
             if (!installationLocations.Any())
             {
@@ -837,29 +890,29 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             string exportLuaPath = location.ExportStubPath;
             if (!File.Exists(exportLuaPath))
             {
-                return new StatusReportItem
+                return SRICheckRemoteHelios(new StatusReportItem
                 {
                     Status = $"The configured DCS Export.lua stub does not exist at '{exportLuaPath}'",
                     Recommendation =
                         "Configure the DCS interface or configure install location correctly to locate the file",
                     Link = StatusReportItem.ProfileEditor,
                     // survive this
-                    Severity = StatusReportItem.SeverityCode.Error
-                };
+                    Severity = StatusReportItem.SeverityCode.Warning
+                });
             }
 
             // NOTE: we have the entire contents we expect in this file in memory, so there is no point in hashing this
             string contents = ReadFile(exportLuaPath);
             if (!contents.Equals(_exportStub))
             {
-                return new StatusReportItem
+                return SRICheckRemoteHelios(new StatusReportItem
                 {
                     Status = $"The DCS Export.lua stub at '{exportLuaPath}' does not match configuration",
                     Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
                     Link = StatusReportItem.ProfileEditor,
                     // survive this
                     Severity = StatusReportItem.SeverityCode.Warning
-                };
+                });
             }
 
             return new StatusReportItem
@@ -867,6 +920,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 Status = $"The configured DCS Export.lua stub at '{exportLuaPath}' is up to date",
                 Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
+        }
+
+        /// <summary>
+        /// Downgrades severity of a Status Report if the local machine is a remote instance of Helios Control Center
+        /// </summary>
+        /// <returns>StatusReportItem with reduced severity</returns>
+        private StatusReportItem SRICheckRemoteHelios(StatusReportItem statusReportItem)
+        {
+            if (_localMachineIsRemoteHelios)
+            {
+                statusReportItem.Severity = StatusReportItem.SeverityCode.Info;
+                statusReportItem.Recommendation = $"If this is not a remote Helios Control Center instance, then {statusReportItem.Recommendation}";
+            }
+            return statusReportItem;
         }
 
         // NOTE: we don't factor this to share code with the other Check... functions because they are all
@@ -916,27 +983,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             string mainPath = location.ExportMainPath(EXPORT_MAIN_NAME);
             if (!File.Exists(mainPath))
             {
-                return new StatusReportItem
+                return SRICheckRemoteHelios(new StatusReportItem
                 {
                     Status = $"The configured DCS export script does not exist at '{mainPath}'",
                     Recommendation =
                         "Configure the DCS interface or configure install locations correctly to locate the file",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
-                };
+                });
             }
 
             // NOTE: we have the entire contents we expect in this file in memory, so there is no point in hashing this
             string contents = ReadFile(mainPath);
             if (!contents.Equals(_exportMain))
             {
-                return new StatusReportItem
+                return SRICheckRemoteHelios(new StatusReportItem
                 {
                     Status = $"The DCS export script at '{mainPath}' does not match configuration",
                     Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
-                };
+                });
             }
 
             return new StatusReportItem
@@ -967,24 +1034,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             if (_parent.ExportModuleBaseName == null && !moduleInfo.CanGenerate)
             {
                 // no included module and we don't even know its name
-                return new StatusReportItem
+                return SRICheckRemoteHelios(new StatusReportItem
                 {
                     Status = $"The {moduleInfo.DisplayName} is not included in this profile, so Helios cannot check if it is installed.",
                     Recommendation = "Please manually check that the export module was correctly placed",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
-                };
+                });
             }
 
             string exportModulePath = location.ExportModulePath(moduleInfo.ModuleLocation, GenerateModuleBaseName());
             if (!File.Exists(exportModulePath))
             {
-                return new StatusReportItem
+                return SRICheckRemoteHelios(new StatusReportItem
                 {
                     Status = $"The {moduleInfo.DisplayName} does not exist at '{exportModulePath}'",
                     Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
-                };
+                });
             }
 
             // NOTE: we have the entire contents we expect in this file in memory, so there is no point in hashing this
@@ -1016,7 +1083,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         // XXX if address is localhost, false
         // XXX if address is broadcast or multicast, true
         // XXX if address is address of one of our adapters, true
-        private bool LocalMachineIsRemoteHelios() => false;
+        // For now, we make the assumption that if there are no obvious DCS installation locations, then 
+        // we're most likely to be be running a remote version of Helios Control Center.
+        // ToDo: Find a more robust way to determine if the current machine is running a remote Control Center
+
+        private bool LocalMachineIsRemoteHelios()
+        {
+            _localMachineIsRemoteHelios = !InstallationLocations.Singleton.Active.Any();
+            return _localMachineIsRemoteHelios;
+        }
 
         #endregion
     }

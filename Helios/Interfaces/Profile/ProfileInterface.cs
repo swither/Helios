@@ -45,7 +45,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
         private HeliosTrigger _profileStoppedTrigger;
 
         private static Regex _rxDoubleQuotes = new Regex("(?:\\\")([^\"]*)(?:\\\")", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
-        private static Regex _rxExe = new Regex("(" + Environment.GetEnvironmentVariable("PATHEXT").Replace(";", "|").Replace(".", "\\.") + ")", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+        private static string executableExtensions = Environment.GetEnvironmentVariable("PATHEXT") ?? ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;";
+        private static Regex _rxExe = new Regex("(" + executableExtensions.Replace(";", "|").Replace(".", "\\.") + ")", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
 
         public ProfileInterface()
             : base("Profile")
@@ -180,56 +181,63 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
                 matches = _rxDoubleQuotes.Matches(e.Value.StringValue);  // Extract anything which is enclosed in escaped double quotes
                 int blank = e.Value.StringValue.IndexOf(" ");
-                if (matches.Count == 0)
+                try
                 {
-                    //  There is nothing enclosed in double-quotes, so we assume the executable is before the first space and any arguments follow the first space
+                    if (matches.Count == 0)
+                    {
+                        //  There is nothing enclosed in double-quotes, so we assume the executable is before the first space and any arguments follow the first space
 
-                    if (blank > 0)
-                    {
-                        expandedPath = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(0, blank));
-                        expandedArgs = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(blank + 1));
-                    }
-                    else
-                    {
-                        expandedPath = Environment.ExpandEnvironmentVariables(e.Value.StringValue);
-                        expandedArgs = "";
-                    }
-                }
-                else
-                {
-                    int matchCursor = 0;
-                    foreach (Match matchItem in matches)
-                    {
-                        if (matchItem.Equals(matches[0]))
+                        if (blank > 0)
                         {
-                            if (matchItem.Index == 0)
-                            {
-                                expandedPath = Environment.ExpandEnvironmentVariables(matchItem.Groups[1].ToString());
-                                matchCursor = matchItem.Length;
-                            }
-                            else
-                            {
-                                expandedPath = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(0, blank));
-                                expandedArgs = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(blank, matchItem.Index - blank));
-                                expandedArgs += " " + Environment.ExpandEnvironmentVariables(matchItem.ToString());
-                                matchCursor = matchItem.Index + matchItem.Length;
-                            }
+                            expandedPath = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(0, blank));
+                            expandedArgs = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(blank + 1));
                         }
                         else
                         {
-                            if (matchItem.Index == matchCursor)
+                            expandedPath = Environment.ExpandEnvironmentVariables(e.Value.StringValue);
+                            expandedArgs = "";
+                        }
+                    }
+                    else
+                    {
+                        int matchCursor = 0;
+                        foreach (Match matchItem in matches)
+                        {
+                            if (matchItem.Equals(matches[0]))
                             {
-                                expandedArgs += " " + Environment.ExpandEnvironmentVariables(matchItem.ToString());
+                                if (matchItem.Index == 0)
+                                {
+                                    expandedPath = Environment.ExpandEnvironmentVariables(matchItem.Groups[1].ToString());
+                                    matchCursor = matchItem.Length;
+                                }
+                                else
+                                {
+                                    expandedPath = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(0, blank));
+                                    expandedArgs = Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(blank, matchItem.Index - blank));
+                                    expandedArgs += " " + Environment.ExpandEnvironmentVariables(matchItem.ToString());
+                                    matchCursor = matchItem.Index + matchItem.Length;
+                                }
                             }
                             else
                             {
-                                expandedArgs += Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(matchCursor, matchItem.Index - matchCursor));
-                                matchCursor = matchItem.Index + matchItem.Length;
-                                expandedArgs += " " + Environment.ExpandEnvironmentVariables(matchItem.ToString());
+                                if (matchItem.Index == matchCursor)
+                                {
+                                    expandedArgs += " " + Environment.ExpandEnvironmentVariables(matchItem.ToString());
+                                }
+                                else
+                                {
+                                    expandedArgs += Environment.ExpandEnvironmentVariables(e.Value.StringValue.Substring(matchCursor, matchItem.Index - matchCursor));
+                                    matchCursor = matchItem.Index + matchItem.Length;
+                                    expandedArgs += " " + Environment.ExpandEnvironmentVariables(matchItem.ToString());
+                                }
                             }
+                            Logger.Debug("Double Quoted item found {ItemText}", matchItem);
                         }
-                        Logger.Debug("Double Quoted item found {ItemText}", matchItem.ToString());
                     }
+                }
+                catch (ArgumentNullException ex)
+                {
+                    Logger.Error(ex, "Error caught preparing to identify launch program or arguments for an external application (path={ExpandedPath})", expandedPath);
                 }
             }
             try
@@ -252,7 +260,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             }
             catch (Exception ex)
             {
-                Logger.Error(ex,"Error caught launching external application (path={ExpandedPath})", expandedPath);
+                // this is written as info because it is very likely to be a user error and we do not want to see problem reports from this.
+                Logger.Info(ex,"Error caught launching external application (path={ExpandedPath}).  This is very likely to be due to a missing program, missing file, or incorrect permissions on what has been specified on the lauinch action.", expandedPath);
             }
         }
 
@@ -260,8 +269,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
         {
             try
             {
-                Process[] _localProcessesByName = Process.GetProcessesByName(e.Value.StringValue);
-                foreach (Process proc in _localProcessesByName)
+                Process[] localProcessesByName = Process.GetProcessesByName(e.Value.StringValue);
+                foreach (Process proc in localProcessesByName)
                 {
                     Logger.Info("Killing process image name {ProcessImageName}", e.Value.StringValue);
                     proc.Kill();
@@ -388,38 +397,41 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
         {
             foreach(HeliosBinding binding in OutputBindings)
             {
-                if(binding.Action.ActionID == "launch application")
+                switch (binding.Action.ActionID)
                 {
-                    if (binding.ValueSource == BindingValueSources.StaticValue && ValidateExecPath(binding.Value))
-                    {
+                    case "launch application":
+                        if (binding.ValueSource == BindingValueSources.StaticValue && ValidateExecPath(binding.Value))
+                        {
+                            newReport.Add(new StatusReportItem
+                            {
+                                Status = $"Item or application found (or cannot be checked) and is probably viable: '{binding.OutputDescription}'",
+                                Recommendation = "No action necessary.",
+                                Severity = StatusReportItem.SeverityCode.Info,
+                                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                            });
+                        }
+                        else
+                        {
+                            newReport.Add(new StatusReportItem
+                            {
+                                Status = $"Argument Error - Item or application not found on this machine or contains incorrect symbols and is not launchable from '{binding.OutputDescription}'",
+                                Recommendation = "Install missing application, local file then reload profile.",
+                                Severity = StatusReportItem.SeverityCode.Error,
+                                Flags = StatusReportItem.StatusFlags.Verbose
+                            });
+                        }
+                        break;
+                    case "kill application":
                         newReport.Add(new StatusReportItem
                         {
-                            Status = $"Item or application found (or cannot be checked) and is probably viable: '{binding.OutputDescription}'",
-                            Recommendation = "No action necessary.",
+                            Status = $"A kill action is contained in this profile for process image name '{binding.Value}'",
+                            Recommendation = "Ensure that the process being killed is expected and acceptable.",
                             Severity = StatusReportItem.SeverityCode.Info,
                             Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
                         });
-                    }
-                    else
-                    {
-                        newReport.Add(new StatusReportItem
-                        {
-                            Status = $"Item or application not found on this machine and may not be launchable from '{binding.OutputDescription}'",
-                            Recommendation = "Install missing application or local file then reload profile.",
-                            Severity = StatusReportItem.SeverityCode.Warning,
-                            Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
-                        });
-
-                    }
-                } else if(binding.Action.ActionID == "kill application")
-                {
-                    newReport.Add(new StatusReportItem
-                    {
-                        Status = $"A kill action is contained in this profile for process image name '{binding.Value}'",
-                        Recommendation = "Ensure that the process being killed is expected and acceptable.",
-                        Severity = StatusReportItem.SeverityCode.Info,
-                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
-                    });
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -462,98 +474,72 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
             MatchCollection matches;
 
-            matches = _rxDoubleQuotes.Matches(proposedPath);                                         // Extract anything which is enclosed in escaped double quotes
+            matches = _rxDoubleQuotes.Matches(proposedPath);                            // Extract anything which is enclosed in escaped double quotes
             int blankPosition = proposedPath.IndexOf(" ");                              // For uncomplicated launches, if there is a blank, it will denote the start of the argument(s) 
             if (matches.Count == 0 & blankPosition <= 0)
             {
                 // nothing enclosed in escaped double quotes
-                //
-                // parse assuming not a URI
-                try
-                {
-                    proposedPath = Path.GetFullPath(proposedPath);
-                }
-                catch (ArgumentException ex)
-                {
-                    Logger.Debug(ex, "GetFullPath Parsing for {ProposedPath} threw exception" , proposedPath);
-                    return false;
-                }
-                catch (NotSupportedException ex)
-                {
-                    // If we have a URI and attempt to get the full path, then this is probably what caused us to be here
-                    Logger.Debug(ex, "GetFullPath Parsing for {ProposedPath} threw exception", proposedPath);
-                }
-                try
-                {
-                    Uri uriCheck = new Uri(proposedPath);
-                    if (uriCheck.IsFile) return File.Exists(proposedPath) ? true : false;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Debug(ex, "URI Parsing for {ProposedPath} threw exception", proposedPath);
-                    return false;
-                }
-            } else if (matches.Count == 0)
+                return ExtractPathCheck(proposedPath);
+            }
+            else if (matches.Count == 0)
             {
                 //  There is nothing enclosed in double-quotes, so we assume the file to check is before the first blank
-                //
-                //  parse assuming not URI
-                try
-                {
-                    proposedPath = Path.GetFullPath(proposedPath.Substring(0, blankPosition));
-                }
-                catch (ArgumentException ex)
-                {
-                    Logger.Debug(ex, "GetFullPath Parsing for {ProposedPath} threw exception", proposedPath.Substring(0, blankPosition));
-                    return false;
-                }
-                catch (NotSupportedException ex)
-                {
-                    // If we have a URI and attempt to get the full path, then this is probably what caused us to be here
-                    Logger.Debug(ex, "GetFullPath Parsing for {ProposedPath} threw exception", proposedPath.Substring(0, blankPosition));
-                }
-                try
-                {
-                    Uri uriCheck = new Uri(Path.GetFullPath(proposedPath));
-                    if (uriCheck.IsFile) return File.Exists(proposedPath) ? true : false;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Debug(ex, "URI Parsing for {ProposedPath} threw exception", proposedPath);
-                    return false;
-                }
+                return ExtractPathCheck(proposedPath.Substring(0, blankPosition));
             }
             else
             {
                 // There is text enclosed in escaped double quotes and there are blank characters
-                //
-                // parse assuming not URI
-                try
+                return ExtractPathCheck(matches[0].Groups[1].ToString());
+            }
+        }
+
+        private static bool ExtractURICheck(string proposedPath)
+        {
+            try
+            {
+                Uri uriCheck = new Uri(proposedPath);
+                switch (uriCheck.Scheme)
                 {
-                    proposedPath = Path.GetFullPath(matches[0].Groups[1].ToString());
-                }
-                catch (ArgumentException ex)
-                {
-                    Logger.Debug(ex, "GetFullPath Parsing for {ParsedText} threw exception " , matches[0].Groups[1].ToString());
-                    return false;
-                }
-                catch(NotSupportedException ex)
-                {
-                    // If we have a URI and attempt to get the full path, then this is probably what caused us to be here
-                    Logger.Debug(ex, "GetFullPath Parsing for {ParsedText} threw exception", matches[0].Groups[1].ToString());
-                }
-                try
-                {
-                    Uri uriCheck = new Uri(proposedPath);
-                    if (uriCheck.IsFile) return File.Exists(proposedPath) ? true : false;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Debug(ex, "URI Parsing for {ParsedText} threw exception", matches[0].Groups[1].ToString());
-                    return false;
+                    case "file":
+                        if (uriCheck.IsFile) return File.Exists(proposedPath);
+                        break;
+                    case "http":
+                    case "https":
+                        return true;
+                        break;
+                    default:
+                        return true;
+                        break;
                 }
             }
+            catch (Exception ex)
+            {
+                Logger.Debug(ex, "URI Parsing for {ProposedPath} threw exception", proposedPath);
+                return false;
+            }
             return true;
+        }
+
+        private static bool ExtractPathCheck(string proposedPath)
+        {
+            // parse assuming not a URI
+            try
+            {
+                proposedPath = Path.GetFullPath(proposedPath);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Debug(ex, "GetFullPath Parsing for {ProposedPath} threw exception", proposedPath);
+                return false;
+            }
+            catch (NotSupportedException ex)
+            {
+                // If we have a URI and attempt to get the full path, then this is probably what caused us to be here
+                // this is not necessarily a problem so we do not fail and carry on to do URI checks
+                Logger.Debug(ex, "GetFullPath Parsing for {ProposedPath} threw exception", proposedPath);
+            }
+            // Possibly a URI
+            return ExtractURICheck(proposedPath);
         }
     }
 }
