@@ -140,6 +140,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("DED", "DED Line 4", "Data entry display line 4", "", BindingValueUnits.Text);
             AddValue("DED", "DED Line 5", "Data entry display line 5", "", BindingValueUnits.Text);
 
+            AddValue("Ownship", "latitude", "Ownship latitude in degrees (as known by avionics)","", BindingValueUnits.Degrees);
+            AddValue("Ownship", "longitude", "Ownship longitude in degrees (as known by avionics)","", BindingValueUnits.Degrees);
+            AddValue("Ownship", "x", "Ownship North (Ft)","", BindingValueUnits.Feet);
+            AddValue("Ownship", "y", "Ownship East (Ft)", "", BindingValueUnits.Feet);
+            
 
         }
 
@@ -216,6 +221,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("DED", "DED Line 3", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*2, 26)));
                 SetValue("DED", "DED Line 4", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*3, 26)));
                 SetValue("DED", "DED Line 5", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*4, 26)));
+
+                //Ownship
+                SetValue("Ownship", "x", new BindingValue(_lastFlightData.x));
+                SetValue("Ownship", "y", new BindingValue(_lastFlightData.y));
+                SetValue("Ownship", "longitude", new BindingValue(_lastFlightData2.longitude));
+                SetValue("Ownship", "latitude", new BindingValue(_lastFlightData2.latitude));
 
             }
             if(_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
