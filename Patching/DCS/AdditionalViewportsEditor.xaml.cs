@@ -38,12 +38,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             InitializeComponent();
 
             // load patches for all destinations
-            Dictionary<string, PatchDestinationViewModel> destinations =
-                new Dictionary<string, PatchDestinationViewModel>();
+            Dictionary<string, PatchApplication> destinations =
+                new Dictionary<string, PatchApplication>();
             InstallationLocations locations = InstallationLocations.Singleton;
             foreach (InstallationLocation location in locations.Items)
             {
-                destinations[location.Path] = new PatchDestinationViewModel(location, AdditionalViewports.PATCH_SET);
+                destinations[location.Path] = AdditionalViewports.CreatePatchDestination(location);
             }
 
             Patching = new PatchingConfiguration(destinations, AdditionalViewports.PATCH_SET,
@@ -75,9 +75,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void OnAdded(object sender, InstallationLocations.LocationEvent e)
         {
-            PatchDestinationViewModel destinationPatches =
-                new PatchDestinationViewModel(e.Location, AdditionalViewports.PATCH_SET);
-            Patching?.OnAdded(e.Location.Path, destinationPatches);
+            Patching?.OnAdded(e.Location.Path, AdditionalViewports.CreatePatchDestination(e.Location));
         }
 
         /// <summary>

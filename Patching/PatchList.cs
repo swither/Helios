@@ -25,29 +25,29 @@ namespace GadrocsWorkshop.Helios.Patching
     {
         private readonly List<PatchFile> _patches = new List<PatchFile>();
 
-        public static PatchList LoadPatches(IPatchDestination destination, string patchSet)
+        // target paths in this patch list
+        private readonly HashSet<string> _existing = new HashSet<string>();
+
+        public void Merge(PatchList from)
         {
-            // load user-provided patches from documents folder
-            string userPatchesPath = Path.Combine(ConfigManager.DocumentPath, "Patches", "DCS");
-            string selectedVersion = null;
-            PatchList patches = destination.SelectPatches(userPatchesPath, patchSet, ref selectedVersion);
+            from._patches.ForEach(patch =>
+            {
+                if (_existing.Contains(patch.TargetPath))
+                {
+                    // don't replace existing patches
+                    return;
+                }
 
-            // load pre-installed patches from Helios installation folder
-            string installedPatchesPath = Path.Combine(ConfigManager.ApplicationPath, "Plugins", "Patches", "DCS");
-            PatchList patches2 = destination.SelectPatches(installedPatchesPath, patchSet, ref selectedVersion);
-
-            // index patches by target path
-            HashSet<string> existing = new HashSet<string>(patches._patches.Select(p => p.TargetPath));
-
-            // merge those preinstalled patches that are not replaced by a file for the same target path
-            patches._patches.AddRange(patches2._patches.Where(p => !existing.Contains(p.TargetPath)));
-            return patches;
+                // merge patch for new target
+                _existing.Add(patch.TargetPath);
+                _patches.Add(patch);
+            });
         }
 
         public IEnumerable<StatusReportItem> SimulateApply(IPatchDestination destination) =>
-            DoApply(destination, Mode.Simulate);
+            DoApply(destination, null, Mode.Simulate);
 
-        public IEnumerable<StatusReportItem> Apply(IPatchDestination destination) => DoApply(destination, Mode.Apply);
+        public IEnumerable<StatusReportItem> Apply(IPatchDestinationWritable destination) => DoApply(destination, destination, Mode.Apply);
 
         public IEnumerable<StatusReportItem> Verify(IPatchDestination destination)
         {
@@ -107,7 +107,7 @@ namespace GadrocsWorkshop.Helios.Patching
             Apply
         }
 
-        private IEnumerable<StatusReportItem> DoApply(IPatchDestination destination, Mode mode)
+        private IEnumerable<StatusReportItem> DoApply(IPatchDestination destination, IPatchDestinationWritable writable, Mode mode)
         {
             // set up according to mode
             string verb;
@@ -179,7 +179,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     continue;
                 }
 
-                if (!destination.TrySaveOriginal(patch.TargetPath))
+                if (!writable.TrySaveOriginal(patch.TargetPath))
                 {
                     // abort
                     yield return new StatusReportItem
@@ -194,7 +194,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     yield break;
                 }
 
-                if (!WriteBack(destination, patch, patched, verbing, out StatusReportItem status))
+                if (!WriteBack(writable, patch, patched, verbing, out StatusReportItem status))
                 {
                     // abort
                     yield return status;
@@ -217,7 +217,24 @@ namespace GadrocsWorkshop.Helios.Patching
             }
         }
 
-        public IEnumerable<StatusReportItem> Revert(IPatchDestination destination)
+        public static PatchList Load( string fromFolder)
+        {
+            PatchList patches = new PatchList();
+            foreach (string patchPath in Directory.EnumerateFiles(fromFolder, "*.gpatch",
+                SearchOption.AllDirectories))
+            {
+                PatchFile patch = new PatchFile
+                {
+                    TargetPath = patchPath.Substring(fromFolder.Length + 1,
+                        patchPath.Length - (fromFolder.Length + 8))
+                };
+                patch.Load(patchPath);
+                patches.Add(patch);
+            }
+            return patches;
+        }
+
+        public IEnumerable<StatusReportItem> Revert(IPatchDestinationWritable destination)
         {
             if (!destination.TryLock())
             {
@@ -294,7 +311,7 @@ namespace GadrocsWorkshop.Helios.Patching
             }
         }
 
-        private static bool WriteBack(IPatchDestination destination, PatchFile patch, string patched, string verbing,
+        private static bool WriteBack(IPatchDestinationWritable destination, PatchFile patch, string patched, string verbing,
             out StatusReportItem status)
         {
             if (destination.TryWritePatched(patch.TargetPath, patched))

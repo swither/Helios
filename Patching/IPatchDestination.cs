@@ -14,22 +14,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System.Collections;
+using System.Collections.Generic;
+
 namespace GadrocsWorkshop.Helios.Patching
 {
     public interface IPatchDestination
     {
         /// <summary>
-        /// a description that allows a human to identify this patch destination
-        /// </summary>
-        string Description { get; }
-
-        /// <summary>
-        /// a longer description for debugging purposes, including file paths
-        /// </summary>
-        string LongDescription { get; }
-
-        /// <summary>
-        /// tries to acquire a lock on the patch destination preventing other write operations
+        /// tries to acquire a lock on the patch destination preventing write operations
         /// </summary>
         /// <returns></returns>
         bool TryLock();
@@ -41,6 +34,16 @@ namespace GadrocsWorkshop.Helios.Patching
         bool TryUnlock();
 
         /// <summary>
+        /// a description that allows a human to identify this patch destination
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
+        /// a longer description for debugging purposes, including file paths
+        /// </summary>
+        string LongDescription { get; }
+
+        /// <summary>
         /// tries to read the full text of the target file
         /// </summary>
         /// <param name="targetPath"></param>
@@ -48,6 +51,43 @@ namespace GadrocsWorkshop.Helios.Patching
         /// <returns>true if the contents were read successfully</returns>
         bool TryGetSource(string targetPath, out string source);
 
+        /// <summary>
+        /// finds all applicable patches from a specfic patches folder
+        /// </summary>
+        /// <param name="patchesRoot">the root folder for Patches</param>
+        /// <param name="selectedVersion">
+        /// returns the selected version, if any.  If set to non-null before calling this method, only that
+        /// version will be considered.
+        /// </param>
+        /// <param name="patchSet">the patch set, such as 'Viewports'</param>
+        /// <returns>a patchlist that may be empty if no matches were found</returns>
+        PatchList SelectPatches(string patchesRoot, ref string selectedVersion, string patchSet);
+
+        /// <summary>
+        /// using an elevated process or whatever other mechanism is required to get a writable destination
+        /// interface, apply patch set created by merging the patches from all the folders in the order given, with earlier
+        /// roots having priority for patch content for the same target path
+        /// </summary>
+        /// <param name="patchesRoots"></param>
+        /// <param name="selectedVersion"></param>
+        /// <param name="patchSet"></param>
+        /// <returns>result report from the operation</returns>
+        IList<StatusReportItem> RemoteApply(string[] patchesRoots, string selectedVersion, string patchSet);
+
+        /// <summary>
+        /// using an elevated process or whatever other mechanism is required to get a writable destination
+        /// interface, revert patch set created by merging the patches from all the folders in the order given, with earlier
+        /// roots having priority for patch content for the same target path
+        /// </summary>
+        /// <param name="patchesRoots"></param>
+        /// <param name="selectedVersion"></param>
+        /// <param name="patchSet"></param>
+        /// <returns>result report from the operation</returns>
+        IList<StatusReportItem> RemoteRevert(string[] patchesRoots, string selectedVersion, string patchSet);
+    }
+
+    public interface IPatchDestinationWritable : IPatchDestination
+    {
         /// <summary>
         /// tries to save the current version of the file as an archived original for this version
         /// </summary>
@@ -69,17 +109,5 @@ namespace GadrocsWorkshop.Helios.Patching
         /// <param name="targetPath"></param>
         /// <returns>true if the file was restored</returns>
         bool TryRestoreOriginal(string targetPath);
-
-        /// <summary>
-        /// finds all applicable patches from a specfic patches folder
-        /// </summary>
-        /// <param name="patchesPath">the root folder for Patches</param>
-        /// <param name="patchSet">the patch set, such as 'Viewports'</param>
-        /// <param name="selectedVersion">
-        /// returns the selected version, if any.  If set before calling this method, only that
-        /// version will be considered.
-        /// </param>
-        /// <returns>a patchlist that may be empty if no matches were found</returns>
-        PatchList SelectPatches(string patchesPath, string patchSet, ref string selectedVersion);
     }
 }

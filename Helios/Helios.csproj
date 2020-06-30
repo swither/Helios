@@ -85,6 +85,9 @@
     <Compile Include="Interfaces\DCS\Generic\GenericInterfaceEditor.xaml.cs">
       <DependentUpon>GenericInterfaceEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Util\CommandLineOptions.cs" />
+    <Compile Include="Util\ElevatedProcess.cs" />
+    <Compile Include="Util\ElevatedProcessResponsePipe.cs" />
     <Compile Include="Windows\Controls\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -570,7 +573,7 @@
     <Compile Include="Gauges\FA-18C\UFC\UFC.cs" />
     <Compile Include="Gauges\FA-18C\IFEI\IFEI.cs" />
     <Compile Include="Gauges\FA-18C\VVI\VVI.cs" />
-    <Compile Include="Util\CommandLineOptions.cs" />
+    <Compile Include="Util\CommonCommandLineOptions.cs" />
     <Compile Include="Util\DCS\MockInstallationLocations.cs" />
     <Compile Include="Util\EnumBooleanConverter.cs" />
     <Compile Include="Util\XamlFirewall.cs" />

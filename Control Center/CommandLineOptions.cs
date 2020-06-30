@@ -18,7 +18,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
     using CommandLine;
     using System.Collections.Generic;
 
-    class CommandLineOptions : Util.CommandLineOptions
+    class CommandLineOptions : Util.CommonCommandLineOptions
     {
         [Option('x', "exit", HelpText = "Kill a running Control Center")]
         public bool Exit { get; set; } = false;

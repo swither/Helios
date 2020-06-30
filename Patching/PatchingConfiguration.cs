@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using GadrocsWorkshop.Helios.Util;
 
@@ -24,11 +25,11 @@ namespace GadrocsWorkshop.Helios.Patching
     // REVISIT: reimplement as a HeliosViewModel and a DCSConfiguration
     public class PatchingConfiguration : DependencyObject, IInstallation
     {
-        private readonly Dictionary<string, PatchDestinationViewModel> _destinations;
+        private readonly Dictionary<string, PatchApplication> _destinations;
         private string _patchSet;
         private readonly string _patchSetDescription;
 
-        public PatchingConfiguration(Dictionary<string, PatchDestinationViewModel> destinations, string patchSet,
+        public PatchingConfiguration(Dictionary<string, PatchApplication> destinations, string patchSet,
             string patchSetDescription)
         {
             _destinations = destinations;
@@ -36,7 +37,7 @@ namespace GadrocsWorkshop.Helios.Patching
             _patchSetDescription = patchSetDescription;
 
             // check if all selected patches are installed
-            foreach (PatchDestinationViewModel status in _destinations.Values)
+            foreach (PatchApplication status in _destinations.Values)
             {
                 status.CheckApplied();
             }
@@ -47,7 +48,7 @@ namespace GadrocsWorkshop.Helios.Patching
 
         public void OnEnabled(string key)
         {
-            PatchDestinationViewModel destinationPatches = _destinations[key];
+            PatchApplication destinationPatches = _destinations[key];
             destinationPatches.Enabled = true;
             destinationPatches.CheckApplied();
             UpdateStatus();
@@ -65,7 +66,7 @@ namespace GadrocsWorkshop.Helios.Patching
             UpdateStatus();
         }
 
-        public void OnAdded(string key, PatchDestinationViewModel destinationPatches)
+        public void OnAdded(string key, PatchApplication destinationPatches)
         {
             destinationPatches.CheckApplied();
             _destinations[key] = destinationPatches;
@@ -75,12 +76,12 @@ namespace GadrocsWorkshop.Helios.Patching
         private void UpdateStatus()
         {
             StatusCodes newStatus = StatusCodes.UpToDate;
-            if (_destinations.Count < 1)
+            if (!_destinations.Values.Any(d => d.Enabled))
             {
                 newStatus = StatusCodes.NoLocations;
             }
 
-            foreach (PatchDestinationViewModel status in _destinations.Values)
+            foreach (PatchApplication status in _destinations.Values)
             {
                 if (!status.Enabled)
                 {
@@ -124,7 +125,7 @@ namespace GadrocsWorkshop.Helios.Patching
             string message = "";
 
             // simulate patches and collect any errors
-            foreach (PatchDestinationViewModel item in _destinations.Values)
+            foreach (PatchApplication item in _destinations.Values)
             {
                 if (!item.Enabled)
                 {
@@ -174,41 +175,48 @@ namespace GadrocsWorkshop.Helios.Patching
                 }
             }
 
+
             // apply patches
-            foreach (PatchDestinationViewModel item in _destinations.Values)
+            foreach (PatchApplication item in _destinations.Values)
             {
                 if (!item.Enabled)
                 {
                     continue;
                 }
 
-                StatusCodes newStatus = StatusCodes.UpToDate;
-                foreach (StatusReportItem result in item.Patches.Apply(item.Destination))
+                // apply patches directly or via elevated process, as appropriate
+                IList<StatusReportItem> applyResults = item.UseRemote ? item.RemoteApply() : item.Apply();
+                foreach (StatusReportItem result in applyResults)
                 {
                     result.Log(ConfigManager.LogManager);
                     results.Add(result);
-                    if (result.Severity >= StatusReportItem.SeverityCode.Error)
+                    if (result.Severity < StatusReportItem.SeverityCode.Error)
                     {
-                        if (!failed)
-                        {
-                            // keep first message
-                            message = $"{result.Status}\n{result.Recommendation}";
-                        }
-
-                        failed = true;
-                        newStatus = StatusCodes.Incompatible;
+                        continue;
                     }
-                }
 
-                item.Status = newStatus;
+                    if (!failed)
+                    {
+                        // keep first message
+                        message = $"Patching {item.Destination.Description} failed\n{result.Status}\n{result.Recommendation}";
+                    }
+                    failed = true;
+                }
             }
 
-            // XXX need to revert any patches that were installed, if we can, and add to result report
             UpdateStatus();
             if (failed)
             {
+                // XXX need to revert any patches that were installed, if we can, and add to result report
                 callbacks.Failure($"{_patchSetDescription} installation failed", message, results);
                 return InstallationResult.Fatal;
+            }
+
+            if (Status != StatusCodes.UpToDate)
+            {
+                // installation completed, but not everything was done
+                callbacks.Failure($"{_patchSetDescription} installation incomplete", "Not all patches were installed", results);
+                return InstallationResult.Canceled;
             }
 
             callbacks.Success($"{_patchSetDescription} installation success", "All patches installed successfully",
@@ -220,50 +228,65 @@ namespace GadrocsWorkshop.Helios.Patching
         public InstallationResult Uninstall(IInstallationCallbacks callbacks)
         {
             List<StatusReportItem> results = new List<StatusReportItem>();
+            bool failed = false;
+            string message = "";
 
             // revert patches, by either restoring original file or reverse patching
-            foreach (PatchDestinationViewModel item in _destinations.Values)
+            foreach (PatchApplication item in _destinations.Values)
             {
-                bool failed = false;
-                string message = "";
                 if (!item.Enabled)
                 {
                     continue;
                 }
 
-                StatusCodes newStatus = StatusCodes.OutOfDate;
-                foreach (StatusReportItem result in item.Patches.Revert(item.Destination))
+                // revert directly or via elevated process, as appropriate
+                IList<StatusReportItem> revertResults = item.UseRemote ? item.RemoteRevert() : item.Revert();
+                foreach (StatusReportItem result in revertResults)
                 {
                     result.Log(ConfigManager.LogManager);
                     results.Add(result);
-                    if (result.Severity >= StatusReportItem.SeverityCode.Error)
+                    if (result.Severity < StatusReportItem.SeverityCode.Error)
                     {
-                        if (!failed)
-                        {
-                            // keep first message
-                            message = $"{result.Status}\n{result.Recommendation}";
-                        }
-
-                        failed = true;
-                        newStatus = StatusCodes.Incompatible;
+                        continue;
                     }
+
+                    if (!failed)
+                    {
+                        // keep first message
+                        message = $"Reverting patches in {item.Destination.Description} failed\n{result.Status}\n{result.Recommendation}";
+                    }
+                    failed = true;
                 }
 
-                item.Status = newStatus;
-                if (!failed)
+                // ReSharper disable once InvertIf early exit on error condition should have a block
+                if (failed)
                 {
-                    continue;
+                    // give up and just direct the user to fix one installation this time, meaning they may have to do this multiple times
+                    message +=
+                        $"\nPlease execute 'bin\\dcs_updater.exe repair' in your {item.Destination.LongDescription} to restore to original files";
+                    break;
                 }
-
-                message +=
-                    $"\nPlease execute 'bin\\dcs_updater.exe repair' in your {item.Destination.LongDescription} to restore to original files";
-                callbacks.Failure($"{_patchSetDescription} revert failed", message, results);
-                return InstallationResult.Fatal;
             }
 
             UpdateStatus();
 
-            callbacks.Success($"{_patchSetDescription} installation success", "All patches reverted successfully",
+            if (failed)
+            {
+                callbacks.Failure($"{_patchSetDescription} revert failed", message, results);
+                return InstallationResult.Fatal;
+            }
+
+            // special check that is not handled by UpdateStatus, because we are technically in a state that just means
+            // we have to reinstall some patches, but this still means something went wrong in reverting patches, such as
+            // user cancellation
+            if (_destinations.Values.Any(d => d.Status != StatusCodes.OutOfDate))
+            {
+                // revert completed, but not everything was done
+                callbacks.Failure($"{_patchSetDescription} removal incomplete", "Some patches were not reverted", results);
+                return InstallationResult.Canceled;
+            }
+
+            callbacks.Success($"{_patchSetDescription} removal success", "All patches reverted successfully",
                 results);
             return InstallationResult.Success;
         }

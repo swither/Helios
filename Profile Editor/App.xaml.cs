@@ -51,7 +51,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             base.OnStartup(e);
             Current.Dispatcher.UnhandledException += App_DispatcherUnhandledException;
 
-            CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
+            CommandLineOptions options = Util.CommonCommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
 
             // react to options or defaults
             if (options.Profiles.Any())

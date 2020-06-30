@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using NLog;
 
@@ -187,5 +188,11 @@ namespace GadrocsWorkshop.Helios
         }
 
         public static string CreateTimeStamp(DateTime dateTime) => dateTime.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
+
+        // utility to encapsulate this as a status report when it is the only item in the report
+        public IList<StatusReportItem> AsReport()
+        {
+            return new List<StatusReportItem> { this };
+        }
     }
 }

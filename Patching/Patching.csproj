@@ -59,7 +59,7 @@
     <Compile Include="DCS\ShadowMonitor.cs" />
     <Compile Include="DCS\ShadowVisual.cs" />
     <Compile Include="DCS\ViewportViewModel.cs" />
-    <Compile Include="PatchDestinationViewModel.cs" />
+    <Compile Include="PatchApplication.cs" />
     <Compile Include="PatchingConfiguration.cs" />
     <Compile Include="IPatchDestination.cs" />
     <Compile Include="PatchFile.cs" />

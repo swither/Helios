@@ -56,6 +56,9 @@ namespace GadrocsWorkshop.Helios.Util.DCS
                 "a file path we retrieved from open file dialog should not have a null directory");
             string variantFile = System.IO.Path.Combine(Path, "dcs_variant.txt");
 
+            // check if we can write a file here
+            Writable = TestWrite();
+
             // default saved games name
             SavedGamesName = "DCS";
             if (!File.Exists(variantFile))
@@ -81,6 +84,23 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             }
 
             SavedGamesName = $"DCS.{variant}";
+        }
+
+        private bool TestWrite()
+        {
+            try
+            {
+                string tempFileName = System.IO.Path.Combine(Path, System.IO.Path.GetRandomFileName());
+                using (FileStream fs = File.Create(tempFileName, 1, FileOptions.DeleteOnClose))
+                {
+                    _ = fs;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void NotifyChangeEnabled()
@@ -145,6 +165,8 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         public static readonly DependencyProperty IsEnabledProperty =
             DependencyProperty.Register("IsEnabled", typeof(bool), typeof(InstallationLocation),
                 new PropertyMetadata(true, OnChangeEnabled));
+
+        public bool Writable { get; }
 
         #endregion
 

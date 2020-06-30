@@ -44,6 +44,22 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
         }
 
+        /// <summary>
+        /// set up the application of patches to a specific location in DCS-specific way
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        internal static PatchApplication CreatePatchDestination(InstallationLocation location) =>
+            new PatchApplication(
+                new PatchDestination(location),
+                location.IsEnabled,
+                !location.Writable,
+                PATCH_SET,
+                // load user-provided patches from documents folder
+                System.IO.Path.Combine(ConfigManager.DocumentPath, "Patches", "DCS"),
+                // then load pre-installed patches from Helios installation folder
+                System.IO.Path.Combine(ConfigManager.ApplicationPath, "Plugins", "Patches", "DCS"));
+
         protected override void AttachToProfileOnMainThread()
         {
             base.AttachToProfileOnMainThread();
@@ -108,24 +124,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             // check if all our patches are installed
-            foreach (IPatchDestination destination in locations
-                .Select(location => new PatchDestination(location) as IPatchDestination))
+            foreach (PatchApplication item in locations
+                .Select(CreatePatchDestination))
             {
-                PatchList patches = PatchList.LoadPatches(destination, "Viewports");
-                if (patches.IsEmpty())
+                if (item.SelectedVersion == null)
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"No Viewport patches compatible with {destination.Description} found in installation",
+                        Status = $"No Viewport patches compatible with {item.Destination.Description} found",
                         Recommendation =
                             "Please reinstall Helios to install these patches or provide them in documents folder",
                         Severity = StatusReportItem.SeverityCode.Error
                     };
                 }
 
-                IEnumerable<StatusReportItem> results = patches.Verify(destination);
-                foreach (StatusReportItem result in results)
+                foreach (StatusReportItem result in item.Patches.Verify(item.Destination))
                 {
+                    // return detailed results instead of just "up to date or not"
                     yield return result;
                 }
             }

@@ -15,14 +15,19 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    public class PatchDestination : IPatchDestination
+    [DebuggerDisplay("DCS in {" + nameof(_dcsRoot) + "}")]
+    public class PatchDestination : IPatchDestinationWritable
     {
         private readonly string _dcsRoot;
         private static readonly Encoding Utf8WithoutBom = new UTF8Encoding(false);
@@ -109,17 +114,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private string BackupPath(string targetPath) => $"{targetPath}.{Version}";
 
-        public PatchList SelectPatches(string patchesPath, string patchSet, ref string selectedVersion)
+        public PatchList SelectPatches(string patchesRoot, ref string selectedVersion, string patchSet)
         {
-            PatchList patches = new PatchList();
-            if (!Directory.Exists(patchesPath))
+            if (!Directory.Exists(patchesRoot))
             {
-                return patches;
+                return new PatchList();
             }
 
             string candidateVersion = "";
             string candidatePatchSetPath = "";
-            foreach (string versionPath in Directory.EnumerateDirectories(patchesPath, "???_???_?????_*",
+            foreach (string versionPath in Directory.EnumerateDirectories(patchesRoot, "???_???_?????_*",
                 SearchOption.TopDirectoryOnly))
             {
                 string directoryVersion = Path.GetFileName(versionPath);
@@ -137,20 +141,20 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     continue;
                 }
 
-                if (string.Compare(directoryVersion, candidateVersion, StringComparison.InvariantCulture) > 0)
+                if (string.Compare(directoryVersion, candidateVersion, StringComparison.InvariantCulture) <= 0)
                 {
-                    if (selectedVersion != null)
-                    {
-                        // we already committed to a particular patch version
-                        if (selectedVersion != directoryVersion)
-                        {
-                            continue;
-                        }
-                    }
-
-                    candidateVersion = directoryVersion;
-                    candidatePatchSetPath = patchSetPath;
+                    // we already have a better match
+                    continue;
                 }
+
+                if (selectedVersion != null && selectedVersion != directoryVersion)
+                {
+                    // we already committed to a particular patch version and it is not this one
+                    continue;
+                }
+
+                candidateVersion = directoryVersion;
+                candidatePatchSetPath = patchSetPath;
             }
 
             if (candidatePatchSetPath == "")
@@ -158,34 +162,54 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (selectedVersion != null)
                 {
                     ConfigManager.LogManager.LogInfo(
-                        $"no additional {patchSet} patches for DCS {DisplayVersion} from {Anonymizer.Anonymize(patchesPath)} based on selected patch version {selectedVersion}");
+                        $"no additional {patchSet} patches for DCS {DisplayVersion} from {Anonymizer.Anonymize(patchesRoot)} based on selected patch version {selectedVersion}");
                 }
                 else
                 {
                     ConfigManager.LogManager.LogInfo(
-                        $"current version of DCS {DisplayVersion} is not supported by any installed {patchSet} patch set from {Anonymizer.Anonymize(patchesPath)}");
+                        $"current version of DCS {DisplayVersion} is not supported by any installed {patchSet} patch set from {Anonymizer.Anonymize(patchesRoot)}");
                 }
 
-                return patches;
+                return new PatchList();
             }
 
             ConfigManager.LogManager.LogInfo(
-                $"loading {patchSet} patches for DCS {DisplayVersion} from {Anonymizer.Anonymize(patchesPath)} using version {candidateVersion} of the patches");
-
-            foreach (string patchPath in Directory.EnumerateFiles(candidatePatchSetPath, "*.gpatch",
-                SearchOption.AllDirectories))
-            {
-                PatchFile patch = new PatchFile
-                {
-                    TargetPath = patchPath.Substring(candidatePatchSetPath.Length + 1,
-                        patchPath.Length - (candidatePatchSetPath.Length + 8))
-                };
-                patch.Load(patchPath);
-                patches.Add(patch);
-            }
+                $"loading {patchSet} patches for DCS {DisplayVersion} from {Anonymizer.Anonymize(patchesRoot)} using version {candidateVersion} of the patches");
 
             selectedVersion = candidateVersion;
-            return patches;
+            return PatchList.Load(candidatePatchSetPath);
+        }
+
+        private IList<StatusReportItem> ExecuteRemote(string[] patchesRoots, string selectedVersion, string patchSet, string command)
+        {
+            IEnumerable<string> args = new[] { "-d", $"\"{_dcsRoot}\"", command }
+                .Concat(patchesRoots.Select(root => $"\"{Path.Combine(root, selectedVersion, patchSet)}\""));
+            string myDirectory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location)).FullName;
+            string executablePath = Path.Combine(myDirectory ?? "", "HeliosPatching.exe");
+            using (ElevatedProcess elevated = new ElevatedProcess(executablePath, args))
+            {
+                if (!elevated.TryExecute())
+                {
+                    return new StatusReportItem
+                    {
+                        Status =
+                            $"Running the HeliosPatching.exe utility as administrator either failed or was canceled by the user.  No changes will be written to {LongDescription}",
+                        Severity = StatusReportItem.SeverityCode.Warning
+                        // NOTE: configuration out of date indicates that this can be corrected by trying again
+                    }.AsReport();
+                }
+                return elevated.ReadResults();
+            }
+        }
+
+        public IList<StatusReportItem> RemoteApply(string[] patchesRoots, string selectedVersion, string patchSet)
+        {
+            return ExecuteRemote(patchesRoots, selectedVersion, patchSet, "apply");
+        }
+
+        public IList<StatusReportItem> RemoteRevert(string[] patchesRoots, string selectedVersion, string patchSet)
+        {
+            return ExecuteRemote(patchesRoots, selectedVersion, patchSet, "revert");
         }
     }
 }

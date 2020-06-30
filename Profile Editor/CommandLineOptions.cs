@@ -18,7 +18,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using CommandLine;
     using System.Collections.Generic;
 
-    class CommandLineOptions : Util.CommandLineOptions
+    class CommandLineOptions : Util.CommonCommandLineOptions
     {
         [Value(0, MetaName = "[Profile]", HelpText = "Startup profile name")]
         public IEnumerable<string> Profiles

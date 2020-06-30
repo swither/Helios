@@ -1,5 +1,4 @@
-﻿// Copyright 2014 Craig Courtney
-// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,6 +12,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 using System.Collections.Generic;
 using System.Windows;
@@ -22,22 +22,10 @@ using CommandLine.Text;
 namespace GadrocsWorkshop.Helios.Util
 {
     /// <summary>
-    /// command line options common to Helios programs
+    /// helper to work around issues with CommandLine package in a graphical application
     /// </summary>
     public class CommandLineOptions
     {
-        [Option('l', "loglevel", Required = false, Default = LogLevel.Info,
-            HelpText = "Set log level [Debug, Info, Warning, Error].")]
-        public LogLevel LogLevel { get; set; } = LogLevel.Info;
-
-        [Option('d', "documents", Required = false, Default = "Helios",
-            HelpText = "Set the Documents folder name to use.")]
-        public string DocumentPath { get; set; } = "Helios";
-
-        [Option('e', "devdocuments", Required = false, Default = "HeliosDev",
-            HelpText = "Set the Documents folder name to use for a Development Prototype build.")]
-        public string DevDocumentPath { get; set; } = "HeliosDev";
-
         public static T Parse<T>(T defaults, string[] args, out int exitCode) where T : CommandLineOptions
         {
             T options = defaults;

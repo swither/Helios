@@ -71,7 +71,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             base.OnStartup(e);
             Current.Dispatcher.UnhandledException += App_DispatcherUnhandledException;
 
-            CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
+            CommandLineOptions options = Util.CommonCommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
 
             // react to options or defaults
             if (options.Profiles != null && options.Profiles.Any())
@@ -106,7 +106,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
             // NOTE: first argument is name of executable, as in native applications, when called this way, so we strip it off
-            CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), args.Skip(1).ToArray(), out int exitCode);
+            CommandLineOptions options = Util.CommonCommandLineOptions.Parse(new CommandLineOptions(), args.Skip(1).ToArray(), out int exitCode);
             if (options.Exit)
             {
                 ApplicationCommands.Close.Execute(null, Current.MainWindow);
