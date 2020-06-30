@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Diagnostics;
-using NLog;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -32,11 +31,13 @@ namespace GadrocsWorkshop.Helios
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static void Initialize(string docPath, string logFileName, LogLevel logLevel, HeliosApplication application = null)
+        /// <summary>
+        /// initialize only the document path and logging functionality, so that Helios classes that log can be used, without starting Helios
+        /// </summary>
+        /// <param name="docPath"></param>
+        /// <param name="logLevel"></param>
+        public static void InitializeLogging(string docPath, LogLevel logLevel)
         {
-            // check OS and build
-            CheckPlatform();
-
             // Create documents directory if it does not exist
             ConfigManager.DocumentPath = docPath;
 
@@ -45,7 +46,27 @@ namespace GadrocsWorkshop.Helios
 
             // create this legacy interface for other DLLs that don't have access to NLog
             ConfigManager.LogManager = new LogManager(logLevel);
+        }
 
+        /// <summary>
+        /// Start Helios global objects in ConfigManager
+        /// </summary>
+        /// <param name="docPath"></param>
+        /// <param name="logFileNameIgnored">is ignored in this implementation, as log name is from the process name of the running process</param>
+        /// <param name="logLevel"></param>
+        /// <param name="application"></param>
+        public static void Initialize(string docPath, string logFileNameIgnored, LogLevel logLevel, HeliosApplication application = null)
+        {
+            // check OS and build
+            CheckPlatform();
+
+            // initialize logging and documents folder
+            InitializeLogging(docPath, logLevel);
+
+            // previous versions of Helios got their log file name from here, now it is based on the process name of the running process
+            _ = logFileNameIgnored;
+
+            // initialize the rest of Helios
             Assembly execAssembly = Assembly.GetExecutingAssembly();
             Logger.Info("Helios Version " + execAssembly.GetName().Version);
 
@@ -111,7 +132,7 @@ namespace GadrocsWorkshop.Helios
         private static void InitializeNLog(LogLevel logLevel)
         {
             // tell NLog config where to log
-            GlobalDiagnosticsContext.Set("documentsPath", ConfigManager.DocumentPath);
+            NLog.GlobalDiagnosticsContext.Set("documentsPath", ConfigManager.DocumentPath);
 
             // tell NLog config the log level
             NLog.LogLevel nlogLevel;
@@ -137,7 +158,7 @@ namespace GadrocsWorkshop.Helios
                     break;
             }
 
-            GlobalDiagnosticsContext.Set("logLevel", nlogLevel.ToString());
+            NLog.GlobalDiagnosticsContext.Set("logLevel", nlogLevel.ToString());
 
             // now that we are configured, we can log this
             if (badLogLevel)

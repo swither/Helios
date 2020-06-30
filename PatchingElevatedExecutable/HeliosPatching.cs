@@ -28,23 +28,29 @@ namespace HeliosVirtualCockpit.Helios.HeliosPatching
                 Console.Error.WriteLine("Do not execute this program.  It is a system process used by Helios Profile Editor.");
                 return;
             }
-            if (args.Length < 5)
-            {
-                throw new Exception("must have at least the following arguments: -o PIPENAME -d DCSROOT COMMAND");
-            }
-
-            if (args[0] != "-o")
-            {
-                throw new Exception("must have the following arguments: -o PIPENAME -d DCSROOT COMMAND");
-            }
-
-            if (args[2] != "-d")
-            {
-                throw new Exception("must have the following arguments: -o PIPENAME -d DCSROOT COMMAND");
-            }
-
+            // start only enough of Helios to support logging
+            string documentPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                RunningVersion.IsDevelopmentPrototype ? "HeliosDev" : "Helios");
+            HeliosInit.InitializeLogging(documentPath, LogLevel.Info);
+            ConfigManager.DocumentPath = documentPath;
             try
             {
+                if (args.Length < 5)
+                {
+                    throw new Exception("must have at least the following arguments: -o PIPENAME -d DCSROOT COMMAND");
+                }
+
+                if (args[0] != "-o")
+                {
+                    throw new Exception("must have the following arguments: -o PIPENAME -d DCSROOT COMMAND");
+                }
+
+                if (args[2] != "-d")
+                {
+                    throw new Exception("must have the following arguments: -o PIPENAME -d DCSROOT COMMAND");
+                }
+
                 string pipeName = args[1];
                 string dcsRoot = args[3];
                 string verb = args[4];
@@ -73,10 +79,13 @@ namespace HeliosVirtualCockpit.Helios.HeliosPatching
             }
             catch (Exception ex)
             {
+                ConfigManager.LogManager.LogError("fatal error while performing patch operations as administrator", ex);
 #if DEBUG
+                // during debugging, we may be running as a console application, so print to console and wait
                 Console.WriteLine(ex);
                 Console.WriteLine(ex.StackTrace);
-                new ManualResetEvent(false).WaitOne();
+
+                new ManualResetEvent(false).WaitOne(TimeSpan.FromSeconds(30));
 #else
                 _ = ex;
 #endif

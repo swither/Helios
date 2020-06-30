@@ -93,10 +93,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return false;
             }
 
-            using (StreamWriter streamWriter = new StreamWriter(path, false, Utf8WithoutBom))
+            try
             {
-                streamWriter.Write(patched);
-                return true;
+                using (StreamWriter streamWriter = new StreamWriter(path, false, Utf8WithoutBom))
+                {
+                    streamWriter.Write(patched);
+                    return true;
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                ConfigManager.LogManager.LogError($"permission denied trying to write patched file: '{path}'", ex);
+                return false;
             }
         }
 
@@ -108,8 +116,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return false;
             }
 
-            File.Copy(backupAbsolute, LocateFile(targetPath), true);
-            return true;
+            string path = LocateFile(targetPath);
+            try
+            {
+                File.Copy(backupAbsolute, path, true);
+                return true;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                ConfigManager.LogManager.LogError($"permission denied trying to write reverted file: '{path}'", ex);
+                return false;
+            }
         }
 
         private string BackupPath(string targetPath) => $"{targetPath}.{Version}";

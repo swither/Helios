@@ -220,6 +220,10 @@ namespace GadrocsWorkshop.Helios.Patching
         public static PatchList Load( string fromFolder)
         {
             PatchList patches = new PatchList();
+            if (!Directory.Exists(fromFolder))
+            {
+                return patches;
+            }
             foreach (string patchPath in Directory.EnumerateFiles(fromFolder, "*.gpatch",
                 SearchOption.AllDirectories))
             {

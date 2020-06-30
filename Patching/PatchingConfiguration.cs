@@ -279,7 +279,7 @@ namespace GadrocsWorkshop.Helios.Patching
             // special check that is not handled by UpdateStatus, because we are technically in a state that just means
             // we have to reinstall some patches, but this still means something went wrong in reverting patches, such as
             // user cancellation
-            if (_destinations.Values.Any(d => d.Status != StatusCodes.OutOfDate))
+            if (_destinations.Values.Any(d => d.Enabled && d.Status != StatusCodes.OutOfDate))
             {
                 // revert completed, but not everything was done
                 callbacks.Failure($"{_patchSetDescription} removal incomplete", "Some patches were not reverted", results);
