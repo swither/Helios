@@ -140,8 +140,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("DED", "DED Line 4", "Data entry display line 4", "", BindingValueUnits.Text);
             AddValue("DED", "DED Line 5", "Data entry display line 5", "", BindingValueUnits.Text);
 
-            AddValue("Ownship", "latitude", "Ownship latitude in degrees (as known by avionics)","", BindingValueUnits.Degrees);
-            AddValue("Ownship", "longitude", "Ownship longitude in degrees (as known by avionics)","", BindingValueUnits.Degrees);
+            AddValue("Ownship", "latitude", "Ownship latitude", "in degrees (as known by avionics)", BindingValueUnits.Degrees);
+            AddValue("Ownship", "longitude", "Ownship longitude", "in degrees (as known by avionics)", BindingValueUnits.Degrees);
             AddValue("Ownship", "x", "Ownship North (Ft)","", BindingValueUnits.Feet);
             AddValue("Ownship", "y", "Ownship East (Ft)", "", BindingValueUnits.Feet);
             
