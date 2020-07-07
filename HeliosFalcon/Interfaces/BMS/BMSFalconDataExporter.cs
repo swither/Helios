@@ -144,7 +144,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Ownship", "longitude", "Ownship longitude", "in degrees (as known by avionics)", BindingValueUnits.Degrees);
             AddValue("Ownship", "x", "Ownship North (Ft)","", BindingValueUnits.Feet);
             AddValue("Ownship", "y", "Ownship East (Ft)", "", BindingValueUnits.Feet);
-            
+            AddValue("Ownship", "ground speed", "Ownship ground speed", "in feet per second", BindingValueUnits.FeetPerSecond);
 
         }
 
@@ -271,6 +271,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessLightBits2(_lastFlightData.lightBits2, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits3(_lastFlightData.lightBits3);
             }
+        internal float GroundSpeedInFeetPerSecond(float xDot, float yDot)
+        {
+            const float FPS_PER_KNOT = 1.68780986f;
+            return (float)Math.Sqrt((xDot * xDot) + (yDot * yDot)) / FPS_PER_KNOT;
         }
 
         internal string DecodeUserInterfaceText(byte[] buffer,int offset,int length)
