@@ -1,22 +1,3 @@
-local function UFCSendData(UFCcode, UFCvalue)
-    -- This is a 16 segment display so we need to map numerals to a single charcter in the Hornet UFC.ttf font
-    -- the dash has already been catered for and the alphabetic characters should map without change
-    -- Also need to special case 12 because sending ascii 172 is problematic in the Helios code
-    local UFCnum = tonumber(UFCvalue)
-    if UFCnum ~= nil then
-        if UFCnum >= 0 and UFCnum <= 20 then
-            if UFCnum == 12 then
-                UFCvalue = string.char(125)
-            else
-                UFCvalue = string.char(161 + UFCnum)
-            end
-        -- else
-        -- Number Out of Bounds  Error
-        end
-    end
-    helios.send(UFCcode, string.format("%1s", UFCvalue))
-end
-
 function driver.processHighImportance(mainPanelDevice)
     -- Send Altimeter Values
     helios.send(
@@ -119,29 +100,11 @@ function driver.processHighImportance(mainPanelDevice)
         helios.send("2089", string.format("%1s", helios.ensureString(li.UFC_OptionCueing3)):gsub(":", string.char(200))) -- 16 Segment two-dot colon in Hornet_UFC_Unified.ttf
         helios.send("2090", string.format("%1s", helios.ensureString(li.UFC_OptionCueing4)):gsub(":", string.char(200))) -- 16 Segment two-dot colon in Hornet_UFC_Unified.ttf
         helios.send("2091", string.format("%1s", helios.ensureString(li.UFC_OptionCueing5)):gsub(":", string.char(200))) -- 16 Segment two-dot colon in Hornet_UFC_Unified.ttf
-        UFCSendData(
-            "2092",
-            string.format("%2s", helios.ensureString(li.UFC_ScratchPadString1Display)):gsub("_", string.char(201)):gsub(
-                "`",
-                "1"
-            ):gsub("~", "2"):gsub(" ", "")
-        )
-        UFCSendData(
-            "2093",
-            string.format("%2s", helios.ensureString(li.UFC_ScratchPadString2Display)):gsub("_", string.char(201)):gsub(
-                "`",
-                "1"
-            ):gsub("~", "2"):gsub(" ", "")
-        )
-        helios.send("2094", string.format("%7s", helios.ensureString(li.UFC_ScratchPadNumberDisplay)):gsub(" ", "<"))
-        UFCSendData(
-            "2095",
-            string.format("%2s", helios.ensureString(li.UFC_Comm1Display)):gsub("`", "1"):gsub("~", "2"):gsub(" ", "")
-        )
-        UFCSendData(
-            "2096",
-            string.format("%2s", helios.ensureString(li.UFC_Comm2Display)):gsub("`", "1"):gsub("~", "2"):gsub(" ", "")
-        )
+        helios.send("2092", string.format("%2s", helios.ensureString(li.UFC_ScratchPadString1Display))) -- 16 Segment
+        helios.send("2093", string.format("%2s", helios.ensureString(li.UFC_ScratchPadString2Display))) -- 16 Segment
+        helios.send("2094", string.format("%7s", helios.ensureString(li.UFC_ScratchPadNumberDisplay)))  -- 7 Segment numbers
+		helios.send("2095", string.format("%2s", helios.ensureString(li.UFC_Comm1Display)))				-- 16 Segment
+        helios.send("2096", string.format("%2s", helios.ensureString(li.UFC_Comm2Display)))				-- 16 Segment
     end
 end
 
