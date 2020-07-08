@@ -276,16 +276,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             }
         }
 
-        private void ProcessMiscBits(MiscBits miscBits, float rALT)
+         private void ProcessMiscBits(MiscBits miscBits, float rALT)
         {
-            if(miscBits.HasFlag(MiscBits.RALT_Valid))
+            var rAltString = "";
+            if (miscBits.HasFlag(MiscBits.RALT_Valid))
             {
-                SetValue("Altimeter", "radar alt", new BindingValue((int)rALT));
+                rAltString = String.Format("{0:0}", RoundToNearestTen((int)Math.Abs(rALT)));
+                
             }
-            else
-            {
-                SetValue("Altimeter", "radar alt", new BindingValue((int)99999.99f));
-            }
+            SetValue("Altimeter", "radar alt", new BindingValue(rAltString));
+        }
+
+        private object RoundToNearestTen(int num)
+        {
+            int rem = num % 10;
+            return rem >= 5 ? (num - rem + 10) : (num - rem);
         }
 
         internal float GroundSpeedInFeetPerSecond(float xDot, float yDot)
