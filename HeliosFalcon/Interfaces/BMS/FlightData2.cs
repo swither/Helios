@@ -121,7 +121,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         INSTR_LIGHT_BRT = 2,
     };
 
-    [Serializable]
+    [Flags]
+    enum MiscBits : uint
+	{
+		RALT_Valid = 0x1    // indicates weather the RALT reading is valid/reliable
+	};
+
+[Serializable]
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     struct FlightData2
     {
@@ -225,7 +231,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
         // VERSION 15
         public uint bettyBits;      // see BettyBits enum for details
-        public uint miscBits;        // see MiscBits enum for details
+        public MiscBits miscBits;        // see MiscBits enum for details
         public float RALT;                  // radar altitude (only valid/ reliable if MiscBit "RALT_Valid" is set)
         public float bingoFuel;             // bingo fuel level
         public float caraAlow;              // cara alow setting
