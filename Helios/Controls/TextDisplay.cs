@@ -243,8 +243,22 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             set
             {
+                if (_textFormat == value)
+                {
+                    return;
+                }
                 TextFormat oldValue = _textFormat;
+                if (oldValue != null)
+                {
+                    oldValue.PropertyChanged -= TextFormat_PropertyChanged;
+                }
                 _textFormat = value;
+                if (_textFormat != null)
+                {
+                    // NOTE: we indirectly set ConfiguredFontSize by changing text format object
+                    _referenceHeight = Height;
+                    _textFormat.PropertyChanged += TextFormat_PropertyChanged;
+                }
                 OnPropertyChanged("TextFormat", oldValue, value, true);
                 Refresh();
             }
