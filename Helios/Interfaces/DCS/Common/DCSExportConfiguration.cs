@@ -702,8 +702,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             _exportMain = Resources
                 .ReadResourceFile($"pack://application:,,,/Helios;component/Interfaces/DCS/Common/{EXPORT_MAIN_NAME}")
-                // TODO: Currently the IP address is set in the inidividual airtcraft interface, but implemented with a wider scope. 
-                // TODO: support DNS lookup for hostnames (currently the IPV4 address is not policed)
+                // TODO: validate the IP address against allowable protocol versions and address types for this version of HeliosExport__.lua
                 .Replace("HELIOS_REPLACE_IPAddress", IPAddress)
                 .Replace("HELIOS_REPLACE_Port", Port.ToString())
                 .Replace("HELIOS_REPLACE_ExportInterval", Math.Round(1d / Math.Max(4, ExportFrequency), 3).ToString(CultureInfo.InvariantCulture));
