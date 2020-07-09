@@ -93,6 +93,10 @@ local helios_module_names = {
     ["P-51D"] = "Helios_P51",
     ["TF-51D"] = "Helios_P51",
     ["SA342"] = "Helios_SA342",
+    ["SA342L"] = "Helios_SA342",
+    ["SA342M"] = "Helios_SA342",
+    ["SA342Mistral"] = "Helios_SA342",
+    ["SA342Minigun"] = "Helios_SA342",
     ["JF-17"] = "Helios_JF17"
 }
 
@@ -374,6 +378,15 @@ function helios_impl.loadDriver(driverType)
     else
         -- now try to load specific driver
         local driverPath = string.format("%sScripts\\Helios\\Drivers\\%s.lua", lfs.writedir(), currentSelfName)
+
+        -- check for normal case of driver not existing
+        if (lfs.attributes(driverPath) == nil) then
+            log.write("HELIOS.EXPORT", log.INFO, string.format("no driver for '%s' found", currentSelfName))
+            helios_impl.installDriver(driver, newDriverType)
+            return currentSelfName
+        end
+    
+        -- try to load
         success, result = pcall(dofile, driverPath)
 
         -- check result for nil, since driver may not have returned anything
