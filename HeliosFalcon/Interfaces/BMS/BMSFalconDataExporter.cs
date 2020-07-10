@@ -229,6 +229,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Ownship", "y", new BindingValue(_lastFlightData.y));
                 SetValue("Ownship", "longitude", new BindingValue(_lastFlightData2.longitude));
                 SetValue("Ownship", "latitude", new BindingValue(_lastFlightData2.latitude));
+                SetValue("Ownship", "ground speed", new BindingValue(GroundSpeedInFeetPerSecond(_lastFlightData.xDot, _lastFlightData.yDot)));
 
             }
             if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
@@ -296,6 +297,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         internal float GroundSpeedInFeetPerSecond(float xDot, float yDot)
         {
             const float FPS_PER_KNOT = 1.68780986f;
+            //return (int)((float)Math.Sqrt((xDot * xDot) + (yDot * yDot)) / FPS_PER_KNOT);
             return (float)Math.Sqrt((xDot * xDot) + (yDot * yDot)) / FPS_PER_KNOT;
         }
 
