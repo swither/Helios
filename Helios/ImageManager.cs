@@ -75,7 +75,8 @@ namespace GadrocsWorkshop.Helios
             Logger.Debug("image being loaded from {URI}", Anonymizer.Anonymize(imageUri));
             BitmapImage image = new BitmapImage();
             image.BeginInit();
-            image.CacheOption = BitmapCacheOption.OnDemand;
+            // Don't keep disk files open, because we may want to change them.  But it is ok to lazy load from resources that can't change.
+            image.CacheOption = imageUri.Scheme == "pack" ? BitmapCacheOption.OnDemand : BitmapCacheOption.OnLoad;
             image.CreateOptions = BitmapCreateOptions.DelayCreation;
             image.UriSource = imageUri;
 
