@@ -140,12 +140,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("DED", "DED Line 4", "Data entry display line 4", "", BindingValueUnits.Text);
             AddValue("DED", "DED Line 5", "Data entry display line 5", "", BindingValueUnits.Text);
 
-            AddValue("Ownship", "latitude", "Ownship latitude in degrees (as known by avionics)","", BindingValueUnits.Degrees);
-            AddValue("Ownship", "longitude", "Ownship longitude in degrees (as known by avionics)","", BindingValueUnits.Degrees);
+            AddValue("Ownship", "latitude", "Ownship latitude", "in degrees (as known by avionics)", BindingValueUnits.Degrees);
+            AddValue("Ownship", "longitude", "Ownship longitude", "in degrees (as known by avionics)", BindingValueUnits.Degrees);
             AddValue("Ownship", "x", "Ownship North (Ft)","", BindingValueUnits.Feet);
             AddValue("Ownship", "y", "Ownship East (Ft)", "", BindingValueUnits.Feet);
-            
+            AddValue("Ownship", "ground speed", "Ownship ground speed", "in feet per second", BindingValueUnits.FeetPerSecond);
 
+            //MiscBits
+            AddValue("Altimeter", "radar alt", "radar altitude", "Altitude in feet.", BindingValueUnits.Feet);
         }
 
         internal override void InitData()
@@ -162,7 +164,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             if (_sharedMemory != null && _sharedMemory.IsDataAvailable)
             {
                 _lastFlightData = (FlightData)_sharedMemory.MarshalTo(typeof(FlightData));
-                
+
                 SetValue("Altimeter", "altitidue", new BindingValue(Math.Abs(_lastFlightData.z)));
                 SetValue("ADI", "pitch", new BindingValue(_lastFlightData.pitch));
                 SetValue("ADI", "roll", new BindingValue(_lastFlightData.roll));
@@ -214,22 +216,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Tacan", "aux tacan chan", new BindingValue(_lastFlightData.AUXTChan));
 
                 ProcessContacts(_lastFlightData);
-                
+
                 //DED
-                SetValue("DED", "DED Line 1", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED,0,26)));
+                SetValue("DED", "DED Line 1", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 0, 26)));
                 SetValue("DED", "DED Line 2", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26, 26)));
-                SetValue("DED", "DED Line 3", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*2, 26)));
-                SetValue("DED", "DED Line 4", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*3, 26)));
-                SetValue("DED", "DED Line 5", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*4, 26)));
+                SetValue("DED", "DED Line 3", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26 * 2, 26)));
+                SetValue("DED", "DED Line 4", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26 * 3, 26)));
+                SetValue("DED", "DED Line 5", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26 * 4, 26)));
 
                 //Ownship
                 SetValue("Ownship", "x", new BindingValue(_lastFlightData.x));
                 SetValue("Ownship", "y", new BindingValue(_lastFlightData.y));
                 SetValue("Ownship", "longitude", new BindingValue(_lastFlightData2.longitude));
                 SetValue("Ownship", "latitude", new BindingValue(_lastFlightData2.latitude));
+                SetValue("Ownship", "ground speed", new BindingValue(GroundSpeedInFeetPerSecond(_lastFlightData.xDot, _lastFlightData.yDot)));
 
             }
-            if(_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
+            if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
             {
                 _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
                 SetValue("Altimeter", "indicated altitude", new BindingValue(Math.Abs(_lastFlightData2.aauz)));
@@ -266,11 +269,36 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 //AV8B Values
                 SetValue("AV8B", "vtol exhaust angle position", new BindingValue(_lastFlightData2.vtolPos));
 
+                ProcessMiscBits(_lastFlightData2.miscBits, _lastFlightData2.RALT);
                 ProcessHsiBits(_lastFlightData.hsiBits, _lastFlightData.desiredCourse, _lastFlightData.bearingToBeacon, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits(_lastFlightData.lightBits);
                 ProcessLightBits2(_lastFlightData.lightBits2, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits3(_lastFlightData.lightBits3);
             }
+        }
+
+         private void ProcessMiscBits(MiscBits miscBits, float rALT)
+        {
+            var rAltString = "";
+            if (miscBits.HasFlag(MiscBits.RALT_Valid))
+            {
+                rAltString = String.Format("{0:0}", RoundToNearestTen((int)Math.Abs(rALT)));
+                
+            }
+            SetValue("Altimeter", "radar alt", new BindingValue(rAltString));
+        }
+
+        private object RoundToNearestTen(int num)
+        {
+            int rem = num % 10;
+            return rem >= 5 ? (num - rem + 10) : (num - rem);
+        }
+
+        internal float GroundSpeedInFeetPerSecond(float xDot, float yDot)
+        {
+            const float FPS_PER_KNOT = 1.68780986f;
+            //return (int)((float)Math.Sqrt((xDot * xDot) + (yDot * yDot)) / FPS_PER_KNOT);
+            return (float)Math.Sqrt((xDot * xDot) + (yDot * yDot)) / FPS_PER_KNOT;
         }
 
         internal string DecodeUserInterfaceText(byte[] buffer,int offset,int length)

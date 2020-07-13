@@ -4,7 +4,7 @@ This is the source code repository for the Helios Virtual Cockpit version 1.6.
 
 Helios 1.5 version numbers are reserved for Gadroc and have no known releases.
 
-Helios 1.4 releases and information are separately distributed at https://github.com/BlueFinBima/Helios
+Helios 1.4 releases and information are separately distributed at https://github.com/BlueFinBima/Helios14
 
 ## Links for Helios 1.6:
 
