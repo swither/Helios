@@ -22,7 +22,6 @@ namespace GadrocsWorkshop.Helios.Controls
     public class CustomGaugeRenderer : HeliosVisualRenderer
     {
         private ImageSource _image, _backgroundImage;
-        private ImageBrush _brush;
         private Rect _imageRect, _backgroundRect;
         private Point _center, _nextToCenter;
         private double _rotation;
@@ -66,7 +65,6 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 _rotation = 0d;
                 _image = null;
-                _brush = null;
                 _backgroundImage = null;
                 return;
             }
@@ -79,9 +77,6 @@ namespace GadrocsWorkshop.Helios.Controls
             // WARNING: needle scale applied to image but not rotation point
             _imageRect.Height = customGauge.Height * customGauge.Needle_Scale;
             _imageRect.Width = _image.Width * (_imageRect.Height / _image.Height); // uniform image based on Height
-
-            // create image brush
-            _brush = new ImageBrush(_image);
 
             // calculate rotation point
             _center = new Point(customGauge.Width * customGauge.Needle_PivotX,
