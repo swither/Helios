@@ -176,20 +176,23 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 return scale;
             }
 
-            // calculate the visible extent of the controls being placed
-            Rect extent = Rect.Empty;
+            // calculate the visible extent of the controls being placed, including top left corner
+            Rect extent = new Rect(0,0,1,1);
             foreach (HeliosVisual visual in _controls)
             {
                 extent.Union(visual.DisplayRectangle);
             }
             extent.Intersect(new Rect(0, 0, _oldWidth, _oldHeight));
 
-            // now choose a scaling factor that will scale in one dimension while maximizing the other
-            if ((extent.Width > 0d) && (extent.Height > 0d))
+            // NOTE: populated extent should generally be much larger than 2 pixels, we are just using this here to protect against rounding issues
+            if ((extent.Width >= 2d) && (extent.Height >= 2d))
             {
-                // pick better scale option based on contained controls
+                // now choose a scaling factor that will match monitor sizes in one dimension while making sure we don't
+                // drop controls by scaling in the other dimension
                 double scaleX = Math.Min(newMonitor.Width / _oldWidth, newMonitor.Height / extent.Height);
-                double scaleY = Math.Min(newMonitor.Width / extent.Width, newMonitor.Height / _oldHeight);
+                double scaleY = Math.Min(newMonitor.Height / _oldHeight, newMonitor.Width / extent.Width);
+
+                // choose the maximum scale value possible (this allows going back from portrait to landscape, for example)
                 scale = Math.Max(scaleX, scaleY);
             }
             else
