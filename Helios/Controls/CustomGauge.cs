@@ -53,6 +53,12 @@ namespace GadrocsWorkshop.Helios.Controls
             //Triggers.Add(_potValue);
         }
 
+        public override bool HitTest(Point location)
+        {
+            // our extent can be greater than our background rectangle due to rotated needle images
+            return new Rect(0, 0, Width, Height).Contains(location);
+        }
+
         #region Properties
 
 
@@ -335,6 +341,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private void SetRotation()
         {
             KnobRotation = InitialRotation + (((Value - MinValue) / (MaxValue - MinValue)) * RotationTravel);
+            Refresh();
         }
 
         public override void Reset()
