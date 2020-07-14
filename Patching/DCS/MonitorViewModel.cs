@@ -99,7 +99,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             transformed.Offset(_globalOffset);
             transformed.Scale(_scale, _scale);
             Rect = transformed;
-            ConfigManager.LogManager.LogDebug($"scaled monitor view {GetHashCode()} for monitor setup UI is {Rect}");
+            // ConfigManager.LogManager.LogDebug($"scaled monitor view {GetHashCode()} for monitor setup UI is {Rect}");
         }
 
         private void UpdateInclusionNarrative()

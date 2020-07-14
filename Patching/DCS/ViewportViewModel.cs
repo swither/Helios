@@ -97,7 +97,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             absolute.Offset(_globalOffset);
             absolute.Scale(_scale, _scale);
             Rect = absolute;
-            ConfigManager.LogManager.LogDebug($"scaled viewport view {GetHashCode()} for monitor setup UI is {Rect}");
+            // ConfigManager.LogManager.LogDebug($"scaled viewport view {GetHashCode()} for monitor setup UI is {Rect}");
         }
 
         public static readonly DependencyProperty RectProperty =
