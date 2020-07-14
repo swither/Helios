@@ -46,7 +46,7 @@ echo ## User Notes >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo [EDIT REQUIRED: create user-readable notes from following Developer Notes and then update the Change Notes in Wiki from these] >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo ## Developer Notes >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
-cat %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\changes_%COMMIT%.md >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+type %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\changes_%COMMIT%.md >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo Full change notes from previous releases here: https://github.com/HeliosVirtualCockpit/Helios/wiki/Change-Log >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 
