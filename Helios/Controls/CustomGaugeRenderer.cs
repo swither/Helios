@@ -14,80 +14,91 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+using System.Windows;
+using System.Windows.Media;
+
 namespace GadrocsWorkshop.Helios.Controls
 {
-    using System.Windows;
-    using System.Windows.Media;
-
     public class CustomGaugeRenderer : HeliosVisualRenderer
     {
-        private ImageSource _image, _bgplate_image;
+        private ImageSource _image, _backgroundImage;
         private ImageBrush _brush;
-        private Rect _imageRect, _bgplate_imageRect;
-        private Point _center, _punto;
-        private Brush _scopeBrush;
+        private Rect _imageRect, _backgroundRect;
+        private Point _center, _nextToCenter;
+        private double _rotation;
+        private readonly Brush _scopeBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+        private readonly Pen _scopePen;
 
-       
-
-        protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+        public CustomGaugeRenderer()
         {
-        _scopeBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-        Pen _scopePen = new Pen(_scopeBrush, 1d);
+            _scopePen = new Pen(_scopeBrush, 1d);
+        }
 
-
-            CustomNeedle customNeedle = Visual as CustomNeedle;
-            if (customNeedle != null)
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            if (_backgroundImage != null)
             {
-                drawingContext.DrawImage(_bgplate_image, _bgplate_imageRect);
+                drawingContext.DrawImage(_backgroundImage, _backgroundRect);
+            }
 
-                drawingContext.PushTransform(new RotateTransform(customNeedle.KnobRotation, _center.X, _center.Y));
+            // ReSharper disable once CompareOfFloatsByEqualityOperator checking for initialized
+            if (_rotation != 0d)
+            {
+                drawingContext.PushTransform(new RotateTransform(_rotation, _center.X, _center.Y));
+            }
+
+            if (_image != null)
+            {
                 drawingContext.DrawImage(_image, _imageRect);
-                drawingContext.DrawLine(_scopePen, _center, _punto); //draw rotation point for reference
+                drawingContext.DrawLine(_scopePen, _center, _nextToCenter); //draw rotation point for reference
+            }
+
+            // ReSharper disable once CompareOfFloatsByEqualityOperator checking for initialized
+            if (_rotation != 0d)
+            {
                 drawingContext.Pop();
             }
         }
 
         protected override void OnRefresh()
         {
-
-           
-            CustomGauge customGauge = Visual as CustomGauge;  // ----------BG plate
-            CustomNeedle customNeedle = Visual as CustomNeedle;   // ----- needle
-
-			
-
-			if (customNeedle != null) // needle
+            if (!(Visual is CustomGauge customGauge))
             {
-               
-                _imageRect.X = customNeedle.Width * customGauge.Needle_PosX; ;
-                _imageRect.Y = customNeedle.Height * customGauge.Needle_PosY; ;
-                _image = ConfigManager.ImageManager.LoadImage(customNeedle.KnobImage);
-				if (_image == null)
-				{
-					_image = ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png"); 
-				}
-				_imageRect.Height = customGauge.Height * customGauge.Needle_Scale;
-                _imageRect.Width = (_image.Width * (customGauge.Height/_image.Height) )*customGauge.Needle_Scale; // uniform image based on Height
-                _brush = new ImageBrush(_image);
-                _center = new Point(customGauge.Width * customGauge.Needle_PivotX, customGauge.Height * customGauge.Needle_PivotY); // calculate rotation point
-                _punto = new Point((customNeedle.Width * customGauge.Needle_PivotX)+1, customNeedle.Height * customGauge.Needle_PivotY);
-
-            }
-            else
-            {
+                _rotation = 0d;
                 _image = null;
                 _brush = null;
+                _backgroundImage = null;
+                return;
             }
-            if (customGauge != null) // plate
+
+            _rotation = customGauge.KnobRotation;
+            _imageRect.X = customGauge.Width * customGauge.Needle_PosX;
+            _imageRect.Y = customGauge.Height * customGauge.Needle_PosY;
+            _image = ConfigManager.ImageManager.LoadImage(customGauge.KnobImage) ?? ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png");
+
+            // WARNING: needle scale applied to image but not rotation point
+            _imageRect.Height = customGauge.Height * customGauge.Needle_Scale;
+            _imageRect.Width = _image.Width * (_imageRect.Height / _image.Height); // uniform image based on Height
+
+            // create image brush
+            _brush = new ImageBrush(_image);
+
+            // calculate rotation point
+            _center = new Point(customGauge.Width * customGauge.Needle_PivotX,
+                customGauge.Height * customGauge.Needle_PivotY); 
+            _nextToCenter = new Point((customGauge.Width * customGauge.Needle_PivotX) + 1,
+                customGauge.Height * customGauge.Needle_PivotY);
+
+            // optional background plate image
+            if (!string.IsNullOrWhiteSpace(customGauge.BGPlateImage))
             {
-                _bgplate_imageRect.Width = customNeedle.Width;
-                _bgplate_imageRect.Height = customNeedle.Height;
-                _bgplate_image = ConfigManager.ImageManager.LoadImage(customGauge.BGPlateImage);
+                _backgroundRect.Width = customGauge.Width;
+                _backgroundRect.Height = customGauge.Height;
+                _backgroundImage = ConfigManager.ImageManager.LoadImage(customGauge.BGPlateImage);
             }
             else
             {
-                _bgplate_image = null;
-                _brush = null;
+                _backgroundImage = null;
             }
         }
     }
