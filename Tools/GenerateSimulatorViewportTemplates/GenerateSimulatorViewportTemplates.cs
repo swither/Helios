@@ -95,7 +95,7 @@ namespace GenerateSimulatorViewportTemplates
                     lines.Add("                </Padding>");
                     lines.Add("            </Font>");
                     lines.Add($"            <Text>{viewportName}</Text>");
-                    lines.Add($"            <Location>{viewport.X},{viewport.Y}</Location>");
+                    lines.Add(FormattableString.Invariant($"            <Location>{viewport.X},{viewport.Y}</Location>"));
                     int width = viewport.Width;
                     if (width < 1)
                     {
