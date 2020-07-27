@@ -40,11 +40,11 @@ namespace GadrocsWorkshop.Helios.Util
             // no op
         }
 
-        public override long Seek(long offset, SeekOrigin origin) => throw new NotImplementedException();
+        public override long Seek(long offset, SeekOrigin origin) => throw new InvalidOperationException();
 
         public override void SetLength(long value)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public override int Read(byte[] buffer, int offset, int count)
@@ -66,17 +66,17 @@ namespace GadrocsWorkshop.Helios.Util
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public override bool CanRead => true;
         public override bool CanSeek => false;
         public override bool CanWrite => false;
-        public override long Length => throw new NotImplementedException();
+        public override long Length => throw new InvalidOperationException();
         public override long Position
         {
-            get => throw new NotImplementedException(); 
-            set => throw new NotImplementedException();
+            get => throw new InvalidOperationException(); 
+            set => throw new InvalidOperationException();
         }
     }
 
