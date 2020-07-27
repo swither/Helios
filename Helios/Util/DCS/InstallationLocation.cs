@@ -24,8 +24,14 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             }
             foreach (string path in settings.EnumerateSettingNames(SETTINGS_GROUP))
             {
+                string autoUpdatePath = System.IO.Path.Combine(path, AUTO_UPDATE_CONFIG);
+                if (!File.Exists(autoUpdatePath))
+                {
+                    // stale setting
+                    continue;
+                }
                 InstallationLocation location =
-                    new InstallationLocation(System.IO.Path.Combine(path, AUTO_UPDATE_CONFIG))
+                    new InstallationLocation(autoUpdatePath)
                     {
                         IsEnabled = settings.LoadSetting(SETTINGS_GROUP, path, false),
                         Loaded = true
