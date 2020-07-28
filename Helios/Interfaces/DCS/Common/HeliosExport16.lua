@@ -741,9 +741,15 @@ function helios_impl.createModuleDriver(selfName, moduleName)
     driver.selfName = selfName
     driver.everyFrameArguments = result.HighImportanceArguments
     driver.arguments = result.LowImportanceArguments
-    driver.processHighImportance = result.HighImportance
-    driver.processLowImportance = result.LowImportance
-    driver.processInput = result.ProcessInput
+    if result.HighImportance ~= nil then
+        driver.processHighImportance = result.HighImportance
+    end
+    if result.LowImportance ~= nil then
+        driver.processLowImportance = result.LowImportance
+    end
+    if result.ProcessInput ~= nil then
+        driver.processInput = result.ProcessInput
+    end
     if result.FlamingCliffsAircraft then
         -- override all export processing, even if no hook provided
         if result.ProcessExports ~= nil then
