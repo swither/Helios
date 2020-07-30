@@ -145,6 +145,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Ownship", "x", "Ownship North (Ft)","", BindingValueUnits.Feet);
             AddValue("Ownship", "y", "Ownship East (Ft)", "", BindingValueUnits.Feet);
             AddValue("Ownship", "ground speed", "Ownship ground speed", "in feet per second", BindingValueUnits.FeetPerSecond);
+            AddValue("Ownship", "distance from bullseye", "Ownship distance from bullseye", "", BindingValueUnits.Feet);
+            AddValue("Ownship", "heading from bullseye", "Ownship heading from bullseye", "", BindingValueUnits.Degrees);
+            AddValue("Ownship", "deltaX from bulls", "Delta from bullseye North (Ft)", "", BindingValueUnits.Feet);
+            AddValue("Ownship", "deltaY from bulls", "Delta from bullseye East (Ft)", "", BindingValueUnits.Feet);
 
             //MiscBits
             AddValue("Altimeter", "radar alt", "radar altitude", "Altitude in feet.", BindingValueUnits.Feet);
@@ -266,6 +270,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Hydraulic", "Pressure B", new BindingValue(_lastFlightData2.hydPressureB));
                 SetValue("Time", "Time", new BindingValue(_lastFlightData2.currentTime));
 
+                //Bullseye                
+                ProcessOwnshipFromBullseye(_lastFlightData.x, _lastFlightData.y, _lastFlightData2.bullseyeX, _lastFlightData2.bullseyeY);
+
                 //AV8B Values
                 SetValue("AV8B", "vtol exhaust angle position", new BindingValue(_lastFlightData2.vtolPos));
 
@@ -320,6 +327,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             }
 
             return sanitized.ToString();
+        }
+
+        private void ProcessOwnshipFromBullseye(float ownshipX, float ownshipY, float bullseyeX, float bullseyeY)
+        {
+            float deltaX = ownshipX - bullseyeX;
+            float deltaY = ownshipY - bullseyeY;
+            double nauticalMile = 6076.11549;
+
+            double distance = Math.Sqrt((deltaX * deltaX) + (deltaY * deltaY)) / nauticalMile;
+            double heading = (Math.Atan2(deltaY, deltaX)) * (180 / Math.PI);
+
+            SetValue("Ownship", "deltaX from bulls", new BindingValue(deltaX));
+            SetValue("Ownship", "deltaY from bulls", new BindingValue(deltaY));
+            SetValue("Ownship", "distance from bullseye", new BindingValue(String.Format("{0:0}", distance)));
+            SetValue("Ownship", "heading from bullseye", new BindingValue(String.Format("{0:0}", heading)));
         }
 
         protected void ProcessLightBits(BMSLightBits bits)
