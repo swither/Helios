@@ -43,8 +43,12 @@ helios_private.port = HELIOS_REPLACE_Port
 -- NOTE: this parameter has no configuration UI
 helios_private.exportLowTickInterval = 2
 
--- seconds between ticks (high priority export interval)
+-- seconds between updates (high priority export interval)
 helios_impl.exportInterval = HELIOS_REPLACE_ExportInterval
+
+-- seconds between updates for low priority data
+-- NOTE: this parameter has no configuration UI
+helios_impl.exportLowInterval = 0.2
 
 -- maximum number of seconds without us sending anything
 -- NOTE: Helios needs us to send something to discover our UDP client port number
@@ -93,6 +97,10 @@ local helios_module_names = {
     ["P-51D"] = "Helios_P51",
     ["TF-51D"] = "Helios_P51",
     ["SA342"] = "Helios_SA342",
+    ["SA342L"] = "Helios_SA342",
+    ["SA342M"] = "Helios_SA342",
+    ["SA342Mistral"] = "Helios_SA342",
+    ["SA342Minigun"] = "Helios_SA342",
     ["JF-17"] = "Helios_JF17"
 }
 
@@ -109,21 +117,24 @@ end
 
 function helios_impl.LuaExportBeforeNextFrame()
     helios_private.processInput()
-end
 
-function helios_impl.LuaExportAfterNextFrame()
-end
+    helios_private.clock = LoGetModelTime()
 
-function helios_impl.LuaExportStop()
-    -- called once just after mission stop.
-    helios_impl.unload()
-end
+    local updateHigh = false
+    local updateLow = false
+    if helios_private.clock >= helios_private.state.nextHighUpdate then
+        updateHigh = true
+        helios_private.state.nextHighUpdate = helios_private.calculateNextUpdate(helios_private.state.nextHighUpdate, helios_impl.exportInterval)
+    end
+    if helios_private.clock >= helios_private.state.nextLowUpdate then
+        updateLow = true
+        helios_private.state.nextLowUpdate = helios_private.calculateNextUpdate(helios_private.state.nextLowUpdate, helios_impl.exportLowInterval)        
+    end
 
-function helios_impl.LuaExportActivityNextEvent(timeNow)
-    log.write("HELIOS.EXPORT", log.DEBUG, string.format("next event at %f", timeNow))
-
-    helios_private.clock = timeNow
-    local nextEvent = timeNow + helios_impl.exportInterval
+    if (not updateHigh) and (not updateLow) then
+        -- not time yet
+        return
+    end
 
     -- check if vehicle type has changed
     local selfName = helios.selfName()
@@ -131,15 +142,24 @@ function helios_impl.LuaExportActivityNextEvent(timeNow)
         helios_private.handleSelfNameChange(selfName)
     end
 
-    -- count until we need to send low priority data
-    helios_private.state.tickCount = helios_private.state.tickCount + 1
-
     if helios_private.driver.processExports ~= nil then
         -- let driver do it
         helios_private.driver.processExports(LoGetSelfData())
     else
-        helios_private.processExports()
-    end
+        local mainPanelDevice = GetDevice(0)
+        if type(mainPanelDevice) == "table" then
+            mainPanelDevice:update_arguments()
+    
+            if updateHigh then
+                helios_private.processArguments(mainPanelDevice, helios_private.driver.everyFrameArguments)
+                helios_private.driver.processHighImportance(mainPanelDevice)
+            end
+
+            if updateLow then
+                helios_private.processArguments(mainPanelDevice, helios_private.driver.arguments)
+                helios_private.driver.processLowImportance(mainPanelDevice)
+            end
+        end    end
 
     local heartBeat = nil
     if helios_private.clock > (helios_impl.announceInterval + helios_private.state.lastSend) then
@@ -164,7 +184,14 @@ function helios_impl.LuaExportActivityNextEvent(timeNow)
     end
 
     helios_private.flush();
-    return nextEvent
+end
+
+function helios_impl.LuaExportAfterNextFrame()
+end
+
+function helios_impl.LuaExportStop()
+    -- called once just after mission stop.
+    helios_impl.unload()
 end
 
 -- ========================= PUBLIC API FOR DRIVERS --------======================
@@ -374,6 +401,15 @@ function helios_impl.loadDriver(driverType)
     else
         -- now try to load specific driver
         local driverPath = string.format("%sScripts\\Helios\\Drivers\\%s.lua", lfs.writedir(), currentSelfName)
+
+        -- check for normal case of driver not existing
+        if (lfs.attributes(driverPath) == nil) then
+            log.write("HELIOS.EXPORT", log.INFO, string.format("no driver for '%s' found", currentSelfName))
+            helios_impl.installDriver(driver, newDriverType)
+            return currentSelfName
+        end
+    
+        -- try to load
         success, result = pcall(dofile, driverPath)
 
         -- check result for nil, since driver may not have returned anything
@@ -504,8 +540,9 @@ function helios_private.clearState()
     -- future event time when we are allowed to send an alert if an error occurs
     helios_private.state.nextAlert = 0
 
-    -- Frame counter for non important data
-    helios_private.state.tickCount = 0
+    -- next high and low priority updates
+    helios_private.state.nextHighUpdate = 0
+    helios_private.state.nextLowUpdate = 0
 
     -- ticks of fast announcement remaining
     helios_private.state.fastAnnounceTicks = helios_impl.fastAnnounceDuration / helios_impl.exportInterval
@@ -559,7 +596,7 @@ function helios_private.resetCachedValues()
     helios_private.state.lastData = {}
 
     -- make sure low priority is sent also
-    helios_private.state.tickCount = helios_private.exportLowTickInterval
+    helios_private.state.nextLowUpdate = helios_private.state.nextHighUpdate
 end
 
 function helios_private.processInput()
@@ -626,23 +663,6 @@ function helios_private.handleSelfNameChange(selfName)
     helios_impl.notifyLoaded()
 end
 
---- default implementation of exports, used if not overridden by the driver
-function helios_private.processExports()
-    local mainPanetargetDevice = GetDevice(0)
-    if type(mainPanetargetDevice) == "table" then
-        mainPanetargetDevice:update_arguments()
-
-        helios_private.processArguments(mainPanetargetDevice, helios_private.driver.everyFrameArguments)
-        helios_private.driver.processHighImportance(mainPanetargetDevice)
-
-        if helios_private.state.tickCount >= helios_private.exportLowTickInterval then
-            helios_private.processArguments(mainPanetargetDevice, helios_private.driver.arguments)
-            helios_private.driver.processLowImportance(mainPanetargetDevice)
-            helios_private.state.tickCount = 0
-        end
-    end
-end
-
 --- send a failure message to Helios, if allowed by rate control
 function helios_private.sendAlert(message)
     if helios_private.clock >= helios_private.state.nextAlert then
@@ -651,6 +671,21 @@ function helios_private.sendAlert(message)
         helios_private.doSend("ALERT_MESSAGE", (helios_private.mimeLibrary.b64(message)):gsub("=","+"))
         helios_private.flush()
     end
+end
+
+--- calculate next update time
+function helios_private.calculateNextUpdate(currentUpdate, updateInterval) 
+    -- schedule next round relative to expiration, not relative to now
+    local nextUpdate = currentUpdate + updateInterval
+
+    -- check if already expired
+    if nextUpdate < helios_private.clock then
+        -- either newly initialized or we are rendering too slow
+        -- and have falled behind, reset from now
+        nextUpdate = helios_private.clock + updateInterval
+    end
+
+    return nextUpdate
 end
 
 -- ========================= MODULE COMPATIBILITY LAYER ==========================
@@ -728,9 +763,15 @@ function helios_impl.createModuleDriver(selfName, moduleName)
     driver.selfName = selfName
     driver.everyFrameArguments = result.HighImportanceArguments
     driver.arguments = result.LowImportanceArguments
-    driver.processHighImportance = result.HighImportance
-    driver.processLowImportance = result.LowImportance
-    driver.processInput = result.ProcessInput
+    if result.HighImportance ~= nil then
+        driver.processHighImportance = result.HighImportance
+    end
+    if result.LowImportance ~= nil then
+        driver.processLowImportance = result.LowImportance
+    end
+    if result.ProcessInput ~= nil then
+        driver.processInput = result.ProcessInput
+    end
     if result.FlamingCliffsAircraft then
         -- override all export processing, even if no hook provided
         if result.ProcessExports ~= nil then
@@ -818,7 +859,6 @@ log.write("HELIOS.EXPORT", log.INFO, "Helios registering DCS Lua callbacks")
 helios_private.previousHooks = {}
 helios_private.previousHooks.LuaExportStart = LuaExportStart
 helios_private.previousHooks.LuaExportStop = LuaExportStop
-helios_private.previousHooks.LuaExportActivityNextEvent = LuaExportActivityNextEvent
 helios_private.previousHooks.LuaExportBeforeNextFrame = LuaExportBeforeNextFrame
 helios_private.previousHooks.LuaExportAfterNextFrame = LuaExportAfterNextFrame
 
@@ -854,41 +894,6 @@ helios_private.chainHook("LuaExportStart")
 helios_private.chainHook("LuaExportStop")
 helios_private.chainHook("LuaExportAfterNextFrame")
 helios_private.chainHook("LuaExportBeforeNextFrame")
-
--- specialized chain for next event hook
-function LuaExportActivityNextEvent(timeNow)
-    local timeNext = timeNow;
-
-    -- try execute Helios version of hook
-    local success, result = pcall(helios_impl.LuaExportActivityNextEvent, timeNow)
-    if success then
-        timeNext = result
-    else
-        log.write("HELIOS.EXPORT", log.ERROR, "error return from Helios implementation of 'LuaExportActivityNextEvent'")
-        if type(result) == "string" then
-            log.write("HELIOS.EXPORT", log.ERROR, result)
-            helios_private.sendAlert("LuaExportActivityNextEvent "..result)
-        end
-    end
-
-    -- chain to next export script, if any, and keep closest event time that requires wake up
-    local nextHandler = helios_private.previousHooks.LuaExportActivityNextEvent
-    if nextHandler ~= nil then
-        success, result = pcall(nextHandler, timeNow)
-        if not success then
-            log.write("HELIOS.EXPORT", log.ERROR, "error return from chained third-party implementation of 'LuaExportActivityNextEvent'")
-            if type(result) == "string" then
-                log.write("HELIOS.EXPORT", log.ERROR, result)
-                helios_private.sendAlert("thirdparty LuaExportActivityNextEvent "..result)
-            end
-        else
-            if result < timeNext then
-                timeNext = result
-            end
-        end
-    end
-    return timeNext
-end
 
 -- when running under one of our tools, these functions are accessible to our wrapper
 return helios_impl
