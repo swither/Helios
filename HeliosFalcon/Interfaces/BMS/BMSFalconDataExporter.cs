@@ -340,8 +340,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
             SetValue("Ownship", "deltaX from bulls", new BindingValue(deltaX));
             SetValue("Ownship", "deltaY from bulls", new BindingValue(deltaY));
-            SetValue("Ownship", "distance from bullseye", new BindingValue(String.Format("{0:0}", distance)));
-            SetValue("Ownship", "heading from bullseye", new BindingValue(String.Format("{0:0}", heading)));
+            SetValue("Ownship", "distance from bullseye", new BindingValue(String.Format("{0:0}", Math.Abs(distance))));
+            SetValue("Ownship", "heading from bullseye", new BindingValue(String.Format("{0:000}", ClampDegrees(heading))));
         }
 
         protected void ProcessLightBits(BMSLightBits bits)
