@@ -147,6 +147,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Ownship", "ground speed", "Ownship ground speed", "in feet per second", BindingValueUnits.FeetPerSecond);
             AddValue("Ownship", "distance from bullseye", "Ownship distance from bullseye", "", BindingValueUnits.Feet);
             AddValue("Ownship", "heading from bullseye", "Ownship heading from bullseye", "", BindingValueUnits.Degrees);
+            AddValue("Ownship", "heading to bullseye", "Ownship heading to bullseye", "", BindingValueUnits.Degrees);
             AddValue("Ownship", "deltaX from bulls", "Delta from bullseye North (Ft)", "", BindingValueUnits.Feet);
             AddValue("Ownship", "deltaY from bulls", "Delta from bullseye East (Ft)", "", BindingValueUnits.Feet);
 
@@ -336,12 +337,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             double nauticalMile = 6076.11549;
 
             double distance = Math.Sqrt((deltaX * deltaX) + (deltaY * deltaY)) / nauticalMile;
-            double heading = (Math.Atan2(deltaY, deltaX)) * (180 / Math.PI);
+            double heading = ClampDegrees((Math.Atan2(deltaY, deltaX)) * (180 / Math.PI));
+            double reciprocal = ClampDegrees(((Math.Atan2(deltaY, deltaX)) * (180 / Math.PI)) + 180);
 
             SetValue("Ownship", "deltaX from bulls", new BindingValue(deltaX));
             SetValue("Ownship", "deltaY from bulls", new BindingValue(deltaY));
             SetValue("Ownship", "distance from bullseye", new BindingValue(String.Format("{0:0}", Math.Abs(distance))));
-            SetValue("Ownship", "heading from bullseye", new BindingValue(String.Format("{0:000}", ClampDegrees(heading))));
+            SetValue("Ownship", "heading from bullseye", new BindingValue(String.Format("{0:0}", heading)));
+            SetValue("Ownship", "heading to bullseye", new BindingValue(String.Format("{0:0}", reciprocal)));
         }
 
         protected void ProcessLightBits(BMSLightBits bits)
