@@ -560,7 +560,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status =
-                        "You must save the profile before you can use Monitor Setup, because it uses the profile name as the name of the monitor setup",
+                        "You must save the profile before you can use Monitor Setup, because it needs to know the profile name",
                     Recommendation = "Save the profile at least once before configuring Monitor Setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error

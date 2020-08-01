@@ -166,9 +166,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private bool _geometryChanging;
 
         /// <summary>
-        /// if true, then a reset monitors operation is currently running, so we need to inhibit geometry updates and auto selection until the end
+        /// if true, then monitors are either invalid or currently being reset, so we should not do any automatic configurations
         /// </summary>
-        private bool _resetMonitorsActive;
+        private bool _monitorsValid;
 
         #endregion
 
@@ -209,6 +209,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 AddMonitor(monitor);
             }
 
+            // we only update our models if the monitor layout matches
+            _monitorsValid = Profile?.IsValidMonitorLayout ?? false;
+
+            // calculate initial geometry, if we can
             UpdateAllGeometry();
 
             // register for changes
@@ -591,10 +595,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private void OnDelayedGeometryChange(object sender, EventArgs e)
         {
-            if (_resetMonitorsActive)
+            if (!_monitorsValid)
             {
-                // don't process events during monitor reset
-                // don't stop the timer, so it will actually get handled after reset monitors is done
+                // don't process events if monitors are not valid
+                // we will schedule an update once they are
+                _geometryChangeTimer?.Stop();
                 return;
             }
 
@@ -632,12 +637,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private void CheckMonitorSettings()
         {
-            if (!Profile.IsValidMonitorLayout)
-            {
-                // hasn't been reset yet, these monitors aren't the ones will will use
-                return;
-            }
-
             // get the list of real monitors and all their serialized settings names
             HashSet<string> displayKeys = new HashSet<string>();
             foreach (Monitor monitor in ConfigManager.DisplayManager.Displays)
@@ -674,11 +673,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private string CalculateMonitorLayoutKey()
         {
-            if (!Profile.IsValidMonitorLayout)
-            {
-                return null;
-            }
-
             IEnumerable<string> keys = Monitors
                 .Where(m => m.Included)
                 .OrderBy(m => m.Monitor.Left)
@@ -699,6 +693,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void UpdateAllGeometry()
         {
+            if (!_monitorsValid)
+            {
+                // don't process events if monitors are not valid
+                // we will schedule an update once they are
+                MonitorLayoutKey = null;
+                return;
+            }
             CheckMonitorSettings();
             AutoSelectMainView();
             AutoSelectUserInterfaceView();
@@ -1062,13 +1063,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public void NotifyResetMonitorsStarting()
         {
             // not volatile, only main thread access
-            _resetMonitorsActive = true;
+            _monitorsValid = false;
         }
 
         public void NotifyResetMonitorsComplete()
         {
             // not volatile, only main thread access
-            _resetMonitorsActive = false;
+            _monitorsValid = Profile?.IsValidMonitorLayout ?? false;
+            if (_monitorsValid)
+            {
+                ScheduleGeometryChange();
+            }
         }
 
         #endregion
