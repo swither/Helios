@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
@@ -548,7 +549,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         internal IList<StatusReportItem> CheckConfig()
         {
             List<StatusReportItem> report = new List<StatusReportItem>();
-            IList<InstallationLocation> installationLocations = InstallationLocations.Singleton.Active;
+
+            // report all locations but only retain the enabled ones
+            IList<InstallationLocation> installationLocations = InstallationLocations.Singleton.Items
+                .Select(location =>
+                {
+                    report.Add(ReportLocation(location));
+                    return location;
+                })
+                .Where(location => location.IsEnabled)
+                .ToList();
+
             if (!installationLocations.Any())
             {
                 report.Add(new StatusReportItem
@@ -603,6 +614,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             return report;
         }
 
+        private static StatusReportItem ReportLocation(InstallationLocation location)
+        {
+            string statusPrefix = location.IsEnabled ? "" : "Not writing to ";
+            return new StatusReportItem
+            {
+                Status =
+                    $"{statusPrefix}DCS version {location.Version} installed at '{location.Path}' with Saved Games at '{location.SavedGamesPath}'",
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+            };
+        }
+
         /// <summary>
         /// main entry point for run time readiness check with a human readable narrative
         /// </summary>
@@ -626,7 +648,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 };
             }
 
-            IList<InstallationLocation> installationLocations = InstallationLocations.Singleton.Active;
+            // report all locations but only retain the enabled ones
+            IList<InstallationLocation> installationLocations = new List<InstallationLocation>();
+            foreach (InstallationLocation location in InstallationLocations.Singleton.Items)
+            {
+                yield return ReportLocation(location);
+                if (location.IsEnabled)
+                {
+                    installationLocations.Add(location);
+                }
+            }
+
             if (!installationLocations.Any())
             {
                 yield return new StatusReportItem
@@ -655,7 +687,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // check on our main script
                 UpdateExportScript();
                 yield return CheckExportScript(location);
-
 
                 if (string.IsNullOrEmpty(_parent.ExportModuleBaseName) && !moduleInfo.CanGenerate)
                 {

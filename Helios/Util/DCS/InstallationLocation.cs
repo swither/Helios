@@ -179,10 +179,15 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         #region PathComponents
 
         /// <summary>
+        /// location of Saved Games data for this DCS instance
+        /// </summary>
+        public string SavedGamesPath => System.IO.Path.Combine(KnownFolders.SavedGames, SavedGamesName);
+
+        /// <summary>
         /// location where we will write Export.lua and related directories
         /// exported for UI
         /// </summary>
-        public string ScriptDirectoryPath => System.IO.Path.Combine(KnownFolders.SavedGames, SavedGamesName, "Scripts");
+        public string ScriptDirectoryPath => System.IO.Path.Combine(SavedGamesPath, "Scripts");
 
         public string ExportStubPath => System.IO.Path.Combine(ScriptDirectoryPath, "Export.lua");
 

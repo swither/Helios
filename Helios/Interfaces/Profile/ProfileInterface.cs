@@ -225,26 +225,45 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         private void CheckResetMonitors(IList<StatusReportItem> newReport)
         {
-            if (Profile != null)
+            if (Profile == null)
             {
-                if (Profile.IsValidMonitorLayout)
+                return;
+            }
+
+            if (Profile.IsValidMonitorLayout)
+            {
+                newReport.Add(new StatusReportItem
+                {
+                    Status = "The monitor arrangement saved in this profile matches this computer",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                });
+            }
+            else
+            {
+                newReport.Add(new StatusReportItem
+                {
+                    Status = "The monitor arrangement saved in this profile does not match this computer",
+                    Recommendation = "Perform Reset Monitors from the Profile menu",
+                    Severity = StatusReportItem.SeverityCode.Error,
+                    Link = StatusReportItem.ProfileEditor
+                });
+                foreach (Monitor display in Profile.CheckedDisplays)
                 {
                     newReport.Add(new StatusReportItem
                     {
-                        Status = "The monitor arrangement saved in this profile matches this computer",
+                        Status = $"Windows reports an attached display of size {display.Width}x{display.Height} at ({display.Left}, {display.Top})",
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
                     });
                 }
-                else
+            }
+
+            foreach (Monitor monitor in Profile.Monitors)
+            {
+                newReport.Add(new StatusReportItem
                 {
-                    newReport.Add(new StatusReportItem
-                    {
-                        Status = "The monitor arrangement saved in this profile does not match this computer",
-                        Recommendation = "Perform Reset Monitors from the Profile menu",
-                        Severity = StatusReportItem.SeverityCode.Error,
-                        Link = StatusReportItem.ProfileEditor
-                    });
-                }
+                    Status = $"The profile declares a monitor of size {monitor.Width}x{monitor.Height} at ({monitor.Left}, {monitor.Top})",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                });
             }
         }
 
