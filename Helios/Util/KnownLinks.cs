@@ -25,26 +25,12 @@ namespace GadrocsWorkshop.Helios.Util
         /// <returns>the URL if we can figure it out, or null</returns>
         public static string GitRepoUrl()
         {
-            string repo = ConfigManager.SettingsManager.LoadSetting("Helios", "Repo", null);
+            // download from the current repo, unless overridden by Helios setting without any UI
+            string repo = ConfigManager.SettingsManager.LoadSetting("Helios", "Repo", null) ??
+                          "https://github.com/HeliosVirtualCockpit/Helios/";
 
-            if (repo == null)
-            {
-                repo = ConfigManager.SettingsManager.LoadSetting("Helios", VersionChecker.GITHUB_DOWNLOAD_URL_SETTING, null);
-            }
-            else
-            {
-                if (!repo.EndsWith("/"))
-                {
-                    repo += '/';
-                }
-            }
-
-            if (repo == null)
-            {
-                // last resort
-                repo = "https://github.com/HeliosVirtualCockpit/Helios/";
-            }
-
+            // don't allow something that isn't a github URL, because otherwise we may do bad things
+            // based on URL assumptions
             Match match = new Regex("^https://github.com/[a-zA-Z0-9_]+/[a-zA-Z0-9_]+/").Match(repo);
             return match.Success ? match.Groups[0].Value : null;
         }

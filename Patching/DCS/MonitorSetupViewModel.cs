@@ -403,7 +403,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
                 // present
                 InstallationPromptResult result = installationDialogs.DangerPrompt("Incomplete Monitor Setup",
-                    string.Join("\n", lines),
+                    string.Join(Environment.NewLine, lines),
                     items);
                 if (result == InstallationPromptResult.Cancel)
                 {

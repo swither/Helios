@@ -63,8 +63,7 @@
       },
       {
         "viewportName": "F14_ECMD",
-        "relativeInitFilePath":
-          "Mods\\aircraft\\F14\\Cockpit\\Scripts\\ElectronicCounterMeasureDisplay\\Indicator\\init.lua",
+        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\ElectronicCounterMeasureDisplay\\Indicator\\init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "x": 0,
@@ -74,8 +73,7 @@
       },
       {
         "viewportName": "F14_HSD",
-        "relativeInitFilePath":
-          "Mods\\aircraft\\F14\\Cockpit\\Scripts\\HorizontalSituationDisplay\\Indicator\\init.lua",
+        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\HorizontalSituationDisplay\\Indicator\\init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "x": 0,
@@ -85,8 +83,7 @@
       },
       {
         "viewportName": "F14_TID",
-        "relativeInitFilePath":
-          "Mods\\aircraft\\F14\\Cockpit\\Scripts\\TacticalInformationDisplay\\Indicator\\init.lua",
+        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\TacticalInformationDisplay\\Indicator\\init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "x": 0,
@@ -153,7 +150,7 @@
     ]
   },
   {
-    "templateName": "MIG-21bis Unmodified",
+    "templateName": "MIG-21bis",
     "moduleId": "MIG-21bis",
     "viewports": [
       {
@@ -165,6 +162,112 @@
         "y": 0,
         "width": 0,
         "height": 0
+      }
+    ]
+  },
+  {
+    "templateName": "JF-17",
+    "moduleId": "DEKA_JF-17",
+    "viewports": [
+      {
+        "viewportname": "JF17_LEFT_MFCD",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 218,
+        "y": 180,
+        "width": 422,
+        "height": 563
+      },
+      {
+        "viewportname": "JF17_RIGHT_MFCD",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 1261,
+        "y": 180,
+        "width": 422,
+        "height": 563
+      },
+      {
+        "viewportname": "JF17_CENTER_MFCD",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 740,
+        "y": 453,
+        "width": 422,
+        "height": 563
+      },
+      {
+        "viewportname": "JF17_UFCP_1",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 906,
+        "y": 18,
+        "width": 143,
+        "height": 34
+      },
+      {
+        "viewportname": "JF17_UFCP_2",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 906,
+        "y": 74,
+        "width": 143,
+        "height": 34
+      },
+      {
+        "viewportname": "JF17_UFCP_3",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 906,
+        "y": 124,
+        "width": 143,
+        "height": 34
+      },
+      {
+        "viewportname": "JF17_UFCP_4",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 906,
+        "y": 180,
+        "width": 143,
+        "height": 34
+      },
+      {
+        "viewportname": "JF17_RADIO",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 88,
+        "y": 313,
+        "width": 128,
+        "height": 74
+      },
+      {
+        "viewportname": "JF17_CLOCK_WIN1",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 1758,
+        "y": 733,
+        "width": 90,
+        "height": 27
+      },
+      {
+        "viewportname": "JF17_CLOCK_WIN2",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 1758,
+        "y": 780,
+        "width": 90,
+        "height": 27
       }
     ]
   }
