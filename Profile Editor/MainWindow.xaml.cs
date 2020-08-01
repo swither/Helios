@@ -1099,6 +1099,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
 
             GetLoadingAdorner();
+            IEnumerable<IResetMonitorsObserver> resetMonitorsObservers = Profile.Interfaces.OfType<IResetMonitorsObserver>();
+            foreach (IResetMonitorsObserver interestedInterface in resetMonitorsObservers)
+            {
+                interestedInterface.NotifyResetMonitorsStarting();
+            }
 
             try {
                 ConfigManager.UndoManager.StartBatch();
@@ -1124,17 +1129,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             finally
             {
                 Dispatcher.Invoke(DispatcherPriority.Background, new Action(RemoveLoadingAdorner));
-                Dispatcher.Invoke(DispatcherPriority.Background, new Action(OnResetMonitorsComplete));
+                Dispatcher.Invoke(DispatcherPriority.Background, new Action<IEnumerable<IResetMonitorsObserver>>(OnResetMonitorsComplete), resetMonitorsObservers);
             }
         }
 
         /// <summary>
-        /// callback to main thread after reset monitors thread completes and all change events on Profile.Monitors collection
+        /// callback on main thread after reset monitors thread completes and all change events on Profile.Monitors collection
         /// and properties on Monitor objects have been delivered
         /// </summary>
-        private void OnResetMonitorsComplete()
+        private void OnResetMonitorsComplete(IEnumerable<IResetMonitorsObserver> resetMonitorsObservers)
         {
-            foreach (IResetMonitorsObserver interestedInterface in Profile.Interfaces.OfType<IResetMonitorsObserver>())
+            foreach (IResetMonitorsObserver interestedInterface in resetMonitorsObservers)
             {
                 interestedInterface.NotifyResetMonitorsComplete();
             }

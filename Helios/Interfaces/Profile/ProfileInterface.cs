@@ -265,6 +265,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             _statusReportNotify.PublishStatusReport(statusReport);
         }
 
+        public void NotifyResetMonitorsStarting()
+        {
+            // no code
+        }
+
         public void NotifyResetMonitorsComplete()
         {
             InvalidateStatusReport();
