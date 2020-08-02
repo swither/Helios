@@ -30,12 +30,9 @@ namespace GadrocsWorkshop.Helios.Util.DCS
                     // stale setting
                     continue;
                 }
+
                 InstallationLocation location =
-                    new InstallationLocation(autoUpdatePath)
-                    {
-                        IsEnabled = settings.LoadSetting(SETTINGS_GROUP, path, false),
-                        Loaded = true
-                    };
+                    new InstallationLocation(autoUpdatePath, settings.LoadSetting(SETTINGS_GROUP, path, false));
                 yield return location;
             }
         }
@@ -51,6 +48,11 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
             #endregion
         }
+
+        /// <summary>
+        /// true if we are setting properties and do not want to fire events, such as during deserialization
+        /// </summary>
+        private static bool _suppressEvents;
 
         public InstallationLocation(string autoUpdatePath)
         {
@@ -92,6 +94,13 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             SavedGamesName = $"DCS.{variant}";
         }
 
+        public InstallationLocation(string autoUpdatePath, bool enabled) : this(autoUpdatePath)
+        {
+            _suppressEvents = true;
+            IsEnabled = enabled;
+            _suppressEvents = false;
+        }
+
         private bool TestWrite()
         {
             try
@@ -129,7 +138,7 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         private static void OnChangeEnabled(DependencyObject target, DependencyPropertyChangedEventArgs e)
         {
             InstallationLocation location = (InstallationLocation) target;
-            if (!location.Loaded)
+            if (_suppressEvents)
             {
                 return;
             }
@@ -138,11 +147,6 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         }
 
         #region Properties
-
-        /// <summary>
-        /// true if we are done initializing and should process events
-        /// </summary>
-        private bool Loaded { get; set; }
 
         /// <summary>
         /// installation location absolute path
