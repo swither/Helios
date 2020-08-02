@@ -569,7 +569,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // nothing to do
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Helios is configured not to generate Export.Lua stub for {location.SavedGamesName}",
+                    Status = $"Helios is configured not to generate Export.lua stub for {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -582,7 +582,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 WriteFile(exportStubPath, _exportStub);
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Wrote new Export.Lua stub for {location.SavedGamesName}",
+                    Status = $"Wrote new Export.lua stub for {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -594,7 +594,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // file was written by us and is still unchanged
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Export.Lua stub is up to date for {location.SavedGamesName}",
+                    Status = $"Export.lua stub is up to date for {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -607,7 +607,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 WriteFile(exportStubPath, _exportStub);
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Wrote generated Export.Lua stub for {location.SavedGamesName}",
+                    Status = $"Wrote generated Export.lua stub for {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -618,7 +618,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // our main script is already called, no changes required
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Export.Lua stub for {location.SavedGamesName} already calls {ExportMainName} and won't be modified",
+                    Status = $"Export.lua stub for {location.SavedGamesName} already calls {ExportMainName} and won't be modified",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -631,7 +631,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 WriteFile(exportStubPath, contents.Replace("HeliosExport.lua", ExportMainName));
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Export.Lua stub for {location.SavedGamesName} changed to call {ExportMainName}",
+                    Status = $"Export.lua stub for {location.SavedGamesName} changed to call {ExportMainName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -644,7 +644,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 WriteFile(exportStubPath, _exportStub);
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Replaced Export.Lua stub for {location.SavedGamesName}",
+                    Status = $"Replaced Export.lua stub for {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -658,7 +658,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     $"{contents}{Environment.NewLine}dofile(lfs.writedir()..[[{location.ExportMainRelativePath(ExportMainName)}]]){Environment.NewLine}");
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Added call to {ExportMainName} to existing Export.Lua stub for {location.SavedGamesName}",
+                    Status = $"Added call to {ExportMainName} to existing Export.lua stub for {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -667,7 +667,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // NOTE: we should never get here if the code is correct
             report.Add(new StatusReportItem
             {
-                Status = $"Export.Lua stub for {location.SavedGamesName} cannot be updated because it is not understood by Helios",
+                Status = $"Export.lua stub for {location.SavedGamesName} cannot be updated because it is not understood by Helios",
                 Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             });
         }
@@ -1147,7 +1147,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // file was written by us and is still unchanged
                 return new StatusReportItem
                 {
-                    Status = $"Generated Export.Lua stub is up to date for {location.SavedGamesName}",
+                    Status = $"Generated Export.lua stub is up to date for {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
@@ -1157,7 +1157,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // our main script is already called, no changes required
                 return new StatusReportItem
                 {
-                    Status = $"Export.Lua stub for {location.SavedGamesName} calls {ExportMainName}",
+                    Status = $"Export.lua stub for {location.SavedGamesName} calls {ExportMainName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
@@ -1167,7 +1167,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // CZ style Export.lua
                 return new StatusReportItem
                 {
-                    Status = $"Export.Lua stub for {location.SavedGamesName} looks like a Helios 1.4 stub that needs an upgrade",
+                    Status = $"Export.lua stub for {location.SavedGamesName} looks like a Helios 1.4 stub that needs an upgrade",
                     Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
@@ -1179,7 +1179,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // we don't know how to check this type of script that is not a stub
                 return new StatusReportItem
                 {
-                    Status = $"Export.Lua for {location.SavedGamesName} looks like a complete export script that needs an upgrade",
+                    Status = $"Export.lua for {location.SavedGamesName} looks like a complete export script that needs an upgrade",
                     Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
@@ -1191,7 +1191,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // need to add a dofile line to a file already in that style
                 return new StatusReportItem
                 {
-                    Status = $"Export.Lua stub for {location.SavedGamesName} does not call {ExportMainName}",
+                    Status = $"Export.lua stub for {location.SavedGamesName} does not call {ExportMainName}",
                     Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
@@ -1201,7 +1201,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // no idea what this is
             return new StatusReportItem
             {
-                Status = $"Export.Lua for {location.SavedGamesName} cannot be understood by Helios",
+                Status = $"Export.lua for {location.SavedGamesName} cannot be understood by Helios",
                 Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup for more instructions",
                 Severity = StatusReportItem.SeverityCode.Error
             };

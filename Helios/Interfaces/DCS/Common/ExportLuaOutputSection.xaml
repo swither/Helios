@@ -7,7 +7,7 @@
     xmlns:common="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
     xmlns:helios="clr-namespace:GadrocsWorkshop.Helios"
     d:DataContext="{d:DesignInstance Type=common:DCSInterfaceEditor}"
-    Header="DCS Export.Lua Output (Advanced)" 
+    Header="DCS Export.lua Output (Advanced)" 
     Margin="0,0,0,12" 
     IsExpanded="False" 
     Style="{StaticResource GroupBoxWithExpanderStyle}">
