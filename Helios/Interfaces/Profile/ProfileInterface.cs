@@ -286,6 +286,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                     Severity = StatusReportItem.SeverityCode.Error,
                     Link = StatusReportItem.ProfileEditor
                 });
+
+                foreach (Monitor display in Profile.CheckedDisplays)
+                {
+                    newReport.Add(new StatusReportItem
+                    {
+                        Status = $"Windows reports an attached display of size {display.Width}x{display.Height} at ({display.Left}, {display.Top})",
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                    });
+                }
             }
 
             foreach (Monitor monitor in Profile.Monitors)
@@ -295,25 +304,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                     Status = $"The profile declares a monitor of size {monitor.Width}x{monitor.Height} at ({monitor.Left}, {monitor.Top})",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
                 });
-            }
-
-            foreach (Monitor display in Profile.CheckedDisplays)
-            {
-#if false
-// code for when we are per-monitor DPI aware
-                display.GetDpi(NativeMethods.DpiType.Effective, out uint dpiX, out uint dpiY);
-                newReport.Add(new StatusReportItem
-                {
-                    Status = $"Windows reports an attached display of size {display.Width}x{display.Height} at ({display.Left}, {display.Top}) with DPI [{dpiX}:{dpiY}]",
-                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
-                });
-#else
-                newReport.Add(new StatusReportItem
-                {
-                    Status = $"Windows reports an attached display of size {display.Width}x{display.Height} at ({display.Left}, {display.Top})",
-                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
-                });
-#endif
             }
         }
 

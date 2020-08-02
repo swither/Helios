@@ -543,6 +543,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public override IEnumerable<StatusReportItem> PerformReadyCheck()
         {
+            // while we do not have the ability to measure the DPI setting for each screen, we just report the system dpi and an advisory message
+            // we always include this advisory because it is affecting basically all our widescreen users right now
+            int dpi = ConfigManager.DisplayManager.DPI;
+            yield return new StatusReportItem
+            {
+                Status = $"Windows reports a scaling value of {Math.Round(dpi / 0.96d)}% ({dpi} dpi)",
+                Recommendation = "This version of Helios does not support using different display scaling (DPI) on different monitors.  Make sure you use the same scaling value for all displays.",
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+            };
+
             if (!_parent.Profile.IsValidMonitorLayout)
             {
                 yield return new StatusReportItem
