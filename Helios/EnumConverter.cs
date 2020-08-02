@@ -140,10 +140,10 @@ namespace GadrocsWorkshop.Helios
             Logger.Debug("attempting to convert from {Value} to {Type}", value, targetType);
             if (!displayValues.Contains(value))
             {
-                Logger.Debug("value {Value} of type {Type} was not found in mappings:", value, value.GetType());
+                Logger.Warn("value {Value} of type {Type} was not found in mappings:", value, value.GetType());
                 foreach (DictionaryEntry displayValue in displayValues)
                 {
-                    Logger.Debug("{Source} of type {Type} -> {Target}", displayValue.Key, displayValue.Key.GetType(), displayValue.Value);
+                    Logger.Warn("{Source} of type {Type} -> {Target}", displayValue.Key, displayValue.Key.GetType(), displayValue.Value);
                 }
             }
             return displayValues[value];
