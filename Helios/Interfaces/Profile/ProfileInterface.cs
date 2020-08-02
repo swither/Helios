@@ -13,8 +13,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Runtime.CompilerServices;
-using System.Windows.Threading;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
 
@@ -23,8 +21,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
     using GadrocsWorkshop.Helios.ComponentModel;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
-    using System.Windows;
 
     [HeliosInterface("Helios.Base.ProfileInterface", "Profile", null, typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
     public class ProfileInterface : HeliosInterface, IStatusReportNotify, IResetMonitorsObserver, IReadyCheck
@@ -78,6 +76,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
             images.ImageLoadSuccess += Images_ImageLoadSuccess;
             images.ImageLoadFailure += Images_ImageLoadFailure;
+            Profile.PropertyChanged += Profile_PropertyChanged;
             Profile.ProfileStarted += Profile_ProfileStarted;
             Profile.ProfileStopped += Profile_ProfileStopped;
         }
@@ -90,6 +89,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
         private void Profile_ProfileStopped(object sender, EventArgs e)
         {
             // TODO stop trigger
+        }
+
+        private void Profile_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Profile.Path))
+            {
+                InvalidateStatusReport();
+            }
         }
 
         public override void Reset()
@@ -127,6 +134,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
             oldProfile.ProfileStopped -= Profile_ProfileStopped;
             oldProfile.ProfileStarted -= Profile_ProfileStarted;
+            oldProfile.PropertyChanged -= Profile_PropertyChanged;
             images.ImageLoadSuccess -= Images_ImageLoadSuccess;
             images.ImageLoadFailure -= Images_ImageLoadFailure;
         }
@@ -203,10 +211,41 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
         private void CreateStatusReport()
         {
             IList<StatusReportItem> newReport = new List<StatusReportItem>();
+            CheckProfile(newReport);
             CheckResetMonitors(newReport);
             CheckMissingimages(newReport);
             CheckExecutablePaths(newReport);
             PublishStatusReport(newReport);
+        }
+
+        private void CheckProfile(IList<StatusReportItem> newReport)
+        {
+            if (Profile == null)
+            {
+                // this is probably never displayed
+                newReport.Add(new StatusReportItem
+                {
+                    Status = "No profile loaded",
+                    Severity = StatusReportItem.SeverityCode.Warning
+                });
+                return;
+            }
+
+            if (string.IsNullOrEmpty(Profile.Path))
+            {
+                newReport.Add(new StatusReportItem
+                {
+                    Status = $"Profile is not yet named",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                });
+                return;
+            }
+
+            newReport.Add(new StatusReportItem
+            {
+                Status = $"Profile is '{Profile.Path}'",
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+            });
         }
 
         private void CheckMissingimages(IList<StatusReportItem> newReport)
@@ -247,14 +286,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                     Severity = StatusReportItem.SeverityCode.Error,
                     Link = StatusReportItem.ProfileEditor
                 });
-                foreach (Monitor display in Profile.CheckedDisplays)
-                {
-                    newReport.Add(new StatusReportItem
-                    {
-                        Status = $"Windows reports an attached display of size {display.Width}x{display.Height} at ({display.Left}, {display.Top})",
-                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
-                    });
-                }
             }
 
             foreach (Monitor monitor in Profile.Monitors)
@@ -264,6 +295,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                     Status = $"The profile declares a monitor of size {monitor.Width}x{monitor.Height} at ({monitor.Left}, {monitor.Top})",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
                 });
+            }
+
+            foreach (Monitor display in Profile.CheckedDisplays)
+            {
+#if false
+// code for when we are per-monitor DPI aware
+                display.GetDpi(NativeMethods.DpiType.Effective, out uint dpiX, out uint dpiY);
+                newReport.Add(new StatusReportItem
+                {
+                    Status = $"Windows reports an attached display of size {display.Width}x{display.Height} at ({display.Left}, {display.Top}) with DPI [{dpiX}:{dpiY}]",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                });
+#else
+                newReport.Add(new StatusReportItem
+                {
+                    Status = $"Windows reports an attached display of size {display.Width}x{display.Height} at ({display.Left}, {display.Top})",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                });
+#endif
             }
         }
 

@@ -22,8 +22,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     {
         [Description("Update file if possible")]
         Update,
-        [Description("Always overwrite file")] Replace,
-
+        [Description("Always overwrite file")] 
+        Replace,
         [Description("User will manage this file")]
         Ignore
     }

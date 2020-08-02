@@ -58,7 +58,7 @@
                 ItemsSource="{Binding Source={StaticResource ExportFileHandling}, Path=DisplayNames}"
                 SelectedItem="{Binding Path=Configuration.ExportLuaHandling, Converter={StaticResource ExportFileHandling}}" />
         </StackPanel>
-        <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}">Uncheck to generate only the export files in the Helios subdirectory, to use your own Export.lua stub that you already have.</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}">Controls how Helios Profile Editor will handle the Export.lua stub.</TextBlock>
 
         <GroupBox Grid.Row="4" Grid.Column="1" Header="Third Party Scripts" Margin="0,4,0,0" Style="{StaticResource AppliesIfDofilesAllowed}">
             <StackPanel>
