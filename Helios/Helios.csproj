@@ -76,6 +76,7 @@
     <Compile Include="Interfaces\DCS\Common\ExportFilesOutputSection.xaml.cs">
       <DependentUpon>ExportFilesOutputSection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\DCS\Common\ExportFileHandling.cs" />
     <Compile Include="Interfaces\DCS\Common\ExportLuaOutputSection.xaml.cs">
       <DependentUpon>ExportLuaOutputSection.xaml</DependentUpon>
     </Compile>
