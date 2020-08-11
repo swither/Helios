@@ -62,7 +62,8 @@ namespace GadrocsWorkshop.Helios.Patching
         {
             bool notInstalled = false;
             bool installed = false;
-            foreach (StatusReportItem result in Patches.Verify(Destination))
+            IList<StatusReportItem> verified = Patches.Verify(Destination).ToList();
+            foreach (StatusReportItem result in verified)
             {
                 // don't log these results, because Verify considers being out of date to be an error
                 if (result.Severity > StatusReportItem.SeverityCode.Warning)
@@ -77,7 +78,11 @@ namespace GadrocsWorkshop.Helios.Patching
                 }
             }
 
-            if (installed && notInstalled)
+            if (!verified.Any())
+            {
+                Status = StatusCodes.NotApplicable;
+            }
+            else if (installed && notInstalled)
             {
                 Status = StatusCodes.ResetRequired;
             }
@@ -93,6 +98,19 @@ namespace GadrocsWorkshop.Helios.Patching
 
         internal IList<StatusReportItem> RemoteApply()
         {
+            if (Status == StatusCodes.NotApplicable)
+            {
+                // there is nothing to do, so don't run the remote patch utility
+                return new List<StatusReportItem>
+                {
+                    new StatusReportItem
+                    {
+                        Status = $"No applicable patches for {Destination.LongDescription} since none of the patched files are present",
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    }
+                };
+            }
+
             if (string.IsNullOrEmpty(SelectedVersion))
             {
                 return new List<StatusReportItem>
@@ -113,6 +131,19 @@ namespace GadrocsWorkshop.Helios.Patching
 
         internal IList<StatusReportItem> RemoteRevert()
         {
+            if (Status == StatusCodes.NotApplicable)
+            {
+                // there is nothing to do, so don't run the remote patch/revert utility
+                return new List<StatusReportItem>
+                {
+                    new StatusReportItem
+                    {
+                        Status = $"No applicable patches to revert for {Destination.LongDescription} since none of the patched files are present",
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    }
+                };
+            }
+
             if (string.IsNullOrEmpty(SelectedVersion))
             {
                 return new List<StatusReportItem>

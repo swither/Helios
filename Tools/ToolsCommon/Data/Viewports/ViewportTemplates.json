@@ -146,8 +146,7 @@
     "viewports": [
       {
         "viewportName": "LEFT_MFCD",
-        "relativeInitFilePath":
-          "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/MDI_IP1556A/indicator/MDI_left_init.lua",
+        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/MDI_IP1556A/indicator/MDI_left_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
@@ -158,8 +157,7 @@
       },
       {
         "viewportName": "RIGHT_MFCD",
-        "relativeInitFilePath":
-          "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/MDI_IP1556A/indicator/MDI_right_init.lua",
+        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/MDI_IP1556A/indicator/MDI_right_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
@@ -181,8 +179,7 @@
       },
       {
         "viewportName": "CENTER_MFCD",
-        "relativeInitFilePath":
-          "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/AMPCD/indicator/AMPCD_init.lua",
+        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/AMPCD/indicator/AMPCD_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
@@ -483,6 +480,81 @@
         "width": 334,
         "height": 306
       }
+    ]
+  },
+  {
+    "templateName": "SA342",
+    "moduleId": "POLYCHOPSIM_SA342",
+    "viewports": [
+      {
+        "viewportname": "NADIR",
+        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/NADIR/init.lua", 
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 60,
+        "y": 500,
+        "width": 285,
+        "height": 156
+      },
+      {
+        "viewportname": "RWR",
+        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/RWR/indicator/init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 421,
+        "y": 15,
+        "width": 198,
+        "height": 198
+      },
+      {
+        "viewportname": "TV",
+        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/TV/indicator/init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 20,
+        "y": 6,
+        "width": 382,
+        "height": 308
+      },
+      {
+        "viewportname": "WP1",
+        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/WP1/init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 115,
+        "y": 451,
+        "width": 160,
+        "height": 27
+      },
+      {
+        "viewportname": "UHF",
+        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/RADIO/indicator/UHF/init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 140,
+        "y": 604,
+        "width": 100,
+        "height": 24
+      },
+      {
+        "viewportname": "FM",
+        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/RADIO/indicator/FM/init.lua", 
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 180,
+        "y": 387,
+        "width": 147,
+        "height": 20
+      },
+
+
+
     ]
   }
 ]

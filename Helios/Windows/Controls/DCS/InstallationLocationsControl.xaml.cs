@@ -47,12 +47,18 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             }
             InstallationLocations.Singleton.Enabled += Locations_Changed;
             InstallationLocations.Singleton.Disabled += Locations_Changed;
+
+            // we also need to register these, because another dialog could be editing this collection also
+            InstallationLocations.Singleton.Added += Locations_Changed;
+            InstallationLocations.Singleton.Removed += Locations_Changed;
         }
 
         public void Dispose()
         {
             InstallationLocations.Singleton.Enabled -= Locations_Changed;
             InstallationLocations.Singleton.Disabled -= Locations_Changed;
+            InstallationLocations.Singleton.Added -= Locations_Changed;
+            InstallationLocations.Singleton.Removed -= Locations_Changed;
         }
 
         private void Locations_Changed(object sender, InstallationLocations.LocationEvent e)

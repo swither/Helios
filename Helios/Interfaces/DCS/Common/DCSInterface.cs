@@ -199,7 +199,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-
         /// <summary>
         /// file base name (no path, no extension) for the ExportModuleText, because naming
         /// can differ across module formats
@@ -254,6 +253,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         internal void SaveSetting<T>(string key, T value)
         {
             ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, key, value);
+        }
+
+        internal bool HasSetting(string key)
+        {
+            return ConfigManager.SettingsManager.IsSettingAvailable(SETTINGS_GROUP, key) || ConfigManager.SettingsManager.IsSettingAvailable(Name, key);
         }
 
         protected override void AttachToProfileOnMainThread()

@@ -35,7 +35,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     [HeliosInterface("Patching.DCS.MonitorSetup", "DCS Monitor Setup", typeof(MonitorSetupEditor),
         Factory = typeof(UniqueHeliosInterfaceFactory))]
     public class MonitorSetup : HeliosInterface, IReadyCheck, IStatusReportNotify,
-        IShadowVisualParent, IInstallation, IExtendedDescription
+        IShadowVisualParent, IInstallation, IExtendedDescription, IResetMonitorsObserver
     {
         #region Delegates
 
@@ -96,9 +96,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         #region Private
 
         /// <summary>
-        /// live inventory of our profile, indexed by monitor key
+        /// live inventory of our profile, indexed by Helios monitor object
         /// </summary>
-        private readonly Dictionary<string, ShadowMonitor> _monitors = new Dictionary<string, ShadowMonitor>();
+        private readonly Dictionary<Monitor, ShadowMonitor> _monitors = new Dictionary<Monitor, ShadowMonitor>();
 
         private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
 
@@ -165,6 +165,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private bool _geometryChanging;
 
+        /// <summary>
+        /// if true, then monitors are either invalid or currently being reset, so we should not do any automatic configurations
+        /// </summary>
+        private bool _monitorsValid;
+
         #endregion
 
         public MonitorSetup()
@@ -204,6 +209,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 AddMonitor(monitor);
             }
 
+            // we only update our models if the monitor layout matches
+            _monitorsValid = Profile?.IsValidMonitorLayout ?? false;
+
+            // calculate initial geometry, if we can
             UpdateAllGeometry();
 
             // register for changes
@@ -243,7 +252,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void AddMonitor(Monitor monitor)
         {
             ShadowMonitor shadow = new ShadowMonitor(this, monitor);
-            _monitors[shadow.Key] = shadow;
+            _monitors[monitor] = shadow;
 
             // now that we can find the monitor in our index, we can safely add viewports
             // and other children
@@ -257,11 +266,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void RemoveMonitor(Monitor monitor)
         {
-            string key = ShadowMonitor.CreateKey(monitor);
-            ShadowMonitor shadow = _monitors[key];
+            ShadowMonitor shadow = _monitors[monitor];
             shadow.MonitorChanged -= Raw_MonitorChanged;
             MonitorRemoved?.Invoke(this, new ShadowMonitorEventArgs(shadow));
-            _monitors.Remove(key);
+            _monitors.Remove(monitor);
             shadow.Dispose();
         }
 
@@ -271,8 +279,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ViewportAdded?.Invoke(this, new ShadowViewportEventArgs(viewport));
 
             // update viewport count on hosting monitor
-            string monitorKey = ShadowMonitor.CreateKey(viewport.Monitor);
-            ShadowMonitor monitor = _monitors[monitorKey];
+            ShadowMonitor monitor = _monitors[viewport.Monitor];
             monitor.AddViewport();
 
             viewport.ViewportChanged += Raw_ViewportChanged;
@@ -288,8 +295,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             ViewportRemoved?.Invoke(this, new ShadowViewportEventArgs(viewport));
 
             // update viewport count on hosting monitor
-            string monitorKey = ShadowMonitor.CreateKey(viewport.Monitor);
-            ShadowMonitor monitor = _monitors[monitorKey];
+            ShadowMonitor monitor = _monitors[viewport.Monitor];
             monitor.RemoveViewport();
 
             // recalculate, delayed
@@ -331,9 +337,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// <param name="e"></param>
         private void Shadow_KeyChanged(object sender, ShadowMonitor.KeyChangeEventArgs e)
         {
-            ShadowMonitor renamed = _monitors[e.OldKey];
-            _monitors.Remove(e.OldKey);
-            _monitors[e.NewKey] = renamed;
+            // no code in this implementation, as we track monitors by the actual Helios Monitor object
         }
 
         /// <summary>
@@ -591,6 +595,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private void OnDelayedGeometryChange(object sender, EventArgs e)
         {
+            if (!_monitorsValid)
+            {
+                // don't process events if monitors are not valid
+                // we will schedule an update once they are
+                _geometryChangeTimer?.Stop();
+                return;
+            }
+
             // recursion prevention flag
             _geometryChanging = true;
             try
@@ -602,7 +614,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     // delivered late
                     return;
                 }
-
                 UpdateAllGeometry();
             }
             finally
@@ -626,12 +637,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private void CheckMonitorSettings()
         {
-            if (!Profile.IsValidMonitorLayout)
-            {
-                // hasn't been reset yet, these monitors aren't the ones will will use
-                return;
-            }
-
             // get the list of real monitors and all their serialized settings names
             HashSet<string> displayKeys = new HashSet<string>();
             foreach (Monitor monitor in ConfigManager.DisplayManager.Displays)
@@ -668,11 +673,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private string CalculateMonitorLayoutKey()
         {
-            if (!Profile.IsValidMonitorLayout)
-            {
-                return null;
-            }
-
             IEnumerable<string> keys = Monitors
                 .Where(m => m.Included)
                 .OrderBy(m => m.Monitor.Left)
@@ -693,6 +693,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void UpdateAllGeometry()
         {
+            if (!_monitorsValid)
+            {
+                // don't process events if monitors are not valid
+                // we will schedule an update once they are
+                MonitorLayoutKey = null;
+                return;
+            }
             CheckMonitorSettings();
             AutoSelectMainView();
             AutoSelectUserInterfaceView();
@@ -1048,6 +1055,26 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         public string StatusName => Name;
+
+        #endregion
+
+        #region IResetMonitorsObserver
+
+        public void NotifyResetMonitorsStarting()
+        {
+            // not volatile, only main thread access
+            _monitorsValid = false;
+        }
+
+        public void NotifyResetMonitorsComplete()
+        {
+            // not volatile, only main thread access
+            _monitorsValid = Profile?.IsValidMonitorLayout ?? false;
+            if (_monitorsValid)
+            {
+                ScheduleGeometryChange();
+            }
+        }
 
         #endregion
     }

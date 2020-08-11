@@ -75,12 +75,15 @@ namespace GadrocsWorkshop.Helios.Patching
 
         private void UpdateStatus()
         {
-            StatusCodes newStatus = StatusCodes.UpToDate;
             if (!_destinations.Values.Any(d => d.Enabled))
             {
-                newStatus = StatusCodes.NoLocations;
+                Status = StatusCodes.NoLocations;
+                return;
             }
 
+            // calculate overall status
+            StatusCodes newStatus = StatusCodes.NotApplicable;
+            bool someUpToDate = false;
             foreach (PatchApplication status in _destinations.Values)
             {
                 if (!status.Enabled)
@@ -97,6 +100,8 @@ namespace GadrocsWorkshop.Helios.Patching
                         // don't end iteration, need to check for failures
                         break;
                     case StatusCodes.UpToDate:
+                        // don't end iteration, need to check for failures and out of date things
+                        someUpToDate = true;
                         break;
                     case StatusCodes.Incompatible:
                         // any destination being incompatible counts
@@ -106,6 +111,9 @@ namespace GadrocsWorkshop.Helios.Patching
                         // any destination being dirty counts
                         Status = StatusCodes.ResetRequired;
                         return;
+                    case StatusCodes.NotApplicable:
+                        // this never changes the status; ignore
+                        break;
                     case StatusCodes.NoLocations:
                     case StatusCodes.ResetMonitorsRequired:
                     case StatusCodes.ProfileSaveRequired:
@@ -114,6 +122,11 @@ namespace GadrocsWorkshop.Helios.Patching
                 }
             }
 
+            if (newStatus == StatusCodes.NotApplicable && someUpToDate)
+            {
+                // at least some patches were applied
+                newStatus = StatusCodes.UpToDate;
+            }
             Status = newStatus;
         }
 
@@ -181,6 +194,7 @@ namespace GadrocsWorkshop.Helios.Patching
             {
                 if (!item.Enabled)
                 {
+                    // destination is not selected for writing
                     continue;
                 }
 
@@ -279,7 +293,9 @@ namespace GadrocsWorkshop.Helios.Patching
             // special check that is not handled by UpdateStatus, because we are technically in a state that just means
             // we have to reinstall some patches, but this still means something went wrong in reverting patches, such as
             // user cancellation
-            if (_destinations.Values.Any(d => d.Enabled && d.Status != StatusCodes.OutOfDate))
+            if (_destinations.Values.Any(d => d.Enabled 
+                                              && d.Status != StatusCodes.OutOfDate
+                                              && d.Status != StatusCodes.NotApplicable))
             {
                 // revert completed, but not everything was done
                 callbacks.Failure($"{_patchSetDescription} removal incomplete", "Some patches were not reverted", results);

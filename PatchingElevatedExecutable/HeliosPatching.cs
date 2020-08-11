@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 using GadrocsWorkshop.Helios;
 using GadrocsWorkshop.Helios.Patching;
 using GadrocsWorkshop.Helios.Patching.DCS;
@@ -25,7 +26,7 @@ namespace HeliosVirtualCockpit.Helios.HeliosPatching
             if (args.Length < 2)
             {
                 // tell users to go away and not try to use this executable even though it is in the installation folder
-                Console.Error.WriteLine("Do not execute this program.  It is a system process used by Helios Profile Editor.");
+                MessageBox.Show("Do not execute this program.  It is a system process used by Helios Profile Editor.", "HeliosPatching Utility Executable");
                 return;
             }
             // start only enough of Helios to support logging

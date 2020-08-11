@@ -33,7 +33,8 @@ namespace ToolsCommon
             {"HEATBLUR_F-14", "F-14"},
             {"M-2000C", "M2000C"},
             {"Mi-8MTV2", "Mi-8"},
-            {"MIG-21bis", "MiG-21"}
+            {"MIG-21bis", "MiG-21"},
+            {"POLYCHOPSIM_SA342", "SA342"} // NOTE: no dash in this name
         };
 
         // REVISIT these will go away when we get the new ViewportTemplates format with the prefix in the file
@@ -42,7 +43,8 @@ namespace ToolsCommon
             // make these fit in with template / control categories in Helios UI
             {"HEATBLUR_F-14", "F-14"},
             {"Mi-8MTV2", "Mi-8"},
-            {"MIG-21bis", "MiG-21"}
+            {"MIG-21bis", "MiG-21"},
+            {"POLYCHOPSIM_SA342", "SA342"} // NOTE: no dash in this name
         };
 
         [JsonProperty("templateName")] public string TemplateName { get; set; }

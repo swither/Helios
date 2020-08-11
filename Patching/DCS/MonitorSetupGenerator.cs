@@ -80,7 +80,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// <returns></returns>
         private IEnumerable<StatusReportItem> UpdateMonitorSetup(MonitorSetupTemplate template, bool verbose)
         {
-            List<string> lines = CreateHeader(template);
+            List<FormattableString> lines = CreateHeader(template);
 
             foreach (StatusReportItem item in GatherViewports(template))
             {
@@ -90,7 +90,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // emit in sorted canonical order so we can compare files later
             foreach (KeyValuePair<string, Rect> viewport in _allViewports.Viewports.OrderBy(p => p.Key))
             {
-                if (TryCreateViewport(lines, viewport, out string code))
+                if (TryCreateViewport(lines, viewport, out FormattableString code))
                 {
                     yield return new StatusReportItem
                     {
@@ -183,22 +183,24 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // set up required names for viewports (well-known to DCS)
             lines.Add($"UIMainView = {uiViewName}");
-            lines.Add("GU_MAIN_VIEWPORT = Viewports.Center");
+            lines.Add($"GU_MAIN_VIEWPORT = Viewports.Center");
 
-            foreach (string line in lines)
+            foreach (FormattableString line in lines)
             {
-                ConfigManager.LogManager.LogDebug(line);
+                ConfigManager.LogManager.LogDebug(FormattableString.Invariant(line));
             }
 
             if (template.Combined)
             {
-                _combinedMonitorSetup = string.Join("\n", lines);
+                _combinedMonitorSetup = Render(lines);
             }
             else
             {
-                _monitorSetup = string.Join("\n", lines);
+                _monitorSetup = Render(lines);
             }
         }
+
+        private static string Render(IEnumerable<FormattableString> lines) => string.Join(Environment.NewLine, lines.Select(FormattableString.Invariant));
 
         internal void ConvertToDCS(ref Rect windowsRect)
         {
@@ -206,7 +208,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             windowsRect.Scale(ConfigManager.DisplayManager.PixelsPerDip, ConfigManager.DisplayManager.PixelsPerDip);
         }
 
-        private bool TryCreateViewport(List<string> lines, KeyValuePair<string, Rect> viewport, out string code)
+        private bool TryCreateViewport(ICollection<FormattableString> lines, KeyValuePair<string, Rect> viewport, out FormattableString code)
         {
             Rect viewportRect = viewport.Value;
             viewportRect.Intersect(_parent.Rendered);
@@ -225,32 +227,32 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             return true;
         }
 
-        private static List<string> CreateHeader(MonitorSetupTemplate template)
+        private static List<FormattableString> CreateHeader(MonitorSetupTemplate template)
         {
-            List<string> lines = new List<string>
+            List<FormattableString> lines = new List<FormattableString>
             {
                 // NOTE: why do we need to run this string through a local function?  does this create a ref somehow or prevent string interning?
-                "_  = function(p) return p end",
+                $"_  = function(p) return p end",
                 $"name = _('{template.MonitorSetupName}')",
                 $"description = 'Generated from {template.SourcesList}'"
             };
             return lines;
         }
 
-        private static void CreateMainView(List<string> lines, Rect mainView)
+        private static void CreateMainView(List<FormattableString> lines, Rect mainView)
         {
             // calling the MAIN viewport "Center" to match DCS' built-in monitor setups, even though it doesn't matter
-            lines.Add("Viewports = {");
-            lines.Add("  Center = {");
+            lines.Add($"Viewports = {{");
+            lines.Add($"  Center = {{");
             lines.Add($"    x = {mainView.Left},");
             lines.Add($"    y = {mainView.Top},");
             lines.Add($"    width = {mainView.Width},");
             lines.Add($"    height = {mainView.Height},");
             lines.Add($"    aspect = {mainView.Width / mainView.Height},");
-            lines.Add("    dx = 0,");
-            lines.Add("    dy = 0");
-            lines.Add("  }");
-            lines.Add("}");
+            lines.Add($"    dx = 0,");
+            lines.Add($"    dy = 0");
+            lines.Add($"  }}");
+            lines.Add($"}}");
         }
 
         private IEnumerable<StatusReportItem> UpdateLocalViewports(MonitorSetupTemplate template)
@@ -447,14 +449,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// <param name="uiView"></param>
         /// <param name="uiViewName"></param>
         /// <returns></returns>
-        public StatusReportItem CreateUserInterfaceViewIfRequired(List<string> lines, Rect mainView, Rect uiView,
+        public StatusReportItem CreateUserInterfaceViewIfRequired(List<FormattableString> lines, Rect mainView, Rect uiView,
             out string uiViewName)
         {
-            string comment;
+            FormattableString comment;
             if (uiView != mainView)
             {
                 uiViewName = "UI";
-                string code =
+                FormattableString code =
                     $"{uiViewName} = {{ x = {uiView.Left}, y = {uiView.Top}, width = {uiView.Width}, height = {uiView.Height} }}";
                 comment = code;
                 lines.Add(code);
@@ -462,12 +464,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             else
             {
                 uiViewName = "Viewports.Center";
-                comment = "UI = MAIN";
+                comment = $"UI = MAIN";
             }
 
             return new StatusReportItem
             {
-                Status = comment,
+                Status = FormattableString.Invariant(comment),
                 Flags = StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
         }
@@ -541,6 +543,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public override IEnumerable<StatusReportItem> PerformReadyCheck()
         {
+            // while we do not have the ability to measure the DPI setting for each screen, we just report the system dpi and an advisory message
+            // we always include this advisory because it is affecting basically all our widescreen users right now
+            int dpi = ConfigManager.DisplayManager.DPI;
+            yield return new StatusReportItem
+            {
+                Status = $"Windows reports a scaling value of {Math.Round(dpi / 0.96d)}% ({dpi} dpi)",
+                Recommendation = "This version of Helios does not support using different display scaling (DPI) on different monitors.  Make sure you use the same scaling value for all displays.",
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+            };
+
             if (!_parent.Profile.IsValidMonitorLayout)
             {
                 yield return new StatusReportItem
@@ -558,7 +570,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status =
-                        "You must save the profile before you can use Monitor Setup, because it uses the profile name as the name of the monitor setup",
+                        "You must save the profile before you can use Monitor Setup, because it needs to know the profile name",
                     Recommendation = "Save the profile at least once before configuring Monitor Setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error

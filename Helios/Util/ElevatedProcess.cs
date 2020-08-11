@@ -27,6 +27,7 @@ namespace GadrocsWorkshop.Helios.Util
 {
     public class OneMessageStream : Stream
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private NamedPipeClientStream _connection;
         private bool _didReadSomething;
 
@@ -52,15 +53,20 @@ namespace GadrocsWorkshop.Helios.Util
             if (_connection.IsMessageComplete && _didReadSomething)
             {
                 // end of stream
+                Logger.Debug("complete message received; ending stream");
                 return 0;
             }
 
             int result =_connection.Read(buffer, offset, count);
             if (result > 0)
             {
+                Logger.Debug($"received {result} bytes for total of {offset + result}");
                 _didReadSomething = true;
             }
-
+            else
+            {
+                Logger.Debug($"ending stream on read result of {result}");
+            }
             return result;
         }
 

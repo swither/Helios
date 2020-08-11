@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,6 +26,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
@@ -55,6 +57,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     /// </summary>
     public class DCSExportConfiguration : DCSConfiguration
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public class ModuleFormatInfo
         {
             public string DisplayName { get; internal set; }
@@ -89,7 +93,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             };
 
         // the main export script we generate
-        private const string EXPORT_MAIN_NAME = "HeliosExport16.lua";
+        private const string ExportMainName = "HeliosExport16.lua";
+
+        // regex used to check for the call to our main exports already being present
+        private static readonly Regex ExportMainCall = new Regex($"dofile\\(.*{ExportMainName}.]?\\)", RegexOptions.Compiled);
+
+        // regex used to check for a Capt Zeen style Export.lua from 1.4
+        private static readonly Regex HeliosExport14Call = new Regex($"dofile\\(.*HeliosExport\\.lua.]?\\)", RegexOptions.Compiled);
+
+        // regex used to check for a non trivial Export.lua that registers its own handlers
+        private static readonly Regex LuaExportStartCall = new Regex("^\\s*(function\\s+)?LuaExportStart", RegexOptions.Compiled | RegexOptions.Multiline);
+
+        // regex used to check for dofile calls in Export.lua
+        private static readonly Regex DofileCall = new Regex("^\\s*[^-].*dofile\\(.*\\)", RegexOptions.Compiled | RegexOptions.Multiline);
 
         // the interface that owns this object, and for which we generate the Exports
         private readonly DCSInterface _parent;
@@ -120,11 +136,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private int _exportFrequency;
 
         /// <summary>
-        /// generate Export.lua stub or just Scripts/Helios/...?
-        /// </summary>
-        private bool _generateExportLoader;
-
-        /// <summary>
         /// backing field for property CanAttachModuleFile, contains
         /// true if a module of the currently selected ExportModuleFormat can be attached
         /// </summary>
@@ -142,7 +153,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         private string _moduleFolderGuess;
 
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// backing field for property Status, contains
+        /// the status of the configuration, including up to date, out of date, or lack of locations
+        /// </summary>
+        private StatusCodes _status;
+
+        /// <summary>
+        /// backing field for property ExportLuaHandling, contains
+        /// selected mode for Export.lua stub configuration
+        /// </summary>
+        private ExportFileHandling _exportLuaHandling;
 
         public DCSExportConfiguration(DCSInterface parent)
         {
@@ -151,9 +172,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // get global configuration parameters that are not serialized to the profile
             _ipAddress = _parent.LoadSetting("IPAddress", "127.0.0.1");
             _exportFrequency = _parent.LoadSetting("ExportFrequency", 15);
-            _generateExportLoader = _parent.LoadSetting("GenerateExportLoader", true);
             _exportModuleText = _parent.ExportModuleText;
 
+            // load dofiles settings first, because we may need that for upgrade 
             string savedDoFiles = _parent.LoadSetting("DoFiles", "");
             foreach (string file in savedDoFiles.Split(','))
             {
@@ -161,6 +182,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 {
                     DoFiles.Add(file);
                 }
+            }
+
+            if (_parent.HasSetting("ExportLuaHandling"))
+            {
+                _exportLuaHandling = _parent.LoadSetting("ExportLuaHandling", ExportFileHandling.Update);
+            }
+            else
+            {
+                // try to infer settting from legacy configuration
+                CalculateExportLuaHandling();
             }
 
             // create our current config for status reporting
@@ -182,6 +213,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             // some properties in our parent object are relevant to us
             _parent.PropertyChanged += Parent_PropertyChanged;
+        }
+
+        private void CalculateExportLuaHandling()
+        {
+            // upgrade from previous version's configuration
+            bool generateExportLoader = _parent.LoadSetting("GenerateExportLoader", true);
+            if (generateExportLoader)
+            {
+                // only overwrite if we have dofile lines configured
+                _exportLuaHandling = DoFiles.Any() ? ExportFileHandling.Replace : ExportFileHandling.Update;
+            }
+            else
+            {
+                // we were configured to ignore the Export.lua file
+                _exportLuaHandling = ExportFileHandling.Ignore;
+            }
+
+            // write this here instead of setting the property, because we don't want to notify
+            _parent.SaveSetting("ExportLuaHandling", _exportLuaHandling);
         }
 
         private void Parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -224,6 +274,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         /// <summary>
         /// true if a module of the currently selected ExportModuleFormat can be attached
+        /// REVISIT: this is really part of view model
         /// </summary>
         public bool CanAttachModuleFile
         {
@@ -359,28 +410,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 
         /// <summary>
-        /// If true, we generate the Scripts/Export.lua stub in addition to the files in Scripts/Helios
-        /// This is a site-specific setting persisted in HeliosSettings instead of in the profile.
-        /// </summary>
-        public bool GenerateExportLoader
-        {
-            get => _generateExportLoader;
-            set
-            {
-                bool oldValue = _generateExportLoader;
-                if (oldValue == value)
-                {
-                    return;
-                }
-
-                _generateExportLoader = value;
-                _parent.SaveSetting("GenerateExportLoader", _generateExportLoader);
-                OnPropertyChanged("GenerateExportLoader", oldValue, value, false);
-            }
-        }
-
-        /// <summary>
         /// our best guess for the folder where the module we might want to attach would be located
+        /// REVISIT: this is really part of view model
         /// </summary>
         public string ModuleFolderGuess
         {
@@ -395,13 +426,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 
         /// <summary>
-        /// backing field for property Status, contains
         /// the status of the configuration, including up to date, out of date, or lack of locations
-        /// </summary>
-        private StatusCodes _status;
-
-        /// <summary>
-        /// the status of the configuration, including up to date, out of date, or lack of locations
+        /// REVISIT: this is really part of view model
         /// </summary>
         public StatusCodes Status
         {
@@ -414,6 +440,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 OnPropertyChanged("Status", oldValue, value, true);
             }
         }
+
+        /// <summary>
+        /// selected mode for Export.lua stub configuration
+        /// </summary>
+        public ExportFileHandling ExportLuaHandling
+        {
+            get => _exportLuaHandling;
+            set
+            {
+                if (_exportLuaHandling == value) return;
+                ExportFileHandling oldValue = _exportLuaHandling;
+                _exportLuaHandling = value;
+                _parent.SaveSetting("ExportLuaHandling", value);
+                OnPropertyChanged("ExportLuaHandling", oldValue, value, true);
+
+                _parent.InvalidateStatusReport();
+            }
+        }
+
         #endregion
 
         // view model functionality is embedded in this model class
@@ -459,23 +504,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // pass1: get permissions
                 foreach (InstallationLocation location in InstallationLocations.Singleton.Active)
                 {
-                    if (_generateExportLoader)
+                    if (!AuthorizeExportStubChanges(callbacks, location))
                     {
-                        string exportStubPath = location.ExportStubPath;
-                        if (File.Exists(exportStubPath))
-                        {
-                            string contents = ReadFile(exportStubPath);
-                            if (contents != _exportStub)
-                            {
-                                InstallationPromptResult response = callbacks.DangerPrompt("Overwrite Export.lua",
-                                    $"Helios is about to overwrite the Export.lua script \nat {exportStubPath}\nThis file could have been created by third party software or a previous version.  Please make sure you have saved this file if you still need its contents.", new List<StatusReportItem>());
-                                if (response == InstallationPromptResult.Cancel)
-                                {
-                                    // abort
-                                    return InstallationResult.Canceled;
-                                }
-                            }
-                        }
+                        return InstallationResult.Canceled;
                     }
                 }
 
@@ -488,23 +519,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         Directory.CreateDirectory(location.ExportModuleDirectory(moduleInfo.ModuleLocation));
                     }
 
-                    // write all the generated files
-                    if (_generateExportLoader)
-                    {
-                        string exportStubPath = location.ExportStubPath;
-                        WriteFile(exportStubPath, _exportStub);
-                        report.Add(new StatusReportItem
-                        {
-                            Status = $"Wrote Export.Lua stub for {location.SavedGamesName}",
-                            Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
-                        });
-                    }
+                    // actually modify the file if we have to
+                    InstallExportStub(location, report);
 
                     // main export script is required
-                    File.WriteAllText(location.ExportMainPath(EXPORT_MAIN_NAME), _exportMain);
+                    File.WriteAllText(location.ExportMainPath(ExportMainName), _exportMain);
                     report.Add(new StatusReportItem
                     {
-                        Status = $"Wrote main export file {EXPORT_MAIN_NAME} for {location.SavedGamesName}",
+                        Status = $"Wrote main export file {ExportMainName} for {location.SavedGamesName}",
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     });
 
@@ -540,6 +562,200 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
+        private void InstallExportStub(InstallationLocation location, List<StatusReportItem> report)
+        {
+            if (ExportLuaHandling == ExportFileHandling.Ignore)
+            {
+                // nothing to do
+                report.Add(new StatusReportItem
+                {
+                    Status = $"Helios is configured not to generate Export.lua stub for {location.SavedGamesName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
+                return;
+            }
+
+            string exportStubPath = location.ExportStubPath;
+            if (!File.Exists(exportStubPath))
+            {
+                // clean script folder, we can just write our default stub
+                WriteFile(exportStubPath, _exportStub);
+                report.Add(new StatusReportItem
+                {
+                    Status = $"Wrote new Export.lua stub for {location.SavedGamesName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
+                return;
+            }
+
+            string contents = ReadFile(exportStubPath);
+            if (contents == _exportStub)
+            {
+                // file was written by us and is still unchanged
+                report.Add(new StatusReportItem
+                {
+                    Status = $"Export.lua stub is up to date for {location.SavedGamesName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
+                return;
+            }
+
+            if (ExportLuaHandling == ExportFileHandling.Replace)
+            {
+                // force write
+                BackupExportStub(location);
+                WriteFile(exportStubPath, _exportStub);
+                report.Add(new StatusReportItem
+                {
+                    Status = $"Wrote generated Export.lua stub for {location.SavedGamesName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
+                return;
+            }
+
+            if (ExportMainCall.IsMatch(contents))
+            {
+                // our main script is already called, no changes required
+                report.Add(new StatusReportItem
+                {
+                    Status = $"Export.lua stub for {location.SavedGamesName} already calls {ExportMainName} and won't be modified",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
+                return;
+            }
+
+            if (HeliosExport14Call.IsMatch(contents))
+            {
+                // change CZ style Export.lua to call new exports
+                BackupExportStub(location);
+                WriteFile(exportStubPath, contents.Replace("HeliosExport.lua", ExportMainName));
+                report.Add(new StatusReportItem
+                {
+                    Status = $"Export.lua stub for {location.SavedGamesName} changed to call {ExportMainName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
+                return;
+            }
+
+            if (LuaExportStartCall.IsMatch(contents))
+            {
+                // replace entire file because we don't know how to handle it, make user do it
+                BackupExportStub(location);
+                WriteFile(exportStubPath, _exportStub);
+                report.Add(new StatusReportItem
+                {
+                    Status = $"Replaced Export.lua stub for {location.SavedGamesName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
+                return;
+            }
+
+            if (DofileCall.IsMatch(contents))
+            {
+                // add a dofile line to a file already in that style
+                BackupExportStub(location);
+                WriteFile(exportStubPath,
+                    $"{contents}{Environment.NewLine}dofile(lfs.writedir()..[[{location.ExportMainRelativePath(ExportMainName)}]]){Environment.NewLine}");
+                report.Add(new StatusReportItem
+                {
+                    Status = $"Added call to {ExportMainName} to existing Export.lua stub for {location.SavedGamesName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
+                return;
+            }
+
+            // NOTE: we should never get here if the code is correct
+            report.Add(new StatusReportItem
+            {
+                Status = $"Export.lua stub for {location.SavedGamesName} cannot be updated because it is not understood by Helios",
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+            });
+        }
+
+        private void BackupExportStub(InstallationLocation location)
+        {
+            string dateStamp = DateTime.Now.ToString("yyyyMMdd", DateTimeFormatInfo.InvariantInfo);
+            // even for debugging, only create this many backups in one day to guard against program error creating them in a loop
+            for (int counter = 0; counter < 10; counter++)
+            {
+                string suffix = counter > 0 ? $".{counter}" : "";
+                string backupPath = Path.Combine(location.ScriptDirectoryPath, $"Export.lua.backup.{dateStamp}{suffix}.txt");
+                if (!File.Exists(backupPath))
+                {
+                    File.Copy(location.ExportStubPath, backupPath);
+                    return;
+                }
+            }
+            string lastResortPath = Path.Combine(location.ScriptDirectoryPath, $"Export.lua.backup.{dateStamp}.overflow.txt");
+            if (File.Exists(lastResortPath))
+            {
+                File.Delete(lastResortPath);
+            }
+            File.Copy(location.ExportStubPath, lastResortPath);
+        }
+
+        private bool AuthorizeExportStubChanges(IInstallationCallbacks callbacks, InstallationLocation location)
+        {
+            if (ExportLuaHandling == ExportFileHandling.Ignore)
+            {
+                // we are not going to write Export.lua
+                return true;
+            }
+
+            string exportStubPath = location.ExportStubPath;
+            if (!File.Exists(exportStubPath))
+            {
+                // clean script folder, we can just write our default stub
+                return true;
+            }
+
+            string contents = ReadFile(exportStubPath);
+            if (contents == _exportStub)
+            {
+                // file was written by us and is still unchanged
+                return true;
+            }
+
+            InstallationPromptResult response;
+            if (ExportLuaHandling == ExportFileHandling.Replace)
+            {
+                response = callbacks.DangerPrompt("Replace Export.lua",
+                    $"Helios is about to overwrite the Export.lua script \nat {exportStubPath}.\nHelios is configured to generate this entire file including any third party dofile lines. A backup copy of this file will be left in the same folder.  You can also configure Helios to just update the file if you want to make changes yourself.",
+                    new List<StatusReportItem>());
+            }
+            else if (ExportMainCall.IsMatch(contents))
+            {
+                // our main script is already called, no changes required
+                return true;
+            }
+            else if (HeliosExport14Call.IsMatch(contents))
+            {
+                response = callbacks.DangerPrompt("Upgrade Export.lua",
+                    $"Helios is about to change the Export.lua script \nat {exportStubPath}\nto call the new main export script {ExportMainName}.  A backup copy of this file will be left in the same folder.",
+                    new List<StatusReportItem>());
+            }
+            else if (LuaExportStartCall.IsMatch(contents))
+            {
+                response = callbacks.DangerPrompt("Overwrite Export.lua",
+                    $"Helios is about to overwrite the Export.lua script \nat {exportStubPath}.\nThis file could have been created by third party software or a previous version and it appears to be a complete export file, such as created by Helios 1.4.  This version of Helios requires an Export.lua stub file with dofile(...) calls in it to be combined with other applications requiring exports.  Helios will overwrite this file and you will need to add support for third party scripts to it yourself.  A backup copy of this file will be left in the same folder.",
+                    new List<StatusReportItem>());
+            }
+            else if (DofileCall.IsMatch(contents))
+            {
+                response = callbacks.DangerPrompt("Configure Export.lua",
+                    $"Helios is about add a line to the Export.lua script \nat {exportStubPath}.\nThis line will call the main export script {ExportMainName} to allow sending data to Helios.  A backup copy of this file will be left in the same folder.",
+                    new List<StatusReportItem>());
+            }
+            else
+            {
+                callbacks.Failure("Unrecognized Export.lua",
+                    $"Helios cannot understand the Export.lua script\nat {exportStubPath}.\nIn order to install this version of Helios, you will need to rename this script and then configure this interface again.  Afterwards, you can edit this file again to add your changes.  Alternatively, you can configure Helios not to create Export.lua at all if you have an unusual Export.lua that works with this version of Helios.",
+                    new List<StatusReportItem>());
+                return false;
+            }
+            return (response != InstallationPromptResult.Cancel);
+        }
+
         /// <summary>
         /// utility for checking if everything is up to date while editing in the UI,
         /// which is not the same as performing the ready check at run time
@@ -548,7 +764,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         internal IList<StatusReportItem> CheckConfig()
         {
             List<StatusReportItem> report = new List<StatusReportItem>();
-            IList<InstallationLocation> installationLocations = InstallationLocations.Singleton.Active;
+
+            // report all locations but only retain the enabled ones
+            IList<InstallationLocation> installationLocations = InstallationLocations.Singleton.Items
+                .Select(location =>
+                {
+                    report.Add(ReportLocation(location));
+                    return location;
+                })
+                .Where(location => location.IsEnabled)
+                .ToList();
+
             if (!installationLocations.Any())
             {
                 report.Add(new StatusReportItem
@@ -562,15 +788,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
 
             // export.lua generation is optional, so we have to pick the correct function to check it
-            Func<InstallationLocation, StatusReportItem> stubChecker;
-            if (GenerateExportLoader)
-            {
-                stubChecker = CheckExportStub;
-            }
-            else
-            {
-                stubChecker = CheckThirdPartyExportStub;
-            }
+            Func<InstallationLocation, StatusReportItem> stubChecker = SelectStubChecker();
 
             foreach (InstallationLocation location in installationLocations)
             {
@@ -603,6 +821,38 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             return report;
         }
 
+        private Func<InstallationLocation, StatusReportItem> SelectStubChecker()
+        {
+            Func<InstallationLocation, StatusReportItem> stubChecker;
+            switch (ExportLuaHandling)
+            {
+                case ExportFileHandling.Update:
+                    stubChecker = CheckUpdatedExportStub;
+                    break;
+                case ExportFileHandling.Replace:
+                    stubChecker = CheckGeneratedExportStub;
+                    break;
+                case ExportFileHandling.Ignore:
+                    stubChecker = CheckThirdPartyExportStub;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return stubChecker;
+        }
+
+        private static StatusReportItem ReportLocation(InstallationLocation location)
+        {
+            string statusPrefix = location.IsEnabled ? "" : "Not writing to ";
+            return new StatusReportItem
+            {
+                Status =
+                    $"{statusPrefix}DCS version {location.Version} installed at '{location.Path}' with Saved Games at '{location.SavedGamesPath}'",
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+            };
+        }
+
         /// <summary>
         /// main entry point for run time readiness check with a human readable narrative
         /// </summary>
@@ -626,7 +876,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 };
             }
 
-            IList<InstallationLocation> installationLocations = InstallationLocations.Singleton.Active;
+            // report all locations but only retain the enabled ones
+            IList<InstallationLocation> installationLocations = new List<InstallationLocation>();
+            foreach (InstallationLocation location in InstallationLocations.Singleton.Items)
+            {
+                yield return ReportLocation(location);
+                if (location.IsEnabled)
+                {
+                    installationLocations.Add(location);
+                }
+            }
+
             if (!installationLocations.Any())
             {
                 yield return new StatusReportItem
@@ -641,21 +901,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             ModuleFormatInfo moduleInfo = ExportModuleFormatInfo[_parent.ExportModuleFormat];
             foreach (InstallationLocation location in installationLocations)
             {
-                // check on the Export.lua stub, if applicable
-                if (GenerateExportLoader)
-                {
-                    UpdateExportStub();
-                    yield return CheckExportStub(location);
-                }
-                else
-                {
-                    yield return CheckThirdPartyExportStub(location);
-                }
+                // check on the Export.lua stub
+                UpdateExportStub();
+                yield return SelectStubChecker()(location);
 
                 // check on our main script
                 UpdateExportScript();
                 yield return CheckExportScript(location);
-
 
                 if (string.IsNullOrEmpty(_parent.ExportModuleBaseName) && !moduleInfo.CanGenerate)
                 {
@@ -701,7 +953,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private void UpdateExportScript()
         {
             _exportMain = Resources
-                .ReadResourceFile($"pack://application:,,,/Helios;component/Interfaces/DCS/Common/{EXPORT_MAIN_NAME}")
+                .ReadResourceFile($"pack://application:,,,/Helios;component/Interfaces/DCS/Common/{ExportMainName}")
+                // TODO: validate the IP address against allowable protocol versions and address types for this version of HeliosExport__.lua
                 .Replace("HELIOS_REPLACE_IPAddress", IPAddress)
                 .Replace("HELIOS_REPLACE_Port", Port.ToString())
                 .Replace("HELIOS_REPLACE_ExportInterval", Math.Round(1d / Math.Max(4, ExportFrequency), 3).ToString(CultureInfo.InvariantCulture));
@@ -832,7 +1085,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         // NOTE: we don't factor this to share code with the other Check... functions because they are all
         // subtly different in terms of severity and we want to encourage more special cases added in the future
-        private StatusReportItem CheckExportStub(InstallationLocation location)
+        private StatusReportItem CheckGeneratedExportStub(InstallationLocation location)
         {
             string exportLuaPath = location.ExportStubPath;
             if (!File.Exists(exportLuaPath))
@@ -843,7 +1096,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     Recommendation =
                         "Configure the DCS interface or configure install location correctly to locate the file",
                     Link = StatusReportItem.ProfileEditor,
-                    // survive this
                     Severity = StatusReportItem.SeverityCode.Error
                 };
             }
@@ -869,6 +1121,92 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             };
         }
 
+
+        // NOTE: we don't factor this to share code with the other Check... functions because they are all
+        // subtly different in terms of severity and we want to encourage more special cases added in the future
+        private StatusReportItem CheckUpdatedExportStub(InstallationLocation location)
+        {
+            string exportLuaPath = location.ExportStubPath;
+            if (!File.Exists(exportLuaPath))
+            {
+                return new StatusReportItem
+                {
+                    Status = $"The configured DCS Export.lua stub does not exist at '{exportLuaPath}'",
+                    Recommendation =
+                        "Configure the DCS interface or configure install location correctly to locate the file",
+                    Link = StatusReportItem.ProfileEditor,
+                    Severity = StatusReportItem.SeverityCode.Error
+                };
+            }
+
+            // NOTE: we have the entire contents we expect in this file in memory, so there is no point in hashing this
+            string contents = ReadFile(exportLuaPath);
+
+            if (contents == _exportStub)
+            {
+                // file was written by us and is still unchanged
+                return new StatusReportItem
+                {
+                    Status = $"Generated Export.lua stub is up to date for {location.SavedGamesName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+
+            if (ExportMainCall.IsMatch(contents))
+            {
+                // our main script is already called, no changes required
+                return new StatusReportItem
+                {
+                    Status = $"Export.lua stub for {location.SavedGamesName} calls {ExportMainName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+
+            if (HeliosExport14Call.IsMatch(contents))
+            {
+                // CZ style Export.lua
+                return new StatusReportItem
+                {
+                    Status = $"Export.lua stub for {location.SavedGamesName} looks like a Helios 1.4 stub that needs an upgrade",
+                    Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
+                    Link = StatusReportItem.ProfileEditor,
+                    Severity = StatusReportItem.SeverityCode.Error
+                };
+            }
+
+            if (LuaExportStartCall.IsMatch(contents))
+            {
+                // we don't know how to check this type of script that is not a stub
+                return new StatusReportItem
+                {
+                    Status = $"Export.lua for {location.SavedGamesName} looks like a complete export script that needs an upgrade",
+                    Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
+                    Link = StatusReportItem.ProfileEditor,
+                    Severity = StatusReportItem.SeverityCode.Error
+                };
+            }
+
+            if (DofileCall.IsMatch(contents))
+            {
+                // need to add a dofile line to a file already in that style
+                return new StatusReportItem
+                {
+                    Status = $"Export.lua stub for {location.SavedGamesName} does not call {ExportMainName}",
+                    Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
+                    Link = StatusReportItem.ProfileEditor,
+                    Severity = StatusReportItem.SeverityCode.Error
+                };
+            }
+
+            // no idea what this is
+            return new StatusReportItem
+            {
+                Status = $"Export.lua for {location.SavedGamesName} cannot be understood by Helios",
+                Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup for more instructions",
+                Severity = StatusReportItem.SeverityCode.Error
+            };
+        }
+
         // NOTE: we don't factor this to share code with the other Check... functions because they are all
         // subtly different in terms of severity and we want to encourage more special cases added in the future
         private StatusReportItem CheckThirdPartyExportStub(InstallationLocation location)
@@ -888,12 +1226,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
 
             string contents = ReadFile(exportLuaPath);
-            if (!contents.Contains(EXPORT_MAIN_NAME))
+            if (!contents.Contains(ExportMainName))
             {
                 return new StatusReportItem
                 {
                     Status =
-                        $"Helios Export script Helios\\{EXPORT_MAIN_NAME} does not appear to be called by Export.lua at '{exportLuaPath}'",
+                        $"Helios Export script Helios\\{ExportMainName} does not appear to be called by Export.lua at '{exportLuaPath}'",
                     Recommendation = "Recreate Export.lua or edit it manually",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error,
@@ -913,7 +1251,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         // subtly different in terms of severity and we want to encourage more special cases added in the future
         private StatusReportItem CheckExportScript(InstallationLocation location)
         {
-            string mainPath = location.ExportMainPath(EXPORT_MAIN_NAME);
+            string mainPath = location.ExportMainPath(ExportMainName);
             if (!File.Exists(mainPath))
             {
                 return new StatusReportItem

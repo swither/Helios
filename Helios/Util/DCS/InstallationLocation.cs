@@ -1,4 +1,20 @@
-﻿using System;
+﻿// Copyright 2020 Ammo Goettsch
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -30,12 +46,9 @@ namespace GadrocsWorkshop.Helios.Util.DCS
                     // stale setting
                     continue;
                 }
+
                 InstallationLocation location =
-                    new InstallationLocation(autoUpdatePath)
-                    {
-                        IsEnabled = settings.LoadSetting(SETTINGS_GROUP, path, false),
-                        Loaded = true
-                    };
+                    new InstallationLocation(autoUpdatePath, settings.LoadSetting(SETTINGS_GROUP, path, false));
                 yield return location;
             }
         }
@@ -51,6 +64,11 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
             #endregion
         }
+
+        /// <summary>
+        /// true if we are setting properties and do not want to fire events, such as during deserialization
+        /// </summary>
+        private static bool _suppressEvents;
 
         public InstallationLocation(string autoUpdatePath)
         {
@@ -92,6 +110,13 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             SavedGamesName = $"DCS.{variant}";
         }
 
+        public InstallationLocation(string autoUpdatePath, bool enabled) : this(autoUpdatePath)
+        {
+            _suppressEvents = true;
+            IsEnabled = enabled;
+            _suppressEvents = false;
+        }
+
         private bool TestWrite()
         {
             try
@@ -129,7 +154,7 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         private static void OnChangeEnabled(DependencyObject target, DependencyPropertyChangedEventArgs e)
         {
             InstallationLocation location = (InstallationLocation) target;
-            if (!location.Loaded)
+            if (_suppressEvents)
             {
                 return;
             }
@@ -138,11 +163,6 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         }
 
         #region Properties
-
-        /// <summary>
-        /// true if we are done initializing and should process events
-        /// </summary>
-        private bool Loaded { get; set; }
 
         /// <summary>
         /// installation location absolute path
@@ -179,20 +199,32 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         #region PathComponents
 
         /// <summary>
+        /// location of Saved Games data for this DCS instance
+        /// </summary>
+        public string SavedGamesPath => System.IO.Path.Combine(KnownFolders.SavedGames, SavedGamesName);
+
+        /// <summary>
         /// location where we will write Export.lua and related directories
         /// exported for UI
         /// </summary>
-        public string ScriptDirectoryPath => System.IO.Path.Combine(KnownFolders.SavedGames, SavedGamesName, "Scripts");
+        public string ScriptDirectoryPath => System.IO.Path.Combine(SavedGamesPath, "Scripts");
 
-        public string ExportStubPath => System.IO.Path.Combine(ScriptDirectoryPath, "Export.lua");
+        public string ExportStubPath => System.IO.Path.Combine(ScriptDirectoryPath, ExportLuaName);
+
+        public static string ExportLuaName => "Export.lua";
 
         public string ExportMainPath(string exportMainName) =>
-            System.IO.Path.Combine(ScriptDirectoryPath, "Helios", exportMainName);
+            System.IO.Path.Combine(ScriptDirectoryPath, ScriptsSubdirectory, exportMainName);
+
+        public static string ScriptsSubdirectory => "Helios";
+
+        public string ExportMainRelativePath(string exportMainName) =>
+            System.IO.Path.Combine("Scripts", ScriptsSubdirectory, exportMainName);
 
         public string ExportModulePath(string moduleLocation, string baseName) =>
             System.IO.Path.Combine(ExportModuleDirectory(moduleLocation), $"{baseName}.lua");
 
-        public string ExportModuleDirectory(string moduleLocation) => System.IO.Path.Combine(ScriptDirectoryPath, "Helios", moduleLocation);
+        public string ExportModuleDirectory(string moduleLocation) => System.IO.Path.Combine(ScriptDirectoryPath, ScriptsSubdirectory, moduleLocation);
 
         #endregion
     }

@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios.Gauges.KA_50.IAS
         {
             Point center = new Point(170, 170);
 
-            _needleCalibration = new CalibrationPointCollectionDouble(20d, 5d, 35d, 345d);
+            _needleCalibration = new CalibrationPointCollectionDouble(20d, 5d, 350d, 345d);
             _needleCalibration.Add(new CalibrationPointDouble(50d, 95d));
             _needleCalibration.Add(new CalibrationPointDouble(100d, 145d));
             _needleCalibration.Add(new CalibrationPointDouble(150d, 185d));

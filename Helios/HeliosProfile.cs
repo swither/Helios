@@ -32,20 +32,17 @@ namespace GadrocsWorkshop.Helios
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private bool _invalidVersion = false;
-        private bool _dirty = false;
-        private bool _layoutChecked = false;
-        private bool _validLayout = false;
-        private bool _designMode = false;
-        private bool _started = false;
+        private bool _invalidVersion;
+        private bool _dirty;
+        private bool _layoutChecked;
+
+        private bool _validLayout;
+        private bool _designMode;
+        private bool _started;
         private string _name = "Untitled";
         private string _path = "";
-        DateTime _loadTime;
-        Dispatcher _dispatcher = null;
-
-        private MonitorCollection _monitors = new MonitorCollection();
-        private HeliosInterfaceCollection _interfaces = new HeliosInterfaceCollection();
-        private HashSet<string> _tags = new HashSet<string>();
+        Dispatcher _dispatcher;
+        private readonly HashSet<string> _tags = new HashSet<string>();
 
         public HeliosProfile() : this(true)
         {
@@ -53,15 +50,15 @@ namespace GadrocsWorkshop.Helios
 
         public HeliosProfile(bool autoAddInterfaces)
         {
-            _monitors.CollectionChanged += Monitors_CollectionChanged;
-            _interfaces.CollectionChanged += Interfaces_CollectionChanged;
+            Monitors.CollectionChanged += Monitors_CollectionChanged;
+            Interfaces.CollectionChanged += Interfaces_CollectionChanged;
 
             int i = 1;
             foreach (Monitor display in ConfigManager.DisplayManager.Displays)
             {
                 Monitor monitor = new Monitor(display);
                 monitor.Name = "Monitor " + i++;
-                _monitors.Add(monitor);
+                Monitors.Add(monitor);
             }
 
             if (autoAddInterfaces)
@@ -104,10 +101,7 @@ namespace GadrocsWorkshop.Helios
 
         public Dispatcher Dispatcher
         {
-            get
-            {
-                return _dispatcher;
-            }
+            get => _dispatcher;
             set
             {
                 if ((_dispatcher == null && value != null)
@@ -120,20 +114,11 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public IEnumerable<string> Tags
-        {
-            get
-            {
-                return _tags;
-            }
-        }
+        public IEnumerable<string> Tags => _tags;
 
         public bool DesignMode
         {
-            get
-            {
-                return _designMode;
-            }
+            get => _designMode;
             set
             {
                 if (!_designMode.Equals(value))
@@ -148,10 +133,7 @@ namespace GadrocsWorkshop.Helios
 
         public string Name
         {
-            get
-            {
-                return _name;
-            }
+            get => _name;
             set
             {
                 if ((_name == null && value != null)
@@ -164,17 +146,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public DateTime LoadTime
-        {
-            get
-            {
-                return _loadTime;
-            }
-            set
-            {
-                _loadTime = value;
-            }
-        }
+        public DateTime LoadTime { get; set; }
 
         /// <summary>
         /// called when a control that allows being connected to control routers
@@ -188,10 +160,7 @@ namespace GadrocsWorkshop.Helios
 
         public bool IsInvalidVersion
         {
-            get
-            {
-                return _invalidVersion;
-            }
+            get => _invalidVersion;
             set
             {
                 if (!_invalidVersion.Equals(value))
@@ -203,20 +172,11 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public HeliosInterfaceCollection Interfaces
-        {
-            get
-            {
-                return _interfaces;
-            }
-        }
+        public HeliosInterfaceCollection Interfaces { get; } = new HeliosInterfaceCollection();
 
         public string Path
         {
-            get
-            {
-                return _path;
-            }
+            get => _path;
             set
             {
                 if ((_path == null && value != null)
@@ -231,10 +191,7 @@ namespace GadrocsWorkshop.Helios
 
         public bool IsDirty
         {
-            get
-            {
-                return _dirty;
-            }
+            get => _dirty;
             set
             {
                 if (!_dirty.Equals(value))
@@ -245,13 +202,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public MonitorCollection Monitors
-        {
-            get
-            {
-                return _monitors;
-            }
-        }
+        public MonitorCollection Monitors { get; } = new MonitorCollection();
 
         /// <summary>
         /// Returns true if all monitors defined in this profile match system defined monitors.
@@ -260,28 +211,45 @@ namespace GadrocsWorkshop.Helios
         {
             get
             {
-                if (!_layoutChecked)
+                if (_layoutChecked)
                 {
-                    _validLayout = true;
-                    foreach (Monitor display in Monitors)
+                    return _validLayout;
+                }
+
+                CheckedDisplays = ConfigManager.DisplayManager.Displays;
+                _validLayout = true;
+                foreach (Monitor display in Monitors)
+                {
+                    if (CheckedDisplays.Any(systemDisplay =>
+                        // ReSharper disable CompareOfFloatsByEqualityOperator these really must be identical
+                        systemDisplay.Top == display.Top &&
+                        systemDisplay.Left == display.Left &&
+                        systemDisplay.Width == display.Width &&
+                        systemDisplay.Height == display.Height))
                     {
-                        if (!IsMonitorValid(display))
-                        {
-                            _validLayout = false;
-                            break;
-                        }
+                        // found matching monitor
+                        continue;
                     }
+
+                    // did not find matching monitor, exit search
+                    _validLayout = false;
+                    break;
                 }
                 return _validLayout;
             }
         }
 
+        /// <summary>
+        /// the DisplayManager collection of monitors against which we checked the monitors
+        /// to get our current value of IsValidMonitorLayout
+        ///
+        /// WARNING: there is currently no mechanism for Helios to learn the displays on the local machine have changed
+        /// </summary>
+        public MonitorCollection CheckedDisplays { get; private set; }
+
         public bool IsStarted
         {
-            get
-            {
-                return _started;
-            }
+            get => _started;
             private set
             {
                 if (!_started.Equals(value))
@@ -296,21 +264,6 @@ namespace GadrocsWorkshop.Helios
         #endregion
 
         #region Methods
-
-        private bool IsMonitorValid(Monitor display)
-        {
-            foreach (Monitor systemDisplay in ConfigManager.DisplayManager.Displays)
-            {
-                if (systemDisplay.Top == display.Top &&
-                    systemDisplay.Left == display.Left &&
-                    systemDisplay.Width == display.Width &&
-                    systemDisplay.Height == display.Height)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         public void ShowControlCenter()
         {
@@ -340,7 +293,7 @@ namespace GadrocsWorkshop.Helios
         {
             // any interfaces that care should now provide information for the newly loaded profile
             string shortName = System.IO.Path.GetFileNameWithoutExtension(Path);
-            foreach (IProfileAwareInterface profileAware in _interfaces.OfType<IProfileAwareInterface>())
+            foreach (IProfileAwareInterface profileAware in Interfaces.OfType<IProfileAwareInterface>())
             {
                 profileAware.RequestDriver(shortName);
             }
@@ -441,7 +394,7 @@ namespace GadrocsWorkshop.Helios
                 }
                 // reindex all tags, since we have no way of removing non-unique ones
                 _tags.Clear();
-                foreach (HeliosInterface heliosInterface in _interfaces)
+                foreach (HeliosInterface heliosInterface in Interfaces)
                 {
                     if (heliosInterface is IProfileAwareInterface profileAware)
                     {
@@ -501,7 +454,7 @@ namespace GadrocsWorkshop.Helios
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
-            foreach (HeliosInterface heliosInterface in _interfaces)
+            foreach (HeliosInterface heliosInterface in Interfaces)
             {
                 if (heliosInterface is IReadyCheck readyCheck)
                 {

@@ -5,19 +5,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     mc:Ignorable="d"
     xmlns:common="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
+    xmlns:helios="clr-namespace:GadrocsWorkshop.Helios"
     d:DataContext="{d:DesignInstance Type=common:DCSInterfaceEditor}"
-    Header="DCS Export.Lua Output (Advanced)" 
+    Header="DCS Export.lua Output (Advanced)" 
     Margin="0,0,0,12" 
     IsExpanded="False" 
     Style="{StaticResource GroupBoxWithExpanderStyle}">
     <Expander.Resources>
-        <Style x:Key="AppliesIfGenerateExportLoader" TargetType="{x:Type Control}">
+        <Style x:Key="AppliesIfDofilesAllowed" TargetType="{x:Type Control}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=Configuration.GenerateExportLoader}" Value="False">
-                    <Setter Property="IsEnabled" Value="false"/>
-                    <Setter Property="Foreground" Value="Gray"/>
+                <DataTrigger Binding="{Binding Path=Configuration.ExportLuaHandling}" Value="{x:Static common:ExportFileHandling.Replace}">
+                    <Setter Property="IsEnabled" Value="true"/>
+                    <Setter Property="Foreground" Value="Black"/>
                 </DataTrigger>
             </Style.Triggers>
+            <Style.Setters>
+                <Setter Property="IsEnabled" Value="false"/>
+                <Setter Property="Foreground" Value="Gray"/>
+            </Style.Setters>
         </Style>
         <DataTemplate x:Key="DoFileTemplate">
             <StackPanel Orientation="Horizontal" Margin="6,3">
@@ -26,6 +31,7 @@
                 <TextBlock Margin="6,0,0,0" Text="{Binding}"/>
             </StackPanel>
         </DataTemplate>
+        <helios:EnumConverter Type="{x:Type common:ExportFileHandling}" x:Key="ExportFileHandling"/>
     </Expander.Resources>
     <Grid Height="Auto">
         <Grid.ColumnDefinitions>
@@ -46,11 +52,15 @@
         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="Export.lua"/>
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
             <!-- shielded from stretching -->
-            <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=Configuration.GenerateExportLoader}"/>
+            <ComboBox
+                VerticalContentAlignment="Center"
+                MinWidth="290"
+                ItemsSource="{Binding Source={StaticResource ExportFileHandling}, Path=DisplayNames}"
+                SelectedItem="{Binding Path=Configuration.ExportLuaHandling, Converter={StaticResource ExportFileHandling}}" />
         </StackPanel>
-        <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}">Uncheck to generate only the export files in the Helios subdirectory, to use your own Export.lua stub that you already have.</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}">Controls how Helios Profile Editor will handle the Export.lua stub.</TextBlock>
 
-        <GroupBox Grid.Row="4" Grid.Column="1" Header="Third Party Scripts" Margin="0,4,0,0" Style="{StaticResource AppliesIfGenerateExportLoader}">
+        <GroupBox Grid.Row="4" Grid.Column="1" Header="Third Party Scripts" Margin="0,4,0,0" Style="{StaticResource AppliesIfDofilesAllowed}">
             <StackPanel>
                 <TextBlock Margin="4,4,4,12" TextWrapping="Wrap"><Run Text="Helios will add the following scripts as dofile lines when it writes Export.lua. Enter paths relative to the directory containing Export.lua."/><LineBreak/><Run Text="For example: ./TARS/TARSExport.lua"/></TextBlock>
                 <Border BorderBrush="#FF808080" BorderThickness="0,1" Margin="12">

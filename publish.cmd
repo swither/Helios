@@ -28,7 +28,7 @@ copy "Tools Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION
 
 REM collect and format log
 FOR /F %%i IN ('git rev-parse %HELIOS_BUILT_VERSION%') DO @set COMMIT=%%i
-git log --date=short --ancestry-path --decorate-refs="1.*" --format="##### [%%h](https://github.com/HeliosVirtualCockpit/Helios/commit/%%H) by %%an on %%ad %%d%%n%%w(0,4,4)%%B  %%n" %HELIOS_REFERENCE_TAG%..%HELIOS_BUILT_VERSION% > %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\changes_%COMMIT%.md
+git log --date=short --decorate-refs="1.*" --format="##### [%%h](https://github.com/HeliosVirtualCockpit/Helios/commit/%%H) by %%an on %%ad %%d%%n%%w(0,4,4)%%B  %%n" %HELIOS_REFERENCE_TAG%..%HELIOS_BUILT_VERSION% > %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\changes_%COMMIT%.md
 
 if "%3" == "nogithub" goto end
 

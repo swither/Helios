@@ -18,6 +18,8 @@ namespace GadrocsWorkshop.Helios.Util
     /// </summary>
     public class ElevatedProcessResponsePipe: IDisposable
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private NamedPipeServerStream _server;
         private readonly object _lock = new object();
         private IList<StatusReportItem> _report;
@@ -108,6 +110,7 @@ namespace GadrocsWorkshop.Helios.Util
         private void DoSendReport(IList<StatusReportItem> report)
         {
             string text = JsonConvert.SerializeObject(report);
+            Logger.Debug($"Sending result report:\n{text}");
             byte[] buffer = new UTF8Encoding().GetBytes(text);
             _server.BeginWrite(buffer, 0, buffer.Length, OnWrite, null);
         }

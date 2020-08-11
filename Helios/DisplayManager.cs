@@ -13,7 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -67,37 +69,18 @@ namespace GadrocsWorkshop.Helios
             get 
             {
                 MonitorCollection displayCollection = new MonitorCollection();
-
-                NativeMethods.DISPLAY_DEVICE d=new NativeMethods.DISPLAY_DEVICE();
-                d.cb=Marshal.SizeOf(d);
                 try
                 {
-                    for (uint id = 0; NativeMethods.EnumDisplayDevices(null, id, ref d, 0); id++)
-                    {
-                        if (!d.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.AttachedToDesktop))
-                        {
-                            continue;
-                        }
-
-                        NativeMethods.DEVMODE ds = new NativeMethods.DEVMODE();
-
-                        bool suc2 = NativeMethods.EnumDisplaySettings(d.DeviceName, NativeMethods.ENUM_CURRENT_SETTINGS, ref ds);
-                        if (!suc2)
-                        {
-                            Logger.Error("failed to enumerate current settings for display {InternalName}", d.DeviceName);
-                            continue;
-                        }
-                        Monitor di = new Monitor(ConvertPixels(ds.dmPositionX),
-                            ConvertPixels(ds.dmPositionY),
-                            ConvertPixels(ds.dmPelsWidth),
-                            ConvertPixels(ds.dmPelsHeight),
-                            ds.dmDisplayOrientation);
-                        displayCollection.Add(di);
-
-                        // check this assumption that we make throughout the code: we identify the main display by its coordinates being
-                        // 0,0 at the top left
-                        Debug.Assert(d.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.PrimaryDevice) == di.IsPrimaryDisplay);
-                    }
+                    displayCollection.AddRange(EnumerateDisplays()
+                        .Select(LogDisplayDevice)
+                        .Where(displayDevice => displayDevice.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.AttachedToDesktop))
+                        .Select(CreateHeliosMonitor)
+                        // filter failed monitors
+                        .Where(monitor => monitor != null)
+                        // sort to make consistent monitor list as long as same monitors are present
+                        .OrderBy(monitor => monitor.Left)
+                        .ThenBy(monitor => monitor.Top)
+                    );
                 }
                 catch (Exception ex)
                 {
@@ -108,6 +91,91 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        private NativeMethods.DISPLAY_DEVICE LogDisplayDevice(NativeMethods.DISPLAY_DEVICE displayDevice)
+        {
+            Logger.Debug("Windows reporting display {Name} with id {Id} and key {Key} with string {String}",
+                displayDevice.DeviceName,
+                displayDevice.DeviceID,
+                displayDevice.DeviceKey,
+                displayDevice.DeviceString);
+            return displayDevice;
+        }
+
+        private IEnumerable<NativeMethods.DISPLAY_DEVICE> EnumerateDisplays()
+        {
+            NativeMethods.DISPLAY_DEVICE displayDevice = new NativeMethods.DISPLAY_DEVICE();
+            displayDevice.cb = Marshal.SizeOf(displayDevice);
+            for (uint id = 0; NativeMethods.EnumDisplayDevices(null, id, ref displayDevice, 0); id++)
+            {
+                yield return displayDevice;
+            }
+        }
+
+        private Monitor CreateHeliosMonitor(NativeMethods.DISPLAY_DEVICE displayDevice)
+        {
+            NativeMethods.DEVMODE deviceMode = new NativeMethods.DEVMODE();
+
+            bool suc2 = NativeMethods.EnumDisplaySettings(displayDevice.DeviceName, NativeMethods.ENUM_CURRENT_SETTINGS,
+                ref deviceMode);
+            if (!suc2)
+            {
+                Logger.Error("failed to enumerate current settings for display {InternalName}", displayDevice.DeviceName);
+                return null;
+            }
+
+            Monitor heliosMonitor = new Monitor(ConvertPixels(deviceMode.dmPositionX),
+                ConvertPixels(deviceMode.dmPositionY),
+                ConvertPixels(deviceMode.dmPelsWidth),
+                ConvertPixels(deviceMode.dmPelsHeight),
+                deviceMode.dmDisplayOrientation);
+
+            Logger.Debug("Created Helios Monitor for display {Name} of size {Width}x{Height} at {Left},{Top}",
+                displayDevice.DeviceName,
+                heliosMonitor.Width,
+                heliosMonitor.Height,
+                heliosMonitor.Left,
+                heliosMonitor.Top);
+
+            // check this assumption that we make throughout the code: we identify the main display by its coordinates being
+            // 0,0 at the top left
+            Debug.Assert(displayDevice.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.PrimaryDevice) ==
+                         heliosMonitor.IsPrimaryDisplay);
+            return heliosMonitor;
+        }
+
+        private IEnumerable<Monitor> EnumerateMonitors(NativeMethods.DISPLAY_DEVICE displayDevice)
+        {
+            for (uint id = 0; NativeMethods.EnumDisplayDevices(null, id, ref displayDevice, 0); id++)
+            {
+                if (!displayDevice.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.AttachedToDesktop))
+                {
+                    continue;
+                }
+
+                NativeMethods.DEVMODE ds = new NativeMethods.DEVMODE();
+
+                bool suc2 = NativeMethods.EnumDisplaySettings(displayDevice.DeviceName, NativeMethods.ENUM_CURRENT_SETTINGS,
+                    ref ds);
+                if (!suc2)
+                {
+                    Logger.Error("failed to enumerate current settings for display {InternalName}", displayDevice.DeviceName);
+                    continue;
+                }
+
+                Monitor heliosMonitor = new Monitor(ConvertPixels(ds.dmPositionX),
+                    ConvertPixels(ds.dmPositionY),
+                    ConvertPixels(ds.dmPelsWidth),
+                    ConvertPixels(ds.dmPelsHeight),
+                    ds.dmDisplayOrientation);
+
+                // check this assumption that we make throughout the code: we identify the main display by its coordinates being
+                // 0,0 at the top left
+                Debug.Assert(displayDevice.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.PrimaryDevice) ==
+                             heliosMonitor.IsPrimaryDisplay);
+
+                yield return heliosMonitor;
+            }
+        }
         #endregion
 
     }
