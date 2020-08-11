@@ -983,23 +983,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void DialogShowModal_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // this is the source of the event, and we will resolve DataTemplate from their position
-            FrameworkElement host = (FrameworkElement)e.OriginalSource;
-
-            // crash if incorrect parameter type
-            ShowModalParameter parameter = (ShowModalParameter) e.Parameter;
-
-            // resolve the data template
-            DataTemplate template = parameter.DataTemplate ?? (DataTemplate)host.TryFindResource(new DataTemplateKey(parameter.Content.GetType()));
-
-            // display the dialog appropriate to the content
-            Window generic = new DefaultDialogWindow
-            {
-                ContentTemplate = template, 
-                Content = parameter.Content
-            };
-            
-            generic.ShowDialog();
+            new DefaultDialogWindow().ShowModal(sender, e);
         }
 
         private void CloseAllDocuments()

@@ -24,8 +24,33 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
     public class DialogWindow : Window
     {
         private bool _initialMeasurement = true;
+        private bool _loaded;
         private Size? _initialSize;
 
+        public DialogWindow()
+        {
+            // collapse the window, so we don't blink an incorrectly sized dialog for one frame before
+            // the content loads
+            Visibility = Visibility.Collapsed;
+            Loaded += DialogWindow_Loaded;
+        }
+
+        private void DialogWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (_initialMeasurement && !_loaded)
+            {
+                // need to resize the content to the configured initial size, but only once
+                InvalidateMeasure();
+            }
+            _loaded = true;
+
+            // show the dialog after we are done with this cycle
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+            {
+                Visibility = Visibility.Visible;
+            }));
+        }
+        
         protected override Size MeasureOverride(Size availableSize)
         {
             if (_initialMeasurement)
@@ -70,8 +95,10 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             // set up the dialog to default sizes or sizes specified by child
             MaxWidth = GetDialogMaxWidth(child);
             MaxHeight = GetDialogMaxHeight(child);
+            
             if (!double.IsInfinity(MaxWidth))
             {
+                // not resizable
                 return;
             }
 
@@ -87,10 +114,22 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 return new Size(double.PositiveInfinity, double.NegativeInfinity);
             }
 
+            // adjust min size if necesary
+            double initialWidth = GetDialogInitialWidth(child);
+            if (initialWidth < MinWidth)
+            {
+                MinWidth = initialWidth;
+            }
+            double initialHeight = GetDialogInitialHeight(child);
+            if (initialHeight < MinHeight)
+            {
+                MinHeight = initialHeight;
+            }
+
             // change some stuff after the current measure/arrange/render cycle
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<FrameworkElement>(ConfigureFromChild), child);
 
-            return new Size(GetDialogInitialWidth(child), GetDialogInitialHeight(child));
+            return new Size(initialWidth, initialHeight);
         }
 
         public static bool IsPropertyDefault(DependencyObject obj, DependencyProperty dp)

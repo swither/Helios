@@ -6,9 +6,11 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Helios;component/Styles/Editor.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Helios;component/Styles/Editor.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Helios;component/Windows/Controls/InterfaceStatusResources.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/InstallationDialogs.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <heliosUtil:EnumBooleanConverter x:Key="EnumBooleanConverter"/>
+            <heliosUtil:EnumBooleanConverter x:Key="EnumBooleanConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -135,7 +135,6 @@ namespace GadrocsWorkshop.Helios.Patching
             List<StatusReportItem> results = new List<StatusReportItem>();
             bool failed = false;
             bool imprecise = false;
-            string message = "";
 
             // simulate patches and collect any errors
             foreach (PatchApplication item in _destinations.Values)
@@ -151,13 +150,6 @@ namespace GadrocsWorkshop.Helios.Patching
                     results.Add(result);
                     if (result.Severity >= StatusReportItem.SeverityCode.Error)
                     {
-                        if (!failed)
-                        {
-                            // keep first message
-                            message =
-                                $"Patching {item.Destination.Description} would fail\n{result.Status}\n{result.Recommendation}";
-                        }
-
                         failed = true;
                         item.Status = StatusCodes.Incompatible;
                     }
@@ -171,8 +163,8 @@ namespace GadrocsWorkshop.Helios.Patching
 
             if (failed)
             {
-                UpdateStatus();
-                callbacks.Failure($"{_patchSetDescription} installation would fail", message, results);
+                UpdateStatus(); 
+                callbacks.Failure($"{_patchSetDescription} installation would fail", "Some patches would fail to apply.  No patches have been applied.", results);
                 return InstallationResult.Fatal;
             }
 
@@ -187,7 +179,6 @@ namespace GadrocsWorkshop.Helios.Patching
                     return InstallationResult.Canceled;
                 }
             }
-
 
             // apply patches
             foreach (PatchApplication item in _destinations.Values)
@@ -204,17 +195,10 @@ namespace GadrocsWorkshop.Helios.Patching
                 {
                     result.Log(ConfigManager.LogManager);
                     results.Add(result);
-                    if (result.Severity < StatusReportItem.SeverityCode.Error)
+                    if (result.Severity >= StatusReportItem.SeverityCode.Error)
                     {
-                        continue;
+                        failed = true;
                     }
-
-                    if (!failed)
-                    {
-                        // keep first message
-                        message = $"Patching {item.Destination.Description} failed\n{result.Status}\n{result.Recommendation}";
-                    }
-                    failed = true;
                 }
             }
 
@@ -222,7 +206,7 @@ namespace GadrocsWorkshop.Helios.Patching
             if (failed)
             {
                 // XXX need to revert any patches that were installed, if we can, and add to result report
-                callbacks.Failure($"{_patchSetDescription} installation failed", message, results);
+                callbacks.Failure($"{_patchSetDescription} installation failed", "Some patches failed to be written", results);
                 return InstallationResult.Fatal;
             }
 
@@ -237,7 +221,6 @@ namespace GadrocsWorkshop.Helios.Patching
                 results);
             return InstallationResult.Success;
         }
-
 
         public InstallationResult Uninstall(IInstallationCallbacks callbacks)
         {
@@ -267,7 +250,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     if (!failed)
                     {
                         // keep first message
-                        message = $"Reverting patches in {item.Destination.Description} failed\n{result.Status}\n{result.Recommendation}";
+                        message = $"Reverting patches in {item.Destination.LongDescription} failed\n{result.Status}\n{result.Recommendation}";
                     }
                     failed = true;
                 }

@@ -15,8 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using GadrocsWorkshop.Helios.Util;
 using Newtonsoft.Json;
-using NLog;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -137,6 +139,27 @@ namespace GadrocsWorkshop.Helios
         /// specified entities.
         /// </summary>
         [JsonIgnore] public Uri Link;
+
+        [JsonProperty("Code", NullValueHandling = NullValueHandling.Ignore)]
+        public IList<CodeLine> CodeLines { get; private set; }
+
+        [JsonIgnore]
+        public string Code
+        {
+            // parse into code lines
+            set
+            {
+                if (value == null)
+                {
+                    CodeLines = null;
+                    return;
+                }
+                CodeLines = Regex.Split(value, "(?<=\r?\n)")
+                    .Where(text => !string.IsNullOrEmpty(text))
+                    .Select(text => new CodeLine(text))
+                    .ToList();
+            }
+        }
 
         /// <summary>
         /// utility to create a link to the profile editor without referring to any specific UI component

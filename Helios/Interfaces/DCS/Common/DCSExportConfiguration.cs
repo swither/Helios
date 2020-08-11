@@ -526,7 +526,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     File.WriteAllText(location.ExportMainPath(ExportMainName), _exportMain);
                     report.Add(new StatusReportItem
                     {
-                        Status = $"Wrote main export file {ExportMainName} for {location.SavedGamesName}",
+                        Status = $"Wrote main export file {ExportMainName} to {location.SavedGamesName}",
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     });
 
@@ -582,7 +582,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 WriteFile(exportStubPath, _exportStub);
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Wrote new Export.lua stub for {location.SavedGamesName}",
+                    Status = $"Wrote new Export.lua stub to {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -607,7 +607,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 WriteFile(exportStubPath, _exportStub);
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Wrote generated Export.lua stub for {location.SavedGamesName}",
+                    Status = $"Wrote generated Export.lua stub to {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;

@@ -24,6 +24,10 @@
                 <heliosControls:ShareDialog/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type heliosViewModel:MockInterfaceStatusItem}">
+                <heliosControls:InterfaceStatusItemControl/>
+            </DataTemplate>
+
             <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                 <Style.Triggers>
                     <Trigger Property="Text" Value="">
@@ -32,6 +36,7 @@
                 </Style.Triggers>
             </Style>
 
+            <!-- remove expander if no contents -->
             <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
                 <Setter Property="BorderThickness" Value="0"/>
                 <Style.Triggers>
@@ -106,21 +111,6 @@
                     </MultiDataTrigger>
                 </Style.Triggers>
             </Style>
-
-            <Style x:Key="CautionVisible" TargetType="{x:Type FrameworkElement}">
-                <Setter Property="UIElement.Visibility" Value="Hidden"/>
-                <Style.Triggers>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding Status}" Value="Info"/>
-                            <Condition Binding="{Binding HasRecommendation}" Value="True"/>
-                        </MultiDataTrigger.Conditions>
-                        <MultiDataTrigger.Setters>
-                            <Setter Property="UIElement.Visibility" Value="Visible"/>
-                        </MultiDataTrigger.Setters>
-                    </MultiDataTrigger>
-                </Style.Triggers>
-            </Style>
             
             <!-- starts out expanded, and keeps expanding every time a failure state is reached -->
             <Style x:Key="FailureExpanded" TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
@@ -182,6 +172,7 @@
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
+    <!-- top left title bar with add button -->
     <Border Grid.Row="0" Grid.Column="0" Background="White" BorderThickness="0">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -192,6 +183,7 @@
             <Button Grid.Column="1" Margin="6,6,10,6" Content="&#xE710;" Command="profileEditor:ProfileEditorCommands.AddInterface" Template="{StaticResource FontIconButton}" ToolTip="Add another interface to the Profile"/>
         </Grid>
     </Border>
+    <!-- list of interface tiles -->
     <ScrollViewer Grid.Row="1" Grid.Column="0" Background="{StaticResource EmptySpaceBetweenWhiteItems}">
         <StackPanel>
             <ItemsControl Background="{StaticResource EmptySpaceBetweenWhiteItems}"  ItemsSource="{Binding Source={StaticResource sortByInterfaceName}}">
@@ -223,24 +215,9 @@
                                 </WrapPanel>
                                 <Button Grid.Row="1" Grid.Column="2" Content="&#xE713;" Command="heliosViewModel:InterfaceStatusViewModel.GoThereCommand" CommandParameter="{Binding}" Template="{StaticResource FontIconButton}" Visibility="{Binding GoThereVisibility}" ToolTip="Configure this interface"/>
                                 <Expander Grid.Row="3" Grid.Column="1" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="{Binding DetailsExpanded}" Visibility="{Binding DetailsVisibility}">
-                                    <!-- Expander appears very broken if used with a custom Header, so let's not use it -->
+                                    <!-- Expander is very broken if used with a custom Header because a global style in App.xaml assumes Header is text, so let's not use it -->
                                     <Expander.Content>
-                                        <ItemsControl ItemsSource="{Binding Items}" Margin="10,0,0,0">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
-                                                        <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}"/>
-                                                        <Label Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8C9;" Style="{StaticResource CautionVisible}"/>
-                                                        <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
+                                        <ItemsControl ItemsSource="{Binding Items}" Margin="10,0,0,0"/>
                                     </Expander.Content>
                                 </Expander>
                                 <Expander Grid.Row="4" Grid.Column="1" Header="Recommendations" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" Style="{StaticResource FailureExpanded}" Visibility="{Binding RecommendationsVisibility}">

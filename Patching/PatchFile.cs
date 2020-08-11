@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using DiffMatchPatch;
 
@@ -31,7 +32,7 @@ namespace GadrocsWorkshop.Helios.Patching
 
         public string TargetPath { get; internal set; }
 
-        internal bool TryApply(string source, out string patched, out string status)
+        internal bool TryApply(string source, out string patched, out string status, out string expected)
         {
             status = null;
             object[] results = _googleDiff.patch_apply(_patches, source);
@@ -42,7 +43,11 @@ namespace GadrocsWorkshop.Helios.Patching
             {
                 if (!applied[i])
                 {
-                    status = $"failed to apply patch to {TargetPath}: {resultCodes[i]}";
+                    status = $"failed to apply patch to {TargetPath}: {resultCodes[i]}{Environment.NewLine}The patch could not locate the expected content section (searching near character {_patches[i].start1}):";
+                    IEnumerable<string> expectedText = _patches[i].diffs
+                        .Where(diff => diff.operation != Operation.INSERT)
+                        .Select(diff => diff.text);
+                    expected = string.Join("", expectedText);
                     return false;
                 }
 
@@ -61,6 +66,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 }
             }
 
+            expected = null;
             return true;
         }
 

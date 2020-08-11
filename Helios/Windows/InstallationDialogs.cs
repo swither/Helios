@@ -13,42 +13,73 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
+using GadrocsWorkshop.Helios.Windows.ViewModel;
 
 namespace GadrocsWorkshop.Helios.Windows
 {
     public class InstallationDialogs : IInstallationCallbacks
     {
-        private readonly DependencyObject _host;
+        private readonly IInputElement _host;
 
-        public InstallationDialogs(DependencyObject host)
+        public InstallationDialogs(IInputElement host)
         {
             _host = host;
         }
 
         public InstallationPromptResult DangerPrompt(string title, string message, IList<StatusReportItem> details)
         {
-            // XXX create a custom dialog to explore the details
-            MessageBoxResult response = MessageBox.Show(Window.GetWindow(_host), message, title,
-                MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-            if (response == MessageBoxResult.Cancel)
+            // show a custom dialog to explore the details
+            InstallationDangerPromptModel dangerPrompt = new InstallationDangerPromptModel
             {
-                return InstallationPromptResult.Cancel;
-            }
+                Title = title,
+                Message = message,
+                Details = details.Select(item => new InterfaceStatusViewItem(item)).ToList()
+            };
+            Dialog.ShowModalCommand.Execute(new ShowModalParameter
+            {
+                Content = dangerPrompt
+            }, _host);
 
-            return InstallationPromptResult.Ok;
+            return dangerPrompt.Result;
         }
 
         public void Failure(string title, string message, IList<StatusReportItem> details)
         {
-            // XXX create a custom dialog to explore the details
-            MessageBox.Show(Window.GetWindow(_host), message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+            // show a custom dialog to explore the details
+            Dialog.ShowModalCommand.Execute(new ShowModalParameter
+            {
+                Content = new InstallationFailureModel
+                {
+                    Title = title,
+                    Message = message,
+                    Details = details.Select(item => new InterfaceStatusViewItem(item)).ToList()
+                }
+            }, _host);
         }
 
         public void Success(string title, string message, IList<StatusReportItem> details)
         {
-            // no code until we have a custom dialog to browse the details
+            if (!ConfigManager.SettingsManager.LoadSetting("ProfileEditor", "DetailedViewOnConfigurationSuccess", false))
+            {
+                // don't present results for success
+                return;
+            }
+
+            // show a custom dialog to explore the details
+            Dialog.ShowModalCommand.Execute(new ShowModalParameter
+            {
+                Content = new InstallationSuccessModel
+                {
+                    Title = title,
+                    Message = message,
+                    Details = details.Select(item => new InterfaceStatusViewItem(item)).ToList()
+                }
+            }, _host);
         }
     }
 }

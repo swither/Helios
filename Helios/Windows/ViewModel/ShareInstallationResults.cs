@@ -12,30 +12,20 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 using System.Collections.Generic;
-using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
     /// <summary>
-    /// A view model for StatusReportItem viewed in the Interface Status view
+    /// specialized for convenience in XAML only
     /// </summary>
-    public class InterfaceStatusViewItem : HeliosStaticViewModel<StatusReportItem>
+    public class ShareInstallationResults : Share<InstallationResultViewModel.SingleReport>
     {
-        public InterfaceStatusViewItem(StatusReportItem item) : base(item)
+        public ShareInstallationResults(IList<InstallationResultViewModel.SingleReport> report) : base(report)
         {
             // no code
         }
-
-        public bool HasRecommendation => Data.Recommendation != null;
-
-        public string Status => Data.Severity.ToString();
-        public string TextLine1 => Data.Status;
-        public string TextLine2 => Data.Recommendation;
-
-        // optional verbatim code
-        public bool HasCode => (Data.CodeLines?.Count ?? 0) > 0;
-        public IList<CodeLine> Code => Data.CodeLines;
     }
 }

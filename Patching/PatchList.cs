@@ -75,7 +75,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"{destination.Description} {patch.TargetPath} patch is already applied",
+                        Status = $"{destination.LongDescription} has already patched {patch.TargetPath}",
                         // there will be a lot of these, don't show them in small views
                         Flags = StatusReportItem.StatusFlags.Verbose
                     };
@@ -84,7 +84,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"{destination.Description} {patch.TargetPath} is missing some patches",
+                        Status = $"{destination.LongDescription} is missing some patches in {patch.TargetPath}",
                         Recommendation = "Apply patches",
                         Link = StatusReportItem.ProfileEditor,
                         Severity = StatusReportItem.SeverityCode.Error
@@ -144,32 +144,42 @@ namespace GadrocsWorkshop.Helios.Patching
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"{patch.TargetPath} does not exist in {destination.Description}; ignoring patch"
+                        Status = $"{patch.TargetPath} does not exist in {destination.LongDescription}; ignoring patch"
                     };
                     continue;
                 }
 
-                string patched;
                 if (patch.IsApplied(source))
                 {
                     // already applied, go to next patch
                     yield return new StatusReportItem
                     {
-                        Status = $"{destination.Description} {patch.TargetPath} is already patched"
+                        Status = $"{destination.LongDescription} has already patched {patch.TargetPath}"
                     };
                     continue;
                 }
 
-                if (!patch.TryApply(source, out patched, out string failureStatus))
+                if (!patch.TryApply(source, out string patched, out string failureStatus, out string expectedCode))
                 {
-                    // could not patch; fatal
+                    // send a general failure message that will become the header of the dialog box if any
+                    string failedPatchRecommendation = "Please make sure you do not have viewport mods installed.  If your DCS installation is free from modifications and patches still fail, then install a newer Helios distribution or patches with support for this DCS version.";
                     yield return new StatusReportItem
                     {
-                        Status = $"{destination.Description} {failureStatus}",
-                        Recommendation =
-                            "please install a newer Helios distribution or patches with support for this DCS version",
+                        Status = $"{destination.LongDescription} could not install patches.  You may have viewport mods installed that need to be removed or DCS may have changed too much during a recent update.",
+                        Recommendation = failedPatchRecommendation,
                         Severity = StatusReportItem.SeverityCode.Error
                     };
+
+                    // send detail including code
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{destination.LongDescription} {failureStatus}",
+                        Recommendation = failedPatchRecommendation,
+                        Severity = StatusReportItem.SeverityCode.Error,
+                        Code = expectedCode
+                    };
+
+                    // could not patch; fatal
                     destination.TryUnlock();
                     yield break;
                 }
@@ -185,9 +195,9 @@ namespace GadrocsWorkshop.Helios.Patching
                     yield return new StatusReportItem
                     {
                         Status =
-                            $"{destination.Description} could not save original copy of {patch.TargetPath}",
+                            $"{destination.LongDescription} could not save original copy of {patch.TargetPath}",
                         Recommendation =
-                            "please check write permissions to make sure you can write files in the DCS intallation location",
+                            "please check write permissions to make sure you can write files in the DCS installation location",
                         Severity = StatusReportItem.SeverityCode.Error
                     };
                     destination.TryUnlock();
@@ -257,7 +267,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"{patch.TargetPath} does not exist in {destination.Description}; ignoring patch"
+                        Status = $"{patch.TargetPath} does not exist in {destination.LongDescription}; ignoring patch"
                     };
                     continue;
                 }
@@ -267,7 +277,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     // patch not present in this file any more, go to next patch
                     yield return new StatusReportItem
                     {
-                        Status = $"{destination.Description} {patch.TargetPath} does not have our patches"
+                        Status = $"{destination.LongDescription} does not have our patches for {patch.TargetPath}"
                     };
                     continue;
                 }
@@ -277,7 +287,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     // restored original file for this version, no need to revert patch
                     yield return new StatusReportItem
                     {
-                        Status = $"restored {destination.LongDescription} {patch.TargetPath} restored to original file",
+                        Status = $"{destination.LongDescription} restored original file {patch.TargetPath}",
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     };
                     continue;
@@ -288,7 +298,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     // could not apply reverse patch; keep going trying to fix up as much as possible
                     yield return new StatusReportItem
                     {
-                        Status = $"{destination.Description} {failureStatus}",
+                        Status = $"{destination.LongDescription} {failureStatus}",
                         Recommendation = "please repair DCS installation using dcs_updater.exe",
                         Severity = StatusReportItem.SeverityCode.Error
                     };
@@ -322,7 +332,7 @@ namespace GadrocsWorkshop.Helios.Patching
             {
                 status = new StatusReportItem
                 {
-                    Status = $"{destination.Description} {patch.TargetPath} successfully written after {verbing}"
+                    Status = $"{destination.LongDescription} successfully wrote {patch.TargetPath} after {verbing} patch"
                 };
                 return true;
             }
@@ -330,7 +340,7 @@ namespace GadrocsWorkshop.Helios.Patching
             status = new StatusReportItem
             {
                 Status =
-                    $"{destination.Description} {patch.TargetPath} could not be written to target destination after {verbing}",
+                    $"{destination.LongDescription} could not write {patch.TargetPath} after {verbing} patch",
                 Severity = StatusReportItem.SeverityCode.Error,
                 Recommendation = "please ensure you have write permission to all the files in the target location"
             };

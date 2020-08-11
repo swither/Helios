@@ -69,6 +69,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Util\CodeLine.cs" />
     <Compile Include="Controls\TextScalingMode.cs" />
     <Compile Include="Interfaces\DCS\Common\ExportConfigurationSection.xaml.cs">
       <DependentUpon>ExportConfigurationSection.xaml</DependentUpon>
@@ -132,7 +133,16 @@
     <Compile Include="Interfaces\Capabilities\IDynamicBindings.cs" />
     <Compile Include="Interfaces\Capabilities\IReadyCheck.cs" />
     <Compile Include="Interfaces\Capabilities\IViewportProvider.cs" />
+    <Compile Include="Windows\Controls\InterfaceStatusItemControl.xaml.cs">
+      <DependentUpon>InterfaceStatusItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ViewModel\InstallationResultViewModel.cs" />
+    <Compile Include="Windows\ViewModel\ShareInstallationResults.cs" />
     <Compile Include="Windows\ViewModel\VersionCheckViewModel.cs" />
+    <Page Include="Windows\Controls\InterfaceStatusResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\PotentiometerWithTranslateAppearanceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -2712,6 +2722,10 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Controls\InterfaceStatusItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Controls\VersionCheckWindow.xaml">
       <SubType>Designer</SubType>

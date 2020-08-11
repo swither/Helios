@@ -1,0 +1,130 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
+    xmlns:viewmodel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel">
+    <!-- these are not embedded in InterfaceStatusItemControl.xaml because we don't want to instantiate them hundreds of times -->
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <Style x:Key="FailureVisible" TargetType="{x:Type FrameworkElement}">
+        <Setter Property="UIElement.Visibility" Value="Hidden" />
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Status}" Value="Error" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="UIElement.Visibility" Value="Visible" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="WarningVisible" TargetType="{x:Type FrameworkElement}">
+        <Setter Property="Visibility" Value="Hidden" />
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Status}" Value="Warning" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="UIElement.Visibility" Value="Visible" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="CautionVisible" TargetType="{x:Type FrameworkElement}">
+        <Setter Property="UIElement.Visibility" Value="Hidden" />
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Status}" Value="Info" />
+                    <Condition Binding="{Binding HasRecommendation}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="UIElement.Visibility" Value="Visible" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="EolStyle" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="0,3" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="UIElement.Visibility" Value="Visible" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding LineEnding}" Value="{x:Static util:CodeLineEnding.None}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="EolAnnotationStyle" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="0,3" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="UIElement.Visibility" Value="Visible" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding LineEnding}" Value="{x:Static util:CodeLineEnding.None}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding LineEnding}" Value="{x:Static util:CodeLineEnding.DOS}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <DataTemplate DataType="{x:Type util:CodeLine}">
+        <WrapPanel Orientation="Horizontal" Margin="3,0">
+            <Label
+                HorizontalAlignment="Left"
+                Padding="0"
+                Margin="0,3"
+                Content="{Binding Text}" />
+            <Label
+                Foreground="Blue"
+                Padding="0"
+                Style="{StaticResource EolStyle}"
+                FontFamily="Segoe MDL2 Assets"
+                Content="&#xE751;" />
+            <TextBlock
+                Foreground="Blue"
+                Padding="0"
+                Style="{StaticResource EolAnnotationStyle}"
+                Text="{Binding LineEnding, StringFormat='({0})'}" />
+        </WrapPanel>
+    </DataTemplate>
+    <!-- this data template is separate as an optimization, so we don't instantiate the ItemsControl in the hundreds of status items that do not need it -->
+    <DataTemplate x:Key="StatusItemWithCode" DataType="{x:Type viewmodel:InterfaceStatusViewItem}">
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}"/>
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8C9;" Style="{StaticResource CautionVisible}"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
+            <ItemsControl Grid.Row="1" Grid.Column="1" 
+                          FontFamily="Courier New"
+                          Background="#F0F0F0"
+                          Margin="3"
+                          Padding="6,3"
+                          ItemsSource="{Binding Code}"/>
+        </Grid>
+    </DataTemplate>
+    <!-- this data template is separate as an optimization, so we don't instantiate the ItemsControl in the hundreds of status items that do not need it -->
+    <DataTemplate x:Key="StatusItemWithoutCode" DataType="{x:Type viewmodel:InterfaceStatusViewItem}">
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="Red" Content="&#xE7BA;" Style="{StaticResource FailureVisible}"/>
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}"/>
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8C9;" Style="{StaticResource CautionVisible}"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

@@ -344,62 +344,45 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void Configure(object parameter)
         {
             // need a host in the visual tree for our dialog boxes, so it is passed as the parameter
-            // REVISIT: use our modal dialog command and an implementation of IInstallationCallbacks with
-            // a custom dialog instead (this should be a general replacement for InstallationDialogs(...)
-            InstallationDialogs installationDialogs = new InstallationDialogs((DependencyObject) parameter);
+            InstallationDialogs installationDialogs = new InstallationDialogs((IInputElement) parameter);
 
             // gather information about warnings and get consent to install anyway, if applicable
             List<StatusReportItem> items = new List<StatusReportItem>();
             List<string> lines = new List<string>();
-            int fill = 0;
             foreach (ViewportSetupFileViewModel model in CombinedMonitorSetup.Combined)
             {
                 items.AddRange(GatherWarnings(model)
                     .Where(i => i.Severity >= StatusReportItem.SeverityCode.Warning));
             }
 
-            if (items.Count > fill)
+            if (items.Count > 0)
             {
                 // need a header
-                lines.Add("Problems will exist in the combined Monitor Setup 'Helios':");
+                lines.Add("Problems will exist in the combined Monitor Setup 'Helios'");
                 lines.Add("");
-                lines.AddRange(items
-                    .Select(i => i.Status));
-                fill = items.Count;
             }
 
             if (!Data.GenerateCombined)
             {
-                items.AddRange(GatherWarnings(CombinedMonitorSetup.CurrentViewportSetup)
-                    .Where(i => i.Severity >= StatusReportItem.SeverityCode.Warning));
-            }
-
-            if (items.Count > fill)
-            {
-                // need a header
-                if (fill > 0)
+                IList<StatusReportItem> currentItems = GatherWarnings(CombinedMonitorSetup.CurrentViewportSetup)
+                    .Where(i => i.Severity >= StatusReportItem.SeverityCode.Warning)
+                    .ToList();
+                if (currentItems.Any())
                 {
+                    lines.Add("Problems will exist in the separate Monitor Setup for this Profile");
                     lines.Add("");
+                    items.AddRange(currentItems);
                 }
-
-                lines.Add("Problems will exist in the separate Monitor Setup for the current profile:");
-                lines.Add("");
-                lines.AddRange(items
-                    .Skip(fill)
-                    .Select(i => i.Status));
-                fill = items.Count;
             }
 
-            if (fill > 0)
+            if (items.Any())
             {
-                lines.Add("");
-                lines.Add("You can generate the Monitor Setup anyway and just use it with those limitations.");
+                string extraText = "";
                 if (items.Any(i => !i.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate)))
                 {
-                    lines.Add("");
-                    lines.Add(
-                        "The Monitor Setup will work but it will be considered out of date until you resolve these problems, so Profile Editor will continue to prompt you to generate it again.");
+                    extraText = "  The Monitor Setup may work but it will be considered out of date until you resolve these problems, so Profile Editor will continue to prompt you to generate it again.";
                 }
+                lines.Add($"You can generate the Monitor Setup anyway and just use it with those limitations.{extraText}");
 
                 // present
                 InstallationPromptResult result = installationDialogs.DangerPrompt("Incomplete Monitor Setup",

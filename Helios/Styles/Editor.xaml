@@ -238,7 +238,7 @@
     <ControlTemplate x:Key="FontIconButton" TargetType="Button">
         <Grid Margin="7,0">
             <Border Height="Auto" Margin="0,0,0,0" x:Name="MouseOverBackground" VerticalAlignment="Stretch" Opacity="0" Background="#FFBDBDBD" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" />
-            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="Black" Content="{TemplateBinding Content}"/>
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5" FontFamily="Segoe MDL2 Assets" FontSize="18" MinHeight="28" Foreground="Black" Content="{TemplateBinding Content}"/>
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="true">

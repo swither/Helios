@@ -211,6 +211,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     {
                         Status =
                             $"Running the HeliosPatching.exe utility as administrator either failed or was canceled by the user.  No changes will be written to {LongDescription}",
+                        Recommendation = "Try the patching operation again and give permission to execute HeliosPatching.exe as administrator",
+                        Link = StatusReportItem.ProfileEditor,
                         Severity = StatusReportItem.SeverityCode.Warning
                         // NOTE: configuration out of date indicates that this can be corrected by trying again
                     }.AsReport();

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
+             xmlns:windows="clr-namespace:GadrocsWorkshop.Helios.Windows"
              MinHeight = "480"
              MinWidth = "640"
              ResizeMode = "NoResize"
@@ -17,7 +18,10 @@
     <!-- max sizes and initial width can be changed by content by attached properties from DialogWindow, and resize enabled by setting DialogWindow.DialogMaxWidth to infinity -->
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" 
-                        CanExecute="CloseWindow_CanExec" 
-                        Executed="CloseWindow_Exec" />
+                        CanExecute="CloseWindow_CanExecute" 
+                        Executed="CloseWindow_Executed" />
+        <CommandBinding Command="{x:Static windows:Dialog.ShowModalCommand}" 
+                        CanExecute="DialogShowModal_CanExecute"
+                        Executed="DialogShowModal_Executed" />
     </Window.CommandBindings>
 </local:DialogWindow>
