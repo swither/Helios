@@ -31,6 +31,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         // failed image load paths we know about, so that we can recognize when a load success changes the status
         private HashSet<string> _failedImagePaths;
+        private bool _dirty;
 
         // our implementation of IStatusReportNotify
         private readonly StatusReportNotifyAsyncOnce _statusReportNotify;
@@ -79,6 +80,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             Profile.PropertyChanged += Profile_PropertyChanged;
             Profile.ProfileStarted += Profile_ProfileStarted;
             Profile.ProfileStopped += Profile_ProfileStopped;
+
+            ConfigManager.UndoManager.Empty += UndoManager_Empty;
+            ConfigManager.UndoManager.NonEmpty += UndoManager_NonEmpty;
+        }
+
+        private void UndoManager_NonEmpty(object sender, EventArgs e)
+        {
+            _dirty = true;
+            InvalidateStatusReport();
+        }
+
+        private void UndoManager_Empty(object sender, EventArgs e)
+        {
+            _dirty = false;
+            InvalidateStatusReport();
         }
 
         private void Profile_ProfileStarted(object sender, EventArgs e)
@@ -137,6 +153,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             oldProfile.PropertyChanged -= Profile_PropertyChanged;
             images.ImageLoadSuccess -= Images_ImageLoadSuccess;
             images.ImageLoadFailure -= Images_ImageLoadFailure;
+            ConfigManager.UndoManager.Empty -= UndoManager_Empty;
+            ConfigManager.UndoManager.NonEmpty -= UndoManager_NonEmpty;
         }
 
         void LaunchApplication_Execute(object action, HeliosActionEventArgs e)
@@ -215,7 +233,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             CheckResetMonitors(newReport);
             CheckMissingimages(newReport);
             CheckExecutablePaths(newReport);
+            CheckDirty(newReport);
             PublishStatusReport(newReport);
+        }
+
+        private void CheckDirty(IList<StatusReportItem> newReport)
+        {
+            if (_dirty)
+            {
+                newReport.Add(new StatusReportItem
+                {
+                    Status = "Profile needs to be saved in order to be used by Helios Control Center",
+                    Recommendation = "Save the profile before trying to use it in Helios Control Center",
+                    Link = StatusReportItem.ProfileEditor,
+                    Severity = StatusReportItem.SeverityCode.Warning,
+                    Flags = StatusReportItem.StatusFlags.DoNotDisturb
+                });
+            }
         }
 
         private void CheckProfile(IList<StatusReportItem> newReport)

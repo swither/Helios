@@ -17,6 +17,7 @@ namespace GadrocsWorkshop.Helios
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -28,6 +29,16 @@ namespace GadrocsWorkshop.Helios
 
         private Stack<IUndoItem> _undoEvents;
         private Stack<IUndoItem> _redoEvents;
+
+        /// <summary>
+        /// fired when the current undo stack reaches the empty state
+        /// </summary>
+        public event EventHandler Empty;
+
+        /// <summary>
+        /// fired when the current undo stack leaes the empty state
+        /// </summary>
+        public event EventHandler NonEmpty;
 
         public UndoManager()
         {
@@ -63,9 +74,15 @@ namespace GadrocsWorkshop.Helios
 
             Working = true;
             IUndoItem undo = _undoEvents.Pop();
+            bool nowEmpty = !_undoEvents.Any();
             undo.Undo();
             _redoEvents.Push(undo);
             Working = false;
+
+            if (nowEmpty)
+            {
+                Empty?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -81,16 +98,32 @@ namespace GadrocsWorkshop.Helios
             Working = true;
             IUndoItem redo = _redoEvents.Pop();
             redo.Do();
+            bool emptyBefore = !_undoEvents.Any();
             _undoEvents.Push(redo);
             Working = false;
+            if (emptyBefore)
+            {
+                NonEmpty?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
         /// Clear the undo history.
+        /// WARNING: does not drop the current batch, XXX which seems like an error.
         /// </summary>
         public void ClearUndoHistory()
         {
+            // remember if we actually had entries before
+            bool nonEmptyBefore = _undoEvents.Any();
+
+            // clear the stack
             _undoEvents.Clear();
+
+            // fire event if this was a change
+            if (nonEmptyBefore)
+            {
+                Empty?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -117,6 +150,7 @@ namespace GadrocsWorkshop.Helios
                 return;
             }
 
+            bool emptyBefore = (_batch?.Count ?? 0) == 0 && !_undoEvents.Any();
             if (_batch != null)
             {
                 _batch.Add(undoEvent);
@@ -127,8 +161,15 @@ namespace GadrocsWorkshop.Helios
                 _undoEvents.Push(undoEvent);
                 if (_undoEvents.Count > MAX_UNDO_ITEMS)
                 {
+                    // XXX: we throw away the current item? this should be a Dequeue so we can pop the front
                     _undoEvents.Pop();
                 }
+            }
+
+            if (emptyBefore)
+            {
+                // no longer empty
+                NonEmpty?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -181,7 +222,13 @@ namespace GadrocsWorkshop.Helios
 
             if (_batch.Count > 0)
             {
+                bool emptyBefore = !_undoEvents.Any();
                 _undoEvents.Push(_batch);
+                if (emptyBefore)
+                {
+                    // no longer empty
+                    NonEmpty?.Invoke(this, EventArgs.Empty);
+                }
             }
             _batch = null;
         }
@@ -192,14 +239,20 @@ namespace GadrocsWorkshop.Helios
         public void UndoBatch()
         {
             Working = true;
+            bool nonEmptyBefore = (_batch?.Count ?? 0) > 0 || _undoEvents.Any();
             try
             {
                 _batch?.Undo();
             }
             finally
             {
+                bool nowEmpty = !_undoEvents.Any();
                 Working = false;
                 _batch = null;
+                if (nonEmptyBefore && nowEmpty)
+                {
+                    Empty?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
     }

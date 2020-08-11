@@ -109,7 +109,13 @@ namespace GadrocsWorkshop.Helios
             /// the timestamp in this item is from a log, so correlation can be done
             /// otherwise the time stamp might be off by some milliseconds from related log entries
             /// </summary>
-            TimeStampIsPrecise = 4
+            TimeStampIsPrecise = 4,
+
+            /// <summary>
+            /// when a warning or error item with this flag is reported, do not trigger distruptive UI interaction, such as popping up
+            /// a dialog, because it will happen during normal operation
+            /// </summary>
+            DoNotDisturb = 8
         }
 
         /// <summary>

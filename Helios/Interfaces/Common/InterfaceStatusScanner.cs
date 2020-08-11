@@ -220,7 +220,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
                 return;
             }
 
-            if (statusReport.Any(item => item.Severity >= TriggerThreshold))
+            if (statusReport.Any(item => item.Severity >= TriggerThreshold && !item.Flags.HasFlag(StatusReportItem.StatusFlags.DoNotDisturb)))
             {
                 Triggered?.Invoke(this, EventArgs.Empty);
             }
