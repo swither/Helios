@@ -77,6 +77,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Right Eyebrow", "dbu on indicator", "DBU Warning light on the right eyebrow.", "True if lit", BindingValueUnits.Boolean);
             AddValue("General", "parking brake engaged", "Indicates if the parking brake is engaged.", "True if engaged", BindingValueUnits.Boolean);
             AddValue("Caution", "cadc indicator", "CADC indicator lamp on the caution panel.", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Caution", "atf not engaged", "ATF NOT ENGAGED Caution Light", "True if lit", BindingValueUnits.Boolean);
             AddValue("General", "speed barke", "Indicates if the speed brake is deployed.", "True if speed breake is in any other position than stowed.", BindingValueUnits.Boolean);
 
             AddValue("HSI", "desired course calculated", "Internally calculated value", "360 - current heading + desired course", BindingValueUnits.Degrees);
@@ -454,6 +455,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             SetValue("EPU", "air indicator", new BindingValue(bits.HasFlag(BMSLightBits3.Air)));
             SetValue("Caution", "electric bus fail indicator", new BindingValue(bits.HasFlag(BMSLightBits3.Elec_Fault)));
             SetValue("Caution", "lef fault indicator", new BindingValue(bits.HasFlag(BMSLightBits3.Lef_Fault)));
+            
+            SetValue("Caution", "aft not engaged", new BindingValue(bits.HasFlag(BMSLightBits3.ATF_Not_Engaged)));
 
             SetValue("General", "on ground", new BindingValue(bits.HasFlag(BMSLightBits3.OnGround)));
             SetValue("Flight Control", "run light", new BindingValue(bits.HasFlag(BMSLightBits3.FlcsBitRun)));
