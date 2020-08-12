@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,7 +25,6 @@ namespace GadrocsWorkshop.Helios
     using System.Net;
     using System.Net.Sockets;
     using System.Text;
-
 
     class KeyboardThread
     {
@@ -71,18 +71,20 @@ namespace GadrocsWorkshop.Helios
         {
             lock (typeof(KeyboardThread))
             {
-                bool interupt = (_events.Count == 0);
+                bool interrupt = (_events.Count == 0);
 
                 foreach (NativeMethods.INPUT keyEvent in events)
                 {
                     _events.Enqueue(keyEvent);
                 }
-                if (interupt)
+                if (interrupt)
                 {
+                    // XXX this is disgusting.  The worker thread should wait with timeout on a semaphore
                     _thread.Interrupt();
                 }
             }
         }
+
         private void ConnectSocketAsync(IAsyncResult result)
         {
             lock (typeof(KeyboardThread))
@@ -92,6 +94,7 @@ namespace GadrocsWorkshop.Helios
                 server.BeginAccept(ConnectSocketAsync, server); // wait for another connection
             }
         }
+
         private Boolean TCPSend(byte[] buf, int buflen)
         {
             try
@@ -111,6 +114,7 @@ namespace GadrocsWorkshop.Helios
                 return false;
             }
         }
+
         public Boolean TCPSend(string data)
         {
             try
@@ -177,60 +181,9 @@ namespace GadrocsWorkshop.Helios
 
                 while (true)
                 {
-                    int sleepTime = 20; // Changed from Timeout.Infinite to just delay and recheck;
-                    lock (typeof(KeyboardThread))
-                    {
-                        if (_events.Count > 0)
-                        {
-                            sleepTime = _keyDelay;
-                            NativeMethods.INPUT keyEvent = _events.Dequeue();
-                            int size = Marshal.SizeOf(keyEvent);
-                            byte[] arr = new byte[size];
-                            IntPtr ptr = Marshal.AllocHGlobal(size);
-                            Marshal.StructureToPtr(keyEvent, ptr, true);
-                            Marshal.Copy(ptr, arr, 0, size);
-                            // Send via TCP - if no connection then send to the local PC
-                            if (!TCPSend(arr, size))
-                                NativeMethods.SendInput(1, new NativeMethods.INPUT[] {keyEvent},
-                                    Marshal.SizeOf(keyEvent));
-                            Marshal.FreeHGlobal(ptr);
-                        }
-                        else if (_clientsocket != null)
-                        {
-                            // check TCP read thread
-                            try
-                            {
-                                byte[] buffer = new byte[1024];
-                                _clientsocket.ReceiveTimeout = 1; // so we dont block - will cause an exception
-                                int readBytes = _clientsocket.Receive(buffer, buffer.Length, SocketFlags.None);
-                                if (readBytes != 0)
-                                {
-                                    String DataIn = System.Text.Encoding.ASCII.GetString(buffer, 0, readBytes);
-                                    if (DataIn.Contains("HEARTBEAT"))
-                                        // Send a response - a heatbeat is used because we dont always know when TCP disconnects
-                                        // This allows the client to know whether it is still in a connected state
-                                        TCPSend("HEARTBEAT");
-                                }
-                            }
-                            catch (SocketException se)
-                            {
-                                if (HandleSocketException(se))
-                                {
-                                    // Socket read timeout - ignore
-                                }
-                                else
-                                {
-                                    Logger.Error(
-                                        "Keyboard Thread unable to recover from socket exception on Receive(): " +
-                                        se.Message, se);
-                                }
-                            }
-                        }
-                    }
-
                     try
                     {
-                        Thread.Sleep(sleepTime);
+                        Poll();
                     }
                     catch (ThreadInterruptedException)
                     {
@@ -244,6 +197,78 @@ namespace GadrocsWorkshop.Helios
                 ExceptionViewer.DisplayException(ex);
                 throw;
             }
+        }
+
+        private void Poll()
+        {
+            int sleepTime = 20; // Changed from Timeout.Infinite to just delay and recheck;
+            lock (typeof(KeyboardThread))
+            {
+                if (_events.Count > 0)
+                {
+                    sleepTime = ProcessEvents();
+                }
+                else if (_clientsocket != null)
+                {
+                    ProcessServerConnection();
+                }
+            }
+            Thread.Sleep(sleepTime);
+        }
+
+        private void ProcessServerConnection()
+        {
+            try
+            {
+                byte[] buffer = new byte[1024];
+                _clientsocket.ReceiveTimeout = 1; // so we dont block - will cause an exception
+                int readBytes = _clientsocket.Receive(buffer, buffer.Length, SocketFlags.None);
+                if (readBytes != 0)
+                {
+                    string dataIn = System.Text.Encoding.ASCII.GetString(buffer, 0, readBytes);
+                    if (dataIn.Contains("HEARTBEAT"))
+                        // Send a response - a heatbeat is used because we dont always know when TCP disconnects
+                        // This allows the client to know whether it is still in a connected state
+                        TCPSend("HEARTBEAT");
+                }
+            }
+            catch (SocketException se)
+            {
+                if (HandleSocketException(se))
+                {
+                    // Socket read timeout - ignore
+                }
+                else
+                {
+                    Logger.Error(se, 
+                        "Keyboard Thread unable to recover from socket exception on Receive(): {Message}", se.Message);
+                    // XXX throw?
+                }
+            }
+        }
+
+        private int ProcessEvents()
+        {
+            int sleepTime = _keyDelay;
+            NativeMethods.INPUT keyEvent = _events.Dequeue();
+            int size = Marshal.SizeOf(keyEvent);
+            byte[] arr = new byte[size];
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+            try
+            {
+                Marshal.StructureToPtr(keyEvent, ptr, true);
+                Marshal.Copy(ptr, arr, 0, size);
+                // Send via TCP - if no connection then send to the local PC
+                if (!TCPSend(arr, size))
+                    NativeMethods.SendInput(1, new NativeMethods.INPUT[] {keyEvent},
+                        Marshal.SizeOf(keyEvent));
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
+
+            return sleepTime;
         }
 
         private bool HandleSocketException(SocketException se)

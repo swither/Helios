@@ -952,8 +952,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void UpdateExportScript()
         {
-            _exportMain = Resources
-                .ReadResourceFile($"pack://application:,,,/Helios;component/Interfaces/DCS/Common/{ExportMainName}")
+            string overridePath = Path.Combine(ConfigManager.DocumentPath, "Scripts", "Helios", ExportMainName);
+            string exportMainRaw = File.Exists(overridePath) ? 
+                File.ReadAllText(overridePath) : 
+                Resources.ReadResourceFile($"pack://application:,,,/Helios;component/Interfaces/DCS/Common/{ExportMainName}");
+
+            _exportMain = exportMainRaw
                 // TODO: validate the IP address against allowable protocol versions and address types for this version of HeliosExport__.lua
                 .Replace("HELIOS_REPLACE_IPAddress", IPAddress)
                 .Replace("HELIOS_REPLACE_Port", Port.ToString())
