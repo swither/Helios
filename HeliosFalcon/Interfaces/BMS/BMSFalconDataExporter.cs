@@ -456,7 +456,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             SetValue("Caution", "electric bus fail indicator", new BindingValue(bits.HasFlag(BMSLightBits3.Elec_Fault)));
             SetValue("Caution", "lef fault indicator", new BindingValue(bits.HasFlag(BMSLightBits3.Lef_Fault)));
             
-            SetValue("Caution", "aft not engaged", new BindingValue(bits.HasFlag(BMSLightBits3.ATF_Not_Engaged)));
+            SetValue("Caution", "atf not engaged", new BindingValue(bits.HasFlag(BMSLightBits3.ATF_Not_Engaged)));
 
             SetValue("General", "on ground", new BindingValue(bits.HasFlag(BMSLightBits3.OnGround)));
             SetValue("Flight Control", "run light", new BindingValue(bits.HasFlag(BMSLightBits3.FlcsBitRun)));
