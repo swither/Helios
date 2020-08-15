@@ -15,6 +15,7 @@
 
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
+using GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall;
 using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Windows;
@@ -91,6 +92,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             InitializeComponent();
 
+            DataContext = this;
             InterfaceStatusPanel.DataContext = new InterfaceStatusViewModel(_configurationCheck);
             DockManager.ActiveContentChanged += DockManager_ActiveDocumentChanged;
             NewProfile();
@@ -212,9 +214,22 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
 
             _initialLoad = false;
-            if (Application.Current is App app && app.StartupProfile != null && File.Exists(app.StartupProfile))
+            if (Application.Current is App app && app.StartupFile != null && File.Exists(app.StartupFile))
             {
-                LoadProfile(app.StartupProfile);
+                string extension = Path.GetExtension(app.StartupFile);
+                switch (extension)
+                {
+                    case ".hpf":
+                        LoadProfile(app.StartupFile);
+                        break;
+                    case ".helios16":
+                        InstallArchive(app.StartupFile);
+                        break;
+                    default:
+                        // ignore
+                        Logger.Warn("Ignoring input file with unrecognized file extension {extension}", extension);
+                        break;
+                }
             }
         }
 
@@ -547,7 +562,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
-        private void LoadProfile(string path)
+        private void LoadProfile(string path, bool suppressLayout = false)
         {
             StatusBarMessage = "Loading Profile...";
             GetLoadingAdorner();
@@ -584,7 +599,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
                 // NOTE: only install profile if not null (i.e. load succeeded)
                 Profile = profile;
-                RestoreSavedLayout(profile);
+                if (!suppressLayout)
+                {
+                    RestoreSavedLayout(profile);
+                }
             } 
             else
             {
@@ -1014,7 +1032,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
-#endregion
+        private void ViewInterfaceStatus_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            LayoutAnchorable interfaceStatus = ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
+            if (interfaceStatus != null)
+            {
+                // switch tab also
+                interfaceStatus.IsActive = true;
+            }
+        }
+
+        #endregion
 
         private void Show_Preview(object sender, RoutedEventArgs e)
         {
@@ -1024,11 +1052,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void Show_Toolbox(object sender, RoutedEventArgs e)
         {
             ShowCurrentLayoutAnchorable(ToolboxPanel);
-        }
-
-        private void Show_InterfaceStatus(object sender, RoutedEventArgs e)
-        {
-            ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
         }
 
         /// <summary>
@@ -1043,6 +1066,21 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // LayoutAnchorable current = FindLayoutAnchorable(DockManager.Layout, withContent);
             LayoutAnchorable current = DockManager.Layout.Descendents().OfType<LayoutAnchorable>().First(l => l.Content == withContent);
             current?.Show();
+            return current;
+        }
+
+        /// <summary>
+        /// try to find the layout panel that is now hosting the specified control
+        /// and hide or close it.  During every layout deserialization, these layout panels
+        /// are replaced so we don't keep references to them.
+        /// </summary>
+        /// <param name="withContent"></param>
+        /// <returns>the LayoutAnchorable associated with the content or null</returns>
+        private LayoutAnchorable CloseCurrentLayoutAnchorable(object withContent)
+        {
+            // LayoutAnchorable current = FindLayoutAnchorable(DockManager.Layout, withContent);
+            LayoutAnchorable current = DockManager.Layout.Descendents().OfType<LayoutAnchorable>().First(l => l.Content == withContent);
+            current?.Hide();
             return current;
         }
 
@@ -1156,7 +1194,88 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             CloseProfileItem(e.DeletedItem);
         }
 
+        private void InstallArchive(string startupFile)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<string>(InstallMode), startupFile);
+        }
 
+        private void InstallMode(string startupFile)
+        {
+            // reconfigure UI to just view the interface status and current document view
+            ArchiveInstall.ArchiveInstall archiveInstall = new ArchiveInstall.ArchiveInstall(startupFile, this);
+
+            // run install process, usually displaying some dialogs
+            InstallationDialogs responseDialogs = new InstallationDialogs(this);
+            if (InstallationResult.Success != archiveInstall.Install(responseDialogs))
+            {
+                return;
+            }
+
+            if (archiveInstall.HasMainProfile)
+            {
+                // change the layout to something small that makes sense for initial install
+                LayoutAnchorable welcome = ConfigureUserInterfaceForInstall();
+
+                // load the given profile
+                LoadProfile(archiveInstall.MainProfilePath, true);
+
+                // show the welcome screen delayed, because we probably triggered the interface status
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<LayoutAnchorable>(ShowWelcome), welcome);
+            }
+            else if (!archiveInstall.ProfilePaths.Any())
+            {
+                // no profiles found.  this could happen if we decide to package up some files to push as an archive
+                responseDialogs.ImportantMessage("Archive Contents Installed", 
+                    $"Files contained in the Helios Archive '{startupFile}' were installed.  There were no profiles included, so there is nothing to configure.");
+            }
+            else
+            {
+                // modally, tell the user about the multiple profiles and that they should open one and configure it
+                IEnumerable<string> lines = new[] {"", ""}.Concat(archiveInstall.ProfilePaths);
+                string profiles = string.Join(Environment.NewLine, lines);
+                responseDialogs.ImportantMessage("Multiple Profiles Installed",
+                    $"Files contained in the Helios Archive '{startupFile}' were installed.  There were multiple profiles included.  Open the profiles you intend to use via the Profile menu and configure them: {profiles}");
+            }
+        }
+
+        private void ShowWelcome(LayoutAnchorable welcome)
+        {
+            welcome.Show();
+            welcome.IsActive = true;
+        }
+
+        private LayoutAnchorable ConfigureUserInterfaceForInstall()
+        {
+            // remove unused stuff
+            CloseCurrentLayoutAnchorable(PreviewPanel);
+            CloseCurrentLayoutAnchorable(ExplorerPanel);
+            CloseCurrentLayoutAnchorable(ToolboxPanel);
+            CloseCurrentLayoutAnchorable(LayersPanel);
+            CloseCurrentLayoutAnchorable(BindingsPanel);
+            CloseCurrentLayoutAnchorable(PropertiesPanel);
+
+            // move the interface status
+            LayoutAnchorable interfaceStatus = DockManager.Layout.Descendents().OfType<LayoutAnchorable>()
+                .First(l => Equals(l.Content, InterfaceStatusPanel));
+            if (interfaceStatus != null)
+            {
+                interfaceStatus.Parent.RemoveChild(interfaceStatus);
+                ((LayoutAnchorablePaneGroup) DockManager.Layout.RootPanel.Children.First()).DockWidth = new GridLength(Width / 2);
+                interfaceStatus.AddToLayout(DockManager, AnchorableShowStrategy.Left);
+            }
+
+            // open an "installation mode" window docked on the left, to tell the user what is going to happen, and have them click start to go to interface status
+            // also include a button to reset the layout when they are done 
+            LayoutAnchorable welcome = new LayoutAnchorable
+            {
+                Title = "Installation Mode",
+                CanClose = false,
+                CanHide = false,
+                Content = new Welcome()
+            };
+            welcome.AddToLayout(DockManager, AnchorableShowStrategy.Left);
+            return welcome;
+        }
     }
 }
 

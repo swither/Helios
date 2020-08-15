@@ -38,6 +38,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private static RoutedUICommand SaveLayoutCommand = new RoutedUICommand("Saves current layout as the user default.", "SaveLayout", typeof(ProfileEditorCommands));
         private static RoutedUICommand LoadLayoutCommand = new RoutedUICommand("Loads the user default layout.", "LoadLayout", typeof(ProfileEditorCommands));
         private static RoutedUICommand RestoreDefaultLayoutCommand = new RoutedUICommand("Restores user default layout to system default.", "SaveLayout", typeof(ProfileEditorCommands));
+        private static RoutedUICommand ViewInterfaceStatusCommand = new RoutedUICommand("Shows and focuses the Interface Status view.", "ViewInterfaceStatus", typeof(ProfileEditorCommands));
 
         public static RoutedUICommand MoveBack { get { return MoveBackCommand; } }
         public static RoutedUICommand MoveForward { get { return MoveForwardCommand; } }
@@ -58,5 +59,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         public static RoutedUICommand SaveLayout { get { return SaveLayoutCommand; } }
         public static RoutedUICommand LoadLayout { get { return LoadLayoutCommand; } }
         public static RoutedUICommand RestoreDefaultLayout { get { return RestoreDefaultLayoutCommand; } }
+        public static RoutedUICommand ViewInterfaceStatus { get { return ViewInterfaceStatusCommand; } }
     }
 }

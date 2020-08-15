@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,17 +31,48 @@ namespace GadrocsWorkshop.Helios
     }
 
     /// <summary>
-    /// callbacks from installation that may be implemented by a UI or otherwise
+    /// callbacks from configuration attempts that may be implemented by a UI or otherwise
     /// </summary>
     public interface IInstallationCallbacks
     {
+        /// <summary>
+        /// Presents a warning, allowing for review of the details and selection of Ok or Cancel for the current configuration attempt
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="message"></param>
+        /// <param name="details"></param>
+        /// <returns>the user's selection</returns>
         InstallationPromptResult DangerPrompt(string title, string message, IList<StatusReportItem> details);
+
+        /// <summary>
+        /// Presents a failure result including details, representing a failed configuration attempt with no option to retry
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="message"></param>
+        /// <param name="details"></param>
         void Failure(string title, string message, IList<StatusReportItem> details);
-        void Success(string title, string message, IList<StatusReportItem> details);
+
+        /// <summary>
+        /// Presents a success result including details, representing a successful configuration attempt.  This message
+        /// may not be shown to the user depending on configured options.
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="message"></param>
+        /// <param name="details"></param>
+        /// <returns>true if the message was shown to the user</returns>
+        bool Success(string title, string message, IList<StatusReportItem> details);
+
+        /// <summary>
+        /// Presents a non-optional message during a configuration attempt that has not yet concluded, i.e. there will be a
+        /// Failure, Success, or DangerPrompt cancellation later.
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="message"></param>
+        void ImportantMessage(string title, string message);
     }
 
     /// <summary>
-    /// installation of some resources by a Helios component
+    /// support for making a configuration attempt by a Helios component
     /// </summary>
     public interface IInstallation
     {

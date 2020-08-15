@@ -26,6 +26,7 @@
         <CommandBinding Command="local:ProfileEditorCommands.SaveLayout" Executed="SaveLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.LoadLayout" Executed="LoadLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.RestoreDefaultLayout" Executed="RestoreDefaultLayout_Executed" />
+        <CommandBinding Command="local:ProfileEditorCommands.ViewInterfaceStatus" Executed="ViewInterfaceStatus_Executed" />
         <CommandBinding Command="heliosViewModel:InterfaceStatusViewModel.GoThereCommand" Executed="GoThere_Executed" />
         <CommandBinding Command="heliosViewModel:InterfaceStatusViewModel.DeleteInterfaceCommand" Executed="DeleteInterface_Executed" />
         <CommandBinding Command="heliosWindows:Dialog.ShowModalCommand" Executed="DialogShowModal_Executed"/>
@@ -117,7 +118,7 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_View">
-                <MenuItem Header="Interface _Status" Click="Show_InterfaceStatus" />
+                <MenuItem Header="Interface _Status" Command="{x:Static local:ProfileEditorCommands.ViewInterfaceStatus}" />
                 <Separator />
                 <MenuItem Header="Tool_box" Click="Show_Toolbox" />
                 <Separator />

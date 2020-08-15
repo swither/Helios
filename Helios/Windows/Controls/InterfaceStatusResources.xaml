@@ -103,12 +103,14 @@
             <Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}"/>
             <Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,0" Padding="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8C9;" Style="{StaticResource CautionVisible}"/>
             <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Margin="3,3,6,0" Text="{Binding TextLine1}"/>
-            <ItemsControl Grid.Row="1" Grid.Column="1" 
-                          FontFamily="Courier New"
-                          Background="#F0F0F0"
-                          Margin="3"
-                          Padding="6,3"
-                          ItemsSource="{Binding Code}"/>
+            <ScrollViewer Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <ItemsControl
+                    FontFamily="Courier New"
+                    Background="#F0F0F0"
+                    Margin="3"
+                    Padding="6,3"
+                    ItemsSource="{Binding Code}"/>
+            </ScrollViewer> 
         </Grid>
     </DataTemplate>
     <!-- this data template is separate as an optimization, so we don't instantiate the ItemsControl in the hundreds of status items that do not need it -->

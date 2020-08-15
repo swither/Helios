@@ -1,0 +1,33 @@
+﻿<Grid x:Class="GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall.Welcome"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:profileEditor="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor"
+        mc:Ignorable="d"
+        d:DesignHeight="350" 
+        d:DesignWidth="900">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MaxWidth="400"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Style="{StaticResource Heading1}" Margin="10" TextWrapping="Wrap">Helios is in Profile Installation Mode.</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="10" Padding="0" TextWrapping="Wrap">The interface has been simplified to show only the Interface Status and any editors you open during configuration.  
+            If you need any additional views, you can find them on the "View" menu.</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="0" Margin="10,10,10,0" Padding="0" TextWrapping="Wrap">Work through the Interface Status until all the interfaces shown there have a green "check mark" status.</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="10,5,10,10" Padding="0" TextWrapping="Wrap">Use the button on the right to get started.  When you are done, return here to the "Installlation Mode" tab at the bottom.</TextBlock>
+        <Button Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="10,5,10,10" Content="Start" Command="{x:Static profileEditor:ProfileEditorCommands.ViewInterfaceStatus}" Style="{StaticResource InterfaceEditorButton}"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="10" Padding="0" TextWrapping="Wrap">Then use the button on the right to switch to the regular Profile Editor interface or simply exit the program.</TextBlock>
+        <Button Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="10" Content="Reset UI" Command="{x:Static profileEditor:ProfileEditorCommands.RestoreDefaultLayout}" Style="{StaticResource InterfaceEditorButton}"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="10" Padding="0" TextWrapping="Wrap">To use the profile you just installed, please run Helios Control Center from the Windows Start menu.</TextBlock>
+    </Grid>
+</Grid>

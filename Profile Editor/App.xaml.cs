@@ -34,14 +34,14 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     /// </summary>
     public partial class App : Application
     {
-        private string _startupProfile = null;
+        private string _startupFile = null;
 
         #region Properties
 
-        public string StartupProfile
+        public string StartupFile
         {
-            get { return _startupProfile; }
-            private set { _startupProfile = value; }
+            get { return _startupFile; }
+            private set { _startupFile = value; }
         }
 
         #endregion
@@ -56,7 +56,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // react to options or defaults
             if (options.Profiles.Any())
             {
-                StartupProfile = options.Profiles.Last();
+                StartupFile = options.Profiles.Last();
             }
 
             // start up Helios

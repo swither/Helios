@@ -43,6 +43,9 @@
     <Reference Include="CommandLine, Version=2.7.82.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.7.82\lib\net461\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -50,6 +53,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
@@ -69,6 +73,18 @@
     </ApplicationDefinition>
     <Compile Include="AddInterfaceDialog.xaml.cs">
       <DependentUpon>AddInterfaceDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ArchiveInstall\ArchiveInstall.cs" />
+    <Compile Include="ArchiveInstall\Choice.cs" />
+    <Compile Include="ArchiveInstall\ChoiceControl.xaml.cs">
+      <DependentUpon>ChoiceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ArchiveInstall\ChoiceModel.cs" />
+    <Compile Include="ArchiveInstall\Option.cs" />
+    <Compile Include="ArchiveInstall\OverwriteStrategy.cs" />
+    <Compile Include="ArchiveInstall\ProfileManifest16.cs" />
+    <Compile Include="ArchiveInstall\Welcome.xaml.cs">
+      <DependentUpon>Welcome.xaml</DependentUpon>
     </Compile>
     <Compile Include="BindingsDragDropAdvisor.cs" />
     <Compile Include="BindingsPanel.xaml.cs">
@@ -169,6 +185,14 @@
     <Page Include="AddInterfaceDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ArchiveInstall\ChoiceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ArchiveInstall\Welcome.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BindingsPanel.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -3,13 +3,13 @@
                     xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel;assembly=Helios"
                     xmlns:controls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios">
     <Style x:Key="MessageStyle" TargetType="TextBlock">
-        <Setter Property="Margin" Value="6,12" />
+        <Setter Property="Margin" Value="8,12,18,12" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
     <DataTemplate DataType="{x:Type viewModel:InterfaceStatusViewItem}">
         <controls:InterfaceStatusItemControl />
     </DataTemplate>
-    <!-- Expander is very broken if used with a custom Header because a global style in App.xaml assumes Header is text, so let's not use it -->
+    <!-- Expander is very broken if used with a custom Header because a global style in App.xaml assumes Header is text, so let's not use it that way -->
     <Style x:Key="InstallationExpanderStyle" TargetType="Expander">
         <Setter Property="Margin" Value="9,3" />
         <Setter Property="ExpandDirection" Value="Down" />
@@ -23,6 +23,17 @@
                 </ScrollViewer>
             </Setter.Value>
         </Setter>
+        <Setter Property="Visibility" Value="Visible"/>
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Details.Count, PresentationTraceSources.TraceLevel=High}" Value="0"/>
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </Style.Triggers>    
     </Style>
     <Style x:Key="RecommendationsExpanderStyle" TargetType="Expander" BasedOn="{StaticResource InstallationExpanderStyle}">
         <Setter Property="Content">
@@ -36,6 +47,17 @@
                 </ItemsControl>
             </Setter.Value>
         </Setter>
+        <Setter Property="Visibility" Value="Visible"/>
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Recommendations.Count}" Value="0"/>
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </Style.Triggers>
     </Style>
     <Style x:Key="DialogButtonStyle" TargetType="Button">
         <Setter Property="Margin" Value="6"/>
@@ -52,6 +74,25 @@
     </Style>
     <DataTemplate DataType="{x:Type viewModel:ShareInstallationResults}">
         <controls:ShareDialog/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type viewModel:InstallationMessageModel}">
+        <Grid
+            controls:DialogWindow.DialogInitialWidth="640"
+            controls:DialogWindow.DialogInitialHeight="120">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="{Binding Message}" Style="{StaticResource MessageStyle}" />
+            <Grid Grid.Row="2" Style="{StaticResource ButtonBarStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="1" Command="{x:Static SystemCommands.CloseWindowCommand}" Style="{StaticResource DialogButtonStyle}">Ok</Button>
+            </Grid>
+        </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type viewModel:InstallationSuccessModel}">
         <Grid

@@ -14,20 +14,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
-    public class InstallationResultViewModel
+    public class InstallationMessageViewModelBase
     {
         public string Title { get; internal set; }
         public string Message { get; internal set; }
+    }
 
-        private IList<InterfaceStatusViewItem> _details;
+    public class InstallationResultViewModel : InstallationMessageViewModelBase
+    {
+        private IList<InterfaceStatusViewItem> _details = new List<InterfaceStatusViewItem>();
 
         public class SingleReport
         {
@@ -41,7 +44,8 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             }
         }
 
-        public IList<InterfaceStatusViewItem> Details {
+        public IList<InterfaceStatusViewItem> Details
+        {
             get => _details;
             internal set
             {
@@ -53,7 +57,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             }
         }
 
-        public IList<string> Recommendations { get; private set; }
+        public IList<string> Recommendations { get; private set; } = new List<string>();
 
         /// <summary>
         /// backing field for property ShareCommand, contains
@@ -74,7 +78,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                     Dialog.ShowModalCommand.Execute(
                         new ShowModalParameter
                         {
-                            Content = new ShareInstallationResults(new List<SingleReport> { new SingleReport(Details) })
+                            Content = new ShareInstallationResults(new List<SingleReport> {new SingleReport(Details)})
                         },
                         parameter as IInputElement);
                 });
@@ -122,6 +126,11 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
     }
 
     public class InstallationSuccessModel : InstallationResultViewModel
+    {
+        // no code, only separate for data template selection
+    }
+
+    public class InstallationMessageModel : InstallationMessageViewModelBase
     {
         // no code, only separate for data template selection
     }

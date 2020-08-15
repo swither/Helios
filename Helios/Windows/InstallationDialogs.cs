@@ -13,11 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Threading;
 using GadrocsWorkshop.Helios.Windows.ViewModel;
 
 namespace GadrocsWorkshop.Helios.Windows
@@ -62,12 +60,13 @@ namespace GadrocsWorkshop.Helios.Windows
             }, _host);
         }
 
-        public void Success(string title, string message, IList<StatusReportItem> details)
+        public bool Success(string title, string message, IList<StatusReportItem> details)
         {
-            if (!ConfigManager.SettingsManager.LoadSetting("ProfileEditor", "DetailedViewOnConfigurationSuccess", false))
+            if (!ConfigManager.SettingsManager.LoadSetting("ProfileEditor", "DetailedViewOnConfigurationSuccess", false)
+            )
             {
                 // don't present results for success
-                return;
+                return false;
             }
 
             // show a custom dialog to explore the details
@@ -78,6 +77,19 @@ namespace GadrocsWorkshop.Helios.Windows
                     Title = title,
                     Message = message,
                     Details = details.Select(item => new InterfaceStatusViewItem(item)).ToList()
+                }
+            }, _host);
+            return true;
+        }
+
+        public void ImportantMessage(string title, string message)
+        {
+            Dialog.ShowModalCommand.Execute(new ShowModalParameter
+            {
+                Content = new InstallationMessageModel
+                {
+                    Title = title,
+                    Message = message
                 }
             }, _host);
         }

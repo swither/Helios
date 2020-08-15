@@ -61,7 +61,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
             // TODO declare triggers
 
-            _statusReportNotify = new StatusReportNotifyAsyncOnce(CreateStatusReport, () => "Profile Interface", () => "Interface to Helios Control Center itself.");
+            _statusReportNotify = new StatusReportNotifyAsyncOnce(CreateStatusReport, () => "Profile Interface", () => "Interface to Helios itself.");
         }
 
         protected override void AttachToProfileOnMainThread()
@@ -259,8 +259,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                 // this is probably never displayed
                 newReport.Add(new StatusReportItem
                 {
-                    Status = "No profile loaded",
-                    Severity = StatusReportItem.SeverityCode.Warning
+                    Status = "No profile loaded"
                 });
                 return;
             }
