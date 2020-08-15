@@ -1,0 +1,42 @@
+﻿<controls:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.HeliosProcessControl.ProcessControlInterfaceEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GadrocsWorkshop.Helios.HeliosProcessControl"
+             xmlns:controls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
+             xmlns:helios="clr-namespace:GadrocsWorkshop.Helios;assembly=Helios"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance local:ProcessControlViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="12"/>
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Padding" Value="6"/>
+            </Style>
+            <DataTemplate DataType="{x:Type helios:HeliosBinding}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Text="{Binding Trigger.Source.Name, Mode=OneWay}" MinWidth="200"/>
+                    <TextBox Text="{Binding Trigger.TriggerID, Mode=OneWay}" MinWidth="100"/>
+                    <TextBox Text="{Binding Value, Mode=OneWay}"/>
+                </StackPanel>
+            </DataTemplate>
+        </Grid.Resources>
+        <!-- examples for some things you could access -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="{Binding Data.Name}"/>
+        <!-- if there was any XML config, it would be here: <TextBlock Grid.Row="1" Text="{Binding Data.Model.xyz}"/> -->
+        <ItemsControl Grid.Row="2" Margin="12,0,0,0" ItemsSource="{Binding Data.InputBindings}"/>
+        <CheckBox Grid.Row="3" IsChecked="{Binding Data.Model.AllowLaunch}" Margin="12">Allow Helios profiles on this computer to start (launch) external programs</CheckBox>
+        <CheckBox Grid.Row="4" IsChecked="{Binding Data.Model.AllowKill}" Margin="12">Allow Helios profiles on this computer to stop (kill) external programs</CheckBox>
+    </Grid>
+</controls:HeliosInterfaceEditor>
