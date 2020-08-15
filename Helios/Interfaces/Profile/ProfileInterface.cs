@@ -1,5 +1,6 @@
 //  Copyright 2014 Craig Courtney
-//    
+//  Copyright 2020 Helios Contributors
+//
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -22,7 +23,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Diagnostics;
 
     [HeliosInterface("Helios.Base.ProfileInterface", "Profile", null, typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
     public class ProfileInterface : HeliosInterface, IStatusReportNotify, IResetMonitorsObserver, IReadyCheck
@@ -35,6 +35,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         // our implementation of IStatusReportNotify
         private readonly StatusReportNotifyAsyncOnce _statusReportNotify;
+
+        // definition for profile related triggers
+        private readonly HeliosTrigger _profileStartedTrigger;
+        private readonly HeliosTrigger _profileResetTrigger;
+        private readonly HeliosTrigger _profileStoppedTrigger;
 
         public ProfileInterface()
             : base("Profile")
@@ -55,12 +60,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             hideControlCenter.Execute += new HeliosActionHandler(HideAction_Execute);
             Actions.Add(hideControlCenter);
 
-            HeliosAction launchApplication = new HeliosAction(this, "", "", "launch application", "Launches an external application", "Full path to appliation or document you want to launch or URL to a web page.", BindingValueUnits.Text);
+            HeliosAction launchApplication = new HeliosAction(this, "", "", "launch application", "This functionality has moved to Process Control interface", "This action will be ignored.", BindingValueUnits.Text);
             launchApplication.Execute += LaunchApplication_Execute;
             Actions.Add(launchApplication);
 
-            // TODO declare triggers
+            _profileStartedTrigger = new HeliosTrigger(this, "", "", "Started", "Fired when a profile is started.");
+            Triggers.Add(_profileStartedTrigger);
 
+           _profileResetTrigger = new HeliosTrigger(this, "", "", "Reset", "Fired when a profile has been reset.");
+            Triggers.Add(_profileResetTrigger);
+
+            _profileStoppedTrigger = new HeliosTrigger(this, "", "", "Stopped", "Fired when a profile is stopped.");
+            Triggers.Add(_profileStoppedTrigger);
+            
             _statusReportNotify = new StatusReportNotifyAsyncOnce(CreateStatusReport, () => "Profile Interface", () => "Interface to Helios itself.");
         }
 
@@ -99,12 +111,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         private void Profile_ProfileStarted(object sender, EventArgs e)
         {
-            // TODO start trigger
+            _profileStartedTrigger.FireTrigger(BindingValue.Empty);
         }
 
         private void Profile_ProfileStopped(object sender, EventArgs e)
         {
-            // TODO stop trigger
+            _profileStoppedTrigger.FireTrigger(BindingValue.Empty);
         }
 
         private void Profile_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -117,7 +129,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         public override void Reset()
         {
-            // TODO reset trigger
+            _profileResetTrigger.FireTrigger(BindingValue.Empty);
             base.Reset();
         }
 
@@ -157,48 +169,31 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             ConfigManager.UndoManager.NonEmpty -= UndoManager_NonEmpty;
         }
 
-        void LaunchApplication_Execute(object action, HeliosActionEventArgs e)
+        private void LaunchApplication_Execute(object action, HeliosActionEventArgs e)
         {
-            try
-            {
-                Process.Start(e.Value.StringValue);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error caught launching external application (path=\"" + e.Value.StringValue + "\")");
-            }
+            _ = action;
+            _ = e;
+            Logger.Error("The ability to launch programs with a Helios profile has been moved to the Process Control Interface for security reasons.  Please install this interface, give it permission in its editor, and then use its bindings if you intend to use this functionality.");
         }
 
-        void HideAction_Execute(object action, HeliosActionEventArgs e)
+        private void HideAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (Profile != null)
-            {
-                Profile.HideControlCenter();
-            }
+            Profile?.HideControlCenter();
         }
 
-        void ShowAction_Execute(object action, HeliosActionEventArgs e)
+        private void ShowAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (Profile != null)
-            {
-                Profile.ShowControlCenter();
-            }
+            Profile?.ShowControlCenter();
         }
 
-        void StopAction_Execute(object action, HeliosActionEventArgs e)
+        private void StopAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (Profile != null)
-            {
-                Profile.Stop();
-            }
+            Profile?.Stop();
         }
 
-        void ResetAction_Execute(object action, HeliosActionEventArgs e)
+        private void ResetAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (Profile != null)
-            {
-                Profile.Reset();
-            }
+            Profile?.Reset();
         }
 
         public override void ReadXml(System.Xml.XmlReader reader)
@@ -232,7 +227,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             CheckProfile(newReport);
             CheckResetMonitors(newReport);
             CheckMissingimages(newReport);
-            CheckExecutablePaths(newReport);
             CheckDirty(newReport);
             PublishStatusReport(newReport);
         }
@@ -340,18 +334,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             }
         }
 
-        /// <summary>
-        /// check configuration related to launching or stopping executables
-        /// </summary>
-        /// <param name="newReport"></param>
-        private void CheckExecutablePaths(IList<StatusReportItem> newReport)
-        {
-            // TODO if any launch or kill actions are configured, check paths and access
-            // TODO if incorrect, report warning or error (to stop launch) in StatusReportItem
-            // TODO if correct, report detail also in StatusReportItem
-            _ = newReport;
-        }
-
         public void PublishStatusReport(IList<StatusReportItem> statusReport)
         {
             _statusReportNotify.PublishStatusReport(statusReport);
@@ -371,9 +353,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
         {
             // NOTE: we don't have to check monitor reset because Control Center already does that
             // NOTE: we don't have to check missing images because they will log warnings 
-            List<StatusReportItem> items = new List<StatusReportItem>();
-            CheckExecutablePaths(items);
-            return items;
+            yield break;
         }
     }
 }
