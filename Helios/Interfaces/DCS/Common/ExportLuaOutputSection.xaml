@@ -9,8 +9,20 @@
     d:DataContext="{d:DesignInstance Type=common:DCSInterfaceEditor}"
     Header="DCS Export.lua Output (Advanced)" 
     Margin="0,0,0,12" 
-    IsExpanded="False" 
-    Style="{StaticResource GroupBoxWithExpanderStyle}">
+    IsExpanded="False">
+    <Expander.Style>
+        <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource GroupBoxWithExpanderStyle}">
+            <Setter Property="Visibility" Value="Visible"/>
+            <!-- collapse if this is a remote machine, because we don't configure DCS there -->
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Configuration.Locations.IsRemote}" Value="True">
+                    <DataTrigger.Setters>
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger.Setters>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Expander.Style>
     <Expander.Resources>
         <Style x:Key="AppliesIfDofilesAllowed" TargetType="{x:Type Control}">
             <Style.Triggers>

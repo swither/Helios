@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 
@@ -10,6 +11,11 @@ namespace GadrocsWorkshop.Helios.Util.DCS
     /// </summary>
     public abstract class DCSConfiguration : NotificationObject, IReadyCheck, IInstallation
     {
+        /// <summary>
+        /// utility accessor for pathing in UI, such as: Locations.IsRemote
+        /// </summary>
+        public InstallationLocations Locations => InstallationLocations.Singleton;
+
         protected void SubscribeToLocationChanges()
         {
             // if DCS locations are added, removed, enabled, or disabled, we need to check if the resulting set of locations is configured
@@ -18,6 +24,7 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             locations.Removed += Locations_Changed;
             locations.Enabled += Locations_Changed;
             locations.Disabled += Locations_Changed;
+            locations.RemoteChanged += Locations_Changed;
         }
 
         public virtual void Dispose()
@@ -27,9 +34,10 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             locations.Removed -= Locations_Changed;
             locations.Enabled -= Locations_Changed;
             locations.Disabled -= Locations_Changed;
+            locations.RemoteChanged -= Locations_Changed;
         }
 
-        private void Locations_Changed(object sender, InstallationLocations.LocationEvent e)
+        private void Locations_Changed(object sender, EventArgs e)
         {
             Update();
         }

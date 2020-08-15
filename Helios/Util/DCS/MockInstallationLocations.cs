@@ -13,6 +13,8 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
     class MockInstallationLocations
     {
+        public bool IsRemote => false;
+
         public IEnumerable<MockInstallationLocation> Items { get; } = new List<MockInstallationLocation>
         {
             new MockInstallationLocation

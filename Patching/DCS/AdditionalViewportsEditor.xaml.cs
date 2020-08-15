@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using GadrocsWorkshop.Helios.Util.DCS;
@@ -37,16 +38,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             InitializeComponent();
 
-            // load patches for all destinations
-            Dictionary<string, PatchApplication> destinations =
-                new Dictionary<string, PatchApplication>();
             InstallationLocations locations = InstallationLocations.Singleton;
-            foreach (InstallationLocation location in locations.Items)
-            {
-                destinations[location.Path] = AdditionalViewports.CreatePatchDestination(location);
-            }
 
-            Patching = new PatchingConfiguration(destinations, AdditionalViewports.PATCH_SET,
+            // load patches for all destinations
+            Patching = new PatchingConfiguration(LoadDestinations(locations), AdditionalViewports.PATCH_SET,
                 "Helios viewport patches");
 
             // register for changes in selected destinations so we can scan again
@@ -54,8 +49,28 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             locations.Removed += OnRemoved;
             locations.Enabled += OnEnabled;
             locations.Disabled += OnDisabled;
+            locations.RemoteChanged += OnRemoteChanged;
 
             _installationDialogs = new InstallationDialogs(this);
+        }
+
+        private static Dictionary<string, PatchApplication> LoadDestinations(InstallationLocations locations)
+        {
+            Dictionary<string, PatchApplication> destinations =
+                new Dictionary<string, PatchApplication>();
+
+            if (locations.IsRemote)
+            {
+                // just leave it blank
+                return destinations;
+            }
+
+            foreach (InstallationLocation location in locations.Items)
+            {
+                destinations[location.Path] = AdditionalViewports.CreatePatchDestination(location);
+            }
+
+            return destinations;
         }
 
         private void OnDisabled(object sender, InstallationLocations.LocationEvent e)
@@ -76,6 +91,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void OnAdded(object sender, InstallationLocations.LocationEvent e)
         {
             Patching?.OnAdded(e.Location.Path, AdditionalViewports.CreatePatchDestination(e.Location));
+        }
+
+        private void OnRemoteChanged(object sender, EventArgs e)
+        {
+            Patching?.OnRemoteChanged(LoadDestinations(InstallationLocations.Singleton));
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
 //  Copyright 2020 Ammo Goettsch
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,9 +23,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -93,10 +97,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             };
 
         // the main export script we generate
-        private const string ExportMainName = "HeliosExport16.lua";
+        private const string EXPORT_MAIN_NAME = "HeliosExport16.lua";
 
         // regex used to check for the call to our main exports already being present
-        private static readonly Regex ExportMainCall = new Regex($"dofile\\(.*{ExportMainName}.]?\\)", RegexOptions.Compiled);
+        private static readonly Regex ExportMainCall = new Regex($"dofile\\(.*{EXPORT_MAIN_NAME}.]?\\)", RegexOptions.Compiled);
 
         // regex used to check for a Capt Zeen style Export.lua from 1.4
         private static readonly Regex HeliosExport14Call = new Regex($"dofile\\(.*HeliosExport\\.lua.]?\\)", RegexOptions.Compiled);
@@ -158,7 +162,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// the status of the configuration, including up to date, out of date, or lack of locations
         /// </summary>
         private StatusCodes _status;
-
+        
         /// <summary>
         /// backing field for property ExportLuaHandling, contains
         /// selected mode for Export.lua stub configuration
@@ -170,7 +174,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _parent = parent;
 
             // get global configuration parameters that are not serialized to the profile
-            _ipAddress = _parent.LoadSetting("IPAddress", "127.0.0.1");
+            _ipAddress = _parent.LoadSetting("IPAddress", System.Net.IPAddress.Loopback.ToString());
             _exportFrequency = _parent.LoadSetting("ExportFrequency", 15);
             _exportModuleText = _parent.ExportModuleText;
 
@@ -523,10 +527,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     InstallExportStub(location, report);
 
                     // main export script is required
-                    File.WriteAllText(location.ExportMainPath(ExportMainName), _exportMain);
+                    File.WriteAllText(location.ExportMainPath(EXPORT_MAIN_NAME), _exportMain);
                     report.Add(new StatusReportItem
                     {
-                        Status = $"Wrote main export file {ExportMainName} to {location.SavedGamesName}",
+                        Status = $"Wrote main export file {EXPORT_MAIN_NAME} to {location.SavedGamesName}",
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     });
 
@@ -618,7 +622,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // our main script is already called, no changes required
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Export.lua stub for {location.SavedGamesName} already calls {ExportMainName} and won't be modified",
+                    Status = $"Export.lua stub for {location.SavedGamesName} already calls {EXPORT_MAIN_NAME} and won't be modified",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -628,10 +632,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 // change CZ style Export.lua to call new exports
                 BackupExportStub(location);
-                WriteFile(exportStubPath, contents.Replace("HeliosExport.lua", ExportMainName));
+                WriteFile(exportStubPath, contents.Replace("HeliosExport.lua", EXPORT_MAIN_NAME));
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Export.lua stub for {location.SavedGamesName} changed to call {ExportMainName}",
+                    Status = $"Export.lua stub for {location.SavedGamesName} changed to call {EXPORT_MAIN_NAME}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -655,10 +659,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // add a dofile line to a file already in that style
                 BackupExportStub(location);
                 WriteFile(exportStubPath,
-                    $"{contents}{Environment.NewLine}dofile(lfs.writedir()..[[{location.ExportMainRelativePath(ExportMainName)}]]){Environment.NewLine}");
+                    $"{contents}{Environment.NewLine}dofile(lfs.writedir()..[[{location.ExportMainRelativePath(EXPORT_MAIN_NAME)}]]){Environment.NewLine}");
                 report.Add(new StatusReportItem
                 {
-                    Status = $"Added call to {ExportMainName} to existing Export.lua stub for {location.SavedGamesName}",
+                    Status = $"Added call to {EXPORT_MAIN_NAME} to existing Export.lua stub for {location.SavedGamesName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 });
                 return;
@@ -731,7 +735,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             else if (HeliosExport14Call.IsMatch(contents))
             {
                 response = callbacks.DangerPrompt("Upgrade Export.lua",
-                    $"Helios is about to change the Export.lua script \nat {exportStubPath}\nto call the new main export script {ExportMainName}.  A backup copy of this file will be left in the same folder.",
+                    $"Helios is about to change the Export.lua script \nat {exportStubPath}\nto call the new main export script {EXPORT_MAIN_NAME}.  A backup copy of this file will be left in the same folder.",
                     new List<StatusReportItem>());
             }
             else if (LuaExportStartCall.IsMatch(contents))
@@ -743,7 +747,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             else if (DofileCall.IsMatch(contents))
             {
                 response = callbacks.DangerPrompt("Configure Export.lua",
-                    $"Helios is about add a line to the Export.lua script \nat {exportStubPath}.\nThis line will call the main export script {ExportMainName} to allow sending data to Helios.  A backup copy of this file will be left in the same folder.",
+                    $"Helios is about add a line to the Export.lua script \nat {exportStubPath}.\nThis line will call the main export script {EXPORT_MAIN_NAME} to allow sending data to Helios.  A backup copy of this file will be left in the same folder.",
                     new List<StatusReportItem>());
             }
             else
@@ -764,6 +768,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         internal IList<StatusReportItem> CheckConfig()
         {
             List<StatusReportItem> report = new List<StatusReportItem>();
+
+            // check if we are running on the same machine providing the exports
+            if (Locations.IsRemote)
+            {
+                report.Add(new StatusReportItem
+                {
+                    Status =
+                        $"This computer is configured as a remote Helios, so it is not the machine where DCS runs.  Helios cannot generate export files or check that they have been correctly copied to the computer running DCS.",
+                    Recommendation =
+                        "Also generate your Helios configuration on the computer running DCS to make sure all export scripts are installed",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
+
+                // do not perform any of the remaining checks, because they make no sense remotely
+                return report;
+            }
 
             // report all locations but only retain the enabled ones
             IList<InstallationLocation> installationLocations = InstallationLocations.Singleton.Items
@@ -795,24 +815,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 List<Func<InstallationLocation, StatusReportItem>> checks =
                     new List<Func<InstallationLocation, StatusReportItem>>
                     {
-                        CheckDirectories,
-                        stubChecker,
-                        CheckExportScript
+                        CheckDirectories, stubChecker, CheckExportScript, CheckModule
                     };
 
-                checks.Add(CheckModule);
 
-                foreach (Func<InstallationLocation, StatusReportItem> check in checks)
+                foreach (StatusReportItem result in checks.Select(check => check(location)))
                 {
-                    StatusReportItem result = check(location);
                     report.Add(result);
-                    if (!result.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate))
+                    if (result.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate))
                     {
-                        Logger.Debug(result.Status);
-                        Status = StatusCodes.OutOfDate;
-                        // don't test the remaining items
-                        return report;
+                        continue;
                     }
+
+                    Logger.Debug(result.Status);
+                    Status = StatusCodes.OutOfDate;
+                    // don't test the remaining items
+                    return report;
                 }
             }
 
@@ -861,19 +879,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             string reportingName = _parent.ImpersonatedVehicleName ?? _parent.VehicleName;
 
-            // XXX check if IP address is valid
-
-            // check IP address to see if the files are are checking are actually used
-            if (LocalMachineIsRemoteHelios())
+            // check if we are running on the same machine where the export scripts need to be installed
+            if (Locations.IsRemote)
             {
                 yield return new StatusReportItem
                 {
                     Status =
-                        $"This computer may not be where DCS runs, because Exports are sent here via IP address {IPAddress}",
+                        $"This computer is configured as a remote Helios, so it is not the machine where DCS runs.  Helios cannot check that export files have been correctly copied to the computer running DCS.",
                     Recommendation =
-                        "Helios cannot check that the export files have been copied to your computer running DCS",
-                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                        "Check your Helios configuration on the computer running DCS to make sure all export scripts are installed",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate,
+                    Link = StatusReportItem.ProfileEditor
                 };
+
+                // do not perform any of the remaining checks, because they make no sense remotely
+                yield break;
             }
 
             // report all locations but only retain the enabled ones
@@ -952,13 +972,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void UpdateExportScript()
         {
-            string overridePath = Path.Combine(ConfigManager.DocumentPath, "Scripts", "Helios", ExportMainName);
+            string overridePath = Path.Combine(ConfigManager.DocumentPath, "Scripts", "Helios", EXPORT_MAIN_NAME);
             string exportMainRaw = File.Exists(overridePath) ? 
                 File.ReadAllText(overridePath) : 
-                Resources.ReadResourceFile($"pack://application:,,,/Helios;component/Interfaces/DCS/Common/{ExportMainName}");
+                Resources.ReadResourceFile($"pack://application:,,,/Helios;component/Interfaces/DCS/Common/{EXPORT_MAIN_NAME}");
 
             _exportMain = exportMainRaw
-                // TODO: validate the IP address against allowable protocol versions and address types for this version of HeliosExport__.lua
+                // REVISIT: validate the IP address against allowable protocol versions and address types for this version of HeliosExport__.lua
                 .Replace("HELIOS_REPLACE_IPAddress", IPAddress)
                 .Replace("HELIOS_REPLACE_Port", Port.ToString())
                 .Replace("HELIOS_REPLACE_ExportInterval", Math.Round(1d / Math.Max(4, ExportFrequency), 3).ToString(CultureInfo.InvariantCulture));
@@ -1125,7 +1145,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             };
         }
 
-
         // NOTE: we don't factor this to share code with the other Check... functions because they are all
         // subtly different in terms of severity and we want to encourage more special cases added in the future
         private StatusReportItem CheckUpdatedExportStub(InstallationLocation location)
@@ -1161,7 +1180,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // our main script is already called, no changes required
                 return new StatusReportItem
                 {
-                    Status = $"Export.lua stub for {location.SavedGamesName} calls {ExportMainName}",
+                    Status = $"Export.lua stub for {location.SavedGamesName} calls {EXPORT_MAIN_NAME}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
@@ -1195,7 +1214,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // need to add a dofile line to a file already in that style
                 return new StatusReportItem
                 {
-                    Status = $"Export.lua stub for {location.SavedGamesName} does not call {ExportMainName}",
+                    Status = $"Export.lua stub for {location.SavedGamesName} does not call {EXPORT_MAIN_NAME}",
                     Recommendation = $"Select the interface for {_parent.VehicleName} and run DCS setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
@@ -1230,12 +1249,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
 
             string contents = ReadFile(exportLuaPath);
-            if (!contents.Contains(ExportMainName))
+            if (!contents.Contains(EXPORT_MAIN_NAME))
             {
                 return new StatusReportItem
                 {
                     Status =
-                        $"Helios Export script Helios\\{ExportMainName} does not appear to be called by Export.lua at '{exportLuaPath}'",
+                        $"Helios Export script Helios\\{EXPORT_MAIN_NAME} does not appear to be called by Export.lua at '{exportLuaPath}'",
                     Recommendation = "Recreate Export.lua or edit it manually",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error,
@@ -1255,7 +1274,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         // subtly different in terms of severity and we want to encourage more special cases added in the future
         private StatusReportItem CheckExportScript(InstallationLocation location)
         {
-            string mainPath = location.ExportMainPath(ExportMainName);
+            string mainPath = location.ExportMainPath(EXPORT_MAIN_NAME);
             if (!File.Exists(mainPath))
             {
                 return new StatusReportItem
@@ -1354,11 +1373,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _parent.ExportModuleBaseName ??
             _parent.ImpersonatedVehicleName ?? 
             _parent.VehicleName;
-
-        // XXX if address is localhost, false
-        // XXX if address is broadcast or multicast, true
-        // XXX if address is address of one of our adapters, true
-        private bool LocalMachineIsRemoteHelios() => false;
 
         #endregion
     }

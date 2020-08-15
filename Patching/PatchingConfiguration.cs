@@ -73,6 +73,18 @@ namespace GadrocsWorkshop.Helios.Patching
             UpdateStatus();
         }
 
+        public void OnRemoteChanged(Dictionary<string, PatchApplication> effectiveDestinations)
+        {
+            // rebuild completely
+            _destinations.Clear();
+            foreach (KeyValuePair<string, PatchApplication> keyValuePair in effectiveDestinations)
+            {
+                keyValuePair.Value.CheckApplied();
+                _destinations[keyValuePair.Key] = keyValuePair.Value;
+            }
+            UpdateStatus();
+        }
+
         private void UpdateStatus()
         {
             if (!_destinations.Values.Any(d => d.Enabled))

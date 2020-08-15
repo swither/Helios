@@ -7,9 +7,20 @@
     mc:Ignorable="d"
     xmlns:common="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
     d:DataContext="{d:DesignInstance Type=common:DCSInterfaceEditor}"
-    Header="DCS Export Files Output" 
-    Style="{StaticResource BasicGroup}">
-    <GroupBox.Resources>
+    Header="DCS Export Files Output">
+    <GroupBox.Style>
+        <Style TargetType="Control" BasedOn="{StaticResource BasicGroup}">
+            <Setter Property="Visibility" Value="Visible"/>
+            <!-- collapse if this is a remote machine, because we don't configure DCS there -->
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Configuration.Locations.IsRemote}" Value="True">
+                    <DataTrigger.Setters>
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger.Setters>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </GroupBox.Style>    <GroupBox.Resources>
         <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
             <Setter Property="UIElement.Visibility" Value="Collapsed"/>
             <Style.Triggers>

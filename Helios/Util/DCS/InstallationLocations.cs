@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Microsoft.Win32;
-using NLog;
 
 namespace GadrocsWorkshop.Helios.Util.DCS
 {
@@ -16,8 +15,14 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         public event EventHandler<LocationEvent> Disabled;
         public event EventHandler<LocationEvent> Enabled;
         public event EventHandler<LocationEvent> Removed;
+        public event EventHandler<RemoteChangeEvent> RemoteChanged;
 
         private static InstallationLocations _singleton;
+
+        /// <summary>
+        /// guard to suppress change events during load from settings
+        /// </summary>
+        private bool _suppressWrites;
 
         public static InstallationLocations Singleton => _singleton ?? (_singleton = new InstallationLocations());
 
@@ -31,6 +36,20 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             #region Properties
 
             public InstallationLocation Location { get; }
+
+            #endregion
+        }
+
+        public class RemoteChangeEvent : EventArgs
+        {
+            internal RemoteChangeEvent(bool isRemote)
+            {
+                IsRemote = isRemote;
+            }
+
+            #region Properties
+
+            public bool IsRemote { get; }
 
             #endregion
         }
@@ -58,21 +77,27 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         private void LoadAll()
         {
             // load from settings XML
-            foreach (InstallationLocation item in InstallationLocation.ReadSettings())
+            _suppressWrites = true;
+            try
             {
-                DoAdd(item);
+                foreach (InstallationLocation item in InstallationLocation.ReadSettings())
+                {
+                    DoAdd(item);
+                }
+                IsRemote = ConfigManager.SettingsManager.LoadSetting("DCSInstallation", "IsRemote", false);
+            }
+            finally
+            {
+                _suppressWrites = false;
             }
         }
 
         internal bool TryAdd(InstallationLocation newItem)
         {
             // scan list; O(n) but this is a UI action
-            foreach (InstallationLocation existing in Items)
+            if (Items.Any(existing => existing.Path.Equals(newItem.Path, StringComparison.CurrentCultureIgnoreCase)))
             {
-                if (existing.Path.Equals(newItem.Path, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    return false;
-                }
+                return false;
             }
 
             // add to our collection and register handlers
@@ -124,14 +149,44 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             DependencyProperty.Register("Items", typeof(ObservableCollection<InstallationLocation>),
                 typeof(InstallationLocations), new PropertyMetadata(new ObservableCollection<InstallationLocation>()));
 
+        public static readonly DependencyProperty IsRemoteProperty =
+            DependencyProperty.Register("IsRemote", typeof(bool), typeof(InstallationLocations), new PropertyMetadata(false, OnIsRemoteChanged));
+
         #region Properties
 
-        public IList<InstallationLocation> Active => Items.Where(l => l.IsEnabled).ToList();
+        public IList<InstallationLocation> Active => IsRemote ? 
+            new List<InstallationLocation>() : 
+            Items.Where(l => l.IsEnabled).ToList();
 
         public ObservableCollection<InstallationLocation> Items
         {
             get => (ObservableCollection<InstallationLocation>) GetValue(ItemsProperty);
             set => SetValue(ItemsProperty, value);
+        }
+
+        /// <summary>
+        /// true if this machine is not where DCS is installed, so we should not try to configure DCS
+        /// </summary>
+        public bool IsRemote
+        {
+            get => (bool)GetValue(IsRemoteProperty);
+            set => SetValue(IsRemoteProperty, value);
+        }
+
+        private static void OnIsRemoteChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
+        {
+            InstallationLocations singleton = (InstallationLocations) target;
+            singleton.OnIsRemoteChanged((bool)e.NewValue);
+        }
+
+        private void OnIsRemoteChanged(bool newValue)
+        {
+            if (!_suppressWrites)
+            {
+                // this change is from UI rather than our own initialization
+                ConfigManager.SettingsManager.SaveSetting("DCSInstallation", "IsRemote", newValue);
+            }
+            RemoteChanged?.Invoke(this, new RemoteChangeEvent(newValue));
         }
 
         #endregion

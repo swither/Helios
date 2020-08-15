@@ -15,6 +15,7 @@
 
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -24,15 +25,20 @@ using System.Windows.Input;
 namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
 {
     /// <summary>
-    /// Interaction logic for InstallationLocationsControl.xaml
+    /// Installation Locations section shared by multiple dialogs, currently includes all its view model code
     /// </summary>
     public partial class InstallationLocationsControl : ItemsControl
     {
         static InstallationLocationsControl()
         {
             System.Type ownerType = typeof(InstallationLocationsControl);
-            CommandManager.RegisterClassCommandBinding(ownerType, new CommandBinding(AddInstallationLocationCommand, Add_Executed));
-            CommandManager.RegisterClassCommandBinding(ownerType, new CommandBinding(RemoveInstallationLocationCommand, Remove_Executed));
+            CommandManager.RegisterClassCommandBinding(ownerType, new CommandBinding(AddInstallationLocationCommand, Add_Executed, CanExecuteAddRemove));
+            CommandManager.RegisterClassCommandBinding(ownerType, new CommandBinding(RemoveInstallationLocationCommand, Remove_Executed, CanExecuteAddRemove));
+        }
+
+        private static void CanExecuteAddRemove(object target, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ((InstallationLocationsControl)target).CanConfigureLocations;
         }
 
         public InstallationLocationsControl()
@@ -51,6 +57,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             // we also need to register these, because another dialog could be editing this collection also
             InstallationLocations.Singleton.Added += Locations_Changed;
             InstallationLocations.Singleton.Removed += Locations_Changed;
+            InstallationLocations.Singleton.RemoteChanged += Locations_Changed;
         }
 
         public void Dispose()
@@ -59,16 +66,26 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             InstallationLocations.Singleton.Disabled -= Locations_Changed;
             InstallationLocations.Singleton.Added -= Locations_Changed;
             InstallationLocations.Singleton.Removed -= Locations_Changed;
+            InstallationLocations.Singleton.RemoteChanged -= Locations_Changed;
         }
 
-        private void Locations_Changed(object sender, InstallationLocations.LocationEvent e)
+        private void Locations_Changed(object sender, EventArgs e)
         {
             UpdateStatus();
         }
 
         private void UpdateStatus()
         {
-            Status = InstallationLocations.Singleton.Active.Any() ? StatusCodes.UpToDate : StatusCodes.NoLocations;
+            if (InstallationLocations.Singleton.IsRemote)
+            {
+                CanConfigureLocations = false;
+                Status = StatusCodes.NotApplicable;
+            }
+            else
+            {
+                CanConfigureLocations = true;
+                Status = InstallationLocations.Singleton.Active.Any() ? StatusCodes.UpToDate : StatusCodes.NoLocations;
+            }
         }
 
         #region Commands
@@ -118,6 +135,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             InstallationLocations.Singleton.TryRemove(e.Parameter as InstallationLocation);
             ((InstallationLocationsControl)target).UpdateStatus();
         }
+
         #endregion
 
         #region Properties
@@ -129,9 +147,18 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
 
         public bool GroupIsExpanded
         {
-            get { return (bool) GetValue(GroupIsExpandedProperty); }
-            set { SetValue(GroupIsExpandedProperty, value); }
+            get => (bool) GetValue(GroupIsExpandedProperty);
+            set => SetValue(GroupIsExpandedProperty, value);
         }
+
+        public bool CanConfigureLocations
+        {
+            get => (bool)GetValue(CanConfigureLocationsProperty);
+            set => SetValue(CanConfigureLocationsProperty, value);
+        }
+
+        public static readonly DependencyProperty CanConfigureLocationsProperty =
+            DependencyProperty.Register("CanConfigureLocations", typeof(bool), typeof(InstallationLocationsControl), new PropertyMetadata(true));
 
         public static readonly DependencyProperty StatusProperty =
             DependencyProperty.Register("Status", typeof(StatusCodes), typeof(InstallationLocationsControl), new PropertyMetadata(StatusCodes.Unknown));

@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -68,6 +69,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             locations.Removed += Locations_Changed;
             locations.Enabled += Locations_Changed;
             locations.Disabled += Locations_Changed;
+            locations.RemoteChanged += Locations_Changed;
         }
 
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
@@ -78,9 +80,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             locations.Removed -= Locations_Changed;
             locations.Enabled -= Locations_Changed;
             locations.Disabled -= Locations_Changed;
+            locations.RemoteChanged -= Locations_Changed;
         }
 
-        private void Locations_Changed(object sender, InstallationLocations.LocationEvent e)
+        private void Locations_Changed(object sender, EventArgs e)
         {
             InvalidateStatusReport();
         }
