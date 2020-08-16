@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Windows;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -64,14 +66,59 @@ namespace GadrocsWorkshop.Helios
                 _documentPanelTemplatesPath = Path.Combine(_documentPath, "Panel Templates");
 
                 List<string> paths = new List<string> { _documentPath, _documentImagePath, _documentProfilePath, _documentTemplatesPath, _documentPanelTemplatesPath };
+                bool wroteSomething = false;
                 foreach (string path in paths)
                 {
                     if (!Directory.Exists(path))
                     {
-                        Directory.CreateDirectory(path);
+                        try
+                        {
+                            Directory.CreateDirectory(path);
+                            wroteSomething = true;
+                        }
+                        catch (Exception)
+                        {
+                            // we probably cannot log, so don't try and make it worse
+                            ReportFatalWriteFailureAndExit(path);
+                            return;
+                        }
                     }
                 }
+
+                if (wroteSomething)
+                {
+                    // already successfully created a folder
+                    return;
+                }
+
+                try
+                {
+                    // if we survived to here without needing to create a folder, make sure we test
+                    // for write access here before we crash later in weird ways
+                    string tempFileName = System.IO.Path.Combine(_documentPath, System.IO.Path.GetRandomFileName());
+                    using (FileStream fs = File.Create(tempFileName, 1, FileOptions.DeleteOnClose))
+                    {
+                        _ = fs;
+                    }
+                }
+                catch (Exception)
+                {
+                    ReportFatalWriteFailureAndExit(_documentPath);
+                }
             }
+        }
+
+        private static void ReportFatalWriteFailureAndExit(string path)
+        {
+            MessageBox.Show($"Helios could not write to its own data folder at '{path}'.  " 
+                + "Most likely you have an anti virus or 'application firewall' that is trying to protect your 'Documents' folder.\n\n"
+                + "These types of features are sometimes called 'Ransomware Protection' or 'Controlled Folder Access' (in Windows).\n\n"
+                + "You will need to give permission to 'Profile Editor.exe' and 'Control Center.exe' so that Helios can use its own folders.\n\n"
+                + "Helios will now exit.",
+                "Write Access to Helios Folder Denied");
+
+            // we cannot gracefully exit
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
         public static string ApplicationPath { get { return _applicationPath; } }
