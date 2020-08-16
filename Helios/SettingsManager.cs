@@ -121,15 +121,15 @@ namespace GadrocsWorkshop.Helios
         {
             // start with empty settings
             GroupCollection settingsCollection = new GroupCollection();
-            if (File.Exists(_settingsFile))
+            if (!File.Exists(_settingsFile))
             {
-                XmlReaderSettings settings = new XmlReaderSettings();
-                settings.IgnoreComments = true;
-                settings.IgnoreWhitespace = true;
+                return settingsCollection;
+            }
 
-                TextReader reader = new StreamReader(_settingsFile);
-                XmlReader xmlReader = XmlReader.Create(reader, settings);
-
+            XmlReaderSettings settings = new XmlReaderSettings {IgnoreComments = true, IgnoreWhitespace = true};
+            using (TextReader reader = new StreamReader(_settingsFile))
+            using (XmlReader xmlReader = XmlReader.Create(reader, settings))
+            {
                 try
                 {
                     xmlReader.ReadStartElement("HeliosSettings");
@@ -152,7 +152,7 @@ namespace GadrocsWorkshop.Helios
                                     setting.Name = xmlReader.ReadElementString("Name");
                                     setting.Value = xmlReader.ReadElementString("Value");
                                     xmlReader.ReadEndElement();
-                                    group.Settings.Add(setting);
+                                    @group.Settings.Add(setting);
                                 }
 
                                 xmlReader.ReadEndElement();
@@ -190,39 +190,46 @@ namespace GadrocsWorkshop.Helios
                 throw new AccessViolationException("Implementation error: attempt to save settings, but SettingsManager is not writable in this application");
             }
 
-            // Delete tmp file if exists
+            // delete existing settings file
             if (File.Exists(_settingsFile))
             {
+                // REVISIT one user has reported a crash here on permission denied trying to delete our settings file
+                // it could either have been https://github.com/HeliosVirtualCockpit/Helios/issues/290
+                // or otherwise Control Center still holds the lock on this file itself due to a hung/crashed Control Center
+                // or multiple threads trying to save the settings?
+                //
+                // related: The "single instance" mechanism ensures we don't have two Control Center processes running, but that does not
+                // apply to Profile Editor.  XXX So there could be two Profile Editor instances running clobbering each other's settings.
+                // This does not explain the reported problem but it is a major flaw in this design.  Do we need to detect this situation
+                // and tell the user not to make changes in both instances?
                 File.Delete(_settingsFile);
             }
 
-            TextWriter writer = new StreamWriter(_settingsFile, false);
-
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-
-            XmlWriter xmlWriter = XmlWriter.Create(writer, settings);
-
-            xmlWriter.WriteStartElement("HeliosSettings");
-            foreach (Group group in _settings)
+            using (TextWriter writer = new StreamWriter(_settingsFile, false))
             {
-                xmlWriter.WriteStartElement("Group");
-                xmlWriter.WriteElementString("Name", group.Name);
-                xmlWriter.WriteStartElement("Settings");
-                foreach (Setting setting in group.Settings)
+                using (XmlWriter xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings {Indent = true}))
                 {
-                    xmlWriter.WriteStartElement("Setting");
-                    xmlWriter.WriteElementString("Name", setting.Name);
-                    xmlWriter.WriteElementString("Value", setting.Value); 
+                    xmlWriter.WriteStartElement("HeliosSettings");
+                    foreach (Group group in _settings)
+                    {
+                        xmlWriter.WriteStartElement("Group");
+                        xmlWriter.WriteElementString("Name", group.Name);
+                        xmlWriter.WriteStartElement("Settings");
+                        foreach (Setting setting in group.Settings)
+                        {
+                            xmlWriter.WriteStartElement("Setting");
+                            xmlWriter.WriteElementString("Name", setting.Name);
+                            xmlWriter.WriteElementString("Value", setting.Value); 
+                            xmlWriter.WriteEndElement();
+                        }
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                    }
                     xmlWriter.WriteEndElement();
+                    xmlWriter.Close();
                 }
-                xmlWriter.WriteEndElement();
-                xmlWriter.WriteEndElement();
+                writer.Close();
             }
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.Close();
-            writer.Close();
         }
 
         public void SaveSetting(string group, string name, string value)
