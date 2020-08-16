@@ -72,6 +72,11 @@
     <Compile Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml.cs">
       <DependentUpon>RemoteConfigurationSection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\Profile\ProfileInterfaceEditor.xaml.cs">
+      <DependentUpon>ProfileInterfaceEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\Profile\ProfileSettings.cs" />
+    <Compile Include="Interfaces\Profile\ProfileInterfaceViewModel.cs" />
     <Compile Include="Util\CodeLine.cs" />
     <Compile Include="Controls\TextScalingMode.cs" />
     <Compile Include="Interfaces\DCS\Common\ExportConfigurationSection.xaml.cs">
@@ -145,6 +150,10 @@
     <Page Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\Profile\ProfileInterfaceEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Controls\InterfaceStatusResources.xaml">
       <SubType>Designer</SubType>

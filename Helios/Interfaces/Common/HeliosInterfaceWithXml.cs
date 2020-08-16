@@ -54,14 +54,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             }
         }
 
-        protected override void OnPropertyChanged(PropertyNotificationEventArgs args)
-        {
-            if (args.PropertyName == nameof(Model))
-            {
-            }
-            base.OnPropertyChanged(args);
-        }
-
         private void Configuration_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             // forward changes to configuration properties as child property events so we get Undo support

@@ -336,7 +336,11 @@ namespace GadrocsWorkshop.Helios
                     return loadName;
                 }
 
-                Logger.Warn("referenced user image not found at {loadName}", Anonymizer.Anonymize(loadName));
+                // these load failures happen during deserialization, so we have no idea if they should be warnings or not
+                // unless we configure this with a control center preference
+                //
+                // we cannot configure it from the Profile Interface's settings, because that has not been loaded yet
+                Logger.Info("referenced user image not found at {loadName}", Anonymizer.Anonymize(loadName));
             }
 
             return "";
@@ -381,6 +385,7 @@ namespace GadrocsWorkshop.Helios
             {
                 return;
             }
+
             if (result == null)
             {
                 _failedImagePaths.Add(path);

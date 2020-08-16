@@ -750,7 +750,7 @@
                                    Foreground="Red">
                             You must complete 'Reset Monitors' before configuring monitor setup.
                         </TextBlock>
-                        <Button Grid.Row="0" Grid.Column="1" Command="windows:SharedCommands.ResetMonitors"
+                        <Button Grid.Row="0" Grid.Column="1" Command="{x:Static windows:SharedCommands.ResetMonitors}"
                                 Style="{StaticResource InterfaceEditorButton}">
                             Reset Monitors
                         </Button>

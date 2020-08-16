@@ -33,7 +33,7 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     [Serializable]
     public class HeliosXmlModel: NotificationObject
-    {
+    { 
         public HeliosXmlModel(string xmlNamespace)
         {
             Namespaces = new XmlSerializerNamespaces(new[] {new XmlQualifiedName(string.Empty, xmlNamespace)});

@@ -14,8 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
+using System.Xml;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
+using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Profile
 {
@@ -24,14 +27,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
     using System.Collections.Generic;
     using System.ComponentModel;
 
-    [HeliosInterface("Helios.Base.ProfileInterface", "Profile", null, typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
-    public class ProfileInterface : HeliosInterface, IStatusReportNotify, IResetMonitorsObserver, IReadyCheck
+    [HeliosInterface("Helios.Base.ProfileInterface", "Profile", typeof(ProfileInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
+    public class ProfileInterface : HeliosInterfaceWithXml<ProfileSettings>, IStatusReportNotify, IResetMonitorsObserver, IReadyCheck
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         // failed image load paths we know about, so that we can recognize when a load success changes the status
         private HashSet<string> _failedImagePaths;
         private bool _dirty;
+
+        /// <summary>
+        /// backing field for property Status, contains
+        /// the current configuration status of the profile interface, as of the last status report
+        /// </summary>
+        private StatusCodes _status;
 
         // our implementation of IStatusReportNotify
         private readonly StatusReportNotifyAsyncOnce _statusReportNotify;
@@ -140,7 +149,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
                 // this is normal state during profile loading
                 return;
             }
+
+            // track in case we turn reporting back on
             _failedImagePaths.Add(e.Path);
+
+            if (Model.IgnoreMissingImages)
+            {
+                // suppressed
+                return;
+            }
+
+            // log as warning if not suppressed (to raise caution) and report in status report, because we only logged missing user images at info level during deserializaton
+            Logger.Warn("an image referenced in the profile {ProfileName} could not be loaded from {Path}",
+                Profile?.Name, e.Path);
             InvalidateStatusReport();
         }
 
@@ -169,6 +190,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             ConfigManager.UndoManager.NonEmpty -= UndoManager_NonEmpty;
         }
 
+        public override void ReadXml(XmlReader reader)
+        {
+            base.ReadXml(reader);
+            Model.PropertyChanged += Model_PropertyChanged;
+        }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            if (Model.IsDefault)
+            {
+                // keep profile compatible with previous Helios if no new feature was used
+                return;
+            }
+            base.WriteXml(writer);
+        }
+
+        private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            InvalidateStatusReport();
+        }
+
         private void LaunchApplication_Execute(object action, HeliosActionEventArgs e)
         {
             _ = action;
@@ -194,16 +236,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
         private void ResetAction_Execute(object action, HeliosActionEventArgs e)
         {
             Profile?.Reset();
-        }
-
-        public override void ReadXml(System.Xml.XmlReader reader)
-        {
-            // No-Op
-        }
-
-        public override void WriteXml(System.Xml.XmlWriter writer)
-        {
-            // No-Op
         }
 
         public void Subscribe(IStatusReportObserver observer)
@@ -277,6 +309,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         private void CheckMissingimages(IList<StatusReportItem> newReport)
         {
+            if (Model.IgnoreMissingImages)
+            {
+                if (_failedImagePaths.Any())
+                {
+                    newReport.Add(new StatusReportItem
+                    {
+                        Status = $"Missing images in this Profile are ignored due to a setting in the Profile Interface",
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    });
+                }
+
+                // suppress reporting
+                return;
+            }
             foreach (string path in _failedImagePaths)
             {
                 newReport.Add(new StatusReportItem
@@ -298,6 +344,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
             if (Profile.IsValidMonitorLayout)
             {
+                Status = StatusCodes.UpToDate;
                 newReport.Add(new StatusReportItem
                 {
                     Status = "The monitor arrangement saved in this profile matches this computer",
@@ -306,6 +353,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             }
             else
             {
+                Status = StatusCodes.ResetMonitorsRequired;
                 newReport.Add(new StatusReportItem
                 {
                     Status = "The monitor arrangement saved in this profile does not match this computer",
@@ -354,6 +402,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             // NOTE: we don't have to check monitor reset because Control Center already does that
             // NOTE: we don't have to check missing images because they will log warnings 
             yield break;
+        }
+
+        /// <summary>
+        /// the current configuration status of the profile interface, as of the last status report
+        /// </summary>
+        public StatusCodes Status
+        {
+            get => _status;
+            set
+            {
+                if (_status == value) return;
+                StatusCodes oldValue = _status;
+                _status = value;
+
+                // status change must not make the profile dirty, so we fire it as a no-undo event
+                OnPropertyChanged("Status", oldValue, value, false);
+            }
         }
     }
 }
