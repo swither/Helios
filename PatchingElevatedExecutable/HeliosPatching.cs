@@ -107,18 +107,33 @@ namespace HeliosVirtualCockpit.Helios.HeliosPatching
         private static void DcsApply(ElevatedProcessResponsePipe response, string outputRoot, IEnumerable<string> patchFolders)
         {
             PatchList patches = LoadPatches(patchFolders);
-            string dcsConfig = Path.Combine(outputRoot, "autoupdate.cfg");
-            InstallationLocation location = new InstallationLocation(dcsConfig);
+            if (!InstallationLocation.TryLoadLocation(outputRoot, true, out InstallationLocation location))
+            {
+                ReportBadLocation(response, outputRoot);
+                return;
+            }
             PatchDestination dcs = new PatchDestination(location);
             IList<StatusReportItem> results = patches.Apply(dcs).ToList();
             response.SendReport(results);
         }
 
+        private static void ReportBadLocation(ElevatedProcessResponsePipe response, string outputRoot)
+        {
+            response.SendReport(new StatusReportItem
+            {
+                Status = $"Elevated HeliosPatching utility could not open DCS installation {outputRoot}",
+                Severity = StatusReportItem.SeverityCode.Error
+            }.AsReport());
+        }
+
         private static void DcsRevert(ElevatedProcessResponsePipe response, string outputRoot, IEnumerable<string> patchFolders)
         {
             PatchList patches = LoadPatches(patchFolders);
-            string dcsConfig = Path.Combine(outputRoot, "autoupdate.cfg");
-            InstallationLocation location = new InstallationLocation(dcsConfig);
+            if (!InstallationLocation.TryLoadLocation(outputRoot, true, out InstallationLocation location))
+            {
+                ReportBadLocation(response, outputRoot);
+                return;
+            }
             PatchDestination dcs = new PatchDestination(location);
             IList<StatusReportItem> results = patches.Revert(dcs).ToList();
             response.SendReport(results);

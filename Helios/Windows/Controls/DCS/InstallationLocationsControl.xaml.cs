@@ -99,7 +99,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             string guessName = InstallationLocation.AUTO_UPDATE_CONFIG;
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
-                Title = $"Navigate to DCS Installation and select {InstallationLocation.AUTO_UPDATE_CONFIG} file",
+                Title = $"Navigate to DCS Installation and select {InstallationLocation.AUTO_UPDATE_CONFIG} or {InstallationLocation.DCS_EXE} file",
                 InitialDirectory = "",
                 FileName = guessName,
                 DefaultExt = ".cfg",
@@ -107,7 +107,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
                 DereferenceLinks = true,
                 Multiselect = false,
                 ValidateNames = true,
-                Filter = $"DCS|{InstallationLocation.AUTO_UPDATE_CONFIG}",
+                Filter = $"DCS|{InstallationLocation.AUTO_UPDATE_CONFIG};{InstallationLocation.DCS_EXE}",
                 CheckFileExists = true
             };
 
@@ -125,7 +125,11 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
 
             if (openFileDialog.ShowDialog() == true)
             {
-                InstallationLocations.Singleton.TryAdd(new InstallationLocation(openFileDialog.FileName));
+                if (InstallationLocation.TryBrowseLocation(openFileDialog.FileName, out InstallationLocation location))
+                {
+                    // silently ignore duplicates
+                    _ = InstallationLocations.Singleton.TryAdd(location);
+                }
             }
             ((InstallationLocationsControl)target).UpdateStatus();
         }

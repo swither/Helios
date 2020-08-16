@@ -30,6 +30,7 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
         private const string SETTINGS_GROUP = "DCSInstallationLocations";
         public const string AUTO_UPDATE_CONFIG = "autoupdate.cfg";
+        public const string DCS_EXE = "DCS.exe";
 
         internal static IEnumerable<InstallationLocation> ReadSettings()
         {
@@ -40,17 +41,61 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             }
             foreach (string path in settings.EnumerateSettingNames(SETTINGS_GROUP))
             {
-                string autoUpdatePath = System.IO.Path.Combine(path, AUTO_UPDATE_CONFIG);
-                if (!File.Exists(autoUpdatePath))
+                if (!TryLoadLocation(path, settings.LoadSetting(SETTINGS_GROUP, path, false), out InstallationLocation location))
                 {
                     // stale setting
                     continue;
                 }
-
-                InstallationLocation location =
-                    new InstallationLocation(autoUpdatePath, settings.LoadSetting(SETTINGS_GROUP, path, false));
                 yield return location;
             }
+        }
+
+
+        public static bool TryBrowseLocation(string selectedFile, out InstallationLocation location)
+        {
+            string rootPath;
+            string shortName = System.IO.Path.GetFileName(selectedFile);
+            if (shortName.Equals(DCS_EXE, StringComparison.InvariantCultureIgnoreCase))
+            {
+                // user picked DCS.exe, maybe this is Steam or maybe they just chose to
+                rootPath = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(selectedFile));
+            }
+            else
+            {
+                rootPath = System.IO.Path.GetDirectoryName(selectedFile);
+            }
+
+            Debug.Assert(rootPath != null,
+                "a file path we retrieved from open file dialog should not have a null directory");
+            
+            return TryLoadLocation(rootPath, true, out location);
+        }
+
+        public static bool TryLoadLocation(string rootPath, bool enabled, out InstallationLocation location) {
+            string autoUpdatePath = System.IO.Path.Combine(rootPath ?? ".", AUTO_UPDATE_CONFIG);
+            string version;
+
+            // XXX can we register for changes on these files without breaking DCS?  how does that work in Windows?
+            if (File.Exists(autoUpdatePath))
+            {
+                version = JsonConvert.DeserializeObject<AutoUpdateConfig>(File.ReadAllText(autoUpdatePath)).Version;
+            }
+            else {
+                string exePath = System.IO.Path.Combine(rootPath ?? ".", "bin", "DCS.exe");
+                if (File.Exists(exePath))
+                {
+                    version = ExtractFileVersion(exePath);
+                }
+                else
+                {
+                    // fail, which happens for stale settings
+                    location = null;
+                    return false;
+                }
+            }
+
+            location = new InstallationLocation(rootPath, version, enabled);
+            return true;
         }
 
         /// <summary>
@@ -70,51 +115,56 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         /// </summary>
         private static bool _suppressEvents;
 
-        public InstallationLocation(string autoUpdatePath)
-        {
-            Path = System.IO.Path.GetDirectoryName(autoUpdatePath);
-
-            // XXX can we register for changes on these files without breaking DCS?  how does that work in Windows?
-            Version = JsonConvert.DeserializeObject<AutoUpdateConfig>(File.ReadAllText(autoUpdatePath)).Version;
-            Debug.Assert(Path != null,
-                "a file path we retrieved from open file dialog should not have a null directory");
-            string variantFile = System.IO.Path.Combine(Path, "dcs_variant.txt");
-
-            // check if we can write a file here
-            Writable = TestWrite();
-
-            // default saved games name
-            SavedGamesName = "DCS";
-            if (!File.Exists(variantFile))
-            {
-                return;
-            }
-
-            string variant = File.ReadAllText(variantFile);
-            variant = variant.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None)[0];
-            if (!new Regex("^[A-Za-z_\\-.]+$").IsMatch(variant))
-            {
-                return;
-            }
-
-            if (variant.Length > 100)
-            {
-                return;
-            }
-
-            if (variant.Length < 1)
-            {
-                return;
-            }
-
-            SavedGamesName = $"DCS.{variant}";
-        }
-
-        public InstallationLocation(string autoUpdatePath, bool enabled) : this(autoUpdatePath)
+        private InstallationLocation(string path, string version, bool enabled)
         {
             _suppressEvents = true;
-            IsEnabled = enabled;
-            _suppressEvents = false;
+            try
+            {
+                IsEnabled = enabled;
+
+                Path = path;
+                Version = version;
+                string variantFile = System.IO.Path.Combine(Path, "dcs_variant.txt");
+
+                // check if we can write a file here
+                Writable = TestWrite();
+
+                // default saved games name
+                SavedGamesName = "DCS";
+                if (!File.Exists(variantFile))
+                {
+                    return;
+                }
+
+                string variant = File.ReadAllText(variantFile);
+                variant = variant.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None)[0];
+                if (!new Regex("^[A-Za-z_\\-.]+$").IsMatch(variant))
+                {
+                    return;
+                }
+
+                if (variant.Length > 100)
+                {
+                    return;
+                }
+
+                if (variant.Length < 1)
+                {
+                    return;
+                }
+
+                SavedGamesName = $"DCS.{variant}";
+            }
+            finally
+            {
+                _suppressEvents = false;
+            }
+        }
+
+        private static string ExtractFileVersion(string exePath)
+        {
+            FileVersionInfo info = FileVersionInfo.GetVersionInfo(exePath);
+            return info.FileVersion;
         }
 
         private bool TestWrite()
