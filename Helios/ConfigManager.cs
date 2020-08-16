@@ -113,7 +113,8 @@ namespace GadrocsWorkshop.Helios
             MessageBox.Show($"Helios could not write to its own data folder at '{path}'.  " 
                 + "Most likely you have an anti virus or 'application firewall' that is trying to protect your 'Documents' folder.\n\n"
                 + "These types of features are sometimes called 'Ransomware Protection' or 'Controlled Folder Access' (in Windows).\n\n"
-                + "You will need to give permission to 'Profile Editor.exe' and 'Control Center.exe' so that Helios can use its own folders.\n\n"
+                + "You will need to give permission to 'Profile Editor.exe', 'HeliosPatching.exe' and 'Control Center.exe' so that\n"
+                + "Helios can use its own folders.\n\n"
                 + "Helios will now exit.",
                 "Write Access to Helios Folder Denied");
 
