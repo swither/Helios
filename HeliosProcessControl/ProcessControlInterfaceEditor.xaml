@@ -21,7 +21,8 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBox Text="{Binding Trigger.Source.Name, Mode=OneWay}" MinWidth="200"/>
                     <TextBox Text="{Binding Trigger.TriggerID, Mode=OneWay}" MinWidth="100"/>
-                    <TextBox Text="{Binding Value, Mode=OneWay}"/>
+                    <TextBox Text="{Binding Action.ActionID, Mode=OneWay}" MinWidth="150"/>
+                    <TextBox Text="{Binding Value, Mode=OneWay}" MinWidth="250"/>
                 </StackPanel>
             </DataTemplate>
         </Grid.Resources>
