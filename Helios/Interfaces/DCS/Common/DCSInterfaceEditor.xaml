@@ -24,6 +24,7 @@
     <StackPanel>
         <heliosDcs:InstallationLocationsGroup/>
         <dcs:ExportConfigurationSection/>
+        <dcs:RemoteConfigurationSection/>
         <dcs:ExportLuaOutputSection/>
         <Expander Header="Profile-Specific Settings (Advanced)" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
             <Grid>

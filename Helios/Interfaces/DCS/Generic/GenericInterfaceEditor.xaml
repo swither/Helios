@@ -24,6 +24,7 @@
     <StackPanel>
         <heliosDcs:InstallationLocationsGroup/>
         <dcs:ExportConfigurationSection/>
+        <dcs:RemoteConfigurationSection/>
         <GroupBox Header="Caution" Style="{StaticResource BasicGroup}" BorderBrush="DarkOrange">
             <WrapPanel Orientation="Vertical" Margin="6">
                 <TextBlock TextWrapping="Wrap">
