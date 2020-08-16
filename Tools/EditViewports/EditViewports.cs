@@ -64,7 +64,10 @@ namespace EditViewports
             }
 
             // open DCS installation location
-            InstallationLocation dcs = new InstallationLocation(Path.Combine(dcsRootPath, "autoupdate.cfg"));
+            if (!InstallationLocation.TryLoadLocation(dcsRootPath, true, out InstallationLocation dcs))
+            {
+                throw new Exception($"failed to open DCS installation at {dcsRootPath}");
+            }
 
             // pick JSON file from the given ones based on version number
             string exactName = $"ViewportTemplates_{PatchVersion.SortableString(dcs.Version)}.json";
