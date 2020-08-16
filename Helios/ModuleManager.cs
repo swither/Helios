@@ -29,7 +29,6 @@ namespace GadrocsWorkshop.Helios
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private string _applicationPath;
-        private byte[] _publicKey;
 
         private List<BindingValueUnitConverter> _converters = new List<BindingValueUnitConverter>();
         private HeliosDescriptorCollection _controlDescriptors = new HeliosDescriptorCollection();
@@ -41,10 +40,6 @@ namespace GadrocsWorkshop.Helios
         {
             Logger.Debug($"Helios will search for Helios modules in {applicationPath}");
             _applicationPath = applicationPath;
-
-            Assembly appAssembly = Assembly.GetEntryAssembly();
-            AssemblyName appName = appAssembly.GetName();
-            _publicKey = appName.GetPublicKey();
         }
 
         public HeliosDescriptorCollection ControlDescriptors
@@ -209,23 +204,6 @@ namespace GadrocsWorkshop.Helios
                     Logger.Error(e, "Failed adding module " + asm.FullName);
                 }
             }
-        }
-
-        private bool CompareKeys(byte[] key)
-        {
-            if (key.Length != _publicKey.Length)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < key.Length; i++)
-            {
-                if (key[i] != _publicKey[i])
-                {
-                    return false;
-                }
-            }
-            return true;
         }
     }
 }

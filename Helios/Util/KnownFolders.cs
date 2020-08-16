@@ -52,9 +52,8 @@ namespace GadrocsWorkshop.Helios.Util
             {
                 // We attempt to get the Saved Games known folder from the native method to cater for situations
                 // when the locale of the installation has the folder name in non-English.
-                IntPtr pathPtr;
                 string savedGamesPath;
-                int hr = NativeMethods.SHGetKnownFolderPath(ref FolderSavedGames, 0, IntPtr.Zero, out pathPtr);
+                int hr = NativeMethods.SHGetKnownFolderPath(ref FolderSavedGames, 0, IntPtr.Zero, out IntPtr pathPtr);
                 if (hr == 0)
                 {
                     savedGamesPath = Marshal.PtrToStringUni(pathPtr);
@@ -62,7 +61,7 @@ namespace GadrocsWorkshop.Helios.Util
                 }
                 else
                 {
-                    savedGamesPath = Environment.GetEnvironmentVariable("userprofile") + "Saved Games";
+                    savedGamesPath = System.IO.Path.Combine(Environment.GetEnvironmentVariable("userprofile") ?? "", "Saved Games");
                 }
 
                 return savedGamesPath;

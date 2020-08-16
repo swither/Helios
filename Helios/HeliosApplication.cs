@@ -45,5 +45,10 @@ namespace GadrocsWorkshop.Helios
         /// read from it
         /// </summary>
         public bool SettingsAreWritable { get; set; } = true;
+
+        /// <summary>
+        /// if set to false, logging is initialized in such a way as to discard all log messages
+        /// </summary>
+        public bool AllowLogging { get; set; } = true;
     }
 }

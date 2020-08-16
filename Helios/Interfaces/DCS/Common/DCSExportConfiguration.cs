@@ -23,12 +23,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -100,7 +97,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private const string EXPORT_MAIN_NAME = "HeliosExport16.lua";
 
         // regex used to check for the call to our main exports already being present
-        private static readonly Regex ExportMainCall = new Regex($"dofile\\(.*{EXPORT_MAIN_NAME}.]?\\)", RegexOptions.Compiled);
+        private static readonly Regex ExportMainCall = new Regex($"^\\s*dofile\\(.*{EXPORT_MAIN_NAME}.]?\\)", RegexOptions.Compiled | RegexOptions.Multiline);
 
         // regex used to check for a Capt Zeen style Export.lua from 1.4
         private static readonly Regex HeliosExport14Call = new Regex($"dofile\\(.*HeliosExport\\.lua.]?\\)", RegexOptions.Compiled);
@@ -340,7 +337,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        private void WriteFile(string outputPath, string text)
+        private static void WriteFile(string outputPath, string text)
         {
             using (StreamWriter streamWriter = new StreamWriter(outputPath, false, new UTF8Encoding(false)))
             {
@@ -506,9 +503,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 List<StatusReportItem> report = new List<StatusReportItem>();
 
                 // pass1: get permissions
+                HashSet<string> considered = new HashSet<string>();
                 foreach (InstallationLocation location in InstallationLocations.Singleton.Active)
                 {
-                    if (!AuthorizeExportStubChanges(callbacks, location))
+                    if (!AuthorizeExportStubChanges(callbacks, considered, location))
                     {
                         return InstallationResult.Canceled;
                     }
@@ -676,7 +674,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             });
         }
 
-        private void BackupExportStub(InstallationLocation location)
+        private static void BackupExportStub(InstallationLocation location)
         {
             string dateStamp = DateTime.Now.ToString("yyyyMMdd", DateTimeFormatInfo.InvariantInfo);
             // even for debugging, only create this many backups in one day to guard against program error creating them in a loop
@@ -686,7 +684,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 string backupPath = Path.Combine(location.ScriptDirectoryPath, $"Export.lua.backup.{dateStamp}{suffix}.txt");
                 if (!File.Exists(backupPath))
                 {
-                    File.Copy(location.ExportStubPath, backupPath);
+                    AddCommentAndCopyLua(location.ExportStubPath, backupPath);
                     return;
                 }
             }
@@ -695,10 +693,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 File.Delete(lastResortPath);
             }
-            File.Copy(location.ExportStubPath, lastResortPath);
+            AddCommentAndCopyLua(location.ExportStubPath, lastResortPath);
         }
 
-        private bool AuthorizeExportStubChanges(IInstallationCallbacks callbacks, InstallationLocation location)
+        private static void AddCommentAndCopyLua(string sourcePath, string backupPath)
+        {
+            string contents = ReadFile(sourcePath);
+            string modified = $"-- backup copy of {Path.GetFileName(sourcePath)} created by Helios{Environment.NewLine}{Environment.NewLine}{contents}";
+            WriteFile(backupPath, modified);
+        }
+
+        private bool AuthorizeExportStubChanges(IInstallationCallbacks callbacks, HashSet<string> considered, InstallationLocation location)
         {
             if (ExportLuaHandling == ExportFileHandling.Ignore)
             {
@@ -707,6 +712,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
 
             string exportStubPath = location.ExportStubPath;
+            if (considered.Contains(exportStubPath))
+            {
+                // already asked about this one
+                return true;
+            }
+            considered.Add(exportStubPath);
+
             if (!File.Exists(exportStubPath))
             {
                 // clean script folder, we can just write our default stub
@@ -966,8 +978,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private void UpdateExportStub()
         {
             _exportStub =
-                Resources.ReadResourceFile("pack://application:,,,/Helios;component/Interfaces/DCS/Common/Export.lua")
+                LoadDefaultExportStub()
                 + string.Join("\n", GenerateDoFileLines());
+        }
+
+        private static string LoadDefaultExportStub()
+        {
+            return Resources.ReadResourceFile(
+                "pack://application:,,,/Helios;component/Interfaces/DCS/Common/Export.lua");
         }
 
         private void UpdateExportScript()
@@ -1373,6 +1391,63 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _parent.ExportModuleBaseName ??
             _parent.ImpersonatedVehicleName ?? 
             _parent.VehicleName;
+
+        #endregion
+
+        #region Uninstall
+
+        /// <summary>
+        /// Try to remove our Export.lua hooks from all known DCS installations, whether currently enabled or not.
+        /// Interaction with the user is not possible and the function must just do a best effort.
+        /// </summary>
+        public static void RemoveExportLuaHooks()
+        {
+            // WARNING: this function is called by the installer and can neither log nor communicate with the user
+            string defaultStub = LoadDefaultExportStub();
+            HashSet<string> done = new HashSet<string>();
+
+            foreach (InstallationLocation installationLocation in InstallationLocations.Singleton.Items)
+            {
+                string exportLuaPath = installationLocation.ExportStubPath;
+                
+                // do each file at most once
+                if (done.Contains(exportLuaPath))
+                {
+                    continue;
+                }
+                done.Add(exportLuaPath);
+
+                if (!File.Exists(exportLuaPath))
+                {
+                    continue;
+                }
+
+                string content = ReadFile(exportLuaPath);
+
+                // if the file is a stub we wrote with no dofiles, then we can just delete it
+                if (content == defaultStub)
+                {
+                    BackupExportStub(installationLocation);
+                    File.Delete(exportLuaPath);
+                    return;
+                }
+
+                // otherwise we have to edit
+                Match match = ExportMainCall.Match(content);
+                if (!match.Success)
+                {
+                    // no call to our main
+                    continue;
+                }
+
+                // comment out our call
+                BackupExportStub(installationLocation);
+                string code = match.Groups[0].Value;
+                string replacementCode = code.Replace("dofile(", $"-- following line commented out during Helios uninstall{Environment.NewLine}-- dofile(");
+                string modified = content.Replace(code, replacementCode);
+                WriteFile(exportLuaPath, modified);
+            }
+        }
 
         #endregion
     }

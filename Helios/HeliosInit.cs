@@ -36,16 +36,30 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         /// <param name="docPath"></param>
         /// <param name="logLevel"></param>
-        public static void InitializeLogging(string docPath, LogLevel logLevel)
+        /// <param name="application">optional Application specification that can customize features of Helios system</param>
+        public static void InitializeLogging(string docPath, LogLevel logLevel, HeliosApplication application = null)
         {
             // Create documents directory if it does not exist
             ConfigManager.DocumentPath = docPath;
 
-            // start up logging
-            InitializeNLog(logLevel);
+            if (application?.AllowLogging ?? true)
+            {
+                // start up logging
+                InitializeNLog(logLevel);
+            }
+            else
+            {
+                DisableLogging();
+            }
 
             // create this legacy interface for other DLLs that don't have access to NLog
             ConfigManager.LogManager = new LogManager(logLevel);
+        }
+
+        private static void DisableLogging()
+        {
+            NLog.LogManager.Configuration = new NLog.Config.LoggingConfiguration();
+            NLog.LogManager.Flush();
         }
 
         /// <summary>
@@ -61,7 +75,7 @@ namespace GadrocsWorkshop.Helios
             CheckPlatform();
 
             // initialize logging and documents folder
-            InitializeLogging(docPath, logLevel);
+            InitializeLogging(docPath, logLevel, application);
 
             // previous versions of Helios got their log file name from here, now it is based on the process name of the running process
             _ = logFileNameIgnored;

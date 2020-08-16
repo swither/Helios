@@ -24,33 +24,41 @@ namespace GadrocsWorkshop.Helios.Util
     /// </summary>
     public static class Resources
     {
-        static public void CopyResourceFile(string resourceUri, string destinationPath)
+        public static void CopyResourceFile(string resourceUri, string destinationPath)
         {
-            StreamWriter outputFile = File.CreateText(destinationPath);
-            CopyResourceFile(resourceUri, outputFile);
-            outputFile.Close();
-        }
-
-        static public void CopyResourceFile(string resourceUri, TextWriter destination)
-        {
-            Stream resourceStream = Application.GetResourceStream(new Uri(resourceUri, UriKind.Absolute)).Stream;
-            StreamReader reader = new StreamReader(resourceStream);
-
-            string line;
-            while ((line = reader.ReadLine()) != null)
+            using (StreamWriter outputFile = File.CreateText(destinationPath))
             {
-                destination.WriteLine(line);
+                CopyResourceFile(resourceUri, outputFile);
             }
-
-            reader.Close();
-            resourceStream.Close();
         }
 
-        static public string ReadResourceFile(string resourceUri)
+        public static void CopyResourceFile(string resourceUri, TextWriter destination)
         {
-            Stream resourceStream = Application.GetResourceStream(new Uri(resourceUri, UriKind.Absolute)).Stream;
-            StreamReader reader = new StreamReader(resourceStream);
-            return reader.ReadToEnd();
+            using (Stream resourceStream = CreateResourceStream(resourceUri))
+            using (StreamReader reader = new StreamReader(resourceStream))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    destination.WriteLine(line);
+                }
+            }
+        }
+
+        public static string ReadResourceFile(string resourceUri)
+        {
+            using (Stream resourceStream = CreateResourceStream(resourceUri))
+            using (StreamReader reader = new StreamReader(resourceStream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        private static Stream CreateResourceStream(string resourceUri)
+        {
+            // WARNING: creating a pack URI sometimes fails with an "invalid port" error when running in a minimal environment
+            Uri uri = new Uri(resourceUri, UriKind.Absolute);
+            return Application.GetResourceStream(uri)?.Stream;
         }
     }
 }
