@@ -18,16 +18,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FC2
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    [HeliosInterface("Helios.FC2", "Flaming Cliffs 2", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.FC2", "Flaming Cliffs 3", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class FC2Interface : DCSInterface
     {
         public FC2Interface()
-            : base("Flaming Cliffs 2", "FC2", "pack://application:,,,/Helios;component/Interfaces/DCS/FC2/ExportFunctions.lua")
+            : base("Flaming Cliffs 3", "FC2", "pack://application:,,,/Helios;component/Interfaces/DCS/FC2/ExportFunctions.lua")
         {
             Functions.Add(new NetworkValue(this, "1", "ADI", "pitch", "Current pitch of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
             Functions.Add(new NetworkValue(this, "2", "ADI", "bank", "Current bank of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
             Functions.Add(new NetworkValue(this, "3", "ADI", "side slip", "Current yaw of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
             Functions.Add(new NetworkValue(this, "4", "", "barametric altitude", "Current barometric altitude the aircraft.", "", BindingValueUnits.Meters, null));
+            // WARNING: do not correct spelling in value names, because it will break bindings
             Functions.Add(new NetworkValue(this, "5", "", "rardar altitude", "Current radar altitude of the aircraft.", "", BindingValueUnits.Meters, null));
             Functions.Add(new NetworkValue(this, "6", "HSI", "ADF bearing", "Current ADF heading.", "(0 - 360)", BindingValueUnits.Degrees, null));
             Functions.Add(new NetworkValue(this, "7", "HSI", "RMI bearing", "Current RMI heading.", "(0 - 360)", BindingValueUnits.Degrees, null));
@@ -42,6 +43,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FC2
             Functions.Add(new NetworkValue(this, "16", "", "angle of attack", "Current angle of attack for the aircraft.", "", BindingValueUnits.Degrees, null));
             Functions.Add(new NetworkValue(this, "17", "ADI", "glide deviation", "ILS Glide Deviation", "-1 to 1", BindingValueUnits.Numeric, null));
             Functions.Add(new NetworkValue(this, "18", "ADI", "side deviation", "ILS Side Deiviation", "-1 to 1", BindingValueUnits.Numeric, null));
+
+            Functions.Add(new NetworkValue(this, "19", "", "Mach", "Current Mach number", "number in M", BindingValueUnits.Numeric, null));
+            Functions.Add(new NetworkValue(this, "20", "", "G", "Current G load", "number in g", BindingValueUnits.Numeric, null));
         }
     }
 }
