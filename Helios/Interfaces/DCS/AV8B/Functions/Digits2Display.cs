@@ -41,30 +41,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
 
         public override void ProcessNetworkData(string id, string value)
         {
- 
-                    double displayvalue = Convert.ToDouble(value);
-                    _two_digit_display.SetValue(new BindingValue(displayvalue), false);
-
-
-        }
-
-        private double ClampedParse(string value, double scale)
-        {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
-            {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue = Math.Truncate(scaledValue * 10d) * scale;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out double parsedValue)) {
+                _two_digit_display.SetValue(new BindingValue(parsedValue), false);
             }
-            return scaledValue;
         }
-
 
         public override void Reset()
         {

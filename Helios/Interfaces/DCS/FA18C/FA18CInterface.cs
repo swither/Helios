@@ -186,9 +186,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             // Height Indicator
             //AddFunction(new FlagValue(this, "290", "Caution Indicators", "LOW_ALT_WARN", ""));  // create_caution_lamp(290,CautionLights.CPT_LTS_LOW_ALT_WARN)
             // AoA Indexer Lights
-            AddFunction(new FlagValue(this, "4", "Caution Indicators", "AOA_HIGH", ""));        // create_caution_lamp(4,CautionLights.CPT_LTS_AOA_HIGH)
-            AddFunction(new FlagValue(this, "5", "Caution Indicators", "AOA_CENTER", ""));      // create_caution_lamp(5,CautionLights.CPT_LTS_AOA_CENTER)
-            AddFunction(new FlagValue(this, "6", "Caution Indicators", "AOA_LOW", ""));         // create_caution_lamp(6,CautionLights.CPT_LTS_AOA_LOW)
+            AddFunction(new FlagValue(this, "4", "Caution Indicators", "AOA_HIGH", "AoA Indexer Light (High)","% 0.2f", true));        // create_caution_lamp(4,CautionLights.CPT_LTS_AOA_HIGH)
+            AddFunction(new FlagValue(this, "5", "Caution Indicators", "AOA_CENTER", "AoA Indexer Light (Center)", "% 0.2f", true));      // create_caution_lamp(5,CautionLights.CPT_LTS_AOA_CENTER)
+            AddFunction(new FlagValue(this, "6", "Caution Indicators", "AOA_LOW", "AoA Indexer Light (Low)", "% 0.2f", true));         // create_caution_lamp(6,CautionLights.CPT_LTS_AOA_LOW)
             // Declarations for Caution Lights numbers from Lamps.lua
             #endregion
             #region Internal Lights
