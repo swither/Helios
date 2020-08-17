@@ -11,7 +11,7 @@ namespace HeliosInstallerSupport
     {
         public static void RunHeliosUninstall()
         {
-            using (new MinimalHelios("Helios Installer"))
+            using (new MinimalHelios())
             {
                 DCSExportConfiguration.RemoveExportLuaHooks();
             }

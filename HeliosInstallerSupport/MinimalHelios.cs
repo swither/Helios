@@ -8,10 +8,9 @@ namespace HeliosInstallerSupport
 {
     class MinimalHelios: IDisposable
     {
-        public MinimalHelios(string name)
+        public MinimalHelios()
         {
-            string documentPath = FindHeliosDocuments();
-            HeliosInit.Initialize(documentPath, "", LogLevel.Error, new HeliosApplication
+            HeliosInit.Initialize(FindHeliosDocuments(), "", LogLevel.Error, new HeliosApplication
             {
                 AllowPlugins = false,
                 ConnectToServers = false,

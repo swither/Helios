@@ -81,8 +81,7 @@ namespace GadrocsWorkshop.Helios
             _ = logFileNameIgnored;
 
             // initialize the rest of Helios
-            Assembly execAssembly = Assembly.GetExecutingAssembly();
-            Logger.Info("Helios Version " + execAssembly.GetName().Version);
+            Logger.Info("Helios Version " + RunningVersion.FromHeliosAssembly());
 
             ConfigManager.Application = application ?? new HeliosApplication();
             ConfigManager.SettingsManager =
@@ -101,7 +100,8 @@ namespace GadrocsWorkshop.Helios
             
             Logger.Debug("Searching for Helios modules in libraries");
 
-            LoadModule(Assembly.GetExecutingAssembly());
+            Assembly execAssembly = Assembly.GetExecutingAssembly();
+            LoadModule(execAssembly);
 
             if (ConfigManager.Application.AllowPlugins)
             {

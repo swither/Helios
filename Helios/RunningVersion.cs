@@ -28,9 +28,17 @@ namespace GadrocsWorkshop.Helios
         {
             get
             {
-                Version running = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version();
+                Version running = FromHeliosAssembly();
                 return running.Build >= 1000 && running.Build < 2000;
             }
+        }
+
+        public static Version FromHeliosAssembly()
+        {
+            // NOTE: in an installer context we may not get any version info from the executing assembly
+            return Assembly.GetExecutingAssembly().GetName().Version ??
+                   Assembly.GetCallingAssembly().GetName().Version ??
+                   new Version();
         }
     }
 }

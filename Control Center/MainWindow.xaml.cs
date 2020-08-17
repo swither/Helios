@@ -246,7 +246,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     updateInfoStatus("Error loading Profile", null);
                     break;
                 case StatusValue.RunningVersion:
-                    Version ver = Assembly.GetEntryAssembly().GetName().Version;
+                    Version ver = RunningVersion.FromHeliosAssembly();
                     string message =
                         $"Helios {ver.Major}.{ver.Minor}.{ver.Build:0000}.{ver.Revision:0000}";
                     message += $"\n{KnownLinks.GitRepoUrl() ?? "HeliosVirtualCockpit fork"}";

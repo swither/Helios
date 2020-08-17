@@ -67,7 +67,7 @@ namespace GadrocsWorkshop.Helios
         {
             _settings = settings;
             _settingsAreWritable = settingsAreWritable;
-            RunningVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version();
+            RunningVersion = Helios.RunningVersion.FromHeliosAssembly();
             if (Helios.RunningVersion.IsDevelopmentPrototype)
             {
                 _developmentPrototype = true;

@@ -108,6 +108,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         // regex used to check for dofile calls in Export.lua
         private static readonly Regex DofileCall = new Regex("^\\s*[^-].*dofile\\(.*\\)", RegexOptions.Compiled | RegexOptions.Multiline);
 
+        // regex used to check for Helios-generated third-party dofile calls in Export.lua
+        private static readonly Regex HeliosDofileCall = new Regex("helios_dofile_.*result = pcall\\(dofile", RegexOptions.Compiled | RegexOptions.Multiline);
+
         // the interface that owns this object, and for which we generate the Exports
         private readonly DCSInterface _parent;
 
@@ -652,7 +655,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 return;
             }
 
-            if (DofileCall.IsMatch(contents))
+            if (DofileCall.IsMatch(contents) || HeliosDofileCall.IsMatch(contents))
             {
                 // add a dofile line to a file already in that style
                 BackupExportStub(location);
@@ -756,7 +759,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     $"Helios is about to overwrite the Export.lua script \nat {exportStubPath}.\nThis file could have been created by third party software or a previous version and it appears to be a complete export file, such as created by Helios 1.4.  This version of Helios requires an Export.lua stub file with dofile(...) calls in it to be combined with other applications requiring exports.  Helios will overwrite this file and you will need to add support for third party scripts to it yourself.  A backup copy of this file will be left in the same folder.",
                     new List<StatusReportItem>());
             }
-            else if (DofileCall.IsMatch(contents))
+            else if (DofileCall.IsMatch(contents) || HeliosDofileCall.IsMatch(contents))
             {
                 response = callbacks.DangerPrompt("Configure Export.lua",
                     $"Helios is about add a line to the Export.lua script \nat {exportStubPath}.\nThis line will call the main export script {EXPORT_MAIN_NAME} to allow sending data to Helios.  A backup copy of this file will be left in the same folder.",
@@ -766,7 +769,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 callbacks.Failure("Unrecognized Export.lua",
                     $"Helios cannot understand the Export.lua script\nat {exportStubPath}.\nIn order to install this version of Helios, you will need to rename this script and then configure this interface again.  Afterwards, you can edit this file again to add your changes.  Alternatively, you can configure Helios not to create Export.lua at all if you have an unusual Export.lua that works with this version of Helios.",
-                    new List<StatusReportItem>());
+                    new StatusReportItem
+                    {
+                        Status = "The contents of this file did not match any of the patterns we recognize",
+                        Code = contents,
+                        Severity = StatusReportItem.SeverityCode.Warning
+                    }.AsReport());
                 return false;
             }
             return (response != InstallationPromptResult.Cancel);
