@@ -27,32 +27,33 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
     /// </summary>
     public partial class About : Window
     {
-        // these are in order of being primary on the project
+        // primary authors of the code
         public static readonly string[] Authors = { "Gadroc", "derammo", "BlueFinBima" };
 
-        // these will be listed alphabetically from now on
+        // these are listed alphabetically
         public static string[] Contributors =>
             ContributorsArray.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase).ToArray();
 
-        // raw contributor list, sorted when displayed
+        // raw contributor list in no particular order, sorted alphabetically when displayed
         private static readonly string[] ContributorsArray = 
         {
             "BeamRider",
-            "CaptZeen",
+            "CaptZeen",         // for making Helios more than a toolbox
             "Cylution",
             "damien022",
-            "Jabbers",
+            "Jabbers",          // for expert counsel and a little bit of code
             "KiwiLostInMelb",
             "Phar71",
             "Rachmaninoff",
-            "wheelchock",
             "Will Hartsell",
             "WillianG83",
             "yzfanimal",
-            "ZoeESummers",  // for UX work
-            "ertiyu",       // for testing
-            "Polaris",      // for testing
-            "Sliceback"     // for testing
+            "wheelchock",       // for reviving BMS support
+            "ZoeESummers",      // for UX work
+            "ertiyu",           // for testing
+            "Polaris",          // for testing
+            "Sliceback",        // for testing
+            "Biluf"             // for M-2000C viewports
         };
 
         public About()
