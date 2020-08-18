@@ -17,37 +17,34 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     using GadrocsWorkshop.Helios.UDPInterface;
     using System.Globalization;
+    using System;
 
-    public class FlagValue : NetworkFunction
+    public class IndicatorDimmable:FlagValue
     {
         private string _id;
         private string _format;
+        private HeliosValue _brightness;
 
-        private HeliosValue _value;
-
-        public FlagValue(BaseUDPInterface sourceInterface, string id, string device, string name, string description)
-            : this(sourceInterface, id, device, name, description, "%0.1f")
-        {
-        }
-
-        public FlagValue(BaseUDPInterface sourceInterface, string id, string device, string name, string description, string exportFormat)
-            : base(sourceInterface)
+        public IndicatorDimmable(BaseUDPInterface sourceInterface, string id, string device, string name, string description, string exportFormat)
+            : base(sourceInterface, id, device, name, description, exportFormat)
         {
             _id = id;
             _format = exportFormat;
 
-            _value = new HeliosValue(sourceInterface, BindingValue.Empty, device, name, description, "", BindingValueUnits.Boolean);
-            Values.Add(_value);
-            Triggers.Add(_value);
+            _brightness = new HeliosValue(sourceInterface, BindingValue.Empty, device, name + " brightness", description + " brightness percentage", "", BindingValueUnits.Numeric);
+            Values.Add(_brightness);
+            Triggers.Add(_brightness);
         }
 
         public override void ProcessNetworkData(string id, string value)
         {
-            double parsedValue;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out parsedValue))
+            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out double parsedValue))
             {
-                _value.SetValue(new BindingValue(parsedValue != 0d), false);
+                {
+                    _brightness.SetValue(new BindingValue((parsedValue > 1 ? 1d : parsedValue < 0 ? 0d : parsedValue) * 100), false);
+                }
             }
+            base.ProcessNetworkData(id,value);
         }
 
         public override ExportDataElement[] GetDataElements()
@@ -57,7 +54,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public override void Reset()
         {
-            _value.SetValue(BindingValue.Empty, true);
+            base.Reset();
+             _brightness.SetValue(BindingValue.Empty, true);
         }
     }
 }
