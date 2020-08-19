@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,49 +14,51 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Globalization;
+using GadrocsWorkshop.Helios.UDPInterface;
+
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using System.Globalization;
-    using System;
-
-    public class IndicatorDimmable:FlagValue
+    public class IndicatorDimmable : FlagValue
     {
-        private string _id;
-        private string _format;
-        private HeliosValue _brightness;
+        private readonly string _id;
+        private readonly string _format;
+        private readonly HeliosValue _brightness;
 
-        public IndicatorDimmable(BaseUDPInterface sourceInterface, string id, string device, string name, string description, string exportFormat)
+        public IndicatorDimmable(BaseUDPInterface sourceInterface, string id, string device, string name,
+            string description, string exportFormat)
             : base(sourceInterface, id, device, name, description, exportFormat)
         {
             _id = id;
             _format = exportFormat;
 
-            _brightness = new HeliosValue(sourceInterface, BindingValue.Empty, device, name + " brightness", description + " brightness percentage", "", BindingValueUnits.Numeric);
+            _brightness = new HeliosValue(sourceInterface, BindingValue.Empty, device,
+                $"{name} brightness", $"{description} brightness percentage", "", BindingValueUnits.Numeric);
             Values.Add(_brightness);
             Triggers.Add(_brightness);
         }
 
         public override void ProcessNetworkData(string id, string value)
         {
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out double parsedValue))
+            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double parsedValue))
             {
-                {
-                    _brightness.SetValue(new BindingValue((parsedValue > 1 ? 1d : parsedValue < 0 ? 0d : parsedValue) * 100), false);
-                }
+                _brightness.SetValue(
+                    new BindingValue((parsedValue > 1 ? 1d : parsedValue < 0 ? 0d : parsedValue) * 100), false);
             }
-            base.ProcessNetworkData(id,value);
+
+            base.ProcessNetworkData(id, value);
         }
 
         public override ExportDataElement[] GetDataElements()
         {
-            return new ExportDataElement[] { new DCSDataElement(_id, _format, true) };
+            return new ExportDataElement[] {new DCSDataElement(_id, _format, true)};
         }
 
         public override void Reset()
         {
             base.Reset();
-             _brightness.SetValue(BindingValue.Empty, true);
+            _brightness.SetValue(BindingValue.Empty, true);
         }
     }
 }

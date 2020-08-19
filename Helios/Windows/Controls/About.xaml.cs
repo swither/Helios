@@ -45,10 +45,10 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             "KiwiLostInMelb",
             "Phar71",
             "Rachmaninoff",
+            "wheelchock",       // for reviving BMS support
             "Will Hartsell",
             "WillianG83",
             "yzfanimal",
-            "wheelchock",       // for reviving BMS support
             "ZoeESummers",      // for UX work
             "ertiyu",           // for testing
             "Polaris",          // for testing
