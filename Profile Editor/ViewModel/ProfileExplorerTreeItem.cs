@@ -201,14 +201,14 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                     HeliosVisual visual = (HeliosVisual)ContextItem;
                     visual.PropertyChanged -= HeliosObject_PropertyChanged;
                     visual.Children.CollectionChanged -= VisualChildren_CollectionChanged;
-                    visual.Triggers.CollectionChanged += Triggers_CollectionChanged;
-                    visual.Actions.CollectionChanged += Actions_CollectionChanged;
+                    visual.Triggers.CollectionChanged -= Triggers_CollectionChanged;
+                    visual.Actions.CollectionChanged -= Actions_CollectionChanged;
                     break;
                 case ProfileExplorerTreeItemType.Interface:
                     HeliosInterface heliosInterface = (HeliosInterface)ContextItem;
                     heliosInterface.PropertyChanged -= HeliosObject_PropertyChanged;
-                    heliosInterface.Triggers.CollectionChanged += Triggers_CollectionChanged;
-                    heliosInterface.Actions.CollectionChanged += Actions_CollectionChanged;
+                    heliosInterface.Triggers.CollectionChanged -= Triggers_CollectionChanged;
+                    heliosInterface.Actions.CollectionChanged -= Actions_CollectionChanged;
                     break;
                 case ProfileExplorerTreeItemType.Action:
                     IBindingAction action = (IBindingAction)ContextItem;
@@ -364,7 +364,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
         private bool ShouldAddBinding(HeliosBinding child)
         {
-            if (_includeTypes.HasFlag(ProfileExplorerTreeItemType.Binding))
+            if (!_includeTypes.HasFlag(ProfileExplorerTreeItemType.Binding))
             {
                 // we don't do bindings
                 return false;
@@ -605,9 +605,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         /// <param name="child"></param>
         /// <param name="childItem"></param>
         /// <param name="includeTypes"></param>
-        private void AddBindingElement(IBindingElement child, ProfileExplorerTreeItem childItem, ProfileExplorerTreeItemType includeTypes)
+        private void AddBindingElement(IBindingElement child, ProfileExplorerTreeItemType requiredFlags, ProfileExplorerTreeItem childItem, ProfileExplorerTreeItemType includeTypes)
         {
-            if (childItem.HasChildren || includeTypes.HasFlag(ProfileExplorerTreeItemType.Trigger))
+            if (childItem.HasChildren || includeTypes.HasFlag(requiredFlags))
             {
                 string deviceName = GetDeviceNameForUserInterface(child);
                 if (deviceName.Length > 0)
@@ -635,12 +635,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
         private void AddTrigger(IBindingTrigger trigger, ProfileExplorerTreeItemType includeTypes)
         {
-            AddBindingElement(trigger, new ProfileExplorerTreeItem(trigger, this, includeTypes), includeTypes);
+            AddBindingElement(trigger, ProfileExplorerTreeItemType.Trigger, new ProfileExplorerTreeItem(trigger, this, includeTypes), includeTypes);
         }
 
         public void AddAction(IBindingAction action, ProfileExplorerTreeItemType includeTypes)
         {
-            AddBindingElement(action, new ProfileExplorerTreeItem(action, this, includeTypes), includeTypes);
+            AddBindingElement(action, ProfileExplorerTreeItemType.Action, new ProfileExplorerTreeItem(action, this, includeTypes), includeTypes);
         }
 
         private bool HasFolder(string folderName)

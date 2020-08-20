@@ -88,6 +88,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             AddNewBinding(trigger, action);
 
+            if (!dropItem.HasChildren)
+            {
+                // can happen when dragging onto something configured not to show bindings
+                return;
+            }
+
             ProfileExplorerTreeItem newTreeItem = dropItem.Children.Last();
             newTreeItem.IsSelected = true;
         }
