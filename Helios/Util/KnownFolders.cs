@@ -26,9 +26,8 @@ namespace GadrocsWorkshop.Helios.Util
         {
             get
             {
-                IntPtr pathPtr;
                 string appDataRoaming;
-                int hr = NativeMethods.SHGetKnownFolderPath(ref FolderAppDataRoaming, 0, IntPtr.Zero, out pathPtr);
+                int hr = NativeMethods.SHGetKnownFolderPath(ref FolderAppDataRoaming, 0, IntPtr.Zero, out IntPtr pathPtr);
                 if (hr == 0)
                 {
                     appDataRoaming = Marshal.PtrToStringUni(pathPtr);
@@ -36,7 +35,7 @@ namespace GadrocsWorkshop.Helios.Util
                 }
                 else
                 {
-                    appDataRoaming = Environment.GetEnvironmentVariable("userprofile") + "AppData\\Roaming";
+                    appDataRoaming = System.IO.Path.Combine(Environment.GetEnvironmentVariable("userprofile") ?? "", "AppData\\Roaming");
                 }
 
                 return appDataRoaming;

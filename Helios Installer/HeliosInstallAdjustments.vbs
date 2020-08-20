@@ -48,6 +48,9 @@ else
    newGuid = Left(newGuid, Len(newGuid)-2)
    Execute database, "UPDATE Property SET `Value` = '" & newGuid & "' WHERE `Property` = 'ProductCode'"
 
+   ' run custom actions as user instead of system
+   Execute database, "UPDATE CustomAction SET `Type` = 1025 WHERE `Type` = 3073"
+
    ' special handling for development builds
    Dim devBuild
    Set devBuild = New RegExp
