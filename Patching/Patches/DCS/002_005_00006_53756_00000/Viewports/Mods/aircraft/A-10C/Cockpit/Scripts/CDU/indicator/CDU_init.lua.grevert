@@ -1,0 +1,5 @@
+﻿@@ -866,447 +866,60 @@
+ %0D%0A%0D%0A
+-dofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0Atry_find_assigned_viewport(%22A_10C_CDU_SCREEN%22%2C %22CDU_SCREEN%22)%0D%0Adofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0Atry_find_assigned_viewport(%22A_10C_CDU_SCREEN%22%2C %22CDU_SCREEN%22)%0D%0Aopacity_sensitive_materials %3D %0D%0A%7B%0D%0A%09%22font_CDU%22%2C%0D%0A%7D%0D%0A%0D%0A%0D%0Adofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0Atry_find_assigned_viewport(%22A_10C_CDU_SCREEN%22%2C %22CDU_SCREEN%22)
++opacity_sensitive_materials %3D %0D%0A%7B%0D%0A%09%22font_CDU%22%2C%0D%0A%7D%0D%0A%0D%0A
+ %0D%0A

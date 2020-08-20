@@ -1,0 +1,8 @@
+﻿@@ -97,16 +97,12 @@
+ s.CO
+-LLIMATOR
++MMON
+ %0D%0Apu
+@@ -1050,20 +1050,135 @@
+ %2C 13%2F255%2C 255%2F255%7D%0D%0A
++dofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0Atry_find_assigned_viewport(%22SA342_RWR%22%2C %22RWR%22)%0D%0A
