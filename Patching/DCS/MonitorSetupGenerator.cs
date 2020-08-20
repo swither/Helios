@@ -702,43 +702,136 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 }
             }
 
-            // XXX check if monitor setup selected in DCS (should be a gentle message but error)
-            // XXX check if correct monitor resolution selected in DCS (should be a gentle message but error)
-            string qualifier = _parent.MonitorLayoutMode == MonitorLayoutMode.FromTopLeftCorner ? "at least " : "";
+            foreach (InstallationLocation location in locations.Active)
+            {
+                if (DCSOptions.TryReadOptions(location, out DCSOptions options))
+                {
+                    // check if correct monitor resolution selected in DCS
+                    yield return ReportResolutionSelected(location, options);
+
+                    // don't tell the user to do this yet if the file isn't done
+                    if (hasFile && updated)
+                    {
+                        // check if monitor setup selected in DCS
+                        yield return ReportMonitorSetupSelected(location, options, monitorSetupName);
+                    }
+                }
+                else
+                {
+                    // report that the user has to check this themselves (we may not have access and that's ok)
+                    string qualifier = _parent.MonitorLayoutMode == MonitorLayoutMode.FromTopLeftCorner ? "at least " : "";
+                    yield return new StatusReportItem
+                    {
+                        Status = $"Helios was unable to check the DCS settings stored in {location.SavedGamesPath}",
+                        Recommendation =
+                            $"Using DCS, please make sure the 'Resolution' in the 'System' options is set to {qualifier}{_parent.Rendered.Width}x{_parent.Rendered.Height}",
+                        Severity = StatusReportItem.SeverityCode.Info,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    };
+
+                    // don't tell the user to do this yet if the file isn't done
+                    if (hasFile && updated)
+                    {
+                        yield return new StatusReportItem
+                        {
+                            Status = $"Helios was unable to check the DCS settings stored in {location.SavedGamesPath}",
+                            Recommendation =
+                                $"Using DCS, please make sure 'Monitors' in the 'System' options is set to '{monitorSetupName}'",
+                            Severity = StatusReportItem.SeverityCode.Info,
+                            Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                        };
+                    }
+                }
+            }
+
+            if (_parent.GenerateCombined)
+            {
+                yield break;
+            }
+
             yield return new StatusReportItem
             {
-                Status = "This version of Helios does not select the Resolution in DCS directly",
+                Status = "This profile requires a specific monitor setup file",
                 Recommendation =
-                    $"Using DCS, please set 'Resolution' in the 'System' options to {qualifier}{_parent.Rendered.Width}x{_parent.Rendered.Height}",
+                    "You will need to switch 'Monitors' in DCS when you switch Helios Profile",
                 Severity = StatusReportItem.SeverityCode.Info,
                 Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
+        }
 
-            // don't tell the user to do this yet if the file isn't done
-            if (hasFile && updated)
+        private StatusReportItem ReportResolutionSelected(InstallationLocation location, DCSOptions options)
+        {
+            string status = $"DCS installation in {Anonymizer.Anonymize(location.Path)} has 'Resolution' set to {options.Graphics.Width}x{options.Graphics.Height}";
+
+            if ((long)Math.Round(_parent.Rendered.Width) == options.Graphics.Width &&
+                (long)Math.Round(_parent.Rendered.Height) == options.Graphics.Height)
             {
-                yield return new StatusReportItem
+                // exact match
+                return new StatusReportItem
                 {
-                    Status = "This version of Helios does not select the monitor setup in DCS directly",
-                    Recommendation =
-                        $"Using DCS, please set 'Monitors' in the 'System' options to '{monitorSetupName}'",
-                    Severity = StatusReportItem.SeverityCode.Info,
-                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
-                };
-                if (_parent.GenerateCombined)
-                {
-                    yield break;
-                }
-
-                yield return new StatusReportItem
-                {
-                    Status = "This profile requires a specific monitor setup file",
-                    Recommendation =
-                        "You will need to switch 'Monitors' in DCS when you switch Helios Profile",
-                    Severity = StatusReportItem.SeverityCode.Info,
+                    Status = status,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
+
+            if (_parent.MonitorLayoutMode != MonitorLayoutMode.FromTopLeftCorner)
+            {
+                // inexact match is not permitted in any of these modes
+                return new StatusReportItem
+                {
+                    Status = status,
+                    Recommendation =
+                        $"Using DCS, please make sure the 'Resolution' in the 'System' options is set to {_parent.Rendered.Width}x{_parent.Rendered.Height}",
+                    // not a warning, because the user may simply not have configured DCS yet.  once we do that automatically,
+                    // this can be an out of date warning
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+
+            if (_parent.Rendered.Width > options.Graphics.Width ||
+                _parent.Rendered.Height > options.Graphics.Height)
+            {
+                return new StatusReportItem
+                {
+                    Status = status,
+                    Recommendation =
+                        $"Using DCS, choose a 'Resolution' in the 'System' options that is at least {_parent.Rendered.Width} pixels wide and at least {_parent.Rendered.Height} pixels high",
+                    // not a warning, because the user may simply not have configured DCS yet.  once we do that automatically,
+                    // this can be an out of date warning
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+            
+            return new StatusReportItem
+            {
+                Status = status,
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+            };
+        }
+
+        private StatusReportItem ReportMonitorSetupSelected(InstallationLocation location, DCSOptions options, string monitorSetupName)
+        {
+            string status = $"DCS installation in {Anonymizer.Anonymize(location.Path)} has 'Monitors' set to '{options.Graphics.MultiMonitorSetup}'";
+
+            if (options.Graphics.MultiMonitorSetup.Equals(monitorSetupName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                // selection is correct for current profile
+                return new StatusReportItem
+                {
+                    Status = status,
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+
+            return new StatusReportItem
+            {
+                Status = status,
+                Recommendation =
+                    $"Using DCS, please make sure 'Monitors' in the 'System' options is set to '{monitorSetupName}'",
+                // not a warning, because the user may simply not have configured DCS yet.  once we do that automatically,
+                // this can be an out of date warning
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+            };
         }
 
         private MonitorSetupTemplate CreateCombinedTemplate() =>

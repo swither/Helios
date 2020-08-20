@@ -268,6 +268,8 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
         public static string ScriptsSubdirectory => "Helios";
 
+        public string OptionsPath => System.IO.Path.Combine(SavedGamesPath, "Config", "options.lua");
+
         public string ExportMainRelativePath(string exportMainName) =>
             System.IO.Path.Combine("Scripts", ScriptsSubdirectory, exportMainName);
 
