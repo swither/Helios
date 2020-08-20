@@ -106,6 +106,35 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             ConfigManager.UndoManager.NonEmpty += UndoManager_NonEmpty;
         }
 
+        protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
+        {
+            base.DetachFromProfileOnMainThread(oldProfile);
+            if (!(ConfigManager.ImageManager is IImageManager2 images))
+            {
+                return;
+            }
+
+            oldProfile.ProfileStopped -= Profile_ProfileStopped;
+            oldProfile.ProfileStarted -= Profile_ProfileStarted;
+            oldProfile.PropertyChanged -= Profile_PropertyChanged;
+            images.ImageLoadSuccess -= Images_ImageLoadSuccess;
+            images.ImageLoadFailure -= Images_ImageLoadFailure;
+            ConfigManager.UndoManager.Empty -= UndoManager_Empty;
+            ConfigManager.UndoManager.NonEmpty -= UndoManager_NonEmpty;
+        }
+
+        // WARNING: ReadXml is not usually called because we are usually an empty XML element (default configuration)
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            if (Model.IsDefault)
+            {
+                // keep profile compatible with previous Helios if no new feature was used
+                return;
+            }
+            base.WriteXml(writer);
+        }
+
         private void UndoManager_NonEmpty(object sender, EventArgs e)
         {
             _dirty = true;
@@ -134,6 +163,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             {
                 InvalidateStatusReport();
             }
+        }
+
+        protected override void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.Model_PropertyChanged(sender, e); 
+            InvalidateStatusReport();
         }
 
         public override void Reset()
@@ -171,44 +206,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             {
                 InvalidateStatusReport();
             }
-        }
-
-        protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
-        {
-            base.DetachFromProfileOnMainThread(oldProfile);
-            if (!(ConfigManager.ImageManager is IImageManager2 images))
-            {
-                return;
-            }
-
-            oldProfile.ProfileStopped -= Profile_ProfileStopped;
-            oldProfile.ProfileStarted -= Profile_ProfileStarted;
-            oldProfile.PropertyChanged -= Profile_PropertyChanged;
-            images.ImageLoadSuccess -= Images_ImageLoadSuccess;
-            images.ImageLoadFailure -= Images_ImageLoadFailure;
-            ConfigManager.UndoManager.Empty -= UndoManager_Empty;
-            ConfigManager.UndoManager.NonEmpty -= UndoManager_NonEmpty;
-        }
-
-        public override void ReadXml(XmlReader reader)
-        {
-            base.ReadXml(reader);
-            Model.PropertyChanged += Model_PropertyChanged;
-        }
-
-        public override void WriteXml(XmlWriter writer)
-        {
-            if (Model.IsDefault)
-            {
-                // keep profile compatible with previous Helios if no new feature was used
-                return;
-            }
-            base.WriteXml(writer);
-        }
-
-        private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            InvalidateStatusReport();
         }
 
         private void LaunchApplication_Execute(object action, HeliosActionEventArgs e)

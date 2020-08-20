@@ -32,7 +32,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
 
         public HeliosInterfaceWithXml(string name) : base(name)
         {
-            // no code in base
+            // register to forward any configuration changes against default config
+            _model.PropertyChanged += Model_PropertyChanged;
         }
 
         public T Model
@@ -42,22 +43,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             {
                 if (_model != null)
                 {
-                    _model.PropertyChanged -= Configuration_PropertyChanged;
+                    _model.PropertyChanged -= Model_PropertyChanged;
                 }
                 _model = value;
                 if (_model != null)
                 {
                     // register to forward any configuration value changes after load
-                    _model.PropertyChanged += Configuration_PropertyChanged;
+                    _model.PropertyChanged += Model_PropertyChanged;
                 }
 
             }
         }
 
-        private void Configuration_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        protected virtual void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             // forward changes to configuration properties as child property events so we get Undo support
-            OnPropertyChanged("Configuration", (PropertyNotificationEventArgs)e);
+            OnPropertyChanged(nameof(Model), (PropertyNotificationEventArgs)e);
         }
 
         public override void ReadXml(XmlReader reader)

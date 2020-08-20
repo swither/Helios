@@ -615,6 +615,7 @@ namespace GadrocsWorkshop.Helios
                 string name = xmlReader.GetAttribute("Name");
                 if (xmlReader.IsEmptyElement)
                 {
+                    // don't read from empty XML element
                     xmlReader.Read();
                 }
                 else
