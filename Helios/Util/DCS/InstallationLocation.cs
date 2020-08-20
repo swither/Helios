@@ -270,6 +270,29 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
         public string OptionsPath => System.IO.Path.Combine(SavedGamesPath, "Config", "options.lua");
 
+        /// <summary>
+        /// creates a shortened and anonymous path to the MonitorSetup folder for use in UI
+        /// </summary>
+        public string DescribeMonitorSetupPath =>
+            // ReSharper disable once AssignNullToNotNullAttribute not possible with saved games folder
+            System.IO.Path.Combine(SavedGamesTranslated, SavedGamesName, "Config", "MonitorSetup");
+
+        private static string SavedGamesTranslated
+        {
+            get
+            {
+                string savedGamesTranslated = System.IO.Path.GetFileName(KnownFolders.SavedGames);
+                return savedGamesTranslated;
+            }
+        }
+
+        /// <summary>
+        /// creates a shortened and anonymous path to the options.lua file for use in UI
+        /// </summary>
+        public string DescribeOptionsPath =>
+            // ReSharper disable once AssignNullToNotNullAttribute not possible with saved games folder
+            System.IO.Path.Combine(SavedGamesTranslated, SavedGamesName, "Config", "options.lua");
+
         public string ExportMainRelativePath(string exportMainName) =>
             System.IO.Path.Combine("Scripts", ScriptsSubdirectory, exportMainName);
 

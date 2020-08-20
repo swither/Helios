@@ -361,13 +361,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        public object GenerateAnonymousPath(string savedGamesName)
-        {
-            string savedGamesTranslated = Path.GetFileName(KnownFolders.SavedGames);
-            // ReSharper disable once AssignNullToNotNullAttribute not possible with saved games folder
-            return Path.Combine(savedGamesTranslated, savedGamesName, "Config", "MonitorSetup");
-        }
-
         private string GenerateSavedGamesPath(string savedGamesName) =>
             Path.Combine(KnownFolders.SavedGames, savedGamesName, "Config", "MonitorSetup");
 
@@ -400,7 +393,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             File.WriteAllText(filePath, correctContents);
             return new StatusReportItem
             {
-                Status = $"generated monitor setup file '{name}' in {GenerateAnonymousPath(location.SavedGamesName)}",
+                Status = $"generated monitor setup file '{name}' in {location.DescribeMonitorSetupPath}",
                 Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
         }
@@ -413,7 +406,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return new StatusReportItem
                 {
                     Status =
-                        $"{GenerateAnonymousPath(location.SavedGamesName)} does not contain the monitor setup file '{name}'",
+                        $"{location.DescribeMonitorSetupPath} does not contain the monitor setup file '{name}'",
                     Recommendation = $"Configure {_parent.Name}",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Warning
@@ -426,7 +419,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return new StatusReportItem
                 {
                     Status =
-                        $"monitor setup file '{name}' in {GenerateAnonymousPath(location.SavedGamesName)} does not match configuration",
+                        $"monitor setup file '{name}' in {location.DescribeMonitorSetupPath} does not match configuration",
                     Recommendation = $"Configure {_parent.Name}",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Warning
@@ -436,7 +429,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             return new StatusReportItem
             {
                 Status =
-                    $"monitor setup file '{name}' in {GenerateAnonymousPath(location.SavedGamesName)} is up to date",
+                    $"monitor setup file '{name}' in {location.DescribeMonitorSetupPath} is up to date",
                 Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
         }
@@ -722,7 +715,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     string qualifier = _parent.MonitorLayoutMode == MonitorLayoutMode.FromTopLeftCorner ? "at least " : "";
                     yield return new StatusReportItem
                     {
-                        Status = $"Helios was unable to check the DCS settings stored in {location.SavedGamesPath}",
+                        Status = $"Helios was unable to check the DCS settings stored in {location.DescribeOptionsPath}",
                         Recommendation =
                             $"Using DCS, please make sure the 'Resolution' in the 'System' options is set to {qualifier}{_parent.Rendered.Width}x{_parent.Rendered.Height}",
                         Severity = StatusReportItem.SeverityCode.Info,
@@ -734,7 +727,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     {
                         yield return new StatusReportItem
                         {
-                            Status = $"Helios was unable to check the DCS settings stored in {location.SavedGamesPath}",
+                            Status = $"Helios was unable to check the DCS monitor setup selection stored in {location.DescribeOptionsPath}",
                             Recommendation =
                                 $"Using DCS, please make sure 'Monitors' in the 'System' options is set to '{monitorSetupName}'",
                             Severity = StatusReportItem.SeverityCode.Info,
@@ -761,7 +754,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private StatusReportItem ReportResolutionSelected(InstallationLocation location, DCSOptions options)
         {
-            string status = $"DCS installation in {Anonymizer.Anonymize(location.Path)} has 'Resolution' set to {options.Graphics.Width}x{options.Graphics.Height}";
+            string status = $"{location.DescribeOptionsPath} has 'Resolution' set to {options.Graphics.Width}x{options.Graphics.Height}";
 
             if ((long)Math.Round(_parent.Rendered.Width) == options.Graphics.Width &&
                 (long)Math.Round(_parent.Rendered.Height) == options.Graphics.Height)
@@ -811,7 +804,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private StatusReportItem ReportMonitorSetupSelected(InstallationLocation location, DCSOptions options, string monitorSetupName)
         {
-            string status = $"DCS installation in {Anonymizer.Anonymize(location.Path)} has 'Monitors' set to '{options.Graphics.MultiMonitorSetup}'";
+            string status = $"{location.DescribeOptionsPath} has 'Monitors' set to '{options.Graphics.MultiMonitorSetup}'";
 
             if (options.Graphics.MultiMonitorSetup.Equals(monitorSetupName, StringComparison.InvariantCultureIgnoreCase))
             {
