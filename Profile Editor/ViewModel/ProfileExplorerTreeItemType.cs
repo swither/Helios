@@ -17,7 +17,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 {
     using System;
 
-    [Flags()]
+    /// <summary>
+    /// these values are used to indicate what type of Helios object is represented by a tree item and
+    /// also combined via OR to create a mask to indicate what sort of items will be included when building
+    /// a subtree, to create different sorts of views in the UI
+    /// </summary>
+    [Flags]
     public enum ProfileExplorerTreeItemType
     {
         Folder =    0x001,
