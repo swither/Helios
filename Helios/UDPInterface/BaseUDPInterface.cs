@@ -746,7 +746,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 _main.FunctionsById.TryGetValue(secondaryId, out NetworkFunction secondaryFunction))
             {
                 // dispatch to other function also
-                secondaryFunction.ProcessNetworkData(id, value);
+                secondaryFunction.ProcessNetworkData(secondaryId, value);
             }
             return true;
         }
