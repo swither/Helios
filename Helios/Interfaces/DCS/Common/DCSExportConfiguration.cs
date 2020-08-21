@@ -1371,6 +1371,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
 
             ModuleFormatInfo moduleInfo = ExportModuleFormatInfo[_parent.ExportModuleFormat];
+
+            if (!moduleInfo.IsAllowedToWrite)
+            {
+                // no module file at all
+                return new StatusReportItem
+                {
+                    Status = $"The {moduleInfo.DisplayName} does not use a module or driver file",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                };
+            }
+
             if (_parent.ExportModuleBaseName == null && !moduleInfo.CanGenerate)
             {
                 // no included module and we don't even know its name
