@@ -96,7 +96,7 @@ namespace GadrocsWorkshop.Helios
             ConfigManager.DisplayManager = new DisplayManager();
 
             ConfigManager.ModuleManager = new ModuleManager(ConfigManager.ApplicationPath);
-            ConfigManager.TemplateManager = new TemplateManager(ConfigManager.TemplatePath, ConfigManager.PanelTemplatePath);
+            ConfigManager.TemplateManager = new TemplateManager(ConfigManager.TemplatePath);
             
             Logger.Debug("Searching for Helios modules in libraries");
 

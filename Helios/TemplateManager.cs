@@ -33,10 +33,9 @@ namespace GadrocsWorkshop.Helios
 
         private string _userTemplateDirectory = "";
 
-        internal TemplateManager(string userTemplateDirectory, string userPanelTemplateDirectory)
+        internal TemplateManager(string userTemplateDirectory)
         {
             Logger.Debug($"Helios will load user templates from {Util.Anonymizer.Anonymize(userTemplateDirectory)}");
-            Logger.Debug($"Helios will load user panel templates from {Util.Anonymizer.Anonymize(userPanelTemplateDirectory)}");
 
             _userTemplateDirectory = userTemplateDirectory;
 

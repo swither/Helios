@@ -29,7 +29,6 @@ namespace GadrocsWorkshop.Helios
         private static string _documentImagePath;
         private static string _documentProfilePath;
         private static string _documentTemplatesPath;
-        private static string _documentPanelTemplatesPath;
 
         private static ITemplateManager _templateManager;
         private static IImageManager _imageManager;
@@ -63,9 +62,8 @@ namespace GadrocsWorkshop.Helios
                 _documentImagePath = Path.Combine(_documentPath, "Images");
                 _documentProfilePath = Path.Combine(_documentPath, "Profiles");
                 _documentTemplatesPath = Path.Combine(_documentPath, "Templates");
-                _documentPanelTemplatesPath = Path.Combine(_documentPath, "Panel Templates");
 
-                List<string> paths = new List<string> { _documentPath, _documentImagePath, _documentProfilePath, _documentTemplatesPath, _documentPanelTemplatesPath };
+                List<string> paths = new List<string> { _documentPath, _documentImagePath, _documentProfilePath, _documentTemplatesPath };
                 bool wroteSomething = false;
                 foreach (string path in paths)
                 {
@@ -126,7 +124,6 @@ namespace GadrocsWorkshop.Helios
         public static string ProfilePath { get { return _documentProfilePath; } }
         public static string ImagePath { get { return _documentImagePath; } }
         public static string TemplatePath { get { return _documentTemplatesPath; } }
-        public static string PanelTemplatePath { get { return _documentPanelTemplatesPath; } }
 
         public static IImageManager ImageManager
         {
