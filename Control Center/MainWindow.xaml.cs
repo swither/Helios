@@ -650,16 +650,27 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
         }
 
+        private static readonly Dictionary<string, string> DriverDescriptions = new Dictionary<string, string>
+        {
+            { "HeliosDriver16", "Helios driver"},
+            { "CaptZeenModule1", "module by Capt Zeen"},
+            { "TelemetryOnly", "basic telemetry only"}
+        };
+
         private void Profile_DriverStatusReceived(object sender, DriverStatus e)
         {
             string oldValue = _lastDriverStatus;
-            _lastDriverStatus = e.DriverType;
+            if (!DriverDescriptions.TryGetValue(e.DriverType, out _lastDriverStatus))
+            {
+                // just use the raw value
+                _lastDriverStatus = e.DriverType;
+            }
             ConfigManager.LogManager.LogDebug($"received profile status indicating that simulator is running exports for '{e.DriverType}'");
             if (oldValue != _lastDriverStatus)
             {
                 UpdateStatusMessage();
                 // send only a simple status message to status viewer instead of whole status via ReportStatusToStatusViewer
-                ReportStatus($"Simulator is running exports '{_lastDriverStatus}'");
+                ReportStatus($"Simulator is running {_lastDriverStatus}");
             }
         }
 
