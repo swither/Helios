@@ -145,14 +145,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         private ProfileExplorerTreeItem(IBindingAction item, ProfileExplorerTreeItem parent, ProfileExplorerTreeItemType includeTypes)
             : this(item.ActionName, item.ActionDescription, parent, includeTypes)
         {
+            ContextItem = item;
+            ItemType = ProfileExplorerTreeItemType.Action;
+            
             if (!includeTypes.HasFlag(ProfileExplorerTreeItemType.Binding))
             {
                 return;
             }
-
-            ContextItem = item;
-            ItemType = ProfileExplorerTreeItemType.Action;
-            //SortName = item.Name + " " + item.ActionVerb;
 
             foreach (HeliosBinding binding in item.Owner.InputBindings)
             {
