@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,72 +14,93 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+
 namespace GadrocsWorkshop.Helios
 {
-    using System;
-
     /// <summary>
     /// Abstract base class for all triggers.  Trigger represent changes in there source which
     /// can be used to trigger other actions.
     /// </summary>
-    public class HeliosTrigger : NotificationObject, IBindingTrigger
+    public class HeliosTrigger : NotificationObject, IBindingTrigger, INamedBindingElement
     {
-        private string _id;
         private string _device;
         private string _name;
-        private string _description;
-        private string _verb;
-        private string _valueDescription;
-        private BindingValueUnit _unit;
         private string _bindingDescription;
 
-        private WeakReference _source = new WeakReference(null);
+        private readonly WeakReference _source;
         private WeakReference _context = new WeakReference(null);
 
         public HeliosTrigger(HeliosObject source, string device, string name, string verb, string description)
             : this(source, device, name, verb, description, "", BindingValueUnits.NoValue)
         {
+            // no additional code
         }
 
-        public HeliosTrigger(HeliosObject source, string device, string name, string verb, string description, string valueDescription, BindingValueUnit unit)
+        public HeliosTrigger(HeliosObject source, string device, string name, string verb, string description,
+            string valueDescription, BindingValueUnit unit)
         {
             _device = device;
             _name = name;
-            _verb = verb;
-            _description = description;
+            TriggerVerb = verb;
+            TriggerDescription = description;
             _source = new WeakReference(source);
-            _valueDescription = valueDescription;
-            _unit = unit;
+            TriggerValueDescription = valueDescription;
+            Unit = unit;
             UpdateId();
 
-            TriggerBindingDescription = "when" + (Device.Length > 0 ? " " + _device : "") + (_name.Length > 0 ? " " + _name + " on" : "") + " " + Source.Name +  " " + _verb;
+            // NOTE: we do not subscribe to name changes on our target object, because we don't know when to unregister, as there is
+            // no explicit cleanup of action objects
+            RecalculateName();
+        }
+
+        public void RecalculateName()
+        {
+            string sourceName = _source.IsAlive ? Source.Name : "";
+            TriggerBindingDescription = "when" + (Device.Length > 0 ? " " + _device : "") +
+                                        (_name.Length > 0 ? " " + _name + " on" : "") + " " + sourceName + " " +
+                                        TriggerVerb;
         }
 
         private void UpdateId()
         {
-            _id = "";
-            if (_device != null && _device.Length > 0)
+            TriggerID = "";
+            if (!string.IsNullOrEmpty(_device))
             {
-                _id += _device + ".";
+                TriggerID += _device + ".";
             }
-            if (_name != null && _name.Length > 0)
+
+            if (!string.IsNullOrEmpty(_name))
             {
-                _id += _name + ".";
+                TriggerID += _name + ".";
             }
-            _id += _verb;
+
+            TriggerID += TriggerVerb;
         }
 
         #region IBindingElement Members
 
-        public object Context { get { return _context.Target; } set { _context = new WeakReference(value); } }
+        public object Context
+        {
+            get => _context.Target;
+            set => _context = new WeakReference(value);
+        }
 
-        public HeliosObject Owner { get { return _source.Target as HeliosObject; } }
+        public HeliosObject Owner => _source.Target as HeliosObject;
 
-        public string Device { get { return _device; } set { _device = value; UpdateId(); } }
+        public string Device
+        {
+            get => _device;
+            set
+            {
+                _device = value;
+                UpdateId();
+            }
+        }
 
         public string Name
         {
-            get { return _name; }
+            get => _name;
 
             set
             {
@@ -88,9 +110,9 @@ namespace GadrocsWorkshop.Helios
                 UpdateId();
             }
         }
-       
 
-        public BindingValueUnit Unit { get { return _unit; } }
+
+        public BindingValueUnit Unit { get; }
 
         #endregion
 
@@ -101,85 +123,35 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public event HeliosTriggerHandler TriggerFired;
 
-        public string TriggerID
-        {
-            get
-            {
-                return _id;
-            }
-        }
+        public string TriggerID { get; private set; }
 
-        public string TriggerName
-        {
-            get
-            {
-                return _name + " " + _verb;
-            }
-        }
+        public string TriggerName => _name + " " + TriggerVerb;
 
         /// <summary>
         /// Name used to identify this binding trigger. (Ex: Button 1 Pressed)
         /// </summary>
-        public string TriggerVerb
-        {
-            get
-            {
-                return _verb;
-            }
-        }
+        public string TriggerVerb { get; }
 
         /// <summary>
         /// Gets the description of when this trigger is fired.
         /// </summary>
-        public string TriggerDescription
-        {
-            get
-            {
-                return _description;
-            }
-
-            set
-            {
-                _description = value;
-            }
-        }
+        public string TriggerDescription { get; set; }
 
         /// <summary>
         /// Gets the description of the contents of the supplied value when this trigger is fired.
         /// </summary>
-        public string TriggerValueDescription
-        {
-            get
-            {
-                return _valueDescription;
-            }
-        }
+        public string TriggerValueDescription { get; }
 
         /// <summary>
         /// Source object which fires this trigger.
         /// </summary>
-        public HeliosObject Source
-        {
-            get
-            {
-                return _source.Target as HeliosObject;
-            }
-        }
+        public HeliosObject Source => _source.Target as HeliosObject;
 
-        public bool TriggerSuppliesValue
-        {
-            get
-            {
-                return !((_unit == null) || (_unit.Equals(BindingValueUnits.NoValue)));
-            }
-        }
+        public bool TriggerSuppliesValue => !((Unit == null) || (Unit.Equals(BindingValueUnits.NoValue)));
 
         public string TriggerBindingDescription
         {
-            get
-            {
-                return _bindingDescription;
-            }
+            get => _bindingDescription;
             set
             {
                 if ((_bindingDescription == null && value != null)
@@ -191,18 +163,13 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-
         #endregion
 
         public void FireTrigger(BindingValue value)
         {
             HeliosTriggerEventArgs args = new HeliosTriggerEventArgs(value);
             HeliosTriggerHandler handler = TriggerFired;
-            if (handler != null)
-            {
-                handler.Invoke(this, args);
-            }
+            handler?.Invoke(this, args);
         }
-
     }
 }

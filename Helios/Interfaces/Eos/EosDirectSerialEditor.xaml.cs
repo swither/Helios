@@ -36,7 +36,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Eos
             EosDirectSerial serialInterface = newInterface as EosDirectSerial;
             if (serialInterface != null)
             {
-                serialInterface.Dispatcher = Dispatcher;
                 serialInterface.ResponseReceived += Bus_ResponseReceived;
             }
         }

@@ -552,14 +552,12 @@ namespace GadrocsWorkshop.Helios
         {
             StringBuilder sb = new StringBuilder("");
 
-            HeliosInterface refInterface = refObject as HeliosInterface;
-            if (refInterface != null)
+            if (refObject is HeliosInterface refInterface)
             {
                 sb.Append("Interface;;");
             }
 
-            HeliosVisual refControl = refObject as HeliosVisual;
-            if (refControl != null)
+            if (refObject is HeliosVisual refControl)
             {
                 sb.Append("Visual;");
                 sb.Append(GetVisualPath(refControl));
@@ -572,6 +570,25 @@ namespace GadrocsWorkshop.Helios
             sb.Append("");
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// generate a very expensive descriptive path to the object provided, not usable for
+        /// binding or any functionality other than UI and logging
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string GetDescriptivePath(HeliosObject source)
+        {
+            switch (source)
+            {
+                case HeliosVisual visual:
+                    return GetVisualPath(visual);
+                case HeliosInterface heliosInterface:
+                    return $"Interface '{heliosInterface.Name}'";
+                default:
+                    return $"{source.TypeIdentifier} '{source.Name}'";
+            }
         }
 
         public static string GetVisualPath(HeliosVisual visual)

@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -53,5 +54,16 @@ namespace GadrocsWorkshop.Helios
         /// This value must never be used for generation of IDs that could end up in XML.
         /// </summary>
         string DeviceInUserInterface { get; }
+    }
+
+    public interface INamedBindingElement
+    {
+        /// <summary>
+        /// called to recalculate the descriptive name of the binding based on its source or target
+        /// name having possibly changed
+        ///
+        /// not guaranteed to be called, so it must only be used for descriptive names, not for functional binding
+        /// </summary>
+        void RecalculateName();
     }
 }

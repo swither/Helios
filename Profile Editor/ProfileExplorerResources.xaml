@@ -138,7 +138,12 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="-4" Command="ApplicationCommands.Delete" CommandParameter="{Binding ContextItem}" Template="{StaticResource DeleteButton}" VerticalAlignment="Top" />
-                <TextBlock Grid.Column="1" Foreground="Black" Text="{Binding Path=ContextItem.InputDescription}" Margin="4,0,0,0" FontSize="10" TextWrapping="Wrap" VerticalAlignment="Top"  />
+                <TextBlock Grid.Column="1" Foreground="Black" 
+                           Text="{Binding Path=ContextItem.InputDescription}" 
+                           ToolTip="{Binding Path=ContextItem.LongDescription}" 
+                           ToolTipService.ShowDuration="15000" 
+                           Margin="4,0,0,0" FontSize="10" 
+                           TextWrapping="Wrap" VerticalAlignment="Top"  />
             </Grid>
         </Border>
         <HierarchicalDataTemplate.Triggers>
@@ -156,7 +161,12 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="0" Command="ApplicationCommands.Delete" CommandParameter="{Binding ContextItem}" Template="{StaticResource DeleteButton}" VerticalAlignment="Top" />
-                <TextBlock Grid.Column="1" Foreground="Black" Text="{Binding Path=ContextItem.OutputDescription}" Margin="4,0,0,0" FontSize="10" TextWrapping="Wrap" VerticalAlignment="Top" />
+                <TextBlock Grid.Column="1" Foreground="Black" 
+                           Text="{Binding Path=ContextItem.OutputDescription}" 
+                           ToolTip="{Binding Path=ContextItem.LongDescription}" 
+                           ToolTipService.ShowDuration="15000" 
+                           Margin="4,0,0,0" FontSize="10" 
+                           TextWrapping="Wrap" VerticalAlignment="Top"/>
             </Grid>
         </Border>
         <HierarchicalDataTemplate.Triggers>

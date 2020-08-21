@@ -14,14 +14,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
-using System.Timers;
+using System.Windows.Threading;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 using GadrocsWorkshop.Helios.Windows;
+
+namespace GadrocsWorkshop.Helios.UDPInterface
+{
+    using GadrocsWorkshop.Helios;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Timers;
 
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
@@ -386,9 +391,17 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         private readonly MainThreadAccess _main = new MainThreadAccess();
         private readonly SharedAccess _shared = new SharedAccess();
 
+        /// <summary>
+        /// we cache the main application dispatcher, because we use it
+        /// on every received packet, so let's not keep fetching it from
+        /// Application.Current
+        /// </summary>
+        private readonly Dispatcher _dispatcher;
+
         public BaseUDPInterface(string name)
             : base(name)
         {
+            _dispatcher = System.Windows.Application.Current.Dispatcher;
             _socketDataCallback = OnDataReceived;
 
             _main.ConnectedTrigger = new HeliosTrigger(this, "", "", "Connected", "Fired on DCS connect.");
@@ -605,7 +618,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     ParseReceived(context);
 
                     // pass ownership to main thread, process synchronously
-                    Dispatcher.Invoke(() => DispatchReceived(context),
+                    _dispatcher.Invoke(() => DispatchReceived(context),
                         System.Windows.Threading.DispatcherPriority.Send);
                 }
 
@@ -925,7 +938,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         private void OnStartupTimer(object source, ElapsedEventArgs e)
         {
             // sync notify
-            Dispatcher.Invoke(OnDelayedStartup);
+            _dispatcher.Invoke(new Action(OnDelayedStartup));
         }
 
         private void OnDelayedStartup()

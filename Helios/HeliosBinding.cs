@@ -14,6 +14,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.Threading;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -22,7 +23,13 @@ namespace GadrocsWorkshop.Helios
     using NLua;
     using NLua.Exceptions;
 
-    public class HeliosBinding : NotificationObject
+    /// <summary>
+    /// A binding from a source trigger to a target action
+    ///
+    /// This object implements its own view model, so there are several properties that only exist for the
+    /// benefit of the user interface and logging.
+    /// </summary>
+    public class HeliosBinding : NotificationObject, INamedBindingElement
     {
         private Lua _luaInterpreter;
 
@@ -42,6 +49,7 @@ namespace GadrocsWorkshop.Helios
         private bool _valid = false;
         private string _error = "";
 
+
 #if DEVELOPMENT_CONFIGURATION
         private static Object _sTracingSource = null;
         private static bool _sTraceLoop = false;
@@ -51,58 +59,84 @@ namespace GadrocsWorkshop.Helios
         // deserialization constructor
         public HeliosBinding()
         {
+            // no code in base
         }
 
         // constructor used when building new binding
         public HeliosBinding(IBindingTrigger trigger, IBindingAction action)
+            : this()
         {
             Trigger = trigger;
             Action = action;
         }
 
+        public void RecalculateName()
+        {
+            // just signal all these out of date and let any clients generate the full versions they care about
+            OnPropertyChanged("Description", null, Description, false);
+            OnPropertyChanged("InputDescription", null, Description, false);
+            OnPropertyChanged("OutputDescription", null, Description, false);
+            OnPropertyChanged("LongDescription", null, Description, false);
+        }
+
         #region Properties
+
+        public string Description => IsValid
+            ? ReplaceValue(Trigger.TriggerBindingDescription + " " + Action.ActionBindingDescription)
+            : ErrorMessage;
+
+        public string InputDescription => IsValid
+            ? ReplaceValue(Action.ActionInputBindingDescription + " " + Trigger.TriggerBindingDescription)
+            : ErrorMessage;
+
+        public string OutputDescription => IsValid
+            ? ReplaceValue(Action.ActionBindingDescription)
+            : ErrorMessage;
+
+        /// <summary>
+        /// extremely expensive generator for a string that the caller is expected to cache and only read again when we signal a property change
+        /// </summary>
+        public string LongDescription=> IsValid
+            ? $"binding from '{SourcePath}' to '{TargetPath}'"
+            : ErrorMessage;
 
         public string ErrorMessage
         {
-            get
-            {
-                return _error;
-            }
+            get => _error;
             private set
             {
-                if ((_error == null && value != null)
-                    || (_error != null && !_error.Equals(value)))
+                if ((_error != null || value == null) && (_error == null || _error.Equals(value)))
                 {
-                    string oldValue = _error;
-                    _error = value;
-                    OnPropertyChanged("ErrorMessage", oldValue, value, false);
+                    return;
                 }
+
+                string oldValue = _error;
+                _error = value;
+                OnPropertyChanged("ErrorMessage", oldValue, value, false);
+                RecalculateName();
             }
         }
 
         public bool IsValid
         {
-            get
-            {
-                return _valid;
-            }
+            get => _valid;
             private set
             {
-                if (!_valid.Equals(value))
+                if (_valid.Equals(value))
                 {
-                    bool oldValue = _valid;
-                    _valid = value;
-                    OnPropertyChanged("IsValid", oldValue, value, false);
+                    return;
                 }
+
+                bool oldValue = _valid;
+                _valid = value;
+                OnPropertyChanged("IsValid", oldValue, value, false);
+                RecalculateName();
             }
         }
 
         public bool IsActive
         {
-            get
-            {
-                return _active;
-            }
+            get => _active;
             set
             {
                 if (!_active.Equals(value))
@@ -114,20 +148,11 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public bool HasCondition
-        {
-            get
-            {
-                return Condition != null && Condition.Trim().Length > 0;
-            }
-        }
+        public bool HasCondition => Condition != null && Condition.Trim().Length > 0;
 
         public string Condition
         {
-            get
-            {
-                return _condition;
-            }
+            get => _condition;
             set
             {
                 if ((_condition == null && value != null)
@@ -142,10 +167,7 @@ namespace GadrocsWorkshop.Helios
 
         public BindingValueSources ValueSource
         {
-            get
-            {
-                return _valueSource;
-            }
+            get => _valueSource;
             set
             {
                 if (!_valueSource.Equals(value))
@@ -154,19 +176,14 @@ namespace GadrocsWorkshop.Helios
                     _valueSource = value;
                     Validate();
                     OnPropertyChanged("ValueSource", oldValue, value, true);
-                    OnPropertyChanged("Description", null, Description, false);
-                    OnPropertyChanged("InputDescription", null, Description, false);
-                    OnPropertyChanged("OutputDescription", null, Description, false);
+                    RecalculateName();
                 }
             }
         }
 
         public string Value
         {
-            get
-            {
-                return _value.StringValue;
-            }
+            get => _value.StringValue;
             set
             {
                 if ((_value == null && value != null)
@@ -178,9 +195,7 @@ namespace GadrocsWorkshop.Helios
                     Validate();
                     if (ValueSource == BindingValueSources.StaticValue)
                     {
-                        OnPropertyChanged("Description", null, Description, false);
-                        OnPropertyChanged("InputDescription", null, Description, false);
-                        OnPropertyChanged("OutputDescription", null, Description, false);
+                        RecalculateName();
                     }
                 }
             }
@@ -188,10 +203,7 @@ namespace GadrocsWorkshop.Helios
 
         public IBindingTrigger Trigger
         {
-            get
-            {
-                return _triggerSource.Target as IBindingTrigger;
-            }
+            get => _triggerSource.Target as IBindingTrigger;
             set
             {
                 IBindingTrigger oldTrigger = _triggerSource.Target as IBindingTrigger;
@@ -205,19 +217,14 @@ namespace GadrocsWorkshop.Helios
                     Validate();
 
                     OnPropertyChanged("Trigger", oldTrigger, value, true);
-                    OnPropertyChanged("Description", null, Description, false);
-                    OnPropertyChanged("InputDescription", null, Description, false);
-                    OnPropertyChanged("OutputDescription", null, Description, false);
+                    RecalculateName();
                 }
             }
         }
 
         public IBindingAction Action
         {
-            get
-            {
-                return _targetAction.Target as IBindingAction;
-            }
+            get => _targetAction.Target as IBindingAction;
             set
             {
                 IBindingAction oldAction = _targetAction.Target as IBindingAction;
@@ -231,19 +238,14 @@ namespace GadrocsWorkshop.Helios
                     Validate();
 
                     OnPropertyChanged("Action", oldAction, value, true);
-                    OnPropertyChanged("Description", null, Description, false);
-                    OnPropertyChanged("InputDescription", null, Description, false);
-                    OnPropertyChanged("OutputDescription", null, Description, false);
+                    RecalculateName();
                 }
             }
         }
 
         public bool BypassCascadingTriggers
         {
-            get
-            {
-                return _bypassTargetTriggers;
-            }
+            get => _bypassTargetTriggers;
             set
             {
                 if (!_bypassTargetTriggers.Equals(value))
@@ -251,51 +253,6 @@ namespace GadrocsWorkshop.Helios
                     bool oldBypass = _bypassTargetTriggers;
                     _bypassTargetTriggers = value;
                     OnPropertyChanged("BypassCascadingTriggers", oldBypass, value, true);
-                }
-            }
-        }
-
-        public string Description
-        {
-            get
-            {
-                if (IsValid)
-                {
-                    return ReplaceValue(Trigger.TriggerBindingDescription + " " + Action.ActionBindingDescription);
-                }
-                else
-                {
-                    return ErrorMessage;
-                }
-            }
-        }
-
-        public string InputDescription
-        {
-            get
-            {
-                if (IsValid)
-                {
-                    return ReplaceValue(Action.ActionInputBindingDescription + " " + Trigger.TriggerBindingDescription);
-                }
-                else
-                {
-                    return ErrorMessage;
-                }
-            }
-        }
-
-        public string OutputDescription
-        {
-            get
-            {
-                if (IsValid)
-                {
-                    return ReplaceValue(Action.ActionBindingDescription);
-                }
-                else
-                {
-                    return ErrorMessage;
                 }
             }
         }
@@ -436,11 +393,17 @@ namespace GadrocsWorkshop.Helios
 
             public override string ToString()
             {
-                string source = _binding.Trigger?.Source != null ? HeliosSerializer.GetReferenceName(_binding.Trigger.Source) : "null";
-                string target = _binding.Action?.Target != null ? HeliosSerializer.GetReferenceName(_binding.Action.Target) : "null";
-                return $"{_binding.Description} (from '{source}' to '{target}')";
+                return $"{_binding.Description} (from '{_binding.SourcePath}' to '{_binding.TargetPath}')";
             }
         }
+
+        private string SourcePath => Trigger?.Source != null
+            ? HeliosSerializer.GetDescriptivePath(Trigger.Source)
+            : "null";
+
+        private string TargetPath => Action?.Target != null 
+            ? HeliosSerializer.GetDescriptivePath(Action.Target) 
+            : "null";
 
         public void OnTriggerFired(object trigger, HeliosTriggerEventArgs e)
         {
@@ -570,13 +533,8 @@ namespace GadrocsWorkshop.Helios
                         }
                         break;
                 }
-                if(Action.Target.Dispatcher == null) {
-                    // if we don't have a dispatcher, likely because this is a composite device, we use the dispatcher object from the owner of the trigger
-                    // this seems to work and was the best I could come up with, but it is very much a kludge because I could not work out the proper way
-                    // to have a dispatcher created for Actions
-                    Action.Target.Dispatcher = Trigger.Owner.Dispatcher;
-                }
-                Action.Target.Dispatcher.Invoke(new Action<BindingValue, bool>(Execute), value, BypassCascadingTriggers);
+
+                Action.ExecuteAction(value, BypassCascadingTriggers);
             }
             catch (Exception ex)
             {
@@ -584,11 +542,6 @@ namespace GadrocsWorkshop.Helios
             }
             _executing = false;
             EndTraceTriggerFired();
-        }
-
-        private void Execute(BindingValue value, bool bypass)
-        {
-            Action.ExecuteAction(value, bypass);
         }
 
         public void Clone(HeliosBinding binding)
@@ -654,7 +607,7 @@ namespace GadrocsWorkshop.Helios
                 }
             }
 
-            if (ErrorMessage != null && ErrorMessage.Length > 0)
+            if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 IsValid = true;
                 ErrorMessage = "";

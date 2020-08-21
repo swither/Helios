@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,70 +14,77 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+
 namespace GadrocsWorkshop.Helios
 {
-    using System;
-
     /// <summary>
     /// Delegate to handle action invocation.
     /// </summary>
-    /// <param name="source">Action which has been invoked.</param>
-    /// <param name="value">Value passed to the action.</param>
-    /// <param name="bypassCascadingTriggers">True if cacsading triggers shoudl be surpressed.</param>
     public delegate void HeliosActionHandler(object action, HeliosActionEventArgs e);
 
-    public class HeliosAction : NotificationObject, IBindingAction
+    /// <summary>
+    /// a bindable target-only property that can be attached to a Helios object
+    /// </summary>
+    public class HeliosAction : NotificationObject, IBindingAction, INamedBindingElement
     {
-        private string _id;
         private string _device;
         private string _name;
-        private string _verb;
-        private string _description;
-        private string _valueDescription;
-        private BindingValueUnit _unit;
         private string _bindingDescription = "";
         private string _inputBindingDescription = "";
 
-        private WeakReference _target = new WeakReference(null);
+        private readonly WeakReference _target;
         private WeakReference _context = new WeakReference(null);
-
-        private Type _editor = null;
 
         public HeliosAction(HeliosObject target, string device, string name, string verb, string description)
             : this(target, device, name, verb, description, "", BindingValueUnits.NoValue)
         {
+            // no additional code
         }
 
-        public HeliosAction(HeliosObject target, string device, string name, string verb, string description, string valueDescription, BindingValueUnit unit)
+        public HeliosAction(HeliosObject target, string device, string name, string verb, string description,
+            string valueDescription, BindingValueUnit unit)
         {
             _device = device;
             _target = new WeakReference(target);
             _name = name;
-            _verb = verb;
-            _description = description;
-            _valueDescription = valueDescription;
-            _unit = unit;
+            ActionVerb = verb;
+            ActionDescription = description;
+            ActionValueDescription = valueDescription;
+            Unit = unit;
 
             UpdateId();
 
-            ActionBindingDescription = _verb + (Device.Length > 0 ? " " + _device : "") + (_name.Length > 0 ? " " + _name + " on" : "") + " " + Target.Name + ( ActionRequiresValue ? " to %value%" : "");
             if (ActionRequiresValue)
             {
                 ActionInputBindingDescription = "to %value%";
             }
-         }
+
+            // NOTE: we do not subscribe to name changes on our target object, because we don't know when to unregister, as there is
+            // no explicit cleanup of action objects
+            RecalculateName();
+        }
+
+        public void RecalculateName()
+        {
+            string targetName = _target.IsAlive ? Target.Name : "";
+            ActionBindingDescription = ActionVerb + (Device.Length > 0 ? " " + _device : "") +
+                                       (_name.Length > 0 ? " " + _name + " on" : "") + " " + targetName +
+                                       (ActionRequiresValue ? " to %value%" : "");
+        }
 
         private void UpdateId()
         {
-            _id = "";
-            if (_device != null && _device.Length > 0)
+            ActionID = "";
+            if (!string.IsNullOrEmpty(_device))
             {
-                _id += _device + ".";
+                ActionID += _device + ".";
             }
-            _id += _verb;
-            if (_name != null && _name.Length > 0)
+
+            ActionID += ActionVerb;
+            if (!string.IsNullOrEmpty(_name))
             {
-                _id += "." + _name;
+                ActionID += "." + _name;
             }
         }
 
@@ -84,15 +92,27 @@ namespace GadrocsWorkshop.Helios
 
         #region IBindingElement Members
 
-        public object Context { get { return _context.Target; } set { _context = new WeakReference(value); } }
+        public object Context
+        {
+            get => _context.Target;
+            set => _context = new WeakReference(value);
+        }
 
-        public HeliosObject Owner { get { return _target.Target as HeliosObject; } }
+        public HeliosObject Owner => Target;
 
-        public string Device { get { return _device; } set { _device = value; UpdateId(); } }
+        public string Device
+        {
+            get => _device;
+            set
+            {
+                _device = value;
+                UpdateId();
+            }
+        }
 
         public string Name
         {
-            get { return _name; }
+            get => _name;
             set
             {
                 string oldValue = _name;
@@ -102,42 +122,39 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public BindingValueUnit Unit { get { return _unit; } }
+        public BindingValueUnit Unit { get; }
 
         #endregion
 
         #region IBindingAction Members
 
-        public string ActionID { get { return _id; } }
+        public string ActionID { get; private set; }
 
-        public string ActionName { get { return _verb + " " + _name; } }
+        public string ActionName => ActionVerb + " " + _name;
 
         /// <summary>
         /// Name used to identify this binding action. (Ex: Press Button 1)
         /// </summary>
-        public string ActionVerb { get { return _verb; } }
+        public string ActionVerb { get; }
 
         /// <summary>
         /// Target object which this action acts on.
         /// </summary>
-        public HeliosObject Target { get { return _target.Target as HeliosObject; } }
+        public HeliosObject Target => _target.Target as HeliosObject;
 
         /// <summary>
         /// Short description of what this action does.
         /// </summary>
-        public string ActionDescription { get { return _description; } }
+        public string ActionDescription { get; }
 
         /// <summary>
         /// Description of the valid values that this action accepts.
         /// </summary>
-        public string ActionValueDescription { get { return _valueDescription; } }
+        public string ActionValueDescription { get; }
 
         public string ActionBindingDescription
         {
-            get
-            {
-                return _bindingDescription;
-            }
+            get => _bindingDescription;
             set
             {
                 if ((_bindingDescription == null && value != null)
@@ -151,10 +168,7 @@ namespace GadrocsWorkshop.Helios
 
         public string ActionInputBindingDescription
         {
-            get
-            {
-                return _inputBindingDescription;
-            }
+            get => _inputBindingDescription;
             set
             {
                 if ((_inputBindingDescription == null && value != null)
@@ -166,13 +180,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public bool ActionRequiresValue
-        {
-            get
-            {
-                return !((_unit == null) || (_unit.Equals(BindingValueUnits.NoValue)));
-            }
-        }
+        public bool ActionRequiresValue => !((Unit == null) || (Unit.Equals(BindingValueUnits.NoValue)));
 
         /// <summary>
         /// Executes this action.
@@ -183,17 +191,10 @@ namespace GadrocsWorkshop.Helios
         {
             HeliosActionEventArgs args = new HeliosActionEventArgs(value, bypassCascadingTriggers);
             HeliosActionHandler handler = Execute;
-            if (handler != null)
-            {
-                handler.Invoke(this, args);
-            }
+            handler?.Invoke(this, args);
         }
 
-        public Type ValueEditorType
-        {
-            get { return _editor; }
-            set { _editor = value; }
-        }
+        public Type ValueEditorType { get; set; } = null;
 
         #endregion
     }

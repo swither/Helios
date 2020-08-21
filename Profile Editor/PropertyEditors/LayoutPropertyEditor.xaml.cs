@@ -28,6 +28,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.PropertyEditors
     [HeliosPropertyEditor("*", "hply")]
     public partial class LayoutPropertyEditor : HeliosPropertyEditor, IDataErrorInfo
     {
+        /// <summary>
+        /// if true, we are currently reinitializing everything while attaching to the control, so changes are not from UI
+        /// </summary>
+        protected bool _loading;
+
         public LayoutPropertyEditor()
         {
             InitializeComponent();
@@ -65,10 +70,24 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.PropertyEditors
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
+            // do not cascade
+            if (_loading)
+            {
+                return;
+            }
+
             if (e.Property == ControlProperty)
             {
-                VisualName = Control.Name;
-                LoadControlTypeName();
+                _loading = true;
+                try
+                {
+                    VisualName = Control.Name;
+                    LoadControlTypeName();
+                }
+                finally
+                {
+                    _loading = false;
+                }
             }
 
             if (e.Property == VisualNameProperty)

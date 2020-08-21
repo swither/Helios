@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,58 +14,56 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using GadrocsWorkshop.Helios.Windows.Controls;
+
 namespace GadrocsWorkshop.Helios
 {
-    using System;
-
-    using GadrocsWorkshop.Helios.Windows.Controls;
-
-    public class HeliosValue : NotificationObject, IBindingAction, IBindingTrigger, IHeliosValue
+    public class HeliosValue : NotificationObject, IBindingAction, IBindingTrigger, IHeliosValue, INamedBindingElement
     {
         private string _device;
         private string _name;
-        private string _description;
-        private string _valueDescription;
-        private BindingValueUnit _unit;
 
-        private WeakReference _owner = new WeakReference(null);
+        private readonly WeakReference _owner;
         private WeakReference _context = new WeakReference(null);
 
-        private BindingValue _value;
-
-        private string _id;
-        private string _actionId;
-        private string _triggerId;
-
-        private Type _editor = typeof(TextStaticEditor);
-
-        public HeliosValue(HeliosObject owner, BindingValue initialValue, string device, string name, string description, string valueDescription, BindingValueUnit unit)
+        public HeliosValue(HeliosObject owner, BindingValue initialValue, string device, string name,
+            string description, string valueDescription, BindingValueUnit unit)
         {
             _device = device;
             _name = name;
-            _description = description;
-            _valueDescription = valueDescription;
+            ActionDescription = description;
+            ActionValueDescription = valueDescription;
             _owner = new WeakReference(owner);
-            _value = initialValue;
-            _unit = unit;
+            Value = initialValue;
+            Unit = unit;
 
             UpdateId();
+            RecalculateName();
+        }
+
+        public void RecalculateName()
+        {
+            string ownerName = _owner.IsAlive ? Owner.Name : "";
+            ActionBindingDescription = "set " + (Device.Length > 0 ? _device + " " : "") + _name + " on " +
+                                       ownerName + " to  %value%";
         }
 
         private void UpdateId()
         {
-            _id = "";
-            _actionId = "";
-            _triggerId = "";
-            if (_device != null && _device.Length > 0)
+            ValueID = "";
+            ActionID = "";
+            TriggerID = "";
+            if (!string.IsNullOrEmpty(_device))
             {
-                _id += _device + ".";
-                _actionId += _device + ".";
-                _triggerId += _device + ".";
+                ValueID += _device + ".";
+                ActionID += _device + ".";
+                TriggerID += _device + ".";
             }
-            _triggerId += _name + ".changed";
-            _actionId += "set." + _name;
-            _id += _name;
+
+            TriggerID += _name + ".changed";
+            ActionID += "set." + _name;
+            ValueID += _name;
         }
 
         /// <summary>
@@ -76,10 +75,7 @@ namespace GadrocsWorkshop.Helios
         {
             HeliosTriggerEventArgs args = new HeliosTriggerEventArgs(value);
             HeliosTriggerHandler handler = TriggerFired;
-            if (handler != null)
-            {
-                handler.Invoke(this, args);
-            }
+            handler?.Invoke(this, args);
         }
 
         /// <summary>
@@ -89,10 +85,10 @@ namespace GadrocsWorkshop.Helios
         /// <param name="bypassCascadingTriggers">True if bindings should not trigger further triggers.</param>
         public void SetValue(BindingValue value, bool bypassCascadingTriggers)
         {
-            if ((_value == null && value != null)
-                || (_value != null && !_value.Equals(value)))
+            if ((Value == null && value != null)
+                || (Value != null && !Value.Equals(value)))
             {
-                _value = value;
+                Value = value;
                 if (!bypassCascadingTriggers)
                 {
                     OnFireTrigger(value);
@@ -102,54 +98,40 @@ namespace GadrocsWorkshop.Helios
 
         #region IHeliosValue Members
 
-        public string ValueID
-        {
-            get
-            {
-                return _id;
-            }
-        }
+        public string ValueID { get; private set; }
 
-        public BindingValue Value
-        {
-            get
-            {
-                return _value;
-            }
-        }
+        public BindingValue Value { get; private set; }
 
         public string ValueDescription
         {
-            get
-            {
-                return _valueDescription;
-            }
+            get => ActionValueDescription;
             set
             {
-                if ((_valueDescription == null && value != null)
-                    || (_valueDescription != null && !_valueDescription.Equals(value)))
+                if ((ActionValueDescription == null && value != null)
+                    || (ActionValueDescription != null && !ActionValueDescription.Equals(value)))
                 {
-                    string oldValue = _valueDescription;
-                    _valueDescription = value;
+                    string oldValue = ActionValueDescription;
+                    ActionValueDescription = value;
                     OnPropertyChanged("ValueDescription", oldValue, value, false);
                 }
             }
         }
-    
+
         #endregion
 
         #region IBindingElement Members
 
-        public object Context { get { return _context.Target; } set { _context = new WeakReference(value); } }
+        public object Context
+        {
+            get => _context.Target;
+            set => _context = new WeakReference(value);
+        }
 
-        public HeliosObject Owner { get { return _owner.Target as HeliosObject; } }
+        public HeliosObject Owner => _owner.Target as HeliosObject;
 
         public string Device
         {
-            get
-            {
-                return _device;
-            }
+            get => _device;
             set
             {
                 _device = value;
@@ -157,14 +139,11 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public string Name 
-        { 
-            get 
-            { 
-                return _name; 
-            }
- 
-            set 
+        public string Name
+        {
+            get => _name;
+
+            set
             {
                 string oldValue = _name;
                 _name = value;
@@ -172,67 +151,25 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public BindingValueUnit Unit { get { return _unit; } }
+        public BindingValueUnit Unit { get; }
 
         #endregion
 
         #region IBindingAction Members
 
-        public string ActionID
-        {
-            get
-            {
-                return _actionId;
-            }
-        }
+        public string ActionID { get; private set; }
 
-        public string ActionName
-        {
-            get
-            {
-                return "set " + _name;
-            }
-        }
+        public string ActionName => "set " + _name;
 
-        public string ActionVerb
-        {
-            get
-            {
-                return "set";
-            }
-        }
+        public string ActionVerb => "set";
 
-        public HeliosObject Target
-        {
-            get
-            {
-                return _owner.Target as HeliosObject;
-            }
-        }
+        public HeliosObject Target => _owner.Target as HeliosObject;
 
-        public string ActionDescription
-        {
-            get
-            {
-                return _description;
-            }
-        }
+        public string ActionDescription { get; }
 
-        public bool ActionRequiresValue
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool ActionRequiresValue => true;
 
-        public string ActionValueDescription
-        {
-            get
-            {
-                return _valueDescription;
-            }
-        }
+        public string ActionValueDescription { get; private set; }
 
         /// <summary>
         /// Executes this action.
@@ -243,27 +180,14 @@ namespace GadrocsWorkshop.Helios
         {
             HeliosActionEventArgs args = new HeliosActionEventArgs(value, bypassCascadingTriggers);
             HeliosActionHandler handler = Execute;
-            if (handler != null)
-            {
-                handler.Invoke(this, args);
-            }
+            handler?.Invoke(this, args);
         }
 
-        public Type ValueEditorType
-        {
-            get { return _editor; }
-            set { _editor = value; }
-        }
+        public Type ValueEditorType { get; set; } = typeof(TextStaticEditor);
 
-        public string ActionBindingDescription
-        {
-            get { return "set " + (Device.Length > 0 ? _device + " " : "") + _name + " on " + Owner.Name +  " to  %value%"; }
-        }
+        public string ActionBindingDescription { get; private set; }
 
-        public string ActionInputBindingDescription
-        {
-            get { return "to %value%"; }
-        }
+        public string ActionInputBindingDescription => "to %value%";
 
         #endregion
 
@@ -271,66 +195,22 @@ namespace GadrocsWorkshop.Helios
 
         public event HeliosTriggerHandler TriggerFired;
 
-        public string TriggerID
-        {
-            get
-            {
-                return _triggerId;
-            }
-        }
+        public string TriggerID { get; private set; }
 
-        public string TriggerName
-        {
-            get
-            {
-                return _name + " changed";
-            }
-        }
+        public string TriggerName => _name + " changed";
 
-        public string TriggerVerb
-        {
-            get
-            {
-                return "changed";
-            }
-        }
+        public string TriggerVerb => "changed";
 
-        public string TriggerDescription
-        {
-            get
-            {
-                return _description;
-            }
-        }
+        public string TriggerDescription => ActionDescription;
 
-        public string TriggerValueDescription
-        {
-            get
-            {
-                return _valueDescription;
-            }
-        }
+        public string TriggerValueDescription => ActionValueDescription;
 
-        public HeliosObject Source
-        {
-            get
-            {
-                return _owner.Target as HeliosObject;
-            }
-        }
+        public HeliosObject Source => _owner.Target as HeliosObject;
 
-        public bool TriggerSuppliesValue
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool TriggerSuppliesValue => true;
 
-        public string TriggerBindingDescription
-        {
-            get { return "when" + (Device.Length > 0 ? " " + _device + " " : " ") + _name + " on " + Owner.Name +  " changes";  }
-        }
+        public string TriggerBindingDescription => "when" + (Device.Length > 0 ? " " + _device + " " : " ") + _name +
+                                                   " on " + Owner.Name + " changes";
 
         #endregion
     }

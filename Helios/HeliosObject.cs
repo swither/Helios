@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -12,6 +13,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System.Linq;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -29,15 +32,7 @@ namespace GadrocsWorkshop.Helios
         private string _name;
         private bool _designMode;
         private WeakReference _profile = new WeakReference(null);
-        private Dispatcher _dispatcher;
-        private int _bypassCount = 0;
-
-        private HeliosActionCollection _actions = new HeliosActionCollection();
-        private HeliosTriggerCollection _triggers = new HeliosTriggerCollection();
-        private HeliosValueCollection _values = new HeliosValueCollection();
-
-        private HeliosBindingCollection _inputs = new HeliosBindingCollection();
-        private HeliosBindingCollection _outputs = new HeliosBindingCollection();
+        private int _bypassCount;
 #if DEVELOPMENT_CONFIGURATION
         internal bool _tracing = false;
 #endif
@@ -45,23 +40,17 @@ namespace GadrocsWorkshop.Helios
         protected HeliosObject(string name)
         {
             _name = name;
-            _outputs.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Outputs_CollectionChanged);
+            OutputBindings.CollectionChanged += Outputs_CollectionChanged;
         }
 
         #region Properties
-
-        public Dispatcher Dispatcher
-        {
-            get { return _dispatcher; }
-            set { _dispatcher = value; }
-        }
 
         /// <summary>
         /// Returns the profile that this visual is a part of
         /// </summary>
         public HeliosProfile Profile
         {
-            get { return _profile.Target as HeliosProfile; }
+            get => _profile.Target as HeliosProfile;
             set 
             {
                 HeliosProfile oldProfile = _profile.Target as HeliosProfile;
@@ -79,92 +68,65 @@ namespace GadrocsWorkshop.Helios
         /// Gets the flag to bypass trigger events.  When this
         /// is set to true no triggers should be fired.
         /// </summary>
-        public bool BypassTriggers
-        {
-            get
-            {
-                return (_bypassCount > 0 || DesignMode);
-            }
-        }
+        public bool BypassTriggers => (_bypassCount > 0 || DesignMode);
 
         /// <summary>
         /// Returns the internal collection of Action descriptors used
         /// to respond to the ActionDescriptors.  Sub-classes should
         /// use this to populate their actions.
         /// </summary>
-        public HeliosActionCollection Actions
-        {
-            get
-            {
-                return _actions;
-            }
-        }
+        public HeliosActionCollection Actions { get; } = new HeliosActionCollection();
 
         /// <summary>
         /// Returns the internal collection of Trigger descriptors used
         /// to respond to the ActionDescriptors.  Sub-classes should
         /// use this to populate their actions.
         /// </summary>
-        public HeliosTriggerCollection Triggers
-        {
-            get
-            {
-                return _triggers;
-            }
-        }
+        public HeliosTriggerCollection Triggers { get; } = new HeliosTriggerCollection();
 
         /// <summary>
         /// Returns the internal collection of Value descriptors used
         /// to respond to the ActionDescriptors.  Sub-classes should
         /// use this to populate their actions.
         /// </summary>
-        public HeliosValueCollection Values
-        {
-            get
-            {
-                return _values;
-            }
-        }
+        public HeliosValueCollection Values { get; } = new HeliosValueCollection();
 
         /// <summary>
         /// Collection of bindings which execute actions of this object.
         /// </summary>
-        public HeliosBindingCollection InputBindings
-        {
-            get
-            {
-                return _inputs;
-            }
-        }
+        public HeliosBindingCollection InputBindings { get; } = new HeliosBindingCollection();
 
         /// <summary>
         /// Collection of bindings which this object triggers.
         /// </summary>
-        public HeliosBindingCollection OutputBindings
-        {
-            get
-            {
-                return _outputs;
-            }
-        }
+        public HeliosBindingCollection OutputBindings { get; } = new HeliosBindingCollection();
 
         /// <summary>
         /// Name of this profile object.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _name;
-            }
+            get => _name;
             set
             {
-                if ((_name == null && value != null)
-                    || (_name != null && !_name.Equals(value)))
+                if ((_name != null || value == null) && (_name == null || _name.Equals(value)))
                 {
-                    string oldName = _name;
-                    _name = value;
-                    OnPropertyChanged("Name", oldName, value, true);
+                    return;
+                }
+
+                string oldName = _name;
+                _name = value;
+                OnPropertyChanged("Name", oldName, value, true);
+
+                // manually push name change to our actions, triggers, values, and bindings, because we don't want to
+                // reference them all with event handler subscriptions
+                foreach (INamedBindingElement element in Actions.OfType<INamedBindingElement>()
+                    .Concat(Triggers.OfType<INamedBindingElement>())
+                    .Concat(Values.OfType<INamedBindingElement>())
+                    .Concat(InputBindings)
+                    .Concat(OutputBindings))
+                {
+                    element.RecalculateName();
                 }
             }
         }
@@ -174,10 +136,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public virtual bool DesignMode
         {
-            get
-            {
-                return _designMode || (Profile != null && Profile.DesignMode);
-            }
+            get => _designMode || (Profile != null && Profile.DesignMode);
             set
             {
                 if (_designMode != value)
@@ -215,22 +174,24 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public virtual void ReconnectBindings()
         {
-            if (Profile != null)
+            if (Profile == null)
             {
-                foreach (HeliosBinding binding in OutputBindings)
-                {
-                    if (binding.Action.Target.Profile == Profile && !binding.Action.Target.InputBindings.Contains(binding))
-                    {
-                        binding.Action.Target.InputBindings.Add(binding);
-                    }
-                }
+                return;
+            }
 
-                foreach (HeliosBinding binding in InputBindings)
+            foreach (HeliosBinding binding in OutputBindings)
+            {
+                if (binding.Action.Target.Profile == Profile && !binding.Action.Target.InputBindings.Contains(binding))
                 {
-                    if (binding.Trigger.Source.Profile == Profile && !binding.Trigger.Source.OutputBindings.Contains(binding))
-                    {
-                        binding.Trigger.Source.OutputBindings.Add(binding);
-                    }
+                    binding.Action.Target.InputBindings.Add(binding);
+                }
+            }
+
+            foreach (HeliosBinding binding in InputBindings)
+            {
+                if (binding.Trigger.Source.Profile == Profile && !binding.Trigger.Source.OutputBindings.Contains(binding))
+                {
+                    binding.Trigger.Source.OutputBindings.Add(binding);
                 }
             }
         }
@@ -293,8 +254,8 @@ namespace GadrocsWorkshop.Helios
             {
                 foreach (HeliosBinding binding in e.NewItems)
                 {
-                    binding.Trigger.TriggerFired -= new HeliosTriggerHandler(binding.OnTriggerFired);
-                    binding.Trigger.TriggerFired += new HeliosTriggerHandler(binding.OnTriggerFired);
+                    binding.Trigger.TriggerFired -= binding.OnTriggerFired;
+                    binding.Trigger.TriggerFired += binding.OnTriggerFired;
                 }
             }
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove ||
@@ -302,7 +263,7 @@ namespace GadrocsWorkshop.Helios
             {
                 foreach (HeliosBinding binding in e.OldItems)
                 {
-                    binding.Trigger.TriggerFired -= new HeliosTriggerHandler(binding.OnTriggerFired);
+                    binding.Trigger.TriggerFired -= binding.OnTriggerFired;
                 }
             }
         }

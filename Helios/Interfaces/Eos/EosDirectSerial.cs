@@ -313,7 +313,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Eos
                     OnPropertyChanged("IsScanning", !value, value, false);
                     if (!_scanning)
                     {
-                        Dispatcher.BeginInvoke(new Action(ResetBoardList));
+                        System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(ResetBoardList));
                     }
                 }
             }

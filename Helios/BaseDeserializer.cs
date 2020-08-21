@@ -44,7 +44,6 @@ namespace GadrocsWorkshop.Helios
                         Logger.Error("Ignoring control not supported by this version of Helios: " + typeId);
                         return null;
                     }
-                    visual.Dispatcher = Application.Current.Dispatcher;
                     return visual;
 
                 case "Interface":
@@ -64,7 +63,6 @@ namespace GadrocsWorkshop.Helios
                                 // create a dummy interface that preserves the XML and ignores but allows writing of all bindings
                                 UnsupportedInterface dummy = new UnsupportedInterface();
                                 dummy.RepresentedTypeIdentifier = typeId;
-                                dummy.Dispatcher = Application.Current.Dispatcher;
 
                                 // record interface type alias, but don't install it yet because we may read more instances of this interface
                                 // alias will allow resolution of the unsupported class to our dummy for use in places where we try to instantiate the editor
@@ -78,12 +76,7 @@ namespace GadrocsWorkshop.Helios
                                 throw new ArgumentOutOfRangeException(nameof(ifUnsupported), ifUnsupported, null);
                         }
                     }
-                    HeliosInterface heliosInterface = descriptor.CreateInstance();
-                    if (heliosInterface != null)
-                    {
-                        heliosInterface.Dispatcher = Application.Current.Dispatcher;
-                    }                    
-                    return heliosInterface;
+                    return descriptor.CreateInstance();
 
                 case "Binding":
                     return new HeliosBinding();
