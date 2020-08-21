@@ -14,19 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Windows.Threading;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 using GadrocsWorkshop.Helios.Windows;
-
-namespace GadrocsWorkshop.Helios.UDPInterface
-{
-    using GadrocsWorkshop.Helios;
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Net;
-    using System.Net.Sockets;
-    using System.Timers;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
+using System.Timers;
+using System.Windows.Threading;
 
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
@@ -938,7 +934,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         private void OnStartupTimer(object source, ElapsedEventArgs e)
         {
             // sync notify
-            _dispatcher.Invoke(new Action(OnDelayedStartup));
+            _dispatcher.Invoke(OnDelayedStartup);
         }
 
         private void OnDelayedStartup()
