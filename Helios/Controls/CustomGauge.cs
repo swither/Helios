@@ -341,6 +341,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private void SetRotation()
         {
             KnobRotation = InitialRotation + (((Value - MinValue) / (MaxValue - MinValue)) * RotationTravel);
+            OnDisplayUpdate();
         }
 
         public override void Reset()
