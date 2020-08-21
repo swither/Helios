@@ -27,6 +27,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private double _rotation;
         private readonly Brush _scopeBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
         private readonly Pen _scopePen;
+        private CustomGauge _gauge;
 
         public CustomGaugeRenderer()
         {
@@ -35,6 +36,12 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            if (_gauge != null)
+            {
+                // update for this frame
+                _rotation = _gauge.KnobRotation;
+            }
+
             if (_backgroundImage != null)
             {
                 drawingContext.DrawImage(_backgroundImage, _backgroundRect);
@@ -61,7 +68,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRefresh()
         {
-            if (!(Visual is CustomGauge customGauge))
+            _gauge = Visual as CustomGauge;
+            if (_gauge == null)
             {
                 _rotation = 0d;
                 _image = null;
@@ -69,27 +77,26 @@ namespace GadrocsWorkshop.Helios.Controls
                 return;
             }
 
-            _rotation = customGauge.KnobRotation;
-            _imageRect.X = customGauge.Width * customGauge.Needle_PosX;
-            _imageRect.Y = customGauge.Height * customGauge.Needle_PosY;
-            _image = ConfigManager.ImageManager.LoadImage(customGauge.KnobImage) ?? ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png");
+            _imageRect.X = _gauge.Width * _gauge.Needle_PosX;
+            _imageRect.Y = _gauge.Height * _gauge.Needle_PosY;
+            _image = ConfigManager.ImageManager.LoadImage(_gauge.KnobImage) ?? ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png");
 
             // WARNING: needle scale applied to image but not rotation point
-            _imageRect.Height = customGauge.Height * customGauge.Needle_Scale;
+            _imageRect.Height = _gauge.Height * _gauge.Needle_Scale;
             _imageRect.Width = _image.Width * (_imageRect.Height / _image.Height); // uniform image based on Height
 
             // calculate rotation point
-            _center = new Point(customGauge.Width * customGauge.Needle_PivotX,
-                customGauge.Height * customGauge.Needle_PivotY); 
-            _nextToCenter = new Point((customGauge.Width * customGauge.Needle_PivotX) + 1,
-                customGauge.Height * customGauge.Needle_PivotY);
+            _center = new Point(_gauge.Width * _gauge.Needle_PivotX,
+                _gauge.Height * _gauge.Needle_PivotY); 
+            _nextToCenter = new Point((_gauge.Width * _gauge.Needle_PivotX) + 1,
+                _gauge.Height * _gauge.Needle_PivotY);
 
             // optional background plate image
-            if (!string.IsNullOrWhiteSpace(customGauge.BGPlateImage))
+            if (!string.IsNullOrWhiteSpace(_gauge.BGPlateImage))
             {
-                _backgroundRect.Width = customGauge.Width;
-                _backgroundRect.Height = customGauge.Height;
-                _backgroundImage = ConfigManager.ImageManager.LoadImage(customGauge.BGPlateImage);
+                _backgroundRect.Width = _gauge.Width;
+                _backgroundRect.Height = _gauge.Height;
+                _backgroundImage = ConfigManager.ImageManager.LoadImage(_gauge.BGPlateImage);
             }
             else
             {
