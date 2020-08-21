@@ -144,7 +144,11 @@ function helios_impl.LuaExportBeforeNextFrame()
 
     if helios_private.driver.processExports ~= nil then
         -- let driver do it
-        helios_private.driver.processExports(LoGetSelfData())
+        local selfData = LoGetSelfData()
+        helios_private.driver.processExports(selfData)
+        if helios_private.driver.processSimulatorData ~= nil then
+            helios_private.driver.processSimulatorData(selfData)
+        end
     else
         local mainPanelDevice = GetDevice(0)
         if type(mainPanelDevice) == "table" then
@@ -153,6 +157,9 @@ function helios_impl.LuaExportBeforeNextFrame()
             if updateHigh then
                 helios_private.processArguments(mainPanelDevice, helios_private.driver.everyFrameArguments)
                 helios_private.driver.processHighImportance(mainPanelDevice)
+                if helios_private.driver.processSimulatorData ~= nil then
+                    helios_private.driver.processSimulatorData(LoGetSelfData())
+                end
             end
 
             if updateLow then
@@ -267,16 +274,26 @@ function helios.parseIndication(indicator_id)
 end
 
 -- send a value if its value has changed, batching sends
-function helios.send(id, value)
+--
+-- "format" is an optional format string to apply to the value 
+-- (the formatted value is checked to see if it changed, not the raw one)
+--
+function helios.send(id, value, format)
+    if value == nil or id == nil then
+        return
+    end
     if string.len(value) > 3 and value == string.sub("-0.00000000", 1, string.len(value)) then
         value = value:sub(2)
+    end
+    if format ~= nil then
+        -- the FC2 functions for example expect formatting to be done by the send function
+        value = string.format(format, value)
     end
     if helios_private.state.lastData[id] == nil or helios_private.state.lastData[id] ~= value then
         helios_private.doSend(id, value)
         helios_private.state.lastData[id] = value
     end
 end
-
 -- currently active vehicle/airplane
 function helios.selfName()
     local info = LoGetSelfData()
@@ -311,10 +328,10 @@ function helios_impl.init()
     -- event time 'now' as told to us by DCS
     helios_private.clock = 0
 
-    -- init with empty driver that exports nothing by default
+    -- init with empty driver that exports nothing by default (not even simulator data)
     -- NOTE: also clears state
     log.write("HELIOS.EXPORT", log.DEBUG, "installing empty driver")
-    helios_impl.installDriver(helios_private.createDriver(), "")
+    helios_impl.installDriver(helios_private.createDriver(), "", "")
 
     -- start service
     helios_private.clientSocket = helios_private.socketLibrary.udp()
@@ -353,6 +370,8 @@ function helios_impl.dispatchCommand(command)
         local selfName = helios.selfName()
         if driverType == 'HeliosDriver16' then
             selfName = helios_impl.loadDriver(driverType)
+        elseif driverType == 'TelemetryOnly' then
+            selfName = helios_impl.loadTelemetryDriver()
         elseif driverType == 'CaptZeenModule1' then
             selfName = helios_impl.loadModule(driverType)
         end
@@ -376,6 +395,52 @@ function helios_impl.dispatchCommand(command)
     end
 end
 
+-- default simulator/common data export function to be used by all drivers unless
+-- replaced via driver.processSimulatorData in the driver code
+--
+-- NOTE: not installed in CZ modules
+function helios_private.processSimulatorData(selfData)
+	local altBar = LoGetAltitudeAboveSeaLevel()
+	local altRad = LoGetAltitudeAboveGroundLevel()
+	local pitch, bank, yaw = LoGetADIPitchBankYaw()
+	local vvi = LoGetVerticalVelocity()
+	local ias = LoGetIndicatedAirSpeed()
+	local aoa = LoGetAngleOfAttack()
+	
+	local glide = LoGetGlideDeviation()
+	local side = LoGetSideDeviation()
+
+	-- send this best effort (NOTE: helios.send will filter nil values)
+	if (pitch ~= nil and bank ~= nil and yaw ~= nil) then
+        -- these are text keys, which is very slightly slower but avoids collision with modules and drivers
+		helios.send("T1", math.floor(0.5 + pitch * 57.3), "%d")
+		helios.send("T2", math.floor(0.5 + bank * 57.3), "%d")
+		helios.send("T3", math.floor(0.5 + yaw * 57.3), "%d")
+		helios.send("T4", altBar, "%.1f")
+		helios.send("T5", altRad, "%.1f")
+		helios.send("T13", vvi, "%.1f")
+		helios.send("T14", ias, "%.1f")
+		helios.send("T16", aoa, "%.2f")
+		helios.send("T17", glide, "%.1f")
+		helios.send("T18", side, "%.1f")
+		helios.send("T19", LoGetMachNumber(), "%.2f")
+		local accel = LoGetAccelerationUnits()
+		if accel ~= nil then
+			helios.send("T20", accel.y or 0.0, "%.1f")
+		end
+	end
+end
+
+-- load an export driver that only provides the basic telemetry data included
+-- in all drivers
+function helios_impl.loadTelemetryDriver()
+    local driver = helios_private.createDriver()
+    driver.processSimulatorData = helios_private.processSimulatorData
+    local currentSelfName = helios.selfName()
+    helios_impl.installDriver(driver, "TelemetryOnly", currentSelfName)
+    return currentSelfName
+end
+
 -- load an export driver of the given type for the current vehicle
 -- the driverType is currently always HeliosDriver16
 function helios_impl.loadDriver(driverType)
@@ -383,55 +448,66 @@ function helios_impl.loadDriver(driverType)
         error("missing driver type in request to load driver; program error")
     end
 
+    -- create default driver which will be used as-is if we don't find any driver
+    -- or otherwise will be merged with the contents of the driver file
     local driver = helios_private.createDriver()
-    local newDriverType = ""
+    driver.processSimulatorData = helios_private.processSimulatorData
+
+    local newDriverType = "TelemetryOnly"
     local success, result
 
     -- check if request is allowed
     local currentSelfName = helios.selfName()
     log.write("HELIOS.EXPORT", log.DEBUG, string.format("attempt to load driver for '%s'", currentSelfName))
-    if helios_impl.driverType == "HeliosDriver16" then
+    if helios_impl.driverType == "HeliosDriver16" and helios_impl.vehicle == currentSelfName then
         -- do nothing
         log.write("HELIOS.EXPORT", log.INFO, string.format("driver '%s' for '%s' is already loaded", helios_impl.driverType, currentSelfName))
         return currentSelfName
     elseif currentSelfName == "" then
-        -- no vehicle, use empty driver
-        helios_impl.installDriver(driver, newDriverType)
+        -- no vehicle, use default driver
+        helios_impl.installDriver(driver, newDriverType, currentSelfName)
         return currentSelfName
-    else
-        -- now try to load specific driver
-        local driverPath = string.format("%sScripts\\Helios\\Drivers\\%s.lua", lfs.writedir(), currentSelfName)
+    end
 
-        -- check for normal case of driver not existing
-        if (lfs.attributes(driverPath) == nil) then
-            log.write("HELIOS.EXPORT", log.INFO, string.format("no driver for '%s' found", currentSelfName))
-            helios_impl.installDriver(driver, newDriverType)
-            return currentSelfName
-        end
-    
+    -- now try to load specific driver
+    local driverPath = string.format("%sScripts\\Helios\\Drivers\\%s.lua", lfs.writedir(), currentSelfName)
+    local defaulted = false
+
+    if (lfs.attributes(driverPath) ~= nil) then
         -- try to load
         success, result = pcall(dofile, driverPath)
-
-        -- check result for nil, since driver may not have returned anything
-        if success and result == nil then
-            success = false
-            result = string.format("driver %s did not return a driver object; incompatible with this export script",
-                driverPath
-            )
-        end
-
-        -- sanity check, make sure driver is for correct selfName, since race condition is possible
-        if success and result.selfName ~= currentSelfName then
-            success = false
-            result = string.format("driver %s is for incorrect vehicle '%s'",
-                driverPath,
-                result.selfName
-            )
+    else
+        local defaultDriverPath = string.format("%sScripts\\Helios\\Drivers\\Default.lua", lfs.writedir())
+        if (lfs.attributes(defaultDriverPath) ~= nil) then
+            defaulted = true
+            success, result = pcall(dofile, defaultDriverPath)
+        else
+            -- normal case of driver not existing; no alert
+            log.write("HELIOS.EXPORT", log.INFO, string.format("no driver for '%s' found", currentSelfName))
+            helios_impl.installDriver(driver, newDriverType, currentSelfName)
+            return currentSelfName                
         end
     end
 
+    -- check result for nil, since driver may not have returned anything
+    if success and result == nil then
+        success = false
+        result = string.format("driver %s did not return a driver object; incompatible with this export script",
+            driverPath
+        )
+    end
+
+    -- sanity check, make sure driver is for correct selfName, since race condition is possible
+    if success and result.selfName ~= currentSelfName and not defaulted then
+        success = false
+        result = string.format("driver %s is for incorrect vehicle '%s'",
+            driverPath,
+            result.selfName
+        )
+    end
+
     if success then
-        -- merge, replacing anything specified by the driver
+        -- merge, replacing anything specified by the loaded file
         for k, v in pairs(result) do
             driver[k] = v
         end
@@ -449,7 +525,7 @@ function helios_impl.loadDriver(driverType)
     end
 
     -- actually install the driver
-    helios_impl.installDriver(driver, newDriverType)
+    helios_impl.installDriver(driver, newDriverType, currentSelfName)
     return currentSelfName
 end
 
@@ -476,7 +552,7 @@ function helios_impl.loadModule(driverType)
         local driver = helios_impl.createModuleDriver(currentSelfName, moduleName)
         if driver ~= nil then
             log.write("HELIOS.EXPORT", log.DEBUG, string.format("loaded module for '%s' from '%s'", currentSelfName, modulePath))
-            helios_impl.installDriver(driver, driverType)
+            helios_impl.installDriver(driver, driverType, currentSelfName)
         end
         -- if we fail, we just leave the previous driver installed
     else
@@ -485,7 +561,7 @@ function helios_impl.loadModule(driverType)
     return currentSelfName
 end
 
-function helios_impl.installDriver(driver, driverType)
+function helios_impl.installDriver(driver, driverType, vehicle)
     -- shut down any existing driver
     if helios_private.driver ~= nil then
         helios_private.driver.unload()
@@ -497,6 +573,7 @@ function helios_impl.installDriver(driver, driverType)
     helios_private.driver = driver
     helios_impl.driverType = driverType
     helios_impl.moduleName = driver.moduleName
+    helios_impl.vehicle = vehicle
 
     -- drop any remmaining data and mark all values as dirty
     helios_private.clearState()
@@ -668,7 +745,7 @@ function helios_private.sendAlert(message)
     if helios_private.clock >= helios_private.state.nextAlert then
         helios_private.state.nextAlert = helios_private.clock + helios_impl.alertInterval
         log.write('HELIOS EXPORT', log.DEBUG, string.format("sending error alert message at event time %f", helios_private.clock))
-        helios_private.doSend("ALERT_MESSAGE", (helios_private.mimeLibrary.b64(message)):gsub("=","+"))
+        helios_private.doSend("ALERT_MESSAGE", (helios_private.mimeLibrary.b64(message)):gsub("=","-"))
         helios_private.flush()
     end
 end

@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             "A-10A", "F-15C", "F-16A", "J-11A", "MiG-29A", "MiG-29G", "MiG-29S", "Su-25", "Su-25T", "Su-27", "Su-33",
 
             // our special aircraft codes
-            "DCSGeneric", "FC2"
+            "DCSGeneric", "FC2", "FC3"
         };
 
         public DCSVehicleImpersonation(DCSInterface dcsInterface)

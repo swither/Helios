@@ -825,7 +825,7 @@
     <Compile Include="Interfaces\DCS\Common\SwitchPosition.cs" />
     <Compile Include="Interfaces\DCS\Common\Text.cs" />
     <Compile Include="Interfaces\DCS\FA18C\Functions\Altimeter.cs" />
-    <Compile Include="Interfaces\DCS\FC2\FC2Interface.cs" />
+    <Compile Include="Interfaces\DCS\FC2\FC3Interface.cs" />
     <Compile Include="Interfaces\DCS\Generic\GenericInterface.cs" />
     <Compile Include="Interfaces\DCS\M2000C\M2000CInterface.cs" />
     <Compile Include="Interfaces\DCS\Mi8Simple\Mi8SimpleInterface.cs" />

@@ -1,60 +1,44 @@
 local fc2_flags = {}
 
 function driver.processExports(selfData)
-	local altBar = LoGetAltitudeAboveSeaLevel()
-	local altRad = LoGetAltitudeAboveGroundLevel()
-	local pitch, bank, yaw = LoGetADIPitchBankYaw()
+	-- Flaming Cliffs model only
 	local engine = LoGetEngineInfo()
 	local hsi    = LoGetControlPanel_HSI()
-	local vvi = LoGetVerticalVelocity()
-	local ias = LoGetIndicatedAirSpeed()
 	local route = LoGetRoute()
-	local aoa = LoGetAngleOfAttack()
-	local distanceToWay = 999
-	
-	local glide = LoGetGlideDeviation()
-	local side = LoGetSideDeviation()
 
-	if (selfData ~= nil) then
+	if pitch == nil then
+		-- this is a problem for FC, because this is the primary source of instrument data
+		-- log only once
+		if fc2_flags.pbyLogged == nil then
+			log.write("HELIOS.EXPORT", log.DEBUG, "FC2 export received nothing from LoGetADIPitchBankYaw; cannot send telemetry")
+			fc2_flags.pbyLogged = true
+		end
+	end
+	if hsi ~= nil then
+		helios.send(6, 360 - ((hsi.ADF or hsi.ADF_raw or 0.0) * 57.3), "%.2f")
+		helios.send(7, 360 - ((hsi.RMI or hsi.RMI_raw or 0.0) * 57.3), "%.2f")
+		helios.send(8, ((hsi.Compass or selfData.Heading or 0.0) * 57.3), "%.2f")
+	end
+	if engine ~= nil and engine.RPM ~= nil then
+		helios.send(9, engine.RPM.left, "%.2f")
+		helios.send(10, engine.RPM.right, "%.2f")
+	end
+	if engine ~= nil and engine.Temperature ~= nil then
+		helios.send(11, engine.Temperature.left, "%.2f")
+		helios.send(12, engine.Temperature.right, "%.2f")
+	end
+	if selfData ~= nil then
+		local distanceToWay = 999
 		local myLoc = LoGeoCoordinatesToLoCoordinates(selfData.LatLongAlt.Long, selfData.LatLongAlt.Lat)
-		distanceToWay = math.sqrt((myLoc.x - route.goto_point.world_point.x)^2 + (myLoc.y -  route.goto_point.world_point.y)^2)
+		if myLoc ~= nil and route ~= nil and route.goto_point ~= nil and route.goto_point.world_point ~= nil then
+			distanceToWay = math.sqrt((myLoc.x - route.goto_point.world_point.x)^2 + (myLoc.y -  route.goto_point.world_point.y)^2)
+			helios.send(15, distanceToWay, "%.2f")
+		end
 	else
 		-- log only once
 		if (fc2_flags.selfLogged == nil) then
 			log.write("HELIOS.EXPORT", log.DEBUG, "FC2 export received nothing from LoGetSelfData; cannot send location")
 			fc2_flags.selfLogged = true
-		end
-	end
-
-	if (pitch ~= nill) then
-		helios.send(1, pitch * 57.3, "%.2f")
-		helios.send(2, bank * 57.3, "%.2f")
-		helios.send(3, yaw * 57.3, "%.2f")
-		helios.send(4, altBar, "%.2f")
-		helios.send(5, altRad, "%.2f")
-		helios.send(6, 360 - ((hsi.ADF or hsi.ADF_raw or 0.0) * 57.3), "%.2f")
-		helios.send(7, 360 - ((hsi.RMI or hsi.RMI_raw or 0.0) * 57.3), "%.2f")
-		helios.send(8, ((hsi.Compass or selfData.Heading or 0.0) * 57.3), "%.2f")
-		helios.send(9, engine.RPM.left, "%.2f")
-		helios.send(10, engine.RPM.right, "%.2f")
-		helios.send(11, engine.Temperature.left, "%.2f")
-		helios.send(12, engine.Temperature.right, "%.2f")
-		helios.send(13, vvi, "%.2f")
-		helios.send(14, ias, "%.2f")
-		helios.send(15, distanceToWay, "%.2f")
-		helios.send(16, aoa, "%.2f")
-		helios.send(17, glide, "%.2f")
-		helios.send(18, side, "%.2f")
-		helios.send(19, LoGetMachNumber() or 0.0, "%.2f")
-		local accel = LoGetAccelerationUnits()
-		if accel ~= nil then
-			helios.send(20, accel.y or 0.0, "%.2f")
-		end
-	else
-		-- log only once
-		if (fc2_flags.pbyLogged == nil) then
-			log.write("HELIOS.EXPORT", log.DEBUG, "FC2 export received nothing from LoGetADIPitchBankYaw; cannot send telemetry")
-			fc2_flags.pbyLogged = true
 		end
 	end
 end

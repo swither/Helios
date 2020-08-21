@@ -44,7 +44,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         // Description attribute: display string for use in UI
         [Description("Export module provided by Capt Zeen (Version 1)")]
-        CaptZeenModule1
+        CaptZeenModule1,
+
+        // Description attribute: display string for use in UI
+        [Description("Basic telemetry only")]
+        TelemetryOnly
     }
 
     /// <summary>
@@ -66,6 +70,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             public string ModuleLocation { get; internal set; }
             public bool CanBeAttached { get; internal set; }
             public bool CanGenerate { get; internal set; }
+
+            /// <summary>
+            /// inferences
+            /// </summary>
+            public bool IsAllowedToWrite => CanGenerate || CanBeAttached;
         }
 
         public readonly Dictionary<DCSExportModuleFormat, ModuleFormatInfo> ExportModuleFormatInfo =
@@ -88,6 +97,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         DisplayName = "export module provided by Capt Zeen (Version 1)",
                         ModuleLocation = "Mods",
                         CanBeAttached = true,
+                        CanGenerate = false
+                    }
+                },
+                {
+                    DCSExportModuleFormat.TelemetryOnly, new ModuleFormatInfo
+                    {
+                        // capitalization for use in a sentence (not at the beginning)
+                        DisplayName = "basic telemetry driver",
+                        // WARNING: although we don't generate drivers, this must be a real path because we use this setting to create the directory tree
+                        ModuleLocation = "Drivers",
+                        CanBeAttached = false,
                         CanGenerate = false
                     }
                 }
@@ -535,7 +555,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     });
 
-                    if (string.IsNullOrEmpty(_exportModuleText))
+                    if (string.IsNullOrEmpty(_exportModuleText) || !moduleInfo.IsAllowedToWrite)
                     {
                         // not embedded module, we are done
                         continue;

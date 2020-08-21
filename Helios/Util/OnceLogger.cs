@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Util
             _logger = logger;
         }
 
-        internal void InfoOnceUnlessDebugging(string loggingId, string message, params object[] args)
+        public void InfoOnceUnlessDebugging(string loggingId, string message, params object[] args)
         {
             if (_logger.IsDebugEnabled)
             {
@@ -36,17 +36,23 @@ namespace GadrocsWorkshop.Helios.Util
                 _logger.Info(message, args);
                 return;
             }
-
-            if (_idsLogged.Add(loggingId))
-            {
-                // log once if logging at info
-                List<object> modifiedArgs = new List<object> {"InfoOnce"};
-                modifiedArgs.AddRange(args);
-                _logger.Info($"{{Once}} {message}", modifiedArgs.ToArray());
-            }
+            InfoOnce(loggingId, message, args);
         }
 
-        internal void WarnOnceUnlessDebugging(string loggingId, string message, params object[] args)
+        public void InfoOnce(string loggingId, string message, params object[] args)
+        {
+            if (!_idsLogged.Add(loggingId))
+            {
+                // log only once
+                return;
+            }
+
+            List<object> modifiedArgs = new List<object> { "InfoOnce" };
+            modifiedArgs.AddRange(args);
+            _logger.Info($"{{Once}} {message}", modifiedArgs.ToArray());
+        }
+
+        public void WarnOnceUnlessDebugging(string loggingId, string message, params object[] args)
         {
             if (_logger.IsDebugEnabled)
             {
@@ -55,13 +61,15 @@ namespace GadrocsWorkshop.Helios.Util
                 return;
             }
 
-            if (_idsLogged.Add(loggingId))
+            if (!_idsLogged.Add(loggingId))
             {
-                // log once if logging at info
-                List<object> modifiedArgs = new List<object> {"WarnOnce"};
-                modifiedArgs.AddRange(args);
-                _logger.Warn($"{{Once}} {message}", modifiedArgs.ToArray());
+                // log only once
+                return;
             }
+
+            List<object> modifiedArgs = new List<object> {"WarnOnce"};
+            modifiedArgs.AddRange(args);
+            _logger.Warn($"{{Once}} {message}", modifiedArgs.ToArray());
         }
     }
 }

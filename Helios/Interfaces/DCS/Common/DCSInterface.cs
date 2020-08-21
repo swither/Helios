@@ -99,7 +99,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             NetworkTriggerValue alertMessage = new NetworkTriggerValue(this, "ALERT_MESSAGE", "AlertMessage",
                 "Export driver running on DCS.", "Most recent alert message");
             AddFunction(alertMessage);
-            alertMessage.ValueReceived += AlertMessage_ValueReceived; ;
+            alertMessage.ValueReceived += AlertMessage_ValueReceived;
+
+            // handle basic telemetry data included in all drivers now
+            Functions.Add(new NetworkValue(this, "T1", "Simulator Telemetry", "pitch", "Current pitch of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
+            Functions.Add(new NetworkValue(this, "T2", "Simulator Telemetry", "bank", "Current bank of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
+            Functions.Add(new NetworkValue(this, "T3", "Simulator Telemetry", "yaw", "Current yaw of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
+            Functions.Add(new NetworkValue(this, "T4", "Simulator Telemetry", "barometric altitude", "Current barometric altitude the aircraft.", "", BindingValueUnits.Meters, null));
+            Functions.Add(new NetworkValue(this, "T5", "Simulator Telemetry", "radar altitude", "Current radar altitude of the aircraft.", "", BindingValueUnits.Meters, null));
+            Functions.Add(new NetworkValue(this, "T13", "Simulator Telemetry", "vertical velocity", "Current vertical velocity of the aircraft.", "", BindingValueUnits.MetersPerSecond, null));
+            Functions.Add(new NetworkValue(this, "T14", "Simulator Telemetry", "indicated airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.MetersPerSecond, null));
+            Functions.Add(new NetworkValue(this, "T16", "Simulator Telemetry", "angle of attack", "Current angle of attack for the aircraft.", "", BindingValueUnits.Degrees, null));
+            Functions.Add(new NetworkValue(this, "T17", "Simulator Telemetry", "glide deviation", "ILS Glide Deviation", "-1 to 1", BindingValueUnits.Numeric, null));
+            Functions.Add(new NetworkValue(this, "T18", "Simulator Telemetry", "side deviation", "ILS Side Deiviation", "-1 to 1", BindingValueUnits.Numeric, null));
+            Functions.Add(new NetworkValue(this, "T19", "Simulator Telemetry", "Mach", "Current Mach number", "number in M", BindingValueUnits.Numeric, null));
+            Functions.Add(new NetworkValue(this, "T20", "Simulator Telemetry", "G", "Current G load", "number in g", BindingValueUnits.Numeric, null));
         }
 
         #region Events
@@ -143,7 +157,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public DCSVehicleImpersonation VehicleImpersonation => _vehicleImpersonation;
 
-        public string StatusName =>
+        public virtual string StatusName =>
             ImpersonatedVehicleName != null ? $"{Name} impersonating {ImpersonatedVehicleName}" : Name;
 
         /// <summary>
@@ -311,8 +325,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             try
             {
-                // payload is Base64 with "+" used as padding instead of "=" to avoid Helios protocol
-                string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text.Replace('+', '=')));
+                // payload is Base64 with "-" used as padding instead of "=" to avoid Helios protocol
+                string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text.Replace('-', '=')));
                 Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
             }
             catch (FormatException ex)
@@ -351,6 +365,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _remoteModuleFormat = null;
         }
 
+        private static readonly OnceLogger UnknownIdLogger = new OnceLogger(Logger);
+
         protected override void OnUnrecognizedFunction(string id, string value)
         {
             // don't log this as warning because our protocol includes times when we 
@@ -358,7 +374,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             if (IsSynchronized)
             {
                 // we think we are synchronized
-                Logger.Info($"DCS interface received data for missing function (Key=\"{id}\"); we think export is running module of type '{_remoteModuleFormat}'");
+                // only log this once per ID so we don't flood
+                UnknownIdLogger.InfoOnce(id, $"DCS interface received data for missing function (Key=\"{id}\"); we think export is running module of type '{_remoteModuleFormat}'");
             }
         }
 
