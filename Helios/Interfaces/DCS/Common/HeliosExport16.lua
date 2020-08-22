@@ -418,6 +418,10 @@ function helios_private.processSimulatorData(selfData)
 		helios.send("T3", math.floor(0.5 + yaw * 57.3), "%d")
 		helios.send("T4", altBar, "%.1f")
 		helios.send("T5", altRad, "%.1f")
+        if math.abs(vvi) < 0.04 then
+            -- don't send +/- 0.0 while bouncing on the ground
+            vvi = 0.0
+        end
 		helios.send("T13", vvi, "%.1f")
 		helios.send("T14", ias, "%.1f")
 		helios.send("T16", aoa, "%.2f")
