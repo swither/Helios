@@ -705,10 +705,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
             AddFunction(new FlagValue(this, "243", "Fire Extinguishers", "Ventilator Fire Indicator", "Lit if a high temperature has been detected in the oil-coolers compartment."));
             AddFunction(new FlagValue(this, "244", "Fire Extinguishers", "Bottle 1 Indicator", "Lit when bottle 1 is charged and ready for use."));
             AddFunction(new FlagValue(this, "245", "Fire Extinguishers", "Bottle 2 Indicator", "Lit when bottle 2 is charged and ready for use."));
-            AddFunction(new PushButton(this, FIRE_EXTING_INTERFACE, BUTTON_11, "251", "Fire Extinguishers", "Test Indicator Group 1", "0.1", "0.0", null));
-            // Temporarily commenting out to avoid duplicates
-            // AddFunction(new PushButton(this, FIRE_EXTING_INTERFACE, BUTTON_12, "251", "Fire Extinguishers", "Test Indicator Group 2", "0.2", "0.0", null));
-            // AddFunction(new PushButton(this, FIRE_EXTING_INTERFACE, BUTTON_13, "251", "Fire Extinguishers", "Test Indicator Group 3", "0.3", "0.0", null));
+
+            // this is three valued momentary switch, with commands 3011, 3012, 3013, and argument 251 with values 0.0 (center), 0.1, 0.2, 0.3
+            AddFunction(new Switch(this, FIRE_EXTING_INTERFACE, "251", new []
+                {
+                    new SwitchPosition("0.1", "Group 1", "3011", "3011", "0.0"),
+                    new SwitchPosition("0.2", "Group 2", "3012", "3012", "0.0"),
+                    new SwitchPosition("0.3", "Group 3", "3013", "3013", "0.0"),
+                    new SwitchPosition("0.0", "Release", "3011")
+                },
+                "Fire Extinguishers", "Test Selector", "%.1f", false));
             #endregion
 
             // TODO Misc
