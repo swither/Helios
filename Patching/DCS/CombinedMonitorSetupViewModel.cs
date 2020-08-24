@@ -269,7 +269,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (!model.IsCurrentProfile)
                 {
                     model.Status = ViewportSetupFileStatus.NotGenerated;
-                    model.ProblemShortDescription = "does not have current viewport data";
+                    model.ProblemShortDescription = "needs configuration";
                     model.ProblemNarrative =
                         $"DCS Monitor Setup has to be configured in profile '{model.ProfileName}' before it can be combined";
                     return;
@@ -281,7 +281,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 if (model.Data.MonitorLayoutKey != Data.MonitorLayoutKey)
                 {
                     model.Status = ViewportSetupFileStatus.OutOfDate;
-                    model.ProblemShortDescription = "stored viewport data does not match monitor layout";
+                    model.ProblemShortDescription = "needs configuration for new monitor layout";
                     model.ProblemNarrative =
                         $"DCS Monitor Setup should be configured in profile '{model.ProfileName}' to adjust to the current monitor layout";
                     return;

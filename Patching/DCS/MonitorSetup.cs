@@ -203,11 +203,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             };
             _renderer = new MonitorSetupGenerator(this);
 
-            // recursively walk profile and track every visual
-            foreach (Monitor monitor in Profile.Monitors)
-            {
-                AddMonitor(monitor);
-            }
+            CreateShadowObjects();
 
             // we only update our models if the monitor layout matches
             _monitorsValid = Profile?.IsValidMonitorLayout ?? false;
@@ -218,6 +214,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // register for changes
             Profile.Monitors.CollectionChanged += Monitors_CollectionChanged;
             Profile.PropertyChanged += Profile_PropertyChanged;
+        }
+
+        private void CreateShadowObjects()
+        {
+            // recursively walk profile and track every visual
+            foreach (Monitor monitor in Profile.Monitors)
+            {
+                AddMonitor(monitor);
+            }
         }
 
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
@@ -236,15 +241,24 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _renderer?.Dispose();
             _renderer = null;
 
+            ClearShadowObjects();
+        }
+
+        private void ClearShadowObjects()
+        {
             // clean up shadow collections
             foreach (ShadowMonitor shadow in _monitors.Values)
             {
                 shadow.Dispose();
+                MonitorRemoved?.Invoke(this, new ShadowMonitorEventArgs(shadow));
             }
+
             foreach (ShadowVisual shadow in _viewports.Values)
             {
                 shadow.Dispose();
+                ViewportRemoved?.Invoke(this, new ShadowViewportEventArgs(shadow));
             }
+
             _monitors.Clear();
             _viewports.Clear();
         }
@@ -273,29 +287,29 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             shadow.Dispose();
         }
 
-        public void AddViewport(ShadowVisual viewport)
+        public void AddViewport(ShadowVisual shadowViewport)
         {
-            _viewports[viewport.Visual] = viewport;
-            ViewportAdded?.Invoke(this, new ShadowViewportEventArgs(viewport));
+            _viewports[shadowViewport.Visual] = shadowViewport;
+            ViewportAdded?.Invoke(this, new ShadowViewportEventArgs(shadowViewport));
 
             // update viewport count on hosting monitor
-            ShadowMonitor monitor = _monitors[viewport.Monitor];
+            ShadowMonitor monitor = _monitors[shadowViewport.Monitor];
             monitor.AddViewport();
 
-            viewport.ViewportChanged += Raw_ViewportChanged;
+            shadowViewport.ViewportChanged += Raw_ViewportChanged;
 
             // recalculate, delayed
             ScheduleGeometryChange();
         }
 
-        public void RemoveViewport(ShadowVisual viewport)
+        public void RemoveViewport(ShadowVisual shadowViewport)
         {
-            viewport.ViewportChanged -= Raw_ViewportChanged;
-            _viewports.Remove(viewport.Visual);
-            ViewportRemoved?.Invoke(this, new ShadowViewportEventArgs(viewport));
+            shadowViewport.ViewportChanged -= Raw_ViewportChanged;
+            _viewports.Remove(shadowViewport.Visual);
+            ViewportRemoved?.Invoke(this, new ShadowViewportEventArgs(shadowViewport));
 
             // update viewport count on hosting monitor
-            ShadowMonitor monitor = _monitors[viewport.Monitor];
+            ShadowMonitor monitor = _monitors[shadowViewport.Monitor];
             monitor.RemoveViewport();
 
             // recalculate, delayed
@@ -1070,10 +1084,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             // not volatile, only main thread access
             _monitorsValid = Profile?.IsValidMonitorLayout ?? false;
-            if (_monitorsValid)
+            if (!_monitorsValid)
             {
-                ScheduleGeometryChange();
+                return;
             }
+
+            // rebuild the entire shadow tree because monitors may have switched 
+            // identities due to their geometries being changed but the monitor
+            // object stayed the same (problem caused by 69f90d13)
+            ClearShadowObjects();
+            CreateShadowObjects();
+            ScheduleGeometryChange();
         }
 
         #endregion
