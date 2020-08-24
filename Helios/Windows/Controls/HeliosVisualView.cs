@@ -1,5 +1,6 @@
 //  Copyright 2014 Craig Courtney
-//    
+//  Copyright 2020 Helios Contributors
+
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -257,26 +258,20 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         private void OnResize()
         {
-            if (DisplayRotation)
-            {
-                LayoutTransform = Visual.Renderer.Transform;
-            }
-            else
-            {
-                LayoutTransform = null;
-            }
+            LayoutTransform = DisplayRotation ? Visual.Renderer.Transform : null;
 
             InvalidateMeasure();
             InvalidateArrange();
             UpdateLayout();
             InvalidateVisual();
 
-            FrameworkElement parent = VisualParent as FrameworkElement;
-            if (parent != null)
+            if (!(VisualParent is FrameworkElement parent))
             {
-                parent.InvalidateMeasure();
-                parent.InvalidateArrange();
+                return;
             }
+
+            parent.InvalidateMeasure();
+            parent.InvalidateArrange();
         }
 
         private void VisualChildren_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

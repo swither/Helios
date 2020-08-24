@@ -1,5 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
-//    
+//  Copyright 2020 Helios Contributors
+
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -27,6 +28,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
     public class ProfilePreview : FrameworkElement
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private class MonitorRectangle
         {
             public Rect DisplayRectangle;
@@ -35,13 +38,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             public MonitorAdorner Adorner;
         }
 
-        private VisualCollection _children;
+        private readonly VisualCollection _children;
         private bool _setAdorners = false;
 
-        List<MonitorRectangle> _monitorRectangles = new List<MonitorRectangle>();
+        private readonly List<MonitorRectangle> _monitorRectangles = new List<MonitorRectangle>();
 
-        private DrawingBrush _checkeredBrush;
-        private Pen _borderPen;
+        private readonly DrawingBrush _checkeredBrush;
+        private readonly Pen _borderPen;
 
         static ProfilePreview()
         {
@@ -62,10 +65,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             checkerGroup.Children.Add(grayGroup);
             checkerGroup.Freeze();
 
-            _checkeredBrush = new DrawingBrush(checkerGroup);
-            _checkeredBrush.Viewport = new Rect(0, 0, 10, 10);
-            _checkeredBrush.ViewportUnits = BrushMappingMode.Absolute;
-            _checkeredBrush.TileMode = TileMode.Tile;
+            _checkeredBrush = new DrawingBrush(checkerGroup)
+            {
+                Viewport = new Rect(0, 0, 10, 10),
+                ViewportUnits = BrushMappingMode.Absolute,
+                TileMode = TileMode.Tile
+            };
             _checkeredBrush.Freeze();
 
             _borderPen = new Pen(Brushes.Black, 1d);
@@ -77,31 +82,28 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         public HeliosProfile Profile
         {
-            get { return (HeliosProfile)GetValue(ProfileProperty); }
-            set { SetValue(ProfileProperty, value); }
+            get => (HeliosProfile)GetValue(ProfileProperty);
+            set => SetValue(ProfileProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for Profile.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ProfileProperty =
             DependencyProperty.Register("Profile", typeof(HeliosProfile), typeof(ProfilePreview), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public bool ShowPanels
         {
-            get { return (bool)GetValue(ShowPanelsProperty); }
-            set { SetValue(ShowPanelsProperty, value); }
+            get => (bool)GetValue(ShowPanelsProperty);
+            set => SetValue(ShowPanelsProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for ShowPanels.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ShowPanelsProperty =
             DependencyProperty.Register("ShowPanels", typeof(bool), typeof(ProfilePreview), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.None));
 
         public double ZoomFactor
         {
-            get { return (double)GetValue(ZoomFactorProperty); }
-            set { SetValue(ZoomFactorProperty, value); }
+            get => (double)GetValue(ZoomFactorProperty);
+            set => SetValue(ZoomFactorProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for ZoomFactor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ZoomFactorProperty =
             DependencyProperty.Register("ZoomFactor", typeof(double), typeof(ProfilePreview), new FrameworkPropertyMetadata(1d, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
@@ -109,13 +111,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         #region Visual Methods
 
-        protected override int VisualChildrenCount
-        {
-            get
-            {
-                return _children.Count;
-            }
-        }
+        protected override int VisualChildrenCount => _children.Count;
 
         protected override Visual GetVisualChild(int index)
         {
@@ -133,22 +129,26 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             Size resultSize = new Size(0, 0);
 
-            if (Profile != null)
+            if (Profile == null)
             {
-                resultSize.Width = double.IsPositiveInfinity(availableSize.Width) ? Math.Max(1d, Profile.Monitors.VirtualScreenWidth * ZoomFactor) : availableSize.Width;
-                resultSize.Height = double.IsPositiveInfinity(availableSize.Height) ? Math.Max(1d, Profile.Monitors.VirtualScreenHeight * ZoomFactor) : availableSize.Height;
+                return resultSize;
+            }
 
-                double scale = Math.Min(resultSize.Height / Profile.Monitors.VirtualScreenHeight, resultSize.Width / Profile.Monitors.VirtualScreenWidth);
+            Profile.Monitors.UpdateVirtualScreen();
 
-                resultSize.Width = Profile.Monitors.VirtualScreenWidth * scale;
-                resultSize.Height = Profile.Monitors.VirtualScreenHeight * scale;
+            resultSize.Width = double.IsPositiveInfinity(availableSize.Width) ? Math.Max(1d, Profile.Monitors.VirtualScreenWidth * ZoomFactor) : availableSize.Width;
+            resultSize.Height = double.IsPositiveInfinity(availableSize.Height) ? Math.Max(1d, Profile.Monitors.VirtualScreenHeight * ZoomFactor) : availableSize.Height;
 
-                foreach (HeliosVisualView child in _children)
-                {
-                    Size childSize = new Size(child.Visual.Width * scale,
-                                             child.Visual.Height * scale);
-                    child.Measure(childSize);
-                }
+            double scale = Math.Min(resultSize.Height / Profile.Monitors.VirtualScreenHeight, resultSize.Width / Profile.Monitors.VirtualScreenWidth);
+
+            resultSize.Width = Profile.Monitors.VirtualScreenWidth * scale;
+            resultSize.Height = Profile.Monitors.VirtualScreenHeight * scale;
+
+            foreach (HeliosVisualView child in _children.OfType<HeliosVisualView>())
+            {
+                Size childSize = new Size(child.Visual.Width * scale,
+                    child.Visual.Height * scale);
+                child.Measure(childSize);
             }
 
             return resultSize;
@@ -156,21 +156,24 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (Profile != null)
+            if (Profile == null)
             {
-                Profile.Monitors.UpdateVirtualScreen();
+                return finalSize;
+            }
 
-                double scale = Math.Min(finalSize.Width / Profile.Monitors.VirtualScreenWidth, finalSize.Height / Profile.Monitors.VirtualScreenHeight);
+            // NOTE: there should not be any code paths right now where we did not just 
+            // update this in MeasureOverride
+            Profile.Monitors.UpdateVirtualScreen();
 
-                for(int i=0; i<_monitorRectangles.Count; i++)
-                {
-                    MonitorRectangle monitorRect = _monitorRectangles[i];
-                    monitorRect.DisplayRectangle = new Rect(((monitorRect.Monitor.Left - Profile.Monitors.VirtualScreenLeft) * scale),
-                                                            ((monitorRect.Monitor.Top - Profile.Monitors.VirtualScreenTop) * scale),
-                                                            monitorRect.Monitor.Width * scale,
-                                                            monitorRect.Monitor.Height * scale);
-                    monitorRect.View.Arrange(monitorRect.DisplayRectangle);
-                }
+            double scale = Math.Min(finalSize.Width / Profile.Monitors.VirtualScreenWidth, finalSize.Height / Profile.Monitors.VirtualScreenHeight);
+
+            foreach (MonitorRectangle monitorRectangle in _monitorRectangles)
+            {
+                monitorRectangle.DisplayRectangle = new Rect(((monitorRectangle.Monitor.Left - Profile.Monitors.VirtualScreenLeft) * scale),
+                    ((monitorRectangle.Monitor.Top - Profile.Monitors.VirtualScreenTop) * scale),
+                    monitorRectangle.Monitor.Width * scale,
+                    monitorRectangle.Monitor.Height * scale);
+                monitorRectangle.View.Arrange(monitorRectangle.DisplayRectangle);
             }
 
             return finalSize;
@@ -222,6 +225,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     monitor.Moved += Monitor_MoveResize;
                 }
             }
+
             Dispatcher.BeginInvoke(new Action(UpdateMonitors));
         }
 
@@ -239,21 +243,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void InvalidateAll()
         {
-            InvalidateArrange();
             InvalidateMeasure();
+            InvalidateArrange();
             InvalidateVisual();
         }
 
         private void UpdateMonitors()
         {
             AdornerLayer layer = AdornerLayer.GetAdornerLayer(this);
-            foreach (MonitorRectangle monitorRect in _monitorRectangles)
+            foreach (MonitorRectangle monitorRectangle in _monitorRectangles)
             {
-                if (layer != null)
-                {
-                    layer.Remove(monitorRect.Adorner);
-                }
-                _children.Remove(monitorRect.View);
+                layer?.Remove(monitorRectangle.Adorner);
+                _children.Remove(monitorRectangle.View);
             }
 
             _monitorRectangles.Clear();
@@ -265,20 +266,22 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 int i = 1;
                 foreach (Monitor monitor in Profile.Monitors)
                 {
-                    HeliosVisualView monitorView = new HeliosVisualView();
-                    monitorView.Visual = monitor;
-                    monitorView.Visibility = ShowPanels ? Visibility.Visible : Visibility.Hidden;
+                    HeliosVisualView monitorView = new HeliosVisualView
+                    {
+                        Visual = monitor, Visibility = ShowPanels ? Visibility.Visible : Visibility.Hidden
+                    };
                     _children.Add(monitorView);
-                    
-                    MonitorAdorner adorner = new MonitorAdorner(monitorView, i++.ToString(), monitor);                    
 
-                    MonitorRectangle monitorRect = new MonitorRectangle();
-                    monitorRect.Monitor = monitor;
-                    monitorRect.View = monitorView;
-                    monitorRect.Adorner = adorner;
-                    _monitorRectangles.Add(monitorRect);
+                    _monitorRectangles.Add(new MonitorRectangle
+                    {
+                        Monitor = monitor, 
+                        View = monitorView, 
+                        Adorner = new MonitorAdorner(monitorView, i++.ToString(), monitor)
+                    });
                 }
             }
+
+            // rebuild window and render
             InvalidateMeasure();
             InvalidateArrange();
             InvalidateVisual();
@@ -289,9 +292,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             AdornerLayer layer = AdornerLayer.GetAdornerLayer(this);
             if (layer != null)
             {
-                foreach (MonitorRectangle monitorRect in _monitorRectangles)
+                foreach (MonitorRectangle monitorRectangle in _monitorRectangles)
                 {
-                    layer.Add(monitorRect.Adorner);
+                    layer.Add(monitorRectangle.Adorner);
                 }
             }
             _setAdorners = false;
@@ -306,30 +309,35 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 SetAdorners();
             }
 
-            for (int index = 0; index < _monitorRectangles.Count; index++)
+            foreach (MonitorRectangle monitorRectangle in _monitorRectangles)
             {
-                drawingContext.DrawRectangle(_checkeredBrush, _borderPen, _monitorRectangles[index].DisplayRectangle);
+                drawingContext.DrawRectangle(_checkeredBrush, _borderPen, monitorRectangle.DisplayRectangle);
             }
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2)
+            if (e.ClickCount != 2)
             {
-                Point position = e.GetPosition(this);
-                for (int index = 0; index < _monitorRectangles.Count; index++)
-                {
-                    if (_monitorRectangles[index].DisplayRectangle.Contains(position))
-                    {
-                        if (ProfileEditorCommands.OpenProfileItem.CanExecute(_monitorRectangles[index].Monitor, this))
-                        {
-                            ProfileEditorCommands.OpenProfileItem.Execute(_monitorRectangles[index].Monitor, this);
-                        }
-                        break;
-                    }
-                }
-                e.Handled = true;
+                return;
             }
+
+            Point position = e.GetPosition(this);
+
+            // dispatch OpenProfileItem command to selected monitor object
+            foreach (MonitorRectangle monitorRectangle in _monitorRectangles.Where(t => t.DisplayRectangle.Contains(position)))
+            {
+                if (ProfileEditorCommands.OpenProfileItem.CanExecute(monitorRectangle.Monitor, this))
+                {
+                    ProfileEditorCommands.OpenProfileItem.Execute(monitorRectangle.Monitor, this);
+                }
+
+                // consider only first display rect that is hit, because monitors don't overlap
+                break;
+            }
+
+            // either way, no other clicking allowed
+            e.Handled = true;
         }
         
     }
