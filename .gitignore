@@ -48,6 +48,3 @@ Lua/DCS/Scripts/HeliosExport/Mods
 /*.code-workspace
 /Helios_with*.sln
 /Tools/*NonHelios*
-
-#always getting updated, no need to track
-/Helios/TimeStamp.cs
