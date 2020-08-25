@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios
     /// <summary>
     /// ImageManager gives access to loading and resizing images from the appropriate locations.
     /// </summary>
-    public class ImageManager : IImageManager2
+    public class ImageManager : IImageManager3
     {
         private readonly string _documentImagePath;
         private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -51,7 +51,7 @@ namespace GadrocsWorkshop.Helios
             _xamlFirewall = new XamlFirewall();
         }
 
-        private ImageSource DoLoadImage(string uri, int? width, int? height)
+        private ImageSource DoLoadImage(string uri, int? width, int? height, LoadImageOptions options)
         {
             // parse as URI and check for existence of file, return Uri for resource that exists
             // or null (note: resource is not necesarily allowed to be read)
@@ -75,9 +75,12 @@ namespace GadrocsWorkshop.Helios
             Logger.Debug("image being loaded from {URI}", Anonymizer.Anonymize(imageUri));
             BitmapImage image = new BitmapImage();
             image.BeginInit();
-            // Don't keep disk files open, because we may want to change them.  But it is ok to lazy load from resources that can't change.
+
+            // Don't keep disk files open, because we may want to change them.  But it is ok to lazy load from embedded resources that can't change.
             image.CacheOption = imageUri.Scheme == "pack" ? BitmapCacheOption.OnDemand : BitmapCacheOption.OnLoad;
-            image.CreateOptions = BitmapCreateOptions.DelayCreation;
+            
+            // Override BitMapCreateOptions but only for certain controls that require a reload of images 
+            image.CreateOptions = options.HasFlag(LoadImageOptions.ReloadIfChangedExternally) ? BitmapCreateOptions.IgnoreImageCache : BitmapCreateOptions.DelayCreation;
             image.UriSource = imageUri;
 
             // REVISIT: not clear if it is legal to set decoding in just one axis but we will find out if anyone ever uses this function with only one scaling factor
@@ -372,12 +375,41 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        #region IImageManager
+
         public ImageSource LoadImage(string uri)
         {
-            ImageSource result = DoLoadImage(uri, null, null);
+            ImageSource result = DoLoadImage(uri, null, null, LoadImageOptions.None);
             OnImageLoad(uri, result);
             return result;
         }
+
+        public ImageSource LoadImage(string uri, int width, int height)
+        {
+            ImageSource result = DoLoadImage(uri, width, height, LoadImageOptions.None);
+            OnImageLoad(uri, result);
+            return result;
+        }
+
+        #endregion
+
+        #region IImageManager3
+
+        public ImageSource LoadImage(string uri, LoadImageOptions options)
+        {
+            ImageSource result = DoLoadImage(uri, null, null, options);
+            OnImageLoad(uri, result);
+            return result;
+        }
+
+        public ImageSource LoadImage(string uri, int width, int height, LoadImageOptions options)
+        {
+            ImageSource result = DoLoadImage(uri, width, height, options);
+            OnImageLoad(uri, result);
+            return result;
+        }
+
+        #endregion
 
         private void OnImageLoad(string path, ImageSource result)
         {
@@ -396,13 +428,6 @@ namespace GadrocsWorkshop.Helios
                 _failedImagePaths.Remove(path);
                 ImageLoadSuccess?.Invoke(this, new ImageLoadEventArgs(path));
             }
-        }
-
-        public ImageSource LoadImage(string uri, int width, int height)
-        {
-            ImageSource result = DoLoadImage(uri, width, height);
-            OnImageLoad(uri, result);
-            return result;
         }
 
         public void ClearFailureTracking()

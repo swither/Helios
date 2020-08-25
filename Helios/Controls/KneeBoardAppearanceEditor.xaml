@@ -7,7 +7,7 @@
              xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"                      
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              mc:Ignorable="d" 
-             d:DesignWidth="180">
+             d:DesignWidth="176" d:DesignHeight="59.5">
     <HeliosSdk:HeliosPropertyEditor.Resources>
         <Helios:EnumConverter Type="{x:Type Helios:ImageAlignmentPlus}" x:Key="AlignmentTypes" />
     </HeliosSdk:HeliosPropertyEditor.Resources>
@@ -26,5 +26,7 @@
 
         <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right">Images Alignment</Label>
         <ComboBox Grid.Column="1" Grid.Row="1" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource AlignmentTypes}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.Alignment, Converter={StaticResource AlignmentTypes}}" />
+        <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right">Images Refresh?</Label>
+        <CheckBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="0,2,0,2" IsChecked="{Binding Path=Control.ImageRefresh}"/>
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>

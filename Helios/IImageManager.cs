@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -14,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -30,12 +31,14 @@ namespace GadrocsWorkshop.Helios
         ImageSource LoadImage(string uri);
 
         /// <summary>
-        /// Loads an image file iterating through the profile subdirectories.
+        /// Loads an image file from the specified URI, decoding the image to a specified size.
         /// </summary>
         /// <param name="uri">Can be a file system path, a pack URI, or a special uri of form {assembly}/relativePath</param>
+        /// <param name="width">the pixel width to which the image should be scaled during decoding</param>
+        /// <param name="height">the pixel height to which the image should be scaled during decoding</param>
         /// <returns></returns>
         ImageSource LoadImage(string uri, int width, int height);
-        
+
         string MakeImagePathRelative(string filename);
         string MakeImagePathAbsolute(string fileName);
     }
@@ -69,5 +72,41 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         /// <param name="imageLoadFailureHandler"></param>
         void ReplayCurrentFailures(Action<object, ImageLoadEventArgs> imageLoadFailureHandler);
+    }
+
+    [Flags]
+    public enum LoadImageOptions
+    {
+        [Description("Default behavior of LoadImage")]
+        None = 0,
+
+        [Description("If the image is loaded from a local file URL and changed on disk, the new version will be used.  In-memory caching of images is disabled.")]
+        ReloadIfChangedExternally = 1
+    }
+
+    /// <summary>
+    /// version 3 of public cross-assembly interface IImageManager
+    /// </summary>
+    public interface IImageManager3 : IImageManager2
+    {
+        // NOTE: this could technically be a variant of IImageManager instead of IImageManager2, but let's not confuse people
+
+        /// <summary>
+        /// Loads an image file from the specified URI.
+        /// </summary>
+        /// <param name="uri">Can be a file system path, a pack URI, or a special uri of form {assembly}/relativePath</param>
+        /// <param name="options">Flags set will change the behavior of LoadImage.  LoadImageOptions.None results in the same behavior as LoadImage from the IImageManager interface.</param>
+        /// <returns></returns>
+        ImageSource LoadImage(string uri, LoadImageOptions options);
+
+        /// <summary>
+        /// Loads an image file from the specified URI, decoding the image to a specified size.
+        /// </summary>
+        /// <param name="uri">Can be a file system path, a pack URI, or a special uri of form {assembly}/relativePath</param>
+        /// <param name="width">the pixel width to which the image should be scaled during decoding</param>
+        /// <param name="height">the pixel height to which the image should be scaled during decoding</param>
+        /// <param name="options">Flags set will change the behavior of LoadImage.  LoadImageOptions.None results in the same behavior as LoadImage from the IImageManager interface.</param>
+        /// <returns></returns>
+        ImageSource LoadImage(string uri, int width, int height, LoadImageOptions options);
     }
 }
