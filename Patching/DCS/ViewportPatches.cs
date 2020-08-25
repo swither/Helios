@@ -21,6 +21,11 @@ using GadrocsWorkshop.Helios.Util.DCS;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
+    /// <summary>
+    /// the viewport patching functionality of DCS Additional Viewports
+    ///
+    /// NOTE: initially, this is the only capability of that interface
+    /// </summary>
     public class DCSPatchInstallation : DCSConfiguration
     {
         /// <summary>

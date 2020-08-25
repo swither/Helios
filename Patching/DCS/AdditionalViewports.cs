@@ -23,6 +23,9 @@ using System.Xml;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
+    /// <summary>
+    /// Helios interface for the installation of DCS patches related to exported viewports
+    /// </summary>
     [HeliosInterface("Patching.DCS.AdditionalViewports", "DCS Additional Viewports", typeof(AdditionalViewportsEditor),
         Factory = typeof(UniqueHeliosInterfaceFactory))]
     public class AdditionalViewports : HeliosInterface, IReadyCheck, IViewportProvider, IStatusReportNotify,

@@ -115,6 +115,13 @@
     </FrameworkElement.Resources>
     <StackPanel>
         <heliosDcs:InstallationLocationsGroup />
+        <!--
+        <Expander Header="Details (Advanced)" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
+            <Grid Height="Auto">
+                <ItemsControl ItemsSource="{Binding Data.Patching.Patches}"/>
+            </Grid>
+        </Expander>
+        -->
         <GroupBox Header="DCS Additional Viewports" Style="{StaticResource BasicGroup}">
             <Grid Height="Auto">
                 <Grid.ColumnDefinitions>

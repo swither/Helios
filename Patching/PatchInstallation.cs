@@ -22,6 +22,9 @@ using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching
 {
+    /// <summary>
+    /// a context for the installation of a specific patch set to a set of patch destinations
+    /// </summary>
     public class PatchInstallation: DependencyObject, IInstallation
     {
         private readonly Dictionary<string, PatchApplication> _destinations;
