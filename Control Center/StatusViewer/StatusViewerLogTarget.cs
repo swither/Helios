@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             string message = Layout.Render(logEvent);
 
             // note: exceptions here will bring down the application
-            Application.Current.Dispatcher.InvokeAsync(() =>
+            Application.Current?.Dispatcher.InvokeAsync(() =>
             {
                 try
                 {

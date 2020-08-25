@@ -146,7 +146,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
         public void ReceiveAvailableInstance(IHeliosInterfaceFactoryAsync factory, string displayName, object context)
         {
-            Application.Current.Dispatcher.BeginInvoke(
+            Application.Current?.Dispatcher.BeginInvoke(
                 new Action<IHeliosInterfaceFactoryAsync, string, object>(DoReceiveAvailableInstance),
                 DispatcherPriority.Input,
                 factory, displayName, context);

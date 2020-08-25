@@ -429,7 +429,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             // we could have configuration data that is not used and should not be persisted, so clean up if we can
             // XXX remove this dispatch once we eliminate the profile writing thread
-            Application.Current.Dispatcher.Invoke(CleanBeforeWriting);
+            Application.Current?.Dispatcher.Invoke(CleanBeforeWriting);
 
             if (ExportModuleFormat != DEFAULT_EXPORT_MODULE_FORMAT)
             {

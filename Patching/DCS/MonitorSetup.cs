@@ -193,6 +193,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // real initialization, not just a test instantiation
             Combined.Initialize();
             CurrentProfileName = string.IsNullOrWhiteSpace(Profile.Path) ? null : Profile.Name;
+
+            // NOTE: intentional crash if there is no Application.Current.Dispatcher
             _geometryChangeTimer = new DispatcherTimer(
                 TimeSpan.FromMilliseconds(100),
                 DispatcherPriority.Normal,

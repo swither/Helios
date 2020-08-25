@@ -63,6 +63,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             }
 
             _pendingReports++;
+            if (Application.Current == null)
+            {
+                // this can happen during process kill
+                return;
+            }
             DispatcherOperation scheduled =
                 Application.Current.Dispatcher.BeginInvoke(new Action(CreateStatusReportIfLast), DispatcherPriority.ApplicationIdle);
             scheduled.Completed += OnReportDone;

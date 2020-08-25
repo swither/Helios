@@ -45,7 +45,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             _loaded = true;
 
             // show the dialog after we are done with this cycle
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+            Application.Current?.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
             {
                 Visibility = Visibility.Visible;
             }));
@@ -127,7 +127,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             }
 
             // change some stuff after the current measure/arrange/render cycle
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<FrameworkElement>(ConfigureFromChild), child);
+            Application.Current?.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<FrameworkElement>(ConfigureFromChild), child);
 
             return new Size(initialWidth, initialHeight);
         }

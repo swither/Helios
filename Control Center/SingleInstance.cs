@@ -460,12 +460,9 @@ namespace Microsoft.Shell
             /// <param name="args">List of arguments to pass to the first instance.</param>
             public void InvokeFirstInstance(IList<string> args)
             {
-                if (Application.Current != null)
-                {
-                    // Do an asynchronous call to ActivateFirstInstance function
-                    Application.Current.Dispatcher.BeginInvoke(
-                        DispatcherPriority.Normal, new DispatcherOperationCallback(SingleInstance<TApplication>.ActivateFirstInstanceCallback), args);
-                }
+                // Do an asynchronous call to ActivateFirstInstance function
+                Application.Current?.Dispatcher.BeginInvoke(
+                    DispatcherPriority.Normal, new DispatcherOperationCallback(ActivateFirstInstanceCallback), args);
             }
 
             /// <summary>

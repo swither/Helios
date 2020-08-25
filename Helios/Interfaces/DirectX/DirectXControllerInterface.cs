@@ -40,6 +40,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
         public DirectXControllerInterface()
             : base("DirectX Controller")
         {
+            if (Application.Current == null)
+            {
+                _hWnd = IntPtr.Zero;
+                return;
+            }
             _hWnd = (IntPtr)Application.Current.Dispatcher.Invoke(new GetMainHandleDelegate(GetMainWindowHandle));
         }
 
