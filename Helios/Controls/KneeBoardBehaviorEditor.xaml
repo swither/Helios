@@ -52,7 +52,7 @@
                 <CommandBinding Command="ApplicationCommands.Delete" CanExecute="DeletePosition_CanExecute" Executed="DeletePosition_Executed" />
             </ListBox.CommandBindings>
         </ListBox>
-        <Button Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,3,12,3" Padding="6,3" FontSize="10" Click="Add_Position_Click">Add Page</Button>
+        <Button Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="4,3" Padding="6,3" FontSize="10" Click="Add_Position_Click">Add Page</Button>
         <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource LegacyPropertyName}">Auto Reload</TextBlock>
         <CheckBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,6" IsChecked="{Binding Path=Control.ImageRefresh}">
             <CheckBox.ToolTip>Enable this to reload changed images from disk at the expense of a small performance penalty (no caching of images)</CheckBox.ToolTip>
