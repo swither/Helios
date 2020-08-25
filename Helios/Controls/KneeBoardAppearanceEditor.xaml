@@ -19,14 +19,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
         <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right">Images Alignment</Label>
         <ComboBox Grid.Column="1" Grid.Row="1" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource AlignmentTypes}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.Alignment, Converter={StaticResource AlignmentTypes}}" />
-        <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right">Images Refresh?</Label>
-        <CheckBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="0,2,0,2" IsChecked="{Binding Path=Control.ImageRefresh}"/>
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>
