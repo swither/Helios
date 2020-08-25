@@ -51,16 +51,20 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRefresh()
         {
-            KneeBoard profileImage = Visual as KneeBoard;
-            if (profileImage != null)
+            if (Visual is KneeBoard profileImage)
             {
-                _image = ConfigManager.ImageManager.LoadImage(profileImage.Positions[profileImage._currentPosition].Name);
+                if (profileImage.ImageRefresh && ConfigManager.ImageManager is IImageManager3 refreshCapable)
+                {
+                    _image = refreshCapable.LoadImage(profileImage.Positions[profileImage._currentPosition].Name, LoadImageOptions.ReloadIfChangedExternally);
+                }
+                else
+                {
+                    _image = ConfigManager.ImageManager.LoadImage(profileImage.Positions[profileImage._currentPosition].Name);
+                }
                 _imageRect.Width = profileImage.Width;
                 _imageRect.Height = profileImage.Height;
-                
 
-                    _borderPen = null;
-                
+                _borderPen = null;
 
                 if (_image == null)
                 {

@@ -33,6 +33,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private ImageAlignmentPlus _alignment = ImageAlignmentPlus.Uniform;
         private Color _borderColor = Colors.Black;
         private KneeBoardPositionCollection _positions = new KneeBoardPositionCollection();
+        private bool _imageRefresh;
 
         public int _currentPosition;
         private int _defaultPosition;
@@ -63,6 +64,17 @@ namespace GadrocsWorkshop.Helios.Controls
         }
 
         #region Properties
+
+        public bool ImageRefresh
+        {
+            get { return _imageRefresh;  }
+            set
+            {
+                var oldValue = _imageRefresh;
+                _imageRefresh = value;
+                OnPropertyChanged("ImageRefresh", oldValue, value, true);
+            }
+        }
 
         public string Image
         {
@@ -275,8 +287,6 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void ReadXml(XmlReader reader)
         {
-          
-
             if (!reader.IsEmptyElement)
             {
                 Positions.Clear();
@@ -298,6 +308,11 @@ namespace GadrocsWorkshop.Helios.Controls
             if (reader.Name.Equals("Alignment"))
             {
                 Alignment = (ImageAlignmentPlus)Enum.Parse(typeof(ImageAlignmentPlus), reader.ReadElementString("Alignment"));
+            }
+
+            if (reader.Name.Equals("ImageRefresh"))
+            {
+                ImageRefresh = Convert.ToBoolean(reader.ReadElementString("ImageRefresh"), CultureInfo.InvariantCulture);
             }
         
             // Load base after image so size is properly persisted.
@@ -322,7 +337,11 @@ namespace GadrocsWorkshop.Helios.Controls
             writer.WriteEndElement();
 
             writer.WriteElementString("Alignment", Alignment.ToString());
-          
+            if (ImageRefresh)
+            {
+                writer.WriteElementString("ImageRefresh", ImageRefresh.ToString());
+            }
+
             // Save base after image so size is properly persisted.
             base.WriteXml(writer);
         }
