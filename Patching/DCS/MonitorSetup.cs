@@ -24,6 +24,7 @@ using System.Windows.Threading;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using GadrocsWorkshop.Helios.Patching.DCS.Controls;
 
 // REVISIT missing feature: support explicit view ports for MAIN and UI
 // REVISIT factor out ShadowModel (IShadowVisualParent) into field?

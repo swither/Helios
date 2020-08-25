@@ -14,13 +14,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using System;
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using GadrocsWorkshop.Helios.Patching.DCS.Controls;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using GadrocsWorkshop.Helios.ComponentModel;
-using GadrocsWorkshop.Helios.Interfaces.Capabilities;
-using GadrocsWorkshop.Helios.Util.DCS;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
@@ -29,64 +28,31 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     public class AdditionalViewports : HeliosInterface, IReadyCheck, IViewportProvider, IStatusReportNotify,
         IExtendedDescription
     {
-        #region Constant
-
-        public const string PATCH_SET = "Viewports";
-
-        #endregion
-
         #region Private
 
         private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
-
+        
         #endregion
 
         public AdditionalViewports() : base("DCS Additional Viewports")
         {
+            // no code
         }
-
-        /// <summary>
-        /// set up the application of patches to a specific location in DCS-specific way
-        /// </summary>
-        /// <param name="location"></param>
-        /// <returns></returns>
-        internal static PatchApplication CreatePatchDestination(InstallationLocation location) =>
-            new PatchApplication(
-                new PatchDestination(location),
-                location.IsEnabled,
-                !location.Writable,
-                PATCH_SET,
-                // load user-provided patches from documents folder
-                System.IO.Path.Combine(ConfigManager.DocumentPath, "Patches", "DCS"),
-                // then load pre-installed patches from Helios installation folder
-                System.IO.Path.Combine(ConfigManager.ApplicationPath, "Plugins", "Patches", "DCS"));
 
         protected override void AttachToProfileOnMainThread()
         {
             base.AttachToProfileOnMainThread();
-            InstallationLocations locations = InstallationLocations.Singleton;
-            locations.Added += Locations_Changed;
-            locations.Removed += Locations_Changed;
-            locations.Enabled += Locations_Changed;
-            locations.Disabled += Locations_Changed;
-            locations.RemoteChanged += Locations_Changed;
+            ViewportPatches = new DCSPatchInstallation(this, "Viewports", "viewport");
         }
 
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
         {
             base.DetachFromProfileOnMainThread(oldProfile);
-            InstallationLocations locations = InstallationLocations.Singleton;
-            locations.Added -= Locations_Changed;
-            locations.Removed -= Locations_Changed;
-            locations.Enabled -= Locations_Changed;
-            locations.Disabled -= Locations_Changed;
-            locations.RemoteChanged -= Locations_Changed;
+            ViewportPatches.Dispose();
+            ViewportPatches = null;
         }
 
-        private void Locations_Changed(object sender, EventArgs e)
-        {
-            InvalidateStatusReport();
-        }
+        public DCSPatchInstallation ViewportPatches { get; private set; }
 
         public override void ReadXml(XmlReader reader)
         {
@@ -112,48 +78,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
-            // check if DCS install folders are configured
-            IList<InstallationLocation> locations = InstallationLocations.Singleton.Active;
-            if (!locations.Any())
-            {
-                yield return new StatusReportItem
-                {
-                    Status = "No DCS installation locations are configured for viewport patch installation",
-                    Recommendation = "Configure any DCS installation directories you use",
-                    Link = StatusReportItem.ProfileEditor,
-                    Severity = StatusReportItem.SeverityCode.Error
-                };
-                yield break;
-            }
-
-            // check if all our patches are installed
-            foreach (PatchApplication item in locations
-                .Select(CreatePatchDestination))
-            {
-                if (item.SelectedVersion == null)
-                {
-                    yield return new StatusReportItem
-                    {
-                        Status = $"No Viewport patches compatible with {item.Destination.Description} found",
-                        Recommendation =
-                            "Please reinstall Helios to install these patches or provide them in documents folder",
-                        Severity = StatusReportItem.SeverityCode.Error
-                    };
-                }
-
-                foreach (StatusReportItem result in item.Patches.Verify(item.Destination))
-                {
-                    // return detailed results instead of just "up to date or not"
-                    yield return result;
-                }
-            }
-
-            yield return new StatusReportItem
-            {
-                Status = "Helios is managing DCS patches for viewports and drawing settings",
-                Recommendation = "Do not also install viewport mods manually or via a mod manager like OVGME",
-                Flags = StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate
-            };
+            return ViewportPatches.PerformReadyCheck();
         }
 
         #endregion

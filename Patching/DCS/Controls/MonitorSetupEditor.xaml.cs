@@ -16,7 +16,7 @@
 
 using GadrocsWorkshop.Helios.Windows.Controls;
 
-namespace GadrocsWorkshop.Helios.Patching.DCS
+namespace GadrocsWorkshop.Helios.Patching.DCS.Controls
 {
     /// <summary>
     /// This interface editor allows generation of a DCS Monitor Setup by presenting a view of installed monitors

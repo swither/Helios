@@ -1,4 +1,4 @@
-﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Patching.DCS.AdditionalViewportsEditor"
+﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Patching.DCS.Controls.AdditionalViewportsEditor"
                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,7 +8,10 @@
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
                                  xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+                                 xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS.ViewModel"
                                  x:Name="ViewportsWindow" Height="Auto" Width="Auto"
+                                 mc:Ignorable="d"
+                                 d:DataContext="{d:DesignInstance Type={x:Type viewModel:AdditionalViewportsViewModel}}"
                                  Background="{StaticResource ToolBackground}" Padding="5">
     <FrameworkElement.Resources>
         <ResourceDictionary>
@@ -21,7 +24,7 @@
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                            <Condition Binding="{Binding Data.Patching.Status}"
                                        Value="{x:Static util:StatusCodes.UpToDate}" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
@@ -35,7 +38,7 @@
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                            <Condition Binding="{Binding Data.Patching.Status}"
                                        Value="{x:Static util:StatusCodes.OutOfDate}" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
@@ -49,7 +52,7 @@
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                            <Condition Binding="{Binding Data.Patching.Status}"
                                        Value="{x:Static util:StatusCodes.ResetRequired}" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
@@ -63,7 +66,7 @@
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                            <Condition Binding="{Binding Data.Patching.Status}"
                                        Value="{x:Static util:StatusCodes.Incompatible}" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
@@ -77,7 +80,7 @@
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                            <Condition Binding="{Binding Data.Patching.Status}"
                                        Value="{x:Static util:StatusCodes.NoLocations}" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
@@ -91,7 +94,7 @@
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                            <Condition Binding="{Binding Data.Patching.Status}"
                                        Value="{x:Static util:StatusCodes.NotApplicable}" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>

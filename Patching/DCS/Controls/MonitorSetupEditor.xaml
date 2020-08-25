@@ -1,4 +1,4 @@
-﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Patching.DCS.MonitorSetupEditor"
+﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Patching.DCS.Controls.MonitorSetupEditor"
                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
@@ -9,6 +9,7 @@
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                  xmlns:windows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
                                  xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System" xmlns:helios="clr-namespace:GadrocsWorkshop.Helios;assembly=Helios"
+                                 xmlns:controls="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS.Controls"
                                  mc:Ignorable="d"
                                  d:DesignHeight="800" d:DesignWidth="800"
                                  d:DataContext="{d:DesignInstance Type=dcs:MonitorSetupViewModel, IsDesignTimeCreatable=False}"
@@ -698,7 +699,7 @@
                 </Grid.RowDefinitions>
                 <WrapPanel Grid.Row="1" Style="{StaticResource HideIfNotSavedStyle}">
                     <!-- wrapped only to use proper data context for "Status" in style -->
-                    <dcs:CombinedMonitorSetupControl DataContext="{Binding CombinedMonitorSetup}" />
+                    <controls:CombinedMonitorSetupControl DataContext="{Binding CombinedMonitorSetup}" />
                 </WrapPanel>
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>

@@ -34,33 +34,35 @@
   <ItemGroup>
     <Compile Include="DCS\AdditionalViewports.cs" />
     <Compile Include="DCS\CombinedMonitorSetup.cs" />
-    <Compile Include="DCS\CombinedMonitorSetupControl.xaml.cs">
+    <Compile Include="DCS\Controls\CombinedMonitorSetupControl.xaml.cs">
       <DependentUpon>CombinedMonitorSetupControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DCS\CombinedMonitorSetupViewModel.cs" />
-    <Compile Include="DCS\CombinedMonitorSetupViewModel_DesignInstance.cs" />
+    <Compile Include="DCS\ViewModel\AdditionalViewportsViewModel.cs" />
+    <Compile Include="DCS\ViewModel\CombinedMonitorSetupViewModel.cs" />
+    <Compile Include="DCS\ViewModel\CombinedMonitorSetupViewModel_DesignInstance.cs" />
     <Compile Include="DCS\MonitorLayoutMode.cs" />
     <Compile Include="DCS\MonitorSetupTemplate.cs" />
     <Compile Include="DCS\SourceOfAdditionalViewports.cs" />
+    <Compile Include="DCS\ViewportPatches.cs" />
     <Compile Include="DCS\ViewportSetupFile.cs" />
     <Compile Include="DCS\ViewportSetupFileStatus.cs" />
-    <Compile Include="DCS\ViewportSetupFileViewModel.cs" />
+    <Compile Include="DCS\ViewModel\ViewportSetupFileViewModel.cs" />
     <Compile Include="DCS\MonitorSetupGenerator.cs" />
-    <Compile Include="DCS\MonitorSetupViewModel.cs" />
-    <Compile Include="DCS\MonitorSetupEditor.xaml.cs">
+    <Compile Include="DCS\ViewModel\MonitorSetupViewModel.cs" />
+    <Compile Include="DCS\Controls\MonitorSetupEditor.xaml.cs">
       <DependentUpon>MonitorSetupEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DCS\AdditionalViewportsEditor.xaml.cs">
+    <Compile Include="DCS\Controls\AdditionalViewportsEditor.xaml.cs">
       <DependentUpon>AdditionalViewportsEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="DCS\MonitorSetup.cs" />
-    <Compile Include="DCS\MonitorViewModel.cs" />
+    <Compile Include="DCS\ViewModel\MonitorViewModel.cs" />
     <Compile Include="DCS\PatchVersion.cs" />
     <Compile Include="DCS\ShadowMonitor.cs" />
     <Compile Include="DCS\ShadowVisual.cs" />
-    <Compile Include="DCS\ViewportViewModel.cs" />
+    <Compile Include="DCS\ViewModel\ViewportViewModel.cs" />
     <Compile Include="PatchApplication.cs" />
-    <Compile Include="PatchingConfiguration.cs" />
+    <Compile Include="PatchInstallation.cs" />
     <Compile Include="IPatchDestination.cs" />
     <Compile Include="PatchFile.cs" />
     <Compile Include="DCS\PatchDestination.cs" />
@@ -80,15 +82,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DCS\CombinedMonitorSetupControl.xaml">
+    <Page Include="DCS\Controls\CombinedMonitorSetupControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DCS\MonitorSetupEditor.xaml">
+    <Page Include="DCS\Controls\MonitorSetupEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="DCS\AdditionalViewportsEditor.xaml">
+    <Page Include="DCS\Controls\AdditionalViewportsEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -103,6 +105,7 @@
     <None Include="packages.config" />
     <None Include="Templates\Patching\readme.md" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\HeliosPlugin.targets" />
   <PropertyGroup>
     <PreBuildEvent>

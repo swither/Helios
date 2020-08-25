@@ -14,19 +14,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using System.Windows.Controls;
+using GadrocsWorkshop.Helios.Windows;
 
-namespace GadrocsWorkshop.Helios.Patching.DCS
+namespace GadrocsWorkshop.Helios.Patching.DCS.ViewModel
 {
     /// <summary>
-    /// Two lists of monitor setups associated with profiles, which sort these items into the
-    /// list of combined and excluded monitor setups
+    /// view model for the configuration and application of viewport patches
+    ///
+    /// this will grow if the additional viewports interface ever does something else
     /// </summary>
-    public partial class CombinedMonitorSetupControl : Grid
+    public class AdditionalViewportsViewModel: HeliosViewModel<DCSPatchInstallation>
     {
-        public CombinedMonitorSetupControl()
+        public AdditionalViewportsViewModel(DCSPatchInstallation data) : base(data)
         {
-            InitializeComponent();
+            // no code
         }
     }
 }

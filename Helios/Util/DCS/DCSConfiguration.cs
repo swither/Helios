@@ -9,7 +9,7 @@ namespace GadrocsWorkshop.Helios.Util.DCS
     /// a base class for a configuration object that writes configuration to a number of
     /// selected DCS installation locations shared with all other such objects
     /// </summary>
-    public abstract class DCSConfiguration : NotificationObject, IReadyCheck, IInstallation
+    public abstract class DCSConfiguration : NotificationObject, IReadyCheck, IInstallation, IDisposable
     {
         /// <summary>
         /// utility accessor for pathing in UI, such as: Locations.IsRemote
@@ -20,24 +20,44 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         {
             // if DCS locations are added, removed, enabled, or disabled, we need to check if the resulting set of locations is configured
             InstallationLocations locations = InstallationLocations.Singleton;
-            locations.Added += Locations_Changed;
-            locations.Removed += Locations_Changed;
-            locations.Enabled += Locations_Changed;
-            locations.Disabled += Locations_Changed;
-            locations.RemoteChanged += Locations_Changed;
+            locations.Added += Location_Added;
+            locations.Removed += Location_Removed;
+            locations.Enabled += Location_Enabled;
+            locations.Disabled += Location_Disabled;
+            locations.RemoteChanged += Locations_RemoteChanged;
         }
 
         public virtual void Dispose()
         {
             InstallationLocations locations = InstallationLocations.Singleton;
-            locations.Added -= Locations_Changed;
-            locations.Removed -= Locations_Changed;
-            locations.Enabled -= Locations_Changed;
-            locations.Disabled -= Locations_Changed;
-            locations.RemoteChanged -= Locations_Changed;
+            locations.Added -= Location_Added;
+            locations.Removed -= Location_Removed;
+            locations.Enabled -= Location_Enabled;
+            locations.Disabled -= Location_Disabled;
+            locations.RemoteChanged -= Locations_RemoteChanged;
         }
 
-        private void Locations_Changed(object sender, EventArgs e)
+        protected virtual void Location_Added(object sender, InstallationLocations.LocationEvent e)
+        {
+            Update();
+        }
+
+        protected virtual void Location_Removed(object sender, InstallationLocations.LocationEvent e)
+        {
+            Update();
+        }
+
+        protected virtual void Location_Enabled(object sender, InstallationLocations.LocationEvent e)
+        {
+            Update();
+        }
+
+        protected virtual void Location_Disabled(object sender, InstallationLocations.LocationEvent e)
+        {
+            Update();
+        }
+
+        protected virtual void Locations_RemoteChanged(object sender, InstallationLocations.RemoteChangeEvent e)
         {
             Update();
         }

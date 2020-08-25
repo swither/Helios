@@ -14,26 +14,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using GadrocsWorkshop.Helios.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Patching
 {
-    // REVISIT: reimplement as a HeliosViewModel and a DCSConfiguration
-    public class PatchingConfiguration : DependencyObject, IInstallation
+    public class PatchInstallation: DependencyObject, IInstallation
     {
         private readonly Dictionary<string, PatchApplication> _destinations;
-        private string _patchSet;
         private readonly string _patchSetDescription;
 
-        public PatchingConfiguration(Dictionary<string, PatchApplication> destinations, string patchSet,
-            string patchSetDescription)
+        public PatchInstallation(
+            Dictionary<string, PatchApplication> destinations, 
+            string patchSet,
+            string patchSetDescription,
+            bool isRemoteLocation)
         {
             _destinations = destinations;
-            _patchSet = patchSet;
+            _ = patchSet;
             _patchSetDescription = patchSetDescription;
 
             // check if all selected patches are installed
@@ -73,7 +74,7 @@ namespace GadrocsWorkshop.Helios.Patching
             UpdateStatus();
         }
 
-        public void OnRemoteChanged(Dictionary<string, PatchApplication> effectiveDestinations)
+        public void Reload(Dictionary<string, PatchApplication> effectiveDestinations)
         {
             // rebuild completely
             _destinations.Clear();
@@ -126,9 +127,11 @@ namespace GadrocsWorkshop.Helios.Patching
                     case StatusCodes.NotApplicable:
                         // this never changes the status; ignore
                         break;
+                    // ReSharper disable RedundantCaseLabel documenting intent and triggering unhandled case warning when something is added later
                     case StatusCodes.NoLocations:
                     case StatusCodes.ResetMonitorsRequired:
                     case StatusCodes.ProfileSaveRequired:
+                    // ReSharper enable RedundantCaseLabel
                     default:
                         throw new ArgumentOutOfRangeException(nameof(status.Status), status.Status, null);
                 }
@@ -314,7 +317,7 @@ namespace GadrocsWorkshop.Helios.Patching
         }
 
         public static readonly DependencyProperty StatusProperty =
-            DependencyProperty.Register("Status", typeof(StatusCodes), typeof(PatchingConfiguration),
+            DependencyProperty.Register("Status", typeof(StatusCodes), typeof(PatchInstallation),
                 new PropertyMetadata(StatusCodes.OutOfDate));
 
         #endregion
