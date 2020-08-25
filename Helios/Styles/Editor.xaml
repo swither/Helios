@@ -44,6 +44,14 @@
         <Setter Property="FontSize" Value="14" />
     </Style>
 
+    <!-- fits into existing controls' behavior and appearance editors -->
+    <Style x:Key="LegacyPropertyName" TargetType="TextBlock" BasedOn="{StaticResource PropertyName}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="6,3" />
+        <Setter Property="FontSize" Value="10" />
+    </Style>
+
     <ControlTemplate x:Key="DeleteButton" TargetType="Button">
         <Grid>
             <Border Height="Auto" Margin="0,0,0,0" x:Name="MouseOverBackground" VerticalAlignment="Stretch" Opacity="0"

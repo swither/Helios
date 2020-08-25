@@ -14,7 +14,7 @@
             <Border BorderBrush="LightGray" BorderThickness="0,0,0,1" Margin="2">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
@@ -38,29 +38,24 @@
     </HeliosSdk:HeliosPropertyEditor.Resources>
     <Grid Margin="4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" MinWidth="55" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Orientation="Horizontal">
-            <TextBlock Margin="4,10,2,2" Style="{StaticResource Heading2}">Pages</TextBlock>
-            <Button VerticalAlignment="Bottom" Margin="4,2,2,2" Padding="2,0,2,2" FontSize="10" Click="Add_Position_Click">Add</Button>
-        </StackPanel>
-        
+        <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource Heading2}" Margin="3,6">Pages</TextBlock>
         <ListBox Grid.Column="0" Grid.Row="1" Background="Transparent" Grid.ColumnSpan="2" Name="PositionList" Margin="10,2,2,2" BorderThickness="0" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Control.Positions}" ItemTemplate="{StaticResource PositionLayout}" SelectionChanged="SelectionChanged">
             <ListBox.CommandBindings>
                 <CommandBinding Command="ApplicationCommands.Delete" CanExecute="DeletePosition_CanExecute" Executed="DeletePosition_Executed" />
             </ListBox.CommandBindings>
         </ListBox>
-
-      
-           </Grid>
+        <Button Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,3,12,3" Padding="6,3" FontSize="10" Click="Add_Position_Click">Add Page</Button>
+        <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource LegacyPropertyName}">Auto Reload</TextBlock>
+        <CheckBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,6" IsChecked="{Binding Path=Control.ImageRefresh}">
+            <CheckBox.ToolTip>Enable this to reload changed images from disk at the expense of a small performance penalty (no caching of images)</CheckBox.ToolTip>
+        </CheckBox>
+    </Grid>
 </HeliosSdk:HeliosPropertyEditor>
