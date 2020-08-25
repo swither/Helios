@@ -22,6 +22,10 @@ using NLog;
 
 namespace GadrocsWorkshop.Helios.Windows
 {
+    /// <summary>
+    /// the last resort handler for exceptions, which logs the expection and then shown an ugly message box
+    /// with the exception to the user, without assuming we can display any of our custom dialogs via WPF
+    /// </summary>
     public class ExceptionViewer
     {
         private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -32,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Windows
                 $"Unhandled exception occurred. {Assembly.GetExecutingAssembly()?.GetName()?.Name ?? "Application"} will exit.");
             DisplayException(e.Exception);
 
-            // prepare for exit
+            // prepare for exit or crash
             HeliosInit.OnShutdown();
         }
 
@@ -50,9 +54,6 @@ namespace GadrocsWorkshop.Helios.Windows
             {
                 message += "\n" + trace;
             }
-
-            // XXX try to use a custom dialog that supports selecting text and maybe share dialog
-
             MessageBox.Show(
                 $"Unhandled exception occurred.  Please file a bug:\n{message}",
                 $"Unhandled Error in {ex.Source}");

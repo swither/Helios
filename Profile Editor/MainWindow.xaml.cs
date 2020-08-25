@@ -79,14 +79,22 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private LoadingAdorner _loadingAdorner;
         private readonly List<DocumentMeta> _documents = new List<DocumentMeta>();
 
-        private bool _initialLoad = true;
-
         private readonly InterfaceStatusScanner _configurationCheck = new InterfaceStatusScanner();
 
         /// <summary>
         /// true if trigger was fired since profile was changed
         /// </summary>
         private bool _triggered;
+
+        /// <summary>
+        /// true if initial load (first Activation) has been done
+        /// </summary>
+        private bool _loaded;
+
+        /// <summary>
+        /// true if Closing event has been raised
+        /// </summary>
+        private bool _closing;
 
         public MainWindow()
         {
@@ -195,11 +203,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         public static readonly DependencyProperty CurrentEditorProperty =
             DependencyProperty.Register("CurrentEditor", typeof(HeliosEditorDocument), typeof(MainWindow), new PropertyMetadata(null));
 
-        /// <summary>
-        /// true if Closing event has been raised
-        /// </summary>
-        private bool _bClosing;
-
         #endregion
 
         #region Event Handlers
@@ -208,22 +211,29 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             base.OnActivated(e);
 
-            if (!_initialLoad)
+            // do this once
+            if (_loaded)
             {
                 return;
             }
+            _loaded = true;
 
-            _initialLoad = false;
-            if (Application.Current is App app && app.StartupFile != null && File.Exists(app.StartupFile))
+            if (!(Application.Current is App profileEditor))
             {
-                string extension = Path.GetExtension(app.StartupFile);
+                // not running in our expected Profile Editor application
+                return;
+            }
+
+            if (profileEditor.StartupFile != null && File.Exists(profileEditor.StartupFile))
+            {
+                string extension = Path.GetExtension(profileEditor.StartupFile);
                 switch (extension)
                 {
                     case ".hpf":
-                        LoadProfile(app.StartupFile);
+                        LoadProfile(profileEditor.StartupFile);
                         break;
                     case ".helios16":
-                        InstallArchive(app.StartupFile);
+                        InstallArchive(profileEditor.StartupFile);
                         break;
                     default:
                         // ignore
@@ -294,7 +304,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             if (e.Cancel == false)
             {
                 Logger.Debug("Profile Editor main window has raised OnClosing and is going down");
-                _bClosing = true;
+                _closing = true;
                 ConfigManager.UndoManager.ClearHistory();
 
                 // Persist window placement details to application settings
@@ -311,6 +321,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 // unload profile if present
                 Profile = null;
             }
+
             base.OnClosing(e);
         }
 
@@ -659,7 +670,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private bool PumpUserInterface()
         {
             // first check if our window is being closed, because we will exit if we pump the UI in that state
-            if (_bClosing)
+            if (_closing)
             {
                 // Profile Editor main window canceling work because window is closing
                 // NOTE: logger is dead at this point
@@ -669,7 +680,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // now pump the UI or find out that the Dispatcher is null or dead
             bool bRunning = false;
             Dispatcher?.Invoke(() => { bRunning = true; }, DispatcherPriority.ContextIdle);
-            if (_bClosing || !bRunning)
+            if (_closing || !bRunning)
             {
                 // Profile Editor main window canceling work because window is closing or application is shut down
                 // NOTE: logger is dead at this point

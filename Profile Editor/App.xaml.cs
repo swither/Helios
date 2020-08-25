@@ -30,19 +30,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using System.Windows.Threading;
 
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Application class for the Profile Editor, instantiated before even the main window
     /// </summary>
     public partial class App : Application
     {
-        private string _startupFile = null;
-
         #region Properties
 
-        public string StartupFile
-        {
-            get { return _startupFile; }
-            private set { _startupFile = value; }
-        }
+        public string StartupFile { get; private set; }
 
         #endregion
 
@@ -51,7 +45,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             base.OnStartup(e);
             Current.Dispatcher.UnhandledException += App_DispatcherUnhandledException;
 
-            CommandLineOptions options = Util.CommonCommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
+            CommandLineOptions options = Util.CommandLineOptions.Parse(new CommandLineOptions(), e.Args, out int exitCode);
 
             // react to options or defaults
             if (options.Profiles.Any())
@@ -82,7 +76,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             base.OnExit(e);
         }
 
-        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        /// <summary>
+        /// last resort exception sink, does not assume the application is operable other than logging
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             ExceptionViewer.DisplayUnhandledException(e);
         }
