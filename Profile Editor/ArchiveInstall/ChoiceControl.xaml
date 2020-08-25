@@ -13,7 +13,10 @@
              d:DesignHeight="270" d:DesignWidth="480">
     <Grid.Resources>
         <DataTemplate DataType="{x:Type local:Option}">
-            <RadioButton Margin="12" GroupName="Options" Command="{Binding DataContext.OptionSelectionCommand, ElementName=ChoiceDialog}" CommandParameter="{Binding}" Content="{Binding Description}"/>
+            <WrapPanel Orientation="Vertical">
+                <RadioButton Margin="12" GroupName="Options" IsEnabled="{Binding IsValid}"  Command="{Binding DataContext.OptionSelectionCommand, ElementName=ChoiceDialog}" CommandParameter="{Binding}" Content="{Binding Description}"/>
+                <TextBlock Style="{StaticResource Documentation}" Margin="32,0,12,12" Text="{Binding ValidityNarrative}"/>
+            </WrapPanel>
         </DataTemplate>
     </Grid.Resources>
     <Grid>

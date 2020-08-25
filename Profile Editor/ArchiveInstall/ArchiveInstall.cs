@@ -78,6 +78,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
 
         public InstallationResult Install(IInstallationCallbacks callbacks)
         {
+            ProfileManifest16 manifest = null;
             try
             {
                 using (ZipArchive archive = ZipFile.Open(_archivePath, ZipArchiveMode.Read))
@@ -86,15 +87,72 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
                         entry.FullName.Equals(MANIFEST_PATH, StringComparison.CurrentCultureIgnoreCase));
                     if (manifestEntry != null)
                     {
+                        manifest = LoadManifest(manifestEntry);
+                        if (manifest == null)
+                        {
+                            // this cannot happen because we would get a parse failure?  maybe empty file?
+                            throw new Exception($"JSON manifest {MANIFEST_PATH} could not be parsed");
+                        }
+
+                        // see if we are allowed to install this package
+                        if (!CheckVersionRequirements(manifest, out IList<StatusReportItem> problems))
+                        {
+                            if (RunningVersion.IsDevelopmentPrototype ||
+                                ConfigManager.SettingsManager.LoadSetting("ArchiveInstall", "VersionOverride", false))
+                            {
+                                InstallationPromptResult result = callbacks.DangerPrompt($"{manifest?.Description ?? "Helios Archive"} Installation",
+                                    "Installation requirements are not met.  Do you want to install anyway?", problems);
+                                if (result == InstallationPromptResult.Cancel)
+                                {
+                                    return InstallationResult.Canceled;
+                                }
+                            }
+                            else
+                            {
+                                callbacks.Failure($"{manifest.Description ?? "Helios Archive"} cannot be installed", "Installation requirements are not met", problems);
+                                return InstallationResult.Canceled;
+                            }
+                        }
+
                         //  process selection and build exclusion list
-                        ProfileManifest16 manifest = LoadManifest(manifestEntry);
                         foreach (Choice choice in manifest.Choices)
                         {
+                            // filter options based on version requirements
+                            List<StatusReportItem> details = new List<StatusReportItem>();
+                            foreach (Option option in choice.Options)
+                            {
+                                if (CheckVersionRequirements(option, out IList<StatusReportItem> optionDetails))
+                                {
+                                    // version requirements met and that is all we check
+                                    option.IsValid = true;
+                                }
+                                else
+                                {
+                                    // this option is not allowed
+                                    details.AddRange(optionDetails);
+                                    option.IsValid = false;
+                                    option.ValidityNarrative = "Version requirements not met";
+                                }
+                            }
+
+                            // check if we still have viable choices
+                            if (!choice.Options.Any())
+                            {
+                                callbacks.Failure($"{manifest.Description ?? "Helios Archive"} cannot be installed", "None of the options for a required choice are valid for your installation.", details);
+                                return InstallationResult.Fatal;
+                            }
+
                             // fix up dialog if not specified
                             choice.Message = choice.Message ?? "The Profile Archive being installed contains multiple versions of some of its files.  Please choose one version to install:";
 
                             // wait for response
                             Option selected = PresentChoice(choice);
+
+                            // check if dialog closed or canceled
+                            if (selected == null)
+                            {
+                                return InstallationResult.Canceled;
+                            }
 
                             // process results
                             if (selected?.PathExclusions != null)
@@ -117,7 +175,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
                         .Where(item => item != null)
                         .ToList();
 
-                    callbacks.Success("Installed Helios Archive",
+                    callbacks.Success($"Installed {manifest?.Description ?? "Helios Archive"}",
                         $"Files were installed into {Anonymizer.Anonymize(ConfigManager.DocumentPath)}", report);
                 }
 
@@ -125,10 +183,126 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
             }
             catch (Exception ex)
             {
-                callbacks.Failure("Failed to install Helios Archive",
+                callbacks.Failure($"Failed to install {manifest?.Description ?? "Helios Archive"}",
                     $"Attempt to install Helios Profile from '{Anonymizer.Anonymize(_archivePath)}' failed",
                     ReportException(ex));
                 return InstallationResult.Fatal;
+            }
+        }
+
+        private bool CheckVersionRequirements(ProfileManifest16 manifest, out IList<StatusReportItem> problems)
+        {
+            List<StatusReportItem> report = new List<StatusReportItem>();
+
+            if (manifest.VersionsRequired == null)
+            {
+                problems = report;
+                return true;
+            }
+            foreach (VersionRequired versionRequired in manifest.VersionsRequired)
+            {
+                if (!FetchVersion(versionRequired.Product, out Version version))
+                {
+                    report.Add(new StatusReportItem
+                    {
+                        Status =
+                            $"Helios does not recognize product '{versionRequired.Product}' which is required by this archive",
+                        Recommendation =
+                            "find a version of this archive for the Helios distribution that you have or manually edit the archive contents at your own risk",
+                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    });
+                    continue;
+                }
+                if (versionRequired.Minimum != null && version < versionRequired.Minimum)
+                {
+                    report.Add(new StatusReportItem
+                    {
+                        Status =
+                            $"This archive requires {versionRequired.Product} version {versionRequired.Minimum} or higher. You have version {version}.",
+                        Recommendation =
+                            $"upgrade {versionRequired.Product} or find a version of this archive for the {versionRequired.Product} version you have",
+                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    });
+                    continue;
+                }
+                if (versionRequired.Maximum != null && version > versionRequired.Maximum)
+                {
+                    report.Add(new StatusReportItem
+                    {
+                        Status =
+                            $"This archive requires {versionRequired.Product} version {versionRequired.Maximum} or lower. You have version {version}.",
+                        Recommendation =
+                            $"find a version of this archive for the {versionRequired.Product} version you have",
+                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    });
+                }
+            }
+
+            // return success only if we reported nothing
+            problems = report;
+            return !report.Any();
+        }
+
+        private bool CheckVersionRequirements(Option option, out IList<StatusReportItem> problems)
+        {
+            List<StatusReportItem> report = new List<StatusReportItem>();
+
+            if (option.VersionsRequired == null)
+            {
+                problems = report;
+                return true;
+            }
+            foreach (VersionRequired versionRequired in option.VersionsRequired)
+            {
+                if (!FetchVersion(versionRequired.Product, out Version version))
+                {
+                    report.Add(new StatusReportItem
+                    {
+                        Status =
+                            $"Helios does not recognize product '{versionRequired.Product}' which is required by {option.Description ?? "one of the options"} ",
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    });
+                    continue;
+                }
+                if (versionRequired.Minimum != null && version < versionRequired.Minimum)
+                {
+                    report.Add(new StatusReportItem
+                    {
+                        Status =
+                            $"{option.Description ?? "One of the options"} requires {versionRequired.Product} version {versionRequired.Minimum} or higher. You have version {version}.",
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    });
+                    continue;
+                }
+                if (versionRequired.Maximum != null && version > versionRequired.Maximum)
+                {
+                    report.Add(new StatusReportItem
+                    {
+                        Status =
+                            $"{option.Description ?? "One of the options"} requires {versionRequired.Product} version {versionRequired.Maximum} or lower. You have version {version}.",
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    });
+                }
+            }
+
+            // return success only if we reported nothing
+            problems = report;
+            return !report.Any();
+        }
+
+        private bool FetchVersion(string versionRequiredProduct, out Version version)
+        {
+            switch (versionRequiredProduct)
+            {
+                case "Helios":
+                    version = RunningVersion.FromHeliosAssembly();
+                    return true;
+                default:
+                    version = null;
+                    return false;
             }
         }
 

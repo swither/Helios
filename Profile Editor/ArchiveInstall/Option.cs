@@ -26,5 +26,20 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
 
         [JsonProperty("Excludes")]
         public IEnumerable<string> PathExclusions { get; internal set; }
+
+        [JsonProperty("VersionsRequired", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public IEnumerable<VersionRequired> VersionsRequired { get; internal set; }
+
+        /// <summary>
+        /// true if this option may be selected
+        /// </summary>
+        [JsonIgnore]
+        public bool IsValid { get; internal set; }
+
+        /// <summary>
+        /// if IsValid is false, this may contain a helpful message about it
+        /// </summary>
+        [JsonIgnore]
+        public string ValidityNarrative { get; internal set; }
     }
 }

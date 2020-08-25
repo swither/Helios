@@ -19,8 +19,23 @@ using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
 {
-    internal class ProfileManifest16
+    public class ProfileManifest16
     {
+        [JsonProperty("Description", NullValueHandling = NullValueHandling.Ignore)] 
+        public string Description { get; internal set; }
+
+        [JsonProperty("Version", NullValueHandling = NullValueHandling.Ignore)]
+        public string Version { get; internal set; }
+
+        [JsonProperty("Authors", NullValueHandling = NullValueHandling.Include)]
+        public IEnumerable<string> Authors { get; internal set; }
+
+        [JsonProperty("License", NullValueHandling = NullValueHandling.Ignore)]
+        public string License { get; internal set; }
+
+        [JsonProperty("VersionsRequired", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public IEnumerable<VersionRequired> VersionsRequired { get; internal set; }
+
         [JsonProperty("Choices")]
         public IEnumerable<Choice> Choices { get; internal set; }
     }

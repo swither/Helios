@@ -1196,7 +1196,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void InstallArchive(string startupFile)
         {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<string>(InstallMode), startupFile);
+            Application.Current?.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<string>(InstallMode), startupFile);
         }
 
         private void InstallMode(string startupFile)
@@ -1220,7 +1220,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 LoadProfile(archiveInstall.MainProfilePath, true);
 
                 // show the welcome screen delayed, because we probably triggered the interface status
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<LayoutAnchorable>(ShowWelcome), welcome);
+                Application.Current?.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action<LayoutAnchorable>(ShowWelcome), welcome);
             }
             else if (!archiveInstall.ProfilePaths.Any())
             {
