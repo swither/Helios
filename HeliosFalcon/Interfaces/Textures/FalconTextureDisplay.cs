@@ -117,12 +117,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
-            _textureMemory.Close();
-            _textureMemory.Dispose();
+            _textureMemory?.Close();
+            _textureMemory?.Dispose();
             _textureMemory = null;
 
-            _sharedMemory2.Close();
-            _sharedMemory2.Dispose();
+            _sharedMemory2?.Close();
+            _sharedMemory2?.Dispose();
+            _sharedMemory2 = null;
 
             IsRunning = false;
         }
