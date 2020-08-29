@@ -44,7 +44,18 @@ namespace GadrocsWorkshop.Helios.Windows
         {
             string message = ex.Message;
             Regex buildPathExpression = new Regex("[A-Z]:.*\\\\Helios(Dev)?\\\\");
+
             string trace = ex.StackTrace;
+            Exception scan = ex;
+
+            // get up to 10 inner exceptions
+            for (int i = 0; i < 10 && scan.InnerException != null; i++)
+            {
+                scan = scan.InnerException;
+                trace =
+                    $"{trace}{Environment.NewLine}{Environment.NewLine}caused by:{Environment.NewLine}{scan.Message}{Environment.NewLine}{scan.StackTrace}";
+            }
+
             Match buildPathMatch = buildPathExpression.Match(trace);
             if (buildPathMatch.Success)
             {
