@@ -33,8 +33,7 @@
             </Style>
         </ResourceDictionary>
     </Grid.Resources>
-    <Expander Style="{StaticResource InstallerGroupStyle}" IsExpanded="{Binding GroupIsEgure
-        xpanded, ElementName=InstallationLocations}"  Header="DCS Installations to Update">
+    <Expander Style="{StaticResource InstallerGroupStyle}" IsExpanded="{Binding GroupIsExpanded, ElementName=InstallationLocations}"  Header="DCS Installations to Update">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MinWidth="120"/>
