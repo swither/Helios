@@ -272,7 +272,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 totalBounds.Union(monitor.Rect);
                 if (monitor.Data.Main)
                 {
-                    mainBounds.Union(monitor.Rect);
+                    if (Data.MonitorLayoutMode == MonitorLayoutMode.TopLeftQuarter)
+                    {
+                        // special
+                        Rect scaled = monitor.Rect;
+                        scaled.Width = scaled.Width * 0.5d;
+                        scaled.Height = scaled.Height * 0.5d;
+                        mainBounds.Union(scaled);
+                    }
+                    else
+                    {
+                        mainBounds.Union(monitor.Rect);
+                    }
                 }
 
                 if (monitor.Data.UserInterface)

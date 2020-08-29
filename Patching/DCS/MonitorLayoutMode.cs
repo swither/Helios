@@ -27,6 +27,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         [Description("Horizontal row including primary display")]
         Row,
         [Description("Just the primary display")]
-        PrimaryOnly
+        PrimaryOnly,
+        [Description("Quarter screen (demo)")]
+        TopLeftQuarter
     }
 }

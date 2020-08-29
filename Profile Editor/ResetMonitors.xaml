@@ -2,13 +2,19 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor"
-        xmlns:hsdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
+        xmlns:helios="clr-namespace:GadrocsWorkshop.Helios;assembly=Helios"
         Title="ResetMonitors" Height="Auto" Width="600" MinWidth="700" WindowStartupLocation="CenterOwner" Name="ResetMonitorsWindow" ResizeMode="NoResize" SizeToContent="Height">
+
+    <Window.Resources>
+        <helios:EnumConverter Type="{x:Type local:ResetMonitorsScalingMode}" x:Key="ScalingModes"/>
+    </Window.Resources>
+    
     <Grid Background="White" Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -37,25 +43,28 @@
             <ItemsControl Margin="0,2" ItemsSource="{Binding ElementName=ResetMonitorsWindow,Path=MonitorResets}" >
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="#FF808080" BorderThickness="0,0,0,1" Padding="0,2">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Margin="2,0" Text="{Binding OldMonitor.Name}" />
-                                <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="2,0">
-                                    <TextBlock Margin="2,0" VerticalAlignment="Center">New Monitor:</TextBlock>
-                                    <ComboBox ItemsSource="{Binding  ElementName=ResetMonitorsWindow,Path=NewMonitors}" SelectedIndex="{Binding NewMonitor}" />
-                                    <CheckBox Margin="4,0" IsChecked="{Binding Scale}" VerticalAlignment="Center">Scale</CheckBox>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
+                        <Grid Margin="0,6">
+                            <StackPanel Orientation="Horizontal" Margin="2,0">
+                                <TextBlock Margin="2,0,3,0" VerticalAlignment="Center" Text="content from old " />
+                                <TextBox IsEnabled="True" IsReadOnly="True" Margin="2,0" Padding="4" VerticalAlignment="Center" Text="{Binding OldMonitor.Name}" />
+                                <TextBlock Margin="2,0,6,0" VerticalAlignment="Center">is placed on new</TextBlock>
+                                <ComboBox                                     
+                                    VerticalContentAlignment="Center"
+                                    ItemsSource="{Binding ElementName=ResetMonitorsWindow,Path=NewMonitors}" 
+                                    SelectedIndex="{Binding NewMonitor}" />
+                                <TextBlock Margin="6,0" VerticalAlignment="Center">using scaling mode</TextBlock>
+                                <ComboBox
+                                    VerticalContentAlignment="Center"
+                                    MinWidth="180"
+                                    ItemsSource="{Binding Source={StaticResource ScalingModes}, Path=DisplayNames}"
+                                    SelectedItem="{Binding ScalingMode, Converter={StaticResource ScalingModes}}" />
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Border>
-        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4" >
+        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4" >
             <Button MinWidth="60" Click="Cancel" Margin="0,0,4,0">Cancel</Button>
             <Button MinWidth="60" IsDefault="True" Click="Ok">Ok</Button>
         </StackPanel>

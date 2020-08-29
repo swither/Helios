@@ -141,6 +141,7 @@
     <Compile Include="ResetMonitors.xaml.cs">
       <DependentUpon>ResetMonitors.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ResetMonitorsScalingMode.cs" />
     <Compile Include="ResetMonitorsWork.cs" />
     <Compile Include="SaveTemplateDialog.xaml.cs">
       <DependentUpon>SaveTemplateDialog.xaml</DependentUpon>

@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,40 +24,26 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
     public class MonitorResetItem : NotificationObject
     {
-        private Monitor _oldMonitor;
-        private int _oldId;
+        private readonly int _oldId;
         private int _newMonitor;
-        private bool _scale;
-        private List<HeliosVisual> _controls;
         private readonly double _oldWidth;
         private readonly double _oldHeight;
 
         public MonitorResetItem(Monitor oldMonitor, int oldId, int newId)
         {
-            _controls = new List<HeliosVisual>();
-            _oldMonitor = oldMonitor;
+            Controls = new List<HeliosVisual>();
+            OldMonitor = oldMonitor;
             _oldId = oldId;
             _newMonitor = newId;
             _oldWidth = oldMonitor.Width;
             _oldHeight = oldMonitor.Height;
-            _scale = true;
         }
 
-        public List<HeliosVisual> Controls
-        {
-            get
-            {
-                return _controls;
-            }
-        }
+        public ResetMonitorsScalingMode ScalingMode { get; set; } = ResetMonitorsScalingMode.ScaleMonitor;
 
-        public Monitor OldMonitor
-        {
-            get
-            {
-                return _oldMonitor;
-            }
-        }
+        public List<HeliosVisual> Controls { get; }
+
+        public Monitor OldMonitor { get; }
 
         public int NewMonitor
         {
@@ -75,45 +62,38 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             }
         }
 
-        public bool Scale
-        {
-            get
-            {
-                return _scale;
-            }
-            set
-            {
-                if (!_scale.Equals(value))
-                {
-                    bool oldValue = _scale;
-                    _scale = value;
-                    OnPropertyChanged("Scale", oldValue, value, false);
-                }
-            }
-        }
-
         public IEnumerable<string> Reset()
         {
             Monitor display = ConfigManager.DisplayManager.Displays[_oldId];
-            double scale = ChooseScale(display);
-
+            ChooseTransform(display, out double scale,  out Point translation);
+            
             // atomically change the size of the monitor to match the local display
             OldMonitor.CopyGeometry(display);
 
-            // REVISIT: this does not invalidate the profile preview's image of the monitor
-            // after the last height change, so it shows the wrong height (height of old monitor)
             foreach (HeliosVisual visual in OldMonitor.Children)
             {
-                if (Scale)
-                {
-                    ScaleControl(visual, scale);
-                    yield return $"scaled {visual.TypeIdentifier} {visual.Name}";
-                }
-                else
-                {
-                    CheckBounds(visual, OldMonitor);
-                    yield return $"checked bounds of {visual.TypeIdentifier} {visual.Name}";
-                }
+                yield return UpdateControl(OldMonitor, visual, scale, translation);
+            }
+        }
+
+        private string UpdateControl(Monitor monitor, HeliosVisual visual, double scale, Point translation, string commentPrefix = "")
+        {
+            switch (ScalingMode)
+            {
+                case ResetMonitorsScalingMode.None:
+                    CheckBounds(visual, monitor);
+                    return $"{commentPrefix}checked bounds of {visual.TypeIdentifier} {visual.Name}";
+                case ResetMonitorsScalingMode.ScaleMonitor:
+                    TransformControl(visual, scale, translation);
+                    return $"{commentPrefix}scaled {visual.TypeIdentifier} {visual.Name}";
+                case ResetMonitorsScalingMode.ScaleToFit:
+                    TransformControl(visual, scale, translation);
+                    return $"{commentPrefix}scaled {visual.TypeIdentifier} {visual.Name} to fit";
+                case ResetMonitorsScalingMode.ScaleToTopRightQuarter:
+                    TransformControl(visual, scale, translation);
+                    return $"{commentPrefix}scaled {visual.TypeIdentifier} {visual.Name} for demo";
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -122,7 +102,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             HeliosVisual[] children = OldMonitor.Children.ToArray();
             foreach (HeliosVisual visual in children)
             {
-                _controls.Add(visual);
+                Controls.Add(visual);
                 OldMonitor.Children.Remove(visual);
                 yield return $"lifted {visual.TypeIdentifier} {visual.Name}";
             }
@@ -130,12 +110,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
         public IEnumerable<string> PlaceControls(Monitor newMonitor)
         {
-            if (!_controls.Any())
+            if (!Controls.Any())
             {
                 yield break;
             }
-            double scale = ChooseScale(newMonitor);
-            foreach (HeliosVisual visual in _controls)
+            ChooseTransform(newMonitor, out double scale, out Point translation);
+            foreach (HeliosVisual visual in Controls)
             {
                 // Make sure name is unique
                 int i = 1;
@@ -148,64 +128,67 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
                 newMonitor.Children.Add(visual);
 
-                if (Scale)
-                {
-                    ScaleControl(visual, scale);
-                    yield return $"placed and scaled {visual.TypeIdentifier} {visual.Name}";
-                }
-                else
-                {
-                    CheckBounds(visual, newMonitor);
-                    yield return $"placed and checked bounds of {visual.TypeIdentifier} {visual.Name}";
-                }
+                yield return UpdateControl(newMonitor, visual, scale, translation, "placed and ");
             }
         }
 
         /// <summary>
-        /// choose best scaling factor:
-        ///
-        /// if choose 
+        /// choose best scaling factor and translation vector
         /// </summary>
-        /// <param name="newMonitor"></param>
         /// <returns></returns>
-        private double ChooseScale(Monitor newMonitor)
+        private void ChooseTransform(Monitor newMonitor, out double scale, out Point translation)
         {
-            double scale = 1.0d;
-            if (!Scale)
+            switch (ScalingMode)
             {
-                return scale;
-            }
+                case ResetMonitorsScalingMode.None:
+                    scale = 1d;
+                    translation = new Point(0d, 0d);
+                    break;
 
-            // calculate the visible extent of the controls being placed, including top left corner
-            Rect extent = new Rect(0,0,1,1);
-            foreach (HeliosVisual visual in _controls)
-            {
-                extent.Union(visual.DisplayRectangle);
-            }
-            extent.Intersect(new Rect(0, 0, _oldWidth, _oldHeight));
+                case ResetMonitorsScalingMode.ScaleMonitor:
+                    // scale based only on monitor sizes
+                    scale = Math.Min(newMonitor.Width / _oldWidth, newMonitor.Height / _oldHeight);
+                    translation = new Point(0d, 0d);
+                    break;
 
-            // NOTE: populated extent should generally be much larger than 2 pixels, we are just using this here to protect against rounding issues
-            if ((extent.Width >= 2d) && (extent.Height >= 2d))
-            {
-                // now choose a scaling factor that will match monitor sizes in one dimension while making sure we don't
-                // drop controls by scaling in the other dimension
-                double scaleX = Math.Min(newMonitor.Width / _oldWidth, newMonitor.Height / extent.Height);
-                double scaleY = Math.Min(newMonitor.Height / _oldHeight, newMonitor.Width / extent.Width);
+                case ResetMonitorsScalingMode.ScaleToFit:
+                    // calculate the visible extent of the controls being placed, including top left corner
+                    Rect extent = Rect.Empty;
+                    foreach (HeliosVisual visual in Controls.Concat(OldMonitor.Children))
+                    {
+                        extent.Union(visual.DisplayRectangle);
+                    }
+                    extent.Intersect(new Rect(0, 0, _oldWidth, _oldHeight));
 
-                // choose the maximum scale value possible (this allows going back from portrait to landscape, for example)
-                scale = Math.Max(scaleX, scaleY);
+                    // NOTE: populated extent should generally be much larger than 2 pixels, we are just using this here to protect against rounding issues
+                    if ((extent.Width >= 2d) && (extent.Height >= 2d))
+                    {
+                        // choose a scaling factor that will maximize the content while preserving aspect
+                        // (this allows going back from portrait to landscape, for example)
+                        scale = Math.Min(newMonitor.Height / extent.Height, newMonitor.Width / extent.Width);
+                        translation = new Point(-extent.Left * scale, -extent.Top * scale);
+                    }
+                    else
+                    {
+                        // scale based only on monitor sizes
+                        scale = Math.Min(newMonitor.Width / _oldWidth, newMonitor.Height / _oldHeight);
+                        translation = new Point(0d, 0d);
+                    }
+                    break;
+
+                case ResetMonitorsScalingMode.ScaleToTopRightQuarter:
+                    scale = Math.Min(newMonitor.Width / _oldWidth, newMonitor.Height / _oldHeight) / 2d;
+                    translation = new Point(newMonitor.Width / 2d, 0d);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            else
-            {
-                // scale based on monitor sizes
-                scale = Math.Min(newMonitor.Width / _oldWidth, newMonitor.Height / _oldHeight);
-            }
-            return scale;
         }
 
         public void CopySettings(Monitor newMonitor)
         {
-            if (_controls.Count == 0)
+            if (Controls.Count == 0)
             {
                 // nothing transferred
                 // NOTE: this also covers the case where the source and target monitor are the same
@@ -240,23 +223,14 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             }
         }
 
-        private void ScaleControl(HeliosVisual visual, double scale)
+        private void TransformControl(HeliosVisual visual, double scale, Point translation)
         {
-            if (visual.Left > 0)
-            {
-                double locXDif = visual.Left;
-                visual.Left += (locXDif * scale) - locXDif;
-            }
-
-            if (visual.Top > 0)
-            {
-                double locYDif = visual.Top;
-                visual.Top += (locYDif * scale) - locYDif;
-            }
-
+            visual.Left = visual.Left * scale + translation.X;
+            visual.Top = visual.Top * scale + translation.Y;
             visual.Width = Math.Max(visual.Width * scale, 1d);
             visual.Height = Math.Max(visual.Height * scale, 1d);
 
+            // child coordinates are relative, so we don't have to translate
             visual.ScaleChildren(scale, scale);
         }
     }

@@ -132,7 +132,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 Rect rect = MonitorSetup.VisualToRect(monitor.Monitor);
                 if (monitor.Main)
                 {
-                    mainView.Union(rect);
+                    if (_parent.MonitorLayoutMode == MonitorLayoutMode.TopLeftQuarter)
+                    {
+                        // special
+                        Rect scaled = rect;
+                        scaled.Scale(0.5d, 0.5d);
+                        mainView.Union(scaled);
+                    }
+                    else
+                    {
+                        mainView.Union(rect);
+                    }
                     if (verbose) yield return new StatusReportItem
                     {
                         Status = $"{monitorDescription} is used for main view",

@@ -477,6 +477,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     break;
                 }
                 case MonitorLayoutMode.PrimaryOnly:
+                case MonitorLayoutMode.TopLeftQuarter:
                 {
                     Monitor primary = GetPrimaryMonitor();
                     if (primary == null)
@@ -741,6 +742,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     EnsureRowLayout();
                     break;
                 case MonitorLayoutMode.PrimaryOnly:
+                case MonitorLayoutMode.TopLeftQuarter:
                     EnsurePrimaryLayout();
                     break;
                 default:
