@@ -53,7 +53,12 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             if (Visual is KneeBoard profileImage)
             {
-                if (profileImage.ImageRefresh && ConfigManager.ImageManager is IImageManager3 refreshCapable)
+                if (profileImage.Positions == null || profileImage._currentPosition >= profileImage.Positions.Count)
+                {
+                    // invalid index, let code below load default
+                    _image = null;
+                }
+                else if (profileImage.ImageRefresh && ConfigManager.ImageManager is IImageManager3 refreshCapable)
                 {
                     _image = refreshCapable.LoadImage(profileImage.Positions[profileImage._currentPosition].Name, LoadImageOptions.ReloadIfChangedExternally);
                 }
