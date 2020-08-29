@@ -51,7 +51,7 @@ if ERRORLEVEL 2 (
 
 REM clean up
 del /q "Patching\Templates\Patching\Additional Simulator Viewports\*.htpl" 
-del /s "Helios\Templates\Base\Simulator Viewports\*.htpl"
+del /q "Helios\Templates\Base\Simulator Viewports\*.htpl"
 rmdir /s /q "Helios Installer\Release"
 rmdir /s /q "Helios Installer\Release32"
 rmdir /s /q "Keypress Receiver Installer\Release"
