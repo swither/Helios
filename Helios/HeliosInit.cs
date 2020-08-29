@@ -84,12 +84,9 @@ namespace GadrocsWorkshop.Helios
             Logger.Info("Helios Version " + RunningVersion.FromHeliosAssembly());
 
             ConfigManager.Application = application ?? new HeliosApplication();
-            ConfigManager.SettingsManager =
-                new SettingsManager(Path.Combine(ConfigManager.DocumentPath, "HeliosSettings.xml"))
-                {
-                    Writable = ConfigManager.Application.SettingsAreWritable
-                };
-            ConfigManager.VersionChecker = new VersionChecker(ConfigManager.SettingsManager, ConfigManager.Application.SettingsAreWritable);
+            bool applicationSettingsAreWritable = ConfigManager.Application.SettingsAreWritable;
+            InitializeSettings(applicationSettingsAreWritable);
+            ConfigManager.VersionChecker = new VersionChecker(ConfigManager.SettingsManager, applicationSettingsAreWritable);
             ConfigManager.UndoManager = new UndoManager();
             ConfigManager.ProfileManager = new ProfileManager();
             ConfigManager.ImageManager = new ImageManager(ConfigManager.ImagePath);
@@ -127,6 +124,15 @@ namespace GadrocsWorkshop.Helios
             {
                 Logger.Warn("Hardware rendering is not available on this machine.  Helios will consume large amounts of CPU.");
             }
+        }
+
+        public static void InitializeSettings(bool settingsAreWritable)
+        {
+            ConfigManager.SettingsManager =
+                new SettingsManager(Path.Combine(ConfigManager.DocumentPath, "HeliosSettings.xml"))
+                {
+                    Writable = settingsAreWritable
+                };
         }
 
         [Conditional("HELIOS_64BIT")]

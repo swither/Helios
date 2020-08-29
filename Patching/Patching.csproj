@@ -37,13 +37,13 @@
     <Compile Include="DCS\Controls\CombinedMonitorSetupControl.xaml.cs">
       <DependentUpon>CombinedMonitorSetupControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DCS\DCSPatchInstallation.cs" />
     <Compile Include="DCS\ViewModel\AdditionalViewportsViewModel.cs" />
     <Compile Include="DCS\ViewModel\CombinedMonitorSetupViewModel.cs" />
     <Compile Include="DCS\ViewModel\CombinedMonitorSetupViewModel_DesignInstance.cs" />
     <Compile Include="DCS\MonitorLayoutMode.cs" />
     <Compile Include="DCS\MonitorSetupTemplate.cs" />
     <Compile Include="DCS\SourceOfAdditionalViewports.cs" />
-    <Compile Include="DCS\ViewportPatches.cs" />
     <Compile Include="DCS\ViewportSetupFile.cs" />
     <Compile Include="DCS\ViewportSetupFileStatus.cs" />
     <Compile Include="DCS\ViewModel\ViewportSetupFileViewModel.cs" />
@@ -62,6 +62,7 @@
     <Compile Include="DCS\ShadowVisual.cs" />
     <Compile Include="DCS\ViewModel\ViewportViewModel.cs" />
     <Compile Include="PatchApplication.cs" />
+    <Compile Include="PatchedPath.cs" />
     <Compile Include="PatchInstallation.cs" />
     <Compile Include="IPatchDestination.cs" />
     <Compile Include="PatchFile.cs" />

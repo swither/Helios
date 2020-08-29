@@ -44,12 +44,12 @@ namespace GadrocsWorkshop.Helios.Patching
             });
         }
 
-        public IEnumerable<StatusReportItem> SimulateApply(IPatchDestination destination) =>
-            DoApply(destination, null, Mode.Simulate);
+        public IEnumerable<StatusReportItem> SimulateApply(IPatchDestination destination, HashSet<string> patchExclusions) =>
+            DoApply(destination, null, patchExclusions, Mode.Simulate);
 
-        public IEnumerable<StatusReportItem> Apply(IPatchDestinationWritable destination) => DoApply(destination, destination, Mode.Apply);
+        public IEnumerable<StatusReportItem> Apply(IPatchDestinationWritable destination, HashSet<string> patchExclusions) => DoApply(destination, destination, patchExclusions, Mode.Apply);
 
-        public IEnumerable<StatusReportItem> Verify(IPatchDestination destination)
+        public IEnumerable<StatusReportItem> Verify(IPatchDestination destination, HashSet<string> patchExclusions)
         {
             if (!destination.TryLock())
             {
@@ -64,6 +64,15 @@ namespace GadrocsWorkshop.Helios.Patching
 
             foreach (PatchFile patch in _patches)
             {
+                if (patchExclusions.Contains(patch.TargetPath))
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"{destination.LongDescription} will not patch {patch.TargetPath} because it was excluded from patching by the user"
+                    };
+                    continue;
+                }
+
                 if (!destination.TryGetSource(patch.TargetPath, out string source))
                 {
                     ConfigManager.LogManager.LogDebug(
@@ -77,7 +86,7 @@ namespace GadrocsWorkshop.Helios.Patching
                     {
                         Status = $"{destination.LongDescription} has already patched {patch.TargetPath}",
                         // there will be a lot of these, don't show them in small views
-                        Flags = StatusReportItem.StatusFlags.Verbose
+                        Flags = StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate
                     };
                 }
                 else
@@ -107,7 +116,7 @@ namespace GadrocsWorkshop.Helios.Patching
             Apply
         }
 
-        private IEnumerable<StatusReportItem> DoApply(IPatchDestination destination, IPatchDestinationWritable writable, Mode mode)
+        private IEnumerable<StatusReportItem> DoApply(IPatchDestination destination, IPatchDestinationWritable writable, HashSet<string> patchExclusions, Mode mode)
         {
             // set up according to mode
             string verb;
@@ -140,6 +149,11 @@ namespace GadrocsWorkshop.Helios.Patching
 
             foreach (PatchFile patch in _patches)
             {
+                if (patchExclusions.Contains(patch.TargetPath))
+                {
+                    continue;
+                }
+
                 if (!destination.TryGetSource(patch.TargetPath, out string source))
                 {
                     yield return new StatusReportItem
@@ -248,7 +262,7 @@ namespace GadrocsWorkshop.Helios.Patching
             return patches;
         }
 
-        public IEnumerable<StatusReportItem> Revert(IPatchDestinationWritable destination)
+        public IEnumerable<StatusReportItem> Revert(IPatchDestinationWritable destination, HashSet<string> patchExclusions)
         {
             if (!destination.TryLock())
             {
@@ -263,6 +277,11 @@ namespace GadrocsWorkshop.Helios.Patching
 
             foreach (PatchFile patch in _patches)
             {
+                if (patchExclusions.Contains(patch.TargetPath))
+                {
+                    continue;
+                }
+
                 if (!destination.TryGetSource(patch.TargetPath, out string source))
                 {
                     yield return new StatusReportItem
@@ -351,5 +370,10 @@ namespace GadrocsWorkshop.Helios.Patching
         {
             _patches.Add(patch);
         }
+
+        /// <summary>
+        /// enumerates all paths patched by this patch list, whether currently suppressed/filtered or not
+        /// </summary>
+        public IEnumerable<string> PatchedPaths => _patches.Select(patch => patch.TargetPath);
     }
 }

@@ -164,9 +164,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     continue;
                 }
 
-                if (selectedVersion != null && selectedVersion != directoryVersion)
+                if (selectedVersion != null && string.Compare(directoryVersion, selectedVersion, StringComparison.InvariantCulture) <= 0)
                 {
-                    // we already committed to a particular patch version and it is not this one
+                    // we found a better match in another location
                     continue;
                 }
 
@@ -199,7 +199,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private IList<StatusReportItem> ExecuteRemote(string[] patchesRoots, string selectedVersion, string patchSet, string command)
         {
-            IEnumerable<string> args = new[] { "-d", $"\"{_dcsRoot}\"", command }
+            IEnumerable<string> args = new[] { "-h", ConfigManager.DocumentPath, "-d", $"\"{_dcsRoot}\"", command }
                 .Concat(patchesRoots.Select(root => $"\"{Path.Combine(root, selectedVersion, patchSet)}\""));
             string myDirectory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location)).FullName;
             string executablePath = Path.Combine(myDirectory ?? "", "HeliosPatching.exe");

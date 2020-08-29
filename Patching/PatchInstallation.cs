@@ -17,6 +17,7 @@
 using GadrocsWorkshop.Helios.Util;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 
@@ -24,26 +25,35 @@ namespace GadrocsWorkshop.Helios.Patching
 {
     /// <summary>
     /// a context for the installation of a specific patch set to a set of patch destinations
+    ///
+    /// NOTE: view model functionality directly integrated to avoid tons of glue
     /// </summary>
     public class PatchInstallation: DependencyObject, IInstallation
     {
+        public event EventHandler PatchesChanged;
+
         private readonly Dictionary<string, PatchApplication> _destinations;
         private readonly string _patchSetDescription;
 
         public PatchInstallation(
             Dictionary<string, PatchApplication> destinations, 
             string patchSet,
-            string patchSetDescription,
-            bool isRemoteLocation)
+            string patchSetDescription)
         {
             _destinations = destinations;
             _ = patchSet;
             _patchSetDescription = patchSetDescription;
 
+            PatchedPaths = new ObservableCollection<PatchedPath>();
+
+            // load patchExclusions from settings instead of caching them, so we don't have different code paths from elevated binary
+            HashSet<string> patchExclusions = LoadPatchExclusions();
+
             // check if all selected patches are installed
-            foreach (PatchApplication status in _destinations.Values)
+            foreach (PatchApplication destination in _destinations.Values)
             {
-                status.CheckApplied();
+                destination.PatchExclusions = patchExclusions;
+                destination.CheckApplied();
             }
 
             // update overall status
@@ -79,10 +89,14 @@ namespace GadrocsWorkshop.Helios.Patching
 
         public void Reload(Dictionary<string, PatchApplication> effectiveDestinations)
         {
+            // load patchExclusions from settings instead of caching them, so we don't have different code paths from elevated binary
+            HashSet<string> patchExclusions = LoadPatchExclusions();
+
             // rebuild completely
             _destinations.Clear();
             foreach (KeyValuePair<string, PatchApplication> keyValuePair in effectiveDestinations)
             {
+                keyValuePair.Value.PatchExclusions = patchExclusions;
                 keyValuePair.Value.CheckApplied();
                 _destinations[keyValuePair.Key] = keyValuePair.Value;
             }
@@ -91,24 +105,38 @@ namespace GadrocsWorkshop.Helios.Patching
 
         private void UpdateStatus()
         {
-            if (!_destinations.Values.Any(d => d.Enabled))
-            {
-                Status = StatusCodes.NoLocations;
-                return;
-            }
-
             // calculate overall status
             StatusCodes newStatus = StatusCodes.NotApplicable;
             bool someUpToDate = false;
-            foreach (PatchApplication status in _destinations.Values)
+            bool statusFound = false;
+            bool someEnabled = false;
+
+            // update set of patched paths
+            // REVISIT: accumulate flags for each path, whether patch was from documents or program files?
+            SortedSet<string> allPaths = new SortedSet<string>();
+
+            foreach (PatchApplication destination in _destinations.Values)
             {
-                if (!status.Enabled)
+                // accumulate set of paths that exist in any destination's selected patch set
+                foreach (string path in destination.Patches.PatchedPaths)
                 {
-                    // does not count
+                    allPaths.Add(path);
+                }
+
+                if (statusFound)
+                {
+                    // already found terminal status, just iterating for paths at this point
                     continue;
                 }
 
-                switch (status.Status)
+                if (!destination.Enabled)
+                {
+                    // does not count for status
+                    continue;
+                }
+
+                someEnabled = true;
+                switch (destination.Status)
                 {
                     case StatusCodes.Unknown:
                     case StatusCodes.OutOfDate:
@@ -121,12 +149,14 @@ namespace GadrocsWorkshop.Helios.Patching
                         break;
                     case StatusCodes.Incompatible:
                         // any destination being incompatible counts
-                        Status = StatusCodes.Incompatible;
-                        return;
+                        newStatus = StatusCodes.Incompatible;
+                        statusFound = true;
+                        break;
                     case StatusCodes.ResetRequired:
                         // any destination being dirty counts
-                        Status = StatusCodes.ResetRequired;
-                        return;
+                        newStatus = StatusCodes.ResetRequired;
+                        statusFound = true;
+                        break;
                     case StatusCodes.NotApplicable:
                         // this never changes the status; ignore
                         break;
@@ -136,16 +166,98 @@ namespace GadrocsWorkshop.Helios.Patching
                     case StatusCodes.ProfileSaveRequired:
                     // ReSharper enable RedundantCaseLabel
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(status.Status), status.Status, null);
+                        throw new ArgumentOutOfRangeException(nameof(destination.Status), destination.Status, null);
                 }
             }
 
-            if (newStatus == StatusCodes.NotApplicable && someUpToDate)
+            if (newStatus == StatusCodes.NotApplicable)
             {
-                // at least some patches were applied
-                newStatus = StatusCodes.UpToDate;
-            }
+                if (someUpToDate)
+                {
+                    // at least some patches were applied
+                    newStatus = StatusCodes.UpToDate;
+                } 
+                else if (!someEnabled)
+                {
+                    newStatus = StatusCodes.NoLocations;
+                }
+            } 
+            
+            // update the collection view minimally to invalidate the fewest UI elements
+            UpdatePatchedPaths(allPaths);
+
+            // show new status
             Status = newStatus;
+        }
+
+        private void UpdatePatchedPaths(SortedSet<string> allPaths)
+        {
+            // master/update because we build the ObservableCollection in order also
+            // and we want to strictly minimize the changes in the observable collection
+            int masterCount = PatchedPaths.Count;
+            int masterIndex = 0;
+
+            foreach (string update in allPaths)
+            {
+                if (masterIndex == masterCount)
+                {
+                    // ran our of master records, all updates go in
+                    PatchedPaths.Insert(masterIndex, CreatePatchedPath(update));
+                    masterIndex++;
+                    masterCount++;
+                    continue;
+                }
+
+                // scan up to the current update
+                while (masterIndex<masterCount)
+                {
+                    PatchedPath master = PatchedPaths[masterIndex];
+                    int comparison = string.Compare(master.Path, update, StringComparison.Ordinal);
+                    if (comparison < 0)
+                    {
+                        // master item is no longer present
+                        PatchedPaths.RemoveAt(masterIndex);
+                        masterCount--;
+                        DisposePatchedPath(master);
+                        continue;
+                    }
+
+                    if (comparison == 0)
+                    {
+                        // found existing item, advance update and master
+                        masterIndex++;
+                        break;
+                    }
+
+                    // insert update item before master and keep considering the same master record
+                    // (which is now one further to the right)
+                    PatchedPaths.Insert(masterIndex, CreatePatchedPath(update));
+                    masterIndex++;
+                    masterCount++;
+                    break;
+                }
+            }
+        }
+
+        private void DisposePatchedPath(PatchedPath patchedPath)
+        {
+            patchedPath.PropertyChanged -= PatchedPath_PropertyChanged;
+        }
+
+        private PatchedPath CreatePatchedPath(string path)
+        {
+            PatchedPath patchedPath = new PatchedPath(path);
+            patchedPath.PropertyChanged += PatchedPath_PropertyChanged;
+            return patchedPath;
+        }
+
+        private void PatchedPath_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PatchedPath.Allowed))
+            {
+                // need to check patch status
+                PatchesChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public InstallationResult Install(IInstallationCallbacks callbacks)
@@ -153,6 +265,9 @@ namespace GadrocsWorkshop.Helios.Patching
             List<StatusReportItem> results = new List<StatusReportItem>();
             bool failed = false;
             bool imprecise = false;
+
+            // load patchExclusions from settings instead of caching them, so we don't have different code paths from elevated binary
+            HashSet<string> patchExclusions = LoadPatchExclusions();
 
             // simulate patches and collect any errors
             foreach (PatchApplication item in _destinations.Values)
@@ -162,7 +277,9 @@ namespace GadrocsWorkshop.Helios.Patching
                     continue;
                 }
 
-                foreach (StatusReportItem result in item.Patches.SimulateApply(item.Destination))
+                item.PatchExclusions = patchExclusions;
+
+                foreach (StatusReportItem result in item.Patches.SimulateApply(item.Destination, patchExclusions))
                 {
                     result.Log(ConfigManager.LogManager);
                     results.Add(result);
@@ -246,6 +363,9 @@ namespace GadrocsWorkshop.Helios.Patching
             bool failed = false;
             string message = "";
 
+            // load patchExclusions from settings instead of caching them, so we don't have different code paths from elevated binary
+            HashSet<string> patchExclusions = LoadPatchExclusions();
+
             // revert patches, by either restoring original file or reverse patching
             foreach (PatchApplication item in _destinations.Values)
             {
@@ -255,6 +375,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 }
 
                 // revert directly or via elevated process, as appropriate
+                item.PatchExclusions = patchExclusions;
                 IList<StatusReportItem> revertResults = item.UseRemote ? item.RemoteRevert() : item.Revert();
                 foreach (StatusReportItem result in revertResults)
                 {
@@ -294,9 +415,9 @@ namespace GadrocsWorkshop.Helios.Patching
             // special check that is not handled by UpdateStatus, because we are technically in a state that just means
             // we have to reinstall some patches, but this still means something went wrong in reverting patches, such as
             // user cancellation
-            if (_destinations.Values.Any(d => d.Enabled 
-                                              && d.Status != StatusCodes.OutOfDate
-                                              && d.Status != StatusCodes.NotApplicable))
+            if (_destinations.Values.Any(d => d.Enabled && 
+                d.Status != StatusCodes.OutOfDate && 
+                d.Status != StatusCodes.NotApplicable))
             {
                 // revert completed, but not everything was done
                 callbacks.Failure($"{_patchSetDescription} removal incomplete", "Some patches were not reverted", results);
@@ -306,6 +427,11 @@ namespace GadrocsWorkshop.Helios.Patching
             callbacks.Success($"{_patchSetDescription} removal success", "All patches reverted successfully",
                 results);
             return InstallationResult.Success;
+        }
+
+        public static HashSet<string> LoadPatchExclusions()
+        {
+            return new HashSet<string>(PatchedPath.ExcludedPaths);
         }
 
         #region Properties
@@ -322,6 +448,18 @@ namespace GadrocsWorkshop.Helios.Patching
         public static readonly DependencyProperty StatusProperty =
             DependencyProperty.Register("Status", typeof(StatusCodes), typeof(PatchInstallation),
                 new PropertyMetadata(StatusCodes.OutOfDate));
+
+        /// <summary>
+        /// currently known patched paths in any of the current patch destinations, and their filtering status
+        /// </summary>
+        public ObservableCollection<PatchedPath> PatchedPaths
+        {
+            get => (ObservableCollection<PatchedPath>)GetValue(PatchedPathsProperty);
+            set => SetValue(PatchedPathsProperty, value);
+        }
+
+        public static readonly DependencyProperty PatchedPathsProperty =
+            DependencyProperty.Register("PatchedPaths", typeof(ObservableCollection<PatchedPath>), typeof(PatchInstallation), new PropertyMetadata(null));
 
         #endregion
     }

@@ -23,38 +23,55 @@ namespace HeliosVirtualCockpit.Helios.HeliosPatching
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            if (args.Length < 2)
-            {
-                // tell users to go away and not try to use this executable even though it is in the installation folder
-                MessageBox.Show("Do not execute this program.  It is a system process used by Helios Profile Editor.", "HeliosPatching Utility Executable");
-                return;
-            }
-            // start only enough of Helios to support logging
-            string documentPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                RunningVersion.IsDevelopmentPrototype ? "HeliosDev" : "Helios");
-            HeliosInit.InitializeLogging(documentPath, LogLevel.Info);
-            ConfigManager.DocumentPath = documentPath;
             try
             {
-                if (args.Length < 5)
+                if (args.Length < 2)
                 {
-                    throw new Exception("must have at least the following arguments: -o PIPENAME -d DCSROOT COMMAND");
+                    // tell users to go away and not try to use this executable even though it is in the installation folder
+                    throw new Exception("Do not execute this program.  It is a system process used by Helios Profile Editor.");
+                }
+
+                if (args.Length < 7)
+                {
+                    throw new Exception(
+                        "must have at least the following arguments: -o PIPENAME -h HELIOSDOCUMENTS -d DCSROOT COMMAND");
                 }
 
                 if (args[0] != "-o")
                 {
-                    throw new Exception("must have the following arguments: -o PIPENAME -d DCSROOT COMMAND");
+                    throw new Exception(
+                        "must have the following arguments: -o PIPENAME -h HELIOSDOCUMENTS -d DCSROOT COMMAND");
                 }
 
-                if (args[2] != "-d")
+                if (args[2] != "-h")
                 {
-                    throw new Exception("must have the following arguments: -o PIPENAME -d DCSROOT COMMAND");
+                    throw new Exception(
+                        "must have the following arguments: -o PIPENAME -h HELIOSDOCUMENTS -d DCSROOT COMMAND");
                 }
 
-                string pipeName = args[1];
-                string dcsRoot = args[3];
-                string verb = args[4];
+                if (args[4] != "-d")
+                {
+                    throw new Exception(
+                        "must have the following arguments: -o PIPENAME -h HELIOSDOCUMENTS -d DCSROOT COMMAND");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "HeliosPatching Utility Executable");
+                return;
+            }
+
+            // start only enough of Helios to support logging and settings file
+            string documentPath = args[3];
+            HeliosInit.InitializeLogging(documentPath, LogLevel.Info);
+            ConfigManager.DocumentPath = documentPath;
+            HeliosInit.InitializeSettings(false);
+
+            string pipeName = args[1];
+            string dcsRoot = args[5];
+            string verb = args[6];
+            try
+            {
                 switch (verb)
                 {
                     case "apply":
@@ -75,7 +92,7 @@ namespace HeliosVirtualCockpit.Helios.HeliosPatching
                         break;
                     default:
                         throw new Exception(
-                            "must have arguments matching: -o PIPENAME -d DCSROOT apply|revert PATCHFOLDERS...");
+                            "must have arguments matching: -o PIPENAME -h HELIOSDOCUMENTS -d DCSROOT apply|revert PATCHFOLDERS...");
                 }
             }
             catch (Exception ex)
@@ -113,7 +130,8 @@ namespace HeliosVirtualCockpit.Helios.HeliosPatching
                 return;
             }
             PatchDestination dcs = new PatchDestination(location);
-            IList<StatusReportItem> results = patches.Apply(dcs).ToList();
+            HashSet<string> patchExclusions = PatchInstallation.LoadPatchExclusions();
+            IList<StatusReportItem> results = patches.Apply(dcs, patchExclusions).ToList();
             response.SendReport(results);
         }
 
@@ -135,7 +153,8 @@ namespace HeliosVirtualCockpit.Helios.HeliosPatching
                 return;
             }
             PatchDestination dcs = new PatchDestination(location);
-            IList<StatusReportItem> results = patches.Revert(dcs).ToList();
+            HashSet<string> patchExclusions = PatchInstallation.LoadPatchExclusions();
+            IList<StatusReportItem> results = patches.Revert(dcs, patchExclusions).ToList();
             response.SendReport(results);
         }
     }

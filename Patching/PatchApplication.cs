@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -36,6 +37,8 @@ namespace GadrocsWorkshop.Helios.Patching
         public bool UseRemote { get; }
         public StatusCodes Status { get; internal set; }
 
+        public HashSet<string> PatchExclusions { get; internal set; } = new HashSet<string>();
+
         public PatchApplication(IPatchDestinationWritable destination, bool enabled, bool useRemote, string patchSet,
             params string[] patchesRoots)
         {
@@ -49,7 +52,15 @@ namespace GadrocsWorkshop.Helios.Patching
             string selectedVersion = null;
             foreach (string patchesRoot in PatchesRoots)
             {
+                string previouslySelectedVersion = selectedVersion;
                 PatchList loaded = Destination.SelectPatches(patchesRoot, ref selectedVersion, PatchSet);
+                if (previouslySelectedVersion != null && 
+                    selectedVersion != null && 
+                    string.Compare(selectedVersion, previouslySelectedVersion, StringComparison.InvariantCulture) > 0)
+                {
+                    // replaced with higher version
+                    patches = new PatchList();
+                }
                 patches.Merge(loaded);
             }
 
@@ -62,7 +73,7 @@ namespace GadrocsWorkshop.Helios.Patching
         {
             bool notInstalled = false;
             bool installed = false;
-            IList<StatusReportItem> verified = Patches.Verify(Destination).ToList();
+            IList<StatusReportItem> verified = Patches.Verify(Destination, PatchExclusions).ToList();
             foreach (StatusReportItem result in verified)
             {
                 // don't log these results, because Verify considers being out of date to be an error
@@ -71,11 +82,12 @@ namespace GadrocsWorkshop.Helios.Patching
                     // errors indicate patch needs work
                     notInstalled = true;
                 }
-                else
+                else if (result.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate))
                 {
-                    // any indication other than error means patch is installed
+                    // patch is installed
                     installed = true;
                 }
+                // Note: ignore not applicable / excluded
             }
 
             if (!verified.Any())
@@ -162,13 +174,13 @@ namespace GadrocsWorkshop.Helios.Patching
 
         internal IList<StatusReportItem> Apply()
         {
-            IList<StatusReportItem> results = Patches.Apply(Destination).ToList();
+            IList<StatusReportItem> results = Patches.Apply(Destination, PatchExclusions).ToList();
             return ScanResults(results);
         }
 
         internal IList<StatusReportItem> Revert()
         {
-            IList<StatusReportItem> results = Patches.Revert(Destination).ToList();
+            IList<StatusReportItem> results = Patches.Revert(Destination, PatchExclusions).ToList();
             return ScanResults(results);
         }
 

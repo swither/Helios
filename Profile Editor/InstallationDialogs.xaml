@@ -27,7 +27,7 @@
         <Style.Triggers>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding Details.Count, PresentationTraceSources.TraceLevel=High}" Value="0"/>
+                    <Condition Binding="{Binding Details.Count}" Value="0"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Visibility" Value="Collapsed"/>

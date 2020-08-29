@@ -40,9 +40,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             PatchSetShortName = patchSetShortName;
             Patching = new PatchInstallation(LoadDestinations(Locations),
                 PatchSet,
-                $"Helios {PatchSetShortName} patches",
-                Locations.IsRemote);
+                $"Helios {PatchSetShortName} patches");
+            Patching.PatchesChanged += Patching_PatchesChanged;
             SubscribeToLocationChanges();
+        }
+
+        private void Patching_PatchesChanged(object sender, System.EventArgs e)
+        {
+            _parent?.InvalidateStatusReport();
         }
 
         /// <summary>
@@ -147,6 +152,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public override IEnumerable<StatusReportItem> PerformReadyCheck()
         {
+            // load patchExclusions from settings instead of caching them, so we don't have different code paths from elevated binary
+            HashSet<string> patchExclusions = PatchInstallation.LoadPatchExclusions();
+
             // check if DCS install folders are configured
             IList<InstallationLocation> locations = InstallationLocations.Singleton.Active;
             if (!locations.Any())
@@ -176,7 +184,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     };
                 }
 
-                foreach (StatusReportItem result in item.Patches.Verify(item.Destination))
+                foreach (StatusReportItem result in item.Patches.Verify(item.Destination, patchExclusions))
                 {
                     // return detailed results instead of just "up to date or not"
                     yield return result;
@@ -185,9 +193,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             yield return new StatusReportItem
             {
-                Status = "Helios is managing DCS {PatchSetShortName} patches",
+                Status = $"Helios is managing DCS {PatchSetShortName} patches",
                 Recommendation =
-                    "Do not also install {PatchSetShortName} mods manually or via a mod manager like OVGME",
+                    $"Do not also install {PatchSetShortName} mods manually or via a mod manager like OVGME",
                 Flags = StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
         }

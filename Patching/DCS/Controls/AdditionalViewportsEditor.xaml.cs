@@ -30,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS.Controls
     public partial class AdditionalViewportsEditor : HeliosInterfaceEditor
     {
         private readonly InstallationDialogs _installationDialogs;
-        private AdditionalViewports _parent;
+        private AdditionalViewports _interface;
 
         public AdditionalViewportsEditor()
         {
@@ -47,13 +47,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS.Controls
             base.OnInterfaceChanged(oldInterface, newInterface);
             if (newInterface is AdditionalViewports viewportsInterface)
             {
-                _parent = viewportsInterface;
-                DataContext = new AdditionalViewportsViewModel(_parent.ViewportPatches);
+                _interface = viewportsInterface;
+                DataContext = new AdditionalViewportsViewModel(_interface.ViewportPatches);
             }
             else
             {
                 // deinit; provoke crash on attempt to use 
-                _parent = null;
+                _interface = null;
                 DataContext = null;
             }
         }
@@ -62,14 +62,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS.Controls
 
         private void Configure_Click(object sender, RoutedEventArgs e)
         {
-            _parent?.ViewportPatches.Install(_installationDialogs);
-            _parent?.InvalidateStatusReport();
+            _interface?.ViewportPatches.Install(_installationDialogs);
+            _interface?.InvalidateStatusReport();
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)
         {
-            _parent?.ViewportPatches.Patching.Uninstall(_installationDialogs);
-            _parent?.InvalidateStatusReport();
+            _interface?.ViewportPatches.Patching.Uninstall(_installationDialogs);
+            _interface?.InvalidateStatusReport();
         }
 
         #endregion

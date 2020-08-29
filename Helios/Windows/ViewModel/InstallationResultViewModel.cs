@@ -24,8 +24,8 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
     public class InstallationMessageViewModelBase
     {
-        public string Title { get; internal set; }
-        public string Message { get; internal set; }
+        public string Title { get; set; }
+        public string Message { get; set; }
     }
 
     public class InstallationResultViewModel : InstallationMessageViewModelBase
@@ -78,13 +78,37 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                     Dialog.ShowModalCommand.Execute(
                         new ShowModalParameter
                         {
-                            Content = new ShareInstallationResults(new List<SingleReport> {new SingleReport(Details)})
+                            Content = new ShareInstallationResults(new List<SingleReport>
+                            {
+                                new SingleReport(Messages.Concat(Details))
+                            })
                         },
                         parameter as IInputElement);
                 });
                 return _shareCommand;
             }
         }
+
+        private IEnumerable<InterfaceStatusViewItem> Messages
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Title))
+                {
+                    yield return WrapMessage(Title);
+                }
+                if (!string.IsNullOrEmpty(Message))
+                {
+                    yield return WrapMessage(Message);
+                }
+            }
+        }
+
+        private static InterfaceStatusViewItem WrapMessage(string status) =>
+            new InterfaceStatusViewItem(new StatusReportItem
+            {
+                Status = status
+            });
     }
 
     public class InstallationDangerPromptModel : InstallationResultViewModel

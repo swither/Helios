@@ -9,6 +9,7 @@
                                  xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                                  xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS.ViewModel"
+                                 xmlns:patching="clr-namespace:GadrocsWorkshop.Helios.Patching"
                                  x:Name="ViewportsWindow" Height="Auto" Width="Auto"
                                  mc:Ignorable="d"
                                  d:DataContext="{d:DesignInstance Type={x:Type viewModel:AdditionalViewportsViewModel}}"
@@ -106,22 +107,35 @@
             <Style x:Key="BasicGroup" TargetType="{x:Type Control}">
                 <Setter Property="Margin" Value="0,0,0,12" />
             </Style>
-            <Style x:Key="Documentation" TargetType="{x:Type TextBlock}">
-                <Setter Property="FontSize" Value="10" />
-                <Setter Property="FontStyle" Value="Italic" />
-                <Setter Property="TextWrapping" Value="Wrap" />
-            </Style>
+            <DataTemplate DataType="{x:Type patching:PatchedPath}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Column="0" IsChecked="{Binding Allowed}" Command="{Binding AllowedCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" Margin="5,3" VerticalAlignment="Center"/>
+                    <Label Grid.Column="1" IsEnabled="{Binding Allowed}" Style="{StaticResource InterfaceEditorLabel}" Margin="3" Padding="0,3" VerticalAlignment="Center">
+                        <!-- content is a TextBlock to defeat label interpreting underscores -->
+                        <TextBlock Text="{Binding Path}"/>
+                    </Label>
+                </Grid>
+            </DataTemplate>
         </ResourceDictionary>
     </FrameworkElement.Resources>
     <StackPanel>
         <heliosDcs:InstallationLocationsGroup />
-        <!--
         <Expander Header="Details (Advanced)" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
             <Grid Height="Auto">
-                <ItemsControl ItemsSource="{Binding Data.Patching.Patches}"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="6">These are the files that are patched for you by Helios based on what aircraft you have installed and what DCS Version(s) you have.
+                Disabling one of the items here allows you to take control of that file yourself so that you can modify it freely without Helios complaining about it.
+                However, Helios may not longer function correctly unless you know exactly what you are doing.</TextBlock>
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding Data.Patching.PatchedPaths}"/>
             </Grid>
         </Expander>
-        -->
         <GroupBox Header="DCS Additional Viewports" Style="{StaticResource BasicGroup}">
             <Grid Height="Auto">
                 <Grid.ColumnDefinitions>
@@ -143,9 +157,6 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">All viewport patches are installed.</TextBlock>
                     <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click"
                             Style="{StaticResource InterfaceEditorButton}">
