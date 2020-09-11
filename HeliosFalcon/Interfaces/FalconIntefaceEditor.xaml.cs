@@ -14,6 +14,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.IO;
 using System.Windows;
 using GadrocsWorkshop.Helios.Windows.Controls;
 using Microsoft.Win32;
@@ -43,13 +44,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             ofd.FileName = ((FalconInterface)Interface).KeyFileName;
 
-            if (((FalconInterface) Interface).FalconType == FalconTypes.BMS)
+            if (Directory.Exists(((FalconInterface)Interface).FalconPath))
             {
-                ofd.InitialDirectory = ((FalconInterface)Interface).FalconPath + "\\User\\Config";
+                if (((FalconInterface)Interface).FalconType == FalconTypes.BMS)
+                {
+                    ofd.InitialDirectory = ((FalconInterface)Interface).FalconPath + "\\User\\Config";
+                }
+                else
+                {
+                    ofd.InitialDirectory = ((FalconInterface)Interface).FalconPath;
+                }
             }
             else
             {
-                ofd.InitialDirectory = ((FalconInterface) Interface).FalconPath;
+                ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
 
             Nullable<bool> result = ofd.ShowDialog(Window.GetWindow(this));
