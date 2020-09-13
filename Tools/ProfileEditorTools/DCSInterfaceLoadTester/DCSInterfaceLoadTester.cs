@@ -31,7 +31,7 @@ using GadrocsWorkshop.Helios.UDPInterface;
 namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 {
     [HeliosTool]
-    public class DCSInterfaceLoadTester : IMenuSectionFactory, IProfileTool
+    public class DCSInterfaceLoadTester : ProfileTool, IMenuSectionFactory
     {
         // NOTE: access to C sprintf to emulate Lua format
         [DllImport("msvcrt.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
@@ -52,7 +52,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
         private HeliosBinding.IHeliosBindingTracer _previousTracer;
 
         public DCSInterface Target { get; private set; }
-        public HeliosProfile Profile { get; private set; }
 
         private const double UPDATES_PER_SECOND = 30d;
         private const double SLOW_UPDATES_PER_SECOND = 5d;
@@ -108,15 +107,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
             }
         }
 
-        public void Open(HeliosProfile newProfile)
-        {
-            Profile = newProfile;
-        }
-
-        public void Close(HeliosProfile oldProfile)
+        public override void Close(HeliosProfile oldProfile)
         {
             Stop();
-            Profile = null;
+            base.Close(oldProfile);
         }
 
         private void Start()
@@ -160,8 +154,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
             _timer.Start();
         }
 
-        private bool CanStart =>
-            Profile != null &&
+        public override bool CanStart =>
+            base.CanStart &&
             !IsStarted &&
             Profile.Interfaces.OfType<DCSInterface>().Any();
 

@@ -26,22 +26,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools
     /// tool to set all output bindings on all interfaces to no cascade
     /// </summary>
     [HeliosTool]
-    public class CascadeRemover : IProfileTool, IMenuSectionFactory
+    public class CascadeRemover : ProfileTool, IMenuSectionFactory
     {
-        private HeliosProfile _profile;
-
-        public bool CanStart => _profile != null;
-
-        public void Open(HeliosProfile newProfile)
-        {
-            _profile = newProfile;
-        }
-
-        public void Close(HeliosProfile oldProfile)
-        {
-            _profile = null;
-        }
-
         public MenuSectionModel CreateMenuSection()
         {
             return new MenuSectionModel("Cascade Remover", new List<MenuItemModel>
@@ -52,9 +38,15 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools
             });
         }
 
+        /// <summary>
+        /// since interface bindings are broken in Helios Undo system (property changes are not forwarded to interface for Undo)
+        /// we create our own undo context that marks the profile as dirty and also allows this operation to be reversed
+        /// </summary>
         private class CascadeRemoval : IUndoItem
         {
             private readonly List<HeliosBinding> _items;
+
+            public bool DoesSomething => _items.Any();
 
             public CascadeRemoval(List<HeliosBinding> items)
             {
@@ -72,22 +64,25 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools
             }
         }
 
-
         private void Execute()
         {
-            if (_profile == null)
+            if (Profile == null)
             {
                 return;
             }
 
             CascadeRemoval operation = new CascadeRemoval(FindInterfaceOutputCascades().ToList());
+            if (!operation.DoesSomething)
+            {
+                return;
+            }
             operation.Do();
             ConfigManager.UndoManager.AddUndoItem(operation);
         }
 
         private IEnumerable<HeliosBinding> FindInterfaceOutputCascades()
         {
-            return _profile.Interfaces.SelectMany(profileInterface => profileInterface.OutputBindings
+            return Profile.Interfaces.SelectMany(profileInterface => profileInterface.OutputBindings
                 .Where(h => !h.BypassCascadingTriggers));
         }
     }
