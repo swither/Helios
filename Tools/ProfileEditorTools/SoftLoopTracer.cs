@@ -55,7 +55,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools
                 // log every node traversed while returning back through the sources
                 // after detecting a loop
                 // NOTE: LongDescription is extremely expensive, but that's ok because we trace every loop only once
-                Logger.Info($"  binding loop includes {heliosBinding.Description} ({heliosBinding.LongDescription})");
+                Logger.Warn($"  binding loop includes {heliosBinding.Description} ({heliosBinding.LongDescription})");
             }
 
             HeliosObject source = heliosBinding.Trigger.Source;
@@ -77,7 +77,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools
             {
                 // found source of loop, finish trace
                 _traceLoop = false;
-                Logger.Info("  binding loop trace complete");
+                Logger.Warn("  binding loop trace complete");
             }
 
             // not tracing any more
