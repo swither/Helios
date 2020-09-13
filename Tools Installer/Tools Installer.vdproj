@@ -435,7 +435,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\HeliosDeveloperTools.msi"
+        "OutputFilename" = "8:Release\\Helios Developer Tools.1.6.1000.0.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -525,7 +525,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Patching, Version=1.6.1000.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:Patching, Version=1.6.3401.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_26CAD1EC1D5740483C3382BE756AF312"
@@ -590,11 +590,6 @@
             "AssemblyAsmDisplayName" = "8:SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_360B7CCC5C89D5125D07A4B6A9F8D691"
-                    {
-                    "Name" = "8:SharpDX.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:SharpDX.dll"
             "TargetName" = "8:"
@@ -742,7 +737,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Helios, Version=1.6.1000.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:Helios, Version=1.6.3401.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_8F356B0B3101C3CDC2F506E0DB137C61"
@@ -807,11 +802,6 @@
             "AssemblyAsmDisplayName" = "8:NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_C0A20E88244B38843D46E8085A31D7AB"
-                    {
-                    "Name" = "8:NLog.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:NLog.dll"
             "TargetName" = "8:"
@@ -869,11 +859,6 @@
             "AssemblyAsmDisplayName" = "8:NLua, Version=1.4.31.0, Culture=neutral, PublicKeyToken=6a194c04b9c89217, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_C80F1F33A281940171FC8D7528F54B14"
-                    {
-                    "Name" = "8:NLua.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:NLua.dll"
             "TargetName" = "8:"
@@ -931,11 +916,6 @@
             "AssemblyAsmDisplayName" = "8:SharpDX.DirectInput, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_D0760567F0A7200C295A050E36F2EEB3"
-                    {
-                    "Name" = "8:SharpDX.DirectInput.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:SharpDX.DirectInput.dll"
             "TargetName" = "8:"
@@ -990,7 +970,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ToolsCommon, Version=1.6.3303.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:ToolsCommon, Version=1.6.3401.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_D8F2FABB5807BF0E5328156A0957E577"
@@ -1024,11 +1004,6 @@
             "AssemblyAsmDisplayName" = "8:KeraLua, Version=1.0.29.0, Culture=neutral, PublicKeyToken=6a194c04b9c89217, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F38BECF5F8D07E0DE236977969594DDA"
-                    {
-                    "Name" = "8:KeraLua.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:KeraLua.dll"
             "TargetName" = "8:"
@@ -1067,7 +1042,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_B7F0FD31F11F488392340F766F1F80A3"
             {
-            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\HeliosDev"
+            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\Helios"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -1148,21 +1123,21 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Helios Developer Tools"
-        "ProductCode" = "8:{D9D72FA4-5F80-4E0A-ABDD-BCA558EC08BE}"
-        "PackageCode" = "8:{FA811D4B-8C7C-43D4-B3C0-35C3097FA140}"
+        "ProductCode" = "8:{CA09B01B-E23C-485C-B698-1E0EEACD930C}"
+        "PackageCode" = "8:{F6AF56AE-70B8-4862-ADA2-D2848349C7B2}"
         "UpgradeCode" = "8:{1A6DEA70-100A-4C3B-A9D9-64340BEAC520}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.6.1000"
         "Manufacturer" = "8:Helios Virtual Cockpit"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/HeliosVirtualCockpit/Helios/wiki/Developer-Tools"
         "Title" = "8:Helios Developer Tools"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Helios Virtual Cockpit"
+        "ARPCONTACT" = "8:Helios Contributors"
         "Keywords" = "8:Helios Developer Tools"
         "ARPCOMMENTS" = "8:Helios Developer Tools"
         "ARPURLINFOABOUT" = "8:"

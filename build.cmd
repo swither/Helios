@@ -85,6 +85,10 @@ echo backing up "Keypress Receiver Installer\Keypress Receiver Installer.vdproj"
 move "Keypress Receiver Installer\Keypress Receiver Installer.vdproj" "Keypress Receiver Installer\Keypress Receiver Installer.vdproj.bak"
 echo generating modified "Keypress Receiver Installer\Keypress Receiver Installer.vdproj" 
 powershell -Command "(gc 'Keypress Receiver Installer\Keypress Receiver Installer.vdproj.bak') -replace '1\.6\.1000\.0\.msi', '%HELIOS_BUILT_VERSION%.msi' | Set-Content 'Keypress Receiver Installer\Keypress Receiver Installer.vdproj'"
+echo backing up "Tools Installer\Tools Installer.vdproj" to "Tools Installer\Tools Installer.vdproj.bak" 
+move "Tools Installer\Tools Installer.vdproj" "Tools Installer\Tools Installer.vdproj.bak"
+echo generating modified "Tools Installer\Tools Installer.vdproj" 
+powershell -Command "(gc 'Tools Installer\Tools Installer.vdproj.bak') -replace '1\.6\.1000\.0\.msi', '%HELIOS_BUILT_VERSION%.msi' | Set-Content 'Tools Installer\Tools Installer.vdproj'"
 
 REM build installers; this requires https://stackoverflow.com/questions/8648428/an-error-occurred-while-validating-hresult-8000000a/45580775#45580775
 devenv Helios.sln /Build "JustInstallers|x64"
@@ -97,6 +101,8 @@ echo restoring "Helios Installer\Helios32bit Installer.vdproj" from "Helios Inst
 move "Helios Installer\Helios32bit Installer.vdproj.bak" "Helios Installer\Helios32bit Installer.vdproj"
 echo restoring "Keypress Receiver Installer\Keypress Receiver Installer.vdproj" from "Keypress Receiver Installer\Keypress Receiver Installer.vdproj.bak" 
 move "Keypress Receiver Installer\Keypress Receiver Installer.vdproj.bak" "Keypress Receiver Installer\Keypress Receiver Installer.vdproj"
+echo restoring "Tools Installer\Tools Installer.vdproj" from "Tools Installer\Tools Installer.vdproj.bak" 
+move "Tools Installer\Tools Installer.vdproj.bak" "Tools Installer\Tools Installer.vdproj"
 
 REM fix up setup loaders
 echo renaming setup executables
@@ -113,4 +119,7 @@ cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios32bit.%HELIOS_BUILT_VERS
 popd
 pushd "Keypress Receiver Installer\Release"
 cscript //nologo "..\..\Helios Installer\HeliosInstallAdjustments.vbs" "Helios Keypress Receiver.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
+popd
+pushd "Tools Installer\Release"
+cscript //nologo "..\..\Helios Installer\HeliosInstallAdjustments.vbs" "Helios Developer Tools.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
 popd
