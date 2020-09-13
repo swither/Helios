@@ -49,6 +49,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
         private List<TesterBase> _updateSlowly;
         private DateTime _lastTime;
         private DispatcherTimer _timer;
+        private HeliosBinding.IHeliosBindingTracer _previousTracer;
 
         public DCSInterface Target { get; private set; }
         public HeliosProfile Profile { get; private set; }
@@ -137,7 +138,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
             _timer = new DispatcherTimer(TimeSpan.FromSeconds(1d / UPDATES_PER_SECOND), DispatcherPriority.DataBind,
                 Tick, System.Windows.Application.Current.Dispatcher);
 
-            HeliosBinding.IsDebugLoopTracing = true;
+            _previousTracer = HeliosBinding.BindingTracer;
+            HeliosBinding.BindingTracer = new SoftLoopTracer();
             foreach (NetworkFunction networkFunction in Target.Functions)
             {
                 foreach (DCSDataElement dataElement in networkFunction.GetDataElements().OfType<DCSDataElement>())
@@ -180,7 +182,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
             Target = null;
 
             Profile?.Reset();
-            HeliosBinding.IsDebugLoopTracing = false;
+            HeliosBinding.BindingTracer = _previousTracer;
+            _previousTracer = null;
             _timer = null;
         }
 

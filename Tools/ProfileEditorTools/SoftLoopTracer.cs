@@ -14,9 +14,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-namespace GadrocsWorkshop.Helios
+namespace GadrocsWorkshop.Helios.ProfileEditorTools
 {
-    public class BindingLoopTracer
+    /// more expensive loop detection to trace any soft loops that return back to the interface or object
+    /// that originated the triggering event
+    public class SoftLoopTracer : HeliosBinding.IHeliosBindingTracer
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -24,13 +26,13 @@ namespace GadrocsWorkshop.Helios
         private object _tracingSource;
         private bool _traceLoop;
 
-        internal void TraceTriggerFired(HeliosBinding heliosBinding)
+        public void TraceTriggerFired(HeliosBinding heliosBinding)
         {
             // NOTE: deliberately crash if any of these are null
             HeliosObject target = heliosBinding.Action.Target;
 
             // IsTracing indicates a soft loop, IsExecuting indicates a hard loop
-            if (target.IsTracing || heliosBinding.IsExecuting)
+            if (IsTracing(target) || heliosBinding.IsExecuting)
             {
                 if (!_tracesReported.Contains(heliosBinding.Description))
                 {
@@ -43,27 +45,28 @@ namespace GadrocsWorkshop.Helios
                 _tracingSource = target;
             }
             HeliosObject source = (heliosBinding.Trigger).Source;
-            source.IsTracing = true;
+            SetTracing(source);
         }
 
-        internal void EndTraceTriggerFired(HeliosBinding heliosBinding)
+        public void EndTraceTriggerFired(HeliosBinding heliosBinding)
         {
             if (_traceLoop)
             {
                 // log every node traversed while returning back through the sources
                 // after detecting a loop
-                Logger.Info($"  binding loop includes {heliosBinding.Description}");
+                // NOTE: LongDescription is extremely expensive, but that's ok because we trace every loop only once
+                Logger.Info($"  binding loop includes {heliosBinding.Description} ({heliosBinding.LongDescription})");
             }
 
             HeliosObject source = heliosBinding.Trigger.Source;
-            if (!source.IsTracing)
+            if (!IsTracing(source))
             {
                 // not part of a loop being traced
                 return;
             }
 
             // returning back through the sources
-            source.IsTracing = false;
+            ClearTracing(source);
             if (_tracingSource != source)
             {
                 // not the source currently being traced
@@ -79,6 +82,21 @@ namespace GadrocsWorkshop.Helios
 
             // not tracing any more
             _tracingSource = null;
+        }
+
+        private static void SetTracing(HeliosObject source)
+        {
+            source.OpaqueHandles[typeof(SoftLoopTracer)] = 1;
+        }
+
+        private static void ClearTracing(HeliosObject source)
+        {
+            source.OpaqueHandles.Remove(typeof(SoftLoopTracer));
+        }
+
+        private static bool IsTracing(HeliosObject target)
+        {
+            return target.OpaqueHandles.ContainsKey(typeof(SoftLoopTracer));
         }
     }
 }

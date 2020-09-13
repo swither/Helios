@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="DCSInterfaceLoadTester\BooleanTester.cs" />
     <Compile Include="DCSInterfaceLoadTester\DCSInterfaceLoadTester.cs" />
+    <Compile Include="SoftLoopTracer.cs" />
     <Compile Include="DCSInterfaceLoadTester\TesterBase.cs" />
     <Compile Include="DCSInterfaceLoadTester\NumericTester.cs" />
     <Compile Include="DCSInterfaceLoadTester\SwitchTester.cs" />

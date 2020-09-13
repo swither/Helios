@@ -45,9 +45,6 @@ namespace GadrocsWorkshop.Helios
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        // backing field for IsDebugLoopTracing property
-        private static bool _isDebugLoopTracing;
-
         // deserialization constructor
         public HeliosBinding()
         {
@@ -71,31 +68,18 @@ namespace GadrocsWorkshop.Helios
             OnPropertyChanged("LongDescription", null, Description, false);
         }
 
-        /// <summary>
-        /// if this static property is set to true (only safe on main thread and only for developer use) then the
-        /// bindings will use more expensive loop detection to trace any soft loops that return back to the interface or object
-        /// that originated the triggering event
-        /// </summary>
-        public static bool IsDebugLoopTracing
-        {
-            get => _isDebugLoopTracing;
-            set
-            {
-                if (_isDebugLoopTracing == value)
-                {
-                    // no change
-                    return;
-                }
-                _isDebugLoopTracing = value;
-                BindingLoopTracer = value ? new BindingLoopTracer() : null;
-            }
-        }
-
         #region Properties
 
-        internal static BindingLoopTracer BindingLoopTracer { get; set; }
+        /// <summary>
+        /// if this is set to non-null (only safe on main thread and only for developer use) then the
+        /// bindings will call the provided interface for more expensive binding tracing
+        /// </summary>
+        public static IHeliosBindingTracer BindingTracer { get; set; }
 
-        internal bool IsExecuting { get; private set; }
+        /// <summary>
+        /// true if this binding is currently on the stack of bindings being evaluated
+        /// </summary>
+        public bool IsExecuting { get; private set; }
 
         public string Description => IsValid
             ? ReplaceValue(Trigger.TriggerBindingDescription + " " + Action.ActionBindingDescription)
@@ -370,7 +354,7 @@ namespace GadrocsWorkshop.Helios
             }
 
             string loggingId = ((IBindingTrigger)_triggerSource.Target).TriggerID; 
-            BindingLoopTracer?.TraceTriggerFired(this);
+            BindingTracer?.TraceTriggerFired(this);
 
             try
             {
@@ -515,7 +499,7 @@ namespace GadrocsWorkshop.Helios
             }
             finally
             {
-                BindingLoopTracer?.EndTraceTriggerFired(this);
+                BindingTracer?.EndTraceTriggerFired(this);
             }
         }
 
@@ -587,6 +571,12 @@ namespace GadrocsWorkshop.Helios
                 IsValid = true;
                 ErrorMessage = "";
             }
+        }
+
+        public interface IHeliosBindingTracer
+        {
+            void TraceTriggerFired(HeliosBinding heliosBinding);
+            void EndTraceTriggerFired(HeliosBinding heliosBinding);
         }
     }
 }
