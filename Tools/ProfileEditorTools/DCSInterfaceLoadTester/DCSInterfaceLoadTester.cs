@@ -31,7 +31,7 @@ using GadrocsWorkshop.Helios.UDPInterface;
 namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 {
     [HeliosTool]
-    public partial class DCSInterfaceLoadTester : IMenuSectionFactory, IProfileTool
+    public class DCSInterfaceLoadTester : IMenuSectionFactory, IProfileTool
     {
         // NOTE: access to C sprintf to emulate Lua format
         [DllImport("msvcrt.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]

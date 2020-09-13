@@ -54,6 +54,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CascadeRemover.cs" />
     <Compile Include="DCSInterfaceLoadTester\BooleanTester.cs" />
     <Compile Include="DCSInterfaceLoadTester\DCSInterfaceLoadTester.cs" />
     <Compile Include="SoftLoopTracer.cs" />

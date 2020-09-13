@@ -84,19 +84,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools
             _tracingSource = null;
         }
 
-        private static void SetTracing(HeliosObject source)
+        private static void SetTracing(HeliosObject heliosObject)
         {
-            source.OpaqueHandles[typeof(SoftLoopTracer)] = 1;
+            heliosObject.OpaqueHandles[typeof(SoftLoopTracer)] = 1;
         }
 
-        private static void ClearTracing(HeliosObject source)
+        private static void ClearTracing(HeliosObject heliosObject)
         {
-            source.OpaqueHandles.Remove(typeof(SoftLoopTracer));
+            heliosObject.OpaqueHandles.Remove(typeof(SoftLoopTracer));
         }
 
-        private static bool IsTracing(HeliosObject target)
+        private static bool IsTracing(HeliosObject heliosObject)
         {
-            return target.OpaqueHandles.ContainsKey(typeof(SoftLoopTracer));
+            return heliosObject.OpaqueHandles.ContainsKey(typeof(SoftLoopTracer));
         }
     }
 }

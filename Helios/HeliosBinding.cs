@@ -252,6 +252,7 @@ namespace GadrocsWorkshop.Helios
                 {
                     bool oldBypass = _bypassTargetTriggers;
                     _bypassTargetTriggers = value;
+                    // XXX nobody is listening to these property changes on an Interface's OutputBindings, so it never generates dirty/undo
                     OnPropertyChanged("BypassCascadingTriggers", oldBypass, value, true);
                 }
             }
