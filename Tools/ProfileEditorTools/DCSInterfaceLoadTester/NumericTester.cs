@@ -19,7 +19,10 @@ using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
 namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 {
-    internal class NumericTester : DCSInterfaceLoadTester.Tester
+    /// <summary>
+    /// ramps a numeric value up and down, resting at the zero value for a while
+    /// </summary>
+    internal class NumericTester : TesterBase
     {
         private readonly double _range;
         private DateTime? _zeroTime;

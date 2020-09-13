@@ -14,33 +14,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 using System;
+using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
 namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 {
     /// <summary>
-    /// periodically toggles back and forth between 0 and 1
+    /// base class for a tester that creates test data appropriate for a specific DCS data element (id, value)
     /// </summary>
-    internal class BooleanTester : TesterBase
+    internal abstract class TesterBase : IDisposable
     {
-        private bool _value;
+        public DCSDataElement Data { get; }
 
-        public BooleanTester(DCSDataElement data) : base(data)
+        protected TesterBase(DCSDataElement data)
         {
-            // no code
+            Data = data;
         }
 
-        public override string Update(DateTime now, TimeSpan elapsed)
+        public void Dispose()
         {
-            bool value = (now.Second % 2) == 0;
-            if (_value == value)
-            {
-                return null;
-            }
-
-            _value = value;
-            return DCSInterfaceLoadTester.Format(Data.Format, value ? 1d : 0d);
+            // no code in base
         }
+
+        /// <summary>
+        /// calculates the changed value that we should dispatch to the data element's handler
+        /// </summary>
+        /// <param name="now"></param>
+        /// <param name="elapsed"></param>
+        /// <returns>a synthesized value in the format it would have from the network, or null if no value should be dispatched now</returns>
+        public abstract string Update(DateTime now, TimeSpan elapsed);
     }
 }

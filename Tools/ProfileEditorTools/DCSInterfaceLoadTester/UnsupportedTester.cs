@@ -19,7 +19,10 @@ using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
 namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 {
-    internal class UnsupportedTester : DCSInterfaceLoadTester.Tester
+    /// <summary>
+    /// default implementation to use when no compatible tester can be determined
+    /// </summary>
+    internal class UnsupportedTester : TesterBase
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 

@@ -15,14 +15,16 @@
 // 
 
 using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
-using GadrocsWorkshop.Helios.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 {
-    internal class SwitchTester : DCSInterfaceLoadTester.Tester
+    /// <summary>
+    /// steps through all the valid argument values for a Switch control
+    /// </summary>
+    internal class SwitchTester : TesterBase
     {
         private DateTime? _timeChanged;
         private const double CHANGE_INTERVAL = 1d;

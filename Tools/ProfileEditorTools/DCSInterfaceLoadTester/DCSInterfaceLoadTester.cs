@@ -31,7 +31,7 @@ using GadrocsWorkshop.Helios.UDPInterface;
 namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 {
     [HeliosTool]
-    public class DCSInterfaceLoadTester : IMenuSectionFactory, IProfileTool
+    public partial class DCSInterfaceLoadTester : IMenuSectionFactory, IProfileTool
     {
         // NOTE: access to C sprintf to emulate Lua format
         [DllImport("msvcrt.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
@@ -45,8 +45,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private List<Tester> _updateEveryFrame;
-        private List<Tester> _updateSlowly;
+        private List<TesterBase> _updateEveryFrame;
+        private List<TesterBase> _updateSlowly;
         private DateTime _lastTime;
         private DispatcherTimer _timer;
 
@@ -91,7 +91,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
             _lastTime = now;
         }
 
-        private void Update(Tester tester, DateTime now, TimeSpan elapsed)
+        private void Update(TesterBase tester, DateTime now, TimeSpan elapsed)
         {
             string testValue = tester.Update(now, elapsed);
             if (testValue == null)
@@ -120,8 +120,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 
         private void Start()
         {
-            _updateEveryFrame = new List<Tester>();
-            _updateSlowly = new List<Tester>();
+            _updateEveryFrame = new List<TesterBase>();
+            _updateSlowly = new List<TesterBase>();
 
             if (Profile == null)
             {
@@ -142,7 +142,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
             {
                 foreach (DCSDataElement dataElement in networkFunction.GetDataElements().OfType<DCSDataElement>())
                 {
-                    Tester tester = CreateTester(networkFunction, dataElement);
+                    TesterBase tester = CreateTester(networkFunction, dataElement);
                     if (dataElement.IsExportedEveryFrame)
                     {
                         _updateEveryFrame.Add(tester);
@@ -187,16 +187,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
         private static readonly Regex FloatFormat =
             new Regex(@"%0?\.([1-9][0-9]*)f", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        private Tester CreateTester(NetworkFunction networkFunction, DCSDataElement dataElement)
+        private TesterBase CreateTester(NetworkFunction networkFunction, DCSDataElement dataElement)
         {
-#if false
-            // isolate a specific control during test development
-            if (dataElement.ID != "129")
-            {
-                return new UnsupportedTester(dataElement);
-            }
-#endif
-
             // specific types we want to test a certain way
             switch (networkFunction)
             {
@@ -245,29 +237,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
                 new MenuItemModel("Stop DCS Interface Test", new Windows.RelayCommand(parameter => { Stop(); },
                     parameter => IsStarted))
             });
-        }
-
-        internal abstract class Tester : IDisposable
-        {
-            public DCSDataElement Data { get; }
-
-            protected Tester(DCSDataElement data)
-            {
-                Data = data;
-            }
-
-            public void Dispose()
-            {
-                // no code in base
-            }
-
-            /// <summary>
-            /// calculates the changed value that we should dispatch to the data element's handler
-            /// </summary>
-            /// <param name="now"></param>
-            /// <param name="elapsed"></param>
-            /// <returns>a synthesized value in the format it would have from the network, or null if no value should be dispatched now</returns>
-            public abstract string Update(DateTime now, TimeSpan elapsed);
         }
     }
 }

@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -55,6 +56,7 @@
   <ItemGroup>
     <Compile Include="DCSInterfaceLoadTester\BooleanTester.cs" />
     <Compile Include="DCSInterfaceLoadTester\DCSInterfaceLoadTester.cs" />
+    <Compile Include="DCSInterfaceLoadTester\TesterBase.cs" />
     <Compile Include="DCSInterfaceLoadTester\NumericTester.cs" />
     <Compile Include="DCSInterfaceLoadTester\SwitchTester.cs" />
     <Compile Include="DCSInterfaceLoadTester\UnsupportedTester.cs" />
