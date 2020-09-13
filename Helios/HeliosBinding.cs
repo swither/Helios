@@ -45,6 +45,9 @@ namespace GadrocsWorkshop.Helios
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+        // backing field for IsDebugLoopTracing property
+        private static bool _isDebugLoopTracing;
+
         // deserialization constructor
         public HeliosBinding()
         {
@@ -68,6 +71,11 @@ namespace GadrocsWorkshop.Helios
             OnPropertyChanged("LongDescription", null, Description, false);
         }
 
+        /// <summary>
+        /// if this static property is set to true (only safe on main thread and only for developer use) then the
+        /// bindings will use more expensive loop detection to trace any soft loops that return back to the interface or object
+        /// that originated the triggering event
+        /// </summary>
         public static bool IsDebugLoopTracing
         {
             get => _isDebugLoopTracing;
@@ -326,7 +334,6 @@ namespace GadrocsWorkshop.Helios
         private static readonly Util.OnceLogger LuaConditionLogger = new Util.OnceLogger(Logger);
         private static readonly Util.OnceLogger LuaValueLogger = new Util.OnceLogger(Logger);
         private static readonly Util.OnceLogger LuaNoValueLogger = new Util.OnceLogger(Logger);
-        private static bool _isDebugLoopTracing;
 
         /// <summary>
         /// this object defers formatting of the complex description of a binding until ToString is actually called, meaning this information
