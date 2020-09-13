@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,16 +18,11 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 {
     public class ExportDataElement
     {
-        private string _id;
-
         public ExportDataElement(string id)
         {
-            _id = id;
+            ID = id;
         }
 
-        public string ID
-        {
-            get { return _id; }
-        }
+        public string ID { get; }
     }
 }

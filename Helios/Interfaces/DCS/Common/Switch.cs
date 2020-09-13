@@ -10,6 +10,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
+
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     using GadrocsWorkshop.Helios.UDPInterface;
@@ -132,6 +134,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             get { return _valueDescriptions; }
         }
+
+        public IEnumerable<string> PositionValues => _positions.Select(pos => pos.ArgValue);
 
         #endregion
 

@@ -19,7 +19,6 @@ using System.Linq;
 namespace GadrocsWorkshop.Helios
 {
     using System;
-    using System.Windows.Threading;
     using System.Xml;
 
     /// <summary>
@@ -33,9 +32,11 @@ namespace GadrocsWorkshop.Helios
         private bool _designMode;
         private WeakReference _profile = new WeakReference(null);
         private int _bypassCount;
-#if DEVELOPMENT_CONFIGURATION
-        internal bool _tracing = false;
-#endif
+
+        /// <summary>
+        /// true if one of this object's binding triggers is currently being traced
+        /// </summary>
+        internal bool IsTracing { get; set; }
 
         protected HeliosObject(string name)
         {
@@ -68,7 +69,7 @@ namespace GadrocsWorkshop.Helios
         /// Gets the flag to bypass trigger events.  When this
         /// is set to true no triggers should be fired.
         /// </summary>
-        public bool BypassTriggers => (_bypassCount > 0 || DesignMode);
+        public bool BypassTriggers => (_bypassCount > 0) || ((!HeliosBinding.IsDebugLoopTracing) && DesignMode);
 
         /// <summary>
         /// Returns the internal collection of Action descriptors used
@@ -139,11 +140,13 @@ namespace GadrocsWorkshop.Helios
             get => _designMode || (Profile != null && Profile.DesignMode);
             set
             {
-                if (_designMode != value)
+                if (_designMode == value)
                 {
-                    _designMode = value;
-                    OnPropertyChanged("DesignMode", !value, value, false);
+                    return;
                 }
+
+                _designMode = value;
+                OnPropertyChanged("DesignMode", !value, value, false);
             }
         }
 
@@ -201,7 +204,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         protected virtual void OnProfileChanged(HeliosProfile oldProfile)
         {
-            // no code
+            // no code in base
         }
 
         /// <summary>

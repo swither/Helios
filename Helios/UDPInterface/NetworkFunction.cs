@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,60 +18,18 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 {
     public abstract class NetworkFunction
     {
-        private bool _debug;
-        private BaseUDPInterface _sourceInterface;
-        private HeliosTriggerCollection _triggers = new HeliosTriggerCollection();
-        private HeliosActionCollection _actions = new HeliosActionCollection();
-        private HeliosValueCollection _values = new HeliosValueCollection();
-
         protected NetworkFunction(BaseUDPInterface sourceInterface)
         {
-            _sourceInterface = sourceInterface;
+            SourceInterface = sourceInterface;
         }
 
-        public BaseUDPInterface SourceInterface
-        {
-            get
-            {
-                return _sourceInterface;
-            }
-        }
+        public BaseUDPInterface SourceInterface { get; }
 
-        public HeliosTriggerCollection Triggers
-        {
-            get
-            {
-                return _triggers;
-            }
-        }
+        public HeliosTriggerCollection Triggers { get; } = new HeliosTriggerCollection();
 
-        public HeliosActionCollection Actions
-        {
-            get
-            {
-                return _actions;
-            }
-        }
+        public HeliosActionCollection Actions { get; } = new HeliosActionCollection();
 
-        public HeliosValueCollection Values
-        {
-            get
-            {
-                return _values;
-            }
-        }
-
-        public bool IsDebugMode
-        {
-            get
-            {
-                return _debug;
-            }
-            set
-            {
-                _debug = value;
-            }
-        }
+        public HeliosValueCollection Values { get; } = new HeliosValueCollection();
 
         public abstract void Reset();
 

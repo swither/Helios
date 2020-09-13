@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,15 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
-using System.Threading;
-
 namespace GadrocsWorkshop.Helios
 {
-    using System;
-
     using NLua;
     using NLua.Exceptions;
+    using System;
 
     /// <summary>
     /// A binding from a source trigger to a target action
@@ -32,9 +29,6 @@ namespace GadrocsWorkshop.Helios
     public class HeliosBinding : NotificationObject, INamedBindingElement
     {
         private Lua _luaInterpreter;
-
-        private bool _executing = false;
-
         private bool _active = true;
         private WeakReference _triggerSource = new WeakReference(null);
         private WeakReference _targetAction = new WeakReference(null);
@@ -49,11 +43,6 @@ namespace GadrocsWorkshop.Helios
         private bool _valid = false;
         private string _error = "";
 
-
-#if DEVELOPMENT_CONFIGURATION
-        private static Object _sTracingSource = null;
-        private static bool _sTraceLoop = false;
-#endif
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         // deserialization constructor
@@ -79,7 +68,26 @@ namespace GadrocsWorkshop.Helios
             OnPropertyChanged("LongDescription", null, Description, false);
         }
 
+        public static bool IsDebugLoopTracing
+        {
+            get => _isDebugLoopTracing;
+            set
+            {
+                if (_isDebugLoopTracing == value)
+                {
+                    // no change
+                    return;
+                }
+                _isDebugLoopTracing = value;
+                BindingLoopTracer = value ? new BindingLoopTracer() : null;
+            }
+        }
+
         #region Properties
+
+        internal static BindingLoopTracer BindingLoopTracer { get; set; }
+
+        internal bool IsExecuting { get; private set; }
 
         public string Description => IsValid
             ? ReplaceValue(Trigger.TriggerBindingDescription + " " + Action.ActionBindingDescription)
@@ -296,80 +304,21 @@ namespace GadrocsWorkshop.Helios
 
         private BindingValue CreateBindingValue(object value)
         {
-            if (value is string)
+            switch (value)
             {
-                return new BindingValue((string)value);
-            }
-            else if (value is double)
-            {
-                return new BindingValue((double)value);
-            }
-            else if (value is bool)
-            {
-                return new BindingValue((bool)value);
-            }
-            else if (value is long longValue)
-            {
-                // construct double from long
-                return new BindingValue(longValue);
+                case string stringValue:
+                    return new BindingValue(stringValue);
+                case double doubleValue:
+                    return new BindingValue(doubleValue);
+                case bool boolValue:
+                    return new BindingValue(boolValue);
+                case long longValue:
+                    // construct double from long
+                    return new BindingValue(longValue);
             }
 
             return BindingValue.Empty;
         }
-
-#if DEVELOPMENT_CONFIGURATION
-        private static System.Collections.Generic.HashSet<string> _sTracesReported = new System.Collections.Generic.HashSet<string>();
-
-        private void TraceTriggerFired()
-        {
-            // NOTE: deliberately crash if any of these are null
-            HeliosObject target = (_targetAction.Target as IBindingAction).Target;
-            if (target._tracing || _executing)
-            {
-                if (!_sTracesReported.Contains(Description))
-                {
-                    string loopType = _executing ? "Hard" : "Soft";
-                    Logger.Info($"{loopType} binding loop detected; Object {target.Name} may have triggered itself");
-                    _sTraceLoop = true;
-                    _sTracesReported.Add(Description);
-                }
-                _sTracingSource = target;
-            }
-            HeliosObject source = (_triggerSource.Target as IBindingTrigger).Source;
-            source._tracing = true;
-        }
-
-        private void EndTraceTriggerFired()
-        {
-            if (_sTraceLoop)
-            {
-                Logger.Info($"  binding loop includes {Description}");
-            }
-            HeliosObject source = (_triggerSource.Target as IBindingTrigger).Source;
-            if (source._tracing)
-            {
-                source._tracing = false;
-                if (_sTracingSource == source)
-                {
-                    if (_sTraceLoop)
-                    {
-                        _sTraceLoop = false;
-                        Logger.Info("  binding loop trace complete");
-                    }
-                    _sTracingSource = null;
-                }
-            }
-        }
-#else
-        private void TraceTriggerFired()
-        {
-            // no code
-        }
-        private void EndTraceTriggerFired()
-        {
-            // no code
-        }
-#endif
 
         // log filters to log certain messages only once per binding, because otherwise we will crush the logger and 
         // keep the program from running under load
@@ -377,6 +326,7 @@ namespace GadrocsWorkshop.Helios
         private static readonly Util.OnceLogger LuaConditionLogger = new Util.OnceLogger(Logger);
         private static readonly Util.OnceLogger LuaValueLogger = new Util.OnceLogger(Logger);
         private static readonly Util.OnceLogger LuaNoValueLogger = new Util.OnceLogger(Logger);
+        private static bool _isDebugLoopTracing;
 
         /// <summary>
         /// this object defers formatting of the complex description of a binding until ToString is actually called, meaning this information
@@ -412,136 +362,154 @@ namespace GadrocsWorkshop.Helios
                 return;
             }
 
-            string loggingId = ((IBindingTrigger)_triggerSource.Target).TriggerID;
-            TraceTriggerFired();
-            if (_executing)
-            {
-                Logger.Warn("Binding loop condition detected, binding {Binding} aborted.", 
-                    new DeferredBindingDescription(this));
-                EndTraceTriggerFired();
-                return;
-            }
+            string loggingId = ((IBindingTrigger)_triggerSource.Target).TriggerID; 
+            BindingLoopTracer?.TraceTriggerFired(this);
 
-            TriggeredLogger.InfoOnceUnlessDebugging(loggingId, "Binding {Binding} triggered with value {Value}", 
-                new DeferredBindingDescription(this), e.Value.StringValue);
             try
             {
-                _executing = true;
-                BindingValue value = BindingValue.Empty;
-                //LuaInterpreter["TriggerValue"] = e.Value.NaitiveValue;
-                switch (e.Value.NaitiveType)
+                if (IsExecuting)
                 {
-                    case BindingValueType.Boolean:
-                        LuaInterpreter["TriggerValue"] = e.Value.BoolValue;
-                        break;
-                    case BindingValueType.String:
-                        LuaInterpreter["TriggerValue"] = e.Value.StringValue;
-                        break;
-                    case BindingValueType.Double:
-                        LuaInterpreter["TriggerValue"] = e.Value.DoubleValue;
-                        break;
+                    // target of trigger is currently on the stack
+                    Logger.Warn("Binding loop condition detected, binding {Binding} aborted.",
+                        new HeliosBinding.DeferredBindingDescription(this));
+                    return;
                 }
 
-                if (HasCondition)
+                TriggeredLogger.InfoOnceUnlessDebugging(loggingId, "Binding {Binding} triggered with value {Value}",
+                    new HeliosBinding.DeferredBindingDescription(this), e.Value.StringValue);
+                try
                 {
-                    try
+                    IsExecuting = true;
+                    BindingValue value = BindingValue.Empty;
+                    //LuaInterpreter["TriggerValue"] = e.Value.NaitiveValue;
+                    
+                    // XXX we initialize the LuaInterpreter even if we don't use it.  fix that.
+                    switch (e.Value.NaitiveType)
                     {
-                        object[] conditionReturnValues = LuaInterpreter.DoString(_condition);
-                        if (conditionReturnValues.Length >= 1)
-                        {
-                            BindingValue returnValue = CreateBindingValue(conditionReturnValues[0]);
-                            if (returnValue.BoolValue == false)
-                            {
-                                if (Logger.IsDebugEnabled)
-                                {
-                                    Logger.Debug("Binding condition evaluated to false, binding {Binding} aborted.",
-                                        new DeferredBindingDescription(this));
-                                }
-                                EndTraceTriggerFired();
-                                return;
-                            }
-                        }
+                        case BindingValueType.Boolean:
+                            LuaInterpreter["TriggerValue"] = e.Value.BoolValue;
+                            break;
+                        case BindingValueType.String:
+                            LuaInterpreter["TriggerValue"] = e.Value.StringValue;
+                            break;
+                        case BindingValueType.Double:
+                            LuaInterpreter["TriggerValue"] = e.Value.DoubleValue;
+                            break;
                     }
-                    catch (LuaScriptException luaException)
-                    {
-                        LuaConditionLogger.WarnOnceUnlessDebugging(loggingId,
-                            "Binding condition Lua error {Error} from script {Script} on binding {Binding}",
-                            luaException.Message, Condition, new DeferredBindingDescription(this));
-                    }
-                    catch (Exception conditionException)
-                    {
-                        Logger.Error(conditionException, "Binding condition has thown an unhandled exception for binding {Binding} with condition {Condition}",
-                            new DeferredBindingDescription(this),
-                            Condition);
-                        EndTraceTriggerFired();
-                        return;
-                    }
-                }
 
-                switch (ValueSource)
-                {
-                    case BindingValueSources.StaticValue:
-                        value = _value;
-                        break;
-                    case BindingValueSources.TriggerValue:
-                        if (_needsConversion && _converter != null)
-                        {
-                            value = _converter.Convert(e.Value, Trigger.Unit, Action.Unit);
-                            if (Logger.IsDebugEnabled)
-                            {
-                                Logger.Debug("Binding {Binding} converted value {Original} to {NewValue}",
-                                    new DeferredBindingDescription(this), e.Value.StringValue, value.StringValue);
-                            }
-                        }
-                        else
-                        {
-                            value = e.Value;
-                        }
-                        break;
-                    case BindingValueSources.LuaScript:
+                    if (HasCondition)
+                    {
                         try
                         {
-                            object[] returnValues = LuaInterpreter.DoString(Value);
-                            if ((returnValues != null) && (returnValues.Length >= 1))
+                            object[] conditionReturnValues = LuaInterpreter.DoString(_condition);
+                            if (conditionReturnValues.Length >= 1)
                             {
-                                value = CreateBindingValue(returnValues[0]);
-                                if (Logger.IsDebugEnabled)
+                                BindingValue returnValue = CreateBindingValue(conditionReturnValues[0]);
+                                if (returnValue.BoolValue == false)
                                 {
-                                    Logger.Debug("Lua script for binding {Binding} evaluated {Expression} for value {TriggerValue} and got result {ReturnValue}",
-                                        new DeferredBindingDescription(this), Value, LuaInterpreter["TriggerValue"], returnValues[0]);
+                                    if (Logger.IsDebugEnabled)
+                                    {
+                                        Logger.Debug("Binding condition evaluated to false, binding {Binding} aborted.",
+                                            new HeliosBinding.DeferredBindingDescription(this));
+                                    }
+                                    return;
                                 }
-                            }
-                            else
-                            {
-                                LuaNoValueLogger.WarnOnceUnlessDebugging(loggingId,
-                                    "Binding value Lua script did not return a value from script {Script} for trigger value {TriggerValue} on binding {Binding}",
-                                    Value, LuaInterpreter["TriggerValue"], new DeferredBindingDescription(this));
                             }
                         }
                         catch (LuaScriptException luaException)
                         {
-                            LuaValueLogger.WarnOnceUnlessDebugging(loggingId,
-                                "Binding value Lua error {Error} from script {Script} for trigger value {TriggerValue} on binding {Binding}",
-                                luaException.Message, Value, LuaInterpreter["TriggerValue"], new DeferredBindingDescription(this));
+                            LuaConditionLogger.WarnOnceUnlessDebugging(loggingId,
+                                "Binding condition Lua error {Error} from script {Script} on binding {Binding}",
+                                luaException.Message, Condition, new HeliosBinding.DeferredBindingDescription(this));
                         }
-                        catch (Exception valueException)
+                        catch (Exception conditionException)
                         {
-                            // these are exceptions thrown by the Lua implementation
-                            Logger.Error(valueException, 
-                                "Binding value Lua script has thown an unhandled exception from script {Script} for trigger value {triggerValue} on binding {Binding}",
-                                Value, LuaInterpreter["TriggerValue"], new DeferredBindingDescription(this));
+                            Logger.Error(conditionException,
+                                "Binding condition has thown an unhandled exception for binding {Binding} with condition {Condition}",
+                                new HeliosBinding.DeferredBindingDescription(this),
+                                Condition);
+                            return;
                         }
-                        break;
+                    }
+
+                    switch (ValueSource)
+                    {
+                        case BindingValueSources.StaticValue:
+                            value = _value;
+                            break;
+                        case BindingValueSources.TriggerValue:
+                            if (_needsConversion && _converter != null)
+                            {
+                                value = _converter.Convert(e.Value, Trigger.Unit, Action.Unit);
+                                if (Logger.IsDebugEnabled)
+                                {
+                                    Logger.Debug("Binding {Binding} converted value {Original} to {NewValue}",
+                                        new HeliosBinding.DeferredBindingDescription(this), e.Value.StringValue,
+                                        value.StringValue);
+                                }
+                            }
+                            else
+                            {
+                                value = e.Value;
+                            }
+
+                            break;
+                        case BindingValueSources.LuaScript:
+                            try
+                            {
+                                object[] returnValues = LuaInterpreter.DoString(Value);
+                                if ((returnValues != null) && (returnValues.Length >= 1))
+                                {
+                                    value = CreateBindingValue(returnValues[0]);
+                                    if (Logger.IsDebugEnabled)
+                                    {
+                                        Logger.Debug(
+                                            "Lua script for binding {Binding} evaluated {Expression} for value {TriggerValue} and got result {ReturnValue}",
+                                            new HeliosBinding.DeferredBindingDescription(this), Value,
+                                            LuaInterpreter["TriggerValue"], returnValues[0]);
+                                    }
+                                }
+                                else
+                                {
+                                    LuaNoValueLogger.WarnOnceUnlessDebugging(loggingId,
+                                        "Binding value Lua script did not return a value from script {Script} for trigger value {TriggerValue} on binding {Binding}",
+                                        Value, LuaInterpreter["TriggerValue"],
+                                        new HeliosBinding.DeferredBindingDescription(this));
+                                }
+                            }
+                            catch (LuaScriptException luaException)
+                            {
+                                LuaValueLogger.WarnOnceUnlessDebugging(loggingId,
+                                    "Binding value Lua error {Error} from script {Script} for trigger value {TriggerValue} on binding {Binding}",
+                                    luaException.Message, Value, LuaInterpreter["TriggerValue"],
+                                    new HeliosBinding.DeferredBindingDescription(this));
+                            }
+                            catch (Exception valueException)
+                            {
+                                // these are exceptions thrown by the Lua implementation
+                                Logger.Error(valueException,
+                                    "Binding value Lua script has thown an unhandled exception from script {Script} for trigger value {triggerValue} on binding {Binding}",
+                                    Value, LuaInterpreter["TriggerValue"],
+                                    new HeliosBinding.DeferredBindingDescription(this));
+                            }
+
+                            break;
+                    }
+
+                    Action.ExecuteAction(value, BypassCascadingTriggers);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "Unhandled exception thrown from binding {Binding}",
+                        new HeliosBinding.DeferredBindingDescription(this));
                 }
 
-                Action.ExecuteAction(value, BypassCascadingTriggers);
+                IsExecuting = false;
             }
-            catch (Exception ex)
+            finally
             {
-                Logger.Error(ex, "Unhandled exception thrown from binding {Binding}", new DeferredBindingDescription(this));
+                BindingLoopTracer?.EndTraceTriggerFired(this);
             }
-            _executing = false;
-            EndTraceTriggerFired();
         }
 
         public void Clone(HeliosBinding binding)
