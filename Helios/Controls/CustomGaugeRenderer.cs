@@ -77,26 +77,26 @@ namespace GadrocsWorkshop.Helios.Controls
                 return;
             }
 
-            _imageRect.X = _gauge.Width * _gauge.Needle_PosX;
-            _imageRect.Y = _gauge.Height * _gauge.Needle_PosY;
+            _imageRect.X = _gauge.Width * _gauge.NeedlePosX;
+            _imageRect.Y = _gauge.Height * _gauge.NeedlePosY;
             _image = ConfigManager.ImageManager.LoadImage(_gauge.KnobImage) ?? ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png");
 
             // WARNING: needle scale applied to image but not rotation point
-            _imageRect.Height = _gauge.Height * _gauge.Needle_Scale;
+            _imageRect.Height = _gauge.Height * _gauge.NeedleScale;
             _imageRect.Width = _image.Width * (_imageRect.Height / _image.Height); // uniform image based on Height
 
             // calculate rotation point
-            _center = new Point(_gauge.Width * _gauge.Needle_PivotX,
-                _gauge.Height * _gauge.Needle_PivotY); 
-            _nextToCenter = new Point((_gauge.Width * _gauge.Needle_PivotX) + 1,
-                _gauge.Height * _gauge.Needle_PivotY);
+            _center = new Point(_gauge.Width * _gauge.NeedlePivotX,
+                _gauge.Height * _gauge.NeedlePivotY); 
+            _nextToCenter = new Point((_gauge.Width * _gauge.NeedlePivotX) + 1,
+                _gauge.Height * _gauge.NeedlePivotY);
 
             // optional background plate image
-            if (!string.IsNullOrWhiteSpace(_gauge.BGPlateImage))
+            if (!string.IsNullOrWhiteSpace(_gauge.BgPlateImage))
             {
                 _backgroundRect.Width = _gauge.Width;
                 _backgroundRect.Height = _gauge.Height;
-                _backgroundImage = ConfigManager.ImageManager.LoadImage(_gauge.BGPlateImage);
+                _backgroundImage = ConfigManager.ImageManager.LoadImage(_gauge.BgPlateImage);
             }
             else
             {

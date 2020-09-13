@@ -169,7 +169,7 @@ namespace GadrocsWorkshop.Helios.Controls
                     double oldValue = _valueRotation;
                     _valueRotation = value;
                     _pottranValueRotation.SetValue( new BindingValue( _valueRotation ), BypassTriggers );
-                    OnPropertyChanged( "ValueRotation", oldValue, value, true );
+                    OnPropertyChanged( "ValueRotation", oldValue, value, false );
                     SetRotation( );
                 }
             }
@@ -261,7 +261,7 @@ namespace GadrocsWorkshop.Helios.Controls
                     double oldValue = _valueTranslationX;
                     _valueTranslationX = value;
                     _pottranValueTranslationX.SetValue( new BindingValue( _valueTranslationX ), BypassTriggers );
-                    OnPropertyChanged( "ValueTranslationX", oldValue, value, true );
+                    OnPropertyChanged( "ValueTranslationX", oldValue, value, false );
                     SetTranslationX( );
                 }
             }
@@ -351,7 +351,7 @@ namespace GadrocsWorkshop.Helios.Controls
                     double oldValue = _valueTranslationY;
                     _valueTranslationY = value;
                     _pottranValueTranslationY.SetValue( new BindingValue( _valueTranslationY ), BypassTriggers );
-                    OnPropertyChanged( "ValueTranslationY", oldValue, value, true );
+                    OnPropertyChanged( "ValueTranslationY", oldValue, value, false );
                     SetTranslationY( );
                 }
             }
