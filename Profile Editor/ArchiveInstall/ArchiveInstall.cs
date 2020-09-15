@@ -121,12 +121,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
                             List<StatusReportItem> details = new List<StatusReportItem>();
                             foreach (Option option in choice.Options)
                             {
-                                if (CheckVersionRequirements(option, out IList<StatusReportItem> optionDetails))
-                                {
-                                    // version requirements met and that is all we check
-                                    option.IsValid = true;
-                                }
-                                else
+                                if (!CheckVersionRequirements(option, out IList<StatusReportItem> optionDetails))
                                 {
                                     // this option is not allowed
                                     details.AddRange(optionDetails);
