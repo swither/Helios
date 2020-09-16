@@ -34,7 +34,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
         /// true if this option may be selected
         /// </summary>
         [JsonIgnore]
-        public bool IsValid { get; internal set; }
+        public bool IsValid { get; internal set; } = true;
 
         /// <summary>
         /// if IsValid is false, this may contain a helpful message about it
