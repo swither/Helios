@@ -183,9 +183,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("HSI", "desired course calculated", new BindingValue(ClampDegrees(360 - _lastFlightData.currentHeading) + _lastFlightData.desiredCourse));
                 SetValue("HSI", "desired heading calculated", new BindingValue(ClampDegrees(360 - _lastFlightData.currentHeading) + _lastFlightData.desiredHeading));
                 SetValue("HSI", "bearing to beacon calculated", new BindingValue(ClampDegrees(360 - _lastFlightData.currentHeading) + _lastFlightData.bearingToBeacon));
-
-                float deviation = _lastFlightData.courseDeviation % 180;
-                SetValue("HSI", "course deviation", new BindingValue(deviation / _lastFlightData.deviationLimit));
+                SetValue("HSI", "course deviation", new BindingValue(CalculateHSICourseDeviation(_lastFlightData.deviationLimit, _lastFlightData.courseDeviation)));
 
                 SetValue("HSI", "distance to beacon", new BindingValue(_lastFlightData.distanceToBeacon));
                 SetValue("VVI", "vertical velocity", new BindingValue(_lastFlightData.zDot));
@@ -286,7 +284,45 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             }
         }
 
-         private void ProcessMiscBits(MiscBits miscBits, float rALT)
+        internal float CalculateHSICourseDeviation(float deviationLimit, float courseDeviation)
+        {
+            float deviation = 0;
+            float finalDeviation;
+
+            if (Math.Floor(courseDeviation) <= 179)
+            {
+                deviation = (courseDeviation % 180) / deviationLimit;
+            }
+            else if (Math.Floor(courseDeviation) >= 180)
+            {
+                deviation = ((180 - courseDeviation) % 180) / deviationLimit;
+            }
+
+            //Apply limits to final deviation so we get variatons between 1.1 and -1.1
+            if (deviation > -1.1 & deviation < 1.1)
+            {
+                finalDeviation = deviation;
+            }
+            else if (deviation > 1.1 & deviation < 17)
+            {
+                finalDeviation = 1;
+            }
+            else if (deviation > 17 & deviation < 18.1)
+            {
+                finalDeviation = -deviation + 18;
+            }
+            else if (deviation < -16.9)
+            {
+                finalDeviation = -deviation - 18;
+            }
+            else
+            {
+                finalDeviation = -1;
+            }
+            return finalDeviation;
+        }
+
+        private void ProcessMiscBits(MiscBits miscBits, float rALT)
         {
             var rAltString = "";
             if (miscBits.HasFlag(MiscBits.RALT_Valid))
