@@ -14,12 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GadrocsWorkshop.Helios
 {
     using System;
-    using System.Windows.Threading;
     using System.Xml;
 
     /// <summary>
@@ -33,9 +33,6 @@ namespace GadrocsWorkshop.Helios
         private bool _designMode;
         private WeakReference _profile = new WeakReference(null);
         private int _bypassCount;
-#if DEVELOPMENT_CONFIGURATION
-        internal bool _tracing = false;
-#endif
 
         protected HeliosObject(string name)
         {
@@ -65,10 +62,9 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
-        /// Gets the flag to bypass trigger events.  When this
-        /// is set to true no triggers should be fired.
+        /// True if no triggers should be fired
         /// </summary>
-        public bool BypassTriggers => (_bypassCount > 0 || DesignMode);
+        public bool BypassTriggers => (_bypassCount > 0) || (HeliosBinding.BindingTracer == null && DesignMode);
 
         /// <summary>
         /// Returns the internal collection of Action descriptors used
@@ -139,13 +135,21 @@ namespace GadrocsWorkshop.Helios
             get => _designMode || (Profile != null && Profile.DesignMode);
             set
             {
-                if (_designMode != value)
+                if (_designMode == value)
                 {
-                    _designMode = value;
-                    OnPropertyChanged("DesignMode", !value, value, false);
+                    return;
                 }
+
+                _designMode = value;
+                OnPropertyChanged("DesignMode", !value, value, false);
             }
         }
+
+        /// <summary>
+        /// opaque context information stored for this Helios Object, indexed by the type of the class that owns the context, without
+        /// further object references
+        /// </summary>
+        public IDictionary<Type, long> OpaqueHandles { get; } = new Dictionary<Type, long>();
 
         #endregion
 
@@ -201,7 +205,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         protected virtual void OnProfileChanged(HeliosProfile oldProfile)
         {
-            // no code
+            // no code in base
         }
 
         /// <summary>

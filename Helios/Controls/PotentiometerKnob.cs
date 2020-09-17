@@ -26,8 +26,6 @@ namespace GadrocsWorkshop.Helios.Controls
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private double _value = 0.0d;
-
         private double _initialValue = 0.0d;
         private double _stepValue = 0.1d;
         private double _minValue = 0d;
@@ -36,7 +34,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private double _initialRotation = 225d;
         private double _rotationTravel = 270d;
 
-        private HeliosValue _potValue;
+        private HeliosValue _heliosValue;
 
         private bool _isContinuous;
 
@@ -45,11 +43,11 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             KnobImage = "{Helios}/Images/Knobs/knob1.png";
 
-            _potValue = new HeliosValue(this, new BindingValue(0d), "", "value", "Current value of the potentiometer.", "", BindingValueUnits.Numeric);
-            _potValue.Execute += new HeliosActionHandler(SetValue_Execute);
-            Values.Add(_potValue);
-            Actions.Add(_potValue);
-            Triggers.Add(_potValue);
+            _heliosValue = new HeliosValue(this, new BindingValue(0d), "", "value", "Current value of the potentiometer.", "", BindingValueUnits.Numeric);
+            _heliosValue.Execute += new HeliosActionHandler(SetValue_Execute);
+            Values.Add(_heliosValue);
+            Actions.Add(_heliosValue);
+            Triggers.Add(_heliosValue);
         }
 
         #region Properties
@@ -149,22 +147,28 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
+        /// <summary>
+        /// UI access to current value, backed by Helios value of the potentiometer
+        ///
+        /// writes to this property do not create Undo events
+        /// </summary>
         public double Value
         {
             get
             {
-                return _value;
+                return _heliosValue.Value.DoubleValue;
             }
             set
             {
-                if (!_value.Equals(value))
+                if (_heliosValue.Value.DoubleValue.Equals(value))
                 {
-                    double oldValue = _value;
-                    _value = value;
-                    _potValue.SetValue(new BindingValue(_value), BypassTriggers);
-                    OnPropertyChanged("Value", oldValue, value, true);
-                    SetRotation();
+                    return;
                 }
+
+                double oldValue = _heliosValue.Value.DoubleValue;
+                _heliosValue.SetValue(new BindingValue(value), BypassTriggers);
+                OnPropertyChanged("Value", oldValue, value, false);
+                SetRotation();
             }
         }
 
@@ -214,9 +218,9 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             try
             {
-                BeginTriggerBypass(e.BypassCascadingTriggers);
-                Value = e.Value.DoubleValue;
-                EndTriggerBypass(e.BypassCascadingTriggers);
+                // NOTE: don't create a Helios object property event
+                _heliosValue.SetValue(e.Value, e.BypassCascadingTriggers);
+                SetRotation();
             }
             catch
             {
@@ -254,7 +258,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override double ControlAngle
         {
-            get => InitialRotation + (((Value - MinValue) / ValueSpan) * RotationTravel);
+            get => InitialRotation + (((_heliosValue.Value.DoubleValue - MinValue) / ValueSpan) * RotationTravel);
             set
             {
                 // division by zero guard

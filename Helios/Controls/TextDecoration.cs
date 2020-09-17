@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -27,7 +28,6 @@ namespace GadrocsWorkshop.Helios.Controls
         HeliosValue _textValue;
 
         private TextFormat _format = new TextFormat();
-        private string _text = "Label";
         private Color _fontColor = Colors.White;
         private Color _backgroundColor = Color.FromRgb(30,30,30);
         private bool _fillBackground = false;
@@ -42,8 +42,7 @@ namespace GadrocsWorkshop.Helios.Controls
         : base(name, new Size(60, 20))
         {
             _format.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Format_PropertyChanged);
-
-            _textValue = new HeliosValue(this, new BindingValue(_text), "", "Text", "Text for this label.", "", BindingValueUnits.Text);
+            _textValue = new HeliosValue(this, new BindingValue("Label"), "", "Text", "Text for this label.", "", BindingValueUnits.Text);
             _textValue.Execute += new HeliosActionHandler(TextValue_Execute);
             Actions.Add(_textValue);
             Values.Add(_textValue);
@@ -63,15 +62,15 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             get
             {
-                return _text;
+                return _textValue.Value.StringValue;
             }
             set
             {
-                if ((_text == null && value != null)
-                    || (_text != null && !_text.Equals(value)))
+                if ((_textValue.Value.StringValue == null && value != null)
+                    || (_textValue.Value.StringValue != null && !_textValue.Value.StringValue.Equals(value)))
                 {
-                    string oldValue = _text;
-                    _text = value;
+                    string oldValue = _textValue.Value.StringValue;
+                    _textValue.SetValue(new BindingValue(value), BypassTriggers);
                     OnPropertyChanged("Text", oldValue, value, true);
                     OnDisplayUpdate();
                 }
@@ -138,8 +137,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         void Format_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            PropertyNotificationEventArgs origArgs = e as PropertyNotificationEventArgs;
-            if (origArgs != null)
+            if (e is PropertyNotificationEventArgs origArgs)
             {
                 OnPropertyChanged("Format", origArgs);
             }
@@ -149,7 +147,7 @@ namespace GadrocsWorkshop.Helios.Controls
         void TextValue_Execute(object action, HeliosActionEventArgs e)
         {
             _textValue.SetValue(e.Value, e.BypassCascadingTriggers);
-            Text = e.Value.StringValue;
+            OnDisplayUpdate();
         }
 
         public override void ConfigureIconInstance()

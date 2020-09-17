@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Tools;
+
 namespace GadrocsWorkshop.Helios
 {
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -24,44 +26,27 @@ namespace GadrocsWorkshop.Helios
     /// <summary>
     /// ModuleManager gives access to all plugin component (Controls, Interfaces, Converters and Property Editors).
     /// </summary>
-    internal class ModuleManager : IModuleManager
+    internal class ModuleManager : IModuleManager2
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private string _applicationPath;
-
-        private List<BindingValueUnitConverter> _converters = new List<BindingValueUnitConverter>();
-        private HeliosDescriptorCollection _controlDescriptors = new HeliosDescriptorCollection();
-        private HeliosInterfaceDescriptorCollection _interfaceDescriptors = new HeliosInterfaceDescriptorCollection();
-
-        private Dictionary<string, HeliosPropertyEditorDescriptorCollection> _propertyEditors = new Dictionary<string, HeliosPropertyEditorDescriptorCollection>();
+        private readonly List<BindingValueUnitConverter> _converters = new List<BindingValueUnitConverter>();
+        private readonly Dictionary<string, HeliosPropertyEditorDescriptorCollection> _propertyEditors = new Dictionary<string, HeliosPropertyEditorDescriptorCollection>();
+        private readonly List<HeliosToolDescriptor> _tools = new List<HeliosToolDescriptor>();
 
         internal ModuleManager(string applicationPath)
         {
             Logger.Debug($"Helios will search for Helios modules in {applicationPath}");
-            _applicationPath = applicationPath;
         }
 
-        public HeliosDescriptorCollection ControlDescriptors
-        {
-            get
-            {
-                return _controlDescriptors;
-            }
-        }
+        public HeliosDescriptorCollection ControlDescriptors { get; } = new HeliosDescriptorCollection();
 
-        public HeliosInterfaceDescriptorCollection InterfaceDescriptors
-        {
-            get
-            {
-                return _interfaceDescriptors;
-            }
-        }
+        public HeliosInterfaceDescriptorCollection InterfaceDescriptors { get; } = new HeliosInterfaceDescriptorCollection();
 
         public HeliosVisual CreateControl(string typeIdentifier)
         {
             HeliosVisual control = null;
-            HeliosDescriptor descriptor = _controlDescriptors[typeIdentifier];
+            HeliosDescriptor descriptor = ControlDescriptors[typeIdentifier];
             if (descriptor != null)
             {
                 control = (HeliosVisual)Activator.CreateInstance(descriptor.ControlType);
@@ -74,7 +59,7 @@ namespace GadrocsWorkshop.Helios
             HeliosInterfaceEditor editor = null;
             if (item != null)
             {
-                HeliosInterfaceDescriptor descriptor = _interfaceDescriptors[item.GetType()];
+                HeliosInterfaceDescriptor descriptor = InterfaceDescriptors[item.GetType()];
                 if (descriptor != null && descriptor.InterfaceEditorType != null)
                 {
                     editor = (HeliosInterfaceEditor)Activator.CreateInstance(descriptor.InterfaceEditorType);
@@ -90,7 +75,7 @@ namespace GadrocsWorkshop.Helios
             HeliosVisualRenderer renderer = null;
             Type visualType = visual.GetType();
 
-            HeliosDescriptor descriptor = _controlDescriptors[visualType];
+            HeliosDescriptor descriptor = ControlDescriptors[visualType];
             if (descriptor != null)
             {
                 renderer = (HeliosVisualRenderer)Activator.CreateInstance(descriptor.Renderer);
@@ -141,41 +126,35 @@ namespace GadrocsWorkshop.Helios
 
         internal void RegisterModule(Assembly asm)
         {
-            if (asm != null)
+            if (asm == null)
             {
-                try
+                return;
+            }
+
+            try
+            {
+                foreach (Type type in asm.GetTypes())
                 {
-                    string moduleName = asm.GetName().Name;
-
-                    foreach (Type type in asm.GetTypes())
+                    if (type.IsAbstract) continue;
+                    object[] attrs = type.GetCustomAttributes(false);
+                    foreach (object attribute in attrs)
                     {
-                        if (type.IsAbstract) continue;
-                        object[] attrs = type.GetCustomAttributes(false);
-                        foreach (object attribute in attrs)
+                        switch (attribute)
                         {
-                            HeliosControlAttribute controlAttribute = attribute as HeliosControlAttribute;
-                            if (controlAttribute != null)
-                            {
+                            case HeliosControlAttribute controlAttribute:
                                 Logger.Debug("Control found " + type.Name);
-                                _controlDescriptors.Add(new HeliosDescriptor(type, controlAttribute));
-                            }
-
-                            HeliosInterfaceAttribute interfaceAttribute = attribute as HeliosInterfaceAttribute;
-                            if (interfaceAttribute != null)
-                            {
+                                ControlDescriptors.Add(new HeliosDescriptor(type, controlAttribute));
+                                break;
+                            case HeliosInterfaceAttribute interfaceAttribute:
                                 Logger.Debug("Interface found " + type.Name);
-                                _interfaceDescriptors.Add(new HeliosInterfaceDescriptor(type, interfaceAttribute));
-                            }
-
-                            HeliosUnitConverterAttribute converterAttribute = attribute as HeliosUnitConverterAttribute;
-                            if (converterAttribute != null)
-                            {
+                                InterfaceDescriptors.Add(new HeliosInterfaceDescriptor(type, interfaceAttribute));
+                                break;
+                            case HeliosUnitConverterAttribute converterAttribute:
+                                _ = converterAttribute;
                                 Logger.Debug("Converter found " + type.Name);
                                 _converters.Add((BindingValueUnitConverter)Activator.CreateInstance(type));
-                            }
-
-                            HeliosPropertyEditorAttribute editorAttribute = attribute as HeliosPropertyEditorAttribute;
-                            if (editorAttribute != null)
+                                break;
+                            case HeliosPropertyEditorAttribute editorAttribute:
                             {
                                 Logger.Debug("Property editor found " + type.Name);
                                 HeliosPropertyEditorDescriptorCollection editors;
@@ -190,20 +169,29 @@ namespace GadrocsWorkshop.Helios
                                 }
 
                                 editors.Add(new HeliosPropertyEditorDescriptor(type, editorAttribute));
+                                break;
+                            }
+                            case HeliosToolAttribute tool:
+                            {
+                                _ = tool;
+                                _tools.Add(new HeliosToolDescriptor(type));
+                                break;
                             }
                         }
-
                     }
-                }
-                catch (ReflectionTypeLoadException e)
-                {
-                    Logger.Error(e, "Failed reflecting assembly " + asm.FullName);
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e, "Failed adding module " + asm.FullName);
+
                 }
             }
+            catch (ReflectionTypeLoadException e)
+            {
+                Logger.Error(e, "Failed reflecting assembly " + asm.FullName);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Failed adding module " + asm.FullName);
+            }
         }
+
+        public IEnumerable<HeliosToolDescriptor> Tools => _tools;
     }
 }

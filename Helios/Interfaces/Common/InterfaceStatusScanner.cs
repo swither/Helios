@@ -73,6 +73,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             // signal all interfaces removed so that any running view models / editors can refresh
             InterfaceStatuses?.Clear();
 
+            if (profile == null)
+            {
+                // empty status is correct
+                return;
+            }
+
             // add back new interface status objects for new profile
             foreach (HeliosInterface heliosInterface in profile.Interfaces)
             {

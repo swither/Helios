@@ -39,7 +39,7 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             IsSnapTarget = false;
             HeliosAction fillColorAction = new HeliosAction(this, "", "fill color", "set", "Sets the fill color for the rectangle", "Color in the hex format #AARRGGBB.", BindingValueUnits.Text);
-            fillColorAction.Execute += new HeliosActionHandler(FillColorAction_Execute);
+            fillColorAction.Execute += FillColorAction_Execute;
             Actions.Add(fillColorAction);
         }
 
@@ -47,7 +47,10 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             try 
             {
-                FillColor = (Color)_colorConverter.ConvertFromInvariantString(e.Value.StringValue);
+                _fillColor = (Color)_colorConverter.ConvertFromInvariantString(e.Value.StringValue);
+
+                // invalidate the entire renderer state
+                Refresh();
             }
             catch
             {

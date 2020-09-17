@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,34 +20,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
     public class DCSDataElement : ExportDataElement
     {
-        private string _exportFormat;
-        private bool _everyFrame;
-
         public DCSDataElement(string id)
             : this(id, null, false)
         {
+            // utility constructor
         }
 
         public DCSDataElement(string id, string format)
             : this (id, format, false)
         {
+            // utility constructor
         }
 
         public DCSDataElement(string id, string format, bool everyFrame)
             : base(id)
         {
-            _exportFormat = format;
-            _everyFrame = everyFrame;
+            Format = format;
+            IsExportedEveryFrame = everyFrame;
         }
 
-        public string Format
-        {
-            get { return _exportFormat; }
-        }
+        public string Format { get; }
 
-        public bool IsExportedEveryFrame
-        {
-            get { return _everyFrame; }
-        }
+        public bool IsExportedEveryFrame { get; }
     }
 }

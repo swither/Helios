@@ -741,7 +741,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         /// </summary>
         /// <param name="id"></param>
         /// <param name="value"></param>
-        protected bool DispatchReceived(string id, string value)
+        public bool DispatchReceived(string id, string value)
         {
             if (!_main.FunctionsById.TryGetValue(id, out NetworkFunction function))
             {
@@ -955,12 +955,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
         protected void AddFunction(NetworkFunction function)
         {
-            Functions.Add(function);
-        }
-
-        protected void AddFunction(NetworkFunction function, bool debug)
-        {
-            function.IsDebugMode = debug;
             Functions.Add(function);
         }
 
