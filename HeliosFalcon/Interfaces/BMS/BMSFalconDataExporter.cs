@@ -154,6 +154,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
             //MiscBits
             AddValue("Altimeter", "radar alt", "radar altitude", "Altitude in feet.", BindingValueUnits.Feet);
+
+            //IFF Digits
+            AddValue("IFF", "backup mode 1 digit 1", "AUX COMM: Mode 1 left digit", "", BindingValueUnits.Numeric);
+            AddValue("IFF", "backup mode 1 digit 2", "AUX COMM: Mode 1 right digit", "", BindingValueUnits.Numeric);
+            AddValue("IFF", "backup mode 3 digit 1", "AUX COMM: Mode 3 left digit", "", BindingValueUnits.Numeric);
+            AddValue("IFF", "backup mode 3 digit 2", "AUX COMM: Mode 3 right digit", "", BindingValueUnits.Numeric);
         }
 
         internal override void InitData()
@@ -275,6 +281,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
                 //AV8B Values
                 SetValue("AV8B", "vtol exhaust angle position", new BindingValue(_lastFlightData2.vtolPos));
+
+                //IFF Data
+                SetValue("IFF", "backup mode 1 digit 1", new BindingValue(_lastFlightData2.iffBackupMode1Digit1));
+                SetValue("IFF", "backup mode 1 digit 2", new BindingValue(_lastFlightData2.iffBackupMode1Digit2));
+                SetValue("IFF", "backup mode 3 digit 1", new BindingValue(_lastFlightData2.iffBackupMode3ADigit1));
+                SetValue("IFF", "backup mode 3 digit 2", new BindingValue(_lastFlightData2.iffBackupMode3ADigit2));
 
                 ProcessMiscBits(_lastFlightData2.miscBits, _lastFlightData2.RALT);
                 ProcessHsiBits(_lastFlightData.hsiBits, _lastFlightData.desiredCourse, _lastFlightData.bearingToBeacon, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
