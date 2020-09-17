@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,39 +16,24 @@
 
 namespace GadrocsWorkshop.Helios.Controls
 {
-    using System;
     using System.Windows;
 
     public abstract class CustomNeedle : HeliosVisual
     {
         private string _knobImage;
-        private double _rotation;
-
-       
-
-        private const double SWIPE_SENSITIVY_BASE = 45d;
-
-      
-        private CalibrationPointCollectionDouble _swipeCalibration;
-        
+        protected double _knobRotation;
 
         protected CustomNeedle(string name, Size defaultSize)
             : base(name, defaultSize)
         {
-            _swipeCalibration = new CalibrationPointCollectionDouble(-1d, 2d, 1d, 0.5d);
-            _swipeCalibration.Add(new CalibrationPointDouble(0.0d, 1d));
+            // no code
         }
 
         #region Properties
 
-       
-
         public string KnobImage
         {
-            get
-            {
-                return _knobImage;
-            }
+            get => _knobImage;
             set
             {
                 if ((_knobImage == null && value != null)
@@ -61,60 +47,23 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public double KnobRotation
-        {
-            get
-            {
-                return _rotation;
-            }
-            protected set
-            {
-                if (!_rotation.Equals(value))
-                {
-                    double oldValue = _rotation;
-                    _rotation = value % 360d;
-                    OnPropertyChanged("KnobRotation", oldValue, value, false);
-                    OnDisplayUpdate();
-                }
-            }
-        }
-
-     
-
-      
+        public double KnobRotation => _knobRotation;
 
         #endregion
-
-  //      protected abstract void Pulse(bool increment);
-
-        private Vector VectorFromCenter(Point devicePosition)
-        {
-            return devicePosition - new Point(DisplayRectangle.Width / 2, DisplayRectangle.Height / 2);
-        }
-
-        private double GetAngle(Point startPoint, Point endPoint)
-        {
-            return Vector.AngleBetween(VectorFromCenter(startPoint), VectorFromCenter(endPoint));
-        }
 
         public override void MouseDown(Point location)
         {
            
         }
 
-      void Profile_ProfileTick(object sender, EventArgs e)
-      {
-        
-      }
+        public override void MouseDrag(Point location)
+        {
 
-       public override void MouseDrag(Point location)
-       {
-        
-       }
+        }
 
-       public override void MouseUp(Point location)
-       {
+        public override void MouseUp(Point location)
+        {
          
-       }   
+        }   
     }
 }

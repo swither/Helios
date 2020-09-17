@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -127,7 +128,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// backing field for property CombinedMonitorSetupName, contains
         /// the name of the combined monitor setup that needs to be selected in DCS
         /// </summary>
-        private string _combinedMonitorSetupName = "Helios";
+        private string _combinedMonitorSetupName;
 
         /// <summary>
         /// backing field for property CurrentProfileName, contains
@@ -186,6 +187,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         protected override void AttachToProfileOnMainThread()
         {
             base.AttachToProfileOnMainThread();
+
+            // customize naming in case of custom Documents folder
+            string documentsFolderName = Path.GetFileName(ConfigManager.DocumentPath);
+            _combinedMonitorSetupName = string.IsNullOrEmpty(documentsFolderName) ? "Helios" : documentsFolderName;
 
             // read persistent config
             _monitorLayoutMode = ConfigManager.SettingsManager.LoadSetting(PREFERENCES_SETTINGS_GROUP,
@@ -508,17 +513,21 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void AutoSelectMainView()
         {
             // REVISIT add support for explicit main and UI view viewports, which will require updates to the editor also
-            if (_monitors.Values.Any(m => m.Main))
+            if (_monitors.Values.Any(m => m.Main && m.Included))
             {
-                // got at least one
+                // got at least one, don't even create the list
                 return;
             }
 
+            IList<ShadowMonitor> selectedMonitors = _monitors.Values
+                .Where(m => m.Included)
+                .ToList();
+
             // select any monitors with minimal viewports (might not be entirely empty)
-            int min = _monitors.Values
+            int min = selectedMonitors
                 .Select(m => m.ViewportCount)
                 .Min<int>();
-            foreach (ShadowMonitor monitor in _monitors.Values.Where(m => m.ViewportCount == min))
+            foreach (ShadowMonitor monitor in selectedMonitors.Where(m => m.ViewportCount == min))
             {
                 monitor.Main = true;
             }
@@ -531,17 +540,21 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void AutoSelectUserInterfaceView()
         {
             // REVISIT add support for explicit main and UI view viewports, which will require updates to the editor also
-            if (_monitors.Values.Any(m => m.UserInterface))
+            if (_monitors.Values.Any(m => m.UserInterface && m.Included))
             {
-                // got at least one
+                // got at least one, don't even create the list
                 return;
             }
 
+            IList<ShadowMonitor> selectedMonitors = _monitors.Values
+                .Where(m => m.Included)
+                .ToList();
+
             // select any monitors with minimal viewports (might not be entirely empty)
-            int minViewports = _monitors.Values
+            int minViewports = selectedMonitors
                 .Select(m => m.ViewportCount)
                 .Min<int>();
-            IList<ShadowMonitor> sortedMinPopulated = _monitors.Values
+            IList<ShadowMonitor> sortedMinPopulated = selectedMonitors
                 .Where(m => m.ViewportCount == minViewports)
                 .OrderBy(m => m.Monitor.Left)
                 .ToList();
@@ -719,10 +732,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return;
             }
             CheckMonitorSettings();
+            EnsureValidMonitorSelections();
             AutoSelectMainView();
             AutoSelectUserInterfaceView();
             UpdateGlobalOffset();
-            EnsureValidMonitorSelections();
             UpdateRenderedRectangle();
             MonitorLayoutKey = CalculateMonitorLayoutKey();
         }

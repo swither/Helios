@@ -364,12 +364,12 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="10" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="10" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="10" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -379,12 +379,21 @@
                     <ColumnDefinition Width="*" />
                     <!-- primary controls and long messages-->
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Row="1" Grid.Column="0">
+                <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Layout Mode" />
+                <ComboBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="280" MaxWidth="400" 
+                          ItemsSource="{Binding DisplayNames, Source={StaticResource MonitorLayoutMode}}" 
+                          SelectedItem="{Binding Data.MonitorLayoutMode, Converter={StaticResource MonitorLayoutMode}}" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}">
+                    Selects one of the ways in which DCS' "Resolution" rectangle can be mapped to the displays.  
+                    This setting is shared across all profiles on this computer.
+                </TextBlock>
+
+                <Grid Grid.Row="4" Grid.Column="0">
                     <Label Style="{StaticResource InterfaceEditorLabel}" Content="In-Game View" />
                     <Slider HorizontalAlignment="Right" Margin="6" Orientation="Vertical" Value="{Binding Scale}"
                             Minimum="0.04" Maximum="0.18" LargeChange="0.01" SmallChange="0.005" />
                 </Grid>
-                <ScrollViewer Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Auto"
+                <ScrollViewer Grid.Row="4" Grid.Column="1" HorizontalScrollBarVisibility="Auto"
                               VerticalScrollBarVisibility="Disabled">
                     <Grid>
                         <!-- DCS resolution rectangle underlay -->
@@ -522,10 +531,10 @@
                     </Grid>
                 </ScrollViewer>
 
-                <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}"
+                <Label Grid.Row="6" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}"
                        Content="Menus / Loading" />
 
-                <ScrollViewer Grid.Row="3" Grid.Column="1" HorizontalScrollBarVisibility="Auto"
+                <ScrollViewer Grid.Row="6" Grid.Column="1" HorizontalScrollBarVisibility="Auto"
                               VerticalScrollBarVisibility="Disabled">
                     <Grid>
                         <!-- DCS resolution rectangle underlay -->
@@ -638,16 +647,6 @@
                         </Canvas>
                     </Grid>
                 </ScrollViewer>
-
-                <Label Grid.Row="5" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Layout Mode" />
-                <ComboBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="280" MaxWidth="400" 
-                          ItemsSource="{Binding DisplayNames, Source={StaticResource MonitorLayoutMode}}" 
-                          SelectedItem="{Binding Data.MonitorLayoutMode, Converter={StaticResource MonitorLayoutMode}}" />
-
-                <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource Documentation}">
-                    Selects one of the ways in which DCS' "Resolution" rectangle can be mapped to the displays.  
-                    This setting is shared across all profiles on this computer.
-                </TextBlock>
 
                 <Label Grid.Row="8" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Resolution" />
                 <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">

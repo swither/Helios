@@ -572,8 +572,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new Switch(this, CPT_MECH, "712", new SwitchPosition[] { new SwitchPosition("1.0", "Open", BUTTON_6), new SwitchPosition("0.5", "Hold", BUTTON_6), new SwitchPosition("0.0", "Close", BUTTON_7, BUTTON_7, "0.5") }, "Mechanical", "Canopy Open/Hold/Close", "%0.2f"));
 			AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_11, "787", "1", "Open", "0", "Closed", "Mechanical", "Extend boarding ladder cover", "%1d"));
 			AddFunction(new PushButton(this, CPT_MECH, BUTTON_12, "788", "Mechanical", "Extend boarding ladder button"));
-			AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_15, "786", "0", "Down", "1", "Up", "Mechanical", "Canopy Jettison Lever Unlock Button", " %1d"));
-			AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_14, "785", "0", "Down", "1", "Up", "Mechanical", "Canopy jettison lever", " %1d"));
+			AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_15, "786", "0", "Down", "1", "Up", "Mechanical", "Canopy Jettison Lever Unlock Button", "%1d"));
+			AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_14, "785", "0", "Down", "1", "Up", "Mechanical", "Canopy jettison lever", "%1d"));
 			AddFunction(Switch.CreateThreeWaySwitch(this, CPT_MECH, BUTTON_2, "773", "0.0", "UP", "0.5", "MVR", "1.0", "DN", "Mechanical", "Flap Setting", "%0.1f"));
 			AddFunction(new Rocker(this, CPT_MECH, BUTTON_5, BUTTON_4, BUTTON_5, BUTTON_4, "770", "Mechanical", "Seat Height Adjustment", true));
 			AddFunction(new Axis(this, CPT_MECH, BUTTON_13, "777", 0.1d, 0.0d, 1.0d, "Mechanical", "Internal canopy actuator disengage lever"));
@@ -809,10 +809,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new SilentValueConsumer(this, "141", "Previous incorrect or out of date assignment for value 145"));
             AddFunction(new SilentValueConsumer(this, "142", "Previous incorrect or out of date assignment for value 146"));
 
-            AddFunction(new Functions.VHFRadioEncoder1(this, VHF_AM_RADIO, BUTTON_9, "143", 0.1d, 0d, 1d, "VHF AM Radio", "1st Frequency Selector"), true);
-			AddFunction(new Functions.VHFRadioEncoder(this, VHF_AM_RADIO, BUTTON_11, "144", 0.1d, 0.0d, 0.9d, "VHF AM Radio", "2nd Frequency Selector"), true);
-            AddFunction(new Functions.VHFRadioEncoder3(this, VHF_AM_RADIO, BUTTON_13, "145", 0.1d, 0.0d, 0.9d, "VHF AM Radio", "3rd Frequency Selector"), true);
-            AddFunction(new Functions.VHFRadioEncoder4(this, VHF_AM_RADIO, BUTTON_15, "146", 0.25d, 0.0d, 0.9d, "VHF AM Radio", "4th Frequency Selector"), true);
+            AddFunction(new Functions.VHFRadioEncoder1(this, VHF_AM_RADIO, BUTTON_9, "143", 0.1d, 0d, 1d, "VHF AM Radio", "1st Frequency Selector"));
+			AddFunction(new Functions.VHFRadioEncoder(this, VHF_AM_RADIO, BUTTON_11, "144", 0.1d, 0.0d, 0.9d, "VHF AM Radio", "2nd Frequency Selector"));
+            AddFunction(new Functions.VHFRadioEncoder3(this, VHF_AM_RADIO, BUTTON_13, "145", 0.1d, 0.0d, 0.9d, "VHF AM Radio", "3rd Frequency Selector"));
+            AddFunction(new Functions.VHFRadioEncoder4(this, VHF_AM_RADIO, BUTTON_15, "146", 0.25d, 0.0d, 0.9d, "VHF AM Radio", "4th Frequency Selector"));
 			#endregion
 
 			#region VHF FM Radio
@@ -824,10 +824,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new SilentValueConsumer(this, "155", "Previous incorrect or out of date assignment for value 159"));
             AddFunction(new SilentValueConsumer(this, "156", "Previous incorrect or out of date assignment for value 160"));
 
-            AddFunction(new Functions.VHFRadioEncoder1(this, VHF_FM_RADIO, BUTTON_9, "157", 0.05d, 0d, 1d, "VHF FM Radio", "1st Frequency Selector"), true);
-			AddFunction(new Functions.VHFRadioEncoder(this, VHF_FM_RADIO, BUTTON_11,"158", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "2nd Frequency Selector"), true);
-            AddFunction(new Functions.VHFRadioEncoder3(this, VHF_FM_RADIO, BUTTON_13,"159", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "3rd Frequency Selector"), true);
-            AddFunction(new Functions.VHFRadioEncoder4(this, VHF_FM_RADIO, BUTTON_15,"160", 0.25d, 0.0d, 0.9d, "VHF FM Radio", "4th Frequency Selector"), true);
+            AddFunction(new Functions.VHFRadioEncoder1(this, VHF_FM_RADIO, BUTTON_9, "157", 0.05d, 0d, 1d, "VHF FM Radio", "1st Frequency Selector"));
+			AddFunction(new Functions.VHFRadioEncoder(this, VHF_FM_RADIO, BUTTON_11,"158", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "2nd Frequency Selector"));
+            AddFunction(new Functions.VHFRadioEncoder3(this, VHF_FM_RADIO, BUTTON_13,"159", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "3rd Frequency Selector"));
+            AddFunction(new Functions.VHFRadioEncoder4(this, VHF_FM_RADIO, BUTTON_15,"160", 0.25d, 0.0d, 0.9d, "VHF FM Radio", "4th Frequency Selector"));
             AddFunction(new Switch(this, VHF_FM_RADIO, "152", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_3), new SwitchPosition("0.1", "TX", BUTTON_3), new SwitchPosition("0.2", "DN", BUTTON_3) }, "VHF FM Radio", "Frequency Mode Dial", "%0.1f"));
             AddFunction(new Switch(this, VHF_FM_RADIO, "149", new SwitchPosition[] { new SwitchPosition("0.0", "Emergency FM", BUTTON_4), new SwitchPosition("0.1", "Emergency AM", BUTTON_4), new SwitchPosition("0.2", "Manual", BUTTON_4), new SwitchPosition("0.3", "PRE", BUTTON_4) }, "VHF FM Radio", "Frequency Selection Dial", "%0.1f"));
             AddFunction(new Axis(this, VHF_FM_RADIO, BUTTON_5, "147", 0d, 0d, 1d, "VHF FM Radio", "Volume"));
@@ -925,7 +925,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 
             #region Intercomm Panel
             AddFunction(new Axis(this, INTERCOM, BUTTON_2, "221", 0.1d, 0d, 1d, "Intercom", "INT Volume"));
-            AddFunction(Switch.CreateToggleSwitch(this, INTERCOM, BUTTON_1, "222", "1", "On", "0", "Off", "Intercom", "INT Switch", "%1d"), true);
+            AddFunction(Switch.CreateToggleSwitch(this, INTERCOM, BUTTON_1, "222", "1", "On", "0", "Off", "Intercom", "INT Switch", "%1d"));
             AddFunction(new Axis(this, INTERCOM, BUTTON_4, "223", 0.1d, 0d, 1d, "Intercom", "FM Volume"));
             AddFunction(Switch.CreateToggleSwitch(this, INTERCOM, BUTTON_3, "224", "1", "On", "0", "Off", "Intercom", "FM Switch", "%1d"));
             AddFunction(new Axis(this, INTERCOM, BUTTON_6, "225", 0.1d, 0d, 1d, "Intercom", "VHF Volume"));

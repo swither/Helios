@@ -71,6 +71,8 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public event HeliosActionHandler Execute;
 
+        // XXX this is gross... we churn HeliosTriggerEventArgs and HeliosActionEventArgs objects for no reason.  let's have one EventArgs object that represents a value change
+        // XXX and then we can reuse it through the action/trigger/action/trigger stack frames and even use it for tracing
         protected void OnFireTrigger(BindingValue value)
         {
             HeliosTriggerEventArgs args = new HeliosTriggerEventArgs(value);

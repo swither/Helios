@@ -21,7 +21,8 @@ else
 
    ' upgrade codes for Helios 1.4+ (production)
    Dim heliosUpgrade:heliosUpgrade = "{589D8667-3ED9-478B-8F67-A56E4FADBC63}"
-   Dim keypressUpgrade:keypressUpgrade = "{EC3AC978-542C-4062-B6D0-F652A7C3E134}" 
+   Dim keypressUpgrade:keypressUpgrade = "{EC3AC978-542C-4062-B6D0-F652A7C3E134}"
+   Dim toolsUpgrade:toolsUpgrade = "{1A6DEA70-100A-4C3B-A9D9-64340BEAC520}"
    Dim upgradeCode:upgradeCode = heliosUpgrade
    
    ' upgrade code for Helios Development Prototypes
@@ -36,6 +37,9 @@ else
    if session.Property("ProductName") = "Helios Keypress Receiver" then
         Wscript.Echo "configuring Helios Keypress Receiver Installer"
         upgradeCode = keypressUpgrade
+   elseif session.Property("ProductName") = "Helios Developer Tools" then
+        Wscript.Echo "configuring Helios Developer Tools"
+        upgradeCode = toolsUpgrade
    end if
 
    ' change product version and file versions
@@ -69,6 +73,10 @@ else
          Execute database, "UPDATE Property SET `Value` = 'HeliosDev' WHERE `Property` = 'ProductName'"
      end if
 
+     ' fix up installation paths (DIRCA_TARGETDIR) for dev tools (or similar) that install on top of Helios folder
+     Execute database, "UPDATE CustomAction SET `Target` = '[ProgramFiles64Folder][Manufacturer]\HeliosDev' WHERE `Target` = '[ProgramFiles64Folder][Manufacturer]\Helios'"
+
+     ' fix up start menu folder
      Execute database, "UPDATE Directory SET `DefaultDir` = 'HELIOS~1|HeliosDev' WHERE `DefaultDir` = 'HELIOS|Helios'"
    end if
 

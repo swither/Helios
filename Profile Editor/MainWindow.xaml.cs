@@ -13,10 +13,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.ObjectModel;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
 using GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall;
 using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
+using GadrocsWorkshop.Helios.Tools;
+using GadrocsWorkshop.Helios.Tools.Capabilities;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Windows;
 
@@ -69,7 +72,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             public HeliosEditorDocument editor;
         }
 
-        private delegate HeliosProfile LoadProfileDelegate(string filename);
         private delegate void LayoutDelegate(string filename);
 
         private readonly XmlLayoutSerializer _layoutSerializer;
@@ -96,9 +98,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// </summary>
         private bool _closing;
 
+        
+        /// <summary>
+        /// all plugin tools, indexed by their descriptor Id
+        /// </summary>
+        private Dictionary<string, object> _tools = new Dictionary<string, object>();
+
         public MainWindow()
         {
             InitializeComponent();
+
+            ToolMenuItems = new ObservableCollection<MenuItemModel>();
+            LoadTools();
 
             DataContext = this;
             InterfaceStatusPanel.DataContext = new InterfaceStatusViewModel(_configurationCheck);
@@ -116,6 +127,39 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // on finish loading, check version
             Loaded += PresentVersionCheck;
         }
+        
+        /// <summary>
+        /// load any HeliosTool items discovered in our modules
+        /// </summary>
+        private void LoadTools()
+        {
+            // first add our hard coded items
+            ToolMenuItems.Add(new MenuItemModel("Save Template", ProfileEditorCommands.SaveTemplate));
+            ToolMenuItems.Add(new MenuItemModel("Template _Manager", new RelayCommand(parameter =>
+            {
+                TemplateManagerWindow tm = new TemplateManagerWindow { Owner = this };
+                tm.ShowDialog();
+            })));
+
+            if (!(ConfigManager.ModuleManager is IModuleManager2 modules))
+            {
+                return;
+            }
+
+            foreach (HeliosToolDescriptor descriptor in modules.Tools)
+            {
+                _tools[descriptor.Id] = descriptor.CreateInstance();
+            }
+
+            foreach (IMenuSectionFactory factory in _tools.Values.OfType<IMenuSectionFactory>())
+            {
+                // our WPF implementation does not do well with nested menus so we flatten everything
+                foreach (MenuItemModel menuItemModel in factory.CreateMenuSection().Items)
+                {
+                    ToolMenuItems.Add(menuItemModel);
+                }
+            }
+        }
 
         private static void PresentVersionCheck(object sender, RoutedEventArgs e)
         {
@@ -126,29 +170,31 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         }
 
         void LayoutSerializer_LayoutSerializationCallback(object sender, LayoutSerializationCallbackEventArgs e)
-        {            
-            if (Profile != null && e.Model is LayoutDocument)
+        {
+            if (Profile == null || !(e.Model is LayoutDocument layoutDocument))
             {
-                HeliosObject profileObject = HeliosSerializer.ResolveReferenceName(Profile, e.Model.ContentId);
-                if (profileObject != null)
+                return;
+            }
+
+            HeliosObject profileObject = HeliosSerializer.ResolveReferenceName(Profile, layoutDocument.ContentId);
+            if (profileObject != null)
+            {
+                HeliosEditorDocument editor = CreateDocumentEditor(profileObject);
+                if (editor == null)
                 {
-                    HeliosEditorDocument editor = CreateDocumentEditor(profileObject);
-                    if (editor == null)
-                    {
-                        // this component used to have an editor and now it does not, or more likely this is
-                        // an UnsupportedInterface and therefore has no editor
-                        Logger.Debug("Layout Serializer: Document {ContentId} does not have an editor; ignored", e.Model.ContentId);
-                        return;
-                    }
-                    profileObject.PropertyChanged += DocumentObject_PropertyChanged;
-                    e.Content = CreateDocumentContent(editor);
-                    //DocumentPane.Children.Add((LayoutDocument)e.Model);
-                    e.Model.Closed += Document_Closed;
-                    AddDocumentMeta(profileObject, (LayoutDocument)e.Model, editor);
-                } else
-                {
-                    Logger.Debug("Layout Serializer: Unable to resolve Layout Document " + e.Model.ContentId);
+                    // this component used to have an editor and now it does not, or more likely this is
+                    // an UnsupportedInterface and therefore has no editor
+                    Logger.Debug("Layout Serializer: Document {ContentId} does not have an editor; ignored", layoutDocument.ContentId);
+                    return;
                 }
+                profileObject.PropertyChanged += DocumentObject_PropertyChanged;
+                e.Content = CreateDocumentContent(editor);
+                //DocumentPane.Children.Add((LayoutDocument)e.Model);
+                layoutDocument.Closed += Document_Closed;
+                AddDocumentMeta(profileObject, layoutDocument, editor);
+            } else
+            {
+                Logger.Debug("Layout Serializer: Unable to resolve Layout Document " + layoutDocument.ContentId);
             }
         }
 
@@ -159,17 +205,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             get { return (HeliosProfile)GetValue(ProfileProperty); }
             set
             {
-                Profile?.Unload();
-                if (Profile != null)
-                {
-                    // dont' show stale sources and bindings
-                    BindingsPanel.Clear();
-                }
+                OnProfileChange();
                 SetValue(ProfileProperty, value);
             }
         }
 
-        // Using a DependencyProperty as the backing store for Profile.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ProfileProperty =
             DependencyProperty.Register("Profile", typeof(HeliosProfile), typeof(MainWindow), new PropertyMetadata(null));
 
@@ -179,7 +219,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             set { SetValue(MonitorProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Monitor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MonitorProperty =
             DependencyProperty.Register("Monitor", typeof(int), typeof(MainWindow), new PropertyMetadata(0));
 
@@ -189,7 +228,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             set { SetValue(StatusBarMessageProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for StatusBarMessage.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StatusBarMessageProperty =
             DependencyProperty.Register("StatusBarMessage", typeof(string), typeof(MainWindow), new PropertyMetadata(""));
 
@@ -199,9 +237,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             set { SetValue(CurrentEditorProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for CurrentEditor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CurrentEditorProperty =
             DependencyProperty.Register("CurrentEditor", typeof(HeliosEditorDocument), typeof(MainWindow), new PropertyMetadata(null));
+
+        public ObservableCollection<MenuItemModel> ToolMenuItems
+        {
+            get => (ObservableCollection<MenuItemModel>) GetValue(ToolMenuSectionsProperty);
+            set => SetValue(ToolMenuSectionsProperty, value);
+        }
+
+        public static readonly DependencyProperty ToolMenuSectionsProperty = DependencyProperty.Register("ToolMenuItems", typeof(ObservableCollection<MenuItemModel>), typeof(MainWindow), new PropertyMetadata(null));
 
         #endregion
 
@@ -632,6 +677,52 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             GC.WaitForPendingFinalizers();
         }
 
+        /// <summary>
+        /// called when the current profile and it is about to be replaced
+        /// </summary>
+        private void OnProfileChange()
+        {
+            if (Profile == null)
+            {
+                return;
+            }
+
+            // tell profile objects to disengage
+            Profile.Unload();
+
+            // clean up any running tools
+            foreach (IProfileTool tool in _tools.Values.OfType<IProfileTool>())
+            {
+                tool.Close(Profile);
+            }
+
+            // dont' show stale sources and bindings
+            BindingsPanel.Clear();
+        }
+
+        /// <summary>
+        /// called when creating or loading a profile is complete
+        /// </summary>
+        private void OnProfileChangeComplete()
+        {
+            DocumentMeta selected = _documents.FirstOrDefault(meta => meta.document.IsSelected) ?? _documents.FirstOrDefault();
+            if (selected != null)
+            {
+                selected.document.IsSelected = true;
+                selected.document.IsActive = true;
+            }
+
+            // connect any loaded tools
+            foreach (IProfileTool tool in _tools.Values.OfType<IProfileTool>())
+            {
+                tool.Open(Profile);
+            }
+
+            // start checking the configuration
+            _triggered = false;
+            _configurationCheck?.Reload(Profile);
+        }
+
         private void RestoreSavedLayout(HeliosProfile profile)
         {
             string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
@@ -724,21 +815,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 }
             }
             return true;
-        }
-
-        /// <summary>
-        /// called when creating or loading a profile is complete
-        /// </summary>
-        private void OnProfileChangeComplete()
-        {
-            DocumentMeta selected = _documents.FirstOrDefault(meta => meta.document.IsSelected) ?? _documents.FirstOrDefault();
-            if (selected != null)
-            {
-                selected.document.IsSelected = true;
-                selected.document.IsActive = true;
-            }
-            _triggered = false;
-            _configurationCheck?.Reload(Profile);
         }
 
         private void ConfigurationCheck_Triggered(object sender, EventArgs e)
@@ -1113,12 +1189,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void Show_Layers(object sender, RoutedEventArgs e)
         {
             _ = ShowCurrentLayoutAnchorable(LayersPanel);
-        }
-
-        private void Show_TemplateManager(object sender, RoutedEventArgs e)
-        {
-            TemplateManagerWindow tm = new TemplateManagerWindow {Owner = this};
-            tm.ShowDialog();
         }
 
         private void ResetMonitors_Executed(object sender, ExecutedRoutedEventArgs e)
