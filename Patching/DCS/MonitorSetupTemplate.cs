@@ -21,25 +21,55 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     /// </summary>
     internal class MonitorSetupTemplate
     {
-        public MonitorSetupTemplate(string combinedMonitorSetupName, string profileName, bool combined)
+        public MonitorSetupTemplate(string combinedMonitorSetupBaseName, string profileName, bool combined)
         {
-            CombinedMonitorSetupName = combinedMonitorSetupName;
             ProfileName = profileName;
             Combined = combined;
-            BaseName = ProfileName?.Replace(" ", "") ?? "";
+            ProfileBaseName = ProfileName?.Replace(" ", "") ?? "";
+            CombinedMonitorSetupBaseName = combinedMonitorSetupBaseName;
         }
 
-        public string CombinedMonitorSetupName { get; }
+        /// <summary>
+        /// name of the current profile
+        /// </summary>
         public string ProfileName { get; }
-        public string BaseName { get; }
+
+        /// <summary>
+        /// base name of the separate monitor setup file if we were to generate one for the current profile
+        /// </summary>
+        public string ProfileBaseName { get; }
+
+        /// <summary>
+        /// base name of combined monitor setup file
+        /// </summary>
+        public string CombinedMonitorSetupBaseName { get; }
+
+        /// <summary>
+        /// true if this template is generating a combined setup
+        /// </summary>
         public bool Combined { get; }
 
-        public string MonitorSetupFileBaseName => Combined ? "Helios" : $"H_{BaseName}";
-        public string MonitorSetupName => Combined ? CombinedMonitorSetupName : $"H_{BaseName}";
+        /// <summary>
+        /// effective base name of generated lua file, without path or extension
+        /// </summary>
+        public string MonitorSetupFileBaseName => Combined ? CombinedMonitorSetupBaseName : $"H_{ProfileBaseName}";
 
+        /// <summary>
+        /// the name that the monitor setup file will report to DCS for selection in the UI
+        /// 
+        /// NOTE: for now, the internal name of the monitor setup is always the same as the file name
+        /// </summary>
+        public string MonitorSetupName => MonitorSetupFileBaseName;
+
+        /// <summary>
+        /// a comment placed in the monitor setup Lua file
+        /// </summary>
         public string SourcesList =>
             Combined ? "compatible Helios Profiles" : $"Helios Profile {ProfileName ?? "<unsaved>"}";
 
+        /// <summary>
+        /// effective file name of the monitor setup lua file
+        /// </summary>
         public string FileName => $"{MonitorSetupFileBaseName}.lua";
     }
 }

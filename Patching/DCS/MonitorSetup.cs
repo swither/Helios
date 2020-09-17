@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -127,7 +128,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// backing field for property CombinedMonitorSetupName, contains
         /// the name of the combined monitor setup that needs to be selected in DCS
         /// </summary>
-        private string _combinedMonitorSetupName = "Helios";
+        private string _combinedMonitorSetupName;
 
         /// <summary>
         /// backing field for property CurrentProfileName, contains
@@ -186,6 +187,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         protected override void AttachToProfileOnMainThread()
         {
             base.AttachToProfileOnMainThread();
+
+            // customize naming in case of custom Documents folder
+            string documentsFolderName = Path.GetFileName(ConfigManager.DocumentPath);
+            _combinedMonitorSetupName = string.IsNullOrEmpty(documentsFolderName) ? "Helios" : documentsFolderName;
 
             // read persistent config
             _monitorLayoutMode = ConfigManager.SettingsManager.LoadSetting(PREFERENCES_SETTINGS_GROUP,
