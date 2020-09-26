@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,18 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Media;
+using System.Xml;
+using GadrocsWorkshop.Helios.ComponentModel;
+
 namespace GadrocsWorkshop.Helios
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Windows;
-    using System.Windows.Media;
-    using System.Xml;
-
-    using GadrocsWorkshop.Helios.ComponentModel;
-
-
     /// <summary>
     /// HeliosVisual objects are helios objects which will be rendered on screen.
     /// </summary>
@@ -34,23 +32,16 @@ namespace GadrocsWorkshop.Helios
 
         private WeakReference _parent = new WeakReference(null);
         private string _typeIdentifier;
-
-        private HeliosVisualCollection _children;
-        private bool _persistChildren = true;
-
         private Rect _rectangle;
         private Rect _adjustedRectangle;
-        private Size _nativeSize;
         private HeliosVisualRotation _rotation = HeliosVisualRotation.None;
 
-        private bool _locked = false;
+        private bool _locked;
         private bool _snapable = true;
-        private bool _hidden = false;
-        private bool _defaultHidden = false;
+        private bool _hidden;
+        private bool _defaultHidden;
 
-        private HeliosValue _hiddenValue;
-        private NonClickableZone[] _nonClickableZones;
-
+        private readonly HeliosValue _hiddenValue;
 
         /// <summary>
         /// Base constructor for a HeliosVisual.
@@ -61,21 +52,21 @@ namespace GadrocsWorkshop.Helios
             : base(name)
         {
             _rectangle = new Rect(nativeSize);
-            _nativeSize = nativeSize;
+            NativeSize = nativeSize;
             UpdateRectangle();
 
-            _children = new HeliosVisualCollection();
+            Children = new HeliosVisualCollection();
 
             HeliosAction toggleVisibleAction = new HeliosAction(this, "", "hidden", "toggle", "Toggles whether this control is displayed on screen.");
-            toggleVisibleAction.Execute += new HeliosActionHandler(ToggleVisibleAction_Execute);
+            toggleVisibleAction.Execute += ToggleVisibleAction_Execute;
             Actions.Add(toggleVisibleAction);
 
             _hiddenValue = new HeliosValue(this, new BindingValue(false), "", "hidden", "Indicates if this control is hidden and off screen.", "True if this panel is not displayed.", BindingValueUnits.Boolean);
-            _hiddenValue.Execute += new HeliosActionHandler(SetHiddenAction_Execute);
+            _hiddenValue.Execute += SetHiddenAction_Execute;
             Values.Add(_hiddenValue);
             Actions.Add(_hiddenValue);
 
-            Children.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Children_CollectionChanged);
+            Children.CollectionChanged += Children_CollectionChanged;
         }
 
         /// <summary>
@@ -91,47 +82,35 @@ namespace GadrocsWorkshop.Helios
 
         #region Properties
 
-        public NonClickableZone[] NonClickableZones
-        {
-            get
-            {
-                return _nonClickableZones;
-            }
-            set
-            {
-                _nonClickableZones = value;
-            }
-        }
+        public NonClickableZone[] NonClickableZones { get; set; }
 
-        public bool PersistChildren
-        {
-            get { return _persistChildren; }
-            set { _persistChildren = value; }
-        }
+        public bool PersistChildren { get; set; } = true;
 
         public override string TypeIdentifier
         {
             get
             {
-                if (_typeIdentifier == null)
+                if (_typeIdentifier != null)
                 {
-                    HeliosDescriptor descriptor = ConfigManager.ModuleManager.ControlDescriptors[this.GetType()];
-                    _typeIdentifier = descriptor.TypeIdentifier;
+                    return _typeIdentifier;
                 }
+
+                HeliosDescriptor descriptor = ConfigManager.ModuleManager.ControlDescriptors[GetType()];
+                _typeIdentifier = descriptor.TypeIdentifier;
                 return _typeIdentifier;
             }
         }
 
+        /// <summary>
+        /// XXX this needs a rewrite, as it violates what a property is supposed to be.  Setting it and then reading it won't necessarily return the same value
+        /// 
+        /// on get, recursively checks ancestry to see if any visuals are in design mode or the profile is in design mode
+        /// on set, just sets this object to design mode
+        /// </summary>
         public override bool DesignMode
         {
-            get
-            {
-                return base.DesignMode || (Profile != null && Profile.DesignMode) || (Parent != null && Parent.DesignMode);
-            }
-            set
-            {
-                base.DesignMode = value;
-            }
+            get => base.DesignMode || (Profile != null && Profile.DesignMode) || (Parent != null && Parent.DesignMode);
+            set => base.DesignMode = value;
         }
 
         public Monitor Monitor
@@ -152,36 +131,32 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public HeliosVisual Parent
         {
-            get { return _parent.Target as HeliosVisual; }
-            set { _parent = new WeakReference(value); }
+            get => _parent.Target as HeliosVisual;
+            set => _parent = new WeakReference(value);
         }
 
         /// <summary>
         /// Returns the collection of child visuals for this visual.
         /// </summary>
-        public HeliosVisualCollection Children
-        {
-            get { return _children; }
-        }
+        public HeliosVisualCollection Children { get; }
 
         /// <summary>
         /// Returns true if this visual is hidden and not displayed on the screen.
         /// </summary>
         public bool IsHidden
         {
-            get
-            {
-                return _hidden;
-            }
+            get => _hidden;
             set
             {
-                if (!_hidden.Equals(value))
+                if (_hidden.Equals(value))
                 {
-                    _hidden = value;
-                    _hiddenValue.SetValue(new BindingValue(_hidden), false);
-                    OnPropertyChanged("IsHidden", !value, value, false);
-                    OnHiddenChanged();
+                    return;
                 }
+
+                _hidden = value;
+                _hiddenValue.SetValue(new BindingValue(_hidden), false);
+                OnPropertyChanged("IsHidden", !value, value, false);
+                OnHiddenChanged();
             }
         }
 
@@ -190,56 +165,41 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public bool IsDefaultHidden
         {
-            get
-            {
-                return _defaultHidden;
-            }
+            get => _defaultHidden;
             set
             {
-                if (!_defaultHidden.Equals(value))
+                if (_defaultHidden.Equals(value))
                 {
-                    bool oldValue = _defaultHidden;
-                    _defaultHidden = value;
-                    OnPropertyChanged("IsDefaultHidden", oldValue, value, true);
+                    return;
                 }
+
+                bool oldValue = _defaultHidden;
+                _defaultHidden = value;
+                OnPropertyChanged("IsDefaultHidden", oldValue, value, true);
             }
         }
 
-        public bool IsVisible
-        {
-            get
-            {
-                if (IsHidden)
-                {
-                    return false;
-                }
-
-                if (Parent != null)
-                {
-                    return Parent.IsVisible;
-                }
-
-                return true;
-            }
-        }
+        /// <summary>
+        /// Recursively checks visibility of all visuals up to the root; only returns true if none of them are hidden
+        /// </summary>
+        public bool IsVisible => (!IsHidden) && (Parent == null || Parent.IsVisible);
 
         /// <summary>
         /// Gets and sets the lock status for this visual.  When locked it cannot be selected, moved or edited.
         /// </summary>
         public bool IsLocked
         {
-            get
-            {
-                return _locked;
-            }
+            get => _locked;
             set
             {
-                if (!_locked.Equals(value))
+                if (_locked.Equals(value))
                 {
-                    bool oldValue = _locked;
-                    _locked = value;
-                    OnPropertyChanged("IsLocked", oldValue, value, false);
+                    return;
                 }
+
+                bool oldValue = _locked;
+                _locked = value;
+                OnPropertyChanged("IsLocked", oldValue, value, false);
             }
         }
 
@@ -248,56 +208,44 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public bool IsSnapTarget
         {
-            get
-            {
-                return _snapable;
-            }
+            get => _snapable;
             set
             {
-                if (!_snapable.Equals(value))
+                if (_snapable.Equals(value))
                 {
-                    bool oldValue = _snapable;
-                    _snapable = value;
-                    OnPropertyChanged("IsSnapTarget", oldValue, value, true);
+                    return;
                 }
+
+                bool oldValue = _snapable;
+                _snapable = value;
+                OnPropertyChanged("IsSnapTarget", oldValue, value, true);
             }
         }
 
         /// <summary>
-        /// Returns the renderer for this visual
+        /// Lazy creates and returns the renderer for this visual
         /// </summary>
-        public virtual HeliosVisualRenderer Renderer
-        {
-            get
-            {
-                if (_renderer == null)
-                {
-                    _renderer = ConfigManager.ModuleManager.CreaterRenderer(this);
-                }
-                return _renderer;
-            }
-        }
+        public virtual HeliosVisualRenderer Renderer => _renderer ?? (_renderer = ConfigManager.ModuleManager.CreaterRenderer(this));
 
         /// <summary>
         /// Top edge of where this visual will be displayed.
         /// </summary>
         public double Top
         {
-            get
-            {
-                return _rectangle.Top;
-            }
+            get => _rectangle.Top;
             set
             {
                 double newValue = Math.Truncate(value);
-                if (!_rectangle.Top.Equals(newValue))
+                if (_rectangle.Top.Equals(newValue))
                 {
-                    double oldValue = _rectangle.Top;
-                    _rectangle.Y = newValue;
-                    OnPropertyChanged("Top", oldValue, newValue, true);
-                    UpdateRectangle();
-                    OnMoved();
+                    return;
                 }
+
+                double oldValue = _rectangle.Top;
+                _rectangle.Y = newValue;
+                OnPropertyChanged("Top", oldValue, newValue, true);
+                UpdateRectangle();
+                OnMoved();
             }
         }
 
@@ -306,21 +254,20 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public double Left
         {
-            get
-            {
-                return _rectangle.Left;
-            }
+            get => _rectangle.Left;
             set
             {
                 double newValue = Math.Truncate(value);
-                if (!_rectangle.Left.Equals(newValue))
+                if (_rectangle.Left.Equals(newValue))
                 {
-                    double oldValue = _rectangle.Left;
-                    _rectangle.X = newValue;
-                    OnPropertyChanged("Left", oldValue, newValue, true);
-                    UpdateRectangle();
-                    OnMoved();
+                    return;
                 }
+
+                double oldValue = _rectangle.Left;
+                _rectangle.X = newValue;
+                OnPropertyChanged("Left", oldValue, newValue, true);
+                UpdateRectangle();
+                OnMoved();
             }
         }
 
@@ -329,22 +276,21 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public double Width
         {
-            get
-            {
-                return _rectangle.Width;
-            }
+            get => _rectangle.Width;
             set
             {
                 double newValue = Math.Truncate(value);
-                if (!_rectangle.Width.Equals(newValue))
+                if (_rectangle.Width.Equals(newValue))
                 {
-                    double oldValue = _rectangle.Width;
-                    _rectangle.Width = newValue;
-                    OnPropertyChanged("Width", oldValue, newValue, true);
-                    UpdateRectangle();
-                    Refresh();
-                    OnResized();
+                    return;
                 }
+
+                double oldValue = _rectangle.Width;
+                _rectangle.Width = newValue;
+                OnPropertyChanged("Width", oldValue, newValue, true);
+                UpdateRectangle();
+                Refresh();
+                OnResized();
             }
         }
 
@@ -353,22 +299,21 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public double Height
         {
-            get
-            {
-                return _rectangle.Height;
-            }
+            get => _rectangle.Height;
             set
             {
                 double newValue = Math.Truncate(value);
-                if (!_rectangle.Height.Equals(newValue))
+                if (_rectangle.Height.Equals(newValue))
                 {
-                    double oldValue = _rectangle.Height;
-                    _rectangle.Height = newValue;
-                    OnPropertyChanged("Height", oldValue, newValue, true);
-                    UpdateRectangle();
-                    Refresh();
-                    OnResized();
+                    return;
                 }
+
+                double oldValue = _rectangle.Height;
+                _rectangle.Height = newValue;
+                OnPropertyChanged("Height", oldValue, newValue, true);
+                UpdateRectangle();
+                Refresh();
+                OnResized();
             }
         }
 
@@ -392,6 +337,7 @@ namespace GadrocsWorkshop.Helios
                 _rectangle = value;
                 UpdateRectangle();
                 Refresh();
+                // ReSharper disable CompareOfFloatsByEqualityOperator we really do care about every change
                 if (Left != oldValue.Left || Top != oldValue.Top)
                 {
                     OnMoved();
@@ -400,6 +346,7 @@ namespace GadrocsWorkshop.Helios
                 {
                     OnResized();
                 }
+                // ReSharper enable CompareOfFloatsByEqualityOperator
 
                 // now fire property change for undo support
                 OnPropertyChanged("Rectangle", oldValue, value, true);
@@ -409,31 +356,24 @@ namespace GadrocsWorkshop.Helios
         /// <summary>
         /// Native size for this visual.
         /// </summary>
-        public Size NativeSize
-        {
-            get
-            {
-                return _nativeSize;
-            }
-        }
+        public Size NativeSize { get; }
 
         /// <summary>
         /// Rectangle of this visual as it's displayed
         /// </summary>
         public Rect DisplayRectangle
         {
-            get
-            {
-                return _adjustedRectangle;
-            }
+            get => _adjustedRectangle;
             private set
             {
-                if (!_adjustedRectangle.Equals(value))
+                if (_adjustedRectangle.Equals(value))
                 {
-                    Rect oldValue = _adjustedRectangle;
-                    _adjustedRectangle = value;
-                    OnPropertyChanged("DisplayRectangle", oldValue, value, false);
+                    return;
                 }
+
+                Rect oldValue = _adjustedRectangle;
+                _adjustedRectangle = value;
+                OnPropertyChanged("DisplayRectangle", oldValue, value, false);
             }
         }
 
@@ -442,21 +382,20 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public HeliosVisualRotation Rotation
         {
-            get
-            {
-                return _rotation;
-            }
+            get => _rotation;
             set
             {
-                if (!_rotation.Equals(value))
+                if (_rotation.Equals(value))
                 {
-                    HeliosVisualRotation oldValue = _rotation;
-                    _rotation = value;
-                    OnPropertyChanged("Rotation", oldValue, value, true);
-                    UpdateRectangle();
-                    Refresh();
-                    OnResized();
+                    return;
                 }
+
+                HeliosVisualRotation oldValue = _rotation;
+                _rotation = value;
+                OnPropertyChanged("Rotation", oldValue, value, true);
+                UpdateRectangle();
+                Refresh();
+                OnResized();
             }
         }
 
@@ -475,7 +414,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         /// <param name="action"></param>
         /// <param name="e"></param>
-        void SetHiddenAction_Execute(object action, HeliosActionEventArgs e)
+        private void SetHiddenAction_Execute(object action, HeliosActionEventArgs e)
         {
             IsHidden = e.Value.BoolValue;
         }
@@ -485,7 +424,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         /// <param name="action"></param>
         /// <param name="e"></param>
-        void ToggleVisibleAction_Execute(object action, HeliosActionEventArgs e)
+        private void ToggleVisibleAction_Execute(object action, HeliosActionEventArgs e)
         {
             IsHidden = !IsHidden;
         }
@@ -525,7 +464,14 @@ namespace GadrocsWorkshop.Helios
 					m1.Translate(0, 0);
 					newRect.Transform(m1);
 					break;
-			}
+
+                case HeliosVisualRotation.None:
+                    // newRect is already equal to untransformed _rectangle
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             PostUpdateRectangle(DisplayRectangle, newRect);
             DisplayRectangle = newRect;
         }
@@ -534,7 +480,7 @@ namespace GadrocsWorkshop.Helios
         /// Method that can be implemented by sub classes
         /// 
         protected virtual void PostUpdateRectangle(Rect previous, Rect current) {
-
+            // no code in base
         }
 
 
@@ -545,7 +491,7 @@ namespace GadrocsWorkshop.Helios
         /// <param name="scaleY"></param>
         public virtual void ScaleChildren(double scaleX, double scaleY)
         {
-            // No-Op by default
+            // no code in base
         }
 
         /// <summary>
@@ -553,10 +499,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         protected void Refresh()
         {
-            if (Renderer != null)
-            {
-                Renderer.Refresh();
-            }
+            Renderer?.Refresh();
             OnDisplayUpdate();
         }
 
@@ -565,38 +508,22 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         protected virtual void OnDisplayUpdate()
         {
-            EventHandler handler = DisplayUpdate;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            DisplayUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnMoved()
         {
-            EventHandler handler = Moved;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            Moved?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnResized()
         {
-            EventHandler handler = Resized;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            Resized?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnHiddenChanged()
         {
-            EventHandler handler = HiddenChanged;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            HiddenChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -604,6 +531,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public virtual void ConfigureIconInstance()
         {
+            // no code in base
         }
 
         /// <summary>
@@ -613,17 +541,15 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         /// <param name="location">Point inside visual boundaries.</param>
         /// <returns>True if this visual should handle the interaction.</returns>
-        public virtual bool HitTest(Point location)
-        {
-            return true;
-        }
+        public virtual bool HitTest(Point location) => true;
 
         /// <summary>
         /// Called when a mouse wheel is rotated on this control.
         /// </summary>
-        /// <param name="location">Current location of the mouse relative to this controls upper left corner.</param>
+        /// <param name="delta">Signed change in mouse wheel value.</param>
         public virtual void MouseWheel(int delta)
         {
+            // no code in base
         }
 
         /// <summary>
@@ -644,7 +570,7 @@ namespace GadrocsWorkshop.Helios
         /// <param name="location">Current location of the mouse relative to this controls upper left corner.</param>
         public abstract void MouseUp(Point location);
 
-        void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if ((e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) ||
                 (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace))
@@ -653,7 +579,7 @@ namespace GadrocsWorkshop.Helios
                 {
                     control.Parent = this;
                     control.Profile = Profile;
-                    control.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+                    control.PropertyChanged += Child_PropertyChanged;
                     control.ReconnectBindings();
                 }
             }
@@ -665,7 +591,7 @@ namespace GadrocsWorkshop.Helios
                 {
                     control.Parent = null;
                     control.Profile = Profile;
-                    control.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+                    control.PropertyChanged -= Child_PropertyChanged;
                     control.DisconnectBindings();
                 }
             }
@@ -698,7 +624,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             HeliosVisual control = sender as HeliosVisual;
             OnPropertyChanged("Controls." + control.Name, (PropertyNotificationEventArgs)e);

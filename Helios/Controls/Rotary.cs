@@ -1,4 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,6 +24,9 @@ namespace GadrocsWorkshop.Helios.Controls
     using System;
     using System.Windows;
 
+    /// <summary>
+    /// base class for most rotary controls sharing the same interaction styles
+    /// </summary>
     public abstract class Rotary : HeliosVisual, IRotaryBase
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -59,24 +64,27 @@ namespace GadrocsWorkshop.Helios.Controls
         protected Rotary(string name, Size defaultSize)
             : base(name, defaultSize)
         {
+            // no code
         }
 
         #region Properties
 
         public RotaryClickType ClickType
         {
-            get { return _clickType; }
+            get => _clickType;
             set
             {
-                if (!_clickType.Equals(value))
+                if (_clickType.Equals(value))
                 {
-                    RotaryClickType oldValue = _clickType;
-                    _clickType = value;
-                    OnPropertyChanged("ClickType", oldValue, value, true);
-                    if (value == RotaryClickType.Radial)
-                    {
-                        VisualizeInteraction = true;
-                    }
+                    return;
+                }
+
+                RotaryClickType oldValue = _clickType;
+                _clickType = value;
+                OnPropertyChanged("ClickType", oldValue, value, true);
+                if (value == RotaryClickType.Radial)
+                {
+                    VisualizeInteraction = true;
                 }
             }
         }
@@ -87,29 +95,33 @@ namespace GadrocsWorkshop.Helios.Controls
         /// </summary>
         public double Sensitivity
         {
-            get { return _sensitivity; }
+            get => _sensitivity;
             set
             {
-                if (!_sensitivity.Equals(value))
+                if (_sensitivity.Equals(value))
                 {
-                    double oldValue = _sensitivity;
-                    _sensitivity = value;
-                    OnPropertyChanged("Sensitivity", oldValue, value, true);
+                    return;
                 }
+
+                double oldValue = _sensitivity;
+                _sensitivity = value;
+                OnPropertyChanged("Sensitivity", oldValue, value, true);
             }
         }
 
         public bool MouseWheelAction
         {
-            get { return _mouseWheelAction; }
+            get => _mouseWheelAction;
             set
             {
-                if (!_clickType.Equals(value))
+                if (_mouseWheelAction.Equals(value))
                 {
-                    bool oldValue = _mouseWheelAction;
-                    _mouseWheelAction = value;
-                    OnPropertyChanged("MouseWheelAction", oldValue, value, true);
+                    return;
                 }
+
+                bool oldValue = _mouseWheelAction;
+                _mouseWheelAction = value;
+                OnPropertyChanged("MouseWheelAction", oldValue, value, true);
             }
         }
 
@@ -122,7 +134,10 @@ namespace GadrocsWorkshop.Helios.Controls
             get => _visualizeInteraction;
             set
             {
-                if (_visualizeInteraction == value) return;
+                if (_visualizeInteraction == value)
+                {
+                    return;
+                }
                 bool oldValue = _visualizeInteraction;
                 _visualizeInteraction = value;
                 OnPropertyChanged("VisualizeInteraction", oldValue, value, true);
@@ -138,7 +153,10 @@ namespace GadrocsWorkshop.Helios.Controls
             get => _routable;
             set
             {
-                if (_routable == value) return;
+                if (_routable == value)
+                {
+                    return;
+                }
                 bool oldValue = _routable;
                 _routable = value;
                 OnPropertyChanged("Routable", oldValue, value, true);
