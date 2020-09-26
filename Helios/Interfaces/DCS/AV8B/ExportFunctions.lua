@@ -26,11 +26,11 @@ function driver.processLowImportance(mainPanelDevice)
 		helios.send(2084, string.format("%4s",helios.ensureString(li.ODU_Option_3_Text)))
 		helios.send(2085, string.format("%4s",helios.ensureString(li.ODU_Option_4_Text)))
 		helios.send(2086, string.format("%4s",helios.ensureString(li.ODU_Option_5_Text)))
-		helios.send(2087, string.format("%1s",helios.ensureString(li.ODU_Option_1_Slc)):gsub(":","!"))  -- ":" is reserved
-		helios.send(2088, string.format("%1s",helios.ensureString(li.ODU_Option_2_Slc)):gsub(":","!"))  -- ":" is reserved
-		helios.send(2089, string.format("%1s",helios.ensureString(li.ODU_Option_3_Slc)):gsub(":","!"))  -- ":" is reserved
-		helios.send(2090, string.format("%1s",helios.ensureString(li.ODU_Option_4_Slc)):gsub(":","!"))  -- ":" is reserved
-		helios.send(2091, string.format("%1s",helios.ensureString(li.ODU_Option_5_Slc)):gsub(":","!"))  -- ":" is reserved
+		helios.send(2087, string.format("%1s",helios.ensureString(li.ODU_Option_1_Slc):gsub(":","!")))  -- ":" is reserved
+		helios.send(2088, string.format("%1s",helios.ensureString(li.ODU_Option_2_Slc):gsub(":","!")))  -- ":" is reserved
+		helios.send(2089, string.format("%1s",helios.ensureString(li.ODU_Option_3_Slc):gsub(":","!")))  -- ":" is reserved
+		helios.send(2090, string.format("%1s",helios.ensureString(li.ODU_Option_4_Slc):gsub(":","!")))  -- ":" is reserved
+		helios.send(2091, string.format("%1s",helios.ensureString(li.ODU_Option_5_Slc):gsub(":","!")))  -- ":" is reserved
 		-- -- test command 00000000*2096=20:2095=13:2087=!:2088=!:2089=!:2090=!:2091=!:2082=BLUE:2083=FIN :2084=BIMA:2085=2019:2086=test:2094=123.567:2092=~0:2093=-:326=1:336=1:197=1:365=1:196=1: 
 	end
  	local li = helios.parseIndication(7)  --V/UHF Radio and ACNIP

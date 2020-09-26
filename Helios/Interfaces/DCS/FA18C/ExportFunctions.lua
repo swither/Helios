@@ -95,11 +95,11 @@ function driver.processHighImportance(mainPanelDevice)
         helios.send(2084, string.format("%s", helios.ensureString(li.UFC_OptionDisplay3))) -- These may need special treatment for Hornet_UFC_Unified.ttf if there are special chars or numbers in the data
         helios.send(2085, string.format("%s", helios.ensureString(li.UFC_OptionDisplay4))) -- These may need special treatment for Hornet_UFC_Unified.ttf if there are special chars or numbers in the data
         helios.send(2086, string.format("%s", helios.ensureString(li.UFC_OptionDisplay5))) -- These may need special treatment for Hornet_UFC_Unified.ttf if there are special chars or numbers in the data
-        helios.send(2087, string.format("%1s", helios.ensureString(li.UFC_OptionCueing1)):gsub(":", string.char(200))) -- 16 Segment two-dot colon in Hornet_UFC_Unified.ttf
-        helios.send(2088, string.format("%1s", helios.ensureString(li.UFC_OptionCueing2)):gsub(":", string.char(200))) -- 16 Segment two-dot colon in Hornet_UFC_Unified.ttf
-        helios.send(2089, string.format("%1s", helios.ensureString(li.UFC_OptionCueing3)):gsub(":", string.char(200))) -- 16 Segment two-dot colon in Hornet_UFC_Unified.ttf
-        helios.send(2090, string.format("%1s", helios.ensureString(li.UFC_OptionCueing4)):gsub(":", string.char(200))) -- 16 Segment two-dot colon in Hornet_UFC_Unified.ttf
-        helios.send(2091, string.format("%1s", helios.ensureString(li.UFC_OptionCueing5)):gsub(":", string.char(200))) -- 16 Segment two-dot colon in Hornet_UFC_Unified.ttf
+        helios.send(2087, string.format("%1s", helios.ensureString(li.UFC_OptionCueing1):gsub(":", "!"))) -- colon char is reserved
+        helios.send(2088, string.format("%1s", helios.ensureString(li.UFC_OptionCueing2):gsub(":", "!"))) -- colon char is reserved
+        helios.send(2089, string.format("%1s", helios.ensureString(li.UFC_OptionCueing3):gsub(":", "!"))) -- colon char is reserved
+        helios.send(2090, string.format("%1s", helios.ensureString(li.UFC_OptionCueing4):gsub(":", "!"))) -- colon char is reserved
+        helios.send(2091, string.format("%1s", helios.ensureString(li.UFC_OptionCueing5):gsub(":", "!"))) -- colon char is reserved
         helios.send(2092, string.format("%2s", helios.ensureString(li.UFC_ScratchPadString1Display))) -- 16 Segment
         helios.send(2093, string.format("%2s", helios.ensureString(li.UFC_ScratchPadString2Display))) -- 16 Segment
         helios.send(2094, string.format("%7s", helios.ensureString(li.UFC_ScratchPadNumberDisplay)))  -- 7 Segment numbers
