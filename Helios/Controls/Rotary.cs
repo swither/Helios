@@ -251,7 +251,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
             if (_clickType == RotaryClickType.Touch)
             {
-                if (Parent != null && Parent.Profile != null)
+                if (Parent?.Profile != null)
                 {
                     Parent.Profile.ProfileTick -= Profile_ProfileTick;
                 }

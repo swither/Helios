@@ -49,7 +49,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     }
 
     /// <summary>
-    /// This class represents a Helios shadow being observed.
+    /// This class represents a Helios monitor being observed.
     /// It is the model class.
     /// </summary>
     [DebuggerDisplay("Shadow for {" + nameof(Monitor) + "}")]
@@ -107,8 +107,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private bool _userInterface;
 
-        private int _viewportCount;
-
         #endregion
 
         internal ShadowMonitor(IShadowVisualParent parent, Monitor monitor)
@@ -143,14 +141,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 false);
         }
 
-        private void DeleteSettings()
-        {
-            ISettingsManager2 settings2 = (ISettingsManager2) ConfigManager.SettingsManager;
-            settings2.DeleteSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, Key);
-            settings2.DeleteSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_Main");
-            settings2.DeleteSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_UserInterface");
-        }
-
         /// <summary>
         /// deferred initialization so our factory can index this before we add children to it
         /// </summary>
@@ -166,36 +156,28 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // the monitor we shadow may have changed enough to where our key
             // doesn't match (during reset monitors)
             // and so we need to reindex in that case and load settings again
-            string newKey = CreateKey(_monitor);
-            if (newKey != Key)
+            string newKey = CreateKey(Monitor);
+            if (newKey == Key)
             {
-                string oldKey = Key;
-                Key = newKey;
-                LoadSettings();
-                KeyChanged?.Invoke(this, new KeyChangeEventArgs(oldKey, newKey));
+                return;
             }
+
+            string oldKey = Key;
+            Key = newKey;
+            LoadSettings();
+            KeyChanged?.Invoke(this, new KeyChangeEventArgs(oldKey, newKey));
         }
 
         internal bool AddViewport()
         {
-            _viewportCount++;
-            if (_viewportCount == 1)
-            {
-                return true;
-            }
-
-            return false;
+            ViewportCount++;
+            return ViewportCount == 1;
         }
 
         internal bool RemoveViewport()
         {
-            _viewportCount--;
-            if (_viewportCount == 0)
-            {
-                return true;
-            }
-
-            return false;
+            ViewportCount--;
+            return ViewportCount == 0;
         }
 
         internal void Lockout()
@@ -206,7 +188,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Permissions = PermissionsFlags.CanExclude;
         }
 
-        internal int ViewportCount => _viewportCount;
+        internal int ViewportCount { get; private set; }
 
         /// <summary>
         /// true if this monitor is included in Main 3D view
