@@ -1071,7 +1071,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 if (element is DCSDataElement dcsElement)
                 {
-                    if (dcsElement.Format != null && dcsElement.Format != "" && dcsElement.IsExportedEveryFrame == everyFrame)
+                    if (dcsElement.Format != null && dcsElement.IsExportedEveryFrame == everyFrame)
                     {
                         yield return GenerateFunction(dcsElement);
                     }

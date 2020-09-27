@@ -480,8 +480,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             AddFunction(new Text(this, "2053", "IFEI", "Clock hours", "Value of the clock HH"));
             AddFunction(new Text(this, "2054", "IFEI", "Clock minutes", "Value of the clock MM"));
             AddFunction(new Text(this, "2055", "IFEI", "Clock seconds", "Value of the clock SS"));
-            AddFunction(new FlagValue(this, "2056", "IFEI", "Clock HH MM separator", "Flag to display colon HH:MM on IFEI clock display", ""));
-            AddFunction(new FlagValue(this, "2057", "IFEI", "Clock MM SS separator", "Flag to display colon MM:SS on IFEI clock display", ""));
+            AddFunction(new FlagValue(this, "2056", "IFEI", "Clock HH MM separator", "Flag to display colon HH:MM on IFEI clock display", null));
+            AddFunction(new FlagValue(this, "2057", "IFEI", "Clock MM SS separator", "Flag to display colon MM:SS on IFEI clock display", null));
             AddFunction(new Text(this, "2061", "IFEI", "Left Fuel Flow Value", "Value of the Fuel Flow for the Left Engine"));
             AddFunction(new Text(this, "2062", "IFEI", "Right Fuel Flow Value", "Value of the Fuel Flow for the Right Engine"));
             AddFunction(new Text(this, "2063", "IFEI", "Internal Fuel Amount", "Internel Fuel Value"));
@@ -495,9 +495,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             AddFunction(new Text(this, "2073", "IFEI", "Timer hours", "Value of the Timer Hours"));
             AddFunction(new Text(this, "2072", "IFEI", "Timer minutes", "Value of the Timer Minutes"));
             AddFunction(new Text(this, "2071", "IFEI", "Timer seconds", "Value of the Timer Seconds"));
-            AddFunction(new FlagValue(this, "2058", "IFEI", "Timer H MM separator", "Flag to display colon HH:MM on IFEI timer display", ""));
+            AddFunction(new FlagValue(this, "2058", "IFEI", "Timer H MM separator", "Flag to display colon HH:MM on IFEI timer display", null));
             // 2059 is used for the altimeter 
-            AddFunction(new FlagValue(this, "2060", "IFEI", "Timer MM SS separator", "Flag to display colon MM:SS on IFEI timer display", ""));
+            AddFunction(new FlagValue(this, "2060", "IFEI", "Timer MM SS separator", "Flag to display colon MM:SS on IFEI timer display", null));
             AddFunction(new Text(this, "2074", "IFEI", "SP Code", "Value of the code before the SP"));
             AddFunction(new Text(this, "2075", "IFEI", "SP", "Value of SP"));
             AddFunction(new Text(this, "2076", "IFEI", "Draw Character", "Draw Character Not sure what this is"));
@@ -506,27 +506,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
 
             // These are described as textures, but currently unclear what these actually represent.
             uint commandCode = 4000;
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "RPM Flag", "Show RPM on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Temp Flag", "Show Temp on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "FF Flag", "Show FF on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Noz Flag", "Show Noz on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Oil Flag", "Show Oil on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Bingo Flag", "Show Bingo on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Scale Flag", "Show Left Scale on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Scale Flag", "Show Right Scale on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Scale 0 Flag", "Show Left Scale 0 value on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Scale 0 Flag", "Show Right Scale 0 value on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Scale 50 Flag", "Show Left Scale 50 value on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Scale 50 Flag", "Show Right Scale 50 value on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Scale 100 Flag", "Show Left Scale 10 value on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Scale 100 Flag", "Show Right Scale 10 value on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Nozzle Needle Flag", "Left nozzle needle on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Nozzle Needle Flag", "Right nozzle needle on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Zulu Time Flag", "Z flag indicating Zulu time on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Fuel Flag", "L flag indicating Left fuel quantity on IFEI", ""));
-            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Fuel Flag", "R flag indicating Right fuel quantity on IFEI", ""));
-            AddFunction(new Axis(this, IFEI, commandCode.ToString(), commandCode++.ToString(), 1d, 0d, 400d, "IFEI", "Left Nozzle Position", false, ""));
-            AddFunction(new Axis(this, IFEI, commandCode.ToString(), commandCode++.ToString(), 1d, 0d, 400d, "IFEI", "Right Nozzle Position", false, ""));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "RPM Flag", "Show RPM on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Temp Flag", "Show Temp on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "FF Flag", "Show FF on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Noz Flag", "Show Noz on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Oil Flag", "Show Oil on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Bingo Flag", "Show Bingo on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Scale Flag", "Show Left Scale on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Scale Flag", "Show Right Scale on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Scale 0 Flag", "Show Left Scale 0 value on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Scale 0 Flag", "Show Right Scale 0 value on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Scale 50 Flag", "Show Left Scale 50 value on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Scale 50 Flag", "Show Right Scale 50 value on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Scale 100 Flag", "Show Left Scale 10 value on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Scale 100 Flag", "Show Right Scale 10 value on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Nozzle Needle Flag", "Left nozzle needle on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Nozzle Needle Flag", "Right nozzle needle on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Zulu Time Flag", "Z flag indicating Zulu time on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Left Fuel Flag", "L flag indicating Left fuel quantity on IFEI", null));
+            AddFunction(new FlagValue(this, commandCode++.ToString(), "IFEI", "Right Fuel Flag", "R flag indicating Right fuel quantity on IFEI", null));
+            AddFunction(new Axis(this, IFEI, commandCode.ToString(), commandCode++.ToString(), 1d, 0d, 400d, "IFEI", "Left Nozzle Position", false, null));
+            AddFunction(new Axis(this, IFEI, commandCode.ToString(), commandCode++.ToString(), 1d, 0d, 400d, "IFEI", "Right Nozzle Position", false, null));
 
             #endregion
             #region  Sensor panel
