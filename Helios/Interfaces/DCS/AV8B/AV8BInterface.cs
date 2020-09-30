@@ -169,9 +169,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(new Axis(this, UFCCONTROL, "3301", "301", 0.005d, -1d, 1d, "UFC", "UFC COMM 2 Channel Selector Knob"));
             AddFunction(new PushButton(this, UFCCONTROL, "3178", "178", "UFC", "UFC COMM 1 Channel Selector Pull"));
             AddFunction(new PushButton(this, UFCCONTROL, "3179", "179", "UFC", "UFC COMM 2 Channel Selector Pull"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, HUDCONTROL, "3288", "288", "1", "Norm", "0.5", "Reject 1", "0", "Reject 2", "HUD Control", "Declutter switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, HUDCONTROL, "3288", "288", "1.0", "Norm", "0.5", "Reject 1", "0.0", "Reject 2", "HUD Control", "Declutter switch", "%.1f"));
             AddFunction(new Axis(this, HUDCONTROL, "3289", "289", 0.1d, 0d, 1d, "HUD Control", "Off/Brightness control"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, HUDCONTROL, "3290", "290", "0", "Day", "0.5", "Auto", "1", "Night", "HUD Control", "Display Mode switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, HUDCONTROL, "3290", "290", "0.0", "Day", "0.5", "Auto", "1.0", "Night", "HUD Control", "Display Mode switch", "%.1f"));
             AddFunction(new Axis(this, HUDCONTROL, "3291", "291", 0.1d, 0d, 1d, "HUD Control", "Video Brightness"));
             AddFunction(new Axis(this, HUDCONTROL, "3292", "292", 0.1d, 0d, 1d, "HUD Control", "Video Contrast"));
             AddFunction(Switch.CreateToggleSwitch(this, HUDCONTROL, "3293", "293", "0", "RDR", "1", "Baro", "HUD Control", "Altimeter Mode Switch", "%1d"));
@@ -339,13 +339,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(new FlagValue(this, "451", "LH Flaps & Water", "SEL indicator", "Combat thrust limiter selected"));
             AddFunction(new FlagValue(this, "452", "LH Flaps & Water", "CMBT indicator", "Combat thrust activated. Flashes after 2 ½ minutes"));
             AddFunction(new FlagValue(this, "453", "LH Flaps & Water", "STO indicator", "Flap switch in STOL"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, DECS, "3449", "449", "1", "Take Off", "0.5", "Off", "0", "Landing", "LH Flaps & Water", "H2O Mode Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, DECS, "3449", "449", "1.0", "Take Off", "0.5", "Off", "0.0", "Landing", "LH Flaps & Water", "H2O Mode Switch", "%.1f"));
             AddFunction(new PushButton(this, DECS, "3450", "450", "LH Flaps & Water", "Combat Thrust Button"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, VREST, "3454", "454", "1", "Cruise", "0.5", "Auto", "0", "STOL", "LH Flaps & Water", "Flaps Mode Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, VREST, "3454", "454", "1.0", "Cruise", "0.5", "Auto", "0.0", "STOL", "LH Flaps & Water", "Flaps Mode Switch", "%.1f"));
             AddFunction(new Digits2Display(this, SMC, "2014", "LH Flaps & Water", "Flaps position", "Position of the flaps in degrees"));
             AddFunction(new PushButton(this, VREST, "3460", "460", "LH Flaps & Water", "Flaps BIT"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, VREST, "3457", "457", "0", "Off", "0.5", "On", "1", "Reset", "LH Flaps & Water", "Flaps Power Switch", "%.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, FLIGHTCONTROLS, "3459", "459", "1", "Test", "0.5", "On", "0", "NWS", "LH Flaps & Water", "Anti-Skid Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, VREST, "3457", "457", "0.0", "Off", "0.5", "On", "1.0", "Reset", "LH Flaps & Water", "Flaps Power Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, FLIGHTCONTROLS, "3459", "459", "1.0", "Test", "0.5", "On", "0.0", "NWS", "LH Flaps & Water", "Anti-Skid Switch", "%.1f"));
             #endregion
 
             #region Centre Console
@@ -377,7 +377,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
 
             #region Left Hand Left Hand Switches Fuel External Lights SAAHS
             ////         --Trim Panel
-            AddFunction(Switch.CreateThreeWaySwitch(this, FLIGHTCONTROLS, "3471", "471", "1", "Test", "0.5", "On", "0", "Off", "SAAHS", "RPS/YAW Trim Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, FLIGHTCONTROLS, "3471", "471", "1.0", "Test", "0.5", "On", "0.0", "Off", "SAAHS", "RPS/YAW Trim Switch", "%.1f"));
             AddFunction(Switch.CreateThreeWaySwitch(this, FLIGHTCONTROLS, "3483", "483", "1", "Left", "0", "Centre", "-1", "Right", "SAAHS", "Rudder trim switch", "%.1f"));
 
             CalibrationPointCollectionDouble trimScale = new CalibrationPointCollectionDouble(-1.0d, -1d, 1.0d, 1d);
@@ -394,15 +394,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(Switch.CreateToggleSwitch(this, DECS, "3504", "504", "1", "On", "0", "Off", "Fuel", "Fuel Proportioner", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, DECS, "3508", "508", "1", "Dump", "0", "Off", "Fuel", "Fuel Dump L Switch", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, DECS, "3509", "509", "1", "Dump", "0", "Off", "Fuel", "Fuel Dump R Switch", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, DECS, "3505", "505", "1", "Norm", "0.5", "Off", "0", "DC Oper", "Fuel", "Fuel Pump L Switch", "%.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, DECS, "3506", "506", "1", "Norm", "0.5", "Off", "0", "DC Oper", "Fuel", "Fuel Pump R Switch", "%.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, DECS, "3507", "507", "1", "Press", "0.5", "Out", "0", "In", "Fuel", "Air Refueling Probe Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, DECS, "3505", "505", "1.0", "Norm", "0.5", "Off", "0.0", "DC Oper", "Fuel", "Fuel Pump L Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, DECS, "3506", "506", "1.0", "Norm", "0.5", "Off", "0.0", "DC Oper", "Fuel", "Fuel Pump R Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, DECS, "3507", "507", "1.0", "Press", "0.5", "Out", "0.0", "In", "Fuel", "Air Refueling Probe Switch", "%.1f"));
 
             //          -- External Lights Panel
-            AddFunction(Switch.CreateThreeWaySwitch(this, LTEXT, "3472", "472", "1", "Bright", "0.5", "Dim", "0", "Off", "External Lights", "Landing/Taxi Lights Switch", "%.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, LTEXT, "3503", "503", "1", "Bright", "0.5", "Dim", "0", "Off", "External Lights", "External Lights Mode Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, LTEXT, "3472", "472", "1.0", "Bright", "0.5", "Dim", "0.0", "Off", "External Lights", "Landing/Taxi Lights Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, LTEXT, "3503", "503", "1.0", "Bright", "0.5", "Dim", "0.0", "Off", "External Lights", "External Lights Mode Switch", "%.1f"));
             AddFunction(new Axis(this, LTEXT, "3510", "510", 0.1d, 0d, 1d, "External Lights", "Formation Lights brightness"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, LTEXT, "3511", "511", "1", "Bright", "0.5", "Dim", "0", "Off", "External Lights", "Position Lights Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, LTEXT, "3511", "511", "1.0", "Bright", "0.5", "Dim", "0.0", "Off", "External Lights", "Position Lights Switch", "%.1f"));
             AddFunction(Switch.CreateToggleSwitch(this, LTEXT, "3512", "512", "1", "On", "0", "Off", "External Lights", "Anti-Collision Lights Switch", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, LTEXT, "3513", "513", "1", "On", "0", "Off", "External Lights", "External Auxiliary Lights Switch", "%1d"));
 
@@ -510,7 +510,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             #endregion
 
             #region Interior Lights
-            AddFunction(Switch.CreateThreeWaySwitch(this, LTINT, "3634", "634", "0", "Compass", "0.5", "Off","1","Lights Test","Interior Lights", "Compass Light/Test Lights","%.1f")); //default_tumb_button(_("Compass Light/Test Lights") * * * Not sure if this is correct
+            AddFunction(Switch.CreateThreeWaySwitch(this, LTINT, "3634", "634", "0.0", "Compass", "0.5", "Off", "1.0", "Lights Test","Interior Lights", "Compass Light/Test Lights","%.1f")); //default_tumb_button(_("Compass Light/Test Lights") * * * Not sure if this is correct
             AddFunction(new Axis(this, LTINT, "3635", "635", 0.03d, 0d, 1d, "Interior Lights", "Instruments Lights"));
             AddFunction(new Axis(this, LTINT, "3636", "636", 0.03d, 0d, 1d, "Interior Lights", "Console Lights"));
             AddFunction(new Axis(this, LTINT, "3637", "637", 0.03d, 0d, 1d, "Interior Lights", "Flood Lights"));
@@ -545,9 +545,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             #region ECS
             AddFunction(new Axis(this, ECS, "3639", "639", 0.03d, 0d, 1d, "Environment Control", "Temperature Control Knob"));
             AddFunction(Switch.CreateToggleSwitch(this, ECS, "3640", "640", "0", "Norm", "1", "Reset", "Environment Control", "Fwd Equipment Bay ECS Switch", "%0.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, ECS, "3641", "641", "1", "Norm", "0.5", "Defog", "0", "Max", "Environment Control", "Cabin Defog Switch", "%0.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, ECS, "3642", "642", "1", "Reset", "0.5", "On", "0", "Off", "Environment Control", "Aft Equipment Bay ECS Switch", "%0.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, ECS, "3643", "643", "1", "Press Norm", "0.5", "Dump", "0", "Ram", "Environment Control", "Cabin Pressure Switch", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, ECS, "3641", "641", "1.0", "Norm", "0.5", "Defog", "0.0", "Max", "Environment Control", "Cabin Defog Switch", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, ECS, "3642", "642", "1.0", "Reset", "0.5", "On", "0.0", "Off", "Environment Control", "Aft Equipment Bay ECS Switch", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, ECS, "3643", "643", "1.0", "Press Norm", "0.5", "Dump", "0.0", "Ram", "Environment Control", "Cabin Pressure Switch", "%0.1f"));
             #endregion
 
             #region Engine Display Panel
@@ -568,11 +568,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             //Battery
             CalibrationPointCollectionDouble batteryScale = new CalibrationPointCollectionDouble(0.0d, 0d, 0.30d, 30d);
             AddFunction(new ScaledNetworkValue(this, "608", batteryScale, "Electrical", "Battery Voltage", "Voltage of battery 15v to 30v", "", BindingValueUnits.Volts));
-            AddFunction(Switch.CreateThreeWaySwitch(this, ELECTRIC, "3613", "613", "1", "On", "0.5", "Off", "0", "Alert", "Electrical", "Battery switch", "%.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, ELECTRIC, "3612", "612", "1", "On", "0.5", "Off", "0", "Test", "Electrical", "Generator switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, ELECTRIC, "3613", "613", "1.0", "On", "0.5", "Off", "0.0", "Alert", "Electrical", "Battery switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, ELECTRIC, "3612", "612", "1.0", "On", "0.5", "Off", "0.0", "Test", "Electrical", "Generator switch", "%.1f"));
             AddFunction(Switch.CreateToggleSwitch(this, ELECTRIC, "3611", "611", "1", "Start", "0", "Off", "Electrical", "Engine start switch", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, ELECTRIC, "3610", "610", "1", "Reset", "0.5", "On", "0", "Off", "Electrical", "APU generator switch", "%.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, ELECTRIC, "3609", "609", "0", "Main", "0.5", "Off", "1", "Standby", "Electrical", "DC Test switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, ELECTRIC, "3610", "610", "1.0", "Reset", "0.5", "On", "0.0", "Off", "Electrical", "APU generator switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, ELECTRIC, "3609", "609", "0.0", "Main", "0.5", "Off", "1.0", "Standby", "Electrical", "DC Test switch", "%.1f"));
             #endregion
 
             #region Brake / Hydraulic Pressures
