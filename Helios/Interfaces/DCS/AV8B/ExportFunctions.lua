@@ -21,11 +21,11 @@ function driver.processLowImportance(mainPanelDevice)
 
  	local li = helios.parseIndication(6)
 	if li then
-		helios.send(2082, string.format("%4s",helios.ensureString(li.ODU_Option_1_Text)))
-		helios.send(2083, string.format("%4s",helios.ensureString(li.ODU_Option_2_Text)))
-		helios.send(2084, string.format("%4s",helios.ensureString(li.ODU_Option_3_Text)))
-		helios.send(2085, string.format("%4s",helios.ensureString(li.ODU_Option_4_Text)))
-		helios.send(2086, string.format("%4s",helios.ensureString(li.ODU_Option_5_Text)))
+		helios.send(2082, string.format("%-4s",helios.ensureString(li.ODU_Option_1_Text)))
+		helios.send(2083, string.format("%-4s",helios.ensureString(li.ODU_Option_2_Text)))
+		helios.send(2084, string.format("%-4s",helios.ensureString(li.ODU_Option_3_Text)))
+		helios.send(2085, string.format("%-4s",helios.ensureString(li.ODU_Option_4_Text)))
+		helios.send(2086, string.format("%-4s",helios.ensureString(li.ODU_Option_5_Text)))
 		helios.send(2087, string.format("%1s",helios.ensureString(li.ODU_Option_1_Slc):gsub(":","!")))  -- ":" is reserved
 		helios.send(2088, string.format("%1s",helios.ensureString(li.ODU_Option_2_Slc):gsub(":","!")))  -- ":" is reserved
 		helios.send(2089, string.format("%1s",helios.ensureString(li.ODU_Option_3_Slc):gsub(":","!")))  -- ":" is reserved
