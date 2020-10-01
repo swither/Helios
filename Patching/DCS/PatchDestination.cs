@@ -199,7 +199,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private IList<StatusReportItem> ExecuteRemote(string[] patchesRoots, string selectedVersion, string patchSet, string command)
         {
-            IEnumerable<string> args = new[] { "-h", ConfigManager.DocumentPath, "-d", $"\"{_dcsRoot}\"", command }
+            IEnumerable<string> args = new[] { "-h", $"\"{ConfigManager.DocumentPath}\"", "-d", $"\"{_dcsRoot}\"", command }
                 .Concat(patchesRoots.Select(root => $"\"{Path.Combine(root, selectedVersion, patchSet)}\""));
             string myDirectory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location)).FullName;
             string executablePath = Path.Combine(myDirectory ?? "", "HeliosPatching.exe");
