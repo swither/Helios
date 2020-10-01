@@ -15,7 +15,7 @@
 
 using GadrocsWorkshop.Helios.ComponentModel;
 
-namespace GadrocsWorkshop.Helios.Controls
+namespace GadrocsWorkshop.Helios.Controls.Special
 {
     /// <summary>
     /// a piece of wire, simply transmits any value from its input side to its output side

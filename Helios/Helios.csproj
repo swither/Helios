@@ -141,16 +141,19 @@
     </Compile>
     <Compile Include="Controls\RotaryInteraction.cs" />
     <Compile Include="Controls\RotaryKnob.cs" />
-    <Compile Include="Controls\ViewportExtentBehaviorEditor.xaml.cs">
+    <Compile Include="Controls\Special\ViewportExtentBehaviorEditor.xaml.cs">
       <DependentUpon>ViewportExtentBehaviorEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ViewportExtentRenderer.cs" />
+    <Compile Include="Controls\Special\ViewportExtentRenderer.cs" />
     <Compile Include="Controls\ControlEventArgs.cs" />
-    <Compile Include="Controls\Wire.cs" />
+    <Compile Include="Controls\Special\Wire.cs" />
     <Compile Include="HeliosXmlModel.cs" />
     <Compile Include="Interfaces\Capabilities\IDynamicBindings.cs" />
     <Compile Include="Interfaces\Capabilities\IReadyCheck.cs" />
     <Compile Include="Interfaces\Capabilities\IViewportProvider.cs" />
+    <Compile Include="Windows\Controls\CalibrationEditorDouble.xaml.cs">
+      <DependentUpon>CalibrationEditorDouble.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Controls\InterfaceStatusItemControl.xaml.cs">
       <DependentUpon>InterfaceStatusItemControl.xaml</DependentUpon>
     </Compile>
@@ -164,6 +167,10 @@
     <Page Include="Interfaces\Profile\ProfileInterfaceEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Controls\CalibrationEditorDouble.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Controls\InterfaceStatusResources.xaml">
       <SubType>Designer</SubType>
@@ -263,7 +270,7 @@
       <DependentUpon>ImageTranslucentAppearanceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ImageTranslucentRenderer.cs" />
-    <Compile Include="Controls\ViewportExtent.cs" />
+    <Compile Include="Controls\Special\ViewportExtent.cs" />
     <Compile Include="Gauges\AV-8B\Small Panels\Slip Turn Panel.cs" />
     <Compile Include="Gauges\F-16\HydraulicPressure\HydraulicPressure.cs" />
     <Compile Include="Gauges\M2000C\Common\Mk2CDrumTacanChannel.cs" />
@@ -468,10 +475,10 @@
     <Compile Include="Gauges\FA-18C\MFD\MFD-FA18C-Type-2.cs" />
     <Compile Include="Gauges\FA-18C\MFD\MFD-FA18C-Type-1.cs" />
     <Compile Include="Gauges\AV-8B\MFD\MFD-AV8B.cs" />
-    <Compile Include="Controls\MFD-A10.cs" />
-    <Compile Include="Controls\MFD-F16.cs" />
-    <Compile Include="Controls\MFD.cs" />
-    <Compile Include="Controls\MFDRenderer.cs" />
+    <Compile Include="Gauges\A-10\MFD\MFD_A10.cs" />
+    <Compile Include="Gauges\F-16\MFD\MFD-F16.cs" />
+    <Compile Include="Gauges\MFD.cs" />
+    <Compile Include="Gauges\MFDRenderer.cs" />
     <Compile Include="Controls\Potentiometer.cs" />
     <Compile Include="Controls\PotentiometerAppearanceEditor.xaml.cs">
       <DependentUpon>PotentiometerAppearanceEditor.xaml</DependentUpon>
@@ -516,11 +523,11 @@
     <Compile Include="Controls\RotarySwitchPositionChangeArgs.cs" />
     <Compile Include="Controls\RotarySwitchPositionCollection.cs" />
     <Compile Include="Controls\RotarySwitchRenderer.cs" />
-    <Compile Include="Controls\ScreenReplicator.cs" />
-    <Compile Include="Controls\ScreenReplicatorBehaviorPropertyEditor.xaml.cs">
+    <Compile Include="Controls\Special\ScreenReplicator.cs" />
+    <Compile Include="Controls\Special\ScreenReplicatorBehaviorPropertyEditor.xaml.cs">
       <DependentUpon>ScreenReplicatorBehaviorPropertyEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ScreenReplicatorRenderer.cs" />
+    <Compile Include="Controls\Special\ScreenReplicatorRenderer.cs" />
     <Compile Include="Controls\TextDecoration.cs" />
     <Compile Include="Controls\TextDecorationAppearanceEditor.xaml.cs">
       <DependentUpon>TextDecorationAppearanceEditor.xaml</DependentUpon>
@@ -664,6 +671,7 @@
     <Resource Include="Images\Custom\translate.png" />
     <None Include="Assets\Helios_ADI.svg" />
     <Resource Include="Images\General\HeliosSimplifiedIcon.png" />
+    <Content Include="Controls\Special\readme.txt" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1127,7 +1135,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\ViewportExtentBehaviorEditor.xaml">
+    <Page Include="Controls\Special\ViewportExtentBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1199,7 +1207,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\ScreenReplicatorBehaviorPropertyEditor.xaml">
+    <Page Include="Controls\Special\ScreenReplicatorBehaviorPropertyEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

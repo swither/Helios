@@ -13,14 +13,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Controls
-{
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using System;
-    using System.Windows;
+using System.Windows;
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Controls;
 
+namespace GadrocsWorkshop.Helios.Gauges.MFD
+{
     [HeliosControl("F16.MFD", "MFD", "F-16", typeof(MFDRenderer))]
-    class MFD_F16 : MFD
+    class MFD_F16 : Controls.MFD
     {
         private static readonly Rect SCREEN_RECT = new Rect(67, 67, 341, 343);
 

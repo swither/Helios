@@ -13,14 +13,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Controls
-{
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using System;
-    using System.Globalization;
-    using System.Windows;
-    using System.Windows.Media;
+using System.Windows;
+using System.Windows.Media;
 
+namespace GadrocsWorkshop.Helios.Gauges
+{
     class MFDRenderer : HeliosVisualRenderer
     {
         private ImageBrush _bezel;

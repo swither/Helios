@@ -13,14 +13,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Controls
-{
-    using System;
-    using System.Windows;
+using System.Windows;
 
-    abstract class MFD : CompositeVisual
+namespace GadrocsWorkshop.Helios.Gauges
+{
+    public abstract class MFD : CompositeVisual
     {
-        public MFD(string name, Size size)
+        protected MFD(string name, Size size)
             : base(name, size)
         {
 

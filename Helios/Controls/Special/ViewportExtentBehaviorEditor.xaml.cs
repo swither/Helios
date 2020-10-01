@@ -1,4 +1,4 @@
-﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2014 Craig Courtney
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,20 +13,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Controls
-{
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Windows.Controls;
+using System.Windows;
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Windows.Controls;
 
+namespace GadrocsWorkshop.Helios.Controls.Special
+{
     /// <summary>
-    /// Interaction logic for ScreenReplicatorBehaviorPropertyEditor.xaml
+    /// Interaction logic for ViewportExtentBehaviorEditor.xaml
     /// </summary>
-    [HeliosPropertyEditor("Helios.Base.ScreenReplicator", "Behavior")]
-    public partial class ScreenReplicatorBehaviorPropertyEditor : HeliosPropertyEditor
+    [HeliosPropertyEditor("Helios.Base.ViewportExtent", "Behavior")]
+    public partial class ViewportExtentBehaviorEditor : HeliosPropertyEditor
     {
-        public ScreenReplicatorBehaviorPropertyEditor()
+        public ViewportExtentBehaviorEditor()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            FontChooserDialog dialog = new FontChooserDialog();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.ShowDialog();
         }
     }
 }

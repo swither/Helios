@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace GadrocsWorkshop.Helios.Controls
+namespace GadrocsWorkshop.Helios.Controls.Special
 {
     internal class ViewportExtentRenderer : TextDecorationRenderer
     {

@@ -13,13 +13,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Controls
-{
-    using System;
-    using System.Windows;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
+using System;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
+namespace GadrocsWorkshop.Helios.Controls.Special
+{
     public class ScreenReplicatorRenderer : HeliosVisualRenderer
     {
         private Rect _displayRect = new Rect(0, 0, 0, 0);

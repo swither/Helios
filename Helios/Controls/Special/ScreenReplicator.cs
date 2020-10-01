@@ -13,15 +13,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Controls
-{
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using System;
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Windows;
-    using System.Xml;
+using System;
+using System.ComponentModel;
+using System.Globalization;
+using System.Windows;
+using System.Xml;
+using GadrocsWorkshop.Helios.ComponentModel;
 
+namespace GadrocsWorkshop.Helios.Controls.Special
+{
     [HeliosControl("Helios.Base.ScreenReplicator", "Screen Replicator", "Miscellaneous", typeof(ScreenReplicatorRenderer))]
     public class ScreenReplicator : HeliosVisual
     {

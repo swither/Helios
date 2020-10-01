@@ -31,9 +31,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CalibrationEditorDouble.xaml.cs">
-      <DependentUpon>CalibrationEditorDouble.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CalibrationEditorLong.xaml.cs">
       <DependentUpon>CalibrationEditorLong.xaml</DependentUpon>
     </Compile>
@@ -63,12 +60,6 @@
     <Compile Include="UndoEvents\AddLedGroupUndoEvent.cs" />
     <Compile Include="UndoEvents\AddLedUndoEvent.cs" />
     <Compile Include="UndoEvents\RemoveLedGroupUndoEvent.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="CalibrationEditorDouble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Include="CalibrationEditorLong.xaml">

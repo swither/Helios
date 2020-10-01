@@ -17,6 +17,8 @@
 /// This has been deprecated in favour of the autobinding Left and Right MFCD's which uses a higher res background image
 /// </summary>
 
+using GadrocsWorkshop.Helios.Gauges;
+
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;

@@ -1,9 +1,9 @@
-﻿using GadrocsWorkshop.Helios.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Xml;
+using GadrocsWorkshop.Helios.ComponentModel;
 
-namespace GadrocsWorkshop.Helios.Controls
+namespace GadrocsWorkshop.Helios.Controls.Special
 {
     [HeliosControl("Helios.Base.ViewportExtent", "Simulator Viewport", "Miscellaneous", typeof(ViewportExtentRenderer))]
     public class ViewportExtent: TextDecoration, IViewportExtent
