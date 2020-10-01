@@ -27,6 +27,9 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         private string _interfaceDeviceName = "LH Flaps & Water";
         private string _font = "MS 33558";
         private string _imageLocation = "{AV-8B}/Images/";
+        private static readonly Double SCREENRES = 1.0;
+        private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
+        private Rect _scaledScreenRect = SCREEN_RECT;
 
         public H2OPanel()
             : base("H2O Panel", new Size(160, 476))
@@ -104,10 +107,10 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
 
         public override bool HitTest(Point location)
         {
-            //if (_scaledScreenRect.Contains(location))
-            //{
-            //    return false;
-            //}
+            if (_scaledScreenRect.Contains(location))
+            {
+                return false;
+            }
 
             return true;
         }

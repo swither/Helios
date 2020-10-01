@@ -358,7 +358,7 @@ namespace GadrocsWorkshop.Helios
 
         protected RotaryEncoder AddEncoder(string name, Point posn, Size size,
             string knobImage, double stepValue, double rotationStep,
-            string interfaceDeviceName, string interfaceElementName, bool fromCenter)
+            string interfaceDeviceName, string interfaceElementName, bool fromCenter, RotaryClickType clickType = RotaryClickType.Swipe)
         {
             if (fromCenter)
                 posn = FromCenter(posn, size);
@@ -374,6 +374,7 @@ namespace GadrocsWorkshop.Helios
                 Width = size.Width,
                 Height = size.Height
             };
+            _knob.ClickType = clickType;
 
             Children.Add(_knob);
             foreach (IBindingTrigger trigger in _knob.Triggers)

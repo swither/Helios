@@ -67,7 +67,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         private const string KY_58 = "69";
 		private const string DVADR = "73";
 		private const string ACCELEROMETER = "72";
-		private const string TACAN_CTRL_PANEL = "74";
+        private const string TACAN_CTRL_PANEL = "74";
+        private const string SCORPION_HMCS = "75";
         // ReSharper restore InconsistentNaming
         #endregion
 
@@ -954,10 +955,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             #region Aux Landing
             AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_8, "718", "1", "Up", "0", "Down", "Mechanical", "Auxiliary Landing Gear Handle", "%1d"));
             AddFunction(new PushButton(this, CPT_MECH, BUTTON_9, "722", "Mechanical", "Auxiliary Landing Gear Handle Lock Button"));
-			#endregion
-
-			
-			AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_10, "733", "1", "Disarmed", "0", "Armed", "Mechanical", "Seat Arm Handle", "%1d"));
+            #endregion
+            #region Scorpion HMCS
+            AddFunction(Switch.CreateThreeWaySwitch(this, SCORPION_HMCS, BUTTON_1, "550", "0.2", "On", "0.1", "Off", "0.0", "Bat", "Scorpion HMCS", "Power", "%0.1f"));
+            #endregion
+            AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_10, "733", "1", "Disarmed", "0", "Armed", "Mechanical", "Seat Arm Handle", "%1d"));
         }
      }
 }

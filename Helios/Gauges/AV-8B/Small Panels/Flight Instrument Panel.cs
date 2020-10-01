@@ -105,11 +105,12 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 size: size,
                 posn: posn,
                 knobImage: _imageLocation + _knobName,
-                stepValue: 0.1,
+                stepValue: 0.5,
                 rotationStep: 5,
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
-                fromCenter: false
+                fromCenter: false,
+                clickType: RotaryClickType.Swipe
                 );
         }
 
