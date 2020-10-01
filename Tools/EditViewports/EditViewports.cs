@@ -156,9 +156,9 @@ namespace EditViewports
                             continue;
                         }
 
-                        ConfigManager.LogManager.LogDebug("---------------------------------------------------------");
+                        ConfigManager.LogManager.LogDebug($"----------------------- {viewport.RelativeInitFilePath} ---------------------");
                         ConfigManager.LogManager.LogDebug(patched);
-                        ConfigManager.LogManager.LogDebug("=========================================================");
+                        ConfigManager.LogManager.LogDebug($"======================= {viewport.RelativeInitFilePath} =====================");
 
                         if (!destination.TryWritePatched(viewport.RelativeInitFilePath, patched))
                         {

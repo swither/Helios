@@ -43,7 +43,8 @@ namespace TestApplyPatches
             googleDiff.diff_cleanupSemantic(diffs);
             List<Patch> patches = googleDiff.patch_make(diffs);
             Debug.WriteLine(googleDiff.patch_toText(patches));
-            string patched = (string) googleDiff.patch_apply(patches, imperfectInput)[0];
+            string patched = (string) googleDiff.patch_apply(patches, imperfectInput, out List<Patch> effectivePatches)[0];
+            Debug.WriteLine(effectivePatches.Count);
             Debug.WriteLine(patched);
             Debug.Assert(patched == "diff match pth");
         }
@@ -184,7 +185,7 @@ namespace TestApplyPatches
 
         private static string ApplyPatches(diff_match_patch googleDiff, string testInput, List<Patch> patches)
         {
-            object[] results = googleDiff.patch_apply(patches, testInput);
+            object[] results = googleDiff.patch_apply(patches, testInput, out List<Patch> effectivePatches);
             string patched = (string) results[0];
             bool[] applied = (bool[]) results[1];
             diff_match_patch.PatchResult[] resultCodes = (diff_match_patch.PatchResult[]) results[2];
@@ -192,13 +193,13 @@ namespace TestApplyPatches
             {
                 if (!applied[i])
                 {
-                    throw new Exception($"failed to apply {patches[i]}: {resultCodes[i]}");
+                    throw new Exception($"failed to apply {effectivePatches[i]}: {resultCodes[i]}");
                 }
 
                 switch (resultCodes[i])
                 {
                     case diff_match_patch.PatchResult.UNKNOWN:
-                        throw new Exception($"invalid result code from application of {patches[i]}");
+                        throw new Exception($"invalid result code from application of {effectivePatches[i]}");
                     case diff_match_patch.PatchResult.APPLIED_PERFECT:
                         break;
                     case diff_match_patch.PatchResult.APPLIED_IMPERFECT:
