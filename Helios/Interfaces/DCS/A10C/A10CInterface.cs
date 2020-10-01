@@ -957,7 +957,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new PushButton(this, CPT_MECH, BUTTON_9, "722", "Mechanical", "Auxiliary Landing Gear Handle Lock Button"));
             #endregion
             #region Scorpion HMCS
-            AddFunction(Switch.CreateThreeWaySwitch(this, SCORPION_HMCS, BUTTON_1, "550", "0.2", "On", "0.1", "Off", "0.0", "Bat", "Scorpion HMCS", "Power", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, SCORPION_HMCS, BUTTON_1, "550", "1.0", "On", "0.0", "Off", "-1.0", "Bat", "Scorpion HMCS", "Power", "%0.1f"));
             #endregion
             AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_10, "733", "1", "Disarmed", "0", "Armed", "Mechanical", "Seat Arm Handle", "%1d"));
         }
