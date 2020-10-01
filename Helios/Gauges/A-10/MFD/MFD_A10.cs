@@ -15,12 +15,12 @@
 
 using System.Windows;
 using GadrocsWorkshop.Helios.ComponentModel;
-using GadrocsWorkshop.Helios.Controls;
 
+// ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios.Gauges.A_10.MFD
 {
     [HeliosControl("A10.MFD", "MFD", "A-10", typeof(MFDRenderer))]
-    class MFD_A10 : Controls.MFD
+    class MFD_A10 : Gauges.MFD
     {
         private static readonly Rect SCREEN_RECT = new Rect(67, 67, 341, 343);
         private Rect _scaledScreenRect = SCREEN_RECT;

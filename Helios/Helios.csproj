@@ -476,7 +476,7 @@
     <Compile Include="Gauges\FA-18C\MFD\MFD-FA18C-Type-1.cs" />
     <Compile Include="Gauges\AV-8B\MFD\MFD-AV8B.cs" />
     <Compile Include="Gauges\A-10\MFD\MFD_A10.cs" />
-    <Compile Include="Gauges\F-16\MFD\MFD-F16.cs" />
+    <Compile Include="Gauges\F-16\MFD\MFD_F16.cs" />
     <Compile Include="Gauges\MFD.cs" />
     <Compile Include="Gauges\MFDRenderer.cs" />
     <Compile Include="Controls\Potentiometer.cs" />

@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Phidgets
     using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// Editor for a CalibrationPointCollectionLong
     /// </summary>
     public partial class CalibrationEditorLong : UserControl
     {

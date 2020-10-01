@@ -13,9 +13,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using GadrocsWorkshop.Helios.Gauges;
+// ReSharper disable once CheckNamespace
 
-namespace GadrocsWorkshop.Helios.Controls
+using GadrocsWorkshop.Helios.Controls;
+
+namespace GadrocsWorkshop.Helios.Gauges.FA_18C.MFD
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using System;
@@ -23,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
 
     [HeliosControl("FA18C.AMPCD", "AMPCD", "F/A-18C", typeof(MFDRenderer))]
-    class AMPCD_FA18C : MFD
+    class AMPCD_FA18C : Gauges.MFD
     {
         private static readonly Rect SCREEN_RECT = new Rect(88, 161, 551, 532);
         private Rect _scaledScreenRect = SCREEN_RECT;
