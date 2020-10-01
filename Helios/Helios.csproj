@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentModel\HeliosToolAttribute.cs" />
+    <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
     <Compile Include="Tools\Capabilities\IProfileTool.cs" />
     <Compile Include="Tools\HeliosToolDescriptor.cs" />
     <Compile Include="Tools\MenuItemModel.cs" />
@@ -649,6 +650,7 @@
     <None Include="Assets\Helios_ADI.odg" />
     <None Include="Assets\render.cmd" />
     <None Include="Images\A-10\readme.md" />
+    <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\hud.png" />

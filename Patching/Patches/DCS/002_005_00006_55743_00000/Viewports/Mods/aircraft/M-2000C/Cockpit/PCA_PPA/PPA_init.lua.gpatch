@@ -1,0 +1,3 @@
+﻿@@ -558,28 +558,153 @@
+ ials %3D %7B %22PPA_gauge_font%22%2C %7D
++%0D%0A%0D%0Adofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0Atry_find_assigned_viewport(%22M2000C_PPA%22%2C %22M2000C_PPA%22)

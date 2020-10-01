@@ -19,7 +19,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
     using GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    [HeliosInterface("Helios.A10C", "DCS A-10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    /// <summary>
+    /// interface for DCS A-10C. Please note the poor naming
+    /// of the Helios interface (A10C instead of A-10C) is intentional to match existing profiles.
+    /// </summary>
+    [HeliosInterface("Helios.A10C", "DCS A10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class A10CInterface : DCSInterface
     {
         #region Devices
@@ -142,8 +146,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         private const string BUTTON_67 = "3067";
         #endregion
 
-        public A10CInterface()
-            : base("DCS A10C", "A-10C", "pack://application:,,,/Helios;component/Interfaces/DCS/A10C/ExportFunctions.lua")
+        public A10CInterface() : this("DCS A10C", "A-10C",
+            "pack://application:,,,/Helios;component/Interfaces/DCS/A10C/ExportFunctions.lua")
+        {
+            // all code in referenced constructor
+        }
+
+        public A10CInterface(string heliosName, string dcsVehicleName, string exportFunctionsUri)
+            : base(heliosName, dcsVehicleName, exportFunctionsUri)
         {
             #region Indexers
             AddFunction(new FlagValue(this, "540", "AOA Indexer", "High Indicator", "High AOA indicator light."));
@@ -956,9 +966,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_8, "718", "1", "Up", "0", "Down", "Mechanical", "Auxiliary Landing Gear Handle", "%1d"));
             AddFunction(new PushButton(this, CPT_MECH, BUTTON_9, "722", "Mechanical", "Auxiliary Landing Gear Handle Lock Button"));
             #endregion
+
+            // XXX to be moved to A10C2Interface
             #region Scorpion HMCS
             AddFunction(Switch.CreateThreeWaySwitch(this, SCORPION_HMCS, BUTTON_1, "550", "1.0", "On", "0.0", "Off", "-1.0", "Bat", "Scorpion HMCS", "Power", "%0.1f"));
             #endregion
+
             AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_10, "733", "1", "Disarmed", "0", "Armed", "Mechanical", "Seat Arm Handle", "%1d"));
         }
      }

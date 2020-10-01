@@ -454,6 +454,123 @@
     ]
   },
   {
+    "templateName": "A-10C II",
+    "moduleId": "A-10C_2",
+    "isHeliosTemplate": true,
+    "viewports": [
+      {
+        "viewportName": "LEFT_MFCD",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/MFCD/indicator/MFCD_left_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 59,
+        "y": 140,
+        "width": 435,
+        "height": 435
+      },
+      {
+        "viewportName": "RIGHT_MFCD",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/MFCD/indicator/MFCD_right_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 1417,
+        "y": 140,
+        "width": 435,
+        "height": 435
+      },
+      {
+        "viewportName": "CMSP_SCREEN",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/CMSP/indicator/CMSP_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": -1610,
+        "y": 25,
+        "width": 207,
+        "height": 41
+      },
+      {
+        "viewportName": "CMSC_SCREEN",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/CMSC/indicator/CMSC_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 860,
+        "y": 122,
+        "width": 250,
+        "height": 58
+      },
+      {
+        "viewportName": "RWR_SCREEN",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/AN_ALR69V/indicator/AN_ALR69V_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 594,
+        "y": 162,
+        "width": 185,
+        "height": 185
+      },
+      {
+        "viewportName": "DIGIT_CLOCK",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/DigitalClock/Indicator/DIGIT_CLK_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 478,
+        "y": 825,
+        "width": 123,
+        "height": 123
+      },
+      {
+        "viewportName": "UHF_FREQUENCY_STATUS",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/UHF_Radio/indicator/freq_status_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 546,
+        "y": 438,
+        "width": 112,
+        "height": 28
+      },
+      {
+        "viewportName": "UHF_PRESET_CHANNEL",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/UHF_Radio/indicator/preset_channel_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 637,
+        "y": 367,
+        "width": 34,
+        "height": 27
+      },
+      {
+        "viewportName": "UHF_REPEATER",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/UHF_Radio/indicator/repeater_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 666,
+        "y": 698,
+        "width": 95,
+        "height": 25
+      },
+      {
+        "viewportName": "CDU_SCREEN",
+        "relativeInitFilePath": "Mods/aircraft/A-10C_2/Cockpit/Scripts/CDU/indicator/CDU_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 1225,
+        "y": 642,
+        "width": 222,
+        "height": 163
+      }
+    ]
+  },
+  {
     "templateName": "AV-8B",
     "moduleId": "AV8BNA",
     "isHeliosTemplate": true,
@@ -488,7 +605,7 @@
     "viewports": [
       {
         "viewportname": "NADIR",
-        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/NADIR/init.lua", 
+        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/NADIR/init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
@@ -543,7 +660,7 @@
       },
       {
         "viewportname": "FM",
-        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/RADIO/indicator/FM/init.lua", 
+        "relativeInitFilePath": "Mods/aircraft/SA342/Cockpit/RADIO/indicator/FM/init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,

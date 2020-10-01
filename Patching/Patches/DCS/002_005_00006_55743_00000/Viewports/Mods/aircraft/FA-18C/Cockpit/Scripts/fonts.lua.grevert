@@ -1,0 +1,24 @@
+﻿@@ -2319,78 +2319,8 @@
+ %2C%0D%0A%09
+--- modified by Helios%0D%0A%09-- thickness  %3D 0.4%2C%0D%0A%09-- fuzziness  %3D 0.2%2C%0D%0A%09
+ thic
+@@ -4655,163 +4655,8 @@
+ %5D)%0D%0A
+--- modified by Helios%0D%0Afontdescription%5B%22font_stroke_MDG_DMC_outline%22%5D.thickness %3D 3.0%0D%0Afontdescription%5B%22font_stroke_MDG_DMC_outline%22%5D.fuzziness %3D 0.85%0D%0A-- 
+ font
+@@ -4733,19 +4733,16 @@
+ ckness%0D%0A
+--- 
+ fontdesc
+@@ -4815,16 +4815,18 @@
+ ziness%0D%0A
++%0D%0A
+ -- DMC g
+@@ -4991,159 +4991,8 @@
+ %5D)%0D%0A
+--- modified by Helios%0D%0A-- fontdescription%5B%22font_stroke_MDG_DMC_main%22%5D.thickness %3D 0.4%0D%0A-- fontdescription%5B%22font_stroke_MDG_DMC_main%22%5D.fuzziness %3D 0.2%0D%0A
+ font
+@@ -5143,16 +5143,18 @@
+ ziness%0D%0A
++%0D%0A
+ UFC_xsiz

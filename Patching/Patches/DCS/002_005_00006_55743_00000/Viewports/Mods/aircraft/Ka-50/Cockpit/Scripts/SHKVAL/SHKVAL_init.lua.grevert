@@ -1,0 +1,3 @@
+﻿@@ -1077,125 +1077,4 @@
+ se%0D%0A
+-dofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0Atry_find_assigned_viewport(%22KA_50_SHKVAL%22%2C %22SHKVAL%22)%0D%0A

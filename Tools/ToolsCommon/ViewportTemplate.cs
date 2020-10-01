@@ -27,6 +27,7 @@ namespace ToolsCommon
         private static readonly Dictionary<string, string> _moduleCategories = new Dictionary<string, string>
         {
             // make these fit in with template / control categories in Helios UI
+            {"A-10C_2", "A-10C II"},
             {"AV8BNA", "AV-8B"},
             {"F-16C", "F-16"},
             {"FA-18C", "F/A-18C"},
@@ -40,7 +41,7 @@ namespace ToolsCommon
         // REVISIT these will go away when we get the new ViewportTemplates format with the prefix in the file
         private static readonly Dictionary<string, string> _renamed = new Dictionary<string, string>
         {
-            // make these fit in with template / control categories in Helios UI
+            // adjust viewport prefixes
             {"HEATBLUR_F-14", "F-14"},
             {"Mi-8MTV2", "Mi-8"},
             {"MIG-21bis", "MiG-21"},
