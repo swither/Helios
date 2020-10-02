@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
     /// interface for DCS A-10C. Please note the poor naming
     /// of the Helios interface (A10C instead of A-10C) is intentional to match existing profiles.
     /// </summary>
-    [HeliosInterface("Helios.A10C", "DCS A10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    //[HeliosInterface("Helios.A10C", "DCS A10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class A10CInterface : DCSInterface
     {
         #region Devices
@@ -64,15 +64,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         private const string UHF_RADIO = "54";
         private const string VHF_AM_RADIO = "55";
         private const string VHF_FM_RADIO = "56";
-		private const string TISL = "57";
-		private const string INTERCOM = "58";
+        private const string INTERCOM = "58";
 		private const string AAU34 = "62";
 		private const string AN_APN_194 = "67";
         private const string KY_58 = "69";
 		private const string DVADR = "73";
 		private const string ACCELEROMETER = "72";
         private const string TACAN_CTRL_PANEL = "74";
-        private const string SCORPION_HMCS = "75";
         // ReSharper restore InconsistentNaming
         #endregion
 
@@ -471,26 +469,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             // UHF Repeater
             AddFunction(new NetworkValue(this, "2000", "UHF Radio", "Fequency", "Currently tuned frequency of UHF radio.", "", BindingValueUnits.Text, null));
 
-            #region TISL Panel
-            AddFunction(new Switch(this, TISL, "622", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_1), new SwitchPosition("0.1", "Cage", BUTTON_1), new SwitchPosition("0.2", "Dive", BUTTON_1), new SwitchPosition("0.3", "Level Narrow Nar", BUTTON_1), new SwitchPosition("0.4", "Level Wide", BUTTON_1) }, "TISL", "Mode Select", "%0.1f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, TISL, BUTTON_2, "623", "1", "Over 10", "0", "10-5", "-1", "Under 5", "TISL", "Slant Range", "%1d"));
-            AddFunction(new Axis(this, TISL, BUTTON_3, "624", 0.1d, 0.0d, 1.0d, "TISL", "Altitude above target tens of thousands of feet"));
-            AddFunction(new Axis(this, TISL, BUTTON_4, "626", 0.1d, 0.0d, 1.0d, "TISL", "Altitude above target thousands of feet"));
-            AddFunction(new Axis(this, TISL, BUTTON_5, "636", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 1", true, "%0.2f"));
-            AddFunction(new Axis(this, TISL, BUTTON_6, "638", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 2", true, "%0.2f"));
-            AddFunction(new Axis(this, TISL, BUTTON_7, "640", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 3", true, "%0.2f"));
-            AddFunction(new Axis(this, TISL, BUTTON_8, "642", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 4", true, "%0.2f"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, TISL, BUTTON_9, "644", "1", "TISL", "0", "Both", "-1", "Aux", "TISL", "Code Select", "%1d"));
-            AddFunction(new PushButton(this, TISL, BUTTON_10, "628", "TISL", "Enter"));
-            AddFunction(new PushButton(this, TISL, BUTTON_11, "630", "TISL", "OverTemp"));
-            AddFunction(new PushButton(this, TISL, BUTTON_12, "632", "TISL", "Bite"));
-            AddFunction(new PushButton(this, TISL, BUTTON_13, "634", "TISL", "Track"));
-			AddFunction(new NetworkValue(this, "629", "TISL", "TISL-AUX indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric));
-			AddFunction(new NetworkValue(this, "631", "TISL", "OVER TEMP indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric));
-			AddFunction(new NetworkValue(this, "633", "TISL", "DET-ACD indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric));
-			AddFunction(new NetworkValue(this, "635", "TISL", "TRACK indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric));
-			#endregion
-
 			#region CDU
 			AddFunction(new PushButton(this, CDU, BUTTON_1, "410", "CDU", "LSK 3L"));
             AddFunction(new PushButton(this, CDU, BUTTON_2, "411", "CDU", "LSK 5L"));
@@ -826,26 +804,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new Functions.VHFRadioEncoder4(this, VHF_AM_RADIO, BUTTON_15, "146", 0.25d, 0.0d, 0.9d, "VHF AM Radio", "4th Frequency Selector"));
 			#endregion
 
-			#region VHF FM Radio
-			AddFunction(new Functions.VHFPresetSelector(this, VHF_FM_RADIO, BUTTON_1, "151", 0.01d, 0.00d, 0.19d, "VHF FM Radio", "Preset Channel Selector"));
-
-            // silently consume values sent by old export scripts generated before these were fixed
-            AddFunction(new SilentValueConsumer(this, "153", "Previous incorrect or out of date assignment for value 157"));
-            AddFunction(new SilentValueConsumer(this, "154", "Previous incorrect or out of date assignment for value 158"));
-            AddFunction(new SilentValueConsumer(this, "155", "Previous incorrect or out of date assignment for value 159"));
-            AddFunction(new SilentValueConsumer(this, "156", "Previous incorrect or out of date assignment for value 160"));
-
-            AddFunction(new Functions.VHFRadioEncoder1(this, VHF_FM_RADIO, BUTTON_9, "157", 0.05d, 0d, 1d, "VHF FM Radio", "1st Frequency Selector"));
-			AddFunction(new Functions.VHFRadioEncoder(this, VHF_FM_RADIO, BUTTON_11,"158", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "2nd Frequency Selector"));
-            AddFunction(new Functions.VHFRadioEncoder3(this, VHF_FM_RADIO, BUTTON_13,"159", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "3rd Frequency Selector"));
-            AddFunction(new Functions.VHFRadioEncoder4(this, VHF_FM_RADIO, BUTTON_15,"160", 0.25d, 0.0d, 0.9d, "VHF FM Radio", "4th Frequency Selector"));
-            AddFunction(new Switch(this, VHF_FM_RADIO, "152", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_3), new SwitchPosition("0.1", "TX", BUTTON_3), new SwitchPosition("0.2", "DN", BUTTON_3) }, "VHF FM Radio", "Frequency Mode Dial", "%0.1f"));
-            AddFunction(new Switch(this, VHF_FM_RADIO, "149", new SwitchPosition[] { new SwitchPosition("0.0", "Emergency FM", BUTTON_4), new SwitchPosition("0.1", "Emergency AM", BUTTON_4), new SwitchPosition("0.2", "Manual", BUTTON_4), new SwitchPosition("0.3", "PRE", BUTTON_4) }, "VHF FM Radio", "Frequency Selection Dial", "%0.1f"));
-            AddFunction(new Axis(this, VHF_FM_RADIO, BUTTON_5, "147", 0d, 0d, 1d, "VHF FM Radio", "Volume"));
-            AddFunction(new PushButton(this, VHF_FM_RADIO, BUTTON_6, "150", "VHF FM Radio", "Load"));
-            AddFunction(new Switch(this, VHF_FM_RADIO, "148", new SwitchPosition[] { new SwitchPosition("-1", "Squelch", BUTTON_7), new SwitchPosition("0", "Off", BUTTON_7), new SwitchPosition("1", "Tone", BUTTON_8, BUTTON_8, "0") }, "VHF FM Radio", "Squelch / Tone", "%1d"));
-			#endregion
-
 			#region SAS Panel
 			AddFunction(new Switch(this, AUTOPILOT, "185", new SwitchPosition[] { new SwitchPosition("1", "On", BUTTON_3, BUTTON_4, "0"), new SwitchPosition("0", "Off", BUTTON_3, BUTTON_4, "0") }, "Autopilot", "Yaw SAS Engage Left", "%1d", true));
             AddFunction(new Switch(this, AUTOPILOT, "186", new SwitchPosition[] { new SwitchPosition("1", "On", BUTTON_5, BUTTON_6, "0"), new SwitchPosition("0", "Off", BUTTON_5, BUTTON_6, "0") }, "Autopilot", "Yaw SAS Engage Right", "%1d", true));
@@ -884,6 +842,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new PushButton(this, UHF_RADIO, BUTTON_13, "173", "UHF Radio", "Status Button"));
             AddFunction(new PushButton(this, UHF_RADIO, BUTTON_15, "735", "UHF Radio", "Load Button"));
             AddFunction(Switch.CreateToggleSwitch(this, UHF_RADIO, BUTTON_14, "734", "0", "Down", "1", "Up", "UHF Radio", "Cover", "%1d"));
+            #endregion
+
+            #region VHF FM Radio
+            AddFunction(new Functions.VHFPresetSelector(this, VHF_FM_RADIO, BUTTON_1, "151", 0.01d, 0.00d, 0.19d, "VHF FM Radio", "Preset Channel Selector"));
+
+            // silently consume values sent by old export scripts generated before these were fixed
+            AddFunction(new SilentValueConsumer(this, "153", "Previous incorrect or out of date assignment for value 157"));
+            AddFunction(new SilentValueConsumer(this, "154", "Previous incorrect or out of date assignment for value 158"));
+            AddFunction(new SilentValueConsumer(this, "155", "Previous incorrect or out of date assignment for value 159"));
+            AddFunction(new SilentValueConsumer(this, "156", "Previous incorrect or out of date assignment for value 160"));
+
+            AddFunction(new Functions.VHFRadioEncoder1(this, VHF_FM_RADIO, BUTTON_9, "157", 0.05d, 0d, 1d, "VHF FM Radio", "1st Frequency Selector"));
+            AddFunction(new Functions.VHFRadioEncoder(this, VHF_FM_RADIO, BUTTON_11, "158", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "2nd Frequency Selector"));
+            AddFunction(new Functions.VHFRadioEncoder3(this, VHF_FM_RADIO, BUTTON_13, "159", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "3rd Frequency Selector"));
+            AddFunction(new Functions.VHFRadioEncoder4(this, VHF_FM_RADIO, BUTTON_15, "160", 0.25d, 0.0d, 0.9d, "VHF FM Radio", "4th Frequency Selector"));
+            AddFunction(new Switch(this, VHF_FM_RADIO, "152", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_3), new SwitchPosition("0.1", "TX", BUTTON_3), new SwitchPosition("0.2", "DN", BUTTON_3) }, "VHF FM Radio", "Frequency Mode Dial", "%0.1f"));
+            AddFunction(new Switch(this, VHF_FM_RADIO, "149", new SwitchPosition[] { new SwitchPosition("0.0", "Emergency FM", BUTTON_4), new SwitchPosition("0.1", "Emergency AM", BUTTON_4), new SwitchPosition("0.2", "Manual", BUTTON_4), new SwitchPosition("0.3", "PRE", BUTTON_4) }, "VHF FM Radio", "Frequency Selection Dial", "%0.1f"));
+            AddFunction(new Axis(this, VHF_FM_RADIO, BUTTON_5, "147", 0d, 0d, 1d, "VHF FM Radio", "Volume"));
+            AddFunction(new PushButton(this, VHF_FM_RADIO, BUTTON_6, "150", "VHF FM Radio", "Load"));
+            AddFunction(new Switch(this, VHF_FM_RADIO, "148", new SwitchPosition[] { new SwitchPosition("-1", "Squelch", BUTTON_7), new SwitchPosition("0", "Off", BUTTON_7), new SwitchPosition("1", "Tone", BUTTON_8, BUTTON_8, "0") }, "VHF FM Radio", "Squelch / Tone", "%1d"));
             #endregion
 
             #region Secure Voice Panel
@@ -965,11 +943,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             #region Aux Landing
             AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_8, "718", "1", "Up", "0", "Down", "Mechanical", "Auxiliary Landing Gear Handle", "%1d"));
             AddFunction(new PushButton(this, CPT_MECH, BUTTON_9, "722", "Mechanical", "Auxiliary Landing Gear Handle Lock Button"));
-            #endregion
-
-            // XXX to be moved to A10C2Interface
-            #region Scorpion HMCS
-            AddFunction(Switch.CreateThreeWaySwitch(this, SCORPION_HMCS, BUTTON_1, "550", "1.0", "On", "0.0", "Off", "-1.0", "Bat", "Scorpion HMCS", "Power", "%0.1f"));
             #endregion
 
             AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_10, "733", "1", "Disarmed", "0", "Armed", "Mechanical", "Seat Arm Handle", "%1d"));

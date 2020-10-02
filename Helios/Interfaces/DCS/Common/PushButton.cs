@@ -34,6 +34,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             : this(sourceInterface, deviceId, buttonId, argId, device, name, "1.0", "0.0", "%.1f")
         {
         }
+        public PushButton(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, string device, string name, string exportFormat)
+            : this(sourceInterface, deviceId, buttonId, argId, device, name, "1.0", "0.0", exportFormat)
+        {
+        }
 
         public PushButton(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, string device, string name, string pushValue, string releaseValue, string exportFormat)
             : base(sourceInterface)

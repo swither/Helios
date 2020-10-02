@@ -20,18 +20,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
     using Common;
 
     /// <summary>
-    /// interface for DCS A-10C II including any changes made that are not in DCS A-10C.   Please note the poor naming
+    /// interface for DCS A-10C I including devices which are unique to the original A-10C.   Please note the poor naming
     /// of the Helios interface (A10C instead of A-10C) is intentional to match the existing interface.
     /// </summary>
-    [HeliosInterface("Helios.A10C2", "DCS A-10C II", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    class A10C2Interface: A10CInterface
+    [HeliosInterface("Helios.A10C", "DCS A-10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    class A10C1Interface: A10CInterface
     {
-        #region Devices
-        // REVISIT: TISL does not exist in the A-10C II and needs to be removed 
+        #region devices
         private const string TISL = "57";
-        private const string SCORPION_HMCS = "75";
         #endregion
-
         #region Buttons
         private const string BUTTON_1 = "3001";
         private const string BUTTON_2 = "3002";
@@ -102,37 +99,30 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         private const string BUTTON_67 = "3067";
         #endregion
 
-        public A10C2Interface() : base(
-            "DCS A-10C II", 
-            "A-10C_2",
-            "pack://application:,,,/Helios;component/Interfaces/DCS/A10C/ExportFunctionsA10C2.lua")
+        public A10C1Interface() : base(
+            "DCS A-10C", 
+            "A-10C",
+            "pack://application:,,,/Helios;component/Interfaces/DCS/A10C/ExportFunctionsA10C.lua")
         {
-
-            #region Scorpion HMCS
-            AddFunction(Switch.CreateThreeWaySwitch(this, SCORPION_HMCS, BUTTON_1, "550", "1.0", "On", "0.0", "Off", "-1.0", "Bat", "Scorpion HMCS", "Power", "%0.1f"));
-            #endregion
-
-            // REVISIT: TISL does not exist in the A-10C II and needs to be removed 
             #region TISL Panel
-            AddFunction(new Switch(this, TISL, "622", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_1), new SwitchPosition("0.1", "Cage", BUTTON_1), new SwitchPosition("0.2", "Dive", BUTTON_1), new SwitchPosition("0.3", "Level Narrow Nar", BUTTON_1), new SwitchPosition("0.4", "Level Wide", BUTTON_1) }, "TISL", "Mode Select", null));
-            AddFunction(Switch.CreateThreeWaySwitch(this, TISL, BUTTON_2, "623", "1", "Over 10", "0", "10-5", "-1", "Under 5", "TISL", "Slant Range", null));
-            AddFunction(new Axis(this, TISL, BUTTON_3, "624", 0.1d, 0.0d, 1.0d, "TISL", "Altitude above target tens of thousands of feet",true,null));
-            AddFunction(new Axis(this, TISL, BUTTON_4, "626", 0.1d, 0.0d, 1.0d, "TISL", "Altitude above target thousands of feet", true, null));
-            AddFunction(new Axis(this, TISL, BUTTON_5, "636", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 1", true, null));
-            AddFunction(new Axis(this, TISL, BUTTON_6, "638", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 2", true, null));
-            AddFunction(new Axis(this, TISL, BUTTON_7, "640", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 3", true, null));
-            AddFunction(new Axis(this, TISL, BUTTON_8, "642", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 4", true, null));
-            AddFunction(Switch.CreateThreeWaySwitch(this, TISL, BUTTON_9, "644", "1", "TISL", "0", "Both", "-1", "Aux", "TISL", "Code Select", null));
-            AddFunction(new PushButton(this, TISL, BUTTON_10, "628", "TISL", "Enter", null));
-            AddFunction(new PushButton(this, TISL, BUTTON_11, "630", "TISL", "OverTemp", null));
-            AddFunction(new PushButton(this, TISL, BUTTON_12, "632", "TISL", "Bite", null));
-            AddFunction(new PushButton(this, TISL, BUTTON_13, "634", "TISL", "Track", null));
-            AddFunction(new NetworkValue(this, "629", "TISL", "TISL-AUX indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric, null));
-            AddFunction(new NetworkValue(this, "631", "TISL", "OVER TEMP indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric, null));
-            AddFunction(new NetworkValue(this, "633", "TISL", "DET-ACD indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric, null));
-            AddFunction(new NetworkValue(this, "635", "TISL", "TRACK indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric, null));
+            AddFunction(new Switch(this, TISL, "622", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_1), new SwitchPosition("0.1", "Cage", BUTTON_1), new SwitchPosition("0.2", "Dive", BUTTON_1), new SwitchPosition("0.3", "Level Narrow Nar", BUTTON_1), new SwitchPosition("0.4", "Level Wide", BUTTON_1) }, "TISL", "Mode Select", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, TISL, BUTTON_2, "623", "1", "Over 10", "0", "10-5", "-1", "Under 5", "TISL", "Slant Range", "%1d"));
+            AddFunction(new Axis(this, TISL, BUTTON_3, "624", 0.1d, 0.0d, 1.0d, "TISL", "Altitude above target tens of thousands of feet"));
+            AddFunction(new Axis(this, TISL, BUTTON_4, "626", 0.1d, 0.0d, 1.0d, "TISL", "Altitude above target thousands of feet"));
+            AddFunction(new Axis(this, TISL, BUTTON_5, "636", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 1", true, "%0.2f"));
+            AddFunction(new Axis(this, TISL, BUTTON_6, "638", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 2", true, "%0.2f"));
+            AddFunction(new Axis(this, TISL, BUTTON_7, "640", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 3", true, "%0.2f"));
+            AddFunction(new Axis(this, TISL, BUTTON_8, "642", 0.05d, 0.0d, 1.0d, "TISL", "TISL Code Wheel 4", true, "%0.2f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, TISL, BUTTON_9, "644", "1", "TISL", "0", "Both", "-1", "Aux", "TISL", "Code Select", "%1d"));
+            AddFunction(new PushButton(this, TISL, BUTTON_10, "628", "TISL", "Enter"));
+            AddFunction(new PushButton(this, TISL, BUTTON_11, "630", "TISL", "OverTemp"));
+            AddFunction(new PushButton(this, TISL, BUTTON_12, "632", "TISL", "Bite"));
+            AddFunction(new PushButton(this, TISL, BUTTON_13, "634", "TISL", "Track"));
+            AddFunction(new NetworkValue(this, "629", "TISL", "TISL-AUX indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric));
+            AddFunction(new NetworkValue(this, "631", "TISL", "OVER TEMP indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric));
+            AddFunction(new NetworkValue(this, "633", "TISL", "DET-ACD indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric));
+            AddFunction(new NetworkValue(this, "635", "TISL", "TRACK indicator", "Current value of the indicator", "0 to 1", BindingValueUnits.Numeric));
             #endregion
-
         }
     }
 }

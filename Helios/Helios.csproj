@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentModel\HeliosToolAttribute.cs" />
+    <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
     <Compile Include="Tools\Capabilities\IProfileTool.cs" />
     <Compile Include="Tools\HeliosToolDescriptor.cs" />
