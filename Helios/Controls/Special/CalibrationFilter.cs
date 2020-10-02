@@ -128,7 +128,10 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             _outputValue?.SetValue(outputValue, false);
         }
 
-        public CalibrationPointCollectionDouble Calibration { get; } = new CalibrationPointCollectionDouble();
+        public CalibrationPointCollectionDouble Calibration { get; } = new CalibrationPointCollectionDouble()
+        {
+            Preceision = 10
+        };
 
         /// <summary>
         /// backing field for property OutputUnit, contains
