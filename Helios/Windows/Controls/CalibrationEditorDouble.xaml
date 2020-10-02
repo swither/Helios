@@ -7,37 +7,41 @@
              Name="CalibrationEditor"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel>
+    <WrapPanel Orientation="Vertical">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" MinWidth="64"/>
+                <ColumnDefinition Width="*" MinWidth="64"/>
                 <ColumnDefinition Width="46" />
             </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" Grid.Column="0">Input Value</Label>
-            <Label Grid.Row="0" Grid.Column="1">Target Position</Label>
+            <Label Grid.Row="0" Grid.Column="0">Input</Label>
+            <Label Grid.Row="0" Grid.Column="1">Output</Label>
         </Grid>
-        <ItemsControl Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding ElementName=CalibrationEditor,Path=Calibration}">
+        <ItemsControl ItemsSource="{Binding ElementName=CalibrationEditor,Path=Calibration}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" MinWidth="64"/>
+                            <ColumnDefinition Width="*" MinWidth="64"/>
                             <ColumnDefinition Width="46" />
                         </Grid.ColumnDefinitions>
 
-                        <controls:HeliosTextBox Grid.Column="0" Margin="2" Text="{Binding Path=Value}" />
-                        <controls:HeliosTextBox Grid.Column="1" Margin="2" Text="{Binding Path=Multiplier}" TextChanged="OutputChange"/>
+                        <controls:HeliosTextBox Grid.Column="0" Margin="2" Text="{Binding Path=Value}" LostFocus="OnInputLostFocus"/>
+                        <controls:HeliosTextBox Grid.Column="1" Margin="2" Text="{Binding Path=Multiplier}" TextChanged="OnOutputChange"/>
                         <StackPanel Orientation="Horizontal" Grid.Column="2">
-                            <Button Width="20" Height="20" Padding="2" Margin="2" VerticalAlignment="Center" VerticalContentAlignment="Stretch" Tag="{Binding}" Click="AddCalibrationPoint">
+                            <Button Width="20" Height="20" Padding="2" Margin="2" VerticalAlignment="Center" VerticalContentAlignment="Stretch" 
+                                    Command="{Binding AddCommand, ElementName=CalibrationEditor}" 
+                                    CommandParameter="{Binding}">
                                 <TextBlock VerticalAlignment="Center">+</TextBlock>
                             </Button>
-                            <Button Width="20" Height="20" Padding="2" Margin="2" VerticalAlignment="Center" VerticalContentAlignment="Stretch" Tag="{Binding}" Click="RemoveCalibrationPoint">
+                            <Button Width="20" Height="20" Padding="2" Margin="2" VerticalAlignment="Center" VerticalContentAlignment="Stretch" 
+                                    Command="{Binding RemoveCommand, ElementName=CalibrationEditor}" 
+                                    CommandParameter="{Binding}">
                                 <TextBlock VerticalAlignment="Center">-</TextBlock>
                             </Button>
                         </StackPanel>
@@ -45,5 +49,5 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-    </StackPanel>
+    </WrapPanel>
 </UserControl>

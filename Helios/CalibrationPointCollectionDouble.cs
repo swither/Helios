@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
+
 namespace GadrocsWorkshop.Helios
 {
     using System;
@@ -146,6 +148,15 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        internal void Sort()
+        {
+            List<CalibrationPointDouble> sorted = this.OrderBy(item => item.Value).ToList();
+            _points.Clear();
+            sorted.ForEach(item => _points.AddLast(item));
+            OnCalibrationChanged();
+            OnCollectionChanged();
+        }
+
         public double MaximumOutputValue
         {
             get
@@ -246,11 +257,13 @@ namespace GadrocsWorkshop.Helios
         public void AddPointAfter(CalibrationPointDouble item)
         {
             LinkedListNode<CalibrationPointDouble> addAfter = _points.Find(item);
-            if (addAfter.Next != null)
+            if (addAfter?.Next == null)
             {
-                CalibrationPointDouble point = new CalibrationPointDouble(item.Value + ((addAfter.Next.Value.Value - item.Value) / 2), item.Multiplier + ((addAfter.Next.Value.Multiplier - item.Multiplier) / 2));
-                Add(point);
+                return;
             }
+
+            CalibrationPointDouble point = new CalibrationPointDouble(item.Value + ((addAfter.Next.Value.Value - item.Value) / 2), item.Multiplier + ((addAfter.Next.Value.Multiplier - item.Multiplier) / 2));
+            Add(point);
         }
 
         void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

@@ -70,6 +70,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentModel\HeliosToolAttribute.cs" />
+    <Compile Include="Controls\Special\CalibrationFilter.cs" />
+    <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
+      <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
     <Compile Include="Tools\Capabilities\IProfileTool.cs" />
@@ -161,6 +165,10 @@
     <Compile Include="Windows\ViewModel\InstallationResultViewModel.cs" />
     <Compile Include="Windows\ViewModel\ShareInstallationResults.cs" />
     <Compile Include="Windows\ViewModel\VersionCheckViewModel.cs" />
+    <Page Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -673,6 +681,7 @@
     <None Include="Assets\Helios_ADI.svg" />
     <Resource Include="Images\General\HeliosSimplifiedIcon.png" />
     <Content Include="Controls\Special\readme.txt" />
+    <Resource Include="Images\General\calibration.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -181,8 +181,7 @@ namespace GadrocsWorkshop.Helios
         public void ExecuteAction(BindingValue value, bool bypassCascadingTriggers)
         {
             HeliosActionEventArgs args = new HeliosActionEventArgs(value, bypassCascadingTriggers);
-            HeliosActionHandler handler = Execute;
-            handler?.Invoke(this, args);
+            Execute?.Invoke(this, args);
         }
 
         public Type ValueEditorType { get; set; } = typeof(TextStaticEditor);
