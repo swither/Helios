@@ -148,6 +148,12 @@ namespace GadrocsWorkshop.Helios
             _convertedValueTypes = _convertedValueTypes | BindingValueType.String;
         }
 
+        /// <summary>
+        /// WARNING: This function returns true if the object being compared can provide an equal value, even if the types differ.
+        /// Use IsIdenticalTo to check for complete equality (same type and value)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             object compareObject = obj;
@@ -180,6 +186,7 @@ namespace GadrocsWorkshop.Helios
                 }
             }
 
+            // XXX rewrite.  this is insanely inefficient to use a type check here to check what branch we took above
             if (compareObject is string)
             {
                 return StringValue.Equals(compareObject);
@@ -195,6 +202,46 @@ namespace GadrocsWorkshop.Helios
 
 
             return false;
+        }
+
+        public bool IsIdenticalTo(BindingValue other)
+        {
+            return 0 == NonConvertingCompare(other);
+        }
+
+        public int NonConvertingCompare(BindingValue right)
+        {
+            if (ReferenceEquals(right, this))
+            {
+                return 0;
+            }
+
+            bool thisIsEmpty = (ReferenceEquals(this, Empty));
+
+            if (ReferenceEquals(right, Empty))
+            {
+                // empty is less than all values
+                return thisIsEmpty ? 0 : 1;
+            }
+
+            int typeDifference = _nativeValueType - right._nativeValueType;
+            if (typeDifference != 0)
+            {
+                // different types sort by type
+                return typeDifference;
+            }
+
+            switch (_nativeValueType)
+            {
+                case BindingValueType.Boolean:
+                    return BoolValue.CompareTo(right.BoolValue);
+                case BindingValueType.String:
+                    return string.Compare(StringValue, right.StringValue, StringComparison.InvariantCulture);
+                case BindingValueType.Double:
+                    return DoubleValue.CompareTo(right.DoubleValue);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public override int GetHashCode()
@@ -221,5 +268,7 @@ namespace GadrocsWorkshop.Helios
                 return _nativeValueType;
             }
         }
+
+        public bool IsEmptyValue => ReferenceEquals(this, Empty);
     }
 }

@@ -15,13 +15,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace GadrocsWorkshop.Helios.Windows.Controls
 {
     /// <summary>
-    /// Interaction logic for CalibrationEditorDouble.xaml
+    /// Editor for CalibrationPointCollectionDouble
     /// </summary>
     public partial class CalibrationEditorDouble : UserControl
     {
@@ -60,19 +62,68 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             DependencyProperty.Register("MinOutput", typeof(double), typeof(CalibrationEditorDouble),
                 new UIPropertyMetadata(double.MinValue));
 
-        private void AddCalibrationPoint(object sender, RoutedEventArgs e)
+
+        /// <summary>
+        /// backing field for property AddCommand, contains
+        /// handlers for "Add Point after Current" command
+        /// </summary>
+        private ICommand _addCommand;
+
+        /// <summary>
+        /// handlers for "Add Point after Current" command
+        /// </summary>
+        public ICommand AddCommand
         {
-            Button button = sender as Button;
-            Calibration.AddPointAfter((CalibrationPointDouble) button.Tag);
+            get
+            {
+                _addCommand = _addCommand ?? new RelayCommand(
+                    parameter =>
+                    {
+                        Calibration.AddPointAfter((CalibrationPointDouble)parameter);
+                    },
+                    parameter => !IsLast(parameter)
+                );
+                return _addCommand;
+            }
         }
 
-        private void RemoveCalibrationPoint(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// backing field for property RemoveCommand, contains
+        /// handlers for "Remove Point" command
+        /// </summary>
+        private ICommand _removeCommand;
+
+        /// <summary>
+        /// handlers for "Remove Point" command
+        /// </summary>
+        public ICommand RemoveCommand
         {
-            Button button = sender as Button;
-            Calibration.Remove((CalibrationPointDouble) button.Tag);
+            get
+            {
+                _removeCommand = _removeCommand ?? new RelayCommand(
+                    parameter =>
+                    {
+                        Calibration.Remove((CalibrationPointDouble) parameter);
+                    },
+                    parameter => (Calibration?.Count ?? 0) > 2 &&
+                                 !IsLast(parameter) &&
+                                 !IsFirst(parameter)
+                );
+                return _removeCommand;
+            }
         }
 
-        private void OutputChange(object sender, TextChangedEventArgs e)
+        private bool IsFirst(object parameter)
+        {
+            return parameter != null && ((CalibrationPointDouble)parameter).Equals(Calibration.First());
+        }
+
+        private bool IsLast(object parameter)
+        {
+            return parameter != null && ((CalibrationPointDouble) parameter).Equals(Calibration.Last());
+        }
+
+        private void OnOutputChange(object sender, TextChangedEventArgs e)
         {
             if (!(sender is HeliosTextBox box))
             {
@@ -93,6 +144,11 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             {
                 box.Text = MaxOutput.ToString(CultureInfo.CurrentCulture);
             }
+        }
+
+        private void OnInputLostFocus(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Calibration?.Sort();
         }
     }
 }
