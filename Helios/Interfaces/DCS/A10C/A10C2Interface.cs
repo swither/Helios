@@ -20,11 +20,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
     using Common;
 
     /// <summary>
-    /// interface for DCS A-10C II including any changes made that are not in DCS A-10C.   Please note the poor naming
-    /// of the Helios interface (A10C instead of A-10C) is intentional to match the existing interface.
+    /// Interface for DCS A-10C II including any changes made that are not in DCS A-10C
     /// </summary>
     [HeliosInterface("Helios.A10C2", "DCS A-10C II", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    class A10C2Interface: A10CInterface
+    public class A10C2Interface : A10CInterface
     {
         #region Devices
         // REVISIT: TISL does not exist in the A-10C II and needs to be removed 

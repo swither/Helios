@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,15 +16,13 @@
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions;
-    using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
+    using Functions;
+    using Common;
 
     /// <summary>
-    /// interface for DCS A-10C. Please note the poor naming
-    /// of the Helios interface (A10C instead of A-10C) is intentional to match existing profiles.
+    /// common base for interfaces for DCS A-10C and DCS A-10C II, containing only functions that are the
+    /// same in both aircraft
     /// </summary>
-    //[HeliosInterface("Helios.A10C", "DCS A10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class A10CInterface : DCSInterface
     {
         #region Devices
@@ -144,13 +143,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         private const string BUTTON_67 = "3067";
         #endregion
 
-        public A10CInterface() : this("DCS A10C", "A-10C",
-            "pack://application:,,,/Helios;component/Interfaces/DCS/A10C/ExportFunctions.lua")
-        {
-            // all code in referenced constructor
-        }
-
-        public A10CInterface(string heliosName, string dcsVehicleName, string exportFunctionsUri)
+        protected A10CInterface(string heliosName, string dcsVehicleName, string exportFunctionsUri)
             : base(heliosName, dcsVehicleName, exportFunctionsUri)
         {
             #region Indexers

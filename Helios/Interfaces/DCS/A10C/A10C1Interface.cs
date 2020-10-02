@@ -20,11 +20,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
     using Common;
 
     /// <summary>
-    /// interface for DCS A-10C I including devices which are unique to the original A-10C.   Please note the poor naming
-    /// of the Helios interface (A10C instead of A-10C) is intentional to match the existing interface.
+    /// Interface for original DCS A-10C, including devices which are unique to the original A-10C.
     /// </summary>
     [HeliosInterface("Helios.A10C", "DCS A-10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    class A10C1Interface: A10CInterface
+    public class A10C1Interface: A10CInterface
     {
         #region devices
         private const string TISL = "57";
@@ -102,7 +101,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
         public A10C1Interface() : base(
             "DCS A-10C", 
             "A-10C",
-            "pack://application:,,,/Helios;component/Interfaces/DCS/A10C/ExportFunctionsA10C.lua")
+            "pack://application:,,,/Helios;component/Interfaces/DCS/A10C/ExportFunctionsA10C1.lua")
         {
             #region TISL Panel
             AddFunction(new Switch(this, TISL, "622", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_1), new SwitchPosition("0.1", "Cage", BUTTON_1), new SwitchPosition("0.2", "Dive", BUTTON_1), new SwitchPosition("0.3", "Level Narrow Nar", BUTTON_1), new SwitchPosition("0.4", "Level Wide", BUTTON_1) }, "TISL", "Mode Select", "%0.1f"));

@@ -1075,7 +1075,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Interfaces\DCS\F14B\ExportFunctions.lua" />
-    <Resource Include="Interfaces\DCS\A10C\ExportFunctions.lua" />
+    <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C1.lua" />
     <Resource Include="Interfaces\DCS\Common\Export.lua" />
     <Resource Include="Interfaces\DCS\BlackShark\ExportFunctions.lua" />
     <None Include="packages.config" />
