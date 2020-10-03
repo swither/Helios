@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using DiffMatchPatch;
+using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Patching
 {
@@ -35,16 +36,22 @@ namespace GadrocsWorkshop.Helios.Patching
         internal bool TryApply(string source, out string patched, out string status, out string expected)
         {
             status = null;
-            object[] results = _googleDiff.patch_apply(_patches, source);
-            patched = (string) results[0];
-            bool[] applied = (bool[]) results[1];
-            diff_match_patch.PatchResult[] resultCodes = (diff_match_patch.PatchResult[]) results[2];
+            if (_patches.Count < 1)
+            {
+                // don't bother running the code below with zero sized arrays
+                ConfigManager.LogManager.LogInfo($"ignoring empty patch for '{Anonymizer.Anonymize(TargetPath)}'");
+                expected = null;
+                patched = source;
+                return true;
+            }
+
+            bool[] applied = GooglePatchApply(source, _patches, out patched, out List<Patch> effectivePatches, out diff_match_patch.PatchResult[] resultCodes);
             for (int i = 0; i < applied.Length; i++)
             {
                 if (!applied[i])
                 {
-                    status = $"failed to apply patch to {TargetPath}: {resultCodes[i]}{Environment.NewLine}The patch could not locate the expected content section (searching near character {_patches[i].start1}):";
-                    IEnumerable<string> expectedText = _patches[i].diffs
+                    status = $"failed to apply patch to {TargetPath}: {resultCodes[i]}{Environment.NewLine}The patch could not locate the expected content section (searching near character {effectivePatches[i].start1}):";
+                    IEnumerable<string> expectedText = effectivePatches[i].diffs
                         .Where(diff => diff.operation != Operation.INSERT)
                         .Select(diff => diff.text);
                     expected = string.Join("", expectedText);
@@ -54,7 +61,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 switch (resultCodes[i])
                 {
                     case diff_match_patch.PatchResult.UNKNOWN:
-                        throw new Exception($"invalid result code from application of {_patches[i]}");
+                        throw new Exception($"invalid result code from application of {effectivePatches[i]}");
                     case diff_match_patch.PatchResult.APPLIED_PERFECT:
                         break;
                     case diff_match_patch.PatchResult.APPLIED_IMPERFECT:
@@ -70,6 +77,36 @@ namespace GadrocsWorkshop.Helios.Patching
             return true;
         }
 
+        private bool[] GooglePatchApply(string source, List<Patch> patches, out string patched, out List<Patch> effectivePatches, out diff_match_patch.PatchResult[] resultCodes)
+        {
+            object[] results = _googleDiff.patch_apply(patches, source, out effectivePatches);
+            if (results.Length != 3)
+            {
+                // something horrible has happened with out third party library call
+                throw new Exception(
+                    $"patch_apply in GoogleDiffMatchPatch returned incorrect number of results: {results.Length}; broken installation");
+            }
+
+            patched = (string) results[0];
+            bool[] applied = (bool[]) results[1];
+            resultCodes = (diff_match_patch.PatchResult[]) results[2];
+            if (applied.Length != resultCodes.Length)
+            {
+                // something horrible has happened with out third party library call
+                throw new Exception(
+                    $"patch_apply in GoogleDiffMatchPatch returned unmatched result arrays; broken installation");
+            }
+
+            if (applied.Length != effectivePatches.Count)
+            {
+                // something horrible has happened with out third party library call
+                throw new Exception(
+                    $"patch_apply in GoogleDiffMatchPatch returned incorrect number of results {applied.Length} for {effectivePatches.Count} patches; broken installation");
+            }
+
+            return applied;
+        }
+
         internal bool TryRevert(string source, out string patched, out string status)
         {
             if (_reversePatches == null)
@@ -80,10 +117,7 @@ namespace GadrocsWorkshop.Helios.Patching
             }
 
             status = null;
-            object[] results = _googleDiff.patch_apply(_reversePatches, source);
-            patched = (string) results[0];
-            bool[] applied = (bool[]) results[1];
-            diff_match_patch.PatchResult[] resultCodes = (diff_match_patch.PatchResult[]) results[2];
+            bool[] applied = GooglePatchApply(source, _reversePatches, out patched, out List<Patch> effectivePatches, out diff_match_patch.PatchResult[] resultCodes);
             for (int i = 0; i < applied.Length; i++)
             {
                 if (!applied[i])
@@ -95,7 +129,7 @@ namespace GadrocsWorkshop.Helios.Patching
                 switch (resultCodes[i])
                 {
                     case diff_match_patch.PatchResult.UNKNOWN:
-                        throw new Exception($"invalid result code from application of reverse patch {_patches[i]}");
+                        throw new Exception($"invalid result code from application of reverse patch {effectivePatches[i]}");
                     case diff_match_patch.PatchResult.APPLIED_PERFECT:
                         break;
                     case diff_match_patch.PatchResult.APPLIED_IMPERFECT:
