@@ -95,6 +95,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             try
             {
+                // delete file in case of hard link, so we get a new, unlinked file
+                File.Delete(path);
+
+                // now write as UTF-8 (no magic tag)
                 using (StreamWriter streamWriter = new StreamWriter(path, false, Utf8WithoutBom))
                 {
                     streamWriter.Write(patched);
