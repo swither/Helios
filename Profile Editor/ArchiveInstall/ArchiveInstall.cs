@@ -522,8 +522,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
             else
             {
                 // install another type of file
-                string relativePath = string.Join(Path.DirectorySeparatorChar.ToString(), pathSegments.Skip(2));
-                unpackedPath = Path.Combine(ConfigManager.DocumentPath, "Images", relativePath);
+                string relativePath = string.Join(Path.DirectorySeparatorChar.ToString(), pathSegments.Skip(1));
+                unpackedPath = Path.Combine(ConfigManager.DocumentPath, relativePath);
                 string unpackedDirectory = Path.GetDirectoryName(unpackedPath);
                 if (null != unpackedDirectory && !Directory.Exists(unpackedDirectory))
                 {
