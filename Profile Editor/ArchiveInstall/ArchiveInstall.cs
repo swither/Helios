@@ -202,10 +202,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
                 return true;
             }
 
-            // gather structured info
-            List<StructuredInfo> info = manifest.Info?.ToList() ?? new List<StructuredInfo>();
+            List<StructuredInfo> info = new List<StructuredInfo>();
             
-            // add other info that has its own properties
+            // add info that has its own properties
             if (manifest.Authors != null)
             {
                 info.AddRange(manifest.Authors.Select(manifestAuthor => new StructuredInfo("Author", manifestAuthor)));
@@ -217,6 +216,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
             if (!string.IsNullOrEmpty(manifest.Version))
             {
                 info.Add(new StructuredInfo("Version", manifest.Version));
+            }
+
+            // gather structured info
+            if (null != manifest.Info)
+            {
+                info.AddRange(manifest.Info);
             }
 
             return callbacks.DangerPrompt(

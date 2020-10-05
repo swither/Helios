@@ -29,5 +29,5 @@
         </Label.Content>
     </Label>
     <TextBlock Grid.Row="0" Grid.Column="1" Padding="0" Margin="10,3,3,3" TextWrapping="Wrap" Style="{StaticResource CollapsingText}" Text="{Binding Value}"/>
-    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Padding="0" Margin="20,3,3,3" TextWrapping="Wrap" Style="{StaticResource CollapsingText}" Text="{Binding Message}"/>
+    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Padding="0" Margin="10,3,3,6" TextWrapping="Wrap" Style="{StaticResource CollapsingText}" Text="{Binding Message}"/>
 </Grid>
