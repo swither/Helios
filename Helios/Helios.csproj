@@ -74,8 +74,10 @@
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IInstallation2.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
+    <Compile Include="StructuredInfo.cs" />
     <Compile Include="Tools\Capabilities\IProfileTool.cs" />
     <Compile Include="Tools\HeliosToolDescriptor.cs" />
     <Compile Include="Tools\MenuItemModel.cs" />
@@ -161,6 +163,12 @@
     </Compile>
     <Compile Include="Windows\Controls\InterfaceStatusItemControl.xaml.cs">
       <DependentUpon>InterfaceStatusItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Controls\StructuredInfoControl.xaml.cs">
+      <DependentUpon>StructuredInfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Controls\StructuredInfoListControl.xaml.cs">
+      <DependentUpon>StructuredInfoListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ViewModel\InstallationResultViewModel.cs" />
     <Compile Include="Windows\ViewModel\ShareInstallationResults.cs" />
@@ -2769,6 +2777,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Controls\InterfaceStatusItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Controls\StructuredInfoControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Controls\StructuredInfoListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

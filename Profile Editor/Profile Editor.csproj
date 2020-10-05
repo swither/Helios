@@ -83,7 +83,6 @@
     <Compile Include="ArchiveInstall\Option.cs" />
     <Compile Include="ArchiveInstall\OverwriteStrategy.cs" />
     <Compile Include="ArchiveInstall\ProfileManifest16.cs" />
-    <Compile Include="ArchiveInstall\ProfileInfoItem.cs" />
     <Compile Include="ArchiveInstall\VersionRequired.cs" />
     <Compile Include="ArchiveInstall\Welcome.xaml.cs">
       <DependentUpon>Welcome.xaml</DependentUpon>

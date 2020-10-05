@@ -33,8 +33,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
         [JsonProperty("License", NullValueHandling = NullValueHandling.Ignore)]
         public string License { get; internal set; }
 
-        [JsonProperty("ProfileInfo", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public IEnumerable<ProfileInfoItem> ProfileInfoItems { get; internal set; }
+        /// <summary>
+        /// optional additional structured information about this archive's contents
+        /// </summary>
+        [JsonProperty("Info", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public IEnumerable<StructuredInfo> Info { get; internal set; }
 
         [JsonProperty("VersionsRequired", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public IEnumerable<VersionRequired> VersionsRequired { get; internal set; }
