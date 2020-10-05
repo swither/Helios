@@ -399,6 +399,10 @@
     <Resource Include="Images\ufc_vrocker_blank_up.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\A-10CII\Panel_HMCS.png" />
+    <Resource Include="Images\A-10CII\Panel_Blank_TISL.png" />
+    <Resource Include="Images\A-10CII\panel_Compass.png" />
+    <Resource Include="Images\A-10CII\crystal_small.png" />
     <Content Include="Templates\Base\A-10C\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

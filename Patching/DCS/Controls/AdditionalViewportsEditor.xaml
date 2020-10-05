@@ -132,7 +132,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="6">These are the files that are patched for you by Helios based on what aircraft you have installed and what DCS Version(s) you have.
                 Disabling one of the items here allows you to take control of that file yourself so that you can modify it freely without Helios complaining about it.
-                However, Helios may not longer function correctly unless you know exactly what you are doing.</TextBlock>
+                However, Helios may no longer function correctly unless you know exactly what you are doing.</TextBlock>
                 <ItemsControl Grid.Row="1" ItemsSource="{Binding Data.Patching.PatchedPaths}"/>
             </Grid>
         </Expander>
