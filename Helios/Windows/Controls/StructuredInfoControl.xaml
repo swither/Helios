@@ -5,6 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <Grid.Resources>
+        <Style x:Key="CollapsingText" TargetType="TextBlock">
+            <Style.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Grid.Resources>
     <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
@@ -16,9 +25,9 @@
     <Label Grid.Row="0" Grid.Column="0" Padding="0" Margin="10,3,3,3">
         <Label.Content>
             <!-- defeat label content processing (underscores etc.) -->
-            <TextBlock Text="{Binding LabelWithColon}"/>
+            <TextBlock Style="{StaticResource CollapsingText}" Text="{Binding LabelWithColon}"/>
         </Label.Content>
     </Label>
-    <TextBlock Grid.Row="0" Grid.Column="1" Padding="0" Margin="10,3,3,3" TextWrapping="Wrap" Text="{Binding Value}"/>
-    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Padding="0" Margin="20,3,3,3" TextWrapping="Wrap" Text="{Binding Message}"/>
+    <TextBlock Grid.Row="0" Grid.Column="1" Padding="0" Margin="10,3,3,3" TextWrapping="Wrap" Style="{StaticResource CollapsingText}" Text="{Binding Value}"/>
+    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Padding="0" Margin="20,3,3,3" TextWrapping="Wrap" Style="{StaticResource CollapsingText}" Text="{Binding Message}"/>
 </Grid>

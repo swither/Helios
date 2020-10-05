@@ -202,10 +202,27 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
                 return true;
             }
 
+            // gather structured info
+            List<StructuredInfo> info = manifest.Info?.ToList() ?? new List<StructuredInfo>();
+            
+            // add other info that has its own properties
+            if (manifest.Authors != null)
+            {
+                info.AddRange(manifest.Authors.Select(manifestAuthor => new StructuredInfo("Author", manifestAuthor)));
+            }
+            if (!string.IsNullOrEmpty(manifest.License))
+            {
+                info.Add(new StructuredInfo("License", manifest.License));
+            }
+            if (!string.IsNullOrEmpty(manifest.Version))
+            {
+                info.Add(new StructuredInfo("Version", manifest.Version));
+            }
+
             return callbacks.DangerPrompt(
                 $"{ArchivePath} Installation", 
                 $"Helios is about to install: {manifest.Description ?? ArchivePath}", 
-                manifest.Info?.ToList(),
+                info,
                 new List<StatusReportItem>()) == InstallationPromptResult.Ok;
         }
 

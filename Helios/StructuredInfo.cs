@@ -24,6 +24,19 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class StructuredInfo
     {
+        // deserialization constructor
+        public StructuredInfo()
+        {
+            // no code
+        }
+
+        // utility constructor
+        public StructuredInfo(string label, string value)
+        {
+            Label = label;
+            Value = value;
+        }
+
         /// <summary>
         /// a label or property name that identifies this piece of information
         ///
