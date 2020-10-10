@@ -21,26 +21,23 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
 {
     public class Option
     {
+        /// <summary>
+        /// primary unstructured description about this option
+        /// </summary>
         [JsonProperty("Description")]
         public string Description { get; set; }
 
-        [JsonProperty("Version", NullValueHandling = NullValueHandling.Ignore)]
-        public string Version { get; internal set; }
+        /// <summary>
+        /// optional additional structured information about this option
+        /// </summary>
+        [JsonProperty("Info", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public IEnumerable<StructuredInfo> Info { get; internal set; }
 
         [JsonProperty("Excludes")]
         public IEnumerable<string> PathExclusions { get; internal set; }
 
         [JsonProperty("VersionsRequired", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public IEnumerable<VersionRequired> VersionsRequired { get; internal set; }
-
-        [JsonProperty("NativeResolution", NullValueHandling = NullValueHandling.Ignore)]
-        public string NativeResolution { get; internal set; }
-
-        [JsonProperty("AspectRatio", NullValueHandling = NullValueHandling.Ignore)]
-        public string AspectRatio { get; internal set; }
-
-        [JsonProperty("Repository", NullValueHandling = NullValueHandling.Ignore)]
-        public string Repository { get; internal set; }
 
         /// <summary>
         /// true if this option may be selected

@@ -25,7 +25,7 @@ using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
 {
-    internal class ArchiveInstall : IInstallation
+    internal class ArchiveInstall : IInstallation2
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -76,7 +76,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
         /// </summary>
         public string MainProfilePath => ProfilePaths.FirstOrDefault();
 
-        public InstallationResult Install(IInstallationCallbacks callbacks)
+        public string ArchivePath => Path.GetFileName(_archivePath);
+
+        public InstallationResult Install(IInstallationCallbacks2 callbacks)
         {
             ProfileManifest16 manifest = null;
             try
@@ -100,7 +102,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
                             if (RunningVersion.IsDevelopmentPrototype ||
                                 ConfigManager.SettingsManager.LoadSetting("ArchiveInstall", "VersionOverride", false))
                             {
-                                InstallationPromptResult result = callbacks.DangerPrompt($"{manifest?.Description ?? "Helios Archive"} Installation",
+                                InstallationPromptResult result = callbacks.DangerPrompt($"{ArchivePath} Installation",
                                     "Installation requirements are not met.  Do you want to install anyway?", problems);
                                 if (result == InstallationPromptResult.Cancel)
                                 {
@@ -109,12 +111,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
                             }
                             else
                             {
-                                callbacks.Failure($"{manifest.Description ?? "Helios Archive"} cannot be installed", "Installation requirements are not met", problems);
+                                callbacks.Failure($"{ArchivePath} cannot be installed", "Installation requirements are not met", problems);
                                 return InstallationResult.Canceled;
                             }
                         }
 
-                        //  process selection and build exclusion list
+                        // present welcome screen, if applicable
+                        if (!ShowWelcome(callbacks, manifest))
+                        {
+                            callbacks.Failure($"{ArchivePath} installation canceled", "Installation canceled by user", new List<StatusReportItem>());
+                            return InstallationResult.Canceled;
+                        }
+
+                        // process selection and build exclusion list
                         foreach (Choice choice in manifest.Choices)
                         {
                             // filter options based on version requirements
@@ -133,7 +142,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
                             // check if we still have viable choices
                             if (!choice.Options.Any())
                             {
-                                callbacks.Failure($"{manifest.Description ?? "Helios Archive"} cannot be installed", "None of the options for a required choice are valid for your installation.", details);
+                                callbacks.Failure($"{ArchivePath} cannot be installed", "None of the options for a required choice are valid for your installation.", details);
                                 return InstallationResult.Fatal;
                             }
 
@@ -170,7 +179,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
                         .Where(item => item != null)
                         .ToList();
 
-                    callbacks.Success($"Installed {manifest?.Description ?? "Helios Archive"}",
+                    callbacks.Success($"Installed {ArchivePath}",
                         $"Files were installed into {Anonymizer.Anonymize(ConfigManager.DocumentPath)}", report);
                 }
 
@@ -178,11 +187,48 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
             }
             catch (Exception ex)
             {
-                callbacks.Failure($"Failed to install {manifest?.Description ?? "Helios Archive"}",
+                callbacks.Failure($"Failed to install {ArchivePath}",
                     $"Attempt to install Helios Profile from '{Anonymizer.Anonymize(_archivePath)}' failed",
                     ReportException(ex));
                 return InstallationResult.Fatal;
             }
+        }
+
+        private bool ShowWelcome(IInstallationCallbacks2 callbacks, ProfileManifest16 manifest)
+        {
+            if (string.IsNullOrEmpty(manifest.Description) && (manifest.Info == null || !manifest.Info.Any()))
+            {
+                // nothing to present, continue
+                return true;
+            }
+
+            List<StructuredInfo> info = new List<StructuredInfo>();
+            
+            // add info that has its own properties
+            if (manifest.Authors != null)
+            {
+                info.AddRange(manifest.Authors.Select(manifestAuthor => new StructuredInfo("Author", manifestAuthor)));
+            }
+            if (!string.IsNullOrEmpty(manifest.License))
+            {
+                info.Add(new StructuredInfo("License", manifest.License));
+            }
+            if (!string.IsNullOrEmpty(manifest.Version))
+            {
+                info.Add(new StructuredInfo("Version", manifest.Version));
+            }
+
+            // gather structured info
+            if (null != manifest.Info)
+            {
+                info.AddRange(manifest.Info);
+            }
+
+            return callbacks.DangerPrompt(
+                $"{ArchivePath} Installation", 
+                $"Helios is about to install: {manifest.Description ?? ArchivePath}", 
+                info,
+                new List<StatusReportItem>()) == InstallationPromptResult.Ok;
         }
 
         private bool CheckVersionRequirements(ProfileManifest16 manifest, out IList<StatusReportItem> problems)

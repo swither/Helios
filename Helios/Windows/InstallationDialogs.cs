@@ -20,7 +20,7 @@ using GadrocsWorkshop.Helios.Windows.ViewModel;
 
 namespace GadrocsWorkshop.Helios.Windows
 {
-    public class InstallationDialogs : IInstallationCallbacks
+    public class InstallationDialogs : IInstallationCallbacks2
     {
         private readonly IInputElement _host;
 
@@ -29,13 +29,14 @@ namespace GadrocsWorkshop.Helios.Windows
             _host = host;
         }
 
-        public InstallationPromptResult DangerPrompt(string title, string message, IList<StatusReportItem> details)
+        public InstallationPromptResult DangerPrompt(string title, string message, IList<StructuredInfo> info, IList<StatusReportItem> details)
         {
             // show a custom dialog to explore the details
             InstallationDangerPromptModel dangerPrompt = new InstallationDangerPromptModel
             {
                 Title = title,
                 Message = message,
+                Info = info,
                 Details = details.Select(item => new InterfaceStatusViewItem(item)).ToList()
             };
             Dialog.ShowModalCommand.Execute(new ShowModalParameter
@@ -46,7 +47,7 @@ namespace GadrocsWorkshop.Helios.Windows
             return dangerPrompt.Result;
         }
 
-        public void Failure(string title, string message, IList<StatusReportItem> details)
+        public void Failure(string title, string message, IList<StructuredInfo> info, IList<StatusReportItem> details)
         {
             // show a custom dialog to explore the details
             Dialog.ShowModalCommand.Execute(new ShowModalParameter
@@ -55,12 +56,13 @@ namespace GadrocsWorkshop.Helios.Windows
                 {
                     Title = title,
                     Message = message,
+                    Info = info,
                     Details = details.Select(item => new InterfaceStatusViewItem(item)).ToList()
                 }
             }, _host);
         }
 
-        public bool Success(string title, string message, IList<StatusReportItem> details)
+        public bool Success(string title, string message, IList<StructuredInfo> info, IList<StatusReportItem> details)
         {
             if (!ConfigManager.SettingsManager.LoadSetting("ProfileEditor", "DetailedViewOnConfigurationSuccess", false)
             )
@@ -76,22 +78,44 @@ namespace GadrocsWorkshop.Helios.Windows
                 {
                     Title = title,
                     Message = message,
+                    Info = info,
                     Details = details.Select(item => new InterfaceStatusViewItem(item)).ToList()
                 }
             }, _host);
             return true;
         }
 
-        public void ImportantMessage(string title, string message)
+        public void ImportantMessage(string title, string message, IList<StructuredInfo> info)
         {
             Dialog.ShowModalCommand.Execute(new ShowModalParameter
             {
                 Content = new InstallationMessageModel
                 {
                     Title = title,
-                    Message = message
+                    Message = message,
+                    Info = info
                 }
             }, _host);
+        }
+
+        public InstallationPromptResult DangerPrompt(string title, string message, IList<StatusReportItem> status)
+        {
+            return DangerPrompt(title, message, null, status);
+        }
+
+        public void Failure(string title, string message, IList<StatusReportItem> status)
+        {
+            Failure(title, message, null, status);
+        }
+
+        public bool Success(string title, string message, IList<StatusReportItem> status)
+        {
+            return Success(title, message, null, status);
+        }
+
+        public void ImportantMessage(string title, string message)
+        { 
+            ImportantMessage(title, message, null);
         }
     }
 }

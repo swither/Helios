@@ -81,11 +81,13 @@
             controls:DialogWindow.DialogInitialHeight="120">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock Text="{Binding Message}" Style="{StaticResource MessageStyle}" />
-            <Grid Grid.Row="2" Style="{StaticResource ButtonBarStyle}">
+            <controls:StructuredInfoListControl Grid.Row="1" ItemsSource="{Binding Info}"/>
+            <Grid Grid.Row="3" Style="{StaticResource ButtonBarStyle}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -100,12 +102,14 @@
             controls:DialogWindow.DialogInitialHeight="140">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock Text="{Binding Message}" Style="{StaticResource MessageStyle}" />
-            <Expander Grid.Row="1" Header="Details" HorizontalAlignment="Stretch" Style="{StaticResource DetailsExpanderStyle}" IsExpanded="False"/>
-            <Grid Grid.Row="2" Style="{StaticResource ButtonBarStyle}">
+            <controls:StructuredInfoListControl Grid.Row="1" ItemsSource="{Binding Info}"/>
+            <Expander Grid.Row="2" Header="Details" HorizontalAlignment="Stretch" Style="{StaticResource DetailsExpanderStyle}" IsExpanded="False"/>
+            <Grid Grid.Row="3" Style="{StaticResource ButtonBarStyle}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -124,6 +128,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -133,9 +138,10 @@
                 <Label VerticalAlignment="Top" Padding="0" Margin="12,14,0,0" FontFamily="Segoe MDL2 Assets" Foreground="Red" Content="&#xE7BA;"/>
                 <TextBlock Grid.Column="1" Text="{Binding Message}" Style="{StaticResource MessageStyle}" />
             </Grid>
-            <Expander Grid.Row="1" Header="Details" HorizontalAlignment="Stretch" Style="{StaticResource DetailsExpanderStyle}" IsExpanded="True"/>
-            <Expander Grid.Row="2" Header="Recommendations" HorizontalAlignment="Stretch" Style="{StaticResource RecommendationsExpanderStyle}" IsExpanded="True"/>
-            <Grid Grid.Row="3" Style="{StaticResource ButtonBarStyle}">
+            <controls:StructuredInfoListControl Grid.Row="1" ItemsSource="{Binding Info}"/>
+            <Expander Grid.Row="2" Header="Details" HorizontalAlignment="Stretch" Style="{StaticResource DetailsExpanderStyle}" IsExpanded="True"/>
+            <Expander Grid.Row="3" Header="Recommendations" HorizontalAlignment="Stretch" Style="{StaticResource RecommendationsExpanderStyle}" IsExpanded="True"/>
+            <Grid Grid.Row="4" Style="{StaticResource ButtonBarStyle}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -151,10 +157,11 @@
             controls:DialogWindow.DialogInitialHeight="480">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid>
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -162,8 +169,9 @@
                 <Label VerticalAlignment="Top" Padding="0" Margin="12,14,0,0" FontFamily="Segoe MDL2 Assets" Foreground="#FFBF00" Content="&#xE7BA;"/>
                 <TextBlock Grid.Column="1" Text="{Binding Message}" Style="{StaticResource MessageStyle}" />
             </Grid>
-            <Expander Grid.Row="1" Header="Details" HorizontalAlignment="Stretch" Style="{StaticResource DetailsExpanderStyle}" IsExpanded="True"/>
-            <Grid Grid.Row="2" Style="{StaticResource ButtonBarStyle}">
+            <controls:StructuredInfoListControl Grid.Row="1" ItemsSource="{Binding Info}"/>
+            <Expander Grid.Row="2" Header="Details" HorizontalAlignment="Stretch" Style="{StaticResource DetailsExpanderStyle}" IsExpanded="True"/>
+            <Grid Grid.Row="3" Style="{StaticResource ButtonBarStyle}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />

@@ -26,6 +26,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
     {
         public string Title { get; set; }
         public string Message { get; set; }
+        public IList<StructuredInfo> Info{ get; set; }
     }
 
     public class InstallationResultViewModel : InstallationMessageViewModelBase
