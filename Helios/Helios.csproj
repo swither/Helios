@@ -665,6 +665,9 @@
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
     <None Include="Assets\Helios_ADI.odg" />
     <None Include="Assets\render.cmd" />
+    <Content Include="Fonts\A-10C_ALQ_213.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Images\A-10\readme.md" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
     <None Include="Interfaces\Falcon\readme.md" />

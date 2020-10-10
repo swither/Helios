@@ -399,10 +399,48 @@
     <Resource Include="Images\ufc_vrocker_blank_up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\A-10CII\Panel_HMCS.png" />
-    <Resource Include="Images\A-10CII\Panel_Blank_TISL.png" />
-    <Resource Include="Images\A-10CII\panel_Compass.png" />
-    <Resource Include="Images\A-10CII\crystal_small.png" />
+    <Resource Include="Images\A-10CII\A-10CII-Right_Blanking_Panels.png" />
+    <Resource Include="Images\A-10CII\A-10CII_HARS_Panel.png" />
+    <Resource Include="Images\A-10CII\A-10CII_HARS_Scale_Panel.png" />
+    <Resource Include="Images\A-10CII\A-10CII_HMCS_Panel.png" />
+    <Resource Include="Images\A-10CII\A-10CII_HMCS_Toggle_Down.png" />
+    <Resource Include="Images\A-10CII\A-10CII_HMCS_Toggle_Middle.png" />
+    <Resource Include="Images\A-10CII\A-10CII_HMCS_Toggle_Up.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Filter_Panel.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_OSB_Pushbutton_Pressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_OSB_Pushbutton_Unpressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Panel.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Pri_Pushbutton_Pressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Pri_Pushbutton_Unpressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Sep_Pushbutton_Pressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Sep_Pushbutton_Unpressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Unk_Pushbutton_Pressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Unk_Pushbutton_Unpressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_Filter_Panel.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_Knob.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_NXT_Pushbutton_Down.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_NXT_Pushbutton_Middle.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_NXT_Pushbutton_Up.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_OSB_Pushbutton_Pressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_OSB_Pushbutton_Unpressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_Panel.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_RTN_Pushbutton_Pressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_RTN_Pushbutton_Unpressed.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_Toggle_Down.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_Toggle_Middle.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_Toggle_Up.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Heading_Knob.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Knob.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Slave_Toggle_Down.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Slave_Toggle_Middle.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Slave_Toggle_Up.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Small_Toggle_Down.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Small_Toggle_Middle.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Small_Toggle_Up.png" />
+    <Resource Include="Images\A-10C\A-10C_Jettison_Toggle_Down.png" />
+    <Resource Include="Images\A-10C\A-10C_Jettison_Toggle_Up.png" />
+    <Resource Include="Images\A-10C\A-10C_UHF_Repeater_Filter_Panel.png" />
+    <Resource Include="Images\A-10C\A-10C_UHF_Repeater_Panel.png" />
     <Content Include="Templates\Base\A-10C\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
