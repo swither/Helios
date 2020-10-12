@@ -39,29 +39,29 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         private RotarySwitchPositionCollection _positions = new RotarySwitchPositionCollection();
 
         public CMSP()
-            : base("Counter Measures System Panel", new Size(666, 404))
+            : base("CMSP", new Size(666, 404))
         {
             AddPanel("Filters", new Point(0,0), new Size(666, 404), _imageLocation + "A-10C_CMSP_Filter_Panel.png", _interfaceDeviceName, "Display Filters");
-            AddButton("OSB", "1", 86, 168, new Size(64, 64), "CMSP Option Select Pushbutton 4");
-            AddButton("OSB", "2", 175, 168, new Size(64, 64), "CMSP Option Select Pushbutton 5");
-            AddButton("OSB", "3", 275, 168, new Size(64, 64), "CMSP Option Select Pushbutton 4");
-            AddButton("OSB", "4", 367, 168, new Size(64, 64), "CMSP Option Select Pushbutton 5");
-            AddButton("RTN", 546, 50, new Size(68,67), "CMSP Return Pushbutton");
+            AddOSBButton("OSB 1", 86, 168, new Size(64, 64), "OSB 1");
+            AddOSBButton("OSB 2", 175, 168, new Size(64, 64), "OSB 2");
+            AddOSBButton("OSB 3", 275, 168, new Size(64, 64), "OSB 3");
+            AddOSBButton("OSB 4", 367, 168, new Size(64, 64), "OSB 4");
+            AddRTNButton("RTN", 546, 50, new Size(68,67), "Return to Previous Rotary Menu");
 
-            AddThreeWayToggle("NXT", "Pushbutton", ThreeWayToggleSwitchType.MomOnMom, 492, 38, new Size(51, 97), "Next switch");
-            AddThreeWayToggle("MWS", 93, 262, new Size(41, 139), "MWS Switch");
-            AddThreeWayToggle("JMR", 186, 262, new Size(41, 139), "JMR Switch");
-            AddThreeWayToggle("RWR", 278, 262, new Size(41, 139), "RWR Switch");
-            AddThreeWayToggle("Disp", 374, 262, new Size(41, 139), "Disp Switch");
-            AddTwoWayToggle("Jettison", 471, 139, new Size(53,128), "Jettison Switch");
-            AddPot("CMSP Brightness", new Point(550,176), new Size(60, 60), "CMSP Brightness");
-            AddTextDisplay("CMSP Text", 66, 33, new Size(404, 103), "CMSP Line 1", "amsx", _CMSPConversion);
+            AddThreeWayToggle("Page Cycle", "Pushbutton", ThreeWayToggleSwitchType.MomOnMom, 492, 38, new Size(51, 97), "Page Cycle");
+            AddThreeWayToggle("MWS Switch", 93, 262, new Size(41, 139), "MWS");
+            AddThreeWayToggle("JMR Switch", 186, 262, new Size(41, 139), "JMR");
+            AddThreeWayToggle("RWR Switch", 278, 262, new Size(41, 139), "RWR");
+            AddThreeWayToggle("Disp Switch", 374, 262, new Size(41, 139), "DISP");
+            AddTwoWayToggle("ECM Pod Jettison", 471, 139, new Size(53,128), "ECM Pod Jettison");
+            AddPot("Brightness", new Point(550,176), new Size(60, 60), "Brightness");
+            AddTextDisplay("Display Line 1", 66, 33, new Size(404, 103), "CMSP Line 1", "amsx", _CMSPConversion);
             _positions.Add(new RotarySwitchPosition(this, 1, "OFF", 225d));
             _positions.Add(new RotarySwitchPosition(this, 2, "STBY", 270d));
             _positions.Add(new RotarySwitchPosition(this, 3, "MAN", 315d));
             _positions.Add(new RotarySwitchPosition(this, 4, "SEMI", 0d));
             _positions.Add(new RotarySwitchPosition(this, 5, "AUTO", 45d));
-            AddRotarySwitch("CMSP Mode", new Point(478, 269), new Size(125, 125), _imageLocation + "A-10C_CMSP_Knob.png", 1, _positions, _interfaceDeviceName, "CMSP Mode", false);
+            AddRotarySwitch("Mode Dial", new Point(478, 269), new Size(125, 125), _imageLocation + "A-10C_CMSP_Knob.png", 1, _positions, _interfaceDeviceName, "Mode Select Dial", false);
         }
 
 
@@ -70,30 +70,35 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             get { return _imageLocation + "A-10C_CMSP_Panel.png"; }
         }
 
-        private void AddButton(string name, double x, double y, Size size, string description) { AddButton(name, "", x, y, size, description, false, false); }
-        private void AddButton(string name, string buttonVariant, double x, double y, Size size, string description) { AddButton(name, buttonVariant, x, y, size, description, false, false); }
-        private void AddButton(string name, string buttonVariant, double x, double y, Size size, string description, bool horizontal, bool altImage)
+        private void AddOSBButton(string name, double x, double y, Size size, string interfaceElement)
         {
-            Helios.Controls.PushButton button = new Helios.Controls.PushButton();
-            button.Top = y;
-            button.Left = x;
-            button.Width = size.Width;
-            button.Height = size.Height;
-            button.ButtonType = PushButtonType.Momentary;
-            button.Image = _imageLocation + "A-10C_CMSP_" + name + "_Pushbutton_Unpressed.png";
-            button.PushedImage = _imageLocation + "A -10C_CMSP_" + name + "_Pushbutton_Pressed.png";
-            button.Text = "";
-            button.Name = "CMSP_" + name + buttonVariant + "_Button";
-
-            Children.Add(button);
-
-            AddTrigger(button.Triggers["pushed"], "CMSP Key " + name + buttonVariant);
-            AddTrigger(button.Triggers["released"], "CMSP Key " + name + buttonVariant);
-
-            AddAction(button.Actions["push"], "CMSP Key " + name + buttonVariant);
-            AddAction(button.Actions["release"], "CMSP Key " + name + buttonVariant);
-            AddAction(button.Actions["set.physical state"], "CMSP Key " + name + buttonVariant);
+            AddButton(
+                name: name,
+                posn: new Point(x, y),
+                size: size,
+                image: _imageLocation + "A-10C_CMSP_OSB_Pushbutton_Unpressed.png",
+                pushedImage: _imageLocation + "A-10C_CMSP_OSB_Pushbutton_Unpressed.png",
+                buttonText: "",
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElement,
+                fromCenter: false
+               );
         }
+        private void AddRTNButton(string name, double x, double y, Size size, string interfaceElement)
+        {
+            AddButton(
+                name: name,
+                posn: new Point(x, y),
+                size: size,
+                image: _imageLocation + "A-10C_CMSP_OSB_Pushbutton_Unpressed.png",
+                pushedImage: _imageLocation + "A-10C_CMSP_OSB_Pushbutton_Unpressed.png",
+                buttonText: "",
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElement,
+                fromCenter: false
+               );
+        }
+
         private void AddPot(string name, Point posn, Size size, string interfaceElementName)
         {
             AddPot(name: name,
@@ -111,6 +116,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 isContinuous: true,
                 fromCenter: false);
         }
+
         private void AddTextDisplay(string name, double x, double y, Size size,
             string interfaceElementName, string testDisp, string conversionDictionary)
         {

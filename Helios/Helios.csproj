@@ -78,6 +78,7 @@
     <Compile Include="Gauges\A-10\CMSP\CMSP.cs" />
     <Compile Include="Gauges\A-10\Common\Blanking Panel Right.cs" />
     <Compile Include="Gauges\A-10\HARS\HARS.cs" />
+    <Compile Include="Gauges\A-10\HARS\HARSSync_1.cs" />
     <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
     <Compile Include="IInstallation2.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />

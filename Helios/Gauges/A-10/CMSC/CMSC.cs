@@ -39,55 +39,61 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
 
 
         public CMSC()
-            : base("Counter Measures System Control", new Size(1476, 520))
+            : base("CMSC", new Size(1476, 520))
         {
             AddPanel("Filters", new Point(0,0), new Size(1476, 520), _imageLocation + "A-10C_CMSC_Filter_Panel.png", _interfaceDeviceName, "Display Filters");
-            AddButton("Pri", 860, 321, new Size(96,96), "CMSC Option Select Pushbutton 1");
-            AddButton("Sep", 1046, 321, new Size(96, 96), "CMSC Option Select Pushbutton 2");
-            AddButton("Unk", 1235, 321, new Size(96, 96), "CMSC Option Select Pushbutton 3");
-            AddButton("OSB", "1", 135, 86, new Size(96, 96), "CMSC Option Select Pushbutton 4");
-            AddButton("OSB", "2", 135, 245, new Size(96, 96), "CMSC Option Select Pushbutton 5");
+            AddRWRButton("Pri Button", 860, 321, new Size(96,96), "Priority Button");
+            AddRWRButton("Sep Button", 1046, 321, new Size(96, 96), "Separate Button");
+            AddRWRButton("Unk Button", 1235, 321, new Size(96, 96), "Unknown Button");
+            AddOSBButton("JMR Option Button", 135, 86, new Size(96, 96), "Cycle JMR Program Button");
+            AddOSBButton("MWS Option Button", 135, 245, new Size(96, 96), "Cycle MWS Program Button");
 
-            AddPot("CMSC Brightness Control", new Point(261, 375), new Size(110, 110), "CMSC Brightness");
-            AddPot("CMSC Audio Control", new Point(503, 375), new Size(110, 110), "CMSC Audio");
+            AddPot("Brightness Control", new Point(261, 375), new Size(110, 110), "Brightness");
+            AddPot("RWR Volume Control", new Point(503, 375), new Size(110, 110), "RWR Volume");
 
-            AddTextDisplay("CMSC MWS Text", 279, 244, new Size(471, 113), "MWS Text", "amsx", _cmscConversion);
-            AddTextDisplay("CMSC JMR Text", 279, 86, new Size(471, 113), "JMR Text", "1234", _cmscConversion);
-            AddTextDisplay("CMSC Chaff Flare Text", 844, 86, new Size(471, 113), "Chaff Flare Text", "1234", _cmscConversion);
+            AddTextDisplay("MWS Text", 279, 244, new Size(471, 113), "MWS Display", "amsx", _cmscConversion);
+            AddTextDisplay("JMR Text", 279, 86, new Size(471, 113), "JMR Display", "1234", _cmscConversion);
+            AddTextDisplay("Chaff Text", 844, 86, new Size(471, 113), "Chaff Display", "1234", _cmscConversion);
+            // AddTextDisplay("Flare Text", 844, 86, new Size(471, 113), "Flare Display", "1234", _cmscConversion);
 
-            AddIndicator("Missile Launch", "Red", 761, 408, new Size(48,48), "Missile Launch Indicator");
-            AddIndicator("RWR 1", "Green", 869, 222, new Size(48, 48), "RWR 1 Indicator");
-            AddIndicator("RWR 2", "Green", 1250, 222, new Size(48, 48), "RWR 2 Indicator");
+            AddIndicator("Indicator: Missile Launch", "Red", 761, 408, new Size(48,48), "Missle Launch Indicator");
+            AddIndicator("Indicator: Priority", "Green", 869, 222, new Size(48, 48), "Priority Status Indicator");
+            AddIndicator("Indicator: Unknown", "Green", 1250, 222, new Size(48, 48), "Unknown Status Indicator");
         }
-
 
         public override string BezelImage
         {
             get { return _imageLocation + "A-10C_CMSC_Panel.png"; }
         }
 
-        private void AddButton(string name, double x, double y, Size size, string description) { AddButton(name, "", x, y, size, description, false, false); }
-        private void AddButton(string name, string buttonVariant, double x, double y, Size size, string description) { AddButton(name, buttonVariant, x, y, size, description, false, false); }
-        private void AddButton(string name, string buttonVariant, double x, double y, Size size, string description, bool horizontal, bool altImage)
+        private void AddOSBButton(string name, double x, double y, Size size, string interfaceElement)
         {
-            Helios.Controls.PushButton button = new Helios.Controls.PushButton();
-            button.Top = y;
-            button.Left = x;
-            button.Width = size.Width;
-            button.Height = size.Height;
-            button.Image = _imageLocation + "A-10C_CMSC_" + name + "_Pushbutton_Unpressed.png";
-            button.PushedImage = _imageLocation + "A -10C_CMSC_" + name + "_Pushbutton_Pressed.png";
-            button.Text = "";
-            button.Name = "CMSC_" + name + buttonVariant + "_Button";
+            AddButton(
+                name: name,
+                posn: new Point(x, y),
+                size: size,
+                image: _imageLocation + "A-10C_CMSC_OSB_Pushbutton_Unpressed.png",
+                pushedImage: _imageLocation + "A-10C_CMSC_OSB_Pushbutton_Unpressed.png",
+                buttonText: "",
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElement,
+                fromCenter: false
+               );
+        }
 
-            Children.Add(button);
-
-            AddTrigger(button.Triggers["pushed"], "CMSC Key " + name + buttonVariant);
-            AddTrigger(button.Triggers["released"], "CMSC Key " + name + buttonVariant);
-
-            AddAction(button.Actions["push"], "CMSC Key " + name + buttonVariant);
-            AddAction(button.Actions["release"], "CMSC Key " + name + buttonVariant);
-            AddAction(button.Actions["set.physical state"], "CMSC Key " + name + buttonVariant);
+        private void AddRWRButton(string name, double x, double y, Size size, string interfaceElement)
+        {
+            AddButton(
+                name: name,
+                posn: new Point(x, y),
+                size: size,
+                image: _imageLocation + "A-10C_CMSC_" + name.Substring(0, 3) + "_Pushbutton_Unpressed.png",
+                pushedImage: _imageLocation + "A -10C_CMSC_" + name.Substring(0, 3) + "_Pushbutton_Pressed.png",
+                buttonText: "",
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElement,
+                fromCenter: false
+               );
         }
         private void AddPot(string name, Point posn, Size size, string interfaceElementName)
         {

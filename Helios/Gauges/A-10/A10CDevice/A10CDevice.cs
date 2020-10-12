@@ -24,7 +24,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             : base(name, size)
         {
             DefaultInterfaceName = "DCS A-10C";
-
+            AlternativeInterfaceName = "DCS A-10C II";
         }
 
         #region Properties

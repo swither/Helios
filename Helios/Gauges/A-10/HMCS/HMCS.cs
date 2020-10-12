@@ -33,16 +33,16 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         // these two sections are the dead space in the HMCS image.
         //private Rect _scaledScreenRectTL = new Rect(0, 0, 398, 116);
         //private Rect _scaledScreenRectB = new Rect(76, 384, 648, 87);
-        private string _interfaceDeviceName = "HMCS";
+        private string _interfaceDeviceName = "Scorpion HMCS";
         private string _imageLocation = "{A-10C}/Images/A-10CII/";
         private RotarySwitchPositionCollection _positions = new RotarySwitchPositionCollection();
 
         public HMCS()
-            : base("Scorpion HMCS Panel", new Size(798, 355))
+            : base("Scorpion HMCS", new Size(798, 355))
         {
-            AddThreeWayToggle("HMCS Power",new Point(640, 110), new Size(62, 131),
+            AddThreeWayToggle("Power",new Point(640, 110), new Size(62, 131),
                 ThreeWayToggleSwitchPosition.Two, ThreeWayToggleSwitchType.OnOnOn,
-                _interfaceDeviceName,"Power Switch",
+                _interfaceDeviceName,"Power",
                 false,
                 _imageLocation + "A-10CII_HMCS_Toggle_Up.png",
                 _imageLocation + "A-10CII_HMCS_Toggle_Middle.png",

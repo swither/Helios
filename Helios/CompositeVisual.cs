@@ -58,6 +58,7 @@ namespace GadrocsWorkshop.Helios
         protected List<DefaultOutputBinding> _defaultOutputBindings;
         protected List<DefaultInputBinding> _defaultInputBindings;
         protected string _defaultInterfaceName; // default name of the interface to be used
+        protected string _alternativeInterfaceName = ""; // this is used when there are variants of an interface
         protected string _defaultBindingName;   // the name of the default binding in the interface
         protected HeliosInterface _defaultInterface;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -68,6 +69,7 @@ namespace GadrocsWorkshop.Helios
             PersistChildren = false;
             Children.CollectionChanged += Children_CollectionChanged;
             _defaultInterfaceName = "";
+            _alternativeInterfaceName = "";
             _defaultBindingName = "";
             _defaultInterface = null;
             _defaultInputBindings = new List<DefaultInputBinding>();
@@ -112,6 +114,18 @@ namespace GadrocsWorkshop.Helios
             set
             {
                 _defaultInterfaceName = value;
+            }
+        }
+        public string AlternativeInterfaceName
+        {
+            get
+            {
+                return _alternativeInterfaceName;
+            }
+
+            set
+            {
+                _alternativeInterfaceName = value;
             }
         }
 
@@ -225,12 +239,24 @@ namespace GadrocsWorkshop.Helios
             {
                 return;
             }
+            string usingInterfaceName = _defaultInterfaceName;
             if (!Profile.Interfaces.ContainsKey(_defaultInterfaceName))
             {
                 Logger.Info("Cannot find default interface " + _defaultInterfaceName);
-                return;
+                if (!Profile.Interfaces.ContainsKey(_alternativeInterfaceName))
+                {
+                    if (_alternativeInterfaceName != "") Logger.Info("Cannot find alternative interface " + _alternativeInterfaceName);
+                    return;
+                }
+                else
+                {
+                    Logger.Info("Using alternative interface " + _alternativeInterfaceName);
+                    _defaultInterface = Profile.Interfaces[_alternativeInterfaceName];
+                }
             }
-            _defaultInterface = Profile.Interfaces[_defaultInterfaceName];
+            else {
+                _defaultInterface = Profile.Interfaces[_defaultInterfaceName];
+            }
 
             // looping for all default input bindings to assign the value
             foreach (DefaultInputBinding defaultBinding in _defaultInputBindings)
