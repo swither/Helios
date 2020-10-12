@@ -399,6 +399,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new FlagValue(this, "372", "CMSC", "Missle Launch Indicator", "Flashes when missile has been launched near your aircraft."));
             AddFunction(new FlagValue(this, "373", "CMSC", "Priority Status Indicator", "Lit when priority display mode is active."));
             AddFunction(new FlagValue(this, "374", "CMSC", "Unknown Status Indicator", "Lit when unknown threat display is active."));
+            AddFunction(new Text(this, "2090", "CMSC", "JMR Display", "Text Value JMR Display"));
+            AddFunction(new Text(this, "2091", "CMSC", "Chaff Display", "Text Value Chaff Display"));
+            AddFunction(new Text(this, "2092", "CMSC", "Flare Display", "Text Value Flare Display"));
+            AddFunction(new Text(this, "2093", "CMSC", "MWS Display", "Text Value MWS Display"));
+
             #endregion
 
             #region Landing Gear Panel
@@ -550,7 +555,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new ScaledNetworkValue(this, "604", oxyPressureScale, "Oxygen System", "Pressure", "Current PSI of the regulator.", "", BindingValueUnits.PoundsPerSquareInch));
             AddFunction(new FlagValue(this, "600", "Oxygen System", "Breathflow", "Flashs with each breath."));
             #endregion
-            
+
+            #region Cockpit Mechanical Controls
             AddFunction(new Switch(this, CPT_MECH, "712", new SwitchPosition[] { new SwitchPosition("1.0", "Open", BUTTON_6), new SwitchPosition("0.5", "Hold", BUTTON_6), new SwitchPosition("0.0", "Close", BUTTON_7, BUTTON_7, "0.5") }, "Mechanical", "Canopy Open/Hold/Close", "%0.2f"));
 			AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, BUTTON_11, "787", "1", "Open", "0", "Closed", "Mechanical", "Extend boarding ladder cover", "%1d"));
 			AddFunction(new PushButton(this, CPT_MECH, BUTTON_12, "788", "Mechanical", "Extend boarding ladder button"));
@@ -559,10 +565,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 			AddFunction(Switch.CreateThreeWaySwitch(this, CPT_MECH, BUTTON_2, "773", "0.0", "UP", "0.5", "MVR", "1.0", "DN", "Mechanical", "Flap Setting", "%0.1f"));
 			AddFunction(new Rocker(this, CPT_MECH, BUTTON_5, BUTTON_4, BUTTON_5, BUTTON_4, "770", "Mechanical", "Seat Height Adjustment", true));
 			AddFunction(new Axis(this, CPT_MECH, BUTTON_13, "777", 0.1d, 0.0d, 1.0d, "Mechanical", "Internal canopy actuator disengage lever"));
+            #endregion
 
-			#region Circuit Breaker Panel
+            #region Circuit Breaker Panel
 
-			AddFunction(new PushButton(this, ELEC_INTERFACE, BUTTON_7, "666", "Circuit Breaker Panel", "AILERON DISC L"));
+            AddFunction(new PushButton(this, ELEC_INTERFACE, BUTTON_7, "666", "Circuit Breaker Panel", "AILERON DISC L"));
 			AddFunction(new PushButton(this, ELEC_INTERFACE, BUTTON_8, "667", "Circuit Breaker Panel", "AILERON DISC R"));
 			AddFunction(new PushButton(this, ELEC_INTERFACE, BUTTON_9, "668", "Circuit Breaker Panel", "SPS & RUDDER AUTH LIMIT"));
 			AddFunction(new PushButton(this, ELEC_INTERFACE, BUTTON_10, "669", "Circuit Breaker Panel", "ELEVATION DISC L"));
@@ -600,11 +607,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 			AddFunction(new PushButton(this, ELEC_INTERFACE, BUTTON_42, "701", "Circuit Breaker Panel", "INVERTER PWR"));
 			AddFunction(new PushButton(this, ELEC_INTERFACE, BUTTON_43, "702", "Circuit Breaker Panel", "INVERTER CONT"));
 			AddFunction(new PushButton(this, ELEC_INTERFACE, BUTTON_44, "703", "Circuit Breaker Panel", "AUX ESS BUS TIE"));
-			#endregion
+            #endregion
 
-
-			#region EW Panel
-			AddFunction(new PushButton(this, CMSP, BUTTON_1, "352", "CMSP", "OSB 1"));
+            #region EW Panel (CMSP)
+            AddFunction(new PushButton(this, CMSP, BUTTON_1, "352", "CMSP", "OSB 1"));
             AddFunction(new PushButton(this, CMSP, BUTTON_2, "353", "CMSP", "OSB 2"));
             AddFunction(new PushButton(this, CMSP, BUTTON_3, "354", "CMSP", "OSB 3"));
             AddFunction(new PushButton(this, CMSP, BUTTON_4, "355", "CMSP", "OSB 4"));
@@ -617,6 +623,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new Switch(this, CMSP, "362", new SwitchPosition[] { new SwitchPosition("0.2", "Menu", BUTTON_15, BUTTON_15, "0.1"), new SwitchPosition("0.1", "On", null), new SwitchPosition("0.0", "Off", BUTTON_14, null, null, "0.1") }, "CMSP", "RWR", "%0.1f"));
             AddFunction(new Switch(this, CMSP, "363", new SwitchPosition[] { new SwitchPosition("0.2", "Menu", BUTTON_17, BUTTON_17, "0.1"), new SwitchPosition("0.1", "On", null), new SwitchPosition("0.0", "Off", BUTTON_16, null, null, "0.1") }, "CMSP", "DISP", "%0.1f"));
             AddFunction(new Switch(this, CMSP, "364", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_18), new SwitchPosition("0.1", "Standby", BUTTON_18), new SwitchPosition("0.2", "Manual", BUTTON_18), new SwitchPosition("0.3", "Semi-Automatic", BUTTON_18), new SwitchPosition("0.4", "Automatic", BUTTON_18) }, "CMSP", "Mode Select Dial", "%0.1f"));
+            AddFunction(new Text(this, "2094", "CMSP", "Line 1 Display", "Text Line 1 Display"));
+            AddFunction(new Text(this, "2095", "CMSP", "Line 2 Display", "Text Line 2 Display"));
+
             #endregion
 
             #region Environment Control Panel

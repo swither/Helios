@@ -399,9 +399,6 @@
     <Resource Include="Images\ufc_vrocker_blank_up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\A-10CII\A-10CII-Right_Blanking_Panels.png" />
-    <Resource Include="Images\A-10CII\A-10CII_HARS_Panel.png" />
-    <Resource Include="Images\A-10CII\A-10CII_HARS_Scale_Panel.png" />
     <Resource Include="Images\A-10CII\A-10CII_HMCS_Panel.png" />
     <Resource Include="Images\A-10CII\A-10CII_HMCS_Toggle_Down.png" />
     <Resource Include="Images\A-10CII\A-10CII_HMCS_Toggle_Middle.png" />
@@ -437,10 +434,18 @@
     <Resource Include="Images\A-10C\A-10C_HARS_Small_Toggle_Down.png" />
     <Resource Include="Images\A-10C\A-10C_HARS_Small_Toggle_Middle.png" />
     <Resource Include="Images\A-10C\A-10C_HARS_Small_Toggle_Up.png" />
-    <Resource Include="Images\A-10C\A-10C_Jettison_Toggle_Down.png" />
-    <Resource Include="Images\A-10C\A-10C_Jettison_Toggle_Up.png" />
     <Resource Include="Images\A-10C\A-10C_UHF_Repeater_Filter_Panel.png" />
     <Resource Include="Images\A-10C\A-10C_UHF_Repeater_Panel.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Indicator_Green.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSC_Indicator_Red.png" />
+    <Resource Include="Images\A-10C\_Transparent.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_Jettison_Toggle_Down.png" />
+    <Resource Include="Images\A-10C\A-10C_CMSP_Jettison_Toggle_Up.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Panel.png" />
+    <Resource Include="Images\A-10C\A-10C_HARS_Scale_Panel.png" />
+    <Resource Include="Images\A-10CII\A-10CII_Right_Blanking_Panels.png" />
+    <Resource Include="Images\A-10CII\A-10CII_TISL_Blank_Panel.png" />
+    <Resource Include="Images\A-10C\crystal_small.png" />
     <Content Include="Templates\Base\A-10C\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

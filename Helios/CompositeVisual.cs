@@ -403,6 +403,15 @@ namespace GadrocsWorkshop.Helios
             string knobImage, int defaultPosition, //Helios.Gauges.M2000C.RSPositions[] positions,
             string interfaceDeviceName, string interfaceElementName, bool fromCenter)
         {
+            RotarySwitchPositionCollection positions = new RotarySwitchPositionCollection();
+            return AddRotarySwitch(name, posn, size,
+              knobImage, defaultPosition, positions,
+              interfaceDeviceName, interfaceElementName, fromCenter);
+        }
+        protected RotarySwitch AddRotarySwitch(string name, Point posn, Size size,
+            string knobImage, int defaultPosition, RotarySwitchPositionCollection positions,
+            string interfaceDeviceName, string interfaceElementName, bool fromCenter)
+        {
             if (fromCenter)
                 posn = FromCenter(posn, size);
             string componentName = GetComponentName(name);
@@ -420,8 +429,11 @@ namespace GadrocsWorkshop.Helios
             };
             _knob.Positions.Clear();
             _knob.DefaultPosition = defaultPosition;
-
-
+            foreach(RotarySwitchPosition swPosn in positions)
+            {
+                _knob.Positions.Add(swPosn);
+            }
+            
             Children.Add(_knob);
 
             foreach (IBindingTrigger trigger in _knob.Triggers)

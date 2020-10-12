@@ -74,6 +74,11 @@
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Gauges\A-10\CMSC\CMSC.cs" />
+    <Compile Include="Gauges\A-10\CMSP\CMSP.cs" />
+    <Compile Include="Gauges\A-10\Common\Blanking Panel Right.cs" />
+    <Compile Include="Gauges\A-10\HARS\HARS.cs" />
+    <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
     <Compile Include="IInstallation2.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
@@ -2845,6 +2850,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Gauges\A-10\Radios\" />
     <Folder Include="Gauges\FA-18C\Controls\" />
     <Folder Include="Interfaces\DCS\F14B\Functions\" />
     <Folder Include="Interfaces\DCS\M2000C\Functions\" />
