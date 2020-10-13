@@ -34,7 +34,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         //private Rect _scaledScreenRectTL = new Rect(0, 0, 398, 116);
         //private Rect _scaledScreenRectB = new Rect(76, 384, 648, 87);
         private string _interfaceDeviceName = "CMSP";
-        private string _CMSPConversion = "";
+        private string _CMSPConversion = "";  // One character (diamond which might need this, but so far not seen this character being sent)
         private string _imageLocation = "{A-10C}/Images/A-10C/";
         private RotarySwitchPositionCollection _positions = new RotarySwitchPositionCollection();
 
@@ -48,14 +48,19 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             AddOSBButton("OSB 4", 367, 168, new Size(64, 64), "OSB 4");
             AddRTNButton("RTN", 546, 50, new Size(68,67), "Return to Previous Rotary Menu");
 
-            AddThreeWayToggle("Page Cycle", "Pushbutton", ThreeWayToggleSwitchType.MomOnMom, 492, 38, new Size(51, 97), "Page Cycle");
+            AddThreeWayToggle("Page Cycle", "Pushbutton", ThreeWayToggleSwitchType.MomOnMom, 492, 38, new Size(51, 97), "Page Cycle","NXT");
             AddThreeWayToggle("MWS Switch", 93, 262, new Size(41, 139), "MWS");
             AddThreeWayToggle("JMR Switch", 186, 262, new Size(41, 139), "JMR");
             AddThreeWayToggle("RWR Switch", 278, 262, new Size(41, 139), "RWR");
             AddThreeWayToggle("Disp Switch", 374, 262, new Size(41, 139), "DISP");
             AddTwoWayToggle("ECM Pod Jettison", 471, 139, new Size(53,128), "ECM Pod Jettison");
             AddPot("Brightness", new Point(550,176), new Size(60, 60), "Brightness");
-            AddTextDisplay("Display Line 1", 66, 33, new Size(404, 103), "CMSP Line 1", "amsx", _CMSPConversion);
+            AddTextDisplay("Display Line 1 Text", 73, 35, new Size(404, 50), "Line 1 Display", "a1B2C3D4m5s6x7O8", _CMSPConversion);
+
+            AddTextDisplay("Display MWS Text", 73, 87, new Size(101, 50), "Line 2 MWS Display", "amsx", _CMSPConversion);
+            AddTextDisplay("Display JMR Text", 174, 87, new Size(101, 50), "Line 2 JMR Display", "amsx", _CMSPConversion);
+            AddTextDisplay("Display RWR Text", 275, 87, new Size(101, 50), "Line 2 RWR Display", "amsx", _CMSPConversion);
+            AddTextDisplay("Display Disp Text", 376, 87, new Size(101, 50), "Line 2 DISP Display", "amsx", _CMSPConversion);
             _positions.Add(new RotarySwitchPosition(this, 1, "OFF", 225d));
             _positions.Add(new RotarySwitchPosition(this, 2, "STBY", 270d));
             _positions.Add(new RotarySwitchPosition(this, 3, "MAN", 315d));
@@ -77,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 posn: new Point(x, y),
                 size: size,
                 image: _imageLocation + "A-10C_CMSP_OSB_Pushbutton_Unpressed.png",
-                pushedImage: _imageLocation + "A-10C_CMSP_OSB_Pushbutton_Unpressed.png",
+                pushedImage: _imageLocation + "A-10C_CMSP_OSB_Pushbutton_Pressed.png",
                 buttonText: "",
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElement,
@@ -90,8 +95,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 name: name,
                 posn: new Point(x, y),
                 size: size,
-                image: _imageLocation + "A-10C_CMSP_OSB_Pushbutton_Unpressed.png",
-                pushedImage: _imageLocation + "A-10C_CMSP_OSB_Pushbutton_Unpressed.png",
+                image: _imageLocation + "A-10C_CMSP_RTN_Pushbutton_Unpressed.png",
+                pushedImage: _imageLocation + "A-10C_CMSP_RTN_Pushbutton_Pressed.png",
                 buttonText: "",
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElement,
@@ -124,8 +129,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 name: name,
                 posn: new Point(x, y),
                 size: size,
-                font: "Helios 10C_ALQ_213",
-                baseFontsize: 32,
+                font: "A-10C_ALQ_213",
+                baseFontsize: 29,
                 horizontalAlignment: TextHorizontalAlignment.Left,
                 verticalAligment: TextVerticalAlignment.Center,
                 testTextDisplay: testDisp,
@@ -145,8 +150,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 size: size,
                 defaultPosition: ToggleSwitchPosition.One,
                 defaultType: ToggleSwitchType.OnOn,
-                positionOneImage: _imageLocation + "A-10C_CMSP_" + name + "_Toggle_Up.png",
-                positionTwoImage: _imageLocation + "A-10C_CMSP_" + name + "_Toggle_Down.png",
+                positionOneImage: _imageLocation + "A-10C_CMSP_Jettison_Toggle_Up.png",
+                positionTwoImage: _imageLocation + "A-10C_CMSP_Jettison_Toggle_Down.png",
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
                 clickType: LinearClickType.Swipe,
@@ -154,15 +159,22 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 );
             toggle.Name = "CMSP_" + name;
         }
-        private void AddThreeWayToggle(string name, double x, double y, Size size, string interfaceElementName) { AddThreeWayToggle(name, "Toggle", ThreeWayToggleSwitchType.MomOnOn, x, y, size, interfaceElementName); }
-        private void AddThreeWayToggle(string name, string switchTypeName, ThreeWayToggleSwitchType toggleType, double x, double y, Size size, string interfaceElementName)
+        private void AddThreeWayToggle(string name, double x, double y, Size size, string interfaceElementName) { AddThreeWayToggle(name, "Toggle", ThreeWayToggleSwitchType.MomOnOn, x, y, size, interfaceElementName,name); }
+        private void AddThreeWayToggle(string name, string switchTypeName, ThreeWayToggleSwitchType toggleType, double x, double y, Size size, string interfaceElementName, string imageName)
         {
             string swName = "";
             if (switchTypeName == "Toggle") {
                 swName = switchTypeName;
             } else
             {
-                swName = name + "_" + switchTypeName;
+                if(imageName != name)
+                {
+                    swName = imageName + "_" + switchTypeName;
+                }
+                else
+                {
+                    swName = name + "_" + switchTypeName;
+                }
             }
             ThreeWayToggleSwitch toggle = AddThreeWayToggle(
                 name: name,

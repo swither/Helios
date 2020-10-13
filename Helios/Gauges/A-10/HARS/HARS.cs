@@ -36,10 +36,6 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         //private Rect _scaledScreenRectB = new Rect(76, 384, 648, 87);
         private string _interfaceDeviceName = "HARS";
         private string _imageLocation = "{A-10C}/Images/A-10C/";
-        private HeliosValue _syncOffset;
-        private GaugeNeedle _needle;
-        private CalibrationPointCollectionDouble _needleCalibration;
-
 
         public HARS_Panel()
             : base("HARS", new Size(798, 306))
@@ -119,7 +115,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 stepValue: 0.1,
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: "Sync Button Rotate",
-                isContinuous: true,
+                isContinuous: false,
                 fromCenter: false);
 
             AddButton(
@@ -151,10 +147,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             _panel.FillBackground = false;
             _panel.DrawBorder = false;
         }
-        void Sync_Execute(object action, HeliosActionEventArgs e)
-        {
-            _needle.Rotation = _needleCalibration.Interpolate(e.Value.DoubleValue);
-        }
+
         public override bool HitTest(Point location)
         {
             //if (_scaledScreenRectTL.Contains(location) || _scaledScreenRectB.Contains(location))

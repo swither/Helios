@@ -399,10 +399,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new FlagValue(this, "372", "CMSC", "Missle Launch Indicator", "Flashes when missile has been launched near your aircraft."));
             AddFunction(new FlagValue(this, "373", "CMSC", "Priority Status Indicator", "Lit when priority display mode is active."));
             AddFunction(new FlagValue(this, "374", "CMSC", "Unknown Status Indicator", "Lit when unknown threat display is active."));
-            AddFunction(new Text(this, "2090", "CMSC", "JMR Display", "Text Value JMR Display"));
-            AddFunction(new Text(this, "2091", "CMSC", "Chaff Display", "Text Value Chaff Display"));
-            AddFunction(new Text(this, "2092", "CMSC", "Flare Display", "Text Value Flare Display"));
-            AddFunction(new Text(this, "2093", "CMSC", "MWS Display", "Text Value MWS Display"));
+            AddFunction(new Text(this, "2405", "CMSC", "MWS Display", "Text Value MWS Display"));
+            AddFunction(new Text(this, "2406", "CMSC", "Chaff Flare Display", "Text Value for Chaff/Flare Display"));
+            AddFunction(new Text(this, "2407", "CMSC", "JMR Display", "Text Value JMR Display"));
 
             #endregion
 
@@ -623,8 +622,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new Switch(this, CMSP, "362", new SwitchPosition[] { new SwitchPosition("0.2", "Menu", BUTTON_15, BUTTON_15, "0.1"), new SwitchPosition("0.1", "On", null), new SwitchPosition("0.0", "Off", BUTTON_14, null, null, "0.1") }, "CMSP", "RWR", "%0.1f"));
             AddFunction(new Switch(this, CMSP, "363", new SwitchPosition[] { new SwitchPosition("0.2", "Menu", BUTTON_17, BUTTON_17, "0.1"), new SwitchPosition("0.1", "On", null), new SwitchPosition("0.0", "Off", BUTTON_16, null, null, "0.1") }, "CMSP", "DISP", "%0.1f"));
             AddFunction(new Switch(this, CMSP, "364", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_18), new SwitchPosition("0.1", "Standby", BUTTON_18), new SwitchPosition("0.2", "Manual", BUTTON_18), new SwitchPosition("0.3", "Semi-Automatic", BUTTON_18), new SwitchPosition("0.4", "Automatic", BUTTON_18) }, "CMSP", "Mode Select Dial", "%0.1f"));
-            AddFunction(new Text(this, "2094", "CMSP", "Line 1 Display", "Text Line 1 Display"));
-            AddFunction(new Text(this, "2095", "CMSP", "Line 2 Display", "Text Line 2 Display"));
+            AddFunction(new Text(this, "2400", "CMSP", "Line 1 Display", "Line 1 Display"));
+            AddFunction(new Text(this, "2401", "CMSP", "Line 2 MWS Display", "Text Line 2 MWS Display"));
+            AddFunction(new Text(this, "2402", "CMSP", "Line 2 JMR Display", "Text Line 2 JMR Display"));
+            AddFunction(new Text(this, "2403", "CMSP", "Line 2 RWR Display", "Text Line 2 RWR Display"));
+            AddFunction(new Text(this, "2404", "CMSP", "Line 2 DISP Display", "Text Line 2 DISP Display"));
 
             #endregion
 

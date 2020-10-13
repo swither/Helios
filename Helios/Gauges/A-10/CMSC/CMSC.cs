@@ -34,7 +34,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         //private Rect _scaledScreenRectTL = new Rect(0, 0, 398, 116);
         //private Rect _scaledScreenRectB = new Rect(76, 384, 648, 87);
         private string _interfaceDeviceName = "CMSC";
-        private string _cmscConversion = "";
+        private string _cmscConversion = "";  // One character (diamond which might need this, but so far not seen this character being sent)
         private string _imageLocation = "{A-10C}/Images/A-10C/";
 
 
@@ -51,10 +51,9 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             AddPot("Brightness Control", new Point(261, 375), new Size(110, 110), "Brightness");
             AddPot("RWR Volume Control", new Point(503, 375), new Size(110, 110), "RWR Volume");
 
-            AddTextDisplay("MWS Text", 279, 244, new Size(471, 113), "MWS Display", "amsx", _cmscConversion);
-            AddTextDisplay("JMR Text", 279, 86, new Size(471, 113), "JMR Display", "1234", _cmscConversion);
-            AddTextDisplay("Chaff Text", 844, 86, new Size(471, 113), "Chaff Display", "1234", _cmscConversion);
-            // AddTextDisplay("Flare Text", 844, 86, new Size(471, 113), "Flare Display", "1234", _cmscConversion);
+            AddTextDisplay("MWS Text", 279, 248, new Size(471, 113), "MWS Display", "amsxIJKL", _cmscConversion);
+            AddTextDisplay("JMR Text", 279, 90, new Size(471, 113), "JMR Display", "ABCDEFGH", _cmscConversion);
+            AddTextDisplay("Chaff Text", 844, 90, new Size(471, 113), "Chaff Flare Display", "12345678", _cmscConversion);
 
             AddIndicator("Indicator: Missile Launch", "Red", 761, 408, new Size(48,48), "Missle Launch Indicator");
             AddIndicator("Indicator: Priority", "Green", 869, 222, new Size(48, 48), "Priority Status Indicator");
@@ -88,7 +87,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 posn: new Point(x, y),
                 size: size,
                 image: _imageLocation + "A-10C_CMSC_" + name.Substring(0, 3) + "_Pushbutton_Unpressed.png",
-                pushedImage: _imageLocation + "A -10C_CMSC_" + name.Substring(0, 3) + "_Pushbutton_Pressed.png",
+                pushedImage: _imageLocation + "A-10C_CMSC_" + name.Substring(0, 3) + "_Pushbutton_Pressed.png",
                 buttonText: "",
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElement,
@@ -119,8 +118,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 name: name,
                 posn: new Point(x, y),
                 size: size,
-                font: "Helios 10C_ALQ_213",
-                baseFontsize: 88,
+                font: "A-10C_ALQ_213",
+                baseFontsize: 76,
                 horizontalAlignment: TextHorizontalAlignment.Left,
                 verticalAligment: TextVerticalAlignment.Center,
                 testTextDisplay: testDisp,

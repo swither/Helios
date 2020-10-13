@@ -9,6 +9,22 @@ function driver.processHighImportance(mainPanelDevice)
 	helios.send(2090, string.format("%0.2f;%0.2f;%0.5f", mainPanelDevice:get_argument_value(90), mainPanelDevice:get_argument_value(91), mainPanelDevice:get_argument_value(92)))
 	-- instruments pure values												  
 	--helios.send(3012, string.format("%0.3f", mainPanelDevice:get_argument_value(12)))
+
+    local li = helios.parseIndication(7) -- CMSP
+    if li then
+        helios.send(2400, string.format("%-16s", helios.ensureString(li.txt_UP)))
+        helios.send(2401, string.format("%-4s", helios.ensureString(li.txt_DOWN1)))
+        helios.send(2402, string.format("%-4s", helios.ensureString(li.txt_DOWN2)))
+        helios.send(2403, string.format("%-4s", helios.ensureString(li.txt_DOWN3)))
+        helios.send(2404, string.format("%-4s", helios.ensureString(li.txt_DOWN4)))
+    end
+    li = helios.parseIndication(8) -- CMSC
+    if li then
+        helios.send(2405, string.format("%-8s", helios.ensureString(li.txt_MWS)))
+        helios.send(2406, string.format("%-8s", helios.ensureString(li.txt_CHAFF_FLARE)))
+        helios.send(2407, string.format("%-8s", helios.ensureString(li.txt_JMR)))
+    end
+
 end
 
 function driver.processLowImportance(mainPanelDevice)
