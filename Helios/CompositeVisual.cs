@@ -668,6 +668,116 @@ namespace GadrocsWorkshop.Helios
             return newSwitch;
         }
 
+        protected ThreeWayToggleSwitch AddThreeWayToggle(string name, Point posn, Size size,
+            ThreeWayToggleSwitchPosition defaultPosition, ThreeWayToggleSwitchType defaultType,
+            string interfaceDeviceName, string interfaceElementName, bool fromCenter,
+            string positionOneImage = "{Helios}/Images/Toggles/round-up.png",
+            string positionTwoImage = "{Helios}/Images/Toggles/round-norm.png",
+            string positionThreeImage = "{Helios}/Images/Toggles/round-down.png",
+            LinearClickType clickType = LinearClickType.Swipe,
+            bool horizontal = false)
+        {
+            string componentName = GetComponentName(name);
+            ThreeWayToggleSwitch toggle = new ThreeWayToggleSwitch
+            {
+                Top = posn.Y,
+                Left = posn.X,
+                Width = size.Width,
+                Height = size.Height,
+                DefaultPosition = defaultPosition,
+                PositionOneImage = positionOneImage,
+                PositionTwoImage = positionTwoImage,
+                PositionThreeImage = positionThreeImage,
+                SwitchType = defaultType,
+                Name = componentName,
+                ClickType = clickType
+            };
+            if (horizontal)
+            {
+                toggle.Rotation = HeliosVisualRotation.CW;
+                toggle.Orientation = ToggleSwitchOrientation.Horizontal;
+            }
+
+            Children.Add(toggle);
+            foreach (IBindingTrigger trigger in toggle.Triggers)
+            {
+                AddTrigger(trigger, componentName);
+            }
+            AddAction(toggle.Actions["set.position"], componentName);
+
+            AddDefaultOutputBinding(
+                childName: componentName,
+                deviceTriggerName: "position.changed",
+                interfaceActionName: interfaceDeviceName + ".set." + interfaceElementName
+            );
+            AddDefaultInputBinding(
+                childName: componentName,
+                interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
+                deviceActionName: "set.position");
+
+            return toggle;
+        }
+
+        protected ThreeWayToggleSwitch AddRocker(string name, Point posn, Size size,
+            ThreeWayToggleSwitchPosition defaultPosition, ThreeWayToggleSwitchType defaultType,
+            string interfaceDeviceName, string interfaceElementName, bool fromCenter,
+            string positionOneImage = "{Helios}/Images/Toggles/round-up.png",
+            string positionTwoImage = "{Helios}/Images/Toggles/round-norm.png",
+            string positionThreeImage = "{Helios}/Images/Toggles/round-down.png",
+            LinearClickType clickType = LinearClickType.Touch,
+            bool horizontal = false)
+        {
+            string componentName = GetComponentName(name);
+            ThreeWayToggleSwitch rocker = new ThreeWayToggleSwitch
+            {
+                Top = posn.Y,
+                Left = posn.X,
+                Width = size.Width,
+                Height = size.Height,
+                DefaultPosition = defaultPosition,
+                PositionOneImage = positionOneImage,
+                PositionTwoImage = positionTwoImage,
+                PositionThreeImage = positionThreeImage,
+                SwitchType = defaultType,
+                Name = componentName,
+                ClickType = clickType
+            };
+            if (horizontal)
+            {
+                rocker.Rotation = HeliosVisualRotation.CW;
+                rocker.Orientation = ToggleSwitchOrientation.Horizontal;
+            }
+
+            Children.Add(rocker);
+            foreach (IBindingTrigger trigger in rocker.Triggers)
+            {
+                AddTrigger(trigger, componentName);
+            }
+            AddAction(rocker.Actions["set.position"], componentName);
+            AddDefaultOutputBinding(
+                childName: componentName,
+                deviceTriggerName: "position one.entered",
+                interfaceActionName: interfaceDeviceName + ".push up." + interfaceElementName
+            );
+            AddDefaultOutputBinding(
+                childName: componentName,
+                deviceTriggerName: "position two.entered",
+                interfaceActionName: interfaceDeviceName + ".release." + interfaceElementName
+            );
+            AddDefaultOutputBinding(
+                childName: componentName,
+                deviceTriggerName: "position three.entered",
+                interfaceActionName: interfaceDeviceName + ".push down." + interfaceElementName
+            );
+
+            AddDefaultInputBinding(
+                childName: componentName,
+                interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
+                deviceActionName: "set.position");
+
+            return rocker;
+        }
+
         protected IndicatorPushButton AddIndicatorPushButton(string name, Point posn, Size size,
             string image, string pushedImage, Color textColor, Color onTextColor, string font,
             string interfaceDeviceName, string interfaceElementName,
@@ -733,56 +843,6 @@ namespace GadrocsWorkshop.Helios
                 interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
                 deviceActionName: "set.indicator");
             return indicator;
-        }
-
-        protected ThreeWayToggleSwitch AddThreeWayToggle(string name, Point posn, Size size,
-            ThreeWayToggleSwitchPosition defaultPosition, ThreeWayToggleSwitchType defaultType,
-            string interfaceDeviceName, string interfaceElementName, bool fromCenter,
-            string positionOneImage = "{Helios}/Images/Toggles/round-up.png",
-            string positionTwoImage = "{Helios}/Images/Toggles/round-norm.png",
-            string positionThreeImage = "{Helios}/Images/Toggles/round-down.png",
-            LinearClickType clickType = LinearClickType.Swipe,
-            bool horizontal = false)
-        {
-            string componentName = GetComponentName(name);
-            ThreeWayToggleSwitch toggle = new ThreeWayToggleSwitch
-            {
-                Top = posn.Y,
-                Left = posn.X,
-                Width = size.Width,
-                Height = size.Height,
-                DefaultPosition = defaultPosition,
-                PositionOneImage = positionOneImage,
-                PositionTwoImage = positionTwoImage,
-                PositionThreeImage = positionThreeImage,
-                SwitchType = defaultType,
-                Name = componentName,
-                ClickType = clickType
-            };
-            if (horizontal)
-            {
-                toggle.Rotation = HeliosVisualRotation.CW;
-                toggle.Orientation = ToggleSwitchOrientation.Horizontal;
-            }
-
-            Children.Add(toggle);
-            foreach (IBindingTrigger trigger in toggle.Triggers)
-            {
-                AddTrigger(trigger, componentName);
-            }
-            AddAction(toggle.Actions["set.position"], componentName);
-
-            AddDefaultOutputBinding(
-                childName: componentName,
-                deviceTriggerName: "position.changed",
-                interfaceActionName: interfaceDeviceName + ".set." + interfaceElementName
-            );
-            AddDefaultInputBinding(
-                childName: componentName,
-                interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
-                deviceActionName: "set.position");
-
-            return toggle;
         }
 
         protected TextDisplay AddTextDisplay(

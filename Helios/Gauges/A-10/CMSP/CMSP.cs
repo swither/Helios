@@ -41,22 +41,29 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         public CMSP()
             : base("CMSP", new Size(666, 404))
         {
-            AddPanel("Filters", new Point(0,0), new Size(666, 404), _imageLocation + "A-10C_CMSP_Filter_Panel.png", _interfaceDeviceName, "Display Filters");
+            //AddPanel("Filters", new Point(0, 0), new Size(666, 404), _imageLocation + "A-10C_CMSP_Filter_Panel.png", _interfaceDeviceName, "Display Filters");
+            AddTextDisplay("Display Line 1 Text", 73, 35, new Size(430, 50), "Line 1 Display", "a1B2C3D4m5s6x7O8", "    =[]]]];   =[]]];  =[]]; =][;");  // These substitutions are for blanks of different widths
+            AddPanel("Bezel", new Point(0, 0), new Size(666, 404), _imageLocation + "A-10C_CMSP_Panel.png", _interfaceDeviceName, "CMSP Bezel");
             AddOSBButton("OSB 1", 86, 168, new Size(64, 64), "OSB 1");
             AddOSBButton("OSB 2", 175, 168, new Size(64, 64), "OSB 2");
             AddOSBButton("OSB 3", 275, 168, new Size(64, 64), "OSB 3");
             AddOSBButton("OSB 4", 367, 168, new Size(64, 64), "OSB 4");
             AddRTNButton("RTN", 546, 50, new Size(68,67), "Return to Previous Rotary Menu");
 
-            AddThreeWayToggle("Page Cycle", "Pushbutton", ThreeWayToggleSwitchType.MomOnMom, 492, 38, new Size(51, 97), "Page Cycle","NXT");
-            AddThreeWayToggle("MWS Switch", 93, 262, new Size(41, 139), "MWS");
-            AddThreeWayToggle("JMR Switch", 186, 262, new Size(41, 139), "JMR");
-            AddThreeWayToggle("RWR Switch", 278, 262, new Size(41, 139), "RWR");
-            AddThreeWayToggle("Disp Switch", 374, 262, new Size(41, 139), "DISP");
+            AddRocker("Page Cycle", new Point(492, 38), new Size(51, 97), 
+                ThreeWayToggleSwitchPosition.Two, ThreeWayToggleSwitchType.MomOnMom, 
+                _interfaceDeviceName, "Page Cycle", false,
+                _imageLocation + "A-10C_CMSP_NXT_Rocker_Up.png",
+                _imageLocation + "A-10C_CMSP_NXT_Rocker_Middle.png",
+                _imageLocation + "A-10C_CMSP_NXT_Rocker_Down.png",
+                LinearClickType.Touch, false);
+
+            AddThreeWayToggle("MWS Switch", new Point(93, 262), new Size(41, 139), "MWS");
+            AddThreeWayToggle("JMR Switch", new Point(186, 262), new Size(41, 139), "JMR");
+            AddThreeWayToggle("RWR Switch", new Point(278, 262), new Size(41, 139), "RWR");
+            AddThreeWayToggle("Disp Switch", new Point(374, 262), new Size(41, 139), "DISP");
             AddTwoWayToggle("ECM Pod Jettison", 471, 139, new Size(53,128), "ECM Pod Jettison");
             AddPot("Brightness", new Point(550,176), new Size(60, 60), "Brightness");
-            AddTextDisplay("Display Line 1 Text", 73, 35, new Size(404, 50), "Line 1 Display", "a1B2C3D4m5s6x7O8", _CMSPConversion);
-
             AddTextDisplay("Display MWS Text", 73, 87, new Size(101, 50), "Line 2 MWS Display", "amsx", _CMSPConversion);
             AddTextDisplay("Display JMR Text", 174, 87, new Size(101, 50), "Line 2 JMR Display", "amsx", _CMSPConversion);
             AddTextDisplay("Display RWR Text", 275, 87, new Size(101, 50), "Line 2 RWR Display", "amsx", _CMSPConversion);
@@ -72,7 +79,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
 
         public override string BezelImage
         {
-            get { return _imageLocation + "A-10C_CMSP_Panel.png"; }
+            get { return _imageLocation + "A-10C_CMSP_Filter_Panel.png"; }
         }
 
         private void AddOSBButton(string name, double x, double y, Size size, string interfaceElement)
@@ -159,38 +166,46 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 );
             toggle.Name = "CMSP_" + name;
         }
-        private void AddThreeWayToggle(string name, double x, double y, Size size, string interfaceElementName) { AddThreeWayToggle(name, "Toggle", ThreeWayToggleSwitchType.MomOnOn, x, y, size, interfaceElementName,name); }
-        private void AddThreeWayToggle(string name, string switchTypeName, ThreeWayToggleSwitchType toggleType, double x, double y, Size size, string interfaceElementName, string imageName)
+
+        private void AddThreeWayToggle(string name, Point posn, Size size,
+            string interfaceElementName)
         {
-            string swName = "";
-            if (switchTypeName == "Toggle") {
-                swName = switchTypeName;
-            } else
+            string componentName = _interfaceDeviceName + "_" + name;
+            ThreeWayToggleSwitch toggle = new ThreeWayToggleSwitch
             {
-                if(imageName != name)
-                {
-                    swName = imageName + "_" + switchTypeName;
-                }
-                else
-                {
-                    swName = name + "_" + switchTypeName;
-                }
+                Top = posn.Y,
+                Left = posn.X,
+                Width = size.Width,
+                Height = size.Height,
+                DefaultPosition = ThreeWayToggleSwitchPosition.Two,
+                PositionOneImage = _imageLocation + "A-10C_CMSP_Toggle_Up.png",
+                PositionTwoImage = _imageLocation + "A-10C_CMSP_Toggle_Middle.png",
+                PositionThreeImage = _imageLocation + "A-10C_CMSP_Toggle_Down.png",
+                SwitchType = ThreeWayToggleSwitchType.MomOnOn,
+                Name = _interfaceDeviceName + "_" + name,
+                ClickType = LinearClickType.Swipe
+            };
+
+            Children.Add(toggle);
+            foreach (IBindingTrigger trigger in toggle.Triggers)
+            {
+                AddTrigger(trigger, componentName);
             }
-            ThreeWayToggleSwitch toggle = AddThreeWayToggle(
-                name: name,
-                posn: new Point(x, y),
-                size: size,
-                defaultPosition: ThreeWayToggleSwitchPosition.Two,
-                defaultType: toggleType,
-                positionOneImage: _imageLocation + "A-10C_CMSP_"+ swName + "_Up.png",
-                positionTwoImage: _imageLocation + "A-10C_CMSP_" + swName + "_Middle.png",
-                positionThreeImage: _imageLocation + "A-10C_CMSP_" + swName + "_Down.png",
-                interfaceDeviceName: _interfaceDeviceName,
-                interfaceElementName: interfaceElementName,
-                fromCenter: false
-                );
-            toggle.Name = "CMSP_" + name;
+            AddAction(toggle.Actions["set.position"], componentName);
+            AddDefaultOutputBinding(
+                childName: componentName,
+                deviceTriggerName: "position.changed",
+                interfaceActionName: _interfaceDeviceName + ".set." + interfaceElementName);
+            AddDefaultOutputBinding(
+                childName: componentName,
+                deviceTriggerName: "position two.entered",
+                interfaceActionName: _interfaceDeviceName + ".release." + interfaceElementName);
+            AddDefaultInputBinding(
+                childName: componentName,
+                interfaceTriggerName: _interfaceDeviceName + "." + interfaceElementName + ".changed",
+                deviceActionName: "set.position");
         }
+
         private void AddPanel(string name, Point posn, Size size, string background, string interfaceDevice, string interfaceElement)
         {
             HeliosPanel _panel = AddPanel(
