@@ -9,8 +9,8 @@ function driver.processHighImportance(mainPanelDevice)
 	helios.send(2090, string.format("%0.2f;%0.2f;%0.5f", mainPanelDevice:get_argument_value(90), mainPanelDevice:get_argument_value(91), mainPanelDevice:get_argument_value(92)))
 	-- instruments pure values												  
 	--helios.send(3012, string.format("%0.3f", mainPanelDevice:get_argument_value(12)))
-
-    local li = helios.parseIndication(7) -- CMSP
+	local li
+    li = helios.parseIndication(7) -- CMSP
     if li then
         helios.send(2400, string.format("%-16s", helios.ensureString(li.txt_UP)))
         helios.send(2401, string.format("%-4s", helios.ensureString(li.txt_DOWN1)))
@@ -35,4 +35,20 @@ function driver.processLowImportance(mainPanelDevice)
 	--helios.send(2251, string.format("%0.1f;%0.1f", mainPanelDevice:get_argument_value(251), mainPanelDevice:get_argument_value(252)))
 	-- TACAN Channel
 	helios.send(2263, string.format("%0.2f;%0.2f;%0.2f", mainPanelDevice:get_argument_value(263), mainPanelDevice:get_argument_value(264), mainPanelDevice:get_argument_value(265)))
+	local li
+    li = helios.parseIndication(4) -- Clock
+    if li then
+        helios.send(2408, string.format("%s%s", helios.ensureString(li.txtC), helios.ensureString(li.txtET)))
+        helios.send(2409, string.format("%-2s;%-2s", helios.ensureString(li.txtHours), helios.ensureString(li.txtMinutes)))
+        helios.send(2410, string.format("%-2s", helios.ensureString(li.txtSeconds)))
+    end
+    li = helios.parseIndication(10) -- Channel Number
+    if li then
+        helios.send(2411, string.format("%-2s", helios.ensureString(li.txtPresetChannel)))
+    end
+    li = helios.parseIndication(12) -- Radio Frequency
+    if li then
+        helios.send(2412, string.format("%-7s", helios.ensureString(li.txtFreqStatus)))
+    end
+	
 end

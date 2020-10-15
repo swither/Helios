@@ -92,11 +92,11 @@ function driver.processHighImportance(mainPanelDevice)
     if li then
         helios.send(2080, string.format("%s", helios.ensureString(li.UFC_MainDummy)))
         helios.send(2081, string.format("%s", helios.ensureString(li.UFC_mask)))
-        helios.send(2082, string.format("%s", helios.ensureString(li.UFC_OptionDisplay1))) -- These may need special treatment for Hornet_UFC_Unified.ttf if there are special chars or numbers in the data
-        helios.send(2083, string.format("%s", helios.ensureString(li.UFC_OptionDisplay2))) -- These may need special treatment for Hornet_UFC_Unified.ttf if there are special chars or numbers in the data
-        helios.send(2084, string.format("%s", helios.ensureString(li.UFC_OptionDisplay3))) -- These may need special treatment for Hornet_UFC_Unified.ttf if there are special chars or numbers in the data
-        helios.send(2085, string.format("%s", helios.ensureString(li.UFC_OptionDisplay4))) -- These may need special treatment for Hornet_UFC_Unified.ttf if there are special chars or numbers in the data
-        helios.send(2086, string.format("%s", helios.ensureString(li.UFC_OptionDisplay5))) -- These may need special treatment for Hornet_UFC_Unified.ttf if there are special chars or numbers in the data
+        helios.send(2082, string.format("%s", helios.ensureString(li.UFC_OptionDisplay1))) 
+        helios.send(2083, string.format("%s", helios.ensureString(li.UFC_OptionDisplay2))) 
+        helios.send(2084, string.format("%s", helios.ensureString(li.UFC_OptionDisplay3))) 
+        helios.send(2085, string.format("%s", helios.ensureString(li.UFC_OptionDisplay4))) 
+        helios.send(2086, string.format("%s", helios.ensureString(li.UFC_OptionDisplay5))) 
         helios.send(2087, string.format("%1s", helios.ensureString(li.UFC_OptionCueing1):gsub(":", "!"))) -- colon char is reserved
         helios.send(2088, string.format("%1s", helios.ensureString(li.UFC_OptionCueing2):gsub(":", "!"))) -- colon char is reserved
         helios.send(2089, string.format("%1s", helios.ensureString(li.UFC_OptionCueing3):gsub(":", "!"))) -- colon char is reserved

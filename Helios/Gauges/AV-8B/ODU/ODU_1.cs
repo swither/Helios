@@ -95,7 +95,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 name: name,
                 posn: new Point(x, y),
                 size: size,
-                font: "Hornet UFC",
+                font: "Helios Virtual Cockpit F/A-18C_Hornet-Up_Front_Controller",
                 baseFontsize: baseFontsize,
                 horizontalAlignment: hTextAlign,
                 verticalAligment: TextVerticalAlignment.Center,

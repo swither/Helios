@@ -136,7 +136,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 name: name,
                 posn: new Point(x, y),
                 size: size,
-                font: "A-10C_ALQ_213",
+                font: "Helios Virtual Cockpit A-10C_ALQ_213",
                 baseFontsize: 29,
                 horizontalAlignment: TextHorizontalAlignment.Left,
                 verticalAligment: TextVerticalAlignment.Center,

@@ -74,6 +74,7 @@
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Gauges\A-10\DigitalClock\DigitalClock.cs" />
     <Compile Include="Gauges\A-10\CMSC\CMSC.cs" />
     <Compile Include="Gauges\A-10\CMSP\CMSP.cs" />
     <Compile Include="Gauges\A-10\Common\Blanking Panel Right.cs" />

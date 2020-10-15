@@ -30,7 +30,6 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
         private double _GlassReflectionOpacity;
         public const double GLASS_REFLECTION_OPACITY_DEFAULT = 1.0;
 
-        //private String _font = "Hornet IFEI Mono"; // "Segment7 Standard"; //"Seven Segment";
         private Color _textColor = Color.FromArgb(0xff,220, 220, 220);
         private string _imageLocation = "{Helios}/Gauges/FA-18C/IFEI/";
         private GaugeNeedle _gnleftnoz;

@@ -277,14 +277,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new ScaledNetworkValue(this, "35", 360d, "HSI", "Bearing 2", "Direction of currently selected steer point relative to current heading.", "Direction is realtive to current heading.", BindingValueUnits.Degrees));
             AddFunction(new RotaryEncoder(this, HSI, BUTTON_1, "45", 0.05d, "HSI", "Heading Set Knob"));
             AddFunction(new RotaryEncoder(this, HSI, BUTTON_2, "44", 0.05d, "HSI", "Course Set Knob"));
-			AddFunction(new PushButton(this, DIGITAL_CLOCK, BUTTON_1, "68", "Digital Clock", "Toggle Clock and Elapsed Time Modes"));
-			AddFunction(new PushButton(this, DIGITAL_CLOCK, BUTTON_2, "69", "Digital Clock", "Start, Stop and Reset Elapsed Timer"));
+            #endregion
+
+            #region Digital Clock
+            AddFunction(new PushButton(this, DIGITAL_CLOCK, BUTTON_1, "68", "Digital Clock", "Toggle Clock and Elapsed Time Modes"));
+            AddFunction(new PushButton(this, DIGITAL_CLOCK, BUTTON_2, "69", "Digital Clock", "Start, Stop and Reset Elapsed Timer"));
+            AddFunction(new Text(this, "2409", "DIGITAL CLOCK", "Time Hours:Mins", "Text Value of Hours and Minutes"));
+            AddFunction(new Text(this, "2410", "DIGITAL CLOCK", "Time Seconds", "Text Value of Seconds"));
+            AddFunction(new Text(this, "2408", "DIGITAL CLOCK", "Clock Function Type", "Text for Clock or Elapsed Time"));
+            #endregion
 
 
-			#endregion
 
-			#region Front Panel Indicators
-			AddFunction(new PushButton(this, IFFCC, BUTTON_1, "101", "IFFCC", "Ext Stores Jettison"));
+            #region Front Panel Indicators
+            AddFunction(new PushButton(this, IFFCC, BUTTON_1, "101", "IFFCC", "Ext Stores Jettison"));
             AddFunction(new FlagValue(this, "662", "Misc", "Gun Ready Indicator", "Indicator is lit when the GAU-8 cannon is armed and ready to fire."));
             AddFunction(new FlagValue(this, "663", "Misc", "Nose Wheel Steering Indicator", "Indicator is lit when nose wheel steering is engaged."));
             AddFunction(new FlagValue(this, "665", "Misc", "Canopy Unlocked Indicator", "Indicator is lit when canopy is open."));

@@ -30,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
         private Rect _scaledScreenRect = SCREEN_RECT;
         private string _interfaceDeviceName = "IFEI";
 
-        private String _font = "Hornet IFEI Mono"; // "Segment7 Standard"; //"Seven Segment";
+        private String _font = "Helios Virtual Cockpit F/A-18C Hornet IFEI"; // "Segment7 Standard"; //"Seven Segment";
         private Color _textColor = Color.FromArgb(0xff,220, 220, 220);
         private Color _backGroundColor = Color.FromArgb(100, 100, 20, 50);
         private string _imageLocation = "{Helios}/Gauges/FA-18C/IFEI/";

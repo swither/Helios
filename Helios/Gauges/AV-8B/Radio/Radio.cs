@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         private Rect _scaledScreenRect2 = SCREEN_RECT_2;
         private static readonly Rect SCREEN_RECT_3 = new Rect(637, 196, 83, 702);
         private Rect _scaledScreenRect3 = SCREEN_RECT_3;
-        private String _font = "Hornet IFEI Mono";
+        private String _font = "Helios Virtual Cockpit F/A-18C Hornet IFEI";
         private string _interfaceDeviceName = "V/UHF Radio";
         private string _imageLocation = "{AV-8B}/Images/";
 

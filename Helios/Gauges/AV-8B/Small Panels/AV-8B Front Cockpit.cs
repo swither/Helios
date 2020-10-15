@@ -30,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
         private Rect _scaledScreenRect = SCREEN_RECT;
         private string _interfaceDeviceName = "AV-8B Cockpit";
-        private string _font = "Hornet IFEI Mono"; // "Segment7 Standard"; //"Seven Segment";
+        private string _font = "Helios Virtual Cockpit F/A-18C Hornet IFEI"; // "Segment7 Standard"; //"Seven Segment";
         private Color _textColor = Color.FromArgb(0xff, 220, 220, 220);
         private Color _backGroundColor = Color.FromArgb(100, 100, 20, 50);
         private string _imageLocation = "{AV-8B}/Images/";
