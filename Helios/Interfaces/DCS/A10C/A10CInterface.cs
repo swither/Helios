@@ -852,6 +852,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new PushButton(this, UHF_RADIO, BUTTON_13, "173", "UHF Radio", "Status Button"));
             AddFunction(new PushButton(this, UHF_RADIO, BUTTON_15, "735", "UHF Radio", "Load Button"));
             AddFunction(Switch.CreateToggleSwitch(this, UHF_RADIO, BUTTON_14, "734", "0", "Down", "1", "Up", "UHF Radio", "Cover", "%1d"));
+            AddFunction(new Text(this, "2412", "UHF_RADIO", "Frequency Display", "UHF Frequency Display"));
+            AddFunction(new Text(this, "2411", "UHF_RADIO", "Channel Display", "UHF Channel Display"));
+
             #endregion
 
             #region VHF FM Radio

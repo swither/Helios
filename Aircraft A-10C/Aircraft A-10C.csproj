@@ -452,6 +452,12 @@
     <Resource Include="Images\A-10C\Pilot_Reflection_25.png" />
     <Resource Include="Images\A-10C\A-10C_Digital_Clock_Knob_Pressed.png" />
     <Resource Include="Images\A-10C\A-10C_Digital_Clock_Knob_Unpressed.png" />
+    <Resource Include="Images\A-10CII\A-10C_Left_Blank_Panel.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Lid_Closed.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Lid_Opened.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Displays.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Filters.png" />
     <Content Include="Templates\Base\A-10C\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
