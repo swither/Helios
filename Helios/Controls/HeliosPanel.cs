@@ -41,10 +41,12 @@ namespace GadrocsWorkshop.Helios.Controls
         private string _topRigthCornerImageFile = "{Helios}/Images/Panels/panel-top-right.png";
         private string _bottomLeftCornerImageFile = "{Helios}/Images/Panels/panel-bottom-left.png";
         private string _bottomRightCornerImageFile = "{Helios}/Images/Panels/panel-bottom-right.png";
+        private double _opacity; 
 
         public HeliosPanel()
             : base("Panel", new Size(300,300))
         {
+            _opacity = 1.0;
         }
 
         #region Properties
@@ -287,6 +289,23 @@ namespace GadrocsWorkshop.Helios.Controls
                     _bottomRightCornerImageFile = value;
                     OnPropertyChanged("BottomRightCornerImage", oldValue, value, true);
                     Refresh();
+                }
+            }
+        }
+        public double Opacity
+        {
+            get
+            {
+                return _opacity;
+            }
+            set
+            {
+                double oldValue = _opacity;
+                _opacity = value;
+                if (value != oldValue)
+                {
+                    OnPropertyChanged("Opacity", oldValue, value, true);
+                    OnDisplayUpdate();
                 }
             }
         }

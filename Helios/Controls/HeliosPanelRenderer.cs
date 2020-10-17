@@ -45,6 +45,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
                 // TODO Subtract top/left/bottom/right border sizes from background draw (this will allow for rounded transparent corners).
 
+                if (panel.Opacity >= 1.0) drawingContext.PushOpacity(1.0); else drawingContext.PushOpacity(panel.Opacity);                
+
                 if (panel.FillBackground)
                 {
                     drawingContext.DrawRectangle(new SolidColorBrush(panel.BackgroundColor), null, new Rect(0, 0, width, height));
@@ -98,6 +100,7 @@ namespace GadrocsWorkshop.Helios.Controls
                         drawingContext.DrawImage(_bottomLeftCornerImage, new Rect(0, height - _bottomLeftCornerImage.Height, _bottomLeftCornerImage.Width, _bottomLeftCornerImage.Height));
                     }
                 }
+                drawingContext.Pop();       // pop the opacity
             }
         }
 

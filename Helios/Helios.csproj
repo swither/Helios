@@ -75,6 +75,7 @@
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Gauges\A-10\DigitalClock\DigitalClock.cs" />
+    <Compile Include="Gauges\A-10\DigitalClock\DigitalClockGauge.cs" />
     <Compile Include="Gauges\A-10\CMSC\CMSC.cs" />
     <Compile Include="Gauges\A-10\CMSP\CMSP.cs" />
     <Compile Include="Gauges\A-10\Common\Blanking Panel Right.cs" />
@@ -184,6 +185,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Resource Include="Gauges\A-10\DigitalClock\ClockSecondHand.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

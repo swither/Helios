@@ -141,6 +141,39 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
+        /// Renders this control using opacity in the given drawing context.
+        /// </summary>
+        /// <param name="drawingContext">Context on which to draw this control.</param>
+        protected virtual void OnRender(DrawingContext drawingContext, double opacity)
+        {
+            if (opacity >= 1.0)
+            {
+                OnRender(drawingContext);
+                return;
+            }
+            drawingContext.PushOpacity(opacity);
+            OnRender(drawingContext);
+            drawingContext.Pop();
+        }
+
+        /// <summary>
+        /// Renders this control using scale and opacity in the given drawing context.
+        /// </summary>
+        /// <param name="drawingContext">Context on which to draw this control.</param>
+        protected virtual void OnRender(DrawingContext drawingContext, double scaleX, double scaleY, double opacity)
+        {
+            if (opacity >= 1.0)
+            {
+                OnRender(drawingContext, scaleX, scaleY);
+                return;
+            }
+            drawingContext.PushOpacity(opacity);
+            OnRender(drawingContext, scaleX, scaleY);
+            drawingContext.Pop();
+        }
+
+
+        /// <summary>
         /// Refreshes and reloads all resources needed to display this visual.
         /// </summary>
         public void Refresh()

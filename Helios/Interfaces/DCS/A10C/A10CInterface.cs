@@ -282,9 +282,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             #region Digital Clock
             AddFunction(new PushButton(this, DIGITAL_CLOCK, BUTTON_1, "68", "Digital Clock", "Toggle Clock and Elapsed Time Modes"));
             AddFunction(new PushButton(this, DIGITAL_CLOCK, BUTTON_2, "69", "Digital Clock", "Start, Stop and Reset Elapsed Timer"));
-            AddFunction(new Text(this, "2409", "DIGITAL CLOCK", "Time Hours:Mins", "Text Value of Hours and Minutes"));
-            AddFunction(new Text(this, "2410", "DIGITAL CLOCK", "Time Seconds", "Text Value of Seconds"));
-            AddFunction(new Text(this, "2408", "DIGITAL CLOCK", "Clock Function Type", "Text for Clock or Elapsed Time"));
+            AddFunction(new Text(this, "2409", "Digital Clock", "Time Hours:Mins", "Text Value of Hours and Minutes"));
+            AddFunction(new Text(this, "2410", "Digital Clock", "Time Seconds", "Text Value of Seconds"));
+            AddFunction(new Text(this, "2408", "Digital Clock", "Clock Function Type", "Text for Clock or Elapsed Time"));
             #endregion
 
 

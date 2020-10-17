@@ -13,49 +13,169 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Gauges.A_10.IAS
-{
+namespace GadrocsWorkshop.Helios.Gauges.A10C
+{ 
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.Controls;
     using System;
     using System.Windows;
     using System.Windows.Media;
+    using System.Xml;
+    using System.Globalization;
 
-    [HeliosControl("Helios.A10.DigitalClock", "Digital Clock", "A-10 Gauges", typeof(GaugeRenderer))]
-    public class DigitalClock : BaseGauge
+    [HeliosControl("Helios.A10.DigitalClock", "Digital Clock", "A-10C Gauges", typeof(A10CDeviceRenderer))]
+    class DigitalClock : A10CDevice
     {
-        private HeliosValue _indicatedAirSpeed;
-        private GaugeNeedle _needle;
-        private GaugeNeedle _tape;
-        private CalibrationPointCollectionDouble _needleCalibration;
-        private CalibrationPointCollectionDouble _tapeCalibration;
+
+        public const double GLASS_REFLECTION_OPACITY_DEFAULT = 0.50;
+        private string _imageLocation = "{A-10C}/Images/A-10C/";
+        private string _interfaceDeviceName = "Digital Clock";
+        private DigitalClockGauge _digitalClockGauge;
+        private HeliosPanel _glass;
+        private String _font = "Helios Virtual Cockpit A-10C_Digital_Clock";
+        private Color _textColor = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
+        private Color _backGroundColor = Color.FromArgb(0, 100, 20, 50);
+
 
         public DigitalClock()
-            : base("DigitalClock", new Size(364, 376))
+            : base("DigitalClock", new Size(414d, 405d))
         {
-            _tapeCalibration = new CalibrationPointCollectionDouble(0d, 0d, 100d, 346d);
-            _tape = new GaugeNeedle("{Helios}/Gauges/A-10/IAS/ias_tape.xaml", new Point(137, 93), new Size(436, 42), new Point(0, 0));
-            _tape.HorizontalOffset = -_tapeCalibration.Interpolate(0d);
-            _tape.Clip = new RectangleGeometry(new Rect(137d, 93d, 90d, 42d));
-            Components.Add(_tape);
+            AddClock("DigitalClockGauge", 0, 0, new Size(414, 405), _interfaceDeviceName, "Time Seconds");
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/A-10/IAS/ias_faceplate.xaml", new Rect(32d, 38d, 300, 300)));
-
-            _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 550d, 340d);
-            _needleCalibration.Add(new CalibrationPointDouble(100d, 34d));
-            _needle = new GaugeNeedle("{Helios}/Gauges/A-10/Common/needle_a.xaml", new Point(182d, 188d), new Size(22, 165), new Point(11, 130), 10d);
-            Components.Add(_needle);
-
-            Components.Add(new GaugeImage("{Helios}/Gauges/A-10/Common/gauge_bezel.png", new Rect(0d, 0d, 364d, 376d)));
-
-            _indicatedAirSpeed = new HeliosValue(this, new BindingValue(0d), "", "indicated airspeed", "Current indicated airspeed of the aircraft.", "(0 - 550)", BindingValueUnits.Knots);
-            _indicatedAirSpeed.Execute += new HeliosActionHandler(IndicatedAirSpeed_Execute);
-            Actions.Add(_indicatedAirSpeed);
+            AddTextDisplay("HHMM", 100, 159, new Size(180, 80), 54d,
+                "00:00", _interfaceDeviceName, "Time Hours:Mins");
+            AddTextDisplay("SS", 160, 210, new Size(77, 80), 54d,
+                "88", _interfaceDeviceName, "Time Seconds");
+            AddTextDisplay("Clock Function", 180, 258, new Size(53, 60), 36d,
+                "CET", _interfaceDeviceName, "Clock Function Type");
+            _glass = AddPanel("Digital Clock Reflection", new Point(0,0), new Size(414d, 405d), _imageLocation + "Pilot_Reflection_25.png","relection");
+            _glass.Opacity = GLASS_REFLECTION_OPACITY_DEFAULT;
+            HeliosPanel bezel = AddPanel("Digital Clock Bezel", new Point(0, 0), new Size(414d, 405d), _imageLocation + "A-10C_Digital_Clock_Bezel.png", "bezel");
+            AddButton("Select", 65, 340, new Size(60, 60), "Toggle Clock and Elapsed Time Modes");
+            AddButton("Control", 291, 340, new Size(60, 60), "Start, Stop and Reset Elapsed Timer");
         }
 
-        void IndicatedAirSpeed_Execute(object action, HeliosActionEventArgs e)
+        #region Properties
+        #endregion 
+
+
+
+        protected override void OnProfileChanged(HeliosProfile oldProfile)
         {
-            _needle.Rotation = _needleCalibration.Interpolate(e.Value.DoubleValue);
-            _tape.HorizontalOffset = -_tapeCalibration.Interpolate(e.Value.DoubleValue % 100d);
+            base.OnProfileChanged(oldProfile);
+        }
+
+        public override string BezelImage
+        {
+            get { return _imageLocation + "_Transparent.png"; }
+        }
+
+        private void AddClock(string name, double x, double y, Size size, string interfaceDevice, string interfaceElement)
+        {
+            string componentName = interfaceDevice + "_" + name;
+            _digitalClockGauge = new DigitalClockGauge
+            {
+                Top = y,
+                Left = x,
+                Height = size.Height,
+                Width = size.Width,
+                Name = componentName
+            };
+
+            Children.Add(_digitalClockGauge);
+            foreach (IBindingTrigger trigger in _digitalClockGauge.Triggers)
+            {
+                AddTrigger(trigger, trigger.Name);
+            }
+            foreach (IBindingAction action in _digitalClockGauge.Actions)
+            {
+                if (action.Name != "hidden")
+                {
+                    AddAction(action, action.Name);
+                    // Create the automatic input bindings for the Digital Clock_Gauge sub component
+                    AddDefaultInputBinding(
+                        childName: "Digital Clock_DigitalClockGauge",
+                        //childName: "Gauges",
+                        deviceActionName: "set.DigitalClock_Second Hand",
+                        interfaceTriggerName: "Digital Clock.Time Seconds.changed"
+                        );
+                }
+            }
+        }
+
+        private void AddTextDisplay(string name, double x, double y, Size size, double baseFontsize, string testDisp,
+            string interfaceDevice, string interfaceElement)
+        {
+            TextDisplay display = AddTextDisplay(
+                name: name,
+                posn: new Point(x, y),
+                size: size,
+                font: _font,
+                baseFontsize: baseFontsize,
+                horizontalAlignment: TextHorizontalAlignment.Right,
+                verticalAligment: TextVerticalAlignment.Top,
+                testTextDisplay: testDisp,
+                textColor: _textColor,
+                backgroundColor: _backGroundColor,
+                useBackground: false,
+                interfaceDeviceName: interfaceDevice,
+                interfaceElementName: interfaceElement,
+                textDisplayDictionary: ".=:"
+                );
+            //display.TextFormat.FontWeight = FontWeights.Heavy;
+        }
+
+        private void AddButton(string name, double x, double y, Size size, string interfaceElement)
+        {
+            Point pos = new Point(x, y);
+            AddButton(
+                name: name,
+                posn: pos,
+                size: size,
+                image: _imageLocation + "A-10C_Digital_Clock_Knob_Unpressed.png",
+                pushedImage: _imageLocation + "A-10C_Digital_Clock_Knob_Pressed.png",
+                buttonText: "",
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElement,
+                fromCenter: false
+                );
+        }
+        private HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceElement)
+        {
+            HeliosPanel _panel = AddPanel(
+                name: name,
+                posn: posn,
+                size: size,
+                background: background
+                );
+            _panel.FillBackground = false;
+            _panel.DrawBorder = false;
+            return _panel;
+        }
+
+        public override bool HitTest(Point location)
+        {
+            //if (_scaledScreenRect.Contains(location))
+            //{
+                return false;
+            //}
+
+            //return true;
+        }
+
+        public override void MouseDown(Point location)
+        {
+            // No-Op
+        }
+
+        public override void MouseDrag(Point location)
+        {
+            // No-Op
+        }
+
+        public override void MouseUp(Point location)
+        {
+            // No-Op
         }
 
     }

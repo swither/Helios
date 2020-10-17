@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         public HeliosVisual Visual
         {
             get { return (HeliosVisual)GetValue(VisualProperty); }
-            set { SetValue(VisualProperty, value); }
+            set {SetValue(VisualProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Profile.  This enables animation, styling, binding, etc...

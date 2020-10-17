@@ -446,6 +446,12 @@
     <Resource Include="Images\A-10CII\A-10CII_Right_Blanking_Panels.png" />
     <Resource Include="Images\A-10CII\A-10CII_TISL_Blank_Panel.png" />
     <Resource Include="Images\A-10C\crystal_small.png" />
+    <Resource Include="Images\A-10C\A-10C_Digital_Clock_Bezel.png" />
+    <Resource Include="Images\A-10C\A-10C_Digital_Clock_Dial.png" />
+    <Resource Include="Images\A-10C\A-10C_Digital_Clock_Dial_Numbers.png" />
+    <Resource Include="Images\A-10C\Pilot_Reflection_25.png" />
+    <Resource Include="Images\A-10C\A-10C_Digital_Clock_Knob_Pressed.png" />
+    <Resource Include="Images\A-10C\A-10C_Digital_Clock_Knob_Unpressed.png" />
     <Content Include="Templates\Base\A-10C\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

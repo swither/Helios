@@ -39,7 +39,7 @@ function driver.processLowImportance(mainPanelDevice)
     li = helios.parseIndication(4) -- Clock
     if li then
         helios.send(2408, string.format("%s%s", helios.ensureString(li.txtC), helios.ensureString(li.txtET)))
-        helios.send(2409, string.format("%-2s;%-2s", helios.ensureString(li.txtHours), helios.ensureString(li.txtMinutes)))
+        helios.send(2409, string.format("%-2s.%-2s", helios.ensureString(li.txtHours), helios.ensureString(li.txtMinutes)))
         helios.send(2410, string.format("%-2s", helios.ensureString(li.txtSeconds)))
     end
     li = helios.parseIndication(10) -- Channel Number

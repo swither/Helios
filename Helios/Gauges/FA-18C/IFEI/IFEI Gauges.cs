@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
         private Rect _scaledScreenRect = SCREEN_RECT;
-        private double _GlassReflectionOpacity;
+        private double _glassReflectionOpacity;
         public const double GLASS_REFLECTION_OPACITY_DEFAULT = 1.0;
 
         private Color _textColor = Color.FromArgb(0xff,220, 220, 220);
@@ -295,17 +295,17 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
         {
             get
             {
-                return _GlassReflectionOpacity;
+                return _glassReflectionOpacity;
             }
             set
             {
                 // clamp to max opacity
                 double newValue = Math.Min(value, 1.0);
 
-                double oldValue = _GlassReflectionOpacity;
+                double oldValue = _glassReflectionOpacity;
                 if (newValue != oldValue)
                 {
-                    _GlassReflectionOpacity = newValue;
+                    _glassReflectionOpacity = newValue;
 
                     // don't render at all if fully transparent
                     _gireflection.IsHidden = (newValue == 0.0);
