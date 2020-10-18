@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,29 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-using System.Collections.Generic;
-using System.Linq;
-using NLog;
-
 namespace GadrocsWorkshop.Helios.Controls
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
+    using ComponentModel;
+    using Capabilities;
     using System;
+    using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Globalization;
+    using System.Linq;
     using System.Text;
     using System.Windows;
     using System.Windows.Media;
     using System.Xml;
 
     [HeliosControl("Helios.Base.RotarySwitch", "Rotary - Knob 2", "Rotary Switches", typeof(RotarySwitchRenderer))]
-    public class RotarySwitch : RotaryKnob
+    public class RotarySwitch : RotaryKnob, IRotarySwitch
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-        private readonly RotarySwitchPositionCollection _positions = new RotarySwitchPositionCollection();
         private int _currentPosition;
         private int _defaultPosition;
 
@@ -49,12 +46,10 @@ namespace GadrocsWorkshop.Helios.Controls
         private double _maxLabelWidth = 40d;
         private double _maxLabelHeight = 0d;
         private Color _labelColor = Colors.White;
-        private readonly TextFormat _labelFormat = new TextFormat();
-
         private readonly HeliosValue _positionValue;
         private readonly HeliosValue _positionNameValue;
 
-        private bool _isContinuous = false;
+        private bool _isContinuous;
 
         // array ordered by position angles in degrees, so we can dereference to their position index
         private PositionIndexEntry[] _positionIndex;
@@ -66,10 +61,10 @@ namespace GadrocsWorkshop.Helios.Controls
             : base("Rotary Switch", new Size(100, 100))
         {
             KnobImage = "{Helios}/Images/Knobs/knob2.png";
-            _labelFormat.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(LabelFormat_PropertyChanged);
+            LabelFormat.PropertyChanged += LabelFormat_PropertyChanged;
 
             _positionValue = new HeliosValue(this, new BindingValue(1), "", "position", "Current position of the switch.", "", BindingValueUnits.Numeric);
-            _positionValue.Execute += new HeliosActionHandler(SetPositionAction_Execute);
+            _positionValue.Execute += SetPositionAction_Execute;
             Values.Add(_positionValue);
             Actions.Add(_positionValue);
             Triggers.Add(_positionValue);
@@ -78,10 +73,10 @@ namespace GadrocsWorkshop.Helios.Controls
             Values.Add(_positionNameValue);
             Triggers.Add(_positionNameValue);
 
-            _positions.CollectionChanged += new NotifyCollectionChangedEventHandler(Positions_CollectionChanged);
-            _positions.PositionChanged += new EventHandler<RotarySwitchPositionChangeArgs>(PositionChanged);
-            _positions.Add(new RotarySwitchPosition(this, 1, "0", 0d));
-            _positions.Add(new RotarySwitchPosition(this, 2, "1", 90d));
+            Positions.CollectionChanged += Positions_CollectionChanged;
+            Positions.PositionChanged += PositionChanged;
+            Positions.Add(new RotarySwitchPosition(this, 1, "0", 0d));
+            Positions.Add(new RotarySwitchPosition(this, 2, "1", 90d));
             _currentPosition = 1;
             _defaultPosition = 1;
         }
@@ -90,191 +85,177 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public bool DrawLabels
         {
-            get
-            {
-                return _drawLabels;
-            }
+            get => _drawLabels;
             set
             {
-                if (!_drawLabels.Equals(value))
+                if (_drawLabels.Equals(value))
                 {
-                    bool oldValue = _drawLabels;
-                    _drawLabels = value;
-                    OnPropertyChanged("DrawLabels", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                bool oldValue = _drawLabels;
+                _drawLabels = value;
+                OnPropertyChanged("DrawLabels", oldValue, value, true);
+                Refresh();
             }
         }
 
         public double LabelDistance
         {
-            get
-            {
-                return _labelDistance;
-            }
+            get => _labelDistance;
             set
             {
-                if (!_labelDistance.Equals(value))
+                if (_labelDistance.Equals(value))
                 {
-                    double oldValue = _labelDistance;
-                    _labelDistance = value;
-                    OnPropertyChanged("LabelDistance", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                double oldValue = _labelDistance;
+                _labelDistance = value;
+                OnPropertyChanged("LabelDistance", oldValue, value, true);
+                Refresh();
             }
         }
 
         public double MaxLabelHeight
         {
-            get
-            {
-                return _maxLabelHeight;
-            }
+            get => _maxLabelHeight;
             set
             {
-                if (!_maxLabelHeight.Equals(value))
+                if (_maxLabelHeight.Equals(value))
                 {
-                    double oldValue = _maxLabelHeight;
-                    _maxLabelHeight = value;
-                    OnPropertyChanged("MaxLabelHeight", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                double oldValue = _maxLabelHeight;
+                _maxLabelHeight = value;
+                OnPropertyChanged("MaxLabelHeight", oldValue, value, true);
+                Refresh();
             }
         }
 
         public double MaxLabelWidth
         {
-            get
-            {
-                return _maxLabelWidth;
-            }
+            get => _maxLabelWidth;
             set
             {
-                if (!_maxLabelWidth.Equals(value))
+                if (_maxLabelWidth.Equals(value))
                 {
-                    double oldValue = _maxLabelWidth;
-                    _maxLabelWidth = value;
-                    OnPropertyChanged("MaxLabelWidth", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                double oldValue = _maxLabelWidth;
+                _maxLabelWidth = value;
+                OnPropertyChanged("MaxLabelWidth", oldValue, value, true);
+                Refresh();
             }
         }
 
         public bool DrawLines
         {
-            get
-            {
-                return _drawLines;
-            }
+            get => _drawLines;
             set
             {
-                if (!_drawLines.Equals(value))
+                if (_drawLines.Equals(value))
                 {
-                    bool oldValue = _drawLines;
-                    _drawLines = value;
-                    OnPropertyChanged("DrawLines", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                bool oldValue = _drawLines;
+                _drawLines = value;
+                OnPropertyChanged("DrawLines", oldValue, value, true);
+                Refresh();
             }
         }
 
         public bool IsContinuous
         {
-            get
-            {
-                return _isContinuous;
-            }
+            get => _isContinuous;
             set
             {
-                if (!_isContinuous.Equals(value))
+                if (_isContinuous.Equals(value))
                 {
-                    bool oldValue = _isContinuous;
-                    _isContinuous = value;
-                    OnPropertyChanged("IsContinuous", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                bool oldValue = _isContinuous;
+                _isContinuous = value;
+                OnPropertyChanged("IsContinuous", oldValue, value, true);
+                Refresh();
             }
         }
 
         public Color LabelColor
         {
-            get
-            {
-                return _labelColor;
-            }
+            get => _labelColor;
             set
             {
-                if (!_labelColor.Equals(value))
+                if (_labelColor.Equals(value))
                 {
-                    Color oldValue = _labelColor;
-                    _labelColor = value;
-                    OnPropertyChanged("LabelColor", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                Color oldValue = _labelColor;
+                _labelColor = value;
+                OnPropertyChanged("LabelColor", oldValue, value, true);
+                Refresh();
             }
         }
 
-        public TextFormat LabelFormat => _labelFormat;
+        public TextFormat LabelFormat { get; } = new TextFormat();
 
         public double LineThickness
         {
-            get
-            {
-                return _lineThickness;
-            }
+            get => _lineThickness;
             set
             {
-                if (!_lineThickness.Equals(value))
+                if (_lineThickness.Equals(value))
                 {
-                    double oldValue = _lineThickness;
-                    _lineThickness = value;
-                    OnPropertyChanged("LineThickness", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                double oldValue = _lineThickness;
+                _lineThickness = value;
+                OnPropertyChanged("LineThickness", oldValue, value, true);
+                Refresh();
             }
         }
 
         public Color LineColor
         {
-            get
-            {
-                return _lineColor;
-            }
+            get => _lineColor;
             set
             {
-                if (!_lineColor.Equals(value))
+                if (_lineColor.Equals(value))
                 {
-                    Color oldValue = _lineColor;
-                    _lineColor = value;
-                    OnPropertyChanged("LineColor", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                Color oldValue = _lineColor;
+                _lineColor = value;
+                OnPropertyChanged("LineColor", oldValue, value, true);
+                Refresh();
             }
         }
 
         public double LineLength
         {
-            get
-            {
-                return _lineLength;
-            }
+            get => _lineLength;
             set
             {
-                if (!_lineLength.Equals(value))
+                if (_lineLength.Equals(value))
                 {
-                    double oldValue = _lineLength;
-                    _lineLength = value;
-                    OnPropertyChanged("LineLength", oldValue, value, true);
-                    Refresh();
+                    return;
                 }
+
+                double oldValue = _lineLength;
+                _lineLength = value;
+                OnPropertyChanged("LineLength", oldValue, value, true);
+                Refresh();
             }
         }
 
-
-        public RotarySwitchPositionCollection Positions
-        {
-            get { return _positions; }
-        }
+        public RotarySwitchPositionCollection Positions { get; } = new RotarySwitchPositionCollection();
 
         public int CurrentPosition
         {
@@ -312,18 +293,17 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public int DefaultPosition
         {
-            get
-            {
-                return _defaultPosition;
-            }
+            get => _defaultPosition;
             set
             {
-                if (!_defaultPosition.Equals(value) && value > 0 && value <= Positions.Count)
+                if (_defaultPosition.Equals(value) || value <= 0 || value > Positions.Count)
                 {
-                    int oldValue = _defaultPosition;
-                    _defaultPosition = value;
-                    OnPropertyChanged("DefaultPosition", oldValue, value, true);
+                    return;
                 }
+
+                int oldValue = _defaultPosition;
+                _defaultPosition = value;
+                OnPropertyChanged("DefaultPosition", oldValue, value, true);
             }
         }
 
@@ -514,7 +494,15 @@ namespace GadrocsWorkshop.Helios.Controls
         }
 
         #endregion
-        
+
+        #region IRotarySwitch
+
+        public int MinPosition => 1;
+
+        public int MaxPosition => Positions.Count;
+
+        #endregion
+
         #region IRotaryControl
 
         // the angle that our control would be at if we were allowed to stop everywhere, required so that IRotaryControl will operate correctly

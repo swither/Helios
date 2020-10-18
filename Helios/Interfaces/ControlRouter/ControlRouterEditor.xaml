@@ -19,10 +19,14 @@
                 <Border Margin="9,9,9,0" Padding="3,3,3,12" CornerRadius="6" BorderThickness="0" Background="White">
                     <Grid Margin="6">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="120" />
+                            <ColumnDefinition Width="Auto" MinWidth="170" />
+                            <ColumnDefinition Width="Auto" MinWidth="80" />
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="Auto" MinWidth="170" />
                             <ColumnDefinition Width="Auto" MinWidth="80" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -42,6 +46,14 @@
                                VerticalAlignment="Center" Content="Value Increase per Revolution" />
                         <controls:HeliosTextBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center"
                                                 Padding="3,0" Text="{Binding ValuePerRevolution}" />
+                        <Label Grid.Row="1" Grid.Column="3" Style="{StaticResource InterfaceEditorLabel}"
+                               VerticalAlignment="Center" Content="Move Switches by Detents" />
+                        <CheckBox Grid.Row="1" Grid.Column="4" VerticalAlignment="Center"
+                                                Padding="0" Margin="0,5,0,0" IsChecked="{Binding PulseSwitches}">
+                            <CheckBox.ToolTip>
+                                If checked, then switches with well-defined detents will be moved by one detent for each pulse, instead of trying to match rotation angles.
+                            </CheckBox.ToolTip>
+                        </CheckBox>
                     </Grid>
                 </Border>
             </DataTemplate>

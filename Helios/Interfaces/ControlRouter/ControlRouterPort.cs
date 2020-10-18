@@ -45,6 +45,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         private double _pulsesPerRevolution = 72d;
 
         /// <summary>
+        /// backing field for property PulseSwitches, contains
+        /// true if switches should be incremented by one position per pulse instead of by converting to angles
+        /// </summary>
+        private bool _pulseSwitches;
+
+        /// <summary>
         /// backing field for property ValuePerRevolution, contains
         /// the value that would be sent by the input control if it was positioned at an angle of 360 degrees
         /// </summary>
@@ -60,7 +66,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         private ControlRouter _parent;
 
         // control interfaces we know how to use, set to non-null if bound to a control that supports them
-        private IRotaryControl _boundRotary;
+        private IRotaryControl _boundRotaryControl;
+        private IPulsedControl _boundPulsedControl;
 
         // our target control's angle at time of binding
         private double _initialAngle;
@@ -73,6 +80,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
 
         // just for debugging purposes, track how many pulses we have delivered
         private double _pulsesSinceBinding;
+
+        /// <summary>
+        /// true if the port is currently sending pulses directly to the target instead of converting to angles
+        /// </summary>
+        private bool _pulseMode;
 
         /// <summary>
         /// if the bound control moves more than this many degrees without us doing it,
@@ -126,7 +138,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         /// </summary>
         internal void Reset()
         {
-            _boundRotary = null;
+            _boundRotaryControl = null;
             _pulsesSinceBinding = 0d;
             _lastAngle = 0d;
             _initialInputValue = null;
@@ -140,62 +152,81 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
                 // this represents no change
                 return;
             }
+
             Logger.Debug("received change by pulses of {Pulses}", e.Value.DoubleValue);
-            if (_boundRotary != null)
+
+            if (_boundRotaryControl != null && !_pulseMode)
             {
+                // convert to angle
                 _pulsesSinceBinding += e.Value.DoubleValue;
-                _boundRotary.ControlAngle += e.Value.DoubleValue * 360d / _pulsesPerRevolution;
-                Logger.Debug("after {Pulses} pulses, set control to {Angle}", _pulsesSinceBinding, _boundRotary.ControlAngle);
+                _boundRotaryControl.ControlAngle += e.Value.DoubleValue * 360d / _pulsesPerRevolution;
+                Logger.Debug("after {Pulses} pulses, set control to {Angle}", _pulsesSinceBinding, _boundRotaryControl.ControlAngle);
+                return;
             }
+
+            if (_boundPulsedControl != null)
+            {
+                // deliver raw pulses
+                _boundPulsedControl.Pulse((int)e.Value.DoubleValue);
+                return;
+            }
+
+            Logger.Debug("no supported interfaces on target control; cannot deliver pulses");
         }
 
         private void _changeAngle_Execute(object action, HeliosActionEventArgs e)
         {
             ClaimControlIfAvailable(e);
             Logger.Debug("received relative angle {Degrees}", e.Value.DoubleValue);
-            if (_boundRotary != null)
+            if (_boundRotaryControl == null)
             {
-                // if the control has moved from where we last set it, then re-bind
-                // don't just track deltas in this control because then error accumulates
-                double currentAngle = _boundRotary.ControlAngle;
-                if (Math.Abs(_lastAngle - currentAngle) > CONTROL_ANGLE_TOLERANCE)
-                {
-                    // some other control has moved it, rebind at this position
-                    Logger.Debug("another control has moved our bound control, we will now process relative angle changes to this new starting position {Degrees}", currentAngle);
-                    _initialAngle = currentAngle;
-                    _lastAngle = _initialAngle;
-                    _initialInputValue = e.Value;
-                    return;
-                }
-
-                // division by zero guard and unreasonable scale guard
-                double scale = ValuePerRevolution;
-                if (Math.Abs(scale) < 0.00001)
-                {
-                    scale = 0.00001;
-                }
-
-                // calculate absolute position to avoid accumulating error
-                _boundRotary.ControlAngle = _initialAngle +
-                                            (e.Value.DoubleValue -
-                                             (ValueAtZeroDegrees + _initialInputValue.DoubleValue)) * 360.0 / scale;
-
-                // read back what it actually did
-                _lastAngle = _boundRotary.ControlAngle;
+                return;
             }
+
+            // if the control has moved from where we last set it, then re-bind
+            // don't just track deltas in this control because then error accumulates
+            double currentAngle = _boundRotaryControl.ControlAngle;
+            if (Math.Abs(_lastAngle - currentAngle) > CONTROL_ANGLE_TOLERANCE)
+            {
+                // some other control has moved it, rebind at this position
+                Logger.Debug("another control has moved our bound control, we will now process relative angle changes to this new starting position {Degrees}", currentAngle);
+                _initialAngle = currentAngle;
+                _lastAngle = _initialAngle;
+                _initialInputValue = e.Value;
+                return;
+            }
+
+            // division by zero guard and unreasonable scale guard
+            double scale = ValuePerRevolution;
+            if (Math.Abs(scale) < 0.00001)
+            {
+                scale = 0.00001;
+            }
+
+            // calculate absolute position to avoid accumulating error
+            _boundRotaryControl.ControlAngle = _initialAngle +
+                                               (e.Value.DoubleValue -
+                                                (ValueAtZeroDegrees + _initialInputValue.DoubleValue)) * 360.0 / scale;
+
+            // read back what it actually did
+            _lastAngle = _boundRotaryControl.ControlAngle;
         }
 
         private void ClaimControlIfAvailable(HeliosActionEventArgs e)
         {
-            if (_parent.TryClaimControl(out HeliosVisual visual))
+            if (!_parent.TryClaimControl(out HeliosVisual visual))
             {
-                _boundRotary = visual as IRotaryControl;
-                _controlName.SetValue(new BindingValue(visual.Name), false);
-                _initialAngle = _boundRotary?.ControlAngle ?? 0d;
-                _lastAngle = _initialAngle;
-                _initialInputValue = e.Value;
-                _pulsesSinceBinding = 0d;
+                return;
             }
+
+            _boundRotaryControl = visual as IRotaryControl;
+            _boundPulsedControl = visual as IPulsedControl;
+            _controlName.SetValue(new BindingValue(visual.Name), false);
+            _initialAngle = _boundRotaryControl?.ControlAngle ?? 0d;
+            _lastAngle = _initialAngle;
+            _initialInputValue = e.Value;
+            _pulsesSinceBinding = 0d;
+            _pulseMode = PulseSwitches && (visual is IRotarySwitch);
         }
 
         /// <summary>
@@ -217,6 +248,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
                 double oldValue = _pulsesPerRevolution;
                 _pulsesPerRevolution = value;
                 OnPropertyChanged("PulsesPerRevolution", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// true if switches should be incremented by one position per pulse instead of by converting to angles
+        /// </summary>
+        [DefaultValue(false)]
+        [XmlElement("PulseSwitches")]
+        public bool PulseSwitches
+        {
+            get => _pulseSwitches;
+            set
+            {
+                if (_pulseSwitches == value)
+                {
+                    return;
+                }
+                bool oldValue = _pulseSwitches;
+                _pulseSwitches = value;
+                OnPropertyChanged("PulseSwitches", oldValue, value, true);
             }
         }
 
