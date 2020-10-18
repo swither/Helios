@@ -74,8 +74,9 @@
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Gauges\A-10\ARC164\UHFFreqChanDisplay.cs" />
-    <Compile Include="Gauges\A-10\ARC164\UHFFreqRepeater.cs" />
+    <Compile Include="Gauges\A-10\Radios\UHFFreqDisplay.cs" />
+    <Compile Include="Gauges\A-10\Radios\UHFChanDisplay.cs" />
+    <Compile Include="Gauges\A-10\Radios\UHFFreqRepeater.cs" />
     <Compile Include="Gauges\A-10\DigitalClock\DigitalClock.cs" />
     <Compile Include="Gauges\A-10\DigitalClock\DigitalClockGauge.cs" />
     <Compile Include="Gauges\A-10\CMSC\CMSC.cs" />
@@ -2858,7 +2859,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Gauges\A-10\Radios\" />
     <Folder Include="Gauges\FA-18C\Controls\" />
     <Folder Include="Interfaces\DCS\F14B\Functions\" />
     <Folder Include="Interfaces\DCS\M2000C\Functions\" />

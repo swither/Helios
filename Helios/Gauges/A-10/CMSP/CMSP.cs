@@ -73,7 +73,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             _positions.Add(new RotarySwitchPosition(this, 3, "MAN", 315d));
             _positions.Add(new RotarySwitchPosition(this, 4, "SEMI", 0d));
             _positions.Add(new RotarySwitchPosition(this, 5, "AUTO", 45d));
-            AddRotarySwitch("Mode Dial", new Point(478, 269), new Size(125, 125), _imageLocation + "A-10C_CMSP_Knob.png", 1, _positions, _interfaceDeviceName, "Mode Select Dial", false);
+            RotarySwitch knob = AddRotarySwitch("Mode Dial", new Point(478, 269), new Size(125, 125), _imageLocation + "A-10C_CMSP_Knob.png", 1, _positions, _interfaceDeviceName, "Mode Select Dial", false);
+            knob.IsContinuous = false;
         }
 
 

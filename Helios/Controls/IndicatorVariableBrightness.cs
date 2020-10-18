@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows.Media;
     using System.Xml;
     
-    [HeliosControl("Helios.Base.Indicator.VariableBrightness", "Caution Indicator with Brightness", "_Hidden Parts", typeof(IndicatorRenderer))]
+    [HeliosControl("Helios.Base.Indicator.VariableBrightness", "Caution Indicator with Brightness", "Indicators", typeof(IndicatorRenderer), true)]
     public class IndicatorVariableBrightness : Indicator
     {
 

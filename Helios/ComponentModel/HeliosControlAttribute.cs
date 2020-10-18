@@ -24,18 +24,21 @@ namespace GadrocsWorkshop.Helios.ComponentModel
         private readonly string _name;
         private readonly string _category;
         private readonly Type _renderer;
+        private readonly bool _uiHidden;
 
         private string _requires;
 
         /// <param name="typeIdentifier">Unique identifier used for persistance.
         /// Recommended to follow conventions of {module name}.{interface}.  Helios.* is reserved for helios's included controls.</param>
         /// <param name="name">Display name used for this control in the ui.</param>
-        public HeliosControlAttribute(string typeIdentifier, string name, string category, Type renderer)
+        /// <param name="uiHidden">True if control is not to be seen in the ui.</param>
+        public HeliosControlAttribute(string typeIdentifier, string name, string category, Type renderer, bool uiHidden = false)
         {
+            _uiHidden = uiHidden;
             _typeIdentifier = typeIdentifier;
-            _name = name;
             _category = category;
             _renderer = renderer;
+            _name = name;
         }
 
         public string TypeIdentifier
@@ -67,6 +70,14 @@ namespace GadrocsWorkshop.Helios.ComponentModel
             get
             {
                 return _renderer;
+            }
+        }
+
+        public bool UIHidden
+        {
+            get
+            {
+                return _uiHidden;
             }
         }
 

@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.HARS
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.A10C.HARSSync", "HARS Sync II", "_Hidden Parts", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10C.HARSSync", "HARS Sync II", "A-10C Gauges", typeof(GaugeRenderer), true)]
     public class HARSSync : BaseGauge
     {
         private HeliosValue _syncOffset;

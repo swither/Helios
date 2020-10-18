@@ -69,5 +69,13 @@ namespace GadrocsWorkshop.Helios
                 return _controlAttribute.Renderer;
             }
         }
+
+        public bool UIHidden
+        {
+            get
+            {
+                return _controlAttribute.UIHidden;
+            }
+        }
     }
 }

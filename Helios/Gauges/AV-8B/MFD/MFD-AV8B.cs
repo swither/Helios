@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Globalization;
     using System.Windows;
 
-    [HeliosControl("AV8B.MPCD", "MPCD", "_Hidden Parts", typeof(MFDRenderer))]
+    [HeliosControl("AV8B.MPCD", "MPCD", "AV-8B Gauges", typeof(MFDRenderer), true)]
     class MPCD_AV8B : MFD
     {
         private static readonly Rect SCREEN_RECT = new Rect(44,85, 345, 317);

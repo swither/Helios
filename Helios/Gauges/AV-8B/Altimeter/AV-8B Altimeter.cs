@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.AV8B.Altimeter1", "Altimeter", "_Hidden Parts", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.AV8B.Altimeter1", "Altimeter", "AV-8B Gauges", typeof(GaugeRenderer), true)]
     public class Altimeter1 : GadrocsWorkshop.Helios.Gauges.A_10.ADI.Altimeter
     {
 

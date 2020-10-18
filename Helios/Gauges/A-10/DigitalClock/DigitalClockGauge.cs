@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.A10.DigitalClockGauge", "Digital Clock", "_Hidden Parts", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.DigitalClockGauge", "Digital Clock", "A-10C Gauges", typeof(GaugeRenderer),true)]
     public class DigitalClockGauge : BaseGauge
     {
         private HeliosValue _clockHandSeconds;

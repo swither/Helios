@@ -287,8 +287,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new Text(this, "2408", "Digital Clock", "Clock Function Type", "Text for Clock or Elapsed Time"));
             #endregion
 
-
-
             #region Front Panel Indicators
             AddFunction(new PushButton(this, IFFCC, BUTTON_1, "101", "IFFCC", "Ext Stores Jettison"));
             AddFunction(new FlagValue(this, "662", "Misc", "Gun Ready Indicator", "Indicator is lit when the GAU-8 cannon is armed and ready to fire."));

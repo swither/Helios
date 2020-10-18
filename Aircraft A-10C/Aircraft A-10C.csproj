@@ -443,7 +443,7 @@
     <Resource Include="Images\A-10C\A-10C_CMSP_Jettison_Toggle_Up.png" />
     <Resource Include="Images\A-10C\A-10C_HARS_Panel.png" />
     <Resource Include="Images\A-10C\A-10C_HARS_Scale_Panel.png" />
-    <Resource Include="Images\A-10CII\A-10CII_Right_Blanking_Panels.png" />
+    <Resource Include="Images\A-10CII\A-10CII_Right_Blank_Panel.png" />
     <Resource Include="Images\A-10CII\A-10CII_TISL_Blank_Panel.png" />
     <Resource Include="Images\A-10C\crystal_small.png" />
     <Resource Include="Images\A-10C\A-10C_Digital_Clock_Bezel.png" />
@@ -456,8 +456,10 @@
     <Resource Include="Images\A-10CII\A-10C_UHF_Radio.png" />
     <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Lid_Closed.png" />
     <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Lid_Opened.png" />
-    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Displays.png" />
-    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Filters.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Channel_Bezel.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Channel_Filter.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Frequency_Bezel.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Frequency_Filter.png" />
     <Content Include="Templates\Base\A-10C\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

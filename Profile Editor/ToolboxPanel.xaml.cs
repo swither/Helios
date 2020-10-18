@@ -41,7 +41,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
                 foreach (HeliosDescriptor descriptor in ConfigManager.ModuleManager.ControlDescriptors)
                 {
-                    AddTool(new DescriptorToolboxItem(descriptor));
+                    if (!descriptor.UIHidden)
+                    {
+                        AddTool(new DescriptorToolboxItem(descriptor));
+                    }
                 }
                 PopulateTemplates(ConfigManager.TemplateManager.ModuleTemplates);
                 PopulateTemplates(ConfigManager.TemplateManager.UserTemplates);
@@ -111,8 +114,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void AddTool(ToolboxItem tool)
         {
             string toolCategory = DisplayCategory(tool.Category);
-            if (toolCategory != "_Hidden Parts")
-            {
                 ToolboxGroup group;
                 if (_toolboxGroups.ContainsKey(toolCategory))
                 {
@@ -126,7 +127,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 }
 
                 group.Add(tool);
-            }
         }
 
         private void RemoveTemplateTool(HeliosTemplate template)

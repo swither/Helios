@@ -23,29 +23,24 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     using System.Xml;
     using System.Globalization;
 
-    [HeliosControl("Helios.A10.UHFFreqDisplay", "UHF Frequency & Channel Display", "A-10C Gauges", typeof(A10CDeviceRenderer))]
-    class UHFFreqChanDisplay : A10CDevice
+    [HeliosControl("Helios.A10.UHFChannelDisplay", "UHF Channel Display", "A-10C Gauges", typeof(A10CDeviceRenderer))]
+    class UHFChanDisplay : A10CDevice
     {
 
         public const double GLASS_REFLECTION_OPACITY_DEFAULT = 0.50;
         private string _imageLocation = "{A-10C}/Images/A-10CII/";
         private string _interfaceDeviceName = "UHF_RADIO";
-        private HeliosPanel _glass;
         private String _font = "Helios Virtual Cockpit A-10C_ARC_164";
         private Color _textColor = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
         private Color _backGroundColor = Color.FromArgb(0, 100, 20, 50);
 
 
-        public UHFFreqChanDisplay()
-            : base("UHFFreqChanDisplay", new Size(311d, 202d))
+        public UHFChanDisplay()
+            : base("UHFChanDisplay", new Size(173d, 100d))
         {
-            AddTextDisplay("Frequency Display", 72, 120, new Size(166, 68), 36d,
-                "A76.543", _interfaceDeviceName, "Frequency Display");
-            AddTextDisplay("Channel Display", 210, 18, new Size(70, 69), 36d,
+            AddTextDisplay("Channel Display", 74, 18, new Size(70, 69), 36d,
                 "23", _interfaceDeviceName, "Channel Display");
-            //_glass = AddPanel("UHF Reflection", new Point(0,0), new Size(311d, 202d), _imageLocation + "Pilot_Reflection_25.png","relection");
-            //_glass.Opacity = GLASS_REFLECTION_OPACITY_DEFAULT;
-            HeliosPanel bezel = AddPanel("UHF Radio Bezel", new Point(0, 0), new Size(311d, 202d), _imageLocation + "A-10C_UHF_Radio_Displays.png", "bezel");
+            HeliosPanel bezel = AddPanel("UHF Radio Channel Bezel", new Point(0, 0), new Size(173d, 100d), _imageLocation + "A-10C_UHF_Radio_Channel_Bezel.png", "bezel");
         }
 
         #region Properties
@@ -60,7 +55,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
 
         public override string BezelImage
         {
-            get { return _imageLocation + "A-10C_UHF_Radio_Filters.png"; }
+            get { return _imageLocation + "A-10C_UHF_Radio_Channel_Filter.png"; }
         }
 
         private void AddTextDisplay(string name, double x, double y, Size size, double baseFontsize, string testDisp,
