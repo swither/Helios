@@ -115,14 +115,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
             // conversion from pulses to values
             HeliosAction changeValueByPulses = new HeliosAction(parent, Name, "Value from Pulses", "change",
                 "Increment of decrement the value by a number of pulses", "+/- pulses", BindingValueUnits.Numeric);
-            changeValueByPulses.Execute += _changeValueByPulses_Execute;
+            changeValueByPulses.Execute += ChangeValueByPulses_Execute;
             Actions.Add(changeValueByPulses);
 
             // direct angle mapping
             HeliosAction changeAngle = new HeliosAction(parent, Name, "Relative Angle", "change",
                 "Control the angle of bound rotary control relative to where it was when it was bound",
                 "Value of Control", BindingValueUnits.Numeric);
-            changeAngle.Execute += _changeAngle_Execute;
+            changeAngle.Execute += ChangeAngle_Execute;
             Actions.Add(changeAngle);
 
             // status display: name of bound control
@@ -144,7 +144,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
             _initialInputValue = null;
         }
 
-        private void _changeValueByPulses_Execute(object action, HeliosActionEventArgs e)
+        private void ChangeValueByPulses_Execute(object action, HeliosActionEventArgs e)
         {
             ClaimControlIfAvailable(e);
             if (Math.Abs(e.Value.DoubleValue) < 0.1)
@@ -174,7 +174,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
             Logger.Debug("no supported interfaces on target control; cannot deliver pulses");
         }
 
-        private void _changeAngle_Execute(object action, HeliosActionEventArgs e)
+        private void ChangeAngle_Execute(object action, HeliosActionEventArgs e)
         {
             ClaimControlIfAvailable(e);
             Logger.Debug("received relative angle {Degrees}", e.Value.DoubleValue);
