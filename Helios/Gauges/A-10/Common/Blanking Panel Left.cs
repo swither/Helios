@@ -27,21 +27,21 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// It has a slightly different name because the old version is retained to help with backward compatability
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10C.MISC", "Blanking Panel Right", "A-10C Gauges", typeof(A10CDeviceRenderer))]
-    class RightBlank : A10CDevice
+    [HeliosControl("Helios.A10C.MISC", "Blanking Panel Left", "A-10C Gauges", typeof(A10CDeviceRenderer))]
+    class LeftBlank : A10CDevice
     {
         // these three sections are the dead space in the HARS image.
 
         private string _imageLocation = "{A-10C}/Images/A-10CII/";
  
-        public RightBlank()
-            : base("Blanking Panel Right", new Size(798, 390))
+        public LeftBlank()
+            : base("Blanking Panel Left", new Size(625,239))
         {
         }
 
         public override string BezelImage
         {
-            get { return _imageLocation + "A-10CII_Right_Blank_Panel.png"; }
+            get { return _imageLocation + "A-10C_Left_Blank_Panel.png"; }
         }
 
         public override bool HitTest(Point location)
