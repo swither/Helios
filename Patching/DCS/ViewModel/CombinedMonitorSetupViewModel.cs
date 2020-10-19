@@ -54,18 +54,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             bool found = false;
             foreach (string name in Data.Combined.KnownViewportSetupNames)
             {
-                ViewportSetupFile setupFile = Data.Combined.Load(name);
-                if (setupFile == null && name == Data.CurrentProfileName)
-                {
-                    // the current profile must not have missing data, because we will calculate viewports and we need
-                    // a data object to hold them
-                    setupFile = new ViewportSetupFile
-                    {
-                        MonitorLayoutKey = "uninitialized"
-                    };
-                }
-
-                ViewportSetupFileViewModel model = new ViewportSetupFileViewModel(name, setupFile);
+                ViewportSetupFileViewModel model = new ViewportSetupFileViewModel(name, Data.Combined.Load(name));
                 if (model.ProfileName == Data.CurrentProfileName)
                 {
                     found = true;
@@ -229,17 +218,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         private void AddCurrentProfile()
-        {
-            // the current profile must not have missing data, because we will calculate viewports and we need
-            // a data object to hold them
-            ViewportSetupFile data = Data.Combined.Load(Data.CurrentProfileName) ?? new ViewportSetupFile
-            {
-                MonitorLayoutKey = "uninitialized"
-            };
-
+        { 
             // create new item
             CurrentViewportSetup =
-                new ViewportSetupFileViewModel(Data.CurrentProfileName, data)
+                new ViewportSetupFileViewModel(Data.CurrentProfileName, Data.Combined.Load(Data.CurrentProfileName))
                 {
                     IsCurrentProfile = true
                 };
@@ -263,7 +245,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// <param name="model"></param>
         private void CalculateStatus(ViewportSetupFileViewModel model)
         {
-            if (model.Data == null)
+            if (!model.Data.Exists)
             {
                 // the local profile may not have data yet, but that is ok.  for any merged profiles, we need the data
                 if (!model.IsCurrentProfile)
