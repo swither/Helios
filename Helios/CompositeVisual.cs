@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -314,7 +315,7 @@ namespace GadrocsWorkshop.Helios
             string componentName = GetComponentName(name);
             if (fromCenter)
                 posn = FromCenter(posn, size);
-            Potentiometer _knob = new Potentiometer
+            Potentiometer knob = new Potentiometer
             {
                 Name = componentName,
                 KnobImage = knobImage,
@@ -327,17 +328,17 @@ namespace GadrocsWorkshop.Helios
                 Top = posn.Y,
                 Left = posn.X,
                 Width = size.Width,
-                Height = size.Height
+                Height = size.Height,
+                ClickType = clickType,
+                IsContinuous = isContinuous
             };
-            _knob.ClickType = clickType;
-            _knob.IsContinuous = isContinuous;
 
-            Children.Add(_knob);
-            foreach (IBindingTrigger trigger in _knob.Triggers)
+            Children.Add(knob);
+            foreach (IBindingTrigger trigger in knob.Triggers)
             {
                 AddTrigger(trigger, componentName);
             }
-            AddAction(_knob.Actions["set.value"], componentName);
+            AddAction(knob.Actions["set.value"], componentName);
 
             AddDefaultOutputBinding(
                 childName: componentName,
@@ -348,7 +349,7 @@ namespace GadrocsWorkshop.Helios
                 childName: componentName,
                 interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
                 deviceActionName: "set.value");
-            return _knob;
+            return knob;
         }
 
         protected RotaryEncoder AddEncoder(string name, Point posn, Size size,
@@ -534,10 +535,9 @@ namespace GadrocsWorkshop.Helios
                 Width = size.Width,
                 Height = size.Height,
                 OnImage = onImage,
-                OffImage = offImage
+                OffImage = offImage,
+                Name = componentName
             };
-
-            indicator.Name = componentName;
 
             if (withText)
             {
@@ -595,21 +595,25 @@ namespace GadrocsWorkshop.Helios
             bool fromCenter, bool horizontal = false)
         {
             if (fromCenter)
+            {
                 posn = FromCenter(posn, size);
+            }
             string componentName = GetComponentName(name);
 
-            ToggleSwitch newSwitch = new ToggleSwitch();
-            newSwitch.Name = componentName;
-            newSwitch.SwitchType = defaultType;
-            newSwitch.ClickType = clickType;
-            newSwitch.DefaultPosition = defaultPosition;
-            newSwitch.PositionOneImage = positionOneImage;
-            newSwitch.PositionTwoImage = positionTwoImage;
-            newSwitch.Width = size.Width;
-            newSwitch.Height = size.Height;
+            ToggleSwitch newSwitch = new ToggleSwitch
+            {
+                Name = componentName,
+                SwitchType = defaultType,
+                ClickType = clickType,
+                DefaultPosition = defaultPosition,
+                PositionOneImage = positionOneImage,
+                PositionTwoImage = positionTwoImage,
+                Width = size.Width,
+                Height = size.Height,
+                Top = posn.Y,
+                Left = posn.X
+            };
 
-            newSwitch.Top = posn.Y;
-            newSwitch.Left = posn.X;
             if (horizontal)
             {
                 newSwitch.Rotation = HeliosVisualRotation.CW;
