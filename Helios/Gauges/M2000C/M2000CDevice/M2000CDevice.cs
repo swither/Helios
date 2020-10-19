@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.DCS.M2000C;
+
 namespace GadrocsWorkshop.Helios.Gauges.M2000C
 {
     using System.Windows;
@@ -23,8 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
         public M2000CDevice(string name, Size size)
             : base(name, size)
         {
-            DefaultInterfaceName = "DCS M2000C";
-
+            SupportedInterfaces = new[] { typeof(M2000CInterface) };
         }
 
         #region Properties

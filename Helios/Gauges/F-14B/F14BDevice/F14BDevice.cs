@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.DCS.F14B;
+
 namespace GadrocsWorkshop.Helios.Gauges.F14B
 {
     using System;
@@ -23,8 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F14B
         public F14BDevice(string name, Size size)
             : base(name, size)
         {
-            DefaultInterfaceName = "DCS F-14B";
-
+            SupportedInterfaces = new[] { typeof(F14BInterface) };
         }
 
         #region Properties

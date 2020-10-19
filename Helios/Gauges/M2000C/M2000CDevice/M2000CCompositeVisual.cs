@@ -19,7 +19,6 @@ namespace GadrocsWorkshop.Helios.M2000C
     using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Media;
-    using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
     using GadrocsWorkshop.Helios.Gauges.M2000C.Mk2CDrumGauge;
     using GadrocsWorkshop.Helios.Gauges.M2000C.Mk2CNeedle;
@@ -28,17 +27,12 @@ namespace GadrocsWorkshop.Helios.M2000C
     public abstract partial class M2000CCompositeVisual : CompositeVisual
     {
         private Dictionary<HeliosVisual, Rect> _nativeSizes = new Dictionary<HeliosVisual, Rect>();
-        protected new string _defaultInterfaceName; // default name of the interface to be used
-        protected new string _defaultBindingName;   // the name of the default binding in the interface
-        protected new HeliosInterface _defaultInterface;
 
-
-        public M2000CCompositeVisual(string name, Size nativeSize)
+        protected M2000CCompositeVisual(string name, Size nativeSize)
             : base(name, nativeSize)
         {
             PersistChildren = false;
             Children.CollectionChanged += Children_CollectionChanged;
-            _defaultInterfaceName = "";
             _defaultBindingName = "";
             _defaultInterface = null;
         }
@@ -139,10 +133,9 @@ namespace GadrocsWorkshop.Helios.M2000C
                 Width = size.Width,
                 Height = size.Height,
                 OnImage = onImage,
-                OffImage = offImage
+                OffImage = offImage,
+                Name = componentName
             };
-
-            indicator.Name = componentName;
 
             if (withText)
             {

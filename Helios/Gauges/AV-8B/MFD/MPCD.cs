@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.DCS.AV8B;
+
 namespace GadrocsWorkshop.Helios.Gauges.AV8B
 {
     using GadrocsWorkshop.Helios.Controls;
@@ -33,7 +35,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         {
             _interfaceDeviceName = interfaceDeviceName;
             _side = name;
-            DefaultInterfaceName = "DCS AV-8B";
+            SupportedInterfaces = new[] { typeof(AV8BInterface) };
+
             AddButton("OSB1", 5, 740, new Size(56,56), true, "OSB01");
             AddButton("OSB2", 5, 643, new Size(56, 56), true, "OSB02");
             AddButton("OSB3", 5, 534, new Size(56, 56), true, "OSB03");
