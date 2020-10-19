@@ -214,7 +214,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             CreateShadowObjects();
 
             // we only update our models if the monitor layout matches
-            _monitorsValid = Profile?.IsValidMonitorLayout ?? false;
+            _monitorsValid = CheckMonitorsValid;
 
             // calculate initial geometry, if we can
             UpdateAllGeometry();
@@ -999,6 +999,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         internal MonitorSetupGenerator Renderer => _renderer;
 
+        // having a subset or superset of the monitors in the profile is considered reset but it may
+        // break monitor setup, so we have to do this additional check
+        private bool SameNumberOfMonitors => Profile != null &&
+            ConfigManager.DisplayManager.Displays.Count == Profile.Monitors.Count;
+
+        public bool CheckMonitorsValid => Profile != null && Profile.IsValidMonitorLayout && SameNumberOfMonitors;
+
         #endregion
 
         #region IExtendedDescription
@@ -1101,7 +1108,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public void NotifyResetMonitorsComplete()
         {
             // not volatile, only main thread access
-            _monitorsValid = Profile?.IsValidMonitorLayout ?? false;
+            _monitorsValid = CheckMonitorsValid;
             if (!_monitorsValid)
             {
                 return;
