@@ -41,7 +41,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
                 foreach (HeliosDescriptor descriptor in ConfigManager.ModuleManager.ControlDescriptors)
                 {
-                    if (!descriptor.UIHidden)
+                    if (!descriptor.NotShownInUI)
                     {
                         AddTool(new DescriptorToolboxItem(descriptor));
                     }

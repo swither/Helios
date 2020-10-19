@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.edpNoz", "EDP Nozzle", "AV-8B Gauges", typeof(GaugeRenderer), true)]
+    [HeliosControl("Helios.AV8B.edpNoz", "EDP Nozzle", "AV-8B Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class edpNoz: BaseGauge
     {
         private HeliosValue _angle;

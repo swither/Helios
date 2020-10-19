@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.AV8B.ThreeDigitDisplay", "Three Digit Display", "AV - 8B Gauges", typeof(GaugeRenderer), true)]
+    [HeliosControl("Helios.AV8B.ThreeDigitDisplay", "Three Digit Display", "AV-8B Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class ThreeDigitDisplay : BaseGauge
     {
         private HeliosValue _three_digit_display;

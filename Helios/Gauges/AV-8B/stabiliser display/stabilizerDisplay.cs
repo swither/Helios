@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,29 +21,27 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.AV8B.stabilizerDisplay", "Stabilizer Direction Display", "AV-8B Gauges", typeof(GaugeRenderer), true)]
-    public class stabilizerDisplay : BaseGauge
+    [HeliosControl("Helios.AV8B.stabilizerDisplay", "Stabilizer Direction Display", "AV-8B Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
+    public class StabilizerDisplay : BaseGauge
     {
-        private HeliosValue _one_digit_display;
-        private GaugeDrumCounter _onesDrum;
+        private readonly GaugeDrumCounter _onesDrum;
 
-        public stabilizerDisplay()
+        public StabilizerDisplay()
             : this("Stabilizer Direction",new Point(0d, 0d), new Size(40d, 50d))
         {
         }
-        public stabilizerDisplay(String _componentName,Point _position, Size _size)
-            : base(_componentName, _size)
+        public StabilizerDisplay(String componentName, Point position, Size size)
+            : base(componentName, size)
         {
             //Components.Add(new GaugeImage("{Helios}/Gauges/AV-8B/stabilizer display/digit_faceplate.xaml", new Rect(0d, 0d, 80d, 100d)));
 
-            _onesDrum = new GaugeDrumCounter("{Helios}/Gauges/AV-8B/stabiliser display/stabilizer_drum_tape.xaml", _position, "#", new Size(8d, 10d), _size);
-            _onesDrum.Clip = new RectangleGeometry(new Rect(0d, 0d, _size.Width, _size.Height));
+            _onesDrum = new GaugeDrumCounter("{Helios}/Gauges/AV-8B/stabiliser display/stabilizer_drum_tape.xaml", position, "#", new Size(8d, 10d), size);
+            _onesDrum.Clip = new RectangleGeometry(new Rect(0d, 0d, size.Width, size.Height));
             Components.Add(_onesDrum);
 
-            _one_digit_display = new HeliosValue(this, new BindingValue(0d), "", "value", "EDP", "Stabilizer direction display", BindingValueUnits.Numeric);
-            _one_digit_display.Execute += new HeliosActionHandler(DigitDisplay_Execute);
-            Actions.Add(_one_digit_display);
-
+            HeliosValue oneDigitDisplay = new HeliosValue(this, new BindingValue(0d), "", "value", "EDP", "Stabilizer direction display", BindingValueUnits.Numeric);
+            oneDigitDisplay.Execute += DigitDisplay_Execute;
+            Actions.Add(oneDigitDisplay);
         }
 
         public void DigitDisplay_Execute(object action, HeliosActionEventArgs e)

@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.AV8B.smcModeDisplay", "SMC Delivery Mode", "AV-8B Gauges", typeof(GaugeRenderer), true)]
+    [HeliosControl("Helios.AV8B.smcModeDisplay", "SMC Delivery Mode", "AV-8B Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class smcModeDisplay : BaseGauge
     {
         private HeliosValue _one_digit_display;

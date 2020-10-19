@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //       
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,27 +17,20 @@
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
-    using System.ComponentModel;
-    using System.Windows;
-    using System.Windows.Media;
     using System.Xml;
-    
-    [HeliosControl("Helios.Base.Indicator.VariableBrightness", "Caution Indicator with Brightness", "Indicators", typeof(IndicatorRenderer), true)]
+
+    [HeliosControl("Helios.Base.Indicator.VariableBrightness", "Caution Indicator with Brightness", "Indicators", typeof(IndicatorRenderer), HeliosControlFlags.NotShownInUI)]
     public class IndicatorVariableBrightness : Indicator
     {
-
-        private HeliosValue _brightness;
-
         private int _defaultBrightnessLevel;
-        //private int _brightnessLevel;
 
         public IndicatorVariableBrightness()
             : base()
         {
-            _brightness = new HeliosValue(this, new BindingValue(false), "", "indicator brightness", "Current Brightness % for this indicator.", "Brightness value of this indicator as a percentage.", BindingValueUnits.Numeric);
-            _brightness.Execute += new HeliosActionHandler(On_Execute);
-            Values.Add(_brightness);
-            Actions.Add(_brightness);
+            HeliosValue brightness = new HeliosValue(this, new BindingValue(false), "", "indicator brightness", "Current Brightness % for this indicator.", "Brightness value of this indicator as a percentage.", BindingValueUnits.Numeric);
+            brightness.Execute += new HeliosActionHandler(On_Execute);
+            Values.Add(brightness);
+            Actions.Add(brightness);
         }
 
         #region Properties
