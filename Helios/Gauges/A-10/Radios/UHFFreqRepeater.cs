@@ -1,4 +1,4 @@
-﻿//  Copyright 2014 Craig Courtney
+﻿//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,10 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     using System.Windows.Media;
     using System.Xml;
     using System.Globalization;
+    /// <summary>
+    /// This is the A-10C UHF Repeater Panel which uses text displays instead of cutouts for the exported viewport.
+    /// </summary>
+    /// 
 
     [HeliosControl("Helios.A10.UHFFreqRepeater", "UHF Freq Repeater", "A-10C Gauges", typeof(A10CDeviceRenderer))]
     class UHFFreqRepeater : A10CDevice
@@ -39,11 +43,11 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         public UHFFreqRepeater()
             : base("UHFFreqRepeater", new Size(387d, 374d))
         {
-            AddTextDisplay("Frequency Display", 93, 142, new Size(224, 62), 52d,
-                "888.888", _interfaceDeviceName, "Frequency Display");
+            AddTextDisplay("UHF Repeater Display", 88, 142, new Size(224, 62), 52d,
+                "888.888", _interfaceDeviceName, "Repeater Display");
             _glass = AddPanel("UHF Reflection", new Point(0,0), new Size(387d, 374d), _imageLocation + "Pilot_Reflection_25.png","relection");
             _glass.Opacity = GLASS_REFLECTION_OPACITY_DEFAULT;
-            HeliosPanel bezel = AddPanel("Digital Clock Bezel", new Point(0, 0), new Size(387d, 374d), _imageLocation + "A-10C_UHF_Repeater_Panel.png", "bezel");
+            HeliosPanel bezel = AddPanel("UHF Repeater Bezel", new Point(0, 0), new Size(387d, 374d), _imageLocation + "A-10C_UHF_Repeater_Panel.png", "bezel");
         }
 
         #region Properties
@@ -70,7 +74,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 size: size,
                 font: _font,
                 baseFontsize: baseFontsize,
-                horizontalAlignment: TextHorizontalAlignment.Left,
+                horizontalAlignment: TextHorizontalAlignment.Center,
                 verticalAligment: TextVerticalAlignment.Top,
                 testTextDisplay: testDisp,
                 textColor: _textColor,

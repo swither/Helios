@@ -1,4 +1,4 @@
-﻿//  Copyright 2014 Craig Courtney
+﻿//  Copyright 2019 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 /// <summary>
 /// This has been deprecated in favour of SMC_1 which uses text displays and a higher res background image
 /// </summary>
- 
+
 namespace GadrocsWorkshop.Helios.Gauges.AV8B
 {
     using GadrocsWorkshop.Helios.Gauges.AV8B;

@@ -25,15 +25,28 @@ namespace GadrocsWorkshop.Helios
     // for inputs, a trigger on the interface creates an action on the device
     public struct DefaultInputBinding
     {
-        public string ChildName, InterfaceTriggerName, DeviceActionName;
+        public string ChildName, InterfaceTriggerName, DeviceActionName, DeviceTriggerName;
+        public BindingValue DeviceTriggerBindingValue;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public DefaultInputBinding(string childName, string interfaceTriggerName, string deviceActionName)
         {
             ChildName = childName;
             InterfaceTriggerName = interfaceTriggerName;
+            DeviceTriggerName = "";
             DeviceActionName = deviceActionName;
+            DeviceTriggerBindingValue = null;
             Logger.Info("Default Input Binding: Trigger " + interfaceTriggerName + " to action " + deviceActionName + " for child " + childName);
+        }
+
+        public DefaultInputBinding(string childName, string interfaceTriggerName, string deviceActionName, string deviceTriggerName, BindingValue deviceTriggerBindingValue)
+        {
+            ChildName = childName;
+            InterfaceTriggerName = "";
+            DeviceTriggerName = deviceTriggerName;
+            DeviceActionName = deviceActionName;
+            DeviceTriggerBindingValue = deviceTriggerBindingValue; 
+            Logger.Info("Default Input Binding: Trigger " + deviceTriggerName + " to action " + deviceActionName + " for child " + childName);
         }
     }
 
@@ -213,6 +226,10 @@ namespace GadrocsWorkshop.Helios
 
         private HeliosBinding CreateNewBinding(IBindingTrigger trigger, IBindingAction action)
         {
+           return CreateNewBinding(trigger, action, new BindingValue(null));
+        }
+        private HeliosBinding CreateNewBinding(IBindingTrigger trigger, IBindingAction action, BindingValue bindingValue)
+        {
             HeliosBinding binding = new HeliosBinding(trigger, action);
 
             binding.BypassCascadingTriggers = true;
@@ -224,6 +241,12 @@ namespace GadrocsWorkshop.Helios
             else
             {
                 binding.ValueSource = BindingValueSources.StaticValue;
+                if (bindingValue is null)
+                {
+                } else
+                {
+                    binding.Value = bindingValue.StringValue;
+                }
             }
             return binding;
         }
@@ -273,14 +296,31 @@ namespace GadrocsWorkshop.Helios
                     Logger.Error("Cannot find action " + defaultBinding.DeviceActionName);
                     continue;
                 }
-                if (!_defaultInterface.Triggers.ContainsKey(defaultBinding.InterfaceTriggerName))
+                if (defaultBinding.InterfaceTriggerName != "")
                 {
-                    Logger.Error("Cannot find interface trigger " + defaultBinding.InterfaceTriggerName);
-                    continue;
+                    if (!_defaultInterface.Triggers.ContainsKey(defaultBinding.InterfaceTriggerName))
+                    {
+                        Logger.Error("Cannot find interface trigger " + defaultBinding.InterfaceTriggerName);
+                        continue;
+                    }
+
+                    Logger.Debug("Auto binding trigger " + defaultBinding.InterfaceTriggerName + " to " + defaultBinding.DeviceActionName);
+                    child.OutputBindings.Add(CreateNewBinding(_defaultInterface.Triggers[defaultBinding.InterfaceTriggerName],
+                        child.Actions[defaultBinding.DeviceActionName]));
+                } else
+                {
+
+                    if (!Triggers.ContainsKey(defaultBinding.DeviceTriggerName))
+                    {
+                        Logger.Error("Cannot find interface trigger " + defaultBinding.DeviceTriggerName);
+                        continue;
+                    }
+
+                    Logger.Debug("Auto binding trigger " + defaultBinding.DeviceTriggerName + " to " + defaultBinding.DeviceActionName);
+                    child.OutputBindings.Add(CreateNewBinding(Triggers[defaultBinding.DeviceTriggerName],
+                        child.Actions[defaultBinding.DeviceActionName],defaultBinding.DeviceTriggerBindingValue));
+
                 }
-                Logger.Debug("Auto binding trigger " + defaultBinding.InterfaceTriggerName + " to " + defaultBinding.DeviceActionName);
-                child.OutputBindings.Add(CreateNewBinding(_defaultInterface.Triggers[defaultBinding.InterfaceTriggerName],
-                    child.Actions[defaultBinding.DeviceActionName]));
 
                 //child.OutputBindings.Add(
                 //    new HeliosBinding(_defaultInterface.Triggers[defaultBinding.InterfaceTriggerName],
@@ -502,7 +542,6 @@ namespace GadrocsWorkshop.Helios
                 childName: componentName,
                 interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
                 deviceActionName: "set.position");
-
         }
 
         protected PushButton AddButton(string name, Point posn, Size size, string image, string pushedImage,

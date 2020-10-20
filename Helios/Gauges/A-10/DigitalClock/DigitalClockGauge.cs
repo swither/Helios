@@ -1,4 +1,4 @@
-﻿//  Copyright 2014 Craig Courtney
+﻿//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,12 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     using System;
     using System.Windows;
     using System.Windows.Media;
+
+    /// <summary>
+    /// This is a gauge for the digital clock second hand.
+    /// </summary>
+    /// 
+
 
     [HeliosControl("Helios.A10.DigitalClockGauge", "Digital Clock", "A-10C Gauges", typeof(GaugeRenderer),true)]
     public class DigitalClockGauge : BaseGauge

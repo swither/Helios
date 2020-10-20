@@ -1,4 +1,4 @@
-﻿//  Copyright 2014 Craig Courtney
+﻿//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,11 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     using System.Xml;
     using System.Globalization;
 
+    /// <summary>
+    /// This is a version of the UHF Frequency Display which uses a bespoke font to provide data in a text display instead of cutouts for the exported viewport.
+    /// </summary>
+    /// 
+
     [HeliosControl("Helios.A10.UHFFrequencyDisplay", "UHF Frequency Display", "A-10C Gauges", typeof(A10CDeviceRenderer))]
     class UHFFreqDisplay : A10CDevice
     {
@@ -38,7 +43,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         public UHFFreqDisplay()
             : base("UHFFreqDisplay", new Size(289d, 98d))
         {
-            AddTextDisplay("Frequency Display", 72, 16, new Size(166, 68), 36d,
+            AddTextDisplay("Frequency Display", 72, 16, new Size(200, 68), 36d,
                 "A76.543", _interfaceDeviceName, "Frequency Display");
             HeliosPanel bezel = AddPanel("UHF Radio Frequency Bezel", new Point(0, 0), new Size(289d, 98d), _imageLocation + "A-10C_UHF_Radio_Frequency_Bezel.png", "bezel");
         }

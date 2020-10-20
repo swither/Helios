@@ -1,4 +1,4 @@
-﻿//  Copyright 2014 Craig Courtney
+﻿//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,11 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     using System.Windows.Media;
     using System.Xml;
     using System.Globalization;
+
+    /// <summary>
+    /// This is a version of the UHF Channel Display which uses a bespoke font to provide data in a text display instead of cutouts for the exported viewport.
+    /// </summary>
+    /// 
 
     [HeliosControl("Helios.A10.UHFChannelDisplay", "UHF Channel Display", "A-10C Gauges", typeof(A10CDeviceRenderer))]
     class UHFChanDisplay : A10CDevice

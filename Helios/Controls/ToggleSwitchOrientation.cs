@@ -18,6 +18,8 @@ namespace GadrocsWorkshop.Helios.Controls
     public enum ToggleSwitchOrientation
     {
         Vertical,
-        Horizontal
+        Horizontal,
+        VerticalReversed,
+        HorizontalReversed
     }
 }

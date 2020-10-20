@@ -460,6 +460,22 @@
     <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Channel_Filter.png" />
     <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Frequency_Bezel.png" />
     <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Frequency_Filter.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Selector_Knob_1.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Selector_Knob_2.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Selector_Knob_3.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Red_Button_Pressed.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Red_Button_Unpressed.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Squelch_Left.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Squelch_Middle.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Squelch_Right.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Status_Button_Pressed.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Status_Button_Unpressed.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Test_Button_Pressed.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Test_Button_Unpressed.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Tone_Left.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Tone_Middle.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Tone_Right.png" />
+    <Resource Include="Images\A-10CII\A-10C_UHF_Radio_Volume_Knob.png" />
     <Content Include="Templates\Base\A-10C\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

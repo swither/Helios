@@ -164,8 +164,22 @@ namespace GadrocsWorkshop.Helios.Controls
                         }
                         break;
 
+                    case ToggleSwitchOrientation.VerticalReversed:
+                        if (location.Y > Height / 2d)
+                        {
+                            action = SwitchAction.Decrement;
+                        }
+                        break;
+
                     case ToggleSwitchOrientation.Horizontal:
                         if (location.X < Width / 2d)
+                        {
+                            action = SwitchAction.Decrement;
+                        }
+                        break;
+
+                    case ToggleSwitchOrientation.HorizontalReversed:
+                        if (location.X > Width / 2d)
                         {
                             action = SwitchAction.Decrement;
                         }
@@ -200,6 +214,17 @@ namespace GadrocsWorkshop.Helios.Controls
                         }
                         break;
 
+                    case ToggleSwitchOrientation.VerticalReversed:
+                        if (swipeVector.Y < -5)
+                        {
+                            action = SwitchAction.Increment;
+                        }
+                        else if (swipeVector.Y > 5)
+                        {
+                            action = SwitchAction.Decrement;
+                        }
+                        break;
+
                     case ToggleSwitchOrientation.Horizontal:
                         if (swipeVector.X < -5)
                         {
@@ -208,6 +233,17 @@ namespace GadrocsWorkshop.Helios.Controls
                         else if (swipeVector.X > 5)
                         {
                             action = SwitchAction.Increment;
+                        }
+                        break;
+
+                    case ToggleSwitchOrientation.HorizontalReversed:
+                        if (swipeVector.X < -5)
+                        {
+                            action = SwitchAction.Increment;
+                        }
+                        else if (swipeVector.X > 5)
+                        {
+                            action = SwitchAction.Decrement;
                         }
                         break;
                 }

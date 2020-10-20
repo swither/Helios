@@ -46,9 +46,13 @@ function driver.processLowImportance(mainPanelDevice)
     if li then
         helios.send(2411, string.format("%-2s", helios.ensureString(li.txtPresetChannel)))
     end
-    li = helios.parseIndication(12) -- Radio Frequency
+    li = helios.parseIndication(11) -- Radio Frequency
     if li then
-        helios.send(2412, string.format("%-7s", helios.ensureString(li.txtFreqStatus)))
+		local lUHFDisplay = helios.ensureString(li.txtFreqStatus)
+        helios.send(2412, string.format("%.3s.%.3s", lUHFDisplay, lUHFDisplay:sub(-3)))
     end
-	
+    li = helios.parseIndication(12) -- UHF Repeater
+    if li then
+        helios.send(2413, string.format("%-7s", helios.ensureString(li.txtFreqStatus) .. helios.ensureString(li.txtPresetChannel)))
+    end	
 end

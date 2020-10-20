@@ -1,4 +1,4 @@
-﻿//  Copyright 2014 Craig Courtney
+﻿//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,8 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     using System.Windows.Threading;
 
     /// <summary>
-    /// This is the revised version of the Option Display Unit which is larger and uses text displays instead of cutouts for the exported viewport.
-    /// It has a slightly different name because the old version is retained to help with backward compatability
+    /// This is a version of the Counter Measure System Panel which uses a bespoke font to provide data in a text display instead of cutouts for the exported viewport.
     /// </summary>
     /// 
     [HeliosControl("Helios.A10C.CMSP", "Counter Measures System Panel", "A-10C Gauges", typeof(A10CDeviceRenderer))]
