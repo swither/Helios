@@ -223,6 +223,14 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 CornerRadius = Double.Parse(reader.ReadElementString("CornerRadius"), CultureInfo.InvariantCulture);
             }
+            if (reader.Name.Equals("Inverse_direction"))
+            {
+                _inverse_direction = (bool)bc.ConvertFromInvariantString(reader.ReadElementString("Inverse_direction"));
+            }
+            else
+            {
+                Inverse_direction = false;
+            }
             if (reader.Name.Equals("Border"))
             {
                 reader.ReadStartElement("Border");
@@ -233,15 +241,6 @@ namespace GadrocsWorkshop.Helios.Controls
             else
             {
                 BorderThickness = 0d;
-            }
-            if (reader.Name.Equals("Inverse_direction"))
-            {
-                _inverse_direction = (bool)bc.ConvertFromInvariantString(reader.ReadElementString("Inverse_direction"));
-            }
-
-            else
-            {
-                Inverse_direction = false;
             }
             base.ReadXml(reader);
         }

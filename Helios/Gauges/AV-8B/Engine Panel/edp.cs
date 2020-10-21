@@ -1,4 +1,5 @@
-﻿//  Copyright 2019 Helios Contributors
+﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -34,15 +35,18 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddDisplay("Engine Duct Indicator", new ThreeDigitDisplay(), new Point(44, 45), new Size(90, 42), "Duct pressure display");
             AddDisplay("Engine FF Indicator", new ThreeDigitDisplay(), new Point(44, 137), new Size(90, 42), "FF display");
             AddDisplay("Jet Pipe Temp Indicator", new ThreeDigitDisplay(), new Point(214, 137), new Size(90, 42), "JPT display");
-            AddDisplay("Stabilizer Direction Indicator", new stabilizerDisplay(), new Point(44, 232), new Size(30, 42), "Stabilzer Arrow");
+            AddDisplay("Stabilizer Direction Indicator", new StabilizerDisplay(), new Point(44, 232), new Size(30, 42), "Stabilzer Arrow");
             AddDisplay("Stabilizer Angle Indicator", new TwoDigitDisplay(), new Point(73, 232), new Size(60, 42), "Stabiliser display");
             AddDisplay("H2O Amount Indicator", new TwoDigitDisplay(), new Point(214, 232), new Size(60, 42), "H2O display");
             AddIndicator("H2O Flow Indicator",new Point(158,234),new Size(32,32), "H2O flow indicator");
             AddButton("BIT button",-49,6,new Size(60,50), "BIT");
             AddPot("EDP Brightness", new Point(528, 236), new Size(75, 75), "Off/Brightness Control");
-            GaugeImage _gi = new GaugeImage("{AV-8B}/Images/WQHD/Panel/EDP Reflection.png", new Rect(0d, 0d, 528d, 302d));
-            _gi.Opacity = 0.4;
-            //Components.Add(_gi);
+            GaugeImage gi =
+                new GaugeImage("{AV-8B}/Images/WQHD/Panel/EDP Reflection.png", new Rect(0d, 0d, 528d, 302d))
+                {
+                    Opacity = 0.4
+                };
+            //Components.Add(gi);
             //AddPanel("EDP Reflection", new Point(0, 0), new Size(528, 302), "{AV-8B}/Images/WQHD/Panel/EDP Reflection.png", _interfaceDeviceName, "EDP Reflection Element");
 
         }
@@ -57,8 +61,6 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             _panel.FillBackground = false;
             _panel.DrawBorder = false;
             //_panel.BackgroundAlignment = ImageAlignment.Centered;
-
-
         }
         private void AddDisplay(string name, BaseGauge _gauge, Point posn, Size displaySize, string interfaceElementName)
         {

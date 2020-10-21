@@ -487,7 +487,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             try
             {
-                if (!_parent.Profile.IsValidMonitorLayout)
+                if (!_parent.CheckMonitorsValid)
                 {
                     throw new Exception(
                         "UI should have disabled monitor setup writing without up to date monitors; implementation error");
@@ -556,7 +556,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
             };
 
-            if (!_parent.Profile.IsValidMonitorLayout)
+            if (!_parent.CheckMonitorsValid)
             {
                 yield return new StatusReportItem
                 {

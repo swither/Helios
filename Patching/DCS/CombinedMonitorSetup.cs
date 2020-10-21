@@ -57,17 +57,19 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             if (null == viewportSetupName)
             {
-                return null;
+                return new ViewportSetupFile();
             }
 
             string path = LocateFile(viewportSetupName);
             if (!File.Exists(path))
             {
-                return null;
+                return new ViewportSetupFile();
             }
 
             string content = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<ViewportSetupFile>(content);
+            ViewportSetupFile viewportData = JsonConvert.DeserializeObject<ViewportSetupFile>(content);
+            viewportData.Exists = true;
+            return viewportData;
         }
 
         internal void Save(string viewportSetupName, ViewportSetupFile data)

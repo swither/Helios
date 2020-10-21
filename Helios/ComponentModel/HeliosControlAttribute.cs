@@ -17,80 +17,37 @@ namespace GadrocsWorkshop.Helios.ComponentModel
 {
     using System;
 
+    [Flags]
+    public enum HeliosControlFlags
+    {
+        None = 0,
+        NotShownInUI = 1
+    }
+
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public sealed class HeliosControlAttribute : Attribute
     {
-        private readonly string _typeIdentifier;
-        private readonly string _name;
-        private readonly string _category;
-        private readonly Type _renderer;
-        private readonly bool _uiHidden;
-
-        private string _requires;
-
         /// <param name="typeIdentifier">Unique identifier used for persistance.
         /// Recommended to follow conventions of {module name}.{interface}.  Helios.* is reserved for helios's included controls.</param>
         /// <param name="name">Display name used for this control in the ui.</param>
-        /// <param name="uiHidden">True if control is not to be seen in the ui.</param>
-        public HeliosControlAttribute(string typeIdentifier, string name, string category, Type renderer, bool uiHidden = false)
+        /// <param name="flags">combinatation (via OR operator) of flags to control various aspects of how this control can be used.</param>
+        public HeliosControlAttribute(string typeIdentifier, string name, string category, Type renderer, HeliosControlFlags flags = HeliosControlFlags.None)
         {
-            _uiHidden = uiHidden;
-            _typeIdentifier = typeIdentifier;
-            _category = category;
-            _renderer = renderer;
-            _name = name;
+            TypeIdentifier = typeIdentifier;
+            Category = category;
+            Renderer = renderer;
+            Name = name;
+            Flags = flags;
         }
 
-        public string TypeIdentifier
-        {
-            get
-            {
-                return _typeIdentifier;
-            }
-        }
+        public string TypeIdentifier { get; }
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
+        public string Name { get; }
 
-        public string Category
-        {
-            get
-            {
-                return _category;
-            }
-        }
+        public string Category { get; }
 
-        public Type Renderer
-        {
-            get
-            {
-                return _renderer;
-            }
-        }
+        public Type Renderer { get; }
 
-        public bool UIHidden
-        {
-            get
-            {
-                return _uiHidden;
-            }
-        }
-
-        public string Requires
-        {
-            get
-            {
-                return _requires;
-            }
-            set
-            {
-                _requires = value;
-            }
-        }
+        public HeliosControlFlags Flags { get; }
     }
 }

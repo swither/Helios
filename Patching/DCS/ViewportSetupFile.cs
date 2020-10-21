@@ -28,12 +28,18 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     public class ViewportSetupFile : NotificationObject
     {
         /// <summary>
+        /// true if the viewport setup file exists, even if it is out of date
+        /// </summary>
+        [JsonIgnore]
+        public bool Exists { get; internal set; }
+
+        /// <summary>
         /// This string uniquely identifies the monitor layout that was active when these
         /// viewports were generated.  Using these viewports with a different monitor layout
         /// may result in invalid configurations.
         /// </summary>
         [JsonProperty("MonitorLayoutKey")]
-        public string MonitorLayoutKey { get; internal set; }
+        public string MonitorLayoutKey { get; internal set; } = "";
 
         [JsonProperty("Viewports")] public Dictionary<string, Rect> Viewports { get; } = new Dictionary<string, Rect>();
 

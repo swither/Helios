@@ -329,7 +329,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // figure out our UI status
             StatusCodes newStatus = StatusCodes.Unknown;
-            if (!Data.Profile.IsValidMonitorLayout)
+            if (!Data.CheckMonitorsValid)
             {
                 newStatus = StatusCodes.ResetMonitorsRequired;
             }

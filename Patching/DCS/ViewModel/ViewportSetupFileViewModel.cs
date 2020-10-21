@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -25,6 +26,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     {
         public ViewportSetupFileViewModel(string profileName, ViewportSetupFile data) : base(data)
         {
+            if (null == data)
+            {
+                throw new Exception("program error: viewport setup file not initialized; please file a bug related to Helios issue #355");
+            }
             ProfileName = profileName;
         }
 

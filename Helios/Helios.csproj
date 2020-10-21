@@ -629,7 +629,7 @@
     <Compile Include="Gauges\AV-8B\SMC\SMC.cs" />
     <Compile Include="Gauges\AV-8B\AV8BDevice\AV8BDevice.cs" />
     <Compile Include="Gauges\AV-8B\AV8BDevice\AV8BDeviceRenderer.cs" />
-    <Compile Include="Gauges\AV-8B\stabiliser display\stabilizerDisplay.cs" />
+    <Compile Include="Gauges\AV-8B\stabiliser display\StabilizerDisplay.cs" />
     <Compile Include="Gauges\AV-8B\1 Digit Display\1DigitDisplay.cs" />
     <Compile Include="Gauges\AV-8B\ADI\SlipTurn.cs" />
     <Compile Include="Gauges\AV-8B\ADI\BackupADI.cs" />

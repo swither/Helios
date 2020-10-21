@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.VVI", "AV-8B Vertical Velocity Indicator", "AV-8B Gauges", typeof(GaugeRenderer), true)]
+    [HeliosControl("Helios.AV8B.VVI", "AV-8B Vertical Velocity Indicator", "AV-8B Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class VVI : A_10.VVI.VVI
     {
         public VVI()

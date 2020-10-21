@@ -70,12 +70,6 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public bool UIHidden
-        {
-            get
-            {
-                return _controlAttribute.UIHidden;
-            }
-        }
+        public bool NotShownInUI => _controlAttribute.Flags.HasFlag(HeliosControlFlags.NotShownInUI);
     }
 }

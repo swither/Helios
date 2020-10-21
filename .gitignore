@@ -8,6 +8,7 @@ Helios*.exe
 *.tmp
 *.binlog
 *.log
+*.failed
 
 # mstest test results
 TestResults
