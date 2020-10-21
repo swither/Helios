@@ -74,13 +74,12 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             AddThreeWayToggle("T/Tone Switch", new Point(222, 511), new Size(59, 59), "T/Tone Switch");
             AddTwoWaySquelchToggle("Squelch Switch", new Point(354, 511), new Size(52, 61), "Squelch");
 
-            //AddButton("Load Button", new Point(74, 175), new Size(36, 37), _imageLocation + "A-10C_UHF_Radio_Red_Button_Unpressed.png", _imageLocation + "A-10C_UHF_Radio_Red_Button_Pressed.png", "", _interfaceDeviceName, "Load Button", false);
             AddButton("Test Display Button", new Point(109, 242), new Size(45, 47), _imageLocation + "A-10C_UHF_Radio_Test_Button_Unpressed.png", _imageLocation + "A-10C_UHF_Radio_Test_Button_Pressed.png", "", _interfaceDeviceName, "Test Display Button", false);
             AddButton("Status Button", new Point(466, 245), new Size(45, 45), _imageLocation + "A-10C_UHF_Radio_Status_Button_Unpressed.png", _imageLocation + "A-10C_UHF_Radio_Status_Button_Pressed.png", "", _interfaceDeviceName, "Status Button", false);
 
             AddCover("Cover", new Point(23, 0), new Size(268, 233), "Cover");
             // red load button is under the cover so needs to have special binding
-            AddRedButton("Load Button",74, 175, new Size(36, 37), "Load Button");
+            AddLoadButton("Load Button",74, 175, new Size(36, 37), "Load Button");
         }
 
         public override string BezelImage
@@ -121,6 +120,63 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 interfaceTriggerName: _interfaceDeviceName + "." + interfaceElementName + ".changed",
                 deviceActionName: "set.position"
                 );
+        }
+        /// <summary>
+        /// A-10C UHF Radio Load Button.
+        /// This includes binding the hidden action to the switch positions of the cover which sits beneath the button to make them reversed visually.
+        /// This is also the first use case of DefaultInputBinding's deviceTriggerName & deviceTriggerBindingValue in composite visual
+        /// </summary>
+        /// <param name="name">name of element</param>
+        /// <param name="x">Horizontal coordinate of the button</param>
+        /// <param name="y">Vertical coordinate of the button</param>
+        /// <param name="size">Size of the button</param>
+        /// <param name="interfaceElementName">Name of the corresponding trigger</param>
+        private void AddLoadButton(string name, double x, double y, Size size, string interfaceElementName)
+        {
+            string componentName = _interfaceDeviceName + "_" + name;
+            PushButton newButton = new PushButton
+            {
+                Top = y,
+                Left = x,
+                Width = size.Width,
+                Height = size.Height,
+                Image = _imageLocation + "A-10C_UHF_Radio_Red_Button_Unpressed.png",
+                PushedImage = _imageLocation + "A-10C_UHF_Radio_Red_Button_Pressed.png",
+                Text = "",
+                Name = componentName
+            };
+            newButton.IsHidden = true;
+            Children.Add(newButton);
+
+            AddTrigger(newButton.Triggers["pushed"], componentName);
+            AddTrigger(newButton.Triggers["released"], componentName);
+            AddAction(newButton.Actions["set.hidden"], componentName);
+            AddAction(newButton.Actions["set.physical state"], componentName);
+
+            AddDefaultOutputBinding(
+                childName: componentName,
+                deviceTriggerName: "position.changed",
+                interfaceActionName: _interfaceDeviceName + ".set." + interfaceElementName
+                );
+
+            AddDefaultInputBinding(
+                childName: componentName,
+                interfaceTriggerName: _interfaceDeviceName + "." + interfaceElementName + ".changed",
+                deviceActionName: "set.physical state");
+
+            DefaultInputBindings.Add(new DefaultInputBinding(
+                childName: componentName,
+                interfaceTriggerName: "",
+                deviceTriggerName: "UHF Radio_Cover.position two.entered",
+                deviceActionName: "set.hidden",
+                deviceTriggerBindingValue: new BindingValue(false)));
+
+            DefaultInputBindings.Add(new DefaultInputBinding(
+                childName: componentName,
+                interfaceTriggerName: "",
+                deviceTriggerName: "UHF Radio_Cover.position one.entered",
+                deviceActionName: "set.hidden",
+                deviceTriggerBindingValue: new BindingValue(true)));
         }
         private void AddTwoWaySquelchToggle(string name, Point posn, Size size, string interfaceElementName)
         {
@@ -232,54 +288,6 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             {
                 _part.Name = name;
             };
-        }
-
-        private void AddRedButton(string name, double x, double y, Size size, string interfaceElementName)
-        {
-            string componentName = _interfaceDeviceName + "_" + name;
-            PushButton newButton = new PushButton
-            {
-                Top = y,
-                Left = x,
-                Width = size.Width,
-                Height = size.Height,
-                Image = _imageLocation + "A-10C_UHF_Radio_Red_Button_Unpressed.png",
-                PushedImage = _imageLocation + "A-10C_UHF_Radio_Red_Button_Pressed.png",
-                Text = "",
-                Name = componentName
-            };
-            newButton.IsHidden = true;
-            Children.Add(newButton);
-
-            AddTrigger(newButton.Triggers["pushed"], componentName);
-            AddTrigger(newButton.Triggers["released"], componentName);
-            AddAction(newButton.Actions["set.hidden"], componentName);
-            AddAction(newButton.Actions["set.physical state"], componentName);
-
-            AddDefaultOutputBinding(
-                childName: componentName,
-                deviceTriggerName: "position.changed",
-                interfaceActionName: _interfaceDeviceName + ".set." + interfaceElementName
-                );
-
-            AddDefaultInputBinding(
-                childName: componentName,
-                interfaceTriggerName: _interfaceDeviceName + "." + interfaceElementName + ".changed",
-                deviceActionName: "set.physical state");
-
-            DefaultInputBindings.Add(new DefaultInputBinding(
-                childName: componentName,
-                interfaceTriggerName: "",
-                deviceTriggerName: "UHF Radio_Cover.position two.entered",
-                deviceActionName: "set.hidden",
-                deviceTriggerBindingValue: new BindingValue(false)));
-
-            DefaultInputBindings.Add(new DefaultInputBinding(
-                childName: componentName,
-                interfaceTriggerName: "",
-                deviceTriggerName: "UHF Radio_Cover.position one.entered",
-                deviceActionName: "set.hidden",
-                deviceTriggerBindingValue: new BindingValue(true)));
         }
 
         public override bool HitTest(Point location)

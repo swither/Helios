@@ -38,7 +38,14 @@ namespace GadrocsWorkshop.Helios
             DeviceTriggerBindingValue = null;
             Logger.Info("Default Input Binding: Trigger " + interfaceTriggerName + " to action " + deviceActionName + " for child " + childName);
         }
-
+        /// <summary>
+        /// Contains information to allow AutoBinding in the onProfileChanged method.  
+        /// </summary>
+        /// <param name="childName">Name of the device which has the action</param>
+        /// <param name="interfaceTriggerName">The name of the trigger when that trigger is from an interface</param>
+        /// <param name="deviceActionName">The name of the action to be performed</param>
+        /// <param name="deviceTriggerName">The name of the trigger if it is from a visual component</param>
+        /// <param name="deviceTriggerBindingValue">Static trigger value which only used with deviceTriggerValue</param>
         public DefaultInputBinding(string childName, string interfaceTriggerName, string deviceActionName, string deviceTriggerName, BindingValue deviceTriggerBindingValue)
         {
             ChildName = childName;
@@ -245,7 +252,13 @@ namespace GadrocsWorkshop.Helios
                 {
                 } else
                 {
-                    binding.Value = bindingValue.StringValue;
+                    if (action.Unit.ShortName   == "Boolean")
+                    {
+                        binding.Value = bindingValue.BoolValue ? "True" : "False";
+                    } else
+                    {
+                        binding.Value = bindingValue.StringValue;
+                    }
                 }
             }
             return binding;
@@ -304,7 +317,7 @@ namespace GadrocsWorkshop.Helios
                         continue;
                     }
 
-                    Logger.Debug("Auto binding trigger " + defaultBinding.InterfaceTriggerName + " to " + defaultBinding.DeviceActionName);
+                    Logger.Debug("Auto binding trigger " + defaultBinding.InterfaceTriggerName + " to " + defaultBinding.ChildName + defaultBinding.DeviceActionName);
                     child.OutputBindings.Add(CreateNewBinding(_defaultInterface.Triggers[defaultBinding.InterfaceTriggerName],
                         child.Actions[defaultBinding.DeviceActionName]));
                 } else
@@ -316,7 +329,7 @@ namespace GadrocsWorkshop.Helios
                         continue;
                     }
 
-                    Logger.Debug("Auto binding trigger " + defaultBinding.DeviceTriggerName + " to " + defaultBinding.DeviceActionName);
+                    Logger.Debug("Auto binding trigger " + defaultBinding.DeviceTriggerName + " to " + defaultBinding.ChildName + defaultBinding.DeviceActionName);
                     child.OutputBindings.Add(CreateNewBinding(Triggers[defaultBinding.DeviceTriggerName],
                         child.Actions[defaultBinding.DeviceActionName],defaultBinding.DeviceTriggerBindingValue));
 
@@ -349,6 +362,7 @@ namespace GadrocsWorkshop.Helios
                 Logger.Debug("Child Output binding trigger " + defaultBinding.DeviceTriggerName + " to " + defaultBinding.InterfaceActionName);
                 child.OutputBindings.Add(CreateNewBinding(child.Triggers[defaultBinding.DeviceTriggerName],
                                       _defaultInterface.Actions[defaultBinding.InterfaceActionName]));
+
                 //            child.OutputBindings.Add(
                 //new HeliosBinding(child.Triggers[defaultBinding.DeviceTriggerName],
                 //                  _defaultInterface.Actions[defaultBinding.InterfaceActionName]));
