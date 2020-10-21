@@ -21,43 +21,28 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 	
     public class FontFamilyListItem : IComparable
     {
-        private string _displayName;
-        private FontFamily _fontFamily;
-
         public FontFamilyListItem(FontFamily fontFamily)
         {
-            _displayName = TextFormat.GetFontDisplayName(fontFamily);
-            _fontFamily = fontFamily;
+            DisplayName = TextFormat.GetFontDisplayName(fontFamily);
+            FontFamily = fontFamily;
         }
 
         #region Properties
 
-        public string DisplayName
-        {
-            get
-            {
-                return _displayName;
-            }
-        }
+        public string DisplayName { get; }
 
-        public FontFamily FontFamily
-        {
-            get
-            {
-                return _fontFamily;
-            }
-        }
+        public FontFamily FontFamily { get; }
 
         #endregion
 
         public override string ToString()
         {
-            return _displayName;
+            return DisplayName;
         }
 
         public int CompareTo(object obj)
         {
-            return string.Compare(_displayName, obj.ToString(), true, CultureInfo.CurrentCulture);
+            return string.Compare(DisplayName, obj.ToString(), true, CultureInfo.CurrentCulture);
         }
     }
 }

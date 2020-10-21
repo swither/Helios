@@ -2,66 +2,68 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Drawing.Text;
-using System.Drawing;
-
-/// <summary>
-/// Singleton class to allow for dynamic loading of fonts
-/// </summary>
+using System.Windows.Media;
 
 namespace GadrocsWorkshop.Helios
 {
+    /// <summary>
+    /// private fonts for use in Helios
+    /// </summary>
     public class FontManager
     {
-        private static FontManager _instance = null;
-        private static readonly object _padlock = new object();
-        private PrivateFontCollection _privateFontCollection = new PrivateFontCollection();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        FontManager()
-        {
-            AddFont("SFDigitalReadout-Medium.ttf");
-        }
+        private readonly Dictionary<string, FontFamily> _byName = new Dictionary<string, FontFamily>();
 
-        public static FontManager Instance
+        internal FontManager()
         {
-            get
-            {
-                lock (_padlock)
-                {
-                    if (_instance == null)
-                    {
-                        _instance = new FontManager();
-                    }
-                    return _instance;
-                }
-            }
+            // AddFont("SFDigitalReadout-Medium.ttf");
         }
 
         public FontFamily GetFontFamilyByName(string name)
         {
-            return _privateFontCollection.Families.FirstOrDefault(x => x.Name == name);
-        }
-
-        public void AddFont(string fullFileName)
-        {
-            AddFont(File.ReadAllBytes(fullFileName));
-        }
-
-        public void AddFont(byte[] fontBytes)
-        {
-            var handle = GCHandle.Alloc(fontBytes, GCHandleType.Pinned);
-            IntPtr pointer = handle.AddrOfPinnedObject();
-            try
+            if (_byName.TryGetValue(name, out FontFamily family))
             {
-                _privateFontCollection.AddMemoryFont(pointer, fontBytes.Length);
+                return family;
             }
-            finally
-            {
-                handle.Free();
-            }
+            return new FontFamily(name);
         }
 
+        internal void LoadInstalledPrivateFonts()
+        {
+            if (!Directory.Exists(ConfigManager.ApplicationPath))
+            {
+                return;
+            }
+
+            // NOTE: only true type fully supported (?)
+            // https://stackoverflow.com/questions/36986131/systemdrawingtextprivatefontcollection-not-working-when-the-font-is-not-in
+            string fontsPath = Path.Combine(ConfigManager.ApplicationPath, "Fonts");
+            foreach (string fontFilePath in Directory.EnumerateFiles(fontsPath, "*.ttf", SearchOption.AllDirectories))
+            {
+                // load the TTF, just to get font family names and face names
+                GlyphTypeface glyphTypeface = new GlyphTypeface(new Uri(fontFilePath));
+
+                // load every combination of names in every included language
+                foreach (string fontFamilyName in glyphTypeface.FamilyNames.Values)
+                {
+                    foreach (string fontFaceName in glyphTypeface.FaceNames.Values)
+                    {
+                        // construct the full name
+                        string fullName = $"{fontFamilyName} {fontFaceName}";
+
+                        // now load the exact font we want
+                        string fullFontPath = Path.Combine(fontsPath, $"#{fullName}");
+                        FontFamily loaded = new FontFamily(fullFontPath);
+
+                        // index
+                        _byName[fullName] = loaded;
+
+                        // log all the loaded font names
+                        Logger.Info("Loaded private font {Font} for use in Helios", fullName);
+                    }
+                }
+            }
+        }
     }
 }

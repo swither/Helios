@@ -89,9 +89,10 @@ namespace GadrocsWorkshop.Helios
             ConfigManager.VersionChecker = new VersionChecker(ConfigManager.SettingsManager, applicationSettingsAreWritable);
             ConfigManager.UndoManager = new UndoManager();
             ConfigManager.ProfileManager = new ProfileManager();
+            ConfigManager.FontManager = new FontManager();
+            ConfigManager.FontManager.LoadInstalledPrivateFonts();
             ConfigManager.ImageManager = new ImageManager(ConfigManager.ImagePath);
             ConfigManager.DisplayManager = new DisplayManager();
-
             ConfigManager.ModuleManager = new ModuleManager(ConfigManager.ApplicationPath);
             ConfigManager.TemplateManager = new TemplateManager(ConfigManager.TemplatePath);
             

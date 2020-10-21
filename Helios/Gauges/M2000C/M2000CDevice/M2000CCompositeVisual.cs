@@ -152,7 +152,7 @@ namespace GadrocsWorkshop.Helios.M2000C
                 {
                     indicator.TextFormat.FontSize = 12;
                 }
-                indicator.TextFormat.FontFamily = new FontFamily(font);
+                indicator.TextFormat.FontFamily = ConfigManager.FontManager.GetFontFamilyByName(font);
                 indicator.TextFormat.PaddingLeft = 0;
                 indicator.TextFormat.PaddingRight = 0;
                 indicator.TextFormat.PaddingTop = 0;
@@ -374,7 +374,7 @@ namespace GadrocsWorkshop.Helios.M2000C
                 indicator.TextFormat.FontStyle = FontStyles.Normal;
                 indicator.TextFormat.FontWeight = FontWeights.Normal;
                 indicator.TextFormat.FontSize = 18;
-                indicator.TextFormat.FontFamily = new FontFamily(font);
+                indicator.TextFormat.FontFamily = ConfigManager.FontManager.GetFontFamilyByName(font);
                 indicator.TextFormat.PaddingLeft = 0;
                 indicator.TextFormat.PaddingRight = 0;
                 indicator.TextFormat.PaddingTop = 0;

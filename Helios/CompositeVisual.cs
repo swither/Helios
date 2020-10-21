@@ -607,7 +607,7 @@ namespace GadrocsWorkshop.Helios
                 {
                     indicator.TextFormat.FontSize = 12;
                 }
-                indicator.TextFormat.FontFamily = new FontFamily(font);
+                indicator.TextFormat.FontFamily = ConfigManager.FontManager.GetFontFamilyByName(font);
                 indicator.TextFormat.PaddingLeft = 0;
                 indicator.TextFormat.PaddingRight = 0;
                 indicator.TextFormat.PaddingTop = 0;
@@ -827,7 +827,7 @@ namespace GadrocsWorkshop.Helios
                 indicator.TextFormat.FontStyle = FontStyles.Normal;
                 indicator.TextFormat.FontWeight = FontWeights.Normal;
                 indicator.TextFormat.FontSize = 18;
-                indicator.TextFormat.FontFamily = new FontFamily(font);
+                indicator.TextFormat.FontFamily = ConfigManager.FontManager.GetFontFamilyByName(font);
                 indicator.TextFormat.PaddingLeft = 0;
                 indicator.TextFormat.PaddingRight = 0;
                 indicator.TextFormat.PaddingTop = 0;
@@ -899,7 +899,7 @@ namespace GadrocsWorkshop.Helios
             };
             TextFormat textFormat = new TextFormat
             {
-                FontFamily = new FontFamily(font),
+                FontFamily = ConfigManager.FontManager.GetFontFamilyByName(font),
                 HorizontalAlignment = horizontalAlignment,
                 VerticalAlignment = verticalAligment,
                 FontSize = baseFontsize,

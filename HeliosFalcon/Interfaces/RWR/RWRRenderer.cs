@@ -418,7 +418,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
         {
             _format = new TextFormat
             {
-                FontFamily = new FontFamily("Lucida Console Regular"),
+                FontFamily = ConfigManager.FontManager.GetFontFamilyByName("Lucida Console Regular"),
                 FontSize = 12,
                 FontStyle = FontStyles.Normal,
                 FontWeight = FontWeights.Normal,

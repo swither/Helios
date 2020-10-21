@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios
     public class TextFormat : NotificationObject
     {
         private string _displayName = "Franklin Gothic";
-        private FontFamily _family = new FontFamily("Franklin Gothic");
+        private FontFamily _family = ConfigManager.FontManager.GetFontFamilyByName("Franklin Gothic");
         private FontStyle _style = FontStyles.Normal;
         private FontWeight _weight = FontWeights.Normal;
         private double _size = 12f;

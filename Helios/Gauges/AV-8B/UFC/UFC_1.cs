@@ -312,7 +312,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             indicator.TextFormat.FontStyle = FontStyles.Normal;
             indicator.TextFormat.FontWeight = FontWeights.Normal;
             indicator.TextFormat.FontSize = 18;
-            indicator.TextFormat.FontFamily = new FontFamily(_font);
+            indicator.TextFormat.FontFamily = ConfigManager.FontManager.GetFontFamilyByName(_font);
             indicator.TextFormat.PaddingLeft = 0;
             indicator.TextFormat.PaddingRight = 0;
             indicator.TextFormat.PaddingTop = 0;

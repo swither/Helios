@@ -691,14 +691,9 @@
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
     <None Include="Assets\Helios_ADI.odg" />
     <None Include="Assets\render.cmd" />
-    <None Include="Fonts\A-10C_ALQ_213.ttf">
+    <Content Include="Fonts\*.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Fonts\A-10C_ARC_164.ttf" />
-    <None Include="Fonts\A-10C_Digital_Clock.ttf" />
-    <None Include="Fonts\F-16C_Viper_DED.ttf" />
-    <None Include="Fonts\FA-18C_Hornet_IFEI.ttf" />
-    <None Include="Fonts\FA-18C_Hornet_Up_Front_Controller.ttf" />
+    </Content>
     <None Include="Images\A-10\readme.md" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
     <None Include="Interfaces\Falcon\readme.md" />
@@ -1097,11 +1092,7 @@
     <Resource Include="Interfaces\DCS\Generic\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\M2000C\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\Mi8Simple\ExportFunctions.lua" />
-    <None Include="Fonts\Helios font registration.reg" />
     <Resource Include="Images\General\HeliosIcon.png" />
-    <Content Include="Fonts\MS33558.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Interfaces\DCS\F14B\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C1.lua" />
     <Resource Include="Interfaces\DCS\Common\Export.lua" />

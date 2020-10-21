@@ -21,23 +21,9 @@ namespace GadrocsWorkshop.Helios
     using System.Collections.Generic;
     using System.IO;
 
-
     public class ConfigManager
     {
-        private static readonly string _applicationPath;
         private static string _documentPath;
-        private static string _documentImagePath;
-        private static string _documentProfilePath;
-        private static string _documentTemplatesPath;
-
-        private static ITemplateManager _templateManager;
-        private static IImageManager _imageManager;
-        private static IModuleManager _moduleManager;
-        private static IProfileManager2 _profileManager;
-        private static DisplayManager _displayManager;
-        private static UndoManager _undoManager;
-        private static LogManager _logManager;
-        private static ISettingsManager _settingsManager;
 
         /// <summary>
         /// Private constructor to prevent instances.  This class is a Singleton which should be accessed
@@ -45,25 +31,22 @@ namespace GadrocsWorkshop.Helios
         static ConfigManager()
         {
             string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            _applicationPath = Path.GetDirectoryName(assemblyLocation);
+            ApplicationPath = Path.GetDirectoryName(assemblyLocation);
         }
 
         #region Properties
 
         public static string DocumentPath
         {
-            get
-            {
-                return _documentPath;
-            }
+            get => _documentPath;
             set
             {
                 _documentPath = value;
-                _documentImagePath = Path.Combine(_documentPath, "Images");
-                _documentProfilePath = Path.Combine(_documentPath, "Profiles");
-                _documentTemplatesPath = Path.Combine(_documentPath, "Templates");
+                ImagePath = Path.Combine(_documentPath, "Images");
+                ProfilePath = Path.Combine(_documentPath, "Profiles");
+                TemplatePath = Path.Combine(_documentPath, "Templates");
 
-                List<string> paths = new List<string> { _documentPath, _documentImagePath, _documentProfilePath, _documentTemplatesPath };
+                List<string> paths = new List<string> { _documentPath, ImagePath, ProfilePath, TemplatePath };
                 bool wroteSomething = false;
                 foreach (string path in paths)
                 {
@@ -120,102 +103,38 @@ namespace GadrocsWorkshop.Helios
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
-        public static string ApplicationPath { get { return _applicationPath; } }
-        public static string ProfilePath { get { return _documentProfilePath; } }
-        public static string ImagePath { get { return _documentImagePath; } }
-        public static string TemplatePath { get { return _documentTemplatesPath; } }
+        /// <summary>
+        /// full path to directory where Helios.dll is installed
+        /// </summary>
+        public static string ApplicationPath { get; }
 
-        public static IImageManager ImageManager
-        {
-            get
-            {
-                return _imageManager;
-            }
-            set
-            {
-                _imageManager = value;
-            }
-        }
-        public static ITemplateManager TemplateManager
-        {
-            get
-            {
-                return _templateManager;
-            }
-            set
-            {
-                _templateManager = value;
-            }
-        }
-        public static IModuleManager ModuleManager
-        {
-            get
-            {
-                return _moduleManager;
-            }
-            set
-            {
-                _moduleManager = value;
-            }
-        }
-        public static IProfileManager2 ProfileManager
-        {
-            get
-            {
-                return _profileManager;
-            }
-            set
-            {
-                _profileManager = value;
-            }
-        }
-        public static DisplayManager DisplayManager
-        {
-            get
-            {
-                return _displayManager;
-            }
-            set
-            {
-                _displayManager = value;
-            }
-        }
-        public static UndoManager UndoManager
-        {
-            get
-            {
-                return _undoManager;
-            }
-            set
-            {
-                _undoManager = value;
-            }
-        }
-        public static LogManager LogManager
-        {
-            get
-            {
-                return _logManager;
-            }
-            set
-            {
-                _logManager = value;
-            }
-        }
-        public static ISettingsManager SettingsManager
-        {
-            get
-            {
-                return _settingsManager;
-            }
-            set
-            {
-                _settingsManager = value;
-            }
-        }
+        public static string ProfilePath { get; private set; }
+        public static string ImagePath { get; private set; }
+        public static string TemplatePath { get; private set; }
+
+        public static IImageManager ImageManager { get; internal set; }
+
+        public static ITemplateManager TemplateManager { get; internal set; }
+
+        public static IModuleManager ModuleManager { get; internal set; }
+
+        public static IProfileManager2 ProfileManager { get; internal set; }
+
+        public static DisplayManager DisplayManager { get; internal set; }
+
+        public static UndoManager UndoManager { get; internal set; }
+
+        public static LogManager LogManager { get; internal set; }
+
+        public static ISettingsManager SettingsManager { get; internal set; }
+
         public static HeliosApplication Application { get; internal set; }
         public static VersionChecker VersionChecker { get; internal set; }
 
+        /// <summary>
+        /// private fonts for use in Helios
+        /// </summary>
+        public static FontManager FontManager { get; internal set; }
         #endregion
     }
 }
