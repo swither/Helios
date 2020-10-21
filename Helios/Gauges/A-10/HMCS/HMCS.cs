@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.DCS.A10C;
+
 namespace GadrocsWorkshop.Helios.Gauges.A10C
 {
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -39,6 +41,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         public HMCS()
             : base("Scorpion HMCS", new Size(798, 355))
         {
+            SupportedInterfaces = new[] { typeof(A10C2Interface) };
             AddThreeWayToggle("Power",new Point(640, 110), new Size(62, 131),
                 ThreeWayToggleSwitchPosition.Two, ThreeWayToggleSwitchType.OnOnOn,
                 _interfaceDeviceName,"Power",

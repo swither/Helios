@@ -13,17 +13,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.DCS.AV8B;
+
 namespace GadrocsWorkshop.Helios.Gauges.AV8B
 {
-    using System;
     using System.Windows;
 
     abstract class AV8BDevice : AV8BCompositeVisual
     {
-        public AV8BDevice(string name, Size size)
+        protected AV8BDevice(string name, Size size)
             : base(name, size)
         {
-            DefaultInterfaceName = "DCS AV-8B";
+            SupportedInterfaces = new[] { typeof(AV8BInterface) };
         }
 
         #region Properties

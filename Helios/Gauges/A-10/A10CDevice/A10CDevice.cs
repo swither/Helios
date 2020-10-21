@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.DCS.A10C;
+
 namespace GadrocsWorkshop.Helios.Gauges.A10C
 {
     using System;
@@ -23,8 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         public A10CDevice(string name, Size size)
             : base(name, size)
         {
-            DefaultInterfaceName = "DCS A-10C";
-            AlternativeInterfaceName = "DCS A-10C II";
+            SupportedInterfaces = new[] { typeof(A10CInterface) };
         }
 
         #region Properties

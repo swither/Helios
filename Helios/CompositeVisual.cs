@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -12,6 +13,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System.Linq;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -77,19 +80,17 @@ namespace GadrocsWorkshop.Helios
         private Dictionary<HeliosVisual, Rect> _nativeSizes = new Dictionary<HeliosVisual, Rect>();
         protected List<DefaultOutputBinding> _defaultOutputBindings;
         protected List<DefaultInputBinding> _defaultInputBindings;
-        protected string _defaultInterfaceName; // default name of the interface to be used
-        protected string _alternativeInterfaceName = ""; // this is used when there are variants of an interface
         protected string _defaultBindingName;   // the name of the default binding in the interface
         protected HeliosInterface _defaultInterface;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public CompositeVisual(string name, Size nativeSize)
+        public Type[] SupportedInterfaces { get; protected set; } = new Type[0];
+
+        protected CompositeVisual(string name, Size nativeSize)
             : base(name, nativeSize)
         {
             PersistChildren = false;
             Children.CollectionChanged += Children_CollectionChanged;
-            _defaultInterfaceName = "";
-            _alternativeInterfaceName = "";
             _defaultBindingName = "";
             _defaultInterface = null;
             _defaultInputBindings = new List<DefaultInputBinding>();
@@ -124,30 +125,6 @@ namespace GadrocsWorkshop.Helios
         }
 
         #region Properties
-        public string DefaultInterfaceName
-        {
-            get
-            {
-                return _defaultInterfaceName;
-            }
-
-            set
-            {
-                _defaultInterfaceName = value;
-            }
-        }
-        public string AlternativeInterfaceName
-        {
-            get
-            {
-                return _alternativeInterfaceName;
-            }
-
-            set
-            {
-                _alternativeInterfaceName = value;
-            }
-        }
 
         public string DefaultBindingName
         {
@@ -271,27 +248,20 @@ namespace GadrocsWorkshop.Helios
                 return;
 
             // grab the default interface, if it exists
-            if (_defaultInterfaceName == "")
+            foreach (Type supportedInterface in SupportedInterfaces)
             {
+                _defaultInterface = Profile.Interfaces.FirstOrDefault(i => supportedInterface.IsInstanceOfType(i));
+                if (_defaultInterface != null)
+                {
+                    Logger.Info($"{Name} auto binding to interface '{_defaultInterface.Name}'");
+                    break;
+                }
+            }
+
+            if (_defaultInterface == null)
+            {
+                Logger.Info($"{Name} could not locate any supported interface for auto binding");
                 return;
-            }
-            string usingInterfaceName = _defaultInterfaceName;
-            if (!Profile.Interfaces.ContainsKey(_defaultInterfaceName))
-            {
-                Logger.Info("Cannot find default interface " + _defaultInterfaceName);
-                if (!Profile.Interfaces.ContainsKey(_alternativeInterfaceName))
-                {
-                    if (_alternativeInterfaceName != "") Logger.Info("Cannot find alternative interface " + _alternativeInterfaceName);
-                    return;
-                }
-                else
-                {
-                    Logger.Info("Using alternative interface " + _alternativeInterfaceName);
-                    _defaultInterface = Profile.Interfaces[_alternativeInterfaceName];
-                }
-            }
-            else {
-                _defaultInterface = Profile.Interfaces[_defaultInterfaceName];
             }
 
             // looping for all default input bindings to assign the value
@@ -399,7 +369,7 @@ namespace GadrocsWorkshop.Helios
             string componentName = GetComponentName(name);
             if (fromCenter)
                 posn = FromCenter(posn, size);
-            Potentiometer _knob = new Potentiometer
+            Potentiometer knob = new Potentiometer
             {
                 Name = componentName,
                 KnobImage = knobImage,
@@ -412,17 +382,17 @@ namespace GadrocsWorkshop.Helios
                 Top = posn.Y,
                 Left = posn.X,
                 Width = size.Width,
-                Height = size.Height
+                Height = size.Height,
+                ClickType = clickType,
+                IsContinuous = isContinuous
             };
-            _knob.ClickType = clickType;
-            _knob.IsContinuous = isContinuous;
 
-            Children.Add(_knob);
-            foreach (IBindingTrigger trigger in _knob.Triggers)
+            Children.Add(knob);
+            foreach (IBindingTrigger trigger in knob.Triggers)
             {
                 AddTrigger(trigger, componentName);
             }
-            AddAction(_knob.Actions["set.value"], componentName);
+            AddAction(knob.Actions["set.value"], componentName);
 
             AddDefaultOutputBinding(
                 childName: componentName,
@@ -433,7 +403,7 @@ namespace GadrocsWorkshop.Helios
                 childName: componentName,
                 interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
                 deviceActionName: "set.value");
-            return _knob;
+            return knob;
         }
 
         protected RotaryEncoder AddEncoder(string name, Point posn, Size size,
@@ -443,7 +413,7 @@ namespace GadrocsWorkshop.Helios
             if (fromCenter)
                 posn = FromCenter(posn, size);
             string componentName = GetComponentName(name);
-            RotaryEncoder _knob = new RotaryEncoder
+            RotaryEncoder knob = new RotaryEncoder
             {
                 Name = componentName,
                 KnobImage = knobImage,
@@ -452,16 +422,16 @@ namespace GadrocsWorkshop.Helios
                 Top = posn.Y,
                 Left = posn.X,
                 Width = size.Width,
-                Height = size.Height
+                Height = size.Height,
+                ClickType = clickType
             };
-            _knob.ClickType = clickType;
 
-            Children.Add(_knob);
-            foreach (IBindingTrigger trigger in _knob.Triggers)
+            Children.Add(knob);
+            foreach (IBindingTrigger trigger in knob.Triggers)
             {
                 AddTrigger(trigger, componentName);
             }
-            foreach (IBindingAction action in _knob.Actions)
+            foreach (IBindingAction action in knob.Actions)
             {
                 AddAction(action, componentName);
             }
@@ -476,7 +446,7 @@ namespace GadrocsWorkshop.Helios
                 interfaceActionName: interfaceDeviceName + ".decrement." + interfaceElementName
                 );
 
-            return _knob;
+            return knob;
         }
 
         protected RotarySwitch AddRotarySwitch(string name, Point posn, Size size,
@@ -495,7 +465,7 @@ namespace GadrocsWorkshop.Helios
             if (fromCenter)
                 posn = FromCenter(posn, size);
             string componentName = GetComponentName(name);
-            RotarySwitch _knob = new RotarySwitch
+            RotarySwitch knob = new RotarySwitch
             {
                 Name = componentName,
                 KnobImage = knobImage,
@@ -507,20 +477,20 @@ namespace GadrocsWorkshop.Helios
                 Height = size.Height,
                 DefaultPosition = defaultPosition
             };
-            _knob.Positions.Clear();
-            _knob.DefaultPosition = defaultPosition;
+            knob.Positions.Clear();
+            knob.DefaultPosition = defaultPosition;
             foreach(RotarySwitchPosition swPosn in positions)
             {
-                _knob.Positions.Add(swPosn);
+                knob.Positions.Add(swPosn);
             }
             
-            Children.Add(_knob);
+            Children.Add(knob);
 
-            foreach (IBindingTrigger trigger in _knob.Triggers)
+            foreach (IBindingTrigger trigger in knob.Triggers)
             {
                 AddTrigger(trigger, componentName);
             }
-            AddAction(_knob.Actions["set.position"], componentName);
+            AddAction(knob.Actions["set.position"], componentName);
 
             AddDefaultOutputBinding(
                 childName: componentName,
@@ -532,7 +502,7 @@ namespace GadrocsWorkshop.Helios
                 interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
                 deviceActionName: "set.position");
 
-            return _knob;
+            return knob;
         }
 
         protected void AddRotarySwitchBindings(string name, Point posn, Size size, RotarySwitch rotarySwitch,
@@ -618,10 +588,9 @@ namespace GadrocsWorkshop.Helios
                 Width = size.Width,
                 Height = size.Height,
                 OnImage = onImage,
-                OffImage = offImage
+                OffImage = offImage,
+                Name = componentName
             };
-
-            indicator.Name = componentName;
 
             if (withText)
             {
@@ -679,21 +648,25 @@ namespace GadrocsWorkshop.Helios
             bool fromCenter, bool horizontal = false)
         {
             if (fromCenter)
+            {
                 posn = FromCenter(posn, size);
+            }
             string componentName = GetComponentName(name);
 
-            ToggleSwitch newSwitch = new ToggleSwitch();
-            newSwitch.Name = componentName;
-            newSwitch.SwitchType = defaultType;
-            newSwitch.ClickType = clickType;
-            newSwitch.DefaultPosition = defaultPosition;
-            newSwitch.PositionOneImage = positionOneImage;
-            newSwitch.PositionTwoImage = positionTwoImage;
-            newSwitch.Width = size.Width;
-            newSwitch.Height = size.Height;
+            ToggleSwitch newSwitch = new ToggleSwitch
+            {
+                Name = componentName,
+                SwitchType = defaultType,
+                ClickType = clickType,
+                DefaultPosition = defaultPosition,
+                PositionOneImage = positionOneImage,
+                PositionTwoImage = positionTwoImage,
+                Width = size.Width,
+                Height = size.Height,
+                Top = posn.Y,
+                Left = posn.X
+            };
 
-            newSwitch.Top = posn.Y;
-            newSwitch.Left = posn.X;
             if (horizontal)
             {
                 newSwitch.Rotation = HeliosVisualRotation.CW;
@@ -1074,16 +1047,17 @@ namespace GadrocsWorkshop.Helios
         }
         protected HeliosPanel AddPanel(string name, Point posn, Size size, string background)
         {
-            HeliosPanel _panel = new HeliosPanel();
-            _panel.Left = posn.X;
-            _panel.Top = posn.Y;
-            _panel.Width = size.Width;
-            _panel.Height = size.Height;
-            _panel.BackgroundImage = background;
-            _panel.Name = GetComponentName(name);
-            Children.Add(_panel);
-            return _panel;
- 
+            HeliosPanel panel = new HeliosPanel
+            {
+                Left = posn.X,
+                Top = posn.Y,
+                Width = size.Width,
+                Height = size.Height,
+                BackgroundImage = background,
+                Name = GetComponentName(name)
+            };
+            Children.Add(panel);
+            return panel;
         }
-}
+    }
 }

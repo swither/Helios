@@ -1,4 +1,5 @@
-﻿//  Copyright 2019 Helios Contributors
+﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,24 +16,18 @@
 
 namespace GadrocsWorkshop.Helios
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Windows;
-    using System.Windows.Media;
-    using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
+    using System.Windows;
 
 
-    public abstract partial class AV8BCompositeVisual : CompositeVisual
+    public abstract class AV8BCompositeVisual : CompositeVisual
     {
         protected new HeliosInterface _defaultInterface;
 
-        public AV8BCompositeVisual(string name, Size nativeSize)
+        protected AV8BCompositeVisual(string name, Size nativeSize)
             : base(name, nativeSize)
         {
-            _defaultInterfaceName = "";
-            _defaultBindingName = "";
-            _defaultInterface = null;
+            // all code in base
         }
 
         //
@@ -58,7 +53,8 @@ namespace GadrocsWorkshop.Helios
             string[] interfaceElementNames
             )
         {
-            if (DefaultInterfaceName == "DCS AV-8B" && (name == "Altimeter Gauge" || name == "ADI Gauge" || name == "Slip/Turn Gauge"|| name == "AOA Gauge"))
+            // XXX why is this here? this class is only used as AV8BDevice
+            if (name == "Altimeter Gauge" || name == "ADI Gauge" || name == "Slip/Turn Gauge"|| name == "AOA Gauge")
             {
                 gauge.Name = name;
                 gauge.Top = posn.Y;
@@ -68,7 +64,6 @@ namespace GadrocsWorkshop.Helios
 
                 string componentName = GetComponentName(name);
                 gauge.Name = componentName;
-
 
                 Children.Add(gauge);
                 foreach (IBindingTrigger trigger in gauge.Triggers)
@@ -91,17 +86,15 @@ namespace GadrocsWorkshop.Helios
                 }
                 return gauge;
             }
-            else
-            {
-                return base.AddGauge(
-                    name,
-                    gauge,
-                    posn,
-                    size,
-                    interfaceDeviceName,
-                    interfaceElementNames[0]
-                    );
-            }
+
+            return base.AddGauge(
+                name,
+                gauge,
+                posn,
+                size,
+                interfaceDeviceName,
+                interfaceElementNames[0]
+            );
         }
         private Point FromCenter(Point posn, Size size)
         {
@@ -114,7 +107,7 @@ namespace GadrocsWorkshop.Helios
             if (fromCenter)
                 posn = FromCenter(posn, size);
             string componentName = GetComponentName(name);
-            RotaryEncoder _knob = new RotaryEncoder
+            RotaryEncoder knob = new RotaryEncoder
             {
                 Name = componentName,
                 KnobImage = knobImage,
@@ -127,12 +120,12 @@ namespace GadrocsWorkshop.Helios
                 ClickType = clickType
             };
 
-            Children.Add(_knob);
-            foreach (IBindingTrigger trigger in _knob.Triggers)
+            Children.Add(knob);
+            foreach (IBindingTrigger trigger in knob.Triggers)
             {
                 AddTrigger(trigger, componentName);
             }
-            foreach (IBindingAction action in _knob.Actions)
+            foreach (IBindingAction action in knob.Actions)
             {
                 if (action.Name != "hidden")
                 {
@@ -150,7 +143,7 @@ namespace GadrocsWorkshop.Helios
                 interfaceActionName: interfaceDeviceName + ".decrement." + interfaceElementName
                 );
 
-            return _knob;
+            return knob;
         }
         protected ToggleSwitch AddToggleSwitch(string name, Point posn, Size size, ToggleSwitchPosition defaultPosition,
             string positionOneImage, string positionTwoImage, ToggleSwitchType defaultType, LinearClickType clickType, string interfaceDeviceName, string interfaceElementName,
@@ -160,12 +153,14 @@ namespace GadrocsWorkshop.Helios
                 posn = FromCenter(posn, size);
             string componentName = GetComponentName(name);
 
-            ToggleSwitch newSwitch = new ToggleSwitch(); 
-            newSwitch.Name = componentName;
-            newSwitch.SwitchType = defaultType;
-            newSwitch.ClickType = clickType;
-            newSwitch.DefaultPosition = defaultPosition;
-            newSwitch.HasIndicator = true;
+            ToggleSwitch newSwitch = new ToggleSwitch
+            {
+                Name = componentName,
+                SwitchType = defaultType,
+                ClickType = clickType,
+                DefaultPosition = defaultPosition,
+                HasIndicator = true
+            };
             if (interfaceIndicatorElementName != "")
             {
                 // if there is an indicatorElementname then the image names will be partial

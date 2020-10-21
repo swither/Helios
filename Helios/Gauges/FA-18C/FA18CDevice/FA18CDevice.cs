@@ -13,9 +13,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.DCS.FA18C;
+
 namespace GadrocsWorkshop.Helios.Gauges.FA18C
 {
-    using System;
     using System.Windows;
 
     abstract class FA18CDevice : CompositeVisual
@@ -23,8 +24,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
         public FA18CDevice(string name, Size size)
             : base(name, size)
         {
-            DefaultInterfaceName = "DCS F/A-18C";
-
+            SupportedInterfaces = new[] { typeof(FA18CInterface) };
         }
 
         #region Properties
