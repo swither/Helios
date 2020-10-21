@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// </summary>
     /// 
 
-    [HeliosControl("Helios.A10.UHFChannelDisplay", "UHF Channel Display", "A-10C Gauges", typeof(A10CDeviceRenderer))]
+    [HeliosControl("Helios.A10.UHFChannelDisplay", "UHF Channel Display", "A-10C Gauges", typeof(BackgroundImageRenderer))]
     class UHFChanDisplay : A10CDevice
     {
 
@@ -58,7 +58,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             base.OnProfileChanged(oldProfile);
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "A-10C_UHF_Radio_Channel_Filter.png"; }
         }

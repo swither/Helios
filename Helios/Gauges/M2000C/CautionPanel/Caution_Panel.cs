@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("HELIOS.M2000C.CAUTION_PANEL", "Caution Panel", "M2000C Gauges", typeof(M2000CDeviceRenderer))]
+    [HeliosControl("HELIOS.M2000C.CAUTION_PANEL", "Caution Panel", "M2000C Gauges", typeof(BackgroundImageRenderer))]
     class M2000C_CautionPanel : M2000CDevice
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 256, 280);
@@ -98,7 +98,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
 
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{M2000C}/Images/CautionPanel/caution-panel.png"; }
         }

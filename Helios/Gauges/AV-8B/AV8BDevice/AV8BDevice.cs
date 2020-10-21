@@ -13,13 +13,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.DCS.AV8B;
 
 namespace GadrocsWorkshop.Helios.Gauges.AV8B
 {
     using System.Windows;
 
-    abstract class AV8BDevice : AV8BCompositeVisual
+    abstract class AV8BDevice : AV8BCompositeVisual, IBackgroundImage
     {
         protected AV8BDevice(string name, Size size)
             : base(name, size)
@@ -27,10 +28,9 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             SupportedInterfaces = new[] { typeof(AV8BInterface) };
         }
 
-        #region Properties
-
-        public abstract string BezelImage { get; }
-
-        #endregion
+        /// <summary>
+        /// existing code provides this property, so 
+        /// </summary>
+        public abstract string BackgroundImage { get; }
     }
 }

@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
     using System.Xml;
     using System.Globalization;
 
-    [HeliosControl("Helios.FA18C.IFEI", "IFEI", "F/A-18C", typeof(FA18CDeviceRenderer))]
+    [HeliosControl("Helios.FA18C.IFEI", "IFEI", "F/A-18C", typeof(BackgroundImageRenderer))]
     class IFEI_FA18C : FA18CDevice
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
@@ -169,7 +169,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
             base.OnProfileChanged(oldProfile);
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "IFEI.png"; }
         }

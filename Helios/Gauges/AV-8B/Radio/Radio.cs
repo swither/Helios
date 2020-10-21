@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System.Windows.Threading;
 
 
-    [HeliosControl("Helios.AV8B.Radio", "Radio & ACNIP", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.Radio", "Radio & ACNIP", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class Radio: AV8BDevice
     {
         // these sections are the dead space in the image.
@@ -100,7 +100,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddPot("Aux Volume", new Point(174, 739), new Size(80, 80), "Aux Volume Knob", "WQHD/Knob/Inner.png",270,270);
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Right Radio.png"; }
         }

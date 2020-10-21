@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
     using System.Windows.Media;
     using System.Windows;
 
-    [HeliosControl("Helios.FA18C.UFC", "Up Front Controller", "F/A-18C", typeof(FA18CDeviceRenderer))]
+    [HeliosControl("Helios.FA18C.UFC", "Up Front Controller", "F/A-18C", typeof(BackgroundImageRenderer))]
     class UFC_FA18C : FA18CDevice
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
@@ -90,7 +90,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
             AddTextDisplay("Comm2", 538, 309, new Size(40, 42), "Comm Channel 2",32, "~", TextHorizontalAlignment.Center, " =;" + _ufcNumbers16);
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{FA-18C}/Images/UFC Faceplate.png"; }
         }

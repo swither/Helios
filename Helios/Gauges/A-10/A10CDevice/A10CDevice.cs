@@ -13,16 +13,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.DCS.A10C;
 
 namespace GadrocsWorkshop.Helios.Gauges.A10C
 {
-    using System;
     using System.Windows;
 
-    abstract class A10CDevice : CompositeVisual
+    abstract class A10CDevice : CompositeVisual, IBackgroundImage
     {
-        public A10CDevice(string name, Size size)
+        protected A10CDevice(string name, Size size)
             : base(name, size)
         {
             SupportedInterfaces = new[] { typeof(A10CInterface) };
@@ -30,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
 
         #region Properties
 
-        public abstract string BezelImage { get; }
+        public abstract string BackgroundImage { get; }
 
         #endregion
     }

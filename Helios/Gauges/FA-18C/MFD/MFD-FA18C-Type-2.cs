@@ -24,7 +24,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA_18C.MFD
     using System.Globalization;
     using System.Windows;
 
-    [HeliosControl("FA18C.AMPCD", "AMPCD", "F/A-18C", typeof(MFDRenderer))]
+    [HeliosControl("FA18C.AMPCD", "AMPCD", "F/A-18C", typeof(BackgroundImageRenderer))]
     class AMPCD_FA18C : Gauges.MFD
     {
         private static readonly Rect SCREEN_RECT = new Rect(88, 161, 551, 532);
@@ -69,7 +69,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA_18C.MFD
 
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{FA-18C}/Images/AMPCD frame.png"; }
         }

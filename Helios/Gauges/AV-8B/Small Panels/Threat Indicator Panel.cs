@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.ThreatIndicatorPanel", "Threat Indicator Panel", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.ThreatIndicatorPanel", "Threat Indicator Panel", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class ThreatIndicatorPanel: AV8BDevice
     {
         private string _interfaceDeviceName = "Threat Indicators";
@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddIndicator("AI", 108  , 139, new Size(45, 49), "AI");
             AddIndicator("AAA", 154, 203, new Size(45, 49), "AAA");
         }
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "Panel/Threat Indicator Panel.png"; }
         }

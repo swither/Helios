@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.VorIlsChannel
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("HELIOS.M2000C.VorIls_PANEL", "VOR/ILS Panel", "M2000C Gauges", typeof(M2000CDeviceRenderer))]
+    [HeliosControl("HELIOS.M2000C.VorIls_PANEL", "VOR/ILS Panel", "M2000C Gauges", typeof(BackgroundImageRenderer))]
     class M2000C_VorIlsPanel : M2000CDevice
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 350, 314);
@@ -53,7 +53,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.VorIlsChannel
 
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{M2000C}/Images/VorIlsPanel/vor-ils-panel.png"; }
         }

@@ -23,8 +23,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System.Windows.Threading;
 
 
-    [HeliosControl("Helios.AV8B.Advisory", "Advisory Indicators", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
-    class advisoryPanel : AV8BDevice
+    [HeliosControl("Helios.AV8B.Advisory", "Advisory Indicators", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
+    class AdvisoryPanel : AV8BDevice
     {
         // these three sections are the dead space in the UFC image.
         private static readonly Rect SCREEN_RECT1 = new Rect(265, 0, 290, 320);
@@ -35,7 +35,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         private String _font = "MS 33558";
         private string _interfaceDeviceName = "Advisory Indicators";
 
-        public advisoryPanel()
+        public AdvisoryPanel()
             : base("Advisory Indicators", new Size(555, 1024))
         {
             AddIndicator("OXY", new Point(22,86), new Size(104,40), "Advisory OXY");
@@ -87,7 +87,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddIndicator("REPLY", new Point(426, 909), new Size(104, 40), "Advisory REPLY");
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{AV-8B}/Images/Advisory Panel Frame.png"; }
         }

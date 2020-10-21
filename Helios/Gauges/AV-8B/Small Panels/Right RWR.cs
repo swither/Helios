@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.RWR", "RWR Panel", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.RWR", "RWR Panel", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class RWRPanel: AV8BDevice
     {
         private string _interfaceDeviceName = "RWR / ECM";
@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
 
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{AV-8B}/Images/WQHD/Panel/Right RWR.png"; }
         }

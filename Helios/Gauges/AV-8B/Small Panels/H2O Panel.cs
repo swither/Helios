@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.H2OPanel", "H2O Panel", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.H2OPanel", "H2O Panel", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class H2OPanel: AV8BDevice
     {
         private string _interfaceDeviceName = "LH Flaps & Water";
@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddThreeWayToggle("H2O", 55, 18, new Size(100, 134), "H2O Mode Switch");
 
         }
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/H2O.png"; }
         }

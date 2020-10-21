@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.MasterArmPanel", "Master Arm Panel", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.MasterArmPanel", "Master Arm Panel", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class MasterArmPanel: AV8BDevice
     {
         private string _interfaceDeviceName = "Master Modes";
@@ -41,7 +41,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddTwoWayToggle("Master Arm", 71, 747, new Size(74, 81), "Master Arm Switch");
             AddButton("Flare Salvo Button", 69, 518, new Size(86, 82), "Launch Flare Salvo");
         }
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Master Arm.png"; }
         }

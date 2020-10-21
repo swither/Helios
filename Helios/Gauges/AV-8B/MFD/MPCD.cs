@@ -70,7 +70,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         }
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{AV-8B}/Images/MPCD Bezel 2.png"; }
         }

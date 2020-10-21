@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// however it is exactly the same unit that exists in the older A-10C but moved rear-ward a little.
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10C.HARS", "HARS Panel", "A-10C Gauges", typeof(A10CDeviceRenderer), HeliosControlFlags.NotShownInUI)]
+    [HeliosControl("Helios.A10C.HARS", "HARS Panel", "A-10C Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class HARS_Panel : A10CDevice
     {
         // these two sections are the dead space in the HARS image.
@@ -131,7 +131,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 );
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "_Transparent.png"; }
         }

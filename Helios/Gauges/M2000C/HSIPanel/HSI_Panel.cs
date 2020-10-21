@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
     using System.Windows.Media;
     using GadrocsWorkshop.Helios.Gauges.M2000C.Mk2CNeedle;
 
-    [HeliosControl("HELIOS.M2000C.HSI_PANEL", "HSI Panel", "M2000C Gauges", typeof(M2000CDeviceRenderer))]
+    [HeliosControl("HELIOS.M2000C.HSI_PANEL", "HSI Panel", "M2000C Gauges", typeof(BackgroundImageRenderer))]
     class M2000C_HSIPanel : M2000CDevice
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 300, 287);
@@ -74,7 +74,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
 
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{M2000C}/Images/HSIPanel/hsi-panel.png"; }
         }

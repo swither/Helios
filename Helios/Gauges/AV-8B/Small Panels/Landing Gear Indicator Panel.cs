@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.GearIndicatorPanel", "Gear Indicator Panel", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.GearIndicatorPanel", "Gear Indicator Panel", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class GearIndicatorPanel: AV8BDevice
     {
         private string _interfaceDeviceName = "Landing Gear";
@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddIndicator("Main Green", 80, 287, new Size(82, 46), "Main");
             AddIndicator("Main Amber", 80, 345, new Size(82, 46), "Main Wrn");
         }
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Landing Gear Indicator.png"; }
         }

@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.EDP", "Engine Panel", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.EDP", "Engine Panel", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class EDP: AV8BDevice
     {
         private string _interfaceDeviceName = "EDP";
@@ -148,7 +148,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         {
             // No-Op
         }
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{Helios}/Gauges/AV-8B/Engine Panel/edp_faceplate.xaml"; }
         }

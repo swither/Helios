@@ -20,7 +20,7 @@ using GadrocsWorkshop.Helios.Controls;
 // ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios.Gauges.F_16.MFD
 {
-    [HeliosControl("F16.MFD", "MFD", "F-16", typeof(MFDRenderer))]
+    [HeliosControl("F16.MFD", "MFD", "F-16", typeof(BackgroundImageRenderer))]
     class MFD_F16 : Gauges.MFD
     {
         private static readonly Rect SCREEN_RECT = new Rect(67, 67, 341, 343);
@@ -62,7 +62,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F_16.MFD
 
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{Helios}/Images/F-16/mfd_bezel.png"; }
         }

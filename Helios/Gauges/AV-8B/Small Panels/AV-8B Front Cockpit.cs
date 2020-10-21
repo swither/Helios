@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System.Xml;
     using System.Globalization;
 
-    [HeliosControl("Helios.AV8B.Cockpit", "Front Cockpit", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.Cockpit", "Front Cockpit", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class FrontCockpit : AV8BDevice
     {
         private static readonly Double SCREENRES = 1.0;
@@ -82,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             base.OnProfileChanged(oldProfile);
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/AV8B Front Cockpit 2.png"; }
         }

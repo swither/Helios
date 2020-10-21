@@ -21,7 +21,7 @@ using GadrocsWorkshop.Helios.Controls;
 // ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios.Gauges.FA_18C.MFD
 {
-    [HeliosControl("FA18C.MPCD", "MPCD", "F/A-18C", typeof(MFDRenderer))]
+    [HeliosControl("FA18C.MPCD", "MPCD", "F/A-18C", typeof(BackgroundImageRenderer))]
     class MPCD_FA18C : Gauges.MFD
     {
         private static readonly Rect SCREEN_RECT = new Rect(72, 137, 497, 493);
@@ -62,7 +62,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA_18C.MFD
 
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{FA-18C}/Images/MPCD frame.png"; }
         }

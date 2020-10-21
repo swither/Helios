@@ -13,15 +13,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.DCS.FA18C;
 
 namespace GadrocsWorkshop.Helios.Gauges.FA18C
 {
     using System.Windows;
 
-    abstract class FA18CDevice : CompositeVisual
+    abstract class FA18CDevice : CompositeVisual, IBackgroundImage
     {
-        public FA18CDevice(string name, Size size)
+        protected FA18CDevice(string name, Size size)
             : base(name, size)
         {
             SupportedInterfaces = new[] { typeof(FA18CInterface) };
@@ -29,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
 
         #region Properties
 
-        public abstract string BezelImage { get; }
+        public abstract string BackgroundImage { get; }
 
         #endregion
     }

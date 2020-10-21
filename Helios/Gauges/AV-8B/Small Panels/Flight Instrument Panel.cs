@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.FlightInstruments", "Flight Instrument Panel", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.FlightInstruments", "Flight Instrument Panel", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class FlightInstrumentPanel: AV8BDevice
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
@@ -64,7 +64,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             }
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Flight Instruments.png"; }
         }

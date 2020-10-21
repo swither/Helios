@@ -29,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System.Windows.Threading;
 
 
-    [HeliosControl("Helios.AV8B.ODU", "Option Display Unit", "AV-8B Gauges", typeof(AV8BDeviceRenderer), HeliosControlFlags.NotShownInUI)]
+    [HeliosControl("Helios.AV8B.ODU", "Option Display Unit", "AV-8B Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class ODU_AV8B : AV8BDevice
     {
         // these three sections are the dead space in the ODU image.
@@ -50,7 +50,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddButton("ODU 5", 39, 128, new Size(36, 36));
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{AV-8B}/Images/ODU.png"; }
         }

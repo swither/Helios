@@ -13,13 +13,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Controls;
+
 namespace GadrocsWorkshop.Helios.Gauges.M2000C
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("HELIOS.M2000C.DEMAR_PANEL", "Demar Indicator Panel", "M2000C Gauges", typeof(M2000CDeviceRenderer))]
+    [HeliosControl("HELIOS.M2000C.DEMAR_PANEL", "Demar Indicator Panel", "M2000C Gauges", typeof(BackgroundImageRenderer))]
     class M2000C_DEMARPanel : M2000CDevice
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 40, 40);
@@ -35,7 +37,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
 
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{M2000C}/Images/Miscellaneous/demar-panel.png"; }
         }

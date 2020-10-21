@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// It has a slightly different name because the old version is retained to help with backward compatability
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10C.MISC.Panel.Right", "Blanking Panel Right", "A-10C Gauges", typeof(A10CDeviceRenderer))]
+    [HeliosControl("Helios.A10C.MISC.Panel.Right", "Blanking Panel Right", "A-10C Gauges", typeof(BackgroundImageRenderer))]
     class RightBlank : A10CDevice
     {
         // these three sections are the dead space in the HARS image.
@@ -39,7 +39,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         {
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "A-10CII_Right_Blank_Panel.png"; }
         }

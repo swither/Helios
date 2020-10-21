@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// This is the a panel for the A-10CII Scorpion HMCS system
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10C.HMCS", "Scorpion HMCS Panel", "A-10C Gauges", typeof(A10CDeviceRenderer))]
+    [HeliosControl("Helios.A10C.HMCS", "Scorpion HMCS Panel", "A-10C Gauges", typeof(BackgroundImageRenderer))]
     class HMCS : A10CDevice
     {
         // these two sections are the dead space in the HMCS image.
@@ -53,7 +53,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         }
 
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "A-10CII_HMCS_Panel.png"; }
         }

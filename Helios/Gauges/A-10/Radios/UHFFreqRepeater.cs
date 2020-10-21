@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// </summary>
     /// 
 
-    [HeliosControl("Helios.A10.UHFFreqRepeater", "UHF Freq Repeater", "A-10C Gauges", typeof(A10CDeviceRenderer))]
+    [HeliosControl("Helios.A10.UHFFreqRepeater", "UHF Freq Repeater", "A-10C Gauges", typeof(BackgroundImageRenderer))]
     class UHFFreqRepeater : A10CDevice
     {
 
@@ -60,7 +60,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             base.OnProfileChanged(oldProfile);
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "A-10C_UHF_Repeater_Filter_Panel.png"; }
         }

@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.SMC", "Stores Management Panel", "AV-8B Gauges", typeof(AV8BDeviceRenderer), HeliosControlFlags.NotShownInUI)]
+    [HeliosControl("Helios.AV8B.SMC", "Stores Management Panel", "AV-8B Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class SMC_AV8B : AV8BDevice
     {
 
@@ -80,7 +80,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddAction(_gauge.Actions["set.value"], name);
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{AV-8B}/Images/AV-8B SMC faceplate 0.png"; }
         }

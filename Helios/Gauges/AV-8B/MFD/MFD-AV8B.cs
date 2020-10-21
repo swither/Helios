@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Globalization;
     using System.Windows;
 
-    [HeliosControl("AV8B.MPCD", "MPCD", "AV-8B Gauges", typeof(MFDRenderer), HeliosControlFlags.NotShownInUI)]
+    [HeliosControl("AV8B.MPCD", "MPCD", "AV-8B Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class MPCD_AV8B : MFD
     {
         private static readonly Rect SCREEN_RECT = new Rect(44,85, 345, 317);
@@ -68,7 +68,7 @@ namespace GadrocsWorkshop.Helios.Controls
         }
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{AV-8B}/Images/MPCD bezel.png"; }
         }

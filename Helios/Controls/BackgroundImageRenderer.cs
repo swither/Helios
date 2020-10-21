@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2019 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,56 +16,52 @@
 
 using System.Windows;
 using System.Windows.Media;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 
-namespace GadrocsWorkshop.Helios.Gauges
+namespace GadrocsWorkshop.Helios.Controls
 {
-    class MFDRenderer : HeliosVisualRenderer
+    public class BackgroundImageRenderer : HeliosVisualRenderer
     {
-        private ImageBrush _bezel;
-        private Rect _bezelRectangle;
+        private ImageBrush _backgroundBrush;
+        private Rect _backgroundRectangle;
 
-        protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+        protected override void OnRender(DrawingContext drawingContext)
         {
-            MFD mfd = Visual as MFD;
-
-            if (mfd != null)
+            if (Visual is IBackgroundImage)
             {
-                drawingContext.DrawRectangle(_bezel, null, _bezelRectangle);
+                drawingContext.DrawRectangle(_backgroundBrush, null, _backgroundRectangle);
             }
         }
 
         protected override void OnRefresh()
         {
-            MFD mfd = Visual as MFD;
-
-            if (mfd != null)
+            if (Visual is IBackgroundImage control)
             {
-                _bezelRectangle = new Rect(0, 0, mfd.Width, mfd.Height);
-
-                _bezel = CreateImageBrush(mfd.BezelImage);
+                _backgroundRectangle = new Rect(0, 0, Visual.Width, Visual.Height);
+                _backgroundBrush = CreateImageBrush(control.BackgroundImage);
             }
             else
             {
-                _bezel = null;
+                _backgroundBrush = null;
             }
         }
 
         private ImageBrush CreateImageBrush(string imagefile)
         {
             ImageSource image = ConfigManager.ImageManager.LoadImage(imagefile);
-
-            if (image != null)
+            if (image == null)
             {
-                ImageBrush imageBrush = new ImageBrush(image);
-                imageBrush.Stretch = Stretch.Fill;
-                imageBrush.TileMode = TileMode.None;
-                imageBrush.Viewport = new Rect(0d, 0d, 1d, 1d);
-                imageBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
-
-                return imageBrush;
+                return null;
             }
 
-            return null;
+            ImageBrush imageBrush = new ImageBrush(image)
+            {
+                Stretch = Stretch.Fill,
+                TileMode = TileMode.None,
+                Viewport = new Rect(0d, 0d, 1d, 1d),
+                ViewportUnits = BrushMappingMode.RelativeToBoundingBox
+            };
+            return imageBrush;
         }
     }
 }

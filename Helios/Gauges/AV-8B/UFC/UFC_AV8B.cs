@@ -29,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System.Windows.Threading;
 
 
-    [HeliosControl("Helios.AV8B.UFC", "Up Front Controller", "AV-8B Gauges", typeof(AV8BDeviceRenderer), HeliosControlFlags.NotShownInUI)]
+    [HeliosControl("Helios.AV8B.UFC", "Up Front Controller", "AV-8B Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class UFC_AV8B : AV8BDevice
     {
         // these three sections are the dead space in the UFC image.
@@ -105,7 +105,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
 
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{AV-8B}/Images/AV-8B UFC 1080.png"; }
         }

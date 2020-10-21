@@ -125,6 +125,7 @@ namespace GadrocsWorkshop.Helios
 
         /// <summary>
         /// Renders this control in the given drawing context.
+        /// Must not do any expensive such as image loads or brush creation, since it is called on every frame.
         /// </summary>
         /// <param name="drawingContext">Context on which to draw this control.</param>
         protected abstract void OnRender(DrawingContext drawingContext);

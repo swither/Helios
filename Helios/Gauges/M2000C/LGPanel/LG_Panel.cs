@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("HELIOS.M2000C.LG_PANEL", "Landing Gear Panel", "M2000C Gauges", typeof(M2000CDeviceRenderer))]
+    [HeliosControl("HELIOS.M2000C.LG_PANEL", "Landing Gear Panel", "M2000C Gauges", typeof(BackgroundImageRenderer))]
     class M2000C_LGPanel : M2000CDevice
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 300, 390);
@@ -70,7 +70,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
 
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{M2000C}/Images/LGPanel/lg-panel.png"; }
         }

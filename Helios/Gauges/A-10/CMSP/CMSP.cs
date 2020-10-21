@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// This is a version of the Counter Measure System Panel which uses a bespoke font to provide data in a text display instead of cutouts for the exported viewport.
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10C.CMSP", "Counter Measures System Panel", "A-10C Gauges", typeof(A10CDeviceRenderer))]
+    [HeliosControl("Helios.A10C.CMSP", "Counter Measures System Panel", "A-10C Gauges", typeof(BackgroundImageRenderer))]
     class CMSP : A10CDevice
     {
         // these two sections are the dead space in the CMSP image.
@@ -77,7 +77,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         }
 
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "A-10C_CMSP_Filter_Panel.png"; }
         }

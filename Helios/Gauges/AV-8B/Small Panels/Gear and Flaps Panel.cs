@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.AV8B.GearPanel", "Flaps & Landing Gear Panel", "AV-8B Gauges", typeof(AV8BDeviceRenderer))]
+    [HeliosControl("Helios.AV8B.GearPanel", "Flaps & Landing Gear Panel", "AV-8B Gauges", typeof(BackgroundImageRenderer))]
     class GearPanel: AV8BDevice
     {
         private string _interfaceDeviceName = "Landing Gear";
@@ -54,7 +54,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             _flapDisplay.Components.RemoveAt(0);  // remove the inter-digit background
             AddDisplay("Flaps Position", _flapDisplay, new Point(532, 76), new Size(86, 68), "Flaps position");
         }
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Flaps and Landing Gear.png"; }
         }

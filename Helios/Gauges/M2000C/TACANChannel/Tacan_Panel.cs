@@ -24,7 +24,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.TACANChannel
     using GadrocsWorkshop.Helios.Gauges.M2000C.Mk2CDrumTacanChannel;
     using System.Windows.Media;
 
-    [HeliosControl("HELIOS.M2000C.TACAN_PANEL", "Tacan Panel", "M2000C Gauges", typeof(M2000CDeviceRenderer))]
+    [HeliosControl("HELIOS.M2000C.TACAN_PANEL", "Tacan Panel", "M2000C Gauges", typeof(BackgroundImageRenderer))]
     class M2000C_TacanPanel : M2000CDevice
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 256, 280);
@@ -51,7 +51,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.TACANChannel
 
         #region Properties
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return "{M2000C}/Images/TacanPanel/tacan-panel.png"; }
         }

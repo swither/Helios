@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// This is the revised version of the A-10C UHF Radio which uses text displays instead of cutouts for the exported viewport.
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10C.UHFRadio", "UFH Radio", "A-10C Gauges", typeof(A10CDeviceRenderer))]
+    [HeliosControl("Helios.A10C.UHFRadio", "UFH Radio", "A-10C Gauges", typeof(BackgroundImageRenderer))]
     class UHFRadio : A10CDevice
     {
 
@@ -82,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             AddLoadButton("Load Button",74, 175, new Size(36, 37), "Load Button");
         }
 
-        public override string BezelImage
+        public override string BackgroundImage
         {
             get { return _imageLocation + "A-10C_UHF_Radio.png"; }
         }

@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentModel\HeliosToolAttribute.cs" />
+    <Compile Include="Controls\Capabilities\IBackgroundImage.cs" />
     <Compile Include="Controls\Capabilities\IRotarySwitch.cs" />
     <Compile Include="Controls\Special\CalibrationFilter.cs" />
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
@@ -474,7 +475,6 @@
     <Compile Include="Controls\LineDecorationRenderer.cs" />
     <Compile Include="FontManager.cs" />
     <Compile Include="Gauges\A-10\A10CDevice\A10CDevice.cs" />
-    <Compile Include="Gauges\A-10\A10CDevice\A10CDeviceRenderer.cs" />
     <Compile Include="Controls\Metric.cs" />
     <Compile Include="Controls\MetricRenderer.cs" />
     <Compile Include="Controls\PulseType.cs" />
@@ -493,7 +493,6 @@
     <Compile Include="Gauges\AV-8B\SMC\3 Digit Display\3DigitDisplay.cs" />
     <Compile Include="Gauges\AV-8B\UFC\UFC_AV8B.cs" />
     <Compile Include="Gauges\F-14B\F14BDevice\F14BDevice.cs" />
-    <Compile Include="Gauges\F-14B\F14BDevice\F14BDeviceRenderer.cs" />
     <Compile Include="Gauges\FA-18C\ADI\ADI.cs" />
     <Compile Include="Gauges\FA-18C\Altimeter\BarometricAltimeter.cs" />
     <Compile Include="Gauges\FA-18C\Altimeter\RADARAltimeter.cs" />
@@ -513,7 +512,6 @@
     <Compile Include="Gauges\A-10\MFD\MFD_A10.cs" />
     <Compile Include="Gauges\F-16\MFD\MFD_F16.cs" />
     <Compile Include="Gauges\MFD.cs" />
-    <Compile Include="Gauges\MFDRenderer.cs" />
     <Compile Include="Controls\Potentiometer.cs" />
     <Compile Include="Controls\PotentiometerAppearanceEditor.xaml.cs">
       <DependentUpon>PotentiometerAppearanceEditor.xaml</DependentUpon>
@@ -628,7 +626,7 @@
     <Compile Include="Gauges\AV-8B\SMC\smcDisplay.cs" />
     <Compile Include="Gauges\AV-8B\SMC\SMC.cs" />
     <Compile Include="Gauges\AV-8B\AV8BDevice\AV8BDevice.cs" />
-    <Compile Include="Gauges\AV-8B\AV8BDevice\AV8BDeviceRenderer.cs" />
+    <Compile Include="Controls\BackgroundImageRenderer.cs" />
     <Compile Include="Gauges\AV-8B\stabiliser display\StabilizerDisplay.cs" />
     <Compile Include="Gauges\AV-8B\1 Digit Display\1DigitDisplay.cs" />
     <Compile Include="Gauges\AV-8B\ADI\SlipTurn.cs" />
@@ -648,7 +646,6 @@
     <Compile Include="Gauges\AV-8B\VVI\VVI Old.cs" />
     <Compile Include="Gauges\BaseGauge.cs" />
     <Compile Include="Gauges\FA-18C\FA18CDevice\FA18CDevice.cs" />
-    <Compile Include="Gauges\FA-18C\FA18CDevice\FA18CDeviceRenderer.cs" />
     <Compile Include="Gauges\FA-18C\UFC\UFC.cs" />
     <Compile Include="Gauges\FA-18C\IFEI\IFEI.cs" />
     <Compile Include="Gauges\FA-18C\VVI\VVI.cs" />
@@ -691,9 +688,14 @@
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
     <None Include="Assets\Helios_ADI.odg" />
     <None Include="Assets\render.cmd" />
-    <Content Include="Fonts\*.ttf">
+    <None Include="Fonts\A-10C_ALQ_213.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
+    <None Include="Fonts\A-10C_ARC_164.ttf" />
+    <None Include="Fonts\A-10C_Digital_Clock.ttf" />
+    <None Include="Fonts\F-16C_Viper_DED.ttf" />
+    <None Include="Fonts\FA-18C_Hornet_IFEI.ttf" />
+    <None Include="Fonts\FA-18C_Hornet_Up_Front_Controller.ttf" />
     <None Include="Images\A-10\readme.md" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
     <None Include="Interfaces\Falcon\readme.md" />
@@ -763,7 +765,6 @@
     <Compile Include="Gauges\KA-50\Tachometer\Tachometer.cs" />
     <Compile Include="Gauges\KA-50\VVI\VVI.cs" />
     <Compile Include="Gauges\M2000C\M2000CDevice\M2000CDevice.cs" />
-    <Compile Include="Gauges\M2000C\M2000CDevice\M2000CDeviceRenderer.cs" />
     <Compile Include="Gauges\M2000C\MCLPanel\MCL_Panel.cs" />
     <Compile Include="Gauges\M2000C\TACANChannel\Tacan_Panel.cs" />
     <Compile Include="Gauges\Mi-8\ADI\ADI.cs" />
@@ -1092,7 +1093,11 @@
     <Resource Include="Interfaces\DCS\Generic\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\M2000C\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\Mi8Simple\ExportFunctions.lua" />
+    <None Include="Fonts\Helios font registration.reg" />
     <Resource Include="Images\General\HeliosIcon.png" />
+    <Content Include="Fonts\MS33558.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Interfaces\DCS\F14B\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C1.lua" />
     <Resource Include="Interfaces\DCS\Common\Export.lua" />
