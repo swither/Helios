@@ -56,6 +56,7 @@ del /q "Helios\Templates\Base\Simulator Viewports\*.htpl"
 rmdir /s /q "Helios Installer\Release"
 rmdir /s /q "Helios Installer\Release32"
 rmdir /s /q "Keypress Receiver Installer\Release"
+rmdir /s /q "Tools Installer\Release"
 MSBuild.exe -binaryLogger:LogFile=clean.binlog -clp:WarningsOnly -warnAsMessage:MSB4078 -p:Configuration=Release;Platform=x64 -t:Clean Helios.sln
 MSBuild.exe -binaryLogger:LogFile=clean32.binlog -clp:WarningsOnly -warnAsMessage:MSB4078 -p:Configuration=Release;Platform=AnyCPU32 -t:Clean Helios.sln
 rmdir /s /q bin
