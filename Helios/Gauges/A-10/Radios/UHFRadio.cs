@@ -28,13 +28,11 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     [HeliosControl("Helios.A10C.UHFRadio", "UFH Radio", "A-10C Gauges", typeof(BackgroundImageRenderer))]
     class UHFRadio : A10CDevice
     {
-
-        private string _interfaceDeviceName = "UHF Radio";
-        private string _imageLocation = "{A-10C}/Images/A-10CII/";
-        private RotarySwitchPositionCollection positions = new RotarySwitchPositionCollection();
-        private IConfigurableBackgroundImage _channelDisplay;
-        private IConfigurableBackgroundImage _frequencyDisplay;
-        private static readonly Double SCREENRES = 1.0;
+        private const double SCREENRES = 1.0;
+        private readonly string _interfaceDeviceName = "UHF Radio";
+        private readonly string _imageLocation = "{A-10C}/Images/A-10CII/";
+        private readonly IConfigurableBackgroundImage _channelDisplay;
+        private readonly IConfigurableBackgroundImage _frequencyDisplay;
 
         public UHFRadio()
             : base("UHF Radio", new Size(625, 580))
@@ -286,6 +284,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 interfaceDeviceName: interfaceDevice,
                 interfaceElementName: interfaceElement
             );
+
+            // NOTE: this shortens the name of the generated part
             newPart.Name = name;
             return newPart;
         }
