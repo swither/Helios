@@ -17,10 +17,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
-    using System;
-    using System.Windows.Media;
     using System.Windows;
-    using System.Windows.Threading;
+    using System.Windows.Media;
 
     /// <summary>
     /// This is a version of the Counter Measure System Panel which uses a bespoke font to provide data in a text display instead of cutouts for the exported viewport.
@@ -35,14 +33,24 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         private string _interfaceDeviceName = "CMSP";
         private string _CMSPConversion = "";  // One character (diamond which might need this, but so far not seen this character being sent)
         private string _imageLocation = "{A-10C}/Images/A-10C/";
-        private RotarySwitchPositionCollection _positions = new RotarySwitchPositionCollection();
+        private readonly RotarySwitchPositionCollection _positions = new RotarySwitchPositionCollection();
+
+        /// <summary>
+        /// a panel that is also installed as one of our children
+        /// </summary>
+        private readonly HeliosPanel _bezel;
+
+        /// <summary>
+        /// the image we use as the background or our panel, if we are using default backgrounds
+        /// </summary>
+        private const string PANEL_IMAGE = "A-10C_CMSP_Panel.png";
 
         public CMSP()
             : base("CMSP", new Size(666, 404))
         {
             //AddPanel("Filters", new Point(0, 0), new Size(666, 404), _imageLocation + "A-10C_CMSP_Filter_Panel.png", _interfaceDeviceName, "Display Filters");
             AddTextDisplay("Display Line 1 Text", 73, 35, new Size(430, 50), "Line 1 Display", "a1B2C3D4m5s6x7O8", "    =[]]]];   =[]]];  =[]]; =][;");  // These substitutions are for blanks of different widths
-            AddPanel("Bezel", new Point(0, 0), new Size(666, 404), _imageLocation + "A-10C_CMSP_Panel.png", _interfaceDeviceName, "CMSP Bezel");
+            _bezel = AddPanel("Bezel", new Point(0, 0), new Size(666, 404), _imageLocation + PANEL_IMAGE, _interfaceDeviceName, "CMSP Bezel");
             AddOSBButton("OSB 1", 86, 168, new Size(64, 64), "OSB 1");
             AddOSBButton("OSB 2", 175, 168, new Size(64, 64), "OSB 2");
             AddOSBButton("OSB 3", 275, 168, new Size(64, 64), "OSB 3");
@@ -76,10 +84,11 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             knob.IsContinuous = false;
         }
 
+        public override string DefaultBackgroundImage => _imageLocation + "A-10C_CMSP_Filter_Panel.png";
 
-        public override string DefaultBackgroundImage
+        protected override void OnBackgroundImageChange()
         {
-            get { return _imageLocation + "A-10C_CMSP_Filter_Panel.png"; }
+            _bezel.BackgroundImage = BackgroundImageIsCustomized ? null : System.IO.Path.Combine(_imageLocation, PANEL_IMAGE);
         }
 
         private void AddOSBButton(string name, double x, double y, Size size, string interfaceElement)
@@ -205,42 +214,5 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 interfaceTriggerName: _interfaceDeviceName + "." + interfaceElementName + ".changed",
                 deviceActionName: "set.position");
         }
-
-        private void AddPanel(string name, Point posn, Size size, string background, string interfaceDevice, string interfaceElement)
-        {
-            HeliosPanel _panel = AddPanel(
-                name: name,
-                posn: posn,
-                size: size,
-                background: background
-                );
-            _panel.FillBackground = false;
-            _panel.DrawBorder = false;
-        }
-
-        public override bool HitTest(Point location)
-        {
-            //if (_scaledScreenRectTL.Contains(location) || _scaledScreenRectB.Contains(location))
-            //{
-            //    return false;
-            //}
-
-            return true;
-        }
-        public override void MouseDown(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseDrag(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseUp(Point location)
-        {
-            // No-Op
-        }
-
     }
 }

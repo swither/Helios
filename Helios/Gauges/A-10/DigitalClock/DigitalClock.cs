@@ -14,20 +14,17 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace GadrocsWorkshop.Helios.Gauges.A10C
-{ 
+{
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
     using System;
     using System.Windows;
     using System.Windows.Media;
-    using System.Xml;
-    using System.Globalization;
 
     /// <summary>
     /// This is the A-10C Digital Clock panel which uses text displays instead of cutouts for the exported viewport.
     /// </summary>
     /// 
-
     [HeliosControl("Helios.A10.DigitalClock", "Digital Clock", "A-10C Gauges", typeof(BackgroundImageRenderer))]
     class DigitalClock : A10CDevice
     {
@@ -40,7 +37,9 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         private String _font = "Helios Virtual Cockpit A-10C_Digital_Clock";
         private Color _textColor = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
         private Color _backGroundColor = Color.FromArgb(0, 100, 20, 50);
-
+        private readonly HeliosPanel _bezel;
+        private const string PANEL_IMAGE = "A-10C_Digital_Clock_Bezel.png";
+        private const string REFLECTION_IMAGE = "Pilot_Reflection_25.png";
 
         public DigitalClock()
             : base("DigitalClock", new Size(414d, 405d))
@@ -53,26 +52,19 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 "88", _interfaceDeviceName, "Time Seconds");
             AddTextDisplay("Clock Function", 180, 258, new Size(53, 60), 36d,
                 "CET", _interfaceDeviceName, "Clock Function Type");
-            _glass = AddPanel("Digital Clock Reflection", new Point(0,0), new Size(414d, 405d), _imageLocation + "Pilot_Reflection_25.png","relection");
+            _glass = AddPanel("Digital Clock Reflection", new Point(0,0), new Size(414d, 405d), _imageLocation + REFLECTION_IMAGE,"relection");
             _glass.Opacity = GLASS_REFLECTION_OPACITY_DEFAULT;
-            HeliosPanel bezel = AddPanel("Digital Clock Bezel", new Point(0, 0), new Size(414d, 405d), _imageLocation + "A-10C_Digital_Clock_Bezel.png", "bezel");
+            _bezel = AddPanel("Digital Clock Bezel", new Point(0, 0), new Size(414d, 405d), _imageLocation + PANEL_IMAGE, "bezel");
             AddButton("Select", 65, 340, new Size(60, 60), "Toggle Clock and Elapsed Time Modes");
             AddButton("Control", 291, 340, new Size(60, 60), "Start, Stop and Reset Elapsed Timer");
         }
 
-        #region Properties
-        #endregion 
+        public override string DefaultBackgroundImage => _imageLocation + "_Transparent.png";
 
-
-
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
+        protected override void OnBackgroundImageChange()
         {
-            base.OnProfileChanged(oldProfile);
-        }
-
-        public override string DefaultBackgroundImage
-        {
-            get { return _imageLocation + "_Transparent.png"; }
+            _bezel.BackgroundImage = BackgroundImageIsCustomized ? null : System.IO.Path.Combine(_imageLocation, PANEL_IMAGE);
+            _glass.BackgroundImage = BackgroundImageIsCustomized ? null : System.IO.Path.Combine(_imageLocation, REFLECTION_IMAGE);
         }
 
         private void AddClock(string name, double x, double y, Size size, string interfaceDevice, string interfaceElement)
@@ -145,43 +137,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 fromCenter: false
                 );
         }
-        private HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceElement)
-        {
-            HeliosPanel _panel = AddPanel(
-                name: name,
-                posn: posn,
-                size: size,
-                background: background
-                );
-            _panel.FillBackground = false;
-            _panel.DrawBorder = false;
-            return _panel;
-        }
 
-        public override bool HitTest(Point location)
-        {
-            //if (_scaledScreenRect.Contains(location))
-            //{
-                return false;
-            //}
-
-            //return true;
-        }
-
-        public override void MouseDown(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseDrag(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseUp(Point location)
-        {
-            // No-Op
-        }
-
+        // unclickable
+        public override bool HitTest(Point location) => false;
     }
 }

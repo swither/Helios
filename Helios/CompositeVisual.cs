@@ -951,6 +951,7 @@ namespace GadrocsWorkshop.Helios
             gauge.Width = size.Width;
             gauge.Height = size.Height;
 
+            // XXX what is going on here?  we just set Name above
             string componentName = GetComponentName(name);
             gauge.Name = componentName;
 
@@ -980,6 +981,7 @@ namespace GadrocsWorkshop.Helios
             device.Width = size.Width;
             device.Height = size.Height;
 
+            // XXX what is going on here?  we just set Name above
             string componentName = GetComponentName(name);
             device.Name = componentName;
 
@@ -1021,6 +1023,7 @@ namespace GadrocsWorkshop.Helios
             gauge.Width = size.Width;
             gauge.Height = size.Height;
 
+            // XXX what is going on here?  we just set Name above
             string componentName = GetComponentName(name);
             gauge.Name = componentName;
 
@@ -1045,6 +1048,7 @@ namespace GadrocsWorkshop.Helios
             }
             return gauge;
         }
+
         protected HeliosPanel AddPanel(string name, Point posn, Size size, string background)
         {
             HeliosPanel panel = new HeliosPanel

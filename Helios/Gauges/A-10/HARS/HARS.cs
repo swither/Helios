@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,15 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios.Gauges.A10C
 {
-    using GadrocsWorkshop.Helios.Gauges;
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
-    using System;
-    using System.Windows.Media;
     using System.Windows;
-    using System.Windows.Threading;
 
     /// <summary>
     /// This is the revised version of the A-10C HARS panel which is designed for the A-10C II
@@ -36,14 +34,15 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         //private Rect _scaledScreenRectB = new Rect(76, 384, 648, 87);
         private string _interfaceDeviceName = "HARS";
         private string _imageLocation = "{A-10C}/Images/A-10C/";
+        private readonly HeliosPanel _bezel;
+        const string HARS_PANEL_PNG = "A-10C_HARS_Panel.png";
 
         public HARS_Panel()
             : base("HARS", new Size(798, 306))
         {
             AddGauge("HARS_Sync Offset", new A10C.HARS.HARSSync(),new Point(230,24),new Size(137,79),_interfaceDeviceName, "SYN-IND Sync Needle");
             AddPanel("Scale Reflection", new Point(230, 24), new Size(137, 91), _imageLocation + "crystal_small.png", _interfaceDeviceName, "HARS Scale Reflection");
-            AddPanel("HARS Bezel", new Point(0,0), new Size(798, 306), _imageLocation + "A-10C_HARS_Panel.png", _interfaceDeviceName, "HARS Scale Reflection");
-
+            _bezel = AddPanel("HARS Bezel", new Point(0,0), new Size(798, 306), _imageLocation + HARS_PANEL_PNG, _interfaceDeviceName, "HARS Bezel");
             AddToggleSwitch(
                     name: "Hemisphere Selector",
                     posn: new Point(500, 213),
@@ -131,46 +130,11 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 );
         }
 
-        public override string DefaultBackgroundImage
+        protected override void OnBackgroundImageChange()
         {
-            get { return _imageLocation + "_Transparent.png"; }
+            _bezel.BackgroundImage = BackgroundImageIsCustomized ? null : System.IO.Path.Combine(_imageLocation, HARS_PANEL_PNG);
         }
 
-         private void AddPanel(string name, Point posn, Size size, string background, string interfaceDevice, string interfaceElement)
-        {
-            HeliosPanel _panel = AddPanel(
-                name: name,
-                posn: posn,
-                size: size,
-                background: background
-                );
-            _panel.FillBackground = false;
-            _panel.DrawBorder = false;
-        }
-
-        public override bool HitTest(Point location)
-        {
-            //if (_scaledScreenRectTL.Contains(location) || _scaledScreenRectB.Contains(location))
-            //{
-            //    return false;
-            //}
-
-            return true;
-        }
-        public override void MouseDown(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseDrag(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseUp(Point location)
-        {
-            // No-Op
-        }
-
+        public override string DefaultBackgroundImage => _imageLocation + "_Transparent.png";
     }
 }

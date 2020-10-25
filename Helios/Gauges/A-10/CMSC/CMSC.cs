@@ -13,14 +13,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios.Gauges.A10C
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
-    using System;
-    using System.Windows.Media;
     using System.Windows;
-    using System.Windows.Threading;
+    using System.Windows.Media;
 
     /// <summary>
     /// This is a version of the Counter Measure System Controller which uses a bespoke font to provide data in a text display instead of cutouts for the exported viewport.
@@ -35,12 +34,13 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         private string _interfaceDeviceName = "CMSC";
         private string _cmscConversion = "";  // One character (diamond which might need this, but so far not seen this character being sent)
         private string _imageLocation = "{A-10C}/Images/A-10C/";
-
+        private readonly HeliosPanel _filters;
+        private const string PANEL_IMAGE = "A-10C_CMSC_Filter_Panel.png";
 
         public CMSC()
             : base("CMSC", new Size(1476, 520))
         {
-            AddPanel("Filters", new Point(0,0), new Size(1476, 520), _imageLocation + "A-10C_CMSC_Filter_Panel.png", _interfaceDeviceName, "Display Filters");
+            _filters = AddPanel("Filters", new Point(0,0), new Size(1476, 520), _imageLocation + PANEL_IMAGE, _interfaceDeviceName, "Display Filters");
             AddRWRButton("Pri Button", 860, 321, new Size(96,96), "Priority Button");
             AddRWRButton("Sep Button", 1046, 321, new Size(96, 96), "Separate Button");
             AddRWRButton("Unk Button", 1235, 321, new Size(96, 96), "Unknown Button");
@@ -59,9 +59,11 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             AddIndicator("Indicator: Unknown", "Green", 1250, 222, new Size(48, 48), "Unknown Status Indicator");
         }
 
-        public override string DefaultBackgroundImage
+        public override string DefaultBackgroundImage => _imageLocation + "A-10C_CMSC_Panel.png";
+
+        protected override void OnBackgroundImageChange()
         {
-            get { return _imageLocation + "A-10C_CMSC_Panel.png"; }
+            _filters.BackgroundImage = BackgroundImageIsCustomized ? null : System.IO.Path.Combine(_imageLocation, PANEL_IMAGE);
         }
 
         private void AddOSBButton(string name, double x, double y, Size size, string interfaceElement)
@@ -93,6 +95,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 fromCenter: false
                );
         }
+
         private void AddPot(string name, Point posn, Size size, string interfaceElementName)
         {
             AddPot(name: name,
@@ -110,6 +113,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 isContinuous: true,
                 fromCenter: false);
         }
+
         private void AddTextDisplay(string name, double x, double y, Size size,
             string interfaceElementName, string testDisp, string conversionDictionary)
         {
@@ -130,6 +134,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 textDisplayDictionary: conversionDictionary
                 );
         }
+
         private void AddIndicator(string name, string colour, double x, double y, Size size, string interfaceElementName) { AddIndicator(name, colour, x, y, size, false, interfaceElementName); }
         private void AddIndicator(string name, string colour, double x, double y, Size size, bool _vertical, string interfaceElementName)
         {
@@ -150,41 +155,5 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             indicator.Text = "";
             indicator.Name = "CMSC_" + name;
         }
-        private void AddPanel(string name, Point posn, Size size, string background, string interfaceDevice, string interfaceElement)
-        {
-            HeliosPanel _panel = AddPanel(
-                name: name,
-                posn: posn,
-                size: size,
-                background: background
-                );
-            _panel.FillBackground = false;
-            _panel.DrawBorder = false;
-        }
-
-        public override bool HitTest(Point location)
-        {
-            //if (_scaledScreenRectTL.Contains(location) || _scaledScreenRectB.Contains(location))
-            //{
-            //    return false;
-            //}
-
-            return true;
-        }
-        public override void MouseDown(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseDrag(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseUp(Point location)
-        {
-            // No-Op
-        }
-
     }
 }

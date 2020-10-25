@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System;
 using System.Windows;
 using System.Xml;
 using GadrocsWorkshop.Helios.Controls.Capabilities;
@@ -35,6 +36,11 @@ namespace GadrocsWorkshop.Helios.Gauges
         public abstract string DefaultBackgroundImage { get; }
 
         /// <summary>
+        /// true if the current background image is not the same as the default provided for the class
+        /// </summary>
+        protected bool BackgroundImageIsCustomized => BackgroundImage != DefaultBackgroundImage;
+
+        /// <summary>
         /// the Helios image path for the background/bezel image shown below all child controls
         /// </summary>
         public string BackgroundImage
@@ -46,8 +52,19 @@ namespace GadrocsWorkshop.Helios.Gauges
                 string oldValue = _backgroundImage;
                 _backgroundImage = value;
                 OnPropertyChanged("BackgroundImage", oldValue, value, true);
+                OnBackgroundImageChange();
                 Refresh();
             }
+        }
+
+        /// <summary>
+        /// after UI configuration change or deserialization, for example used to
+        /// adjust any additional background images to hide them
+        /// if a custom background was configured
+        /// </summary>
+        protected virtual void OnBackgroundImageChange()
+        {
+            // no code in base
         }
 
         protected CompositeVisualWithBackgroundImage(string name, Size nativeSize) : base(name, nativeSize)
@@ -64,7 +81,7 @@ namespace GadrocsWorkshop.Helios.Gauges
         public override void WriteXml(XmlWriter writer)
         {
             base.WriteXml(writer);
-            if (BackgroundImage != DefaultBackgroundImage)
+            if (BackgroundImageIsCustomized)
             {
                 writer.WriteElementString("BackgroundImage", BackgroundImage);
             }
@@ -77,10 +94,13 @@ namespace GadrocsWorkshop.Helios.Gauges
         public override void ReadXml(XmlReader reader)
         {
             base.ReadXml(reader);
-            if (reader.Name == "BackgroundImage")
+            if (reader.Name != "BackgroundImage")
             {
-                _backgroundImage = reader.ReadElementString("BackgroundImage");
+                return;
             }
+
+            _backgroundImage = reader.ReadElementString("BackgroundImage");
+            OnBackgroundImageChange();
         }
     }
 }

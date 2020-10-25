@@ -14,14 +14,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace GadrocsWorkshop.Helios.Gauges.A10C
-{ 
+{
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
     using System;
     using System.Windows;
     using System.Windows.Media;
-    using System.Xml;
-    using System.Globalization;
 
     /// <summary>
     /// This is a version of the UHF Channel Display which uses a bespoke font to provide data in a text display instead of cutouts for the exported viewport.
@@ -38,30 +36,23 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         private String _font = "Helios Virtual Cockpit A-10C_ARC_164";
         private Color _textColor = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
         private Color _backGroundColor = Color.FromArgb(0, 100, 20, 50);
-
+        private HeliosPanel _bezel;
+        private const string RADIO_CHANNEL_BEZEL_PNG = "A-10C_UHF_Radio_Channel_Bezel.png";
 
         public UHFChanDisplay()
             : base("UHFChanDisplay", new Size(173d, 100d))
         {
             AddTextDisplay("Channel Display", 74, 18, new Size(70, 69), 36d,
                 "23", _interfaceDeviceName, "Channel Display");
-            HeliosPanel bezel = AddPanel("UHF Radio Channel Bezel", new Point(0, 0), new Size(173d, 100d), _imageLocation + "A-10C_UHF_Radio_Channel_Bezel.png", "bezel");
+            _bezel = AddPanel("UHF Radio Channel Bezel", new Point(0, 0), new Size(173d, 100d), _imageLocation + RADIO_CHANNEL_BEZEL_PNG, "bezel");
         }
 
-        #region Properties
-        #endregion 
-
-
-
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
+        protected override void OnBackgroundImageChange()
         {
-            base.OnProfileChanged(oldProfile);
+            _bezel.BackgroundImage = BackgroundImageIsCustomized ? null : System.IO.Path.Combine(_imageLocation, RADIO_CHANNEL_BEZEL_PNG);
         }
 
-        public override string DefaultBackgroundImage
-        {
-            get { return _imageLocation + "A-10C_UHF_Radio_Channel_Filter.png"; }
-        }
+        public override string DefaultBackgroundImage => _imageLocation + "A-10C_UHF_Radio_Channel_Filter.png";
 
         private void AddTextDisplay(string name, double x, double y, Size size, double baseFontsize, string testDisp,
             string interfaceDevice, string interfaceElement)
@@ -85,43 +76,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             //display.TextFormat.FontWeight = FontWeights.Heavy;
         }
 
-        private HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceElement)
-        {
-            HeliosPanel _panel = AddPanel(
-                name: name,
-                posn: posn,
-                size: size,
-                background: background
-                );
-            _panel.FillBackground = false;
-            _panel.DrawBorder = false;
-            return _panel;
-        }
-
-        public override bool HitTest(Point location)
-        {
-            //if (_scaledScreenRect.Contains(location))
-            //{
-                return false;
-            //}
-
-            //return true;
-        }
-
-        public override void MouseDown(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseDrag(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseUp(Point location)
-        {
-            // No-Op
-        }
-
+        // unclickable
+        public override bool HitTest(Point location) => false;
     }
 }

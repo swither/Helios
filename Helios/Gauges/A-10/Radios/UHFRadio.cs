@@ -258,18 +258,6 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             return newSwitch;
         }
 
-        private void AddPanel(string name, Point posn, Size size, string background, string interfaceDevice, string interfaceElement)
-        {
-            HeliosPanel _panel = AddPanel(
-                name: name,
-                posn: posn,
-                size: size,
-                background: background
-                );
-            _panel.FillBackground = false;
-            _panel.DrawBorder = false;
-        }
-
         private void AddPart(string name, CompositeVisual part, Point posn, Size size, string interfaceDevice, string interfaceElement)
         {
             size.Width *= SCREENRES;
@@ -277,17 +265,15 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             posn.X *= SCREENRES;
             posn.Y *= SCREENRES;
 
-            CompositeVisual _part = AddDevice(
+            CompositeVisual newPart = AddDevice(
                 name: name,
                 device: part,
                 size: size,
                 posn: posn,
                 interfaceDeviceName: interfaceDevice,
                 interfaceElementName: interfaceElement
-               );
-            {
-                _part.Name = name;
-            };
+            );
+            newPart.Name = name;
         }
 
         public override bool HitTest(Point location)
