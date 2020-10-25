@@ -13,25 +13,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using GadrocsWorkshop.Helios.Controls.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.DCS.A10C;
 
+// ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios.Gauges.A10C
 {
     using System.Windows;
 
-    abstract class A10CDevice : CompositeVisual, IBackgroundImage
+    abstract class A10CDevice : CompositeVisualWithBackgroundImage
     {
         protected A10CDevice(string name, Size size)
             : base(name, size)
         {
             SupportedInterfaces = new[] { typeof(A10CInterface) };
         }
-
-        #region Properties
-
-        public abstract string BackgroundImage { get; }
-
-        #endregion
     }
 }

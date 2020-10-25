@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddIndicator("AI", 108  , 139, new Size(45, 49), "AI");
             AddIndicator("AAA", 154, 203, new Size(45, 49), "AAA");
         }
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "Panel/Threat Indicator Panel.png"; }
         }

@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Gauges;
+
 namespace GadrocsWorkshop.Helios.M2000C
 {
     using System;
@@ -24,7 +26,7 @@ namespace GadrocsWorkshop.Helios.M2000C
     using GadrocsWorkshop.Helios.Gauges.M2000C.Mk2CNeedle;
     using GadrocsWorkshop.Helios.Gauges.M2000C.Mk2CDrumTacanChannel;
 
-    public abstract partial class M2000CCompositeVisual : CompositeVisual
+    public abstract class M2000CCompositeVisual : CompositeVisualWithBackgroundImage
     {
         private Dictionary<HeliosVisual, Rect> _nativeSizes = new Dictionary<HeliosVisual, Rect>();
 
@@ -80,7 +82,7 @@ namespace GadrocsWorkshop.Helios.M2000C
             if (fromCenter)
                 posn = FromCenter(posn, size);
             string componentName = GetComponentName(name);
-            RotarySwitch _knob = new RotarySwitch
+            RotarySwitch knob = new RotarySwitch
             {
                 Name = componentName,
                 KnobImage = knobImage,
@@ -92,17 +94,17 @@ namespace GadrocsWorkshop.Helios.M2000C
                 Height = size.Height,
                 DefaultPosition = defaultPosition,
                 ClickType = clickType,
+                NonClickableZones = nonClickableZones,
             };
-            _knob.NonClickableZones = nonClickableZones;
-            _knob.Positions.Clear();
+            knob.Positions.Clear();
 
-            Children.Add(_knob);
+            Children.Add(knob);
 
-            foreach (IBindingTrigger trigger in _knob.Triggers)
+            foreach (IBindingTrigger trigger in knob.Triggers)
             {
                 AddTrigger(trigger, componentName);
             }
-            foreach (IBindingAction action in _knob.Actions)
+            foreach (IBindingAction action in knob.Actions)
             {
                 AddAction(action, componentName);
             }
@@ -116,7 +118,7 @@ namespace GadrocsWorkshop.Helios.M2000C
                 deviceTriggerName: "position.changed",
                 interfaceActionName: interfaceDeviceName + ".set." + interfaceElementName);
 
-            return _knob;
+            return knob;
         }
 
         protected new Indicator AddIndicator(string name, Point posn, Size size,
@@ -186,14 +188,16 @@ namespace GadrocsWorkshop.Helios.M2000C
             if (fromCenter)
                 posn = FromCenter(posn, size);
             string componentName = GetComponentName(name);
-            RectangleFill rectangleFill = new RectangleFill();
-            rectangleFill.Name = componentName;
-            rectangleFill.Left = posn.X;
-            rectangleFill.Top = posn.Y;
-            rectangleFill.Height = size.Height;
-            rectangleFill.Width = size.Width;
-            rectangleFill.FillColor = color;
-            rectangleFill.FillHeight = initialValue;
+            RectangleFill rectangleFill = new RectangleFill
+            {
+                Name = componentName,
+                Left = posn.X,
+                Top = posn.Y,
+                Height = size.Height,
+                Width = size.Width,
+                FillColor = color,
+                FillHeight = initialValue
+            };
 
             Children.Add(rectangleFill);
             foreach (IBindingTrigger trigger in rectangleFill.Triggers)

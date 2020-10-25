@@ -83,7 +83,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             _gauge.Name = "SMC_" + name;
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{AV-8B}/Images/AV-8B SMC Faceplate.png"; }
         }

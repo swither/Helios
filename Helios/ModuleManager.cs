@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
 using GadrocsWorkshop.Helios.Tools;
 
 namespace GadrocsWorkshop.Helios
@@ -33,6 +35,7 @@ namespace GadrocsWorkshop.Helios
         private readonly List<BindingValueUnitConverter> _converters = new List<BindingValueUnitConverter>();
         private readonly Dictionary<string, HeliosPropertyEditorDescriptorCollection> _propertyEditors = new Dictionary<string, HeliosPropertyEditorDescriptorCollection>();
         private readonly List<HeliosToolDescriptor> _tools = new List<HeliosToolDescriptor>();
+        private readonly List<HeliosCapabilityEditorDescriptor> _capabilityEditors = new List<HeliosCapabilityEditorDescriptor>();
 
         internal ModuleManager(string applicationPath)
         {
@@ -171,6 +174,12 @@ namespace GadrocsWorkshop.Helios
                                 editors.Add(new HeliosPropertyEditorDescriptor(type, editorAttribute));
                                 break;
                             }
+                            case HeliosCapabilityEditorAttribute capabilityEditorAttribute:
+                            {
+                                Logger.Debug("Capability editor found " + type.Name);
+                                _capabilityEditors.Add(new HeliosCapabilityEditorDescriptor(type, capabilityEditorAttribute));
+                                break;
+                            }
                             case HeliosToolAttribute tool:
                             {
                                 _ = tool;
@@ -190,6 +199,13 @@ namespace GadrocsWorkshop.Helios
             {
                 Logger.Error(e, "Failed adding module " + asm.FullName);
             }
+        }
+
+        public IEnumerable<HeliosCapabilityEditorDescriptor> GetCapabilityEditors(HeliosVisual visual)
+        {
+            // NOTE: we could check for each interface and keep a list of editors for that interface, but that
+            // complexity is not reasonable, considering it will typically be 1:1
+            return (_capabilityEditors.Where(editor => editor.InterfaceType.IsInstanceOfType(visual)));
         }
 
         public IEnumerable<HeliosToolDescriptor> Tools => _tools;

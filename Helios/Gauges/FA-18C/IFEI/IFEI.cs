@@ -169,7 +169,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
             base.OnProfileChanged(oldProfile);
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "IFEI.png"; }
         }

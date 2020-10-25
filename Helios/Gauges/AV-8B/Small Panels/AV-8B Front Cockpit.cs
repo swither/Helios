@@ -82,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             base.OnProfileChanged(oldProfile);
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/AV8B Front Cockpit 2.png"; }
         }

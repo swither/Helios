@@ -69,7 +69,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA_18C.MFD
 
         #region Properties
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{FA-18C}/Images/AMPCD frame.png"; }
         }

@@ -54,7 +54,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             }
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Flight Instruments.png"; }
         }

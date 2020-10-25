@@ -82,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             AddLoadButton("Load Button",74, 175, new Size(36, 37), "Load Button");
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "A-10C_UHF_Radio.png"; }
         }

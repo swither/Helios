@@ -58,7 +58,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             base.OnProfileChanged(oldProfile);
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "A-10C_UHF_Radio_Frequency_Filter.png"; }
         }

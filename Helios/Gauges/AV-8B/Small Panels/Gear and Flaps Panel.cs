@@ -54,7 +54,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             _flapDisplay.Components.RemoveAt(0);  // remove the inter-digit background
             AddDisplay("Flaps Position", _flapDisplay, new Point(532, 76), new Size(86, 68), "Flaps position");
         }
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Flaps and Landing Gear.png"; }
         }

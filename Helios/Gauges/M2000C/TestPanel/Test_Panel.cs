@@ -61,7 +61,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
 
         #region Properties
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{M2000C}/Images/TestPanel/test-panel.png"; }
         }

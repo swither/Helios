@@ -77,7 +77,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         }
 
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "A-10C_CMSP_Filter_Panel.png"; }
         }

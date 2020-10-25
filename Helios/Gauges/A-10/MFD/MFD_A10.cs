@@ -84,7 +84,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.MFD
 
         #region Properties
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{Helios}/Images/A-10/mfd-bezel.png"; }
         }

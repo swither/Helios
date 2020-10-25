@@ -17,21 +17,14 @@ using GadrocsWorkshop.Helios.Interfaces.DCS.F14B;
 
 namespace GadrocsWorkshop.Helios.Gauges.F14B
 {
-    using System;
     using System.Windows;
 
-    abstract class F14BDevice : CompositeVisual
+    abstract class F14BDevice : CompositeVisualWithBackgroundImage
     {
         public F14BDevice(string name, Size size)
             : base(name, size)
         {
             SupportedInterfaces = new[] { typeof(F14BInterface) };
         }
-
-        #region Properties
-
-        public abstract string BezelImage { get; }
-
-        #endregion
     }
 }

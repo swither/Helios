@@ -39,7 +39,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         {
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "A-10C_Left_Blank_Panel.png"; }
         }

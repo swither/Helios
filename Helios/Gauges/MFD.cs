@@ -14,22 +14,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Windows;
-using GadrocsWorkshop.Helios.Controls.Capabilities;
 
 namespace GadrocsWorkshop.Helios.Gauges
 {
-    public abstract class MFD : CompositeVisual, IBackgroundImage
+    public abstract class MFD : CompositeVisualWithBackgroundImage
     {
         protected MFD(string name, Size size)
             : base(name, size)
         {
-
+            // no code
         }
-
-        #region Properties
-
-        public abstract string BackgroundImage { get; }
-
-        #endregion
     }
 }

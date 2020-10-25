@@ -148,7 +148,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         {
             // No-Op
         }
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{Helios}/Gauges/AV-8B/Engine Panel/edp_faceplate.xaml"; }
         }

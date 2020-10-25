@@ -50,7 +50,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddButton("ODU 5", 39, 128, new Size(36, 36));
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{AV-8B}/Images/ODU.png"; }
         }

@@ -131,7 +131,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 );
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "_Transparent.png"; }
         }

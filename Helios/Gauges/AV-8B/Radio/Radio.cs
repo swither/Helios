@@ -100,7 +100,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddPot("Aux Volume", new Point(174, 739), new Size(80, 80), "Aux Volume Knob", "WQHD/Knob/Inner.png",270,270);
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Right Radio.png"; }
         }

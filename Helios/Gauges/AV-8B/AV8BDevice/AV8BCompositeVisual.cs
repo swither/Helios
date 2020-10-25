@@ -14,13 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Windows;
+using GadrocsWorkshop.Helios.Controls;
+using GadrocsWorkshop.Helios.Gauges;
+
+// ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios
 {
-    using GadrocsWorkshop.Helios.Controls;
-    using System.Windows;
-
-
-    public abstract class AV8BCompositeVisual : CompositeVisual
+    public abstract class AV8BCompositeVisual : CompositeVisualWithBackgroundImage
     {
         protected new HeliosInterface _defaultInterface;
 
@@ -36,25 +37,26 @@ namespace GadrocsWorkshop.Helios
         // a requirement for the gauge function name to equal the interface element name
         //
 
-        protected new Gauges.BaseGauge AddGauge(
+        protected new BaseGauge AddGauge(
             string name,
-            Gauges.BaseGauge gauge,
+            BaseGauge gauge,
             Point posn,
             Size size,
             string interfaceDeviceName,
             string interfaceElementName
-            ) => AddGauge(name, gauge, posn, size, interfaceDeviceName, new string[1] { interfaceElementName });
-        protected Gauges.BaseGauge AddGauge(
+        ) => AddGauge(name, gauge, posn, size, interfaceDeviceName, new string[1] {interfaceElementName});
+
+        protected BaseGauge AddGauge(
             string name,
-            Gauges.BaseGauge gauge,
+            BaseGauge gauge,
             Point posn,
             Size size,
             string interfaceDeviceName,
             string[] interfaceElementNames
-            )
+        )
         {
             // XXX why is this here? this class is only used as AV8BDevice
-            if (name == "Altimeter Gauge" || name == "ADI Gauge" || name == "Slip/Turn Gauge"|| name == "AOA Gauge")
+            if (name == "Altimeter Gauge" || name == "ADI Gauge" || name == "Slip/Turn Gauge" || name == "AOA Gauge")
             {
                 gauge.Name = name;
                 gauge.Top = posn.Y;
@@ -70,20 +72,22 @@ namespace GadrocsWorkshop.Helios
                 {
                     AddTrigger(trigger, trigger.Device);
                 }
+
                 int i = 0;
                 foreach (IBindingAction action in gauge.Actions)
                 {
                     if (action.Name != "hidden")
                     {
                         AddAction(action, action.Device);
-                        
+
                         AddDefaultInputBinding(
-                        childName: componentName,
-                        interfaceTriggerName: interfaceDeviceName + "." + interfaceElementNames[i++] + ".changed",
-                        deviceActionName: action.Device + "." + action.ActionVerb + "." + action.Name
+                            componentName,
+                            interfaceDeviceName + "." + interfaceElementNames[i++] + ".changed",
+                            action.Device + "." + action.ActionVerb + "." + action.Name
                         );
                     }
                 }
+
                 return gauge;
             }
 
@@ -96,16 +100,20 @@ namespace GadrocsWorkshop.Helios
                 interfaceElementNames[0]
             );
         }
-        private Point FromCenter(Point posn, Size size)
-        {
-            return new Point(posn.X - size.Width / 2.0, posn.Y - size.Height / 2.0);
-        }
+
+        private Point FromCenter(Point posn, Size size) =>
+            new Point(posn.X - size.Width / 2.0, posn.Y - size.Height / 2.0);
+
         protected new RotaryEncoder AddEncoder(string name, Point posn, Size size,
             string knobImage, double stepValue, double rotationStep,
-            string interfaceDeviceName, string interfaceElementName, bool fromCenter, RotaryClickType clickType = RotaryClickType.Swipe)
+            string interfaceDeviceName, string interfaceElementName, bool fromCenter,
+            RotaryClickType clickType = RotaryClickType.Swipe)
         {
             if (fromCenter)
+            {
                 posn = FromCenter(posn, size);
+            }
+
             string componentName = GetComponentName(name);
             RotaryEncoder knob = new RotaryEncoder
             {
@@ -125,6 +133,7 @@ namespace GadrocsWorkshop.Helios
             {
                 AddTrigger(trigger, componentName);
             }
+
             foreach (IBindingAction action in knob.Actions)
             {
                 if (action.Name != "hidden")
@@ -132,25 +141,31 @@ namespace GadrocsWorkshop.Helios
                     AddAction(action, componentName);
                 }
             }
+
             AddDefaultOutputBinding(
-                childName: componentName,
-                deviceTriggerName: "encoder.incremented",
-                interfaceActionName: interfaceDeviceName + ".increment." + interfaceElementName
+                componentName,
+                "encoder.incremented",
+                interfaceDeviceName + ".increment." + interfaceElementName
             );
             AddDefaultOutputBinding(
-                childName: componentName,
-                deviceTriggerName: "encoder.decremented",
-                interfaceActionName: interfaceDeviceName + ".decrement." + interfaceElementName
-                );
+                componentName,
+                "encoder.decremented",
+                interfaceDeviceName + ".decrement." + interfaceElementName
+            );
 
             return knob;
         }
+
         protected ToggleSwitch AddToggleSwitch(string name, Point posn, Size size, ToggleSwitchPosition defaultPosition,
-            string positionOneImage, string positionTwoImage, ToggleSwitchType defaultType, LinearClickType clickType, string interfaceDeviceName, string interfaceElementName,
+            string positionOneImage, string positionTwoImage, ToggleSwitchType defaultType, LinearClickType clickType,
+            string interfaceDeviceName, string interfaceElementName,
             bool fromCenter, bool horizontal = false, string interfaceIndicatorElementName = "")
         {
             if (fromCenter)
+            {
                 posn = FromCenter(posn, size);
+            }
+
             string componentName = GetComponentName(name);
 
             ToggleSwitch newSwitch = new ToggleSwitch
@@ -177,6 +192,7 @@ namespace GadrocsWorkshop.Helios
                 newSwitch.PositionTwoImage = positionTwoImage;
                 newSwitch.HasIndicator = false;
             }
+
             newSwitch.Width = size.Width;
             newSwitch.Height = size.Height;
 
@@ -194,30 +210,30 @@ namespace GadrocsWorkshop.Helios
             {
                 AddTrigger(trigger, componentName);
             }
+
             AddAction(newSwitch.Actions["set.position"], componentName);
 
             AddDefaultOutputBinding(
-                childName: componentName,
-                deviceTriggerName: "position.changed",
-                interfaceActionName: interfaceDeviceName + ".set." + interfaceElementName
+                componentName,
+                "position.changed",
+                interfaceDeviceName + ".set." + interfaceElementName
             );
             AddDefaultInputBinding(
-                childName: componentName,
-                interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
-                deviceActionName: "set.position");
+                componentName,
+                interfaceDeviceName + "." + interfaceElementName + ".changed",
+                "set.position");
 
             if (newSwitch.HasIndicator)
             {
                 AddAction(newSwitch.Actions["set.indicator"], componentName);
 
                 AddDefaultInputBinding(
-                    childName: componentName,
-                    interfaceTriggerName: interfaceDeviceName + "." + interfaceIndicatorElementName + ".changed",
-                    deviceActionName: "set.indicator");
+                    componentName,
+                    interfaceDeviceName + "." + interfaceIndicatorElementName + ".changed",
+                    "set.indicator");
             }
+
             return newSwitch;
         }
-
-
     }
 }

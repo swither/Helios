@@ -68,7 +68,7 @@ namespace GadrocsWorkshop.Helios.Controls
         }
         #region Properties
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{AV-8B}/Images/MPCD bezel.png"; }
         }

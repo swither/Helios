@@ -41,7 +41,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddTwoWayToggle("Master Arm", 71, 747, new Size(74, 81), "Master Arm Switch");
             AddButton("Flare Salvo Button", 69, 518, new Size(86, 82), "Launch Flare Salvo");
         }
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Master Arm.png"; }
         }

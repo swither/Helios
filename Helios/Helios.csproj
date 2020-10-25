@@ -69,9 +69,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentModel\HeliosCapabilityEditorAttribute.cs" />
+    <Compile Include="ComponentModel\HeliosEditorAttribute.cs" />
     <Compile Include="ComponentModel\HeliosToolAttribute.cs" />
     <Compile Include="Controls\Capabilities\IBackgroundImage.cs" />
+    <Compile Include="Controls\Capabilities\IConfigurableBackgroundImage.cs" />
     <Compile Include="Controls\Capabilities\IRotarySwitch.cs" />
+    <Compile Include="Controls\BackgroundImageAppearanceEditor.xaml.cs">
+      <DependentUpon>BackgroundImageAppearanceEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Special\CalibrationFilter.cs" />
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
@@ -89,6 +95,8 @@
     <Compile Include="Gauges\A-10\HARS\HARS.cs" />
     <Compile Include="Gauges\A-10\HARS\HARSSync_1.cs" />
     <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
+    <Compile Include="Gauges\CompositeVisualWithBackgroundImage.cs" />
+    <Compile Include="HeliosCapabilityEditorDescriptor.cs" />
     <Compile Include="IInstallation2.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
@@ -188,6 +196,10 @@
     <Compile Include="Windows\ViewModel\InstallationResultViewModel.cs" />
     <Compile Include="Windows\ViewModel\ShareInstallationResults.cs" />
     <Compile Include="Windows\ViewModel\VersionCheckViewModel.cs" />
+    <Page Include="Controls\BackgroundImageAppearanceEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

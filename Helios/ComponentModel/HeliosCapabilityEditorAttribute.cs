@@ -14,20 +14,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+
 namespace GadrocsWorkshop.Helios.ComponentModel
 {
-    using System;
-
+    /// <summary>
+    /// A property editor that will be used for any control that implements the specified interface.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-    public class HeliosPropertyEditorAttribute : HeliosEditorAttribute
+    public class HeliosCapabilityEditorAttribute : HeliosEditorAttribute
     {
-        /// <param name="typeIdentifier">type Identifier for one of the controls for which this property editor should be displayed</param>
-        /// <param name="category">display name used for this editor section in the ui</param>
-        public HeliosPropertyEditorAttribute(string typeIdentifier, string category) : base(category)
+        /// <param name="interfaceInterfaceType">typeof(InterfaceTypeName)</param>
+        /// <param name="category">Display name used for this section in the ui.</param>
+        public HeliosCapabilityEditorAttribute(Type interfaceInterfaceType, string category)
+            : base(category)
         {
-            TypeIdentifier = typeIdentifier;
+            InterfaceType = interfaceInterfaceType;
         }
 
-        public string TypeIdentifier { get; }
+        public Type InterfaceType { get; }
     }
 }

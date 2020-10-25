@@ -20,17 +20,12 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
 {
     using System.Windows;
 
-    abstract class AV8BDevice : AV8BCompositeVisual, IBackgroundImage
+    abstract class AV8BDevice : AV8BCompositeVisual
     {
         protected AV8BDevice(string name, Size size)
             : base(name, size)
         {
             SupportedInterfaces = new[] { typeof(AV8BInterface) };
         }
-
-        /// <summary>
-        /// existing code provides this property, so 
-        /// </summary>
-        public abstract string BackgroundImage { get; }
     }
 }

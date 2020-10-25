@@ -59,7 +59,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             AddIndicator("Indicator: Unknown", "Green", 1250, 222, new Size(48, 48), "Unknown Status Indicator");
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "A-10C_CMSC_Panel.png"; }
         }

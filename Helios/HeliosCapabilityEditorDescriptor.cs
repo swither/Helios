@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,18 +20,21 @@ namespace GadrocsWorkshop.Helios
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Windows.Controls;
 
-    public class HeliosPropertyEditorDescriptor
+    /// <summary>
+    /// factory of HeliosPropertyEditor class that has the attribute [HeliosCapabilityEditor]
+    /// </summary>
+    public class HeliosCapabilityEditorDescriptor
     {
-        private readonly HeliosPropertyEditorAttribute _editorAttribute;
+        private readonly HeliosCapabilityEditorAttribute _editorAttribute;
         private readonly Type _editorType;
 
-        public HeliosPropertyEditorDescriptor(Type type, HeliosPropertyEditorAttribute attribute)
+        public HeliosCapabilityEditorDescriptor(Type type, HeliosCapabilityEditorAttribute attribute)
         {
             _editorType = type;
             _editorAttribute = attribute;
         }
 
-        public string TypeIdentifier => _editorAttribute.TypeIdentifier;
+        public Type InterfaceType => _editorAttribute.InterfaceType;
 
         public string Category => _editorAttribute.Category;
 

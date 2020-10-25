@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
 
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{AV-8B}/Images/WQHD/Panel/Right RWR.png"; }
         }

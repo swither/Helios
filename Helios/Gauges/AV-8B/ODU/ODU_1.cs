@@ -59,7 +59,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddTextDisplay("OptionDisplay5", 198, 254, new Size(198, 56), "Option Display 5", 42, "~~~~", TextHorizontalAlignment.Left, _ufcNumbers16);
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{AV-8B}/Images/ODU Panel 2.png"; }
         }

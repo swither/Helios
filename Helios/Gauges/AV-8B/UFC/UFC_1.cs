@@ -134,7 +134,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddTwoWayToggle("Altimeter Switch", 719, 761, new Size(50, 100), "Altimeter Mode Switch");
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{AV-8B}/Images/WQHD/Panel/UFC Large.png"; }
         }

@@ -51,7 +51,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.TACANChannel
 
         #region Properties
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{M2000C}/Images/TacanPanel/tacan-panel.png"; }
         }

@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,20 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using GadrocsWorkshop.Helios.Controls.Capabilities;
-using GadrocsWorkshop.Helios.Interfaces.DCS.FA18C;
+using System;
 
-// ReSharper disable once CheckNamespace
-namespace GadrocsWorkshop.Helios.Gauges.FA18C
+namespace GadrocsWorkshop.Helios.ComponentModel
 {
-    using System.Windows;
-
-    internal abstract class FA18CDevice : CompositeVisualWithBackgroundImage
+    public class HeliosEditorAttribute: Attribute
     {
-        protected FA18CDevice(string name, Size size)
-            : base(name, size)
+        public HeliosEditorAttribute(string category)
         {
-            SupportedInterfaces = new[] { typeof(FA18CInterface) };
+            Category = category;
         }
+
+        public string Category { get; }
     }
 }

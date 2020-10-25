@@ -53,7 +53,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.VorIlsChannel
 
         #region Properties
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{M2000C}/Images/VorIlsPanel/vor-ils-panel.png"; }
         }

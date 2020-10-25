@@ -55,16 +55,13 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         {
             get
             {
-                object[] attrs = GetType().GetCustomAttributes(typeof(HeliosPropertyEditorAttribute), false);
-                foreach (object attribute in attrs)
+                foreach (object attribute in GetType().GetCustomAttributes(typeof(HeliosEditorAttribute), false))
                 {
-                    HeliosPropertyEditorAttribute editorAttribute = attribute as HeliosPropertyEditorAttribute;
-                    if (editorAttribute != null)
+                    if (attribute is HeliosEditorAttribute editorAttribute)
                     {
                         return editorAttribute.Category;
                     }
                 }
-
                 return "";
             }
         }

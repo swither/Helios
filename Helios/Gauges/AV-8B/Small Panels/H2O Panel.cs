@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddThreeWayToggle("H2O", 55, 18, new Size(100, 134), "H2O Mode Switch");
 
         }
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/H2O.png"; }
         }

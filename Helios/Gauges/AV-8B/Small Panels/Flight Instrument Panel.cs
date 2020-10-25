@@ -64,10 +64,11 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             }
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Flight Instruments.png"; }
         }
+
         private void AddButton(string name, double x, double y, string interfaceElementName) { AddButton(name, x, y, false, interfaceElementName); }
         private void AddButton(string name, double x, double y, Size size, string interfaceElementName) { AddButton(name, x, y, size, false, interfaceElementName); }
         private void AddButton(string name, double x, double y, bool horizontal, string interfaceElementName) { AddButton(name, x, y, new Size(40,40),false, interfaceElementName); }
@@ -129,9 +130,10 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 fromCenter: false
                 );
         }
+
         private void AddPart(string name, CompositeVisual Part, Point posn, Size size, string interfaceDevice, string interfaceElement)
         {
-            CompositeVisual _part = AddDevice(
+            CompositeVisual part = AddDevice(
                 name: name,
                 device: Part,
                 size: size,
@@ -140,27 +142,25 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 interfaceElementName: interfaceElement
                 );
             {
-                _part.Name = _generalComponentName + "_" + name;
+                part.Name = _generalComponentName + "_" + name;
             };
         }
 
-        private void AddGauge(string name, BaseGauge Part, Point posn, Size size, string interfaceDevice, string interfaceElement, string _componentName) =>
-            AddGauge(name, Part, posn, size, interfaceDevice, new string[1] { interfaceElement }, _componentName);
-        private new void AddGauge(string name, BaseGauge Part, Point posn, Size size, string interfaceDevice, string[] interfaceElementNames) =>
-            AddGauge(name, Part, posn, size, interfaceDevice, interfaceElementNames, "");
-        private void AddGauge(string name, BaseGauge Part, Point posn, Size size, string interfaceDevice, string[] interfaceElementNames, string _componentName)
+        private void AddGauge(string name, BaseGauge part, Point posn, Size size, string interfaceDevice, string interfaceElement, string _componentName) =>
+            AddGauge(name, part, posn, size, interfaceDevice, new string[1] { interfaceElement }, _componentName);
+        private void AddGauge(string name, BaseGauge part, Point posn, Size size, string interfaceDevice, string[] interfaceElementNames, string _componentName)
         {
-            Part.Name = _componentName + name;
-            BaseGauge _part = AddGauge(
+            part.Name = _componentName + name;
+            BaseGauge gauge = base.AddGauge(
                 name: name,
-                gauge: Part,
-                size: size,
+                gauge: part,
                 posn: posn,
+                size: size,
                 interfaceDeviceName: interfaceDevice,
                 interfaceElementNames: interfaceElementNames
                 );
             {
-                _part.Name = _componentName + "_" + name;
+                gauge.Name = _componentName + "_" + name;
             };
         }
 
@@ -176,7 +176,6 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             _panel.DrawBorder = false;
             //_panel.BackgroundAlignment = ImageAlignment.Centered;
         }
-
 
         public override bool HitTest(Point location)
         {
@@ -202,24 +201,6 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         {
             // No-Op
         }
-
-        //public override void WriteXml(XmlWriter writer)
-        //{
-        //    base.WriteXml(writer);
-        //    if (_IFEI_gauges.GlassReflectionOpacity != IFEI_Gauges.GLASS_REFLECTION_OPACITY_DEFAULT)
-        //    {
-        //        writer.WriteElementString("GlassReflectionOpacity", GlassReflectionOpacity.ToString(CultureInfo.InvariantCulture));
-        //    }
-        //}
-
-        //public override void ReadXml(XmlReader reader)
-        //{
-        //    base.ReadXml(reader);
-        //    if (reader.Name.Equals("GlassReflectionOpacity"))
-        //    {
-        //        GlassReflectionOpacity = double.Parse(reader.ReadElementString("GlassReflectionOpacity"), CultureInfo.InvariantCulture);
-        //    }
-        //}
     }
 }
 

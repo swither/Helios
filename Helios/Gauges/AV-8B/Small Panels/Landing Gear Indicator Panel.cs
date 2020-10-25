@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddIndicator("Main Green", 80, 287, new Size(82, 46), "Main");
             AddIndicator("Main Amber", 80, 345, new Size(82, 46), "Main Wrn");
         }
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "WQHD/Panel/Landing Gear Indicator.png"; }
         }

@@ -13,14 +13,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios.Gauges.M2000C
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
-    using System.Collections;
-    using System.Globalization;
     using System.Windows;
-    using System.Windows.Media;
 
     [HeliosControl("HELIOS.M2000C.ECMBox", "ECM Box", "M2000C Gauges", typeof(BackgroundImageRenderer))]
     class M2000C_ECMBox : M2000CDevice
@@ -47,7 +45,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
 
         #region Properties
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{M2000C}/Images/ECMBox/ecm-box.png"; }
         }

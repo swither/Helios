@@ -87,7 +87,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddIndicator("REPLY", new Point(426, 909), new Size(104, 40), "Advisory REPLY");
         }
 
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{AV-8B}/Images/Advisory Panel Frame.png"; }
         }

@@ -131,7 +131,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B.FuelPanel
         {
             // No-Op
         }
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return "{AV-8B}/Images/AV8B Fuel Panel.png"; }
         }

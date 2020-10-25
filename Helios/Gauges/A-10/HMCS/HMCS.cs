@@ -52,8 +52,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 LinearClickType.Swipe);
         }
 
-
-        public override string BackgroundImage
+        public override string DefaultBackgroundImage
         {
             get { return _imageLocation + "A-10CII_HMCS_Panel.png"; }
         }

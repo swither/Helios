@@ -44,5 +44,6 @@ namespace GadrocsWorkshop.Helios
     public interface IModuleManager2 : IModuleManager
     {
         IEnumerable<HeliosToolDescriptor> Tools { get; }
+        IEnumerable<HeliosCapabilityEditorDescriptor> GetCapabilityEditors(HeliosVisual visual);
     }
 }

@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using GadrocsWorkshop.Helios.ProfileEditor.PropertyEditors;
@@ -36,27 +39,44 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             PropertyEditors.Clear();
 
             HeliosVisual visual = BindingFocus as HeliosVisual;
-            if (visual != null)
+            if (visual == null)
             {
-                // Setup Layout Panel
-                HeliosPropertyEditor layoutEditor;
-                if (visual is Monitor)
-                {
-                    layoutEditor = new MonitorPropertyEditor();
-                }
-                else
-                {
-                    layoutEditor = new LayoutPropertyEditor();
-                }
-                layoutEditor.Control = visual;
-                PropertyEditors.Add(layoutEditor);
+                return;
+            }
 
-                foreach (HeliosPropertyEditorDescriptor descriptor in ConfigManager.ModuleManager.GetPropertyEditors(visual.TypeIdentifier))
-                {
-                    HeliosPropertyEditor editor = descriptor.CreateInstance();
-                    editor.Control = visual;
-                    PropertyEditors.Add(editor);
-                }
+            // Setup Layout Panel
+            HeliosPropertyEditor layoutEditor;
+            if (visual is Monitor)
+            {
+                layoutEditor = new MonitorPropertyEditor();
+            }
+            else
+            {
+                layoutEditor = new LayoutPropertyEditor();
+            }
+            layoutEditor.Control = visual;
+            PropertyEditors.Add(layoutEditor);
+
+            // find editors that explicitly support this exact visual
+            foreach (HeliosPropertyEditorDescriptor descriptor in ConfigManager.ModuleManager.GetPropertyEditors(visual.TypeIdentifier))
+            {
+                HeliosPropertyEditor editor = descriptor.CreateInstance();
+                editor.Control = visual;
+                PropertyEditors.Add(editor);
+            }
+
+            if (!(ConfigManager.ModuleManager is IModuleManager2 capabilities))
+            {
+                // legacy build does not support this interface
+                return;
+            }
+
+            // probe for additional editors based on supported interfaces
+            foreach (HeliosCapabilityEditorDescriptor descriptor in capabilities.GetCapabilityEditors(visual))
+            {
+                HeliosPropertyEditor editor = descriptor.CreateInstance();
+                editor.Control = visual;
+                PropertyEditors.Add(editor);
             }
         }
 
