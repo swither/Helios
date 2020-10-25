@@ -13,21 +13,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using GadrocsWorkshop.Helios.Controls.Capabilities;
-
+// ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios.Gauges.A10C
 {
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
     using System;
-    using System.Windows.Media;
     using System.Windows;
-    using System.Windows.Threading;
 
     /// <summary>
-    /// This is the revised version of the A-10C UHF Radio which uses text displays instead of cutouts for the exported viewport.
+    /// This is an A-10C UHF Radio that uses text displays instead of an exported viewport.
     /// </summary>
-    /// 
     [HeliosControl("Helios.A10C.UHFRadio", "UFH Radio", "A-10C Gauges", typeof(BackgroundImageRenderer))]
     class UHFRadio : A10CDevice
     {
@@ -42,24 +39,23 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         public UHFRadio()
             : base("UHF Radio", new Size(625, 580))
         {
-            RotarySwitch knob;
             RotarySwitchPositionCollection positions = new RotarySwitchPositionCollection();
             positions.Clear();
             positions.Add(new RotarySwitchPosition(this, 1, "Off", 300d));
             positions.Add(new RotarySwitchPosition(this, 2, "Main", 340d));
             positions.Add(new RotarySwitchPosition(this, 3, "Both", 20d));
             positions.Add(new RotarySwitchPosition(this, 4, "ADF", 60d));
-            knob = AddRotarySwitch("Frequency Dial", new Point(81, 455), new Size(115, 115), "1", 1, positions, "Frequency Dial");
+            AddRotarySwitch("Frequency Dial", new Point(81, 455), new Size(115, 115), "1", 1, positions, "Frequency Dial");
             positions.Clear();
             positions.Add(new RotarySwitchPosition(this, 1, "Manual", 315d));
             positions.Add(new RotarySwitchPosition(this, 2, "Preset", 0d));
             positions.Add(new RotarySwitchPosition(this, 3, "Guard", 45d));
-            knob = AddRotarySwitch("Frequency Mode Dial", new Point(433, 455), new Size(115, 115), "1", 1, positions, "Frequency Mode Dial");
+            AddRotarySwitch("Frequency Mode Dial", new Point(433, 455), new Size(115, 115), "1", 1, positions, "Frequency Mode Dial");
             positions.Clear();
             positions.Add(new RotarySwitchPosition(this, 1, "2", 225d));
             positions.Add(new RotarySwitchPosition(this, 2, "3", 270d));
             positions.Add(new RotarySwitchPosition(this, 3, "A", 315d));
-            knob = AddRotarySwitch("100Mhz Selector", new Point(54, 328), new Size(75,75), "3", 1, positions, "100Mhz Selector");
+            AddRotarySwitch("100Mhz Selector", new Point(54, 328), new Size(75,75), "3", 1, positions, "100Mhz Selector");
             RotaryEncoder enc;
             enc = AddEncoder("10Mhz Selector", new Point(161, 329), new Size(75, 75), _imageLocation + "A-10C_UHF_Radio_Selector_Knob_3.png", 0.005d, 30d, _interfaceDeviceName, "10Mhz Selector", false);
             enc.InitialRotation = 15;
@@ -71,8 +67,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             enc.InitialRotation = 45;
             enc = AddEncoder("Channel Selector", new Point(474, 110), new Size(100, 100), _imageLocation + "A-10C_UHF_Radio_Selector_Knob_2.png", 0.005d, 30d, _interfaceDeviceName, "Preset Channel Selector", false);
             enc.InitialRotation = 10;
-            Potentiometer pot;
-            pot = AddPot("Volume", new Point(274, 420 ), new Size(60, 60), _imageLocation + "A-10C_UHF_Radio_Volume_Knob.png", 0d, 300d, 0d, 1d, 0.5, 0.1, _interfaceDeviceName, "Volume", false, RotaryClickType.Radial, false);
+            AddPot("Volume", new Point(274, 420 ), new Size(60, 60), _imageLocation + "A-10C_UHF_Radio_Volume_Knob.png", 0d, 300d, 0d, 1d, 0.5, 0.1, _interfaceDeviceName, "Volume", false, RotaryClickType.Radial, false);
             _channelDisplay = AddPart("Channel Display", new UHFChanDisplay(), new Point(298, 111), new Size(173, 100), _interfaceDeviceName, "Channel Display") as IConfigurableBackgroundImage;
             _frequencyDisplay = AddPart("Frequency Display", new UHFFreqDisplay(), new Point(161, 219), new Size(289, 98), _interfaceDeviceName, "Frequency Display") as IConfigurableBackgroundImage;
             AddThreeWayToggle("T/Tone Switch", new Point(222, 511), new Size(59, 59), "T/Tone Switch");
@@ -104,19 +99,21 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
 
         private void AddCover(string name, Point posn, Size size, string interfaceElementName)
         {
-            ToggleSwitch newSwitch = new ToggleSwitch();
             string componentName = _interfaceDeviceName + "_" + name;
-            newSwitch.Name = componentName;
-            newSwitch.SwitchType = ToggleSwitchType.OnOn;
-            newSwitch.ClickType = LinearClickType.Swipe;
-            newSwitch.DefaultPosition = ToggleSwitchPosition.Two;
-            newSwitch.PositionOneImage = _imageLocation + "A-10C_UHF_Radio_Lid_Closed.png";
-            newSwitch.PositionTwoImage = _imageLocation + "A-10C_UHF_Radio_Lid_Opened.png";
-            newSwitch.Width = size.Width;
-            newSwitch.Height = size.Height;
-            newSwitch.Top = posn.Y;
-            newSwitch.Left = posn.X;
-            newSwitch.Orientation = ToggleSwitchOrientation.VerticalReversed;
+            ToggleSwitch newSwitch = new ToggleSwitch
+            {
+                Name = componentName,
+                SwitchType = ToggleSwitchType.OnOn,
+                ClickType = LinearClickType.Swipe,
+                DefaultPosition = ToggleSwitchPosition.Two,
+                PositionOneImage = _imageLocation + "A-10C_UHF_Radio_Lid_Closed.png",
+                PositionTwoImage = _imageLocation + "A-10C_UHF_Radio_Lid_Opened.png",
+                Width = size.Width,
+                Height = size.Height,
+                Top = posn.Y,
+                Left = posn.X,
+                Orientation = ToggleSwitchOrientation.VerticalReversed
+            };
             Children.Add(newSwitch);
             foreach (IBindingTrigger trigger in newSwitch.Triggers)
             {
@@ -159,9 +156,9 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 Image = _imageLocation + "A-10C_UHF_Radio_Red_Button_Unpressed.png",
                 PushedImage = _imageLocation + "A-10C_UHF_Radio_Red_Button_Pressed.png",
                 Text = "",
-                Name = componentName
+                Name = componentName,
+                IsHidden = true
             };
-            newButton.IsHidden = true;
             Children.Add(newButton);
 
             AddTrigger(newButton.Triggers["pushed"], componentName);
@@ -228,9 +225,9 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 PositionThreeImage = _imageLocation + "A-10C_UHF_Radio_Tone_Left.png",
                 SwitchType = ThreeWayToggleSwitchType.MomOnMom,
                 Name = _interfaceDeviceName + "_" + name,
-                ClickType = LinearClickType.Swipe
+                ClickType = LinearClickType.Swipe,
+                Orientation = ToggleSwitchOrientation.HorizontalReversed
             };
-            toggle.Orientation = ToggleSwitchOrientation.HorizontalReversed;
 
             Children.Add(toggle);
             foreach (IBindingTrigger trigger in toggle.Triggers)
@@ -254,16 +251,16 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             RotarySwitch newSwitch = new RotarySwitch
             {
                 Name = _interfaceDeviceName + "_" + name,
-                KnobImage = _imageLocation + "A-10C_UHF_Radio_Selector_Knob_"+ knobNumber + ".png",
+                KnobImage = _imageLocation + "A-10C_UHF_Radio_Selector_Knob_" + knobNumber + ".png",
                 DrawLabels = false,
                 DrawLines = false,
                 Top = posn.Y,
                 Left = posn.X,
                 Width = size.Width,
                 Height = size.Height,
-                DefaultPosition = defaultPosition
+                DefaultPosition = defaultPosition,
+                IsContinuous = false
             };
-            newSwitch.IsContinuous = false;
             newSwitch.Positions.Clear();
             foreach (RotarySwitchPosition swPosn in positions)
             {
@@ -293,25 +290,6 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             return newPart;
         }
 
-        public override bool HitTest(Point location)
-        {
-             return false;
-        }
-
-        public override void MouseDown(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseDrag(Point location)
-        {
-            // No-Op
-        }
-
-        public override void MouseUp(Point location)
-        {
-            // No-Op
-        }
-
+        public override bool HitTest(Point location) => false;
     }
 }
