@@ -35,6 +35,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         private String _font = "Helios Virtual Cockpit A-10C_ARC_164";
         private Color _textColor = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
         private Color _backGroundColor = Color.FromArgb(0, 100, 20, 50);
+        private readonly HeliosPanel _bezel;
+        private const string PANEL_IMAGE = "A-10C_UHF_Repeater_Panel.png";
 
         public UHFFreqRepeater()
             : base("UHFFreqRepeater", new Size(387d, 374d))
@@ -43,10 +45,17 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 "888.888", _interfaceDeviceName, "Repeater Display");
             _glass = AddPanel("UHF Reflection", new Point(0,0), new Size(387d, 374d), _imageLocation + "Pilot_Reflection_25.png", "reflection");
             _glass.Opacity = GLASS_REFLECTION_OPACITY_DEFAULT;
-            AddPanel("UHF Repeater Bezel", new Point(0, 0), new Size(387d, 374d), _imageLocation + "A-10C_UHF_Repeater_Panel.png", "bezel");
+            _bezel = AddPanel("UHF Repeater Bezel", new Point(0, 0), new Size(387d, 374d), _imageLocation + PANEL_IMAGE, "bezel");
         }
 
         public override string DefaultBackgroundImage => _imageLocation + "A-10C_UHF_Repeater_Filter_Panel.png";
+
+        protected override void OnBackgroundImageChange()
+        {
+            _bezel.BackgroundImage = BackgroundImageIsCustomized
+                ? null
+                : System.IO.Path.Combine(_imageLocation, PANEL_IMAGE);
+        }
 
         private void AddTextDisplay(string name, double x, double y, Size size, double baseFontsize, string testDisp,
             string interfaceDevice, string interfaceElement)

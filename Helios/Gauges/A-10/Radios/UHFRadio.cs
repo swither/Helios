@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Controls.Capabilities;
+
 namespace GadrocsWorkshop.Helios.Gauges.A10C
 {
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -33,6 +35,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
         private string _interfaceDeviceName = "UHF Radio";
         private string _imageLocation = "{A-10C}/Images/A-10CII/";
         private RotarySwitchPositionCollection positions = new RotarySwitchPositionCollection();
+        private IConfigurableBackgroundImage _channelDisplay;
+        private IConfigurableBackgroundImage _frequencyDisplay;
         private static readonly Double SCREENRES = 1.0;
 
         public UHFRadio()
@@ -69,8 +73,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             enc.InitialRotation = 10;
             Potentiometer pot;
             pot = AddPot("Volume", new Point(274, 420 ), new Size(60, 60), _imageLocation + "A-10C_UHF_Radio_Volume_Knob.png", 0d, 300d, 0d, 1d, 0.5, 0.1, _interfaceDeviceName, "Volume", false, RotaryClickType.Radial, false);
-            AddPart("Channel Display", new UHFChanDisplay(), new Point(298, 111), new Size(173, 100), _interfaceDeviceName, "Channel Display");
-            AddPart("Frequency Display", new UHFFreqDisplay(), new Point(161, 219), new Size(289, 98), _interfaceDeviceName, "Frequency Display");
+            _channelDisplay = AddPart("Channel Display", new UHFChanDisplay(), new Point(298, 111), new Size(173, 100), _interfaceDeviceName, "Channel Display") as IConfigurableBackgroundImage;
+            _frequencyDisplay = AddPart("Frequency Display", new UHFFreqDisplay(), new Point(161, 219), new Size(289, 98), _interfaceDeviceName, "Frequency Display") as IConfigurableBackgroundImage;
             AddThreeWayToggle("T/Tone Switch", new Point(222, 511), new Size(59, 59), "T/Tone Switch");
             AddTwoWaySquelchToggle("Squelch Switch", new Point(354, 511), new Size(52, 61), "Squelch");
 
@@ -82,9 +86,20 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             AddLoadButton("Load Button",74, 175, new Size(36, 37), "Load Button");
         }
 
-        public override string DefaultBackgroundImage
+        public override string DefaultBackgroundImage => _imageLocation + "A-10C_UHF_Radio.png";
+
+        protected override void OnBackgroundImageChange()
         {
-            get { return _imageLocation + "A-10C_UHF_Radio.png"; }
+            if (_channelDisplay != null)
+            {
+                _channelDisplay.BackgroundImage =
+                    BackgroundImageIsCustomized ? null : _channelDisplay.DefaultBackgroundImage;
+            }
+            if (_frequencyDisplay != null)
+            {
+                _frequencyDisplay.BackgroundImage =
+                    BackgroundImageIsCustomized ? null : _frequencyDisplay.DefaultBackgroundImage;
+            }
         }
 
         private void AddCover(string name, Point posn, Size size, string interfaceElementName)
@@ -121,6 +136,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 deviceActionName: "set.position"
                 );
         }
+
         /// <summary>
         /// A-10C UHF Radio Load Button.
         /// This includes binding the hidden action to the switch positions of the cover which sits beneath the button to make them reversed visually.
@@ -258,7 +274,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
             return newSwitch;
         }
 
-        private void AddPart(string name, CompositeVisual part, Point posn, Size size, string interfaceDevice, string interfaceElement)
+        private CompositeVisual AddPart(string name, CompositeVisual part, Point posn, Size size, string interfaceDevice, string interfaceElement)
         {
             size.Width *= SCREENRES;
             size.Height *= SCREENRES;
@@ -274,6 +290,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
                 interfaceElementName: interfaceElement
             );
             newPart.Name = name;
+            return newPart;
         }
 
         public override bool HitTest(Point location)
