@@ -14,8 +14,12 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0" FontSize="10" HorizontalAlignment="Right" Padding="3,3,3,6" VerticalContentAlignment="Center">Image</Label>
         <heliosSdk:ImagePicker Grid.Row="0" Grid.Column="1" ImageFilename="{Binding Control.BackgroundImage, Mode=TwoWay}" />
+        <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Margin="3" Padding="10,1" 
+                Content="Reset"
+                Command="{Binding ResetCommand}"/>
     </Grid>
 </heliosSdk:HeliosPropertyEditor>
