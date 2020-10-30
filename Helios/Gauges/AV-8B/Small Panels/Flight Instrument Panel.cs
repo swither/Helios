@@ -39,7 +39,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddGauge("AOA Gauge", new AOA(), new Point(61, 473), new Size(221, 221), _interfaceDeviceName, new string[2] { "AOA Flag", "Angle of Attack" }, _generalComponentName);
             AddGauge("ADI Gauge", new ADI(), new Point(350, 59), new Size(293, 293), _interfaceDeviceName, new string[4] { "SAI Pitch" , "SAI Bank", "SAI Cage/Pitch Adjust Knob", "SAI Warning Flag" }, _generalComponentName);
             _interfaceDeviceName = "Flight Instruments";
-            AddEncoder("ADI Pitch Adjust", new Point(575, 278), new Size(60, 60), "SAI Cage/Pitch Adjust Knob", "WQHD/Knob/Cage Knob.png");
+            AddPot("ADI Pitch Adjust", new Point(575, 278), new Size(60, 60), "SAI Cage/Pitch Adjust Knob", "WQHD/Knob/Cage Knob.png");
             _interfaceDeviceName = "NAV course";
             AddEncoder("Course Set Knob", new Point(150, 40), new Size(80, 80), "Course Setting");
             _interfaceDeviceName = "Flight Instruments";
@@ -89,6 +89,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                     );
             button.Name = _generalComponentName + "_" + name;
         }
+
         protected override void OnProfileChanged(HeliosProfile oldProfile)
         {
             base.OnProfileChanged(oldProfile);
@@ -99,13 +100,13 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddEncoder(name, posn, size, interfaceElementName, "Rotary.png");
         }
 
-        private void AddEncoder(string name, Point posn, Size size, string interfaceElementName, string _knobName)
+        private void AddEncoder(string name, Point posn, Size size, string interfaceElementName, string knobName)
         {
             AddEncoder(
                 name: name,
                 size: size,
                 posn: posn,
-                knobImage: _imageLocation + _knobName,
+                knobImage: _imageLocation + knobName,
                 stepValue: 0.5,
                 rotationStep: 5,
                 interfaceDeviceName: _interfaceDeviceName,
@@ -113,6 +114,24 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 fromCenter: false,
                 clickType: RotaryClickType.Swipe
                 );
+        }
+
+        private void AddPot(string name, Point posn, Size size, string interfaceElementName, string knobName)
+        {
+            AddPot(name: name,
+                posn: posn,
+                size: size,
+                knobImage: _imageLocation + knobName,
+                initialRotation: 45,
+                rotationTravel: 90,
+                minValue: 0,
+                maxValue: 1,
+                initialValue: 0.5,
+                stepValue: 0.1,
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElementName,
+                isContinuous: false,
+                fromCenter: false);
         }
 
         private void AddButton(string name, double x, double y, Size size, string interfaceDevice, string interfaceElement)
