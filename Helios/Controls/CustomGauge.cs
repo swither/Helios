@@ -18,6 +18,7 @@ using System.Globalization;
 using System.Windows;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Controls
 {
@@ -339,4 +340,7 @@ namespace GadrocsWorkshop.Helios.Controls
             Reset();
         }
     }
+
+    // helper for intellisense in XAML
+    public class DesignTimeCustomGauge: DesignTimeControl<CustomGauge> {}
 }
