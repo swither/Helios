@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios
     {
         private MonitorRenderer _renderer;
 
-        private bool _fillBackground = true;
+        private bool _fillBackground = false;
         private Color _backgroundColor = Colors.DarkGray;
         private string _backgroundImageFile = "";
         private ImageAlignment _backgroundAlignment = ImageAlignment.Stretched;
