@@ -136,6 +136,7 @@
       <DependentUpon>GenericInterfaceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\CommandLineOptions.cs" />
+    <Compile Include="Util\DesignTimeControl.cs" />
     <Compile Include="Util\ElevatedProcess.cs" />
     <Compile Include="Util\ElevatedProcessResponsePipe.cs" />
     <Compile Include="Windows\Controls\About.xaml.cs">
