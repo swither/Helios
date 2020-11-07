@@ -111,6 +111,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 binding.ValueSource = BindingValueSources.StaticValue;
             }
 
+            // default cascading triggers according to settings
+            binding.BypassCascadingTriggers = !GlobalOptions.HasDefaultCascadeTriggers;
+
+            // build and install specialized undo context to remove binding on undo
             BindingAddUndoEvent undoEvent = new BindingAddUndoEvent(binding);
             undoEvent.Do();
             ConfigManager.UndoManager.AddUndoItem(undoEvent);
@@ -129,8 +133,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private ProfileExplorerTreeItem GetExplorerTreeItem(UIElement dragElement)
         {
-            TreeViewItem treeItem = GetAncestor(dragElement, typeof(TreeViewItem)) as TreeViewItem;
-            if (treeItem != null)
+            if (GetAncestor(dragElement, typeof(TreeViewItem)) is TreeViewItem treeItem)
             {
                 return treeItem.Header as ProfileExplorerTreeItem;
             }

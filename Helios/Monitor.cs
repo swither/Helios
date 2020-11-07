@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios
     {
         private MonitorRenderer _renderer;
 
-        private bool _fillBackground = false;
+        private bool _fillBackground;
         private Color _backgroundColor = Colors.DarkGray;
         private string _backgroundImageFile = "";
         private ImageAlignment _backgroundAlignment = ImageAlignment.Stretched;
@@ -57,10 +57,6 @@ namespace GadrocsWorkshop.Helios
             Width = width;
             Height = height;
             Orientation = orientation;
-            if (IsPrimaryDisplay)
-            {
-                _fillBackground = false;
-            }
         }
 
         public Monitor(Monitor display)
