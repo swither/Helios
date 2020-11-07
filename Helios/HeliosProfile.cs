@@ -56,8 +56,10 @@ namespace GadrocsWorkshop.Helios
             int i = 1;
             foreach (Monitor display in ConfigManager.DisplayManager.Displays)
             {
-                Monitor monitor = new Monitor(display);
-                monitor.Name = "Monitor " + i++;
+                Monitor monitor = new Monitor(display)
+                {
+                    Name = "Monitor " + i++
+                };
                 Monitors.Add(monitor);
             }
 
