@@ -91,6 +91,9 @@
     <Compile Include="BindingsPanel.xaml.cs">
       <DependentUpon>BindingsPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GlobalOptionsWindow.xaml.cs">
+      <DependentUpon>GlobalOptionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InterfaceStatusView.xaml.cs">
       <DependentUpon>InterfaceStatusView.xaml</DependentUpon>
     </Compile>
@@ -168,6 +171,7 @@
     <Compile Include="UndoEvents\InterfaceDeleteUndoEvent.cs" />
     <Compile Include="ViewModel\AvailableInterfaces.cs" />
     <Compile Include="ViewModel\DescriptorToolboxItem.cs" />
+    <Compile Include="GlobalOptions.cs" />
     <Compile Include="ViewModel\MonitorResetItem.cs" />
     <Compile Include="ViewModel\ProfileExplorerTreeItem.cs" />
     <Compile Include="ViewModel\ProfileExplorerTreeItemCollection.cs" />
@@ -199,6 +203,10 @@
     <Page Include="BindingsPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GlobalOptionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="InstallationDialogs.xaml">
       <SubType>Designer</SubType>

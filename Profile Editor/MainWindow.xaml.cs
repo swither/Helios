@@ -159,6 +159,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     ToolMenuItems.Add(menuItemModel);
                 }
             }
+
+            // finally add hard coded items intended to be last
+            ToolMenuItems.Add(new MenuItemModel("Options", new RelayCommand(parameter =>
+            {
+                GlobalOptionsWindow options = new GlobalOptionsWindow
+                {
+                    DataContext = new GlobalOptions()
+                };
+                options.ShowDialog();
+            })));
         }
 
         private static void PresentVersionCheck(object sender, RoutedEventArgs e)
@@ -564,11 +574,23 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 }
 
                 Profile = new HeliosProfile();
+
+                // configure default layout options
+                bool fillSecondaryMonitors = GlobalOptions.HasDefaultFillSecondaryMonitors;
+                bool defaultAlwaysOnTop = GlobalOptions.HasDefaultAlwaysOnTop;
+                foreach (Monitor monitor in Profile.Monitors)
+                {
+                    monitor.FillBackground = (!monitor.IsPrimaryDisplay) && fillSecondaryMonitors;
+                    monitor.AlwaysOnTop = defaultAlwaysOnTop;
+                }
+
+                // any changes made before now are not considered changes any more
                 ConfigManager.UndoManager.ClearHistory();
 
                 AddNewDocument(Profile.Monitors[0]);
                 OnProfileChangeComplete();
 
+                // clean up memory
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
