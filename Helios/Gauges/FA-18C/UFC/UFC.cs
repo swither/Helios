@@ -85,7 +85,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
             AddTextDisplay("OptionDisplay5", 381, 310, new Size(129,42), "Option Display 5", 32, "~", TextHorizontalAlignment.Left, _ufcNumbers16);
             AddTextDisplay("ScratchPadCharacter1", 92, 35, new Size(32, 48), "Scratchpad 1", 30, "~", TextHorizontalAlignment.Left, " =;" + _ufcNumbers16);
             AddTextDisplay("ScratchPadCharacter2", 122, 35, new Size(32, 48), "Scratchpad 2", 30, "~", TextHorizontalAlignment.Left, " =;" + _ufcNumbers16);
-            AddTextDisplay("ScratchPadNumbers", 152, 35, new Size(135, 48), "Scratchpad Number", 30, "~", TextHorizontalAlignment.Right, " =<");
+            AddTextDisplay("ScratchPadNumbers", 152, 35, new Size(135, 48), "Scratchpad Number", 30, "~", TextHorizontalAlignment.Right, " =>");
             AddTextDisplay("Comm1", 26, 314, new Size(41, 42), "Comm Channel 1",32, "~", TextHorizontalAlignment.Center, " =;" + _ufcNumbers16);
             AddTextDisplay("Comm2", 538, 309, new Size(40, 42), "Comm Channel 2",32, "~", TextHorizontalAlignment.Center, " =;" + _ufcNumbers16);
         }
