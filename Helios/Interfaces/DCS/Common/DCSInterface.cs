@@ -14,19 +14,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
-using System.Xml;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 using GadrocsWorkshop.Helios.UDPInterface;
 using GadrocsWorkshop.Helios.Util;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Xml;
+using Path = System.IO.Path;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
@@ -414,11 +414,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         ImpersonatedVehicleName = reader.ReadElementString("ImpersonatedVehicleName");
                         break;
                     case "ExportModuleText":
-                        ExportModuleText = reader.ReadElementContentAsString();
+                        ExportModuleText = NormalizeLineEndings(reader.ReadElementContentAsString());
                         break;
                     case "ExportModuleTextBase64":
                         string encoded = reader.ReadElementContentAsString();
-                        ExportModuleText = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+                        ExportModuleText = NormalizeLineEndings(Encoding.UTF8.GetString(Convert.FromBase64String(encoded)));
                         break;
                     default:
                         string elementName = reader.Name;
@@ -429,6 +429,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 }
             }
         }
+
+        /// <summary>
+        /// converts all line endings to windows line endings, so that file deserialized from XML will match original file
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        internal static string NormalizeLineEndings(string text)
+        {
+            return LineEndings.Replace(text, Environment.NewLine);
+        }
+
+        // https://stackoverflow.com/a/141069/955263
+        private static readonly Regex LineEndings = new Regex(@"\r\n|\n\r|\n|\r", RegexOptions.Compiled);
 
         public override void WriteXml(XmlWriter writer)
         {

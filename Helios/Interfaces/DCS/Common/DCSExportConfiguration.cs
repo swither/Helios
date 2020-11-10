@@ -333,7 +333,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     ModuleFolderGuess = Path.GetDirectoryName(value);
 
                     // try to read the file and include it
-                    string moduleText = ReadFile(value);
+                    string moduleText = DCSInterface.NormalizeLineEndings(ReadFile(value));
                     using (new HeliosUndoBatch())
                     {
                         _parent.SetEmbeddedModule(value, moduleText);
@@ -1048,9 +1048,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 case DCSExportModuleFormat.HeliosDriver16:
                     _exportModuleText =
-                        string.Join("\n", GenerateDriverLines())
+                        string.Join(Environment.NewLine, GenerateDriverLines())
                         + FetchExportFunctions()
-                        + "\nreturn driver";
+                        + $"{Environment.NewLine}return driver";
                     break;
                 case DCSExportModuleFormat.CaptZeenModule1:
                     // don't know how
