@@ -173,8 +173,21 @@
 
                         <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
                             <TextBlock FontSize="10" TextWrapping="Wrap" Margin="4,4,4,0" Text="{Binding SelectedBinding.ErrorMessage}" Foreground="Red" Style="{StaticResource ErrorMessageStyle}" />
-                            <TextBlock FontSize="9" TextWrapping="Wrap" Margin="4,1,4,4" Style="{StaticResource Documentation}">
-                            <TextBlock.Text>Return value from the script will be passed to the action. A global variable named "TriggerValue" will be populated with the value passed in from the trigger.</TextBlock.Text>
+                            <TextBlock FontSize="9" TextWrapping="Wrap" Margin="4,1,4,4">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Documentation}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding SelectedBinding.ValueSource}" Value="LuaScript"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                                <TextBlock.Text>Return value from the script will be passed to the action. A global variable named "TriggerValue" will be populated with the value passed in from the trigger.</TextBlock.Text>
                             </TextBlock>
                         </StackPanel>
                     </Grid>
