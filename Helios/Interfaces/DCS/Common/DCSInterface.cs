@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -161,6 +162,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             ImpersonatedVehicleName != null ? $"{Name} impersonating {ImpersonatedVehicleName}" : Name;
 
         /// <summary>
+        /// the base name to use when writing an embedded module file during setup
+        /// </summary>
+        public virtual string WrittenModuleBaseName =>
+            ExportModuleBaseName ??
+            ImpersonatedVehicleName ??
+            VehicleName;
+
+        /// <summary>
         /// the configured format for the export module used by this interface
         /// </summary>
         public DCSExportModuleFormat ExportModuleFormat
@@ -178,8 +187,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 {
                     DCSExportModuleFormat oldValue = _exportModuleFormat;
                     _exportModuleFormat = value;
-                    ExportModuleBaseName = null;
-                    ExportModuleText = null;
+                    RemoveEmbeddedModule();
                     OnPropertyChanged("ExportModuleFormat", oldValue, value, true);
                 }
             }
@@ -475,10 +483,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 DCSExportConfiguration.ModuleFormatInfo moduleInfo = Configuration.ExportModuleFormatInfo[ExportModuleFormat];
                 if (!moduleInfo.CanBeAttached)
                 {
-                    ExportModuleBaseName = null;
-                    ExportModuleText = null;
+                    RemoveEmbeddedModule();
                 }
             }
+        }
+
+        public bool HasEmbeddedModule => !string.IsNullOrEmpty(ExportModuleBaseName);
+
+        internal virtual void RemoveEmbeddedModule()
+        {
+            ExportModuleBaseName = null;
+            ExportModuleText = null;
+        }
+
+        internal virtual void SetEmbeddedModule(string path, string moduleText)
+        {
+            ExportModuleText = moduleText;
+            ExportModuleBaseName = Path.GetFileNameWithoutExtension(path);
         }
 
         #region IReadyCheck

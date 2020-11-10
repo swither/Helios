@@ -336,16 +336,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     string moduleText = ReadFile(value);
                     using (new HeliosUndoBatch())
                     {
-                        _parent.ExportModuleText = moduleText;
-                        _parent.ExportModuleBaseName = Path.GetFileNameWithoutExtension(value);
+                        _parent.SetEmbeddedModule(value, moduleText);
                     }
                 }
                 else
                 {
                     using (new HeliosUndoBatch())
                     {
-                        _parent.ExportModuleText = null;
-                        _parent.ExportModuleBaseName = null;
+                        _parent.RemoveEmbeddedModule();
                     }
                 }
                 OnPropertyChanged("SelectedModuleFile", oldValue, value, true);
@@ -561,7 +559,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         continue;
                     }
 
-                    string baseName = GenerateModuleBaseName();
+                    string baseName = _parent.WrittenModuleBaseName;
                     File.WriteAllText(
                         location.ExportModulePath(moduleInfo.ModuleLocation, baseName),
                         _exportModuleText);
@@ -969,7 +967,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 UpdateExportScript();
                 yield return CheckExportScript(location);
 
-                if (string.IsNullOrEmpty(_parent.ExportModuleBaseName) && !moduleInfo.CanGenerate)
+                if ((!_parent.HasEmbeddedModule) && (!moduleInfo.CanGenerate))
                 {
                     yield return new StatusReportItem
                     {
@@ -1033,7 +1031,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private void UpdateModule()
         {
             ModuleFormatInfo moduleInfo = ExportModuleFormatInfo[_parent.ExportModuleFormat];
-            if (moduleInfo.CanBeAttached && _parent.ExportModuleBaseName != null)
+            if (moduleInfo.CanBeAttached && _parent.HasEmbeddedModule)
             {
                 // nothing to do
                 return;
@@ -1382,7 +1380,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 };
             }
 
-            if (_parent.ExportModuleBaseName == null && !moduleInfo.CanGenerate)
+            if ((!_parent.HasEmbeddedModule) && (!moduleInfo.CanGenerate))
             {
                 // no included module and we don't even know its name
                 return new StatusReportItem
@@ -1393,7 +1391,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 };
             }
 
-            string exportModulePath = location.ExportModulePath(moduleInfo.ModuleLocation, GenerateModuleBaseName());
+            string exportModulePath = location.ExportModulePath(moduleInfo.ModuleLocation, _parent.WrittenModuleBaseName);
             if (!File.Exists(exportModulePath))
             {
                 return new StatusReportItem
@@ -1425,11 +1423,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 Severity = StatusReportItem.SeverityCode.Error
             };
         }
-
-        private string GenerateModuleBaseName() =>
-            _parent.ExportModuleBaseName ??
-            _parent.ImpersonatedVehicleName ?? 
-            _parent.VehicleName;
 
         #endregion
 

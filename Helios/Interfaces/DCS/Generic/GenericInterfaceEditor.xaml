@@ -92,12 +92,32 @@
                     <Label Content="Module File"/>
                 </WrapPanel>
                 <WrapPanel Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Visibility="{Binding Path=Configuration.CanAttachModuleFile, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <WrapPanel.Resources>
+                        <Style x:Key="VisibleIfPathPresent" TargetType="Label">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Interface.EmbeddedModuleTargetPath}" Value="{x:Null}"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </WrapPanel.Resources>
                     <heliosSdk:FilePicker
                         FileExtension="lua"
                         FileDescription="Lua module"
                         Text="{Binding Path=Interface.ExportModuleBaseName, Mode=OneWay}" 
                         SelectedFilePath="{Binding Path=Configuration.SelectedModuleFile, Mode=TwoWay}"
                         FolderGuess="{Binding Path=Configuration.ModuleFolderGuess}"/>
+                    <Label Margin="3,0,0,0" Content="( file will be written to" Style="{StaticResource VisibleIfPathPresent}"/>
+                    <Label Margin="0" Padding="0,5" Style="{StaticResource VisibleIfPathPresent}">
+                        <Label.Content>
+                            <TextBlock Text="{Binding Interface.EmbeddedModuleTargetPath}"/>
+                        </Label.Content>
+                    </Label>
+                    <Label Margin="0" Content=")" Style="{StaticResource VisibleIfPathPresent}"/>
                 </WrapPanel>
                 <WrapPanel Grid.Row="8" Grid.Column="1" Visibility="{Binding Path=Configuration.CanAttachModuleFile, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock Style="{StaticResource Documentation}">This third-party export module cannot be created by Helios.  You can attach a file here for inclusion into the Profile and automatic installation.</TextBlock>

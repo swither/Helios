@@ -105,6 +105,11 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
+            // initialize to no file selected, in case we are run again and pick the same file
+            // we want to trigger change events again, since there is no guarantee the file contents
+            // are still the same
+            SelectedFilePath = null;
+
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 CheckFileExists = true,
@@ -117,9 +122,11 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 InitialDirectory = FolderGuess ?? Environment.CurrentDirectory
             };
 
+            // now run the selection dialog
             bool? result = openFileDialog.ShowDialog(Window.GetWindow(this));
             if (result == true)
             {
+                // write the selected file, which will usually trigger some bindings
                 SelectedFilePath = openFileDialog.FileName;
             }
         }

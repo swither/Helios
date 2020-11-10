@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
 {
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -21,6 +23,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
     [HeliosInterface("Helios.DCS", "DCS Generic Interface", typeof(GenericInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class GenericInterface : DCSInterface
     {
+        /// <summary>
+        /// backing field for property EmbeddedModuleTargetPath, contains
+        /// a partial path for the output file if a module is attached
+        /// </summary>
+        private string _embeddedModuleTargetPath;
+
         #region Devices
         private const string PUSH_BUTTONS = "1";
         private const string TOGGLE_SWITCH = "2";
@@ -204,6 +212,75 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
                     CanBeAttached = true,
                     CanGenerate = false
                 };
+        }
+
+        protected override void OnPropertyChanged(PropertyNotificationEventArgs args)
+        {
+            base.OnPropertyChanged(args);
+            switch (args.PropertyName)
+            {
+                case nameof(ExportModuleFormat):
+                case nameof(ImpersonatedVehicleName):
+                case nameof(ExportModuleBaseName):
+                case nameof(ExportModuleText):
+                    if (!HasEmbeddedModule)
+                    {
+                        // all formats require an embedded file for this to be valid
+                        EmbeddedModuleTargetPath = null;
+                        return;
+                    }
+                    switch (ExportModuleFormat)
+                    {
+                        case DCSExportModuleFormat.HeliosDriver16:
+                            EmbeddedModuleTargetPath = string.IsNullOrWhiteSpace(ImpersonatedVehicleName) ? null : $"Drivers\\{ImpersonatedVehicleName}.lua";
+                            break;
+                        case DCSExportModuleFormat.CaptZeenModule1:
+                            EmbeddedModuleTargetPath = string.IsNullOrWhiteSpace(ExportModuleBaseName) ? null : $"Modules\\{ExportModuleBaseName}.lua";
+                            break;
+                        case DCSExportModuleFormat.TelemetryOnly:
+                            EmbeddedModuleTargetPath = null;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// the emitted file name depends on the format used, which is different from the basic DCSInterface behavior
+        /// </summary>
+        public override string WrittenModuleBaseName
+        {
+            get
+            {
+                switch (ExportModuleFormat)
+                {
+                    case DCSExportModuleFormat.HeliosDriver16:
+                        return ImpersonatedVehicleName;
+                    case DCSExportModuleFormat.CaptZeenModule1:
+                        return ExportModuleBaseName;
+                    case DCSExportModuleFormat.TelemetryOnly:
+                        return null;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        /// <summary>
+        /// a partial path for the output file if a module is attached
+        /// </summary>
+        public string EmbeddedModuleTargetPath
+        {
+            get => _embeddedModuleTargetPath;
+            set
+            {
+                if (_embeddedModuleTargetPath == value) return;
+                string oldValue = _embeddedModuleTargetPath;
+                _embeddedModuleTargetPath = value;
+                OnPropertyChanged(nameof(EmbeddedModuleTargetPath), oldValue, value, true);
+            }
         }
     }
 }
