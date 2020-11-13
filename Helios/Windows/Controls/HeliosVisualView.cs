@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Diagnostics;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 
 namespace GadrocsWorkshop.Helios.Windows.Controls
 {
@@ -138,48 +139,74 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         private static void OnVisualChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            HeliosVisualView view = d as HeliosVisualView;
-            if (view != null)
+            if (!(d is HeliosVisualView view))
             {
-                HeliosVisual oldVisual = e.OldValue as HeliosVisual;
-                if (oldVisual != null)
+                return;
+            }
+
+            view.OnVisualChanged(e.OldValue as HeliosVisual);
+        }
+
+        private void OnVisualChanged(HeliosVisual oldVisual)
+        {
+            if (oldVisual != null)
+            {
+                oldVisual.Children.CollectionChanged -= VisualChildren_CollectionChanged;
+                oldVisual.DisplayUpdate -= Visual_DisplayUpdate;
+                oldVisual.Resized -= Visual_ResizeMove;
+                oldVisual.Moved -= Visual_ResizeMove;
+                oldVisual.HiddenChanged -= Visual_HiddenChanged;
+
+                if (oldVisual is IPreviewInput oldPreview)
                 {
-                    oldVisual.Children.CollectionChanged -= view.VisualChildren_CollectionChanged;
-                    oldVisual.DisplayUpdate -= view.Visual_DisplayUpdate;
-                    oldVisual.Resized -= view.Visual_ResizeMove;
-                    oldVisual.Moved -= view.Visual_ResizeMove;
-                    oldVisual.HiddenChanged -= view.Visual_HiddenChanged;
+                    PreviewMouseDown -= oldPreview.PreviewMouseDown;
+                    PreviewMouseUp -= oldPreview.PreviewMouseUp;
+                    PreviewTouchDown -= oldPreview.PreviewTouchDown;
+                    PreviewTouchUp -= oldPreview.PreviewTouchUp;
+                }
+            }
+
+            Children.Clear();
+
+            if (Visual == null)
+            {
+                // no new visual to connect to
+                return;
+            }
+
+            if (DisplayRotation)
+            {
+                if (Visual.Renderer.Dispatcher == null)
+                {
+                    Visual.Renderer.Dispatcher = Dispatcher;
                 }
 
-                view.Children.Clear();
+                Visual.Renderer.Refresh();
+                LayoutTransform = Visual.Renderer.Transform;
+            }
+            else
+            {
+                LayoutTransform = null;
+            }
 
-                if (view.Visual != null)
-                {
-                    if (view.DisplayRotation)
-                    {
-                        if (view.Visual.Renderer.Dispatcher == null)
-                        {
-                            view.Visual.Renderer.Dispatcher = view.Dispatcher;
-                        }
-                        view.Visual.Renderer.Refresh();
-                        view.LayoutTransform = view.Visual.Renderer.Transform;
-                    }
-                    else
-                    {
-                        view.LayoutTransform = null;
-                    }
-                    view.UpdateChildren();
-                    view.Visual.Children.CollectionChanged += view.VisualChildren_CollectionChanged;
-                    view.Visual.DisplayUpdate += view.Visual_DisplayUpdate;
-                    view.Visual.Resized += view.Visual_ResizeMove;
-                    view.Visual.Moved += view.Visual_ResizeMove;
-                    view.Visual.HiddenChanged += view.Visual_HiddenChanged;
+            UpdateChildren();
+            Visual.Children.CollectionChanged += VisualChildren_CollectionChanged;
+            Visual.DisplayUpdate += Visual_DisplayUpdate;
+            Visual.Resized += Visual_ResizeMove;
+            Visual.Moved += Visual_ResizeMove;
+            Visual.HiddenChanged += Visual_HiddenChanged;
 
-                    if (!view.IgnoreHidden)
-                    {
-                        view.Visibility = view.Visual.IsHidden ? Visibility.Hidden : Visibility.Visible;
-                    }
-                }
+            if (!IgnoreHidden)
+            {
+                Visibility = Visual.IsHidden ? Visibility.Hidden : Visibility.Visible;
+            }
+
+            if (Visual is IPreviewInput newPreview)
+            {
+                PreviewMouseDown += newPreview.PreviewMouseDown;
+                PreviewMouseUp += newPreview.PreviewMouseUp;
+                PreviewTouchDown += newPreview.PreviewTouchDown;
+                PreviewTouchUp += newPreview.PreviewTouchUp;
             }
         }
 
