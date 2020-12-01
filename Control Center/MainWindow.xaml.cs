@@ -102,15 +102,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 });
             }
 
-            if (Preferences.StartMinimized)
-            {
-                MinimizeWindow();
-            }
-            else
-            {
-                ShowNormalWindow();
-            }
-
             LoadProfileList(PreferencesFile.LoadSetting("ControlCenter", "LastProfile", ""));
             if (_profileIndex == -1 && _profiles.Count > 0)
             {
@@ -1029,19 +1020,25 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //Set the window style to noactivate.
+            // Set the window style to noactivate.
             _helper = new WindowInteropHelper(this);
 
             NativeMethods.SetWindowLong(_helper.Handle,
                 NativeMethods.GWL_EXSTYLE,
                 NativeMethods.GetWindowLong(_helper.Handle, NativeMethods.GWL_EXSTYLE) | NativeMethods.WS_EX_NOACTIVATE);
+
+            if (Preferences.StartMinimized)
+            {
+                MinimizeWindow();
+            }
+            else
+            {
+                ShowNormalWindow();
+            }
         }
 
         private void Window_Opened(object sender, EventArgs e)
         {
-            Height = _prefsShown ? 277+320 : 277;
-            Width = 504;
-
             if (Environment.OSVersion.Version.Major > 5 && PreferencesFile.LoadSetting("ControlCenter", "AeroWarning", true))
             {
                 bool aeroEnabled;
