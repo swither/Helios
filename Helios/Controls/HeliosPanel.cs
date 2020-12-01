@@ -41,12 +41,12 @@ namespace GadrocsWorkshop.Helios.Controls
         private string _topRigthCornerImageFile = "{Helios}/Images/Panels/panel-top-right.png";
         private string _bottomLeftCornerImageFile = "{Helios}/Images/Panels/panel-bottom-left.png";
         private string _bottomRightCornerImageFile = "{Helios}/Images/Panels/panel-bottom-right.png";
-        private double _opacity; 
+        private double _opacity = 1d; 
 
         public HeliosPanel()
             : base("Panel", new Size(300,300))
         {
-            _opacity = 1.0;
+            // no code
         }
 
         #region Properties
@@ -311,11 +311,6 @@ namespace GadrocsWorkshop.Helios.Controls
         }
 
         #endregion
-
-        public override void Reset()
-        {
-            base.Reset();
-        }
 
         public override void WriteXml(XmlWriter writer)
         {

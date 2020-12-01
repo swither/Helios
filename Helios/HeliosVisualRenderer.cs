@@ -30,10 +30,6 @@ namespace GadrocsWorkshop.Helios
         private Dispatcher _dispatcher;
         private TransformGroup _transform;
 
-        public HeliosVisualRenderer()
-        {
-        }
-
         #region Properties
 
         /// <summary>
@@ -93,20 +89,10 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
-        /// Renders the visual scaled.
-        /// </summary>
-        /// <param name="drawingContext">Context on which to draw this control.</param>
-        public void Render(DrawingContext drawingContext, double scaleX, double scaleY)
-        {
-            CheckRefresh();
-            OnRender(drawingContext, scaleX, scaleY);
-        }
-
-        /// <summary>
         /// Render the visual at a specified size.
         /// </summary>
         /// <param name="drawingContext">Context on which to draw this control.</param>
-        /// 
+        /// <param name="size"></param>
         public void Render(DrawingContext drawingContext, Size size)
         {
             CheckRefresh();
@@ -134,45 +120,14 @@ namespace GadrocsWorkshop.Helios
         /// Renders this control using scale in the given drawing context.
         /// </summary>
         /// <param name="drawingContext">Context on which to draw this control.</param>
+        /// <param name="scaleX"></param>
+        /// <param name="scaleY"></param>
         protected virtual void OnRender(DrawingContext drawingContext, double scaleX, double scaleY)
         {
             drawingContext.PushTransform(new ScaleTransform(scaleX, scaleY));
             OnRender(drawingContext);
             drawingContext.Pop();
         }
-
-        /// <summary>
-        /// Renders this control using opacity in the given drawing context.
-        /// </summary>
-        /// <param name="drawingContext">Context on which to draw this control.</param>
-        protected virtual void OnRender(DrawingContext drawingContext, double opacity)
-        {
-            if (opacity >= 1.0)
-            {
-                OnRender(drawingContext);
-                return;
-            }
-            drawingContext.PushOpacity(opacity);
-            OnRender(drawingContext);
-            drawingContext.Pop();
-        }
-
-        /// <summary>
-        /// Renders this control using scale and opacity in the given drawing context.
-        /// </summary>
-        /// <param name="drawingContext">Context on which to draw this control.</param>
-        protected virtual void OnRender(DrawingContext drawingContext, double scaleX, double scaleY, double opacity)
-        {
-            if (opacity >= 1.0)
-            {
-                OnRender(drawingContext, scaleX, scaleY);
-                return;
-            }
-            drawingContext.PushOpacity(opacity);
-            OnRender(drawingContext, scaleX, scaleY);
-            drawingContext.Pop();
-        }
-
 
         /// <summary>
         /// Refreshes and reloads all resources needed to display this visual.
