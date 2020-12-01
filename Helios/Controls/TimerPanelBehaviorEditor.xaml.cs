@@ -13,19 +13,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Windows.Controls;
+
 namespace GadrocsWorkshop.Helios.Controls
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Windows.Controls;
-
     /// <summary>
-    /// Appearance for basic panels (corners etc.)
+    /// Interaction logic for TimerPanelBehaviorEditor.xaml
     /// </summary>
-    [HeliosPropertyEditor("Helios.Panel", "Appearance")]
-    [HeliosPropertyEditor("Helios.Panel.Timer", "Appearance")]
-    public partial class HeliosPanelAppearanceEditor : HeliosPropertyEditor
+    [HeliosPropertyEditor("Helios.Panel.Timer", "Behavior")]
+    public partial class TimerPanelBehaviorEditor : HeliosPropertyEditor
     {
-        public HeliosPanelAppearanceEditor()
+        public TimerPanelBehaviorEditor()
         {
             InitializeComponent();
         }
