@@ -14,6 +14,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using AvalonDock.Layout;
+using System;
 using System.Windows.Controls;
 
 namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
@@ -23,9 +25,26 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
     /// </summary>
     public partial class Welcome : Grid
     {
+        public const string CONTENT_ID = "InstallationModeWelcome";
+
         public Welcome()
         {
             InitializeComponent();
+            Name = CONTENT_ID;
+        }
+
+        internal static void Create(LayoutAnchorable container, out object content)
+        {
+            if (container == null)
+            {
+                content = null;
+                return;
+            }
+            container.Title = "Installation Mode";
+            container.CanClose = false;
+            container.CanHide = false;
+            content = new Welcome();
+            container.Content = content;
         }
     }
 }

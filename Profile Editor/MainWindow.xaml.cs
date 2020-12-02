@@ -181,8 +181,21 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         void LayoutSerializer_LayoutSerializationCallback(object sender, LayoutSerializationCallbackEventArgs e)
         {
-            if (Profile == null || !(e.Model is LayoutDocument layoutDocument))
+            if (Profile == null)
             {
+                return;
+            }
+
+            if (e.Model.ContentId == Welcome.CONTENT_ID)
+            {
+                Welcome.Create(e.Model as LayoutAnchorable, out object content);
+                e.Content = content;
+                return;
+            }
+
+            if (!(e.Model is LayoutDocument layoutDocument))
+            {
+                // code below here just deserializes documents such as monitors and panels
                 return;
             }
 
@@ -1185,7 +1198,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// </summary>
         /// <param name="withContent"></param>
         /// <returns>the LayoutAnchorable associated with the content or null</returns>
-        private LayoutAnchorable CloseCurrentLayoutAnchorable(object withContent)
+        private ILayoutElement CloseCurrentLayoutAnchorable(object withContent)
         {
             // LayoutAnchorable current = FindLayoutAnchorable(DockManager.Layout, withContent);
             LayoutAnchorable current = DockManager.Layout.Descendents().OfType<LayoutAnchorable>().First(l => l.Content == withContent);
@@ -1317,7 +1330,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             if (archiveInstall.HasMainProfile)
             {
                 // change the layout to something small that makes sense for initial install
-                LayoutAnchorable welcome = ConfigureUserInterfaceForInstall();
+                ILayoutElement welcome = ConfigureUserInterfaceForInstall();
 
                 // load the given profile
                 LoadProfile(archiveInstall.MainProfilePath, true);
@@ -1347,7 +1360,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             welcome.IsActive = true;
         }
 
-        private LayoutAnchorable ConfigureUserInterfaceForInstall()
+        private ILayoutElement ConfigureUserInterfaceForInstall()
         {
             // remove unused stuff
             CloseCurrentLayoutAnchorable(PreviewPanel);
@@ -1369,15 +1382,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             // open an "installation mode" window docked on the left, to tell the user what is going to happen, and have them click start to go to interface status
             // also include a button to reset the layout when they are done 
-            LayoutAnchorable welcome = new LayoutAnchorable
-            {
-                Title = "Installation Mode",
-                CanClose = false,
-                CanHide = false,
-                Content = new Welcome()
-            };
-            welcome.AddToLayout(DockManager, AnchorableShowStrategy.Left);
-            return welcome;
+            LayoutAnchorable welcomePanel = new LayoutAnchorable();
+            Welcome.Create(welcomePanel, out object _);
+            welcomePanel.AddToLayout(DockManager, AnchorableShowStrategy.Left);
+            return welcomePanel;
         }
     }
 }
