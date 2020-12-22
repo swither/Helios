@@ -160,6 +160,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("IFF", "backup mode 1 digit 2", "AUX COMM: Mode 1 right digit", "", BindingValueUnits.Numeric);
             AddValue("IFF", "backup mode 3 digit 1", "AUX COMM: Mode 3 left digit", "", BindingValueUnits.Numeric);
             AddValue("IFF", "backup mode 3 digit 2", "AUX COMM: Mode 3 right digit", "", BindingValueUnits.Numeric);
+
+            // ILS with AOA consideration
+            AddValue("ADI", "ils vertical to flight path", "Position of vertical ils bar with AOA correction.", "(-1 highest, 1 lowest)", BindingValueUnits.Numeric);
         }
 
         internal override void InitData()
@@ -241,6 +244,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Ownship", "latitude", new BindingValue(_lastFlightData2.latitude));
                 SetValue("Ownship", "ground speed", new BindingValue(GroundSpeedInFeetPerSecond(_lastFlightData.xDot, _lastFlightData.yDot)));
 
+                //ADI ILS with AOA consideration value
+                SetValue("ADI", "ils vertical to flight path", new BindingValue(((_lastFlightData.AdiIlsVerPos * 2f) - 1f) - ClampAOA(_lastFlightData.alpha)));
             }
             if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
             {
@@ -294,6 +299,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessLightBits2(_lastFlightData.lightBits2, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits3(_lastFlightData.lightBits3);
             }
+        }
+
+        internal float ClampAOA(float alpha)
+        {
+            float correctedValue;
+            const float SCALE_FACTOR = 0.0025f;
+          if (alpha > 20)
+            {
+                correctedValue = 20f;
+            }
+            else if (alpha < -20)
+            {
+                correctedValue = -20f;
+            }
+            else
+            {
+                correctedValue = alpha;
+            }
+            return correctedValue * SCALE_FACTOR;
         }
 
         internal float CalculateHSICourseDeviation(float deviationLimit, float courseDeviation)
