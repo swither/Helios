@@ -163,6 +163,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
             // ILS with AOA consideration
             AddValue("ADI", "ils vertical to flight path", "Position of vertical ils bar with AOA correction.", "(-1 highest, 1 lowest)", BindingValueUnits.Numeric);
+
+            // BMS 4.35 additions
+            AddValue("Caution", "Inlet Icing indicator", "Inlet Icing indicator lamp on the caution panel.", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Test Panel", "FLCS channel lamp A", "FLCS channel lamp A on test panel (abcd)", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Test Panel", "FLCS channel lamp B", "FLCS channel lamp B on test panel (abcd)", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Test Panel", "FLCS channel lamp C", "FLCS channel lamp C on test panel (abcd)", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Test Panel", "FLCS channel lamp D", "FLCS channel lamp D on test panel (abcd)", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Gear Handle", "gear handle solenoid", "Landing gear handle solenoid status", "True if engaged.", BindingValueUnits.Boolean);
         }
 
         internal override void InitData()
@@ -367,6 +375,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 
             }
             SetValue("Altimeter", "radar alt", new BindingValue(rAltString));
+
+            //BMS 4.35 additions
+            SetValue("Test Panel", "FLCS channel lamp A", new BindingValue(miscBits.HasFlag(MiscBits.Flcs_Flcc_A)));
+            SetValue("Test Panel", "FLCS channel lamp B", new BindingValue(miscBits.HasFlag(MiscBits.Flcs_Flcc_A)));
+            SetValue("Test Panel", "FLCS channel lamp C", new BindingValue(miscBits.HasFlag(MiscBits.Flcs_Flcc_A)));
+            SetValue("Test Panel", "FLCS channel lamp D", new BindingValue(miscBits.HasFlag(MiscBits.Flcs_Flcc_A)));
+            SetValue("Gear Handle", "gear handle solenoid", new BindingValue(miscBits.HasFlag(MiscBits.SolenoidStatus)));
         }
 
         private object RoundToNearestTen(int num)
@@ -544,6 +559,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             SetValue("General", "power off", new BindingValue(bits.HasFlag(BMSLightBits3.Power_Off)));
 
             SetValue("Threat Warning Prime", "systest indicator", new BindingValue(bits.HasFlag(BMSLightBits3.SysTest)));
+
+            // BMS 4.35 additions
+            SetValue("Caution", "Inlet Icing indicator", new BindingValue(bits.HasFlag(BMSLightBits3.Inlet_Icing)));
         }
 
         protected void ProcessHsiBits(HsiBits bits, float desiredCourse, float bearingToBeacon, BlinkBits blinkBits, int time)
