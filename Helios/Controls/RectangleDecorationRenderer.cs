@@ -26,13 +26,13 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
         {
-            RectangleDeocration profileRectangle = Visual as RectangleDeocration;
+            RectangleDecoration profileRectangle = Visual as RectangleDecoration;
             drawingContext.DrawRoundedRectangle(_fillBrush, _borderPen, _imageRect, profileRectangle.CornerRadius, profileRectangle.CornerRadius);
         }
 
         protected override void OnRefresh()
         {
-            RectangleDeocration profileRectangle = Visual as RectangleDeocration;
+            RectangleDecoration profileRectangle = Visual as RectangleDecoration;
             if (profileRectangle != null)
             {
                 _fillBrush = new SolidColorBrush(profileRectangle.FillColor);

@@ -74,7 +74,8 @@
     <Compile Include="ComponentModel\HeliosToolAttribute.cs" />
     <Compile Include="Controls\Capabilities\IBackgroundImage.cs" />
     <Compile Include="Controls\Capabilities\IConfigurableBackgroundImage.cs" />
-    <Compile Include="Controls\Capabilities\IPreviewInput.cs" />
+    <Compile Include="Controls\Capabilities\IWindowsMouseInput.cs" />
+    <Compile Include="Controls\Capabilities\IWindowsPreviewInput.cs" />
     <Compile Include="Controls\Capabilities\IRotarySwitch.cs" />
     <Compile Include="Controls\BackgroundImageAppearanceEditor.xaml.cs">
       <DependentUpon>BackgroundImageAppearanceEditor.xaml</DependentUpon>
@@ -83,6 +84,7 @@
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Special\TestControl.cs" />
     <Compile Include="Controls\TimerPanelBehaviorEditor.xaml.cs">
       <DependentUpon>TimerPanelBehaviorEditor.xaml</DependentUpon>
     </Compile>

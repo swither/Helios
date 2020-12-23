@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Controls.Capabilities
     ///
     /// This allows controls to be aware of when their child controls are clicked.
     /// </summary>
-    public interface IPreviewInput
+    public interface IWindowsPreviewInput
     {
         void PreviewMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs);
         void PreviewMouseUp(object sender, MouseButtonEventArgs mouseButtonEventArgs);

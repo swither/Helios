@@ -31,6 +31,11 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         private List<HeliosVisualView> _children;
         private DateTime? _touchDownTime;
 
+        /// <summary>
+        /// if true, then the HeliosVisual handles windows mouse events <see cref="IWindowsMouseInput">directly </see>, and we will not translate them or automatically capture the mouse
+        /// </summary>
+        private bool _controlHandlesMouse;
+
         public HeliosVisualView()
         {
             _children = new List<HeliosVisualView>();
@@ -157,12 +162,25 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 oldVisual.Moved -= Visual_ResizeMove;
                 oldVisual.HiddenChanged -= Visual_HiddenChanged;
 
-                if (oldVisual is IPreviewInput oldPreview)
+                if (oldVisual is IWindowsPreviewInput oldPreview)
                 {
                     PreviewMouseDown -= oldPreview.PreviewMouseDown;
                     PreviewMouseUp -= oldPreview.PreviewMouseUp;
                     PreviewTouchDown -= oldPreview.PreviewTouchDown;
                     PreviewTouchUp -= oldPreview.PreviewTouchUp;
+                }
+
+                if (oldVisual is IWindowsMouseInput oldMouseInput)
+                {
+                    // native Windows API mouse events, in addition to Helios simple mouse/touch events
+                    MouseDown -= oldMouseInput.MouseDown;
+                    MouseUp -= oldMouseInput.MouseUp;
+                    MouseMove -= oldMouseInput.MouseMove;
+                    GotMouseCapture -= oldMouseInput.GotMouseCapture;
+                    LostMouseCapture -= oldMouseInput.LostMouseCapture;
+                    MouseEnter -= oldMouseInput.MouseEnter;
+                    MouseLeave -= oldMouseInput.MouseLeave;
+                    _controlHandlesMouse = false;
                 }
             }
 
@@ -201,12 +219,25 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 Visibility = Visual.IsHidden ? Visibility.Hidden : Visibility.Visible;
             }
 
-            if (Visual is IPreviewInput newPreview)
+            if (Visual is IWindowsPreviewInput newPreview)
             {
                 PreviewMouseDown += newPreview.PreviewMouseDown;
                 PreviewMouseUp += newPreview.PreviewMouseUp;
                 PreviewTouchDown += newPreview.PreviewTouchDown;
                 PreviewTouchUp += newPreview.PreviewTouchUp;
+            }
+
+            if (Visual is IWindowsMouseInput newMouseInput)
+            {
+                // native Windows API mouse events, in addition to Helios simple mouse/touch events
+                MouseDown += newMouseInput.MouseDown;
+                MouseUp += newMouseInput.MouseUp;
+                MouseMove += newMouseInput.MouseMove;
+                GotMouseCapture += newMouseInput.GotMouseCapture;
+                LostMouseCapture += newMouseInput.LostMouseCapture;
+                MouseEnter += newMouseInput.MouseEnter;
+                MouseLeave += newMouseInput.MouseLeave;
+                _controlHandlesMouse = true;
             }
         }
 
@@ -499,6 +530,12 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (_controlHandlesMouse)
+            {
+                // use normal windows handling via events
+                return;
+            }
+
             if (!IsEnabled)
             {
                 return;
@@ -518,7 +555,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override void OnTouchDown(TouchEventArgs e)
         {
-            if (this.IsEnabled)
+            if (IsEnabled)
             {
                 _touchDownTime = DateTime.Now;
                 Point location = e.GetTouchPoint(this).Position;
@@ -530,6 +567,12 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
         {
+            if (_controlHandlesMouse)
+            {
+                // use normal windows handling via events
+                return;
+            }
+
             if (e.MouseDevice.Captured == this)
             {
                 Point location = e.GetPosition(this);
@@ -550,6 +593,12 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (_controlHandlesMouse)
+            {
+                // use normal windows handling via events
+                return;
+            }
+
             if (e.MouseDevice.Captured == this)
             {
                 if (SuppressMouseClick())
