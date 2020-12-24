@@ -339,7 +339,10 @@ function helios_impl.init()
     helios_private.clientSocket = helios_private.socketLibrary.udp()
     helios_private.clientSocket:setsockname("*", 0)
     helios_private.clientSocket:setoption("broadcast", true)
-    helios_private.clientSocket:settimeout(.001) -- blocking, but for a very short time
+    helios_private.clientSocket:settimeout(0) -- non-blocking
+
+    -- NOTE: the following code was in Helios from 2014 to 2020 for reasons nobody remembers:
+    -- helios_private.clientSocket:settimeout(.001) -- blocking, but for a very short time
 
     log.write("HELIOS.EXPORT", log.DEBUG, "loaded")
 
