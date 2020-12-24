@@ -96,6 +96,7 @@ local helios_module_names = {
     ["Mi-8MT"] = "Helios_MI8",
     ["MiG-21Bis"] = "Helios_Mig21Bis",
     ["P-51D"] = "Helios_P51",
+    ["P-51D-30-NA"] = "Helios_P51",
     ["TF-51D"] = "Helios_P51",
     ["SA342"] = "Helios_SA342",
     ["SA342L"] = "Helios_SA342",
