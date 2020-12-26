@@ -170,7 +170,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Test Panel", "FLCS channel lamp B", "FLCS channel lamp B on test panel (abcd)", "True if lit", BindingValueUnits.Boolean);
             AddValue("Test Panel", "FLCS channel lamp C", "FLCS channel lamp C on test panel (abcd)", "True if lit", BindingValueUnits.Boolean);
             AddValue("Test Panel", "FLCS channel lamp D", "FLCS channel lamp D on test panel (abcd)", "True if lit", BindingValueUnits.Boolean);
-            AddValue("Gear Handle", "gear handle solenoid", "Landing gear handle solenoid status", "True if engaged.", BindingValueUnits.Boolean);
+            AddValue("Gear Handle", "gear handle solenoid", "Landing gear handle solenoid status", "0 working - 1 not working", BindingValueUnits.Boolean);
         }
 
         internal override void InitData()
