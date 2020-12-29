@@ -115,7 +115,7 @@ namespace GadrocsWorkshop.Helios
         /// <summary>
         /// create monitors from stored simulated monitors, making copies because monitor objects will be changed by profile configuration
         /// </summary>
-        public IEnumerable<Monitor> CreateSimulatedMonitors => _simulatedMonitors?.Select(monitor => new Monitor(monitor));
+        private IEnumerable<Monitor> CreateSimulatedMonitors => _simulatedMonitors?.Select(monitor => new Monitor(monitor));
 
         private NativeMethods.DISPLAY_DEVICE LogDisplayDevice(NativeMethods.DISPLAY_DEVICE displayDevice)
         {
