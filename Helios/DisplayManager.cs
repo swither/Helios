@@ -90,7 +90,7 @@ namespace GadrocsWorkshop.Helios
                 MonitorCollection displayCollection = new MonitorCollection();
                 try
                 {
-                    IEnumerable<Monitor> monitors = _simulatedMonitors ?? EnumerateDisplays()
+                    IEnumerable<Monitor> monitors = CreateSimulatedMonitors ?? EnumerateDisplays()
                         .Select(LogDisplayDevice)
                         .Where(displayDevice => displayDevice.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.AttachedToDesktop))
                         .Select(CreateHeliosMonitor)
@@ -111,6 +111,11 @@ namespace GadrocsWorkshop.Helios
                 return displayCollection;
             }
         }
+
+        /// <summary>
+        /// create monitors from stored simulated monitors, making copies because monitor objects will be changed by profile configuration
+        /// </summary>
+        public IEnumerable<Monitor> CreateSimulatedMonitors => _simulatedMonitors?.Select(monitor => new Monitor(monitor));
 
         private NativeMethods.DISPLAY_DEVICE LogDisplayDevice(NativeMethods.DISPLAY_DEVICE displayDevice)
         {
