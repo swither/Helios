@@ -26,6 +26,25 @@ namespace GadrocsWorkshop.Helios
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private int _dpi;
+        private List<Monitor> _simulatedMonitors;
+
+        /// <summary>
+        /// can be used to pretend that the local machine has the given monitors, to test reset monitors or to reset
+        /// published profiles to a neutral "reference" configuration
+        ///
+        /// NOTE: monitors will be sorted according to normal sorting rules if they are not provided in sorted order
+        /// </summary>
+        /// <param name="monitors"></param>
+        public void Simulate(IEnumerable<Monitor> monitors)
+        {
+            // deep copy
+            _simulatedMonitors = monitors.Select(monitor => new Monitor(monitor)).ToList();
+        }
+
+        public void StopSimulating()
+        {
+            _simulatedMonitors = null;
+        }
 
         #region Properties
 
@@ -71,12 +90,14 @@ namespace GadrocsWorkshop.Helios
                 MonitorCollection displayCollection = new MonitorCollection();
                 try
                 {
-                    displayCollection.AddRange(EnumerateDisplays()
+                    IEnumerable<Monitor> monitors = _simulatedMonitors ?? EnumerateDisplays()
                         .Select(LogDisplayDevice)
                         .Where(displayDevice => displayDevice.StateFlags.HasFlag(NativeMethods.DisplayDeviceStateFlags.AttachedToDesktop))
                         .Select(CreateHeliosMonitor)
                         // filter failed monitors
-                        .Where(monitor => monitor != null)
+                        .Where(monitor => monitor != null);
+
+                    displayCollection.AddRange(monitors
                         // sort to make consistent monitor list as long as same monitors are present
                         .OrderBy(monitor => monitor.Left)
                         .ThenBy(monitor => monitor.Top)

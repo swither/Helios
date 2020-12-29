@@ -443,6 +443,14 @@ namespace GadrocsWorkshop.Helios
                 }
             }
 
+            InvalidateLayoutCheck();
+        }
+
+        /// <summary>
+        /// note that something about the monitor layout may have changed, and discard cached layout check result
+        /// </summary>
+        public void InvalidateLayoutCheck()
+        {
             _layoutChecked = false;
         }
 

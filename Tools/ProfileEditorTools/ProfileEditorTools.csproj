@@ -58,6 +58,7 @@
     <Compile Include="DCSInterfaceLoadTester\BooleanTester.cs" />
     <Compile Include="DCSInterfaceLoadTester\DCSInterfaceLoadTester.cs" />
     <Compile Include="ProfileTool.cs" />
+    <Compile Include="SimulatedMonitors.cs" />
     <Compile Include="SoftLoopTracer.cs" />
     <Compile Include="DCSInterfaceLoadTester\TesterBase.cs" />
     <Compile Include="DCSInterfaceLoadTester\NumericTester.cs" />
