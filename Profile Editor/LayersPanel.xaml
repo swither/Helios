@@ -59,41 +59,41 @@
     </Grid.RowDefinitions>
     <ToolBarTray Grid.Row="0" IsLocked="True" Background="Transparent">
         <ToolBar Height="28" Background="Transparent">
-            <Button Command="{Binding MoveForwardCommand}">
+            <Button Command="{Binding MoveForwardCommand}" Focusable="False">
                 <Image Source="ToolbarGraphics/BringForwardIcon.png" />
                 <Button.ToolTip>Bring selected controls forward so they display on top of other controls.</Button.ToolTip>
             </Button>
-            <Button Command="{Binding MoveBackCommand}">
+            <Button Command="{Binding MoveBackCommand}" Focusable="False">
                 <Image Source="ToolbarGraphics/SendBackIcon.png" />
                 <Button.ToolTip>Send selectd controls back so they display under other controls.</Button.ToolTip>
             </Button>
             <Separator />
-            <Button Command="{Binding MoveForwardFullyCommand}">
+            <Button Command="{Binding MoveForwardFullyCommand}" Focusable="False">
                 <Image Source="ToolbarGraphics/BringForwardFullyIcon.png" />
                 <Button.ToolTip>Bring selected controls all the way forward so they display on top of all other controls.</Button.ToolTip>
             </Button>
-            <Button Command="{Binding MoveBackFullyCommand}">
+            <Button Command="{Binding MoveBackFullyCommand}" Focusable="False">
                 <Image Source="ToolbarGraphics/SendBackFullyIcon.png" />
                 <Button.ToolTip>Send selected controls all the way back so they display under all other controls.</Button.ToolTip>
             </Button>
             <Separator />
-            <Button Command="{Binding ToggleHideControlsCommand}">
+            <Button Command="{Binding ToggleHideControlsCommand}" Focusable="False">
                 <Image Source="ToolbarGraphics/HiddenIcon.png" />
                 <Button.ToolTip>Hide or Unhide selected controls.</Button.ToolTip>
             </Button>
-            <Button Command="{Binding ToggleLockControlsCommand}">
+            <Button Command="{Binding ToggleLockControlsCommand}" Focusable="False">
                 <Image Source="ToolbarGraphics/LockedIcon.png" />
                 <Button.ToolTip>Lock or Unlock selected controls.</Button.ToolTip>
             </Button>
-            <Button Command="{Binding LockAllControlsCommand}">
+            <Button Command="{Binding LockAllControlsCommand}" Focusable="False">
                 <Image Source="ToolbarGraphics/LockedPlusIcon.png" />
                 <Button.ToolTip>Lock all controls.</Button.ToolTip>
             </Button>
-            <Button Command="{Binding UnlockAllControlsCommand}">
+            <Button Command="{Binding UnlockAllControlsCommand}" Focusable="False">
                 <Image Source="ToolbarGraphics/UnLockedPlusIcon.png" />
                 <Button.ToolTip>Unlock all controls.</Button.ToolTip>
             </Button>
-            <Button Command="{Binding ToggleSnapControlsCommand}">
+            <Button Command="{Binding ToggleSnapControlsCommand}" Focusable="False">
                 <Image Source="ToolbarGraphics/SnapIcon.png" />
                 <Button.ToolTip>Enable or disable snapping to selected controls.</Button.ToolTip>
             </Button>
