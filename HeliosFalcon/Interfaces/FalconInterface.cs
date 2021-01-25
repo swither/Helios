@@ -110,17 +110,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     switch (_falconType)
                     {
                         case FalconTypes.BMS:
+                        default:
                             _dataExporter = new BMS.BMSFalconDataExporter(this);
                             KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
-                            break;
-                        case FalconTypes.OpenFalcon:
-                            _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
-                            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\OFKeystrokes.key");
-                            break;
-                        case FalconTypes.AlliedForces:
-                        default:
-                            _dataExporter = new AlliedForces.AlliedForcesDataExporter(this);
-                            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\keystrokes.key");
                             break;
                     }
 
