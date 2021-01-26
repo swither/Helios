@@ -292,7 +292,7 @@ namespace GadrocsWorkshop.Helios
                     break;
             }
 
-            return inputString.Replace("%value%", valueString);
+            return inputString?.Replace("%value%", valueString);
         }
 
         private BindingValue CreateBindingValue(object value)
@@ -354,9 +354,10 @@ namespace GadrocsWorkshop.Helios
                 return;
             }
 
-            string loggingId = ((IBindingTrigger)_triggerSource.Target).TriggerID; 
+            string loggingId = ((IBindingTrigger)_triggerSource.Target).TriggerID;
             BindingTracer?.TraceTriggerFired(this);
 
+            // scope of binding trace
             try
             {
                 if (IsExecuting)
@@ -368,31 +369,19 @@ namespace GadrocsWorkshop.Helios
                 }
 
                 TriggeredLogger.InfoOnceUnlessDebugging(loggingId, "Binding {Binding} triggered with value {Value}",
-                    new HeliosBinding.DeferredBindingDescription(this), e.Value.StringValue);
+                    new DeferredBindingDescription(this), e.Value.StringValue);
+                IsExecuting = true;
+
+                // scope of IsExecuting
                 try
                 {
-                    IsExecuting = true;
                     BindingValue value = BindingValue.Empty;
-                    //LuaInterpreter["TriggerValue"] = e.Value.NaitiveValue;
-                    
-                    // XXX we initialize the LuaInterpreter even if we don't use it.  fix that.
-                    switch (e.Value.NaitiveType)
-                    {
-                        case BindingValueType.Boolean:
-                            LuaInterpreter["TriggerValue"] = e.Value.BoolValue;
-                            break;
-                        case BindingValueType.String:
-                            LuaInterpreter["TriggerValue"] = e.Value.StringValue;
-                            break;
-                        case BindingValueType.Double:
-                            LuaInterpreter["TriggerValue"] = e.Value.DoubleValue;
-                            break;
-                    }
 
                     if (HasCondition)
                     {
                         try
                         {
+                            InitializeLua(e);
                             object[] conditionReturnValues = LuaInterpreter.DoString(_condition);
                             if (conditionReturnValues.Length >= 1)
                             {
@@ -402,7 +391,7 @@ namespace GadrocsWorkshop.Helios
                                     if (Logger.IsDebugEnabled)
                                     {
                                         Logger.Debug("Binding condition evaluated to false, binding {Binding} aborted.",
-                                            new HeliosBinding.DeferredBindingDescription(this));
+                                            new DeferredBindingDescription(this));
                                     }
                                     return;
                                 }
@@ -412,13 +401,13 @@ namespace GadrocsWorkshop.Helios
                         {
                             LuaConditionLogger.WarnOnceUnlessDebugging(loggingId,
                                 "Binding condition Lua error {Error} from script {Script} on binding {Binding}",
-                                luaException.Message, Condition, new HeliosBinding.DeferredBindingDescription(this));
+                                luaException.Message, Condition, new DeferredBindingDescription(this));
                         }
                         catch (Exception conditionException)
                         {
                             Logger.Error(conditionException,
                                 "Binding condition has thown an unhandled exception for binding {Binding} with condition {Condition}",
-                                new HeliosBinding.DeferredBindingDescription(this),
+                                new DeferredBindingDescription(this),
                                 Condition);
                             return;
                         }
@@ -436,8 +425,7 @@ namespace GadrocsWorkshop.Helios
                                 if (Logger.IsDebugEnabled)
                                 {
                                     Logger.Debug("Binding {Binding} converted value {Original} to {NewValue}",
-                                        new HeliosBinding.DeferredBindingDescription(this), e.Value.StringValue,
-                                        value.StringValue);
+                                        new DeferredBindingDescription(this), e.Value.StringValue, value.StringValue);
                                 }
                             }
                             else
@@ -449,6 +437,8 @@ namespace GadrocsWorkshop.Helios
                         case BindingValueSources.LuaScript:
                             try
                             {
+                                InitializeLua(e);
+
                                 object[] returnValues = LuaInterpreter.DoString(Value);
                                 if ((returnValues != null) && (returnValues.Length >= 1))
                                 {
@@ -457,16 +447,15 @@ namespace GadrocsWorkshop.Helios
                                     {
                                         Logger.Debug(
                                             "Lua script for binding {Binding} evaluated {Expression} for value {TriggerValue} and got result {ReturnValue}",
-                                            new HeliosBinding.DeferredBindingDescription(this), Value,
-                                            LuaInterpreter["TriggerValue"], returnValues[0]);
+                                            new DeferredBindingDescription(this), Value, LuaInterpreter["TriggerValue"],
+                                            returnValues[0]);
                                     }
                                 }
                                 else
                                 {
                                     LuaNoValueLogger.WarnOnceUnlessDebugging(loggingId,
                                         "Binding value Lua script did not return a value from script {Script} for trigger value {TriggerValue} on binding {Binding}",
-                                        Value, LuaInterpreter["TriggerValue"],
-                                        new HeliosBinding.DeferredBindingDescription(this));
+                                        Value, LuaInterpreter["TriggerValue"], new DeferredBindingDescription(this));
                                 }
                             }
                             catch (LuaScriptException luaException)
@@ -474,15 +463,14 @@ namespace GadrocsWorkshop.Helios
                                 LuaValueLogger.WarnOnceUnlessDebugging(loggingId,
                                     "Binding value Lua error {Error} from script {Script} for trigger value {TriggerValue} on binding {Binding}",
                                     luaException.Message, Value, LuaInterpreter["TriggerValue"],
-                                    new HeliosBinding.DeferredBindingDescription(this));
+                                    new DeferredBindingDescription(this));
                             }
                             catch (Exception valueException)
                             {
                                 // these are exceptions thrown by the Lua implementation
                                 Logger.Error(valueException,
                                     "Binding value Lua script has thown an unhandled exception from script {Script} for trigger value {triggerValue} on binding {Binding}",
-                                    Value, LuaInterpreter["TriggerValue"],
-                                    new HeliosBinding.DeferredBindingDescription(this));
+                                    Value, LuaInterpreter["TriggerValue"], new DeferredBindingDescription(this));
                             }
 
                             break;
@@ -493,16 +481,37 @@ namespace GadrocsWorkshop.Helios
                 catch (Exception ex)
                 {
                     Logger.Error(ex, "Unhandled exception thrown from binding {Binding}",
-                        new HeliosBinding.DeferredBindingDescription(this));
+                        new DeferredBindingDescription(this));
                 }
-
-                IsExecuting = false;
+                finally
+                {
+                    IsExecuting = false;
+                }
             }
             finally
             {
                 BindingTracer?.EndTraceTriggerFired(this);
             }
         }
+
+        // we call this function on any paths that use Lua as an optimization, so we don't allocate Lua unless we need it
+        private void InitializeLua(HeliosTriggerEventArgs e)
+        {
+            //LuaInterpreter["TriggerValue"] = e.Value.NaitiveValue;
+            switch (e.Value.NaitiveType)
+            {
+                case BindingValueType.Boolean:
+                    LuaInterpreter["TriggerValue"] = e.Value.BoolValue;
+                    break;
+                case BindingValueType.String:
+                    LuaInterpreter["TriggerValue"] = e.Value.StringValue;
+                    break;
+                case BindingValueType.Double:
+                    LuaInterpreter["TriggerValue"] = e.Value.DoubleValue;
+                    break;
+            }
+        }
+
 
         public void Clone(HeliosBinding binding)
         {
