@@ -34,6 +34,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private string _keyFile;
         private string _cockpitDatFile;
         private bool _focusAssist;
+        private string _falconVersion;
+        private string[] _falconVersions;
+
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private FalconDataExporter _dataExporter;
@@ -45,6 +48,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             : base("Falcon")
         {
             FalconType = FalconTypes.BMS;
+
+            _falconVersions = GetFalconVersions();
+            _falconPath = GetFalconPath();
+            
             _dataExporter = new BMS.BMSFalconDataExporter(this);
             KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
 
@@ -86,6 +93,37 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 var oldValue = _focusAssist;
                 _focusAssist = value;
                 OnPropertyChanged("FocusAssist", oldValue, value, true);
+            }
+        }
+
+        public string[] FalconVersions
+        {
+            get
+            {
+                return _falconVersions;
+            }
+        }
+
+        public string FalconVersion
+        {
+            get
+            {
+                if(_falconVersion == null && _falconVersions != null)
+                {
+                    _falconVersion = _falconVersions[0];
+                }
+                return _falconVersion;
+            }
+            set
+            {
+                if(_falconVersion == null && value != null ||
+                    _falconVersion != null && !_falconVersion.Equals(value))
+                {
+                    string oldValue = _falconVersion;
+                    _falconVersion = value;
+                    OnPropertyChanged("FalconVersion", oldValue, value, false);
+                    FalconPath = GetFalconPath();
+                }
             }
         }
         public FalconTypes FalconType
@@ -171,34 +209,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             get
             {
-                if (_falconPath == null)
-                {
-                    RegistryKey pathKey = null;
-                    switch (FalconType)
-                    {
-                        case FalconTypes.BMS:
-                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Benchmark Sims\Falcon BMS 4.34");
-                            break;
-
-                        case FalconTypes.OpenFalcon:
-                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\MicroProse\Falcon\4.0");
-                            break;
-
-                        case FalconTypes.AlliedForces:
-                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Lead Pursuit\Battlefield Operations\Falcon");
-                            break;
-                    }
-                    
-                    if (pathKey != null)
-                    {
-                        _falconPath = (string)pathKey.GetValue("baseDir");
-                    }
-                    else
-                    {
-                        _falconPath = "";
-                    }
-                }
                 return _falconPath;
+            }
+            set
+            {
+                if (_falconPath == null && value != null ||
+                    _falconPath != null && !_falconPath.Equals(value))
+                {
+                    string oldValue = _falconPath;
+                    _falconPath = value;
+                    OnPropertyChanged("FalconPath", oldValue, value, false);
+                }
             }
         }
 
@@ -206,6 +227,33 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         #endregion
 
+        public string[] GetFalconVersions()
+        {
+            string[] subkeys = null;
+            string regkey = @"SOFTWARE\WOW6432Node\Benchmark Sims";
+            if(Registry.LocalMachine.OpenSubKey(regkey) != null)
+            {
+                subkeys = Registry.LocalMachine.OpenSubKey(regkey).GetSubKeyNames();
+            }
+            return subkeys;
+        }
+
+        public string GetFalconPath()
+        {
+            RegistryKey pathKey = null;
+            string pathValue = null;
+            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Benchmark Sims\" + FalconVersion);
+
+            if (pathKey != null)
+            {
+                pathValue = (string)pathKey.GetValue("baseDir");
+            }
+            else
+            {
+                pathValue = "";
+            }
+            return pathValue;
+        }
         public BindingValue GetValue(string device, string name)
         {
             return _dataExporter?.GetValue(device, name) ?? BindingValue.Empty;
@@ -307,6 +355,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "FocusAssist":
                         FocusAssist = Convert.ToBoolean(reader.ReadElementString("FocusAssist"));
                         break;
+                    case "FalconVersion":
+                        FalconVersion = reader.ReadElementString("FalconVersion");
+                        break;
                     default:
                         // ignore unsupported settings
                         string elementName = reader.Name;
@@ -320,8 +371,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public override void WriteXml(XmlWriter writer)
         {
             writer.WriteElementString("FalconType", FalconType.ToString());
+            writer.WriteElementString("FalconVersion", FalconVersion.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
-            writer.WriteElementString("CockpitDatFile", CockpitDatFile);
+            //writer.WriteElementString("CockpitDatFile", CockpitDatFile);
             writer.WriteElementString("FocusAssist", FocusAssist.ToString());
         }
 
