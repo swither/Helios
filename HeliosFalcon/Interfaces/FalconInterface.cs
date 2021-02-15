@@ -36,6 +36,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private bool _focusAssist;
         private string _falconVersion;
         private string[] _falconVersions;
+        private Version _falconProfileVersion;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -53,7 +54,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             _falconPath = GetFalconPath();
             
             _dataExporter = new BMS.BMSFalconDataExporter(this);
-            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
 
             HeliosAction sendAction = new HeliosAction(this, "", "callback", "send", "Press and releases a keyboard callback for falcon.", "Callback name", BindingValueUnits.Text)
             {
@@ -122,10 +122,30 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     string oldValue = _falconVersion;
                     _falconVersion = value;
                     OnPropertyChanged("FalconVersion", oldValue, value, false);
+                    FalconProfileVersion = ParseProfileVersion(_falconVersion);
                     FalconPath = GetFalconPath();
                 }
             }
         }
+
+        public Version FalconProfileVersion
+        {
+            get
+            {
+                return _falconProfileVersion;
+            }
+            set
+            {
+                if (_falconProfileVersion == null && value != null ||
+                    _falconProfileVersion != null && !_falconProfileVersion.Equals(value))
+                {
+                    Version oldValue = _falconProfileVersion;
+                    _falconProfileVersion = value;
+                    OnPropertyChanged("FalconVersion", oldValue, value, false);
+                }
+            }
+        }
+
         public FalconTypes FalconType
         {
             get
@@ -169,12 +189,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             get
             {
-                return _keyFile;
+                if(_keyFile != null)
+                {
+                    return _keyFile;
+                }
+                else
+                {
+                    return null;
+                }
             }
             set
             {
                 if ((_keyFile == null && value != null)
-                    || (_keyFile != null && !_keyFile.Equals(value)))
+                    || (_keyFile != null && value != null))
                 {
                     string oldValue = _keyFile;
                     FalconKeyFile oldKeyFile = _callbacks;
@@ -182,6 +209,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     _callbacks = new FalconKeyFile(_keyFile);
                     OnPropertyChanged("KeyFileName", oldValue, value, true);
                     OnPropertyChanged("KeyFile", oldKeyFile, _callbacks, false);
+                    InvalidateStatusReport();
                 }
             }
         }
@@ -227,6 +255,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         #endregion
 
+        public static Version ParseProfileVersion(string versionString)
+        {
+            Version ver = Version.Parse(System.Text.RegularExpressions.Regex.Replace(versionString, "[A-Za-z ]", ""));
+            return ver;
+        }
+
         public string[] GetFalconVersions()
         {
             string[] subkeys = null;
@@ -234,6 +268,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             if(Registry.LocalMachine.OpenSubKey(regkey) != null)
             {
                 subkeys = Registry.LocalMachine.OpenSubKey(regkey).GetSubKeyNames();
+                Array.Reverse(subkeys);
             }
             return subkeys;
         }
@@ -276,8 +311,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 Profile.ProfileTick += new EventHandler(Profile_ProfileTick);
                 Profile.ProfileStopped += new EventHandler(Profile_ProfileStopped);
             }
+            InvalidateStatusReport();
         }
-
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
             _dataExporter?.CloseData();
@@ -377,6 +412,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             writer.WriteElementString("FocusAssist", FocusAssist.ToString());
         }
 
+        
+
         #region IReadyCheck
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
@@ -384,13 +421,74 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             // XXX any error will block control center from starting profile unless user selects to disable ready check
             yield return new StatusReportItem
             {
-                Status = $"Selected Falcon interface driver is {FalconType}",
+                Status = $"Selected Falcon interface driver is '{FalconType}' version '{FalconVersion}'",
                 Severity = StatusReportItem.SeverityCode.Info,
-                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
+
+
+            if (KeyFileName != null)
+            {
+                if (!System.IO.File.Exists(KeyFileName))
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"The key file configured in this profile does not exist at the path specified '{KeyFileName}'",
+                        Recommendation = "Configure this interface with a valid key file",
+                        Severity = StatusReportItem.SeverityCode.Error,
+                    };
+                }
+                else
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"The key file configured in this profile is '{KeyFileName}'\n",
+                        Severity = StatusReportItem.SeverityCode.Info,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    };
+                }
+            }
+            else
+            {
+                yield return new StatusReportItem
+                {
+                    Status = $"Key file not defined",
+                    Recommendation = "Please configure this interface with a valid key file if this profile is designed to interact with Falcon",
+                    Severity = StatusReportItem.SeverityCode.Warning,
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+        }
+
+        public HeliosBindingCollection CheckBindings(HeliosBindingCollection heliosBindings)
+        {
+            HeliosBindingCollection missingCallbackBindings = new HeliosBindingCollection();
+            foreach (HeliosBinding binding in heliosBindings)
+            {
+                if (binding.Value != "" && !_callbacks.HasCallback(binding.Value) && binding.ValueSource.ToString().Equals("StaticValue"))
+                {
+                    missingCallbackBindings.Add(binding);
+
+                }
+            }
+            return missingCallbackBindings;
+        }
+
+        public IEnumerable<StatusReportItem> ReportBindings(HeliosBindingCollection bindings)
+        {
+            foreach (HeliosBinding binding in bindings)
+            {
+                yield return new StatusReportItem
+                {
+                    Status = $"callback bound in the profile is not found in the key file '{binding.Value}'",
+                    Recommendation = $"Add missing callbacks to your key file.",
+                    Severity = StatusReportItem.SeverityCode.Error,
+                    Flags = StatusReportItem.StatusFlags.DoNotDisturb | StatusReportItem.StatusFlags.Verbose
+                };
+            }
         }
         #endregion
-        
+
         #region IStatusReportNotify
         public void Subscribe(IStatusReportObserver observer)
         {
@@ -414,6 +512,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             List<StatusReportItem> newReport = new List<StatusReportItem>();
             newReport.AddRange(PerformReadyCheck());
+            if(_callbacks.IsParsed)
+            {
+                newReport.AddRange(ReportBindings(CheckBindings(InputBindings)));
+            }
             PublishStatusReport(newReport);
         }
         #endregion

@@ -23,17 +23,38 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
     public class FalconKeyFile
     {
         private readonly string _fileName;
-        private bool _parsed = false;
+        private bool _parsed;
         private readonly Dictionary<string, FalconKeyCallback> _callbacks = new Dictionary<string, FalconKeyCallback>();
         private List<FalconKeyCallback> _callbackList;
+        private bool _keyFileExists = false;
 
         public FalconKeyFile(string keyFile)
         {
             _fileName = keyFile;
+            _parsed = false;
         }
 
         #region Properties
 
+        public bool KeyFileExists
+        {
+            get
+            {
+                return _keyFileExists;
+            }
+            set
+            {
+                _keyFileExists = value;
+            }
+        }
+
+        public bool IsParsed
+        {
+            get
+            {
+                return _parsed;
+            }
+        }
         public string FileName
         {
             get { return _fileName; }
@@ -45,6 +66,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             if (File.Exists(keyFile))
             {
+                KeyFileExists = true;
                 using (StreamReader reader = File.OpenText(keyFile))
                 {
                     string line;
@@ -81,9 +103,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                         }
                     }
                 }
+                
                 _callbackList = new List<FalconKeyCallback>(_callbacks.Values);
-                _callbackList.Sort();
-                _parsed = true;
+                if(_callbackList.Count > 0)
+                {
+                    _parsed = true;
+                    _callbackList.Sort();
+                }
+                else
+                {
+                    _parsed = false;
+                }
+            }
+            else
+            {
+                KeyFileExists = false;
             }
         }
 
@@ -157,6 +191,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 return _callbackList;
             }
         }
+
+        
 
         //public List<string> CallbackNames
         //{

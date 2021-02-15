@@ -42,8 +42,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             ofd.Filter = "Key Files (*.key)|*.key";
             ofd.Title = "Select Key File";
 
-            ofd.FileName = ((FalconInterface)Interface).KeyFileName;
-
             if (Directory.Exists(((FalconInterface)Interface).FalconPath))
             {
                 if (((FalconInterface)Interface).FalconType == FalconTypes.BMS)
