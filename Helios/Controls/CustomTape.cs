@@ -20,6 +20,7 @@ namespace GadrocsWorkshop.Helios.Controls
 	using System.Windows;
     using System.Windows.Media;
 	using System.Xml;
+	using System;
 
 	[HeliosControl("Helios.Base.CustomTape", "Custom Tape", "Custom Controls", typeof(Gauges.GaugeRenderer))]
 
@@ -66,12 +67,10 @@ namespace GadrocsWorkshop.Helios.Controls
 		private double _minInputRotation = 0d;
 		private double _maxInputRotation = 1d;
 
+		private bool _imageRefresh;
+        private HeliosValue _tapeImageRefresh;
 
-
-
-
-
-		public CustomTape()
+        public CustomTape()
             : base("CustomTape", new Size(200d, 200d))
         {
 			_Background = new Gauges.GaugeImage(_backgroundImage, new Rect(0, 0, _gaugeWidth, _gaugeHeight));
@@ -79,7 +78,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
 			_Tape = new Gauges.CustomGaugeNeedle(_tapeImage, new Point(0, 0), new Size(200, 200), new Point(100, 100));
             _Tape.Clip = new RectangleGeometry(new Rect(1d, 1d,198d, 198d));
-            Components.Add(_Tape);
+			Components.Add(_Tape);
+			
 
             _OffFlag = new Gauges.GaugeImage(_offFlagImage, new Rect(1d, 1d,55d, 55d));
             _OffFlag.IsHidden = false;
@@ -107,10 +107,27 @@ namespace GadrocsWorkshop.Helios.Controls
 			_tapeRotation.Execute += new HeliosActionHandler(TapeRotation_Execute);
 			Actions.Add(_tapeRotation);
 			Values.Add(_tapeRotation);
+
+			_tapeImageRefresh = new HeliosValue(this, new BindingValue(false), "", "Tape Image Reload", "Indicates a reload of the Tape image", "True if reloaded.", BindingValueUnits.Boolean);
+			_tapeImageRefresh.Execute += new HeliosActionHandler(TapeImageRefresh_Execute);
+			Actions.Add(_tapeImageRefresh);
+			Values.Add(_tapeImageRefresh);
 		}
 
 
-		#region Properties
+        #region Properties
+
+        public bool ImageRefresh
+		{
+			get { return _imageRefresh; }
+			set
+			{
+				var oldValue = _imageRefresh;
+				_imageRefresh = value;
+				_Tape.ImageRefresh = _imageRefresh;
+				OnPropertyChanged("ImageRefresh", oldValue, value, true);
+			}
+		}
 
 		public string TapeImage
 		{
@@ -726,6 +743,13 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Actions
 
+		void TapeImageRefresh_Execute(object action, HeliosActionEventArgs e)
+        {
+			_tapeImageRefresh.SetValue(e.Value, e.BypassCascadingTriggers);
+			ImageRefresh = true;
+			Refresh();
+        }
+
 		void OffFlag_Execute(object action, HeliosActionEventArgs e)
         {
             _offFlag.SetValue(e.Value, e.BypassCascadingTriggers);
@@ -759,6 +783,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		public override void WriteXml(XmlWriter writer)
 		{
+
 			base.WriteXml(writer);
 
 			writer.WriteElementString("TapeImage", TapeImage);
@@ -796,6 +821,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		public override void ReadXml(XmlReader reader)
 		{
+
 			base.ReadXml(reader);
 
 			TapeImage = reader.ReadElementString("TapeImage");
