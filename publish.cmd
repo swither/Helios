@@ -1,6 +1,6 @@
 @echo off
 REM output location (you will need to change this for your local folder structure)
-set HELIOS_SHARE_FOLDER=d:\google\derammo.github\Helios
+set HELIOS_SHARE_FOLDER=C:\google\wheelchock.github\Helios
 
 REM arguments and validation
 set HELIOS_BUILT_VERSION=%1
