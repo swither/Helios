@@ -49,10 +49,9 @@ namespace GadrocsWorkshop.Helios.Gauges
             _baseRotation = baseRotation;
         }
 
-        #region Properties
-        public bool ImageRefresh { get; set; }
+		#region Properties
 
-        public string Image { get; set; }
+		public string Image { get; set; }
 
 
 		public double Tape_Width
@@ -216,20 +215,11 @@ namespace GadrocsWorkshop.Helios.Gauges
             _yScale = yScale;
 
             _rectangle = new Rect(0d, 0d, Math.Max(1d, _size.Width * xScale),  Math.Max(1d, _size.Height * yScale));
-            
-            if (ImageRefresh && ConfigManager.ImageManager is IImageManager3 refreshCapable)
-            {
-                _image = refreshCapable.LoadImage(Image, (int)_rectangle.Width, (int)_rectangle.Height, LoadImageOptions.ReloadIfChangedExternally);
-            }
-            else
-            {
-                _image = ConfigManager.ImageManager.LoadImage(Image, (int)_rectangle.Width, (int)_rectangle.Height);
-            }
-
-            if (_image == null)
+            _image = ConfigManager.ImageManager.LoadImage(Image, (int)_rectangle.Width, (int)_rectangle.Height);
+			if (_image == null)
 			{
 				_image = ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png", (int)_rectangle.Width, (int)_rectangle.Height);
 			}
-        }
+		}
     }
 }
