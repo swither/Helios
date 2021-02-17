@@ -108,7 +108,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			Actions.Add(_tapeRotation);
 			Values.Add(_tapeRotation);
 
-			_tapeImageRefresh = new HeliosValue(this, new BindingValue(false), "", "Tape Image Reload", "Indicates a reload of the Tape image", "True if reloaded.", BindingValueUnits.Boolean);
+			_tapeImageRefresh = new HeliosValue(this, new BindingValue(false), "", "Tape Image Reload", "Indicates a reload of the Tape image", "set true to reload.", BindingValueUnits.Boolean);
 			_tapeImageRefresh.Execute += new HeliosActionHandler(TapeImageRefresh_Execute);
 			Actions.Add(_tapeImageRefresh);
 			Values.Add(_tapeImageRefresh);
@@ -746,8 +746,7 @@ namespace GadrocsWorkshop.Helios.Controls
 		void TapeImageRefresh_Execute(object action, HeliosActionEventArgs e)
         {
 			_tapeImageRefresh.SetValue(e.Value, e.BypassCascadingTriggers);
-			ImageRefresh = true;
-			Refresh();
+			_Tape.ImageRefresh = e.Value.BoolValue;
         }
 
 		void OffFlag_Execute(object action, HeliosActionEventArgs e)
