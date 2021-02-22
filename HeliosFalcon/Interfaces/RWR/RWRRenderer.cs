@@ -118,7 +118,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
                                 csList = RwrInfoGetKeyContent("cslst").PadRight(40, '\0');
                             }
 
-                            DrawContactSymbol(drawingContext, contact, primary, csList[contact.ContactCount]);
+                            DrawContactSymbol(drawingContext, contact, primary, csList[contact.ContactId]);
 
                             if (contact.Selected)
                             {

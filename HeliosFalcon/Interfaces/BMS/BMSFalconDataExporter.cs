@@ -908,7 +908,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 _contacts[i].MissileLaunch = flightData.missileLaunch[i] > 0;
                 _contacts[i].NewDetection = flightData.newDetection[i] > 0;
                 _contacts[i].Visible = i < flightData.RwrObjectCount;
-                _contacts[i].ContactCount = i;
+                _contacts[i].ContactId = i;
             }
         }
     }
