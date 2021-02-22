@@ -252,6 +252,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         }
 
         internal RadarContact[] RadarContacts => _dataExporter?.RadarContacts;
+        public string[] RwrInfo => _dataExporter?.RwrInfo;
 
         #endregion
 
@@ -523,6 +524,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         #region IExtendedDescription
         public string Description => $"Interface to {FalconType}";
         public string RemovalNarrative => $"Delete this interface and remove all of its bindings from the Profile";
+
         #endregion
     }
 }

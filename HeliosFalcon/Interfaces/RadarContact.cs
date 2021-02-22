@@ -26,5 +26,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public double Lethality;
         public bool NewDetection;
         public bool Visible;
+        public int ContactId;
     }
 }

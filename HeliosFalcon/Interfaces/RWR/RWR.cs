@@ -31,6 +31,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
         private bool _flash4Hz;
 
         private string _bezelImage = "{HeliosFalcon}/Images/RWR/rwr_bezel.png";
+        private string[] _rwrInfo;
 
         public RWR()
             : base("RWR", new Size(400, 387))
@@ -178,6 +179,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
             get { return _contacts; }
         }
 
+        internal string[] RwrInfo => _rwrInfo;
+
         #endregion
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
@@ -210,6 +213,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
             {
                 _flash4Hz = DateTime.Now.Millisecond % 250 < 125;
                 _contacts = _falconInterface.RadarContacts;
+                _rwrInfo = _falconInterface.RwrInfo;
                 ProcessIndicators();
                 OnDisplayUpdate();
             }

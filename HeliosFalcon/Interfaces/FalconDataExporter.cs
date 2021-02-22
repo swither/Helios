@@ -35,6 +35,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         }
 
         internal abstract RadarContact[] RadarContacts { get; }
+        internal abstract string[] RwrInfo { get; }
 
         #endregion
 

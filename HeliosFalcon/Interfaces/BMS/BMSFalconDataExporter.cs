@@ -36,6 +36,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         private SharedMemory _sharedMemory2 = null;
 
         private RadarContact[] _contacts = new RadarContact[40];
+        private string[] _rwrInfo;
 
         private FlightData _lastFlightData;
         private FlightData2 _lastFlightData2;
@@ -512,6 +513,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("IFF", "backup mode 3 digit 1", new BindingValue(_lastFlightData2.iffBackupMode3ADigit1));
                 SetValue("IFF", "backup mode 3 digit 2", new BindingValue(_lastFlightData2.iffBackupMode3ADigit2));
 
+                ProcessRwrInfo(_lastFlightData2);
                 ProcessMiscBits(_lastFlightData2.miscBits, _lastFlightData2.RALT);
                 ProcessHsiBits(_lastFlightData.hsiBits, _lastFlightData2.blinkBits);
                 ProcessLightBits(_lastFlightData.lightBits);
@@ -876,6 +878,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             }
         }
 
+        override internal string[] RwrInfo
+        {
+            get
+            {
+                return _rwrInfo;
+            }
+        }
+
+        private void ProcessRwrInfo(FlightData2 flightData2)
+        {
+            string _rwrInfoBuffer = string.Empty;
+            for (int i = 0; i < flightData2.RwrInfo.Length; i++)
+            {
+                _rwrInfoBuffer += (char)flightData2.RwrInfo[i];
+            }
+            _rwrInfo = _rwrInfoBuffer.Split('<');
+        }
         private void ProcessContacts(FlightData flightData)
         {
             for(int i = 0; i < flightData.RWRsymbol.Length; i++)
@@ -889,6 +908,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 _contacts[i].MissileLaunch = flightData.missileLaunch[i] > 0;
                 _contacts[i].NewDetection = flightData.newDetection[i] > 0;
                 _contacts[i].Visible = i < flightData.RwrObjectCount;
+                _contacts[i].ContactId = i;
             }
         }
     }
