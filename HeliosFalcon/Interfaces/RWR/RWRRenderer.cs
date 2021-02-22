@@ -37,6 +37,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
 
         private Rect _symbolBounds = new Rect(175, 168.5, 50, 50);
         private Rect _symbolSecondBounds = new Rect(175, 174.5, 50, 50);
+        protected string[] _rwrInfo;
 
         public RWRRenderer()
         {
@@ -56,6 +57,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
             drawingContext.PushTransform(new ScaleTransform(_scaleX, _scaleY));
 
             drawingContext.DrawEllipse(Brushes.Black, null, _center, 187d, 187d);
+
 
             if (_rwr != null && _rwr.IsOn)
             {
@@ -77,6 +79,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
 
                 if (_rwr.Contacts != null)
                 {
+                    
                     foreach (RadarContact contact in _rwr.Contacts)
                     {
                         if (contact.Visible)
@@ -107,7 +110,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
                                 _format.FontSize = 22;
                             }
 
-                            DrawContactSymbol(drawingContext, contact, primary);
+                            _rwrInfo = _rwr.RwrInfo;
+
+                            string csList = new String('\0', 40);
+                            if (RwrInfoContains("cslst"))
+                            {
+                                csList = RwrInfoGetKeyContent("cslst").PadRight(40, '\0');
+                            }
+
+                            DrawContactSymbol(drawingContext, contact, primary, csList[contact.ContactCount]);
 
                             if (contact.Selected)
                             {
@@ -139,8 +150,30 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
             drawingContext.Pop();
         }
 
-        private void DrawContactSymbol(DrawingContext drawingContext, RadarContact contact, bool primary)
+        private string RwrInfoGetKeyContent(string key)
         {
+            for (int i = 0; i < _rwrInfo.Length; i++)
+            {
+                if (_rwrInfo[i].StartsWith(key + ">")) return _rwrInfo[i].Replace(key + ">", string.Empty).Replace("\0", string.Empty);
+            }
+
+            return string.Empty;
+        }
+
+        private bool RwrInfoContains(string key)
+        {
+            for (int i = 0; i < _rwrInfo.Length; i++)
+            {
+                if (_rwrInfo[i].StartsWith(key + ">")) return true;
+            }
+
+            return false;
+        }
+
+        private void DrawContactSymbol(DrawingContext drawingContext, RadarContact contact, bool primary, char customSymbol)
+        {
+            int symbol = (int)contact.Symbol;
+
             switch (contact.Symbol)
             {
                 case RadarSymbols.NONE:
@@ -404,6 +437,41 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
                 case RadarSymbols.MIB_BW_M:
                     break;
                 default:
+                    if(symbol == 66)
+                    {
+                        if (primary)
+                        {
+                            _format.RenderText(drawingContext, _scopeBrush, "F", _symbolBounds);
+                        }
+                        else
+                        {
+                            _format.RenderText(drawingContext, _scopeBrush, "A", _symbolBounds);
+                        }
+                    }
+                    else if(symbol >= 100)
+                    {
+                        if(customSymbol == '1')
+                        {
+                            DrawCarret(drawingContext);
+                            _format.RenderText(drawingContext, _scopeBrush, (symbol - 100).ToString(), _symbolBounds);
+                        }
+                        else
+                        {
+                            _format.RenderText(drawingContext, _scopeBrush, (symbol - 100).ToString(), _symbolBounds);
+                        }
+                    }
+                    else if(symbol >= 65)
+                    {
+                        if(customSymbol == '1')
+                        {
+                            DrawCarret(drawingContext);
+                            _format.RenderText(drawingContext, _scopeBrush, ((char)symbol).ToString(), _symbolBounds);
+                        }
+                        else
+                        {
+                            _format.RenderText(drawingContext, _scopeBrush, ((char)symbol).ToString(), _symbolBounds);
+                        }
+                    }
                     break;
             }
         }
