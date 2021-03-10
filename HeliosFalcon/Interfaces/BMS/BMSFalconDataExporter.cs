@@ -140,8 +140,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
             // Trim Bits
             AddValue("Trim", "roll trim", "Amount of roll trim currently set.", "(-0.5 to 0.5)", BindingValueUnits.Numeric);
-            AddValue("Trim", "pitch trim", "Number of flares remaining.", "(-0.5 to 0.5)", BindingValueUnits.Numeric);
-            AddValue("Trim", "yaw trim", "Number of flares remaining.", "(-0.5 to 0.5)", BindingValueUnits.Numeric);
+            AddValue("Trim", "pitch trim", "Amount of pitch trim currently set.", "(-0.5 to 0.5)", BindingValueUnits.Numeric);
+            AddValue("Trim", "yaw trim", "Amount of yaw trim currently set.", "(-0.5 to 0.5)", BindingValueUnits.Numeric);
 
             // Right Eyebrow Bits
             AddValue("Right Eyebrow", "oxy low indicator", "OXY LOW indicator on right eyebrow", "True if lit", BindingValueUnits.Boolean);
