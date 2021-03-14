@@ -122,10 +122,13 @@ namespace GadrocsWorkshop.Helios.Controls
 			get { return _imageRefresh; }
 			set
 			{
-				var oldValue = _imageRefresh;
-				_imageRefresh = value;
-				_Tape.ImageRefresh = _imageRefresh;
-				OnPropertyChanged("ImageRefresh", oldValue, value, true);
+				if(!_imageRefresh.Equals(value))
+                {
+					var oldValue = _imageRefresh;
+					_imageRefresh = value;
+					_Tape.ImageRefresh = _imageRefresh;
+					OnPropertyChanged("ImageRefresh", oldValue, value, true);
+				}
 			}
 		}
 
