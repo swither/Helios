@@ -217,7 +217,7 @@ namespace GadrocsWorkshop.Helios.Gauges
 
             _rectangle = new Rect(0d, 0d, Math.Max(1d, _size.Width * xScale),  Math.Max(1d, _size.Height * yScale));
             
-            if (ImageRefresh is true && ConfigManager.ImageManager is IImageManager3 refreshCapable)
+            if (ImageRefresh && ConfigManager.ImageManager is IImageManager3 refreshCapable)
             {
                 _image = refreshCapable.LoadImage(Image, (int)_rectangle.Width, (int)_rectangle.Height, LoadImageOptions.ReloadIfChangedExternally);
             }
