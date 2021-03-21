@@ -385,7 +385,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(new ScaledNetworkValue(this, "474", trimScale, "SAAHS", "Rudder trim", "Position in degrees","", BindingValueUnits.Degrees));  // values at -1 to 1
             //         --SAAHS Panel
             AddFunction(Switch.CreateToggleSwitch(this, FLIGHTCONTROLS, "3476", "476", "1", "Hold", "0", "Off", "SAAHS", "Altitude hold switch", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, FLIGHTCONTROLS, "3477", "477", "2", "On", "1", "Off", "0", "Reset", "SAAHS", "AFC Switch", "%.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, FLIGHTCONTROLS, "3477", "477", "1.0", "On", "0.5", "Off", "0.0", "Reset", "SAAHS", "AFC Switch", "%.1f"));
             AddFunction(Switch.CreateToggleSwitch(this, FLIGHTCONTROLS, "3475", "475", "1", "On", "0", "Off", "SAAHS", "Q Feel switch", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, FLIGHTCONTROLS, "3478", "478", "1", "On", "0", "Off", "SAAHS", "SAS Yaw Switch", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, FLIGHTCONTROLS, "3479", "479", "1", "On", "0", "Off", "SAAHS", "SAS Roll Switch", "%1d"));
