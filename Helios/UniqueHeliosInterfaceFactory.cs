@@ -69,7 +69,8 @@ namespace GadrocsWorkshop.Helios
         private static readonly HashSet<string> _udpInterfaceTypes = new HashSet<string>
         {
             "BaseUDPInterface",
-            "DCSInterface"
+            "DCSInterface",
+            "A10CInterface"
         };
 
         private bool IsUnique(HeliosInterfaceDescriptor descriptor, HeliosProfile profile)
