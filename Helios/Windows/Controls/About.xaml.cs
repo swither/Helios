@@ -53,6 +53,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             "ertiyu",           // for testing
             "Polaris",          // for testing
             "Sliceback",        // for testing
+            "norsetto",         // for M-2000C interface work
             "Biluf"             // for M-2000C viewports
         };
 
