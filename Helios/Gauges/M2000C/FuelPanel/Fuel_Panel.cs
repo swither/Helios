@@ -49,6 +49,8 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
 
             //            AddPot();
             AddSwitch("Fuel CrossFeed Switch", new Point(112, 360), ToggleSwitchPosition.Two, ToggleSwitchType.OnOn);
+            Add3PosnToggle("Fuel Detotalizer Switch", new Point(101, 110), new Size(20, 60), "{M2000C}/Images/switches/long-black-", ThreeWayToggleSwitchType.MomOnMom, 
+                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "Fuel Detotalizer Switch", false, false);
 
             AddRectangleFill("Internal Fuel Quantity Needle", new Point(41, row5));
             AddRectangleFill("Total Fuel Quantity Needle", new Point(192, row5));
@@ -120,6 +122,27 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
                 horizontalRender: true,
                 nonClickableZones: null,
                 fromCenter: true);
+        }
+
+        private void Add3PosnToggle(string name, Point posn, Size size, string image, ThreeWayToggleSwitchType switchType, ThreeWayToggleSwitchPosition defaultPosition,
+            string interfaceDevice, string interfaceElement, bool fromCenter, bool horizontal)
+        {
+            AddThreeWayToggle(
+                name: name,
+                pos: posn,
+                size: size,
+                positionOneImage: image + "up.png",
+                positionTwoImage: image + "mid.png",
+                positionThreeImage: image + "down.png",
+                defaultPosition: defaultPosition,
+                switchType: switchType,
+                interfaceDeviceName: interfaceDevice,
+                interfaceElementName: interfaceElement,
+                horizontal: horizontal,
+                horizontalRender: horizontal,
+                clickType: LinearClickType.Swipe,
+                fromCenter: false
+                );
         }
 
         private void AddPot()
