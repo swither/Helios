@@ -138,30 +138,34 @@ namespace GadrocsWorkshop.Helios
 
         private IEnumerable<string> LoadingWork(HeliosProfile profile, Dispatcher dispatcher)
         {
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreComments = true;
-            settings.IgnoreWhitespace = true;
-
-            TextReader reader = new StreamReader(profile.Path);
-            XmlReader xmlReader = XmlReader.Create(reader, settings);
-
-            HeliosSerializer deserializer = new HeliosSerializer(dispatcher);
-            int profileVersion = deserializer.GetProfileVersion(xmlReader);
-
-            if (profileVersion != 3)
+            XmlReaderSettings settings = new XmlReaderSettings
             {
-                profile.IsInvalidVersion = true;
-            }
-            else
+                IgnoreComments = true,
+                IgnoreWhitespace = true
+            };
+
+            using (TextReader reader = new StreamReader(profile.Path))
             {
-                foreach (string progress in deserializer.DeserializeProfile(profile, xmlReader))
+                using (XmlReader xmlReader = XmlReader.Create(reader, settings))
                 {
-                    yield return progress;
-                }
-            }
+                    HeliosSerializer deserializer = new HeliosSerializer(dispatcher);
+                    int profileVersion = deserializer.GetProfileVersion(xmlReader);
 
-            xmlReader.Close();
-            reader.Close();
+                    if (profileVersion != 3)
+                    {
+                        profile.IsInvalidVersion = true;
+                    }
+                    else
+                    {
+                        foreach (string progress in deserializer.DeserializeProfile(profile, xmlReader))
+                        {
+                            yield return progress;
+                        }
+                    }
+                    xmlReader.Close();
+                }
+                reader.Close();
+            }
         }
     }
 

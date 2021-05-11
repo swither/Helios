@@ -268,8 +268,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 			AddFunction(new FlagValue(this, "40", "HSI", "Power Off Flag", "This flag is on when the HSI gaue has no power."));
             AddFunction(new FlagValue(this, "32", "HSI", "Range Flag", "This flag indicates that the range to steer point or TACAN station is not available."));
             AddFunction(new FlagValue(this, "46", "HSI", "Bearing Flag", "This flag is displayed if the aircraft is significantly off course."));
-            AddFunction(new FlagValue(this, "42", "HSI", "From Flag", "this flag is displayed when heading away from VOR."));
-            AddFunction(new FlagValue(this, "43", "HSI", "To Flag", "this flag is displayed when heading towards VOR."));
+            AddFunction(new FlagValue(this, "42", "HSI", "From Flag", "This flag is displayed when heading away from VOR."));
+            AddFunction(new FlagValue(this, "43", "HSI", "To Flag", "This flag is displayed when heading towards VOR."));
             AddFunction(new HSIMiles(this));
             AddFunction(new ScaledNetworkValue(this, "34", -360d, "HSI", "Heading", "Current heading displayed on the HSI", "", BindingValueUnits.Degrees, 360d, "%.4f"));
             AddFunction(new ScaledNetworkValue(this, "36", 360d, "HSI", "Desired Heading", "Direction of desired heading needle relative to current heading.", "Rotation realtive to current heading towards the desired heading.", BindingValueUnits.Degrees));
