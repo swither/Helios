@@ -38,26 +38,26 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
 
             //Left Switches
             Add3PosnToggle("Target Data Manual Entry Begin/End", new Point(column1, row1), VTB_switch_size, "{M2000C}/Images/switches/black-circle-", ThreeWayToggleSwitchType.MomOnMom,
-                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "", false, false);
+                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "Target Data Manual Entry Begin/End", false, false);
             Add3PosnToggle("Bullseye Waypoint Selector",         new Point(column1, row2), VTB_switch_size, "{M2000C}/Images/switches/black-circle-", ThreeWayToggleSwitchType.MomOnMom,
-                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "", false, false);
+                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "Bullseye Waypoint Selector", false, false);
             Add3PosnToggle("Target Range from Bullseye",         new Point(column1, row3), VTB_switch_size, "{M2000C}/Images/switches/black-circle-", ThreeWayToggleSwitchType.MomOnMom,
-                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "", false, false);
+                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "Target Range from Bullseye", false, false);
             Add3PosnToggle("Target Bearing from Bullseye",       new Point(column1, row4), VTB_switch_size, "{M2000C}/Images/switches/black-circle-", ThreeWayToggleSwitchType.MomOnMom,
-                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "", false, false);
+                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "Target Bearing from Bullseye", false, false);
 
             //Right Switches
             Add3PosnToggle("Target Heading",     new Point(column2, row1), VTB_switch_size, "{M2000C}/Images/switches/black-circle-", ThreeWayToggleSwitchType.MomOnMom,
-                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "", false, false);
+                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "Target Heading", false, false);
             Add3PosnToggle("Target Altitude",    new Point(column2, row2), VTB_switch_size, "{M2000C}/Images/switches/black-circle-", ThreeWayToggleSwitchType.MomOnMom,
-                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "", false, false);
+                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "Target Altitude", false, false);
             Add3PosnToggle("Target Mach Number", new Point(column2, row3), VTB_switch_size, "{M2000C}/Images/switches/black-circle-", ThreeWayToggleSwitchType.MomOnMom,
-                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "", false, false);
+                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "Target Mach Number", false, false);
             Add3PosnToggle("Target Age",         new Point(column2, row4), VTB_switch_size, "{M2000C}/Images/switches/black-circle-", ThreeWayToggleSwitchType.MomOnMom,
-                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "", false, false);
+                ThreeWayToggleSwitchPosition.Two, _interfaceDeviceName, "Target Age", false, false);
 
             //Bottom Switches
-            AddSwitch("Declutter", new Point(76, 501), ToggleSwitchPosition.Two, ToggleSwitchType.MomOn);
+            AddSwitch("VTB Declutter", new Point(76, 501), ToggleSwitchPosition.Two, ToggleSwitchType.MomOn);
             AddSwitch("VTB Orientation Selector (Inop)", new Point(134, 501), ToggleSwitchPosition.One, ToggleSwitchType.OnOn);
             AddSwitch("VTB Power Switch", new Point(500, 452), ToggleSwitchPosition.Two, ToggleSwitchType.OnOn);
         }
