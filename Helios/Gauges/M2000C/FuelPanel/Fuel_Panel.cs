@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
         public M2000C_FuelPanel()
             : base("Fuel Panel", new Size(223, 396))
         {
-            int row1 = 6, row2 = 178, row3 = 199, row4 = 220, row5 = 163, row6 = 71;
+            int row1 = 6, row2 = 178, row3 = 199, row4 = 220, row5 = 163, row6 = 65;
             int column1 = 93, column2 = 81, column3 = 102, column4 = 122;
             //First row
             AddIndicator("Air Refueling", "air-refueling", new Point(column1, row1), new Size(28, 28));
@@ -56,17 +56,17 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
             AddRectangleFill("Total Fuel Quantity Needle", new Point(192, row5));
 
             AddDrum("Internal Fuel Quantity (Tens)", "{Helios}/Gauges/M2000C/Common/drum_tape.xaml", "tens quantity", "(0 - 10)", "#",
-                new Point(82, row6), new Size(10d, 15d), new Size(12d, 19d));
+                new Point(77, row6), new Size(10d, 15d), new Size(12d, 19d));
             AddDrum("Internal Fuel Quantity (Hundreds)", "{Helios}/Gauges/M2000C/Common/drum_tape.xaml", "hundreds quantity", "(0 - 10)", "#",
-                new Point(55, row6), new Size(10d, 15d), new Size(12d, 19d));
+                new Point(52, row6), new Size(10d, 15d), new Size(12d, 19d));
             AddDrum("Internal Fuel Quantity (Thousands)", "{Helios}/Gauges/M2000C/Common/drum_tape.xaml", "thousands quantity", "(0 - 10)", "#",
-                new Point(29, row6), new Size(10d, 15d), new Size(12d, 19d));
+                new Point(28, row6), new Size(10d, 15d), new Size(12d, 19d));
             AddDrum("Total Fuel Quantity (Tens)", "{Helios}/Gauges/M2000C/Common/drum_tape.xaml", "tens quantity", "(0 - 10)", "#",
-                new Point(178, row6), new Size(10d, 15d), new Size(12d, 19d));
+                new Point(167, row6), new Size(10d, 15d), new Size(12d, 19d));
             AddDrum("Total Fuel Quantity (Hundreds)", "{Helios}/Gauges/M2000C/Common/drum_tape.xaml", "hundreds quantity", "(0 - 10)", "#",
-                new Point(154, row6), new Size(10d, 15d), new Size(12d, 19d));
+                new Point(142, row6), new Size(10d, 15d), new Size(12d, 19d));
             AddDrum("Total Fuel Quantity (Thousands)", "{Helios}/Gauges/M2000C/Common/drum_tape.xaml", "thousands quantity", "(0 - 10)", "#",
-                new Point(129, row6), new Size(10d, 15d), new Size(12d, 19d));
+                new Point(118, row6), new Size(10d, 15d), new Size(12d, 19d));
         }
 
         #region Properties
