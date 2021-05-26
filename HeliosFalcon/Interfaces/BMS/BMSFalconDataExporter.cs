@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics.Eventing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Data;
@@ -34,12 +35,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
         private SharedMemory _sharedMemory = null;
         private SharedMemory _sharedMemory2 = null;
+        private SharedMemory _sharedMemoryStringArea = null;
 
         private RadarContact[] _contacts = new RadarContact[40];
         private string[] _rwrInfo;
 
         private FlightData _lastFlightData;
         private FlightData2 _lastFlightData2;
+        private uint _stringAreaSize;
+        private uint _stringAreaTime;
+        private StringData _lastStringData;
 
         private DateTime _outerMarkerLastTick;
         private bool _outerMarkerOnState;
@@ -61,6 +66,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
         private DateTime _unkLastTick;
         private bool _unkOnState;
+        private uint _oldStringAreaTime;
 
         public BMSFalconDataExporter(FalconInterface falconInterface)
             : base(falconInterface)
@@ -373,6 +379,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
             _sharedMemory2 = new SharedMemory("FalconSharedMemoryArea2");
             _sharedMemory2.Open();
+
+            _sharedMemoryStringArea = new SharedMemory("FalconSharedMemoryAreaString");
+            _sharedMemoryStringArea.Open();
         }
 
         internal override void PollData()
@@ -470,6 +479,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
             {
                 _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
+
+                _stringAreaSize = _lastFlightData2.StringAreaSize;
+                _stringAreaTime = _lastFlightData2.StringAreaTime;
+
                 SetValue("Altimeter", "indicated altitude", new BindingValue(Math.Abs(-_lastFlightData2.aauz)));
                 SetValue("Altimeter", "barimetric pressure", new BindingValue(_lastFlightData2.AltCalReading));
 
@@ -519,6 +532,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessLightBits(_lastFlightData.lightBits);
                 ProcessLightBits2(_lastFlightData.lightBits2, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits3(_lastFlightData.lightBits3);
+            }
+
+
+            /*
+             * The Following Code is for demonstration purposes only on accessing StringData.
+             * String data is only available in Falcon 3D
+             */ 
+            if (_sharedMemoryStringArea != null & _sharedMemoryStringArea.IsDataAvailable)
+            {
+                if (_stringAreaSize != 0 & _stringAreaTime != _oldStringAreaTime)
+                {
+                    var _rawStringData = new byte[_stringAreaSize];
+                    Marshal.Copy(_sharedMemoryStringArea.GetPointer(), _rawStringData, 0, (int)_stringAreaSize);
+                    _lastStringData = StringData.GetStringData(_rawStringData);
+                    _oldStringAreaTime = _stringAreaTime;
+
+
+                }
             }
         }
 

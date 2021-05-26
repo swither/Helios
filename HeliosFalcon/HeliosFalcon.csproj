@@ -60,6 +60,8 @@
     <Compile Include="Interfaces\BMS\BMSLightBits3.cs" />
     <Compile Include="Interfaces\BMS\FlightData.cs" />
     <Compile Include="Interfaces\BMS\FlightData2.cs" />
+    <Compile Include="Interfaces\BMS\StringData.cs" />
+    <Compile Include="Interfaces\BMS\StringIdentifier.cs" />
     <Compile Include="Interfaces\FalconCallbackValueEditor.xaml.cs">
       <DependentUpon>FalconCallbackValueEditor.xaml</DependentUpon>
     </Compile>
