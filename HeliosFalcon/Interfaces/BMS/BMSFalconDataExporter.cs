@@ -470,7 +470,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
             {
                 _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
-                SetValue("Altimeter", "indicated altitude", new BindingValue(Math.Abs(-_lastFlightData2.aauz)));
+                SetValue("Altimeter", "indicated altitude", new BindingValue(-_lastFlightData2.aauz));
                 SetValue("Altimeter", "barimetric pressure", new BindingValue(_lastFlightData2.AltCalReading));
 
                 SetValue("HSI", "nav mode", new BindingValue((int)_lastFlightData2.navMode));
