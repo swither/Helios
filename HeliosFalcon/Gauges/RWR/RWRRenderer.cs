@@ -18,7 +18,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.RWR
 {
     public class RWRRenderer : HeliosVisualRenderer
     {
