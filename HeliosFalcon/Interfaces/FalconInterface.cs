@@ -284,7 +284,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             }
             return subkeys;
         }     
-
         public string GetFalconPath()
         {
             RegistryKey pathKey = null;
@@ -301,7 +300,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             }
             return pathValue;
         }
-
         public string GetpilotCallsign()
         {
             string callsign = "";
@@ -309,64 +307,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             if (pathKey != null)
             {
-                callsign = System.Text.Encoding.UTF8.GetString((byte[])pathKey.GetValue("PilotCallsign")).Replace("\0", "");
+                try
+                {
+                    callsign = System.Text.Encoding.UTF8.GetString((byte[])pathKey.GetValue("PilotCallsign")).Replace("\0", "");
+                }
+                catch { }
             }
             return callsign;
         }
-
-        public BindingValue GetValue(string device, string name)
-        {
-            return _dataExporter?.GetValue(device, name) ?? BindingValue.Empty;
-        }
-
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
-        {
-            base.OnProfileChanged(oldProfile);
-
-            if (oldProfile != null)
-            {
-                oldProfile.ProfileStarted -= new EventHandler(Profile_ProfileStarted);
-                oldProfile.ProfileTick -= new EventHandler(Profile_ProfileTick);
-                oldProfile.ProfileStopped -= new EventHandler(Profile_ProfileStopped);
-            }
-
-            if (Profile != null)
-            {
-                Profile.ProfileStarted += new EventHandler(Profile_ProfileStarted);
-                Profile.ProfileTick += new EventHandler(Profile_ProfileTick);
-                Profile.ProfileStopped += new EventHandler(Profile_ProfileStopped);
-            }
-            InvalidateStatusReport();
-        }
-        void Profile_ProfileStopped(object sender, EventArgs e)
-        {
-            _dataExporter?.CloseData();
-        }
-
-        void Profile_ProfileTick(object sender, EventArgs e)
-        {
-            _dataExporter?.PollData();
-        }
-
-        void Profile_ProfileStarted(object sender, EventArgs e)
-        {
-            /*
-             * Check to see if we need to rewrite pilot options file
-             */
-            if (ForceKeyFile)
-            {
-                Logger.Info("Profile has set pilot callsign " + PilotCallsign + " to use key file " + KeyFileName);
-                SetPilotOptions();
-            }
-            _dataExporter?.InitData();
-        }
-
-            
         private void SetPilotOptions()
         {
-            var popFile = FalconPath + "/User/Config/" + PilotCallsign + ".pop";
-            var backupDir = FalconPath + "/User/Config/Helios/";
-            var backupPopFile = backupDir + PilotCallsign + ".pop";
+            var popFile = Path.Combine(FalconPath,"User","Config",PilotCallsign + ".pop");
+            var backupDir = Path.Combine(FalconPath,"User","Config","Helios");
+            var backupPopFile = Path.Combine(backupDir,PilotCallsign + ".pop");
 
             if (File.Exists(popFile))
             {
@@ -411,7 +364,59 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 Logger.Error("FILE NOT FOUND! " + popFile + " Failed to force key file usage in Falcon");
             }
         }
+        public BindingValue GetValue(string device, string name)
+        {
+            return _dataExporter?.GetValue(device, name) ?? BindingValue.Empty;
+        }
 
+        protected override void OnProfileChanged(HeliosProfile oldProfile)
+        {
+            base.OnProfileChanged(oldProfile);
+
+            if (oldProfile != null)
+            {
+                oldProfile.ProfileStarted -= new EventHandler(Profile_ProfileStarted);
+                oldProfile.ProfileTick -= new EventHandler(Profile_ProfileTick);
+                oldProfile.ProfileStopped -= new EventHandler(Profile_ProfileStopped);
+            }
+
+            if (Profile != null)
+            {
+                Profile.ProfileStarted += new EventHandler(Profile_ProfileStarted);
+                Profile.ProfileTick += new EventHandler(Profile_ProfileTick);
+                Profile.ProfileStopped += new EventHandler(Profile_ProfileStopped);
+            }
+            InvalidateStatusReport();
+        }
+        void Profile_ProfileStopped(object sender, EventArgs e)
+        {
+            _dataExporter?.CloseData();
+        }
+
+        void Profile_ProfileTick(object sender, EventArgs e)
+        {
+            _dataExporter?.PollData();
+        }
+
+        void Profile_ProfileStarted(object sender, EventArgs e)
+        {
+            /*
+             * Check to see if we need to rewrite pilot options file
+             */
+            if (ForceKeyFile)
+            {
+                if(PilotCallsign != "")
+                {
+                    Logger.Info("Profile has set pilot callsign " + PilotCallsign + " to use key file " + KeyFileName);
+                    SetPilotOptions();
+                }
+                else
+                {
+                    Logger.Warn("Profile is set to force key file usage but the pilot callsign is not set in Falcon install");
+                }
+            }
+            _dataExporter?.InitData();
+        }
 
         void PressAction_Execute(object action, HeliosActionEventArgs e)
         {
@@ -544,6 +549,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     Recommendation = "Please configure this interface with a valid key file if this profile is designed to interact with Falcon",
                     Severity = StatusReportItem.SeverityCode.Warning,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+            if (PilotCallsign.Equals(""))
+            {
+                yield return new StatusReportItem
+                {
+                    Status = $"Pilot Callsign not set in BMS",
+                    Severity = StatusReportItem.SeverityCode.Error,
+                    Recommendation = "Run Falcon and set your pilot callsign"
                 };
             }
         }
