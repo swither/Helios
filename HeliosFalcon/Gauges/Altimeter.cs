@@ -36,8 +36,8 @@ namespace GadrocsWorkshop.Helios.Gauges.F_16.AltimeterBMS
         {
             Components.Add(new GaugeImage("{Helios}/Gauges/F-16/Altimeter/altimeter_backplate.xaml", new Rect(32d, 38d, 300d, 300d)));
 
-            _tensDrum = new GaugeDrumCounter("{Helios}/Gauges/F-16/Altimeter/alt_drum_tape.xaml", new Point(71d, 164d), "#", new Size(10d, 15d), new Size(30d, 45d));
-            _tensDrum.Clip = new RectangleGeometry(new Rect(71d, 144d, 150d, 81d));
+            _tensDrum = new GaugeDrumCounter("{Helios}/Gauges/F-16/Altimeter/alt_drum_tape.xaml", new Point(71d, 164d), "##", new Size(10d, 15d), new Size(30d, 45d));
+            _tensDrum.Clip = new RectangleGeometry(new Rect(71d, 144d, 30d, 81d));
             Components.Add(_tensDrum);
 
             _drum = new GaugeDrumCounter("{Helios}/Gauges/F-16/Common/drum_tape.xaml", new Point(101d, 164d), "#%00", new Size(10d, 15d), new Size(30d, 45d));
@@ -70,7 +70,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F_16.AltimeterBMS
         void Altitude_Execute(object action, HeliosActionEventArgs e)
         {
             _needle.Rotation = _needleCalibration.Interpolate(e.Value.DoubleValue % 1000d);
-            _tensDrum.Value = (e.Value.DoubleValue < 0 ? 90000 - e.Value.DoubleValue : e.Value.DoubleValue)/10000d;
+            _tensDrum.Value = (e.Value.DoubleValue < 0 ? 99999 - Math.Abs(e.Value.DoubleValue) : e.Value.DoubleValue)/1000d;
             _drum.Value = e.Value.DoubleValue < 0 ? 99999 - Math.Abs(e.Value.DoubleValue) : e.Value.DoubleValue;
         }
 
