@@ -71,7 +71,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F_16.AltimeterBMS
         {
             double _altValue = (e.Value.DoubleValue < 0 ? 99999 - Math.Abs(e.Value.DoubleValue) : e.Value.DoubleValue);
             double _tensDrumRotationEnd = Math.Ceiling(_altValue / 1000d) * 1000d;
-            double _tensDrumRotationStart = _tensDrumRotationEnd - 100d;
+            double _tensDrumRotationStart = _tensDrumRotationEnd - 1000d;
 
             _needle.Rotation = _needleCalibration.Interpolate(e.Value.DoubleValue % 1000d);
             _tensDrum.Value = _altValue > _tensDrumRotationStart
