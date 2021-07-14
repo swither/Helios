@@ -546,6 +546,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                     var _rawStringData = new byte[_stringAreaSize];
                     Marshal.Copy(_sharedMemoryStringArea.GetPointer(), _rawStringData, 0, (int)_stringAreaSize);
                     _lastStringData = StringData.GetStringData(_rawStringData);
+                    NavPoints navPoints = new NavPoints();
+                    navPoints.ParseStringData(StringData.GetStringData(_rawStringData));
                     _oldStringAreaTime = _stringAreaTime;
 
 
