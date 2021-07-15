@@ -17,27 +17,27 @@
 using System.Windows;
 using GadrocsWorkshop.Helios.ComponentModel;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
 {
-    [HeliosControl("Helios.Falcon.DED", "DED", "Falcon Textures", typeof(FalconTextureDisplayRenderer))]
-    public class DED : FalconTextureDisplay
+    [HeliosControl("Helios.Falcon.PFL", "PFL", "Falcon Textures", typeof(FalconTextureDisplayRenderer))]
+    public class PFL : FalconTextureDisplay
     {
         //TODO defaultRec values here were specific to OpenFalcon
-        private static readonly Rect _defaultRect = new Rect(5, 270, 160, 63);
+        private static readonly Rect _defaultRect = new Rect(5, 345, 150, 70);
 
-        public DED()
-            : base("DED", new Size(367, 138))
+        public PFL()
+            : base("PFL", new Size(160, 63))
         {
         }
 
         protected override FalconTextureDisplay.FalconTextures Texture
         {
-            get { return FalconTextureDisplay.FalconTextures.DED; }
+            get { return FalconTextureDisplay.FalconTextures.PFL; }
         }
 
         internal override string DefaultImage
         {
-            get { return "{HeliosFalcon}/Images/Textures/ded.png"; }
+            get { return "{HeliosFalcon}/Images/Textures/pfl.png"; }
         }
 
         protected override Rect DefaultRect

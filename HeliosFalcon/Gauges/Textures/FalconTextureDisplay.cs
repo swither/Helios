@@ -21,7 +21,7 @@ using System.Windows;
 using GadrocsWorkshop.Helios.Interfaces.Falcon.BMS;
 using GadrocsWorkshop.Helios.Util;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
 {
     public abstract class FalconTextureDisplay : HeliosVisual
     {

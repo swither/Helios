@@ -18,7 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GadrocsWorkshop.Helios.ComponentModel;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
 {
     class FalconTextureDisplayRenderer : HeliosVisualRenderer
     {

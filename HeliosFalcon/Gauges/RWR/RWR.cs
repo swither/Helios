@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Windows;
 using GadrocsWorkshop.Helios.ComponentModel;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.RWR
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.RWR
 {
     [HeliosControl("Helios.Falcon.RWR", "Block 50/52 RWR", "Falcon Simulator", typeof(RWRRenderer))] 
     public class RWR : HeliosVisual
