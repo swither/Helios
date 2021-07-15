@@ -37,7 +37,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private string _falconVersion;
         private string[] _falconVersions;
         private Version _falconProfileVersion;
-
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private FalconDataExporter _dataExporter;
@@ -252,6 +251,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         }
 
         internal RadarContact[] RadarContacts => _dataExporter?.RadarContacts;
+
+        internal List<string> NavPoints => _dataExporter?.NavPoints;
+
         public string[] RwrInfo => _dataExporter?.RwrInfo;
 
         #endregion

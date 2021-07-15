@@ -17,25 +17,33 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.Falcon.BMS;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
-    public class NavPoints
+    public class NavigationData
     {
-        private Array _navPoints;
-        public void ParseStringData(StringData stringData)
+        private List<string> _navPoints = new List<string>();
+
+        #region Properties
+        public List<string> NavPoints
+        {
+            get
+            {
+                return _navPoints;
+            }
+        }
+        #endregion
+
+        public List<string> ParseStringData(StringData stringData)
         {
             foreach (var item in stringData.data)
             {
                 Console.WriteLine(item.value);
-                if(item.value.Contains("NP:"))
+                if(item.value.Contains("NP:")) { _navPoints.Add(item.value.Replace(";","")); }
             }
-
+            return _navPoints;
         }
-
-        
     }
-
-
 }

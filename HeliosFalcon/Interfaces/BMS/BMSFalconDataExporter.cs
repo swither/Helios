@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Eventing;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -66,6 +67,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
         private DateTime _unkLastTick;
         private bool _unkOnState;
+        private List<string> _navPoints;
         private uint _oldStringAreaTime;
 
         public BMSFalconDataExporter(FalconInterface falconInterface)
@@ -546,10 +548,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                     var _rawStringData = new byte[_stringAreaSize];
                     Marshal.Copy(_sharedMemoryStringArea.GetPointer(), _rawStringData, 0, (int)_stringAreaSize);
                     _lastStringData = StringData.GetStringData(_rawStringData);
-                    NavPoints navPoints = new NavPoints();
-                    navPoints.ParseStringData(StringData.GetStringData(_rawStringData));
+                    NavigationData navPoints = new NavigationData();
+                    _navPoints = navPoints.ParseStringData(StringData.GetStringData(_rawStringData));
                     _oldStringAreaTime = _stringAreaTime;
-
 
                 }
             }
@@ -903,6 +904,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             _sharedMemory2 = null;
         }
 
+        override internal List<string> NavPoints
+        {
+            get
+            {
+                return _navPoints;
+            }
+        }
+        
         override internal RadarContact[] RadarContacts
         {
             get
