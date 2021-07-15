@@ -485,7 +485,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 _stringAreaSize = _lastFlightData2.StringAreaSize;
                 _stringAreaTime = _lastFlightData2.StringAreaTime;
 
-                SetValue("Altimeter", "indicated altitude", new BindingValue(Math.Abs(-_lastFlightData2.aauz)));
                 SetValue("Altimeter", "barimetric pressure", new BindingValue(_lastFlightData2.AltCalReading));
 
                 SetValue("HSI", "nav mode", new BindingValue((int)_lastFlightData2.navMode));
