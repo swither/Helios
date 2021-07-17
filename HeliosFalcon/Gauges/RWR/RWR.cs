@@ -30,10 +30,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.RWR
         private RadarContact[] _contacts;
         private bool _flash4Hz;
 
-        // TEMP
-        private List<string> _navPoints;
-        // TEMP
-
         private string _bezelImage = "{HeliosFalcon}/Images/RWR/rwr_bezel.png";
         private string[] _rwrInfo;
 
@@ -215,10 +211,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.RWR
         {
             if (_falconInterface != null)
             {
-                //TEMP
-                _navPoints = _falconInterface.NavPoints;
-                //TEMP
-
                 _flash4Hz = DateTime.Now.Millisecond % 250 < 125;
                 _contacts = _falconInterface.RadarContacts;
                 _rwrInfo = _falconInterface.RwrInfo;

@@ -45,7 +45,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         private FlightData2 _lastFlightData2;
         private uint _stringAreaSize;
         private uint _stringAreaTime;
-        private StringData _lastStringData;
 
         private DateTime _outerMarkerLastTick;
         private bool _outerMarkerOnState;
@@ -69,6 +68,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         private bool _unkOnState;
         private List<string> _navPoints;
         private uint _oldStringAreaTime;
+        private bool _stringDataUpdated;
+        private string _theaterName;
 
         public BMSFalconDataExporter(FalconInterface falconInterface)
             : base(falconInterface)
@@ -535,23 +536,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessLightBits2(_lastFlightData.lightBits2, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits3(_lastFlightData.lightBits3);
             }
-
-
-            /*
-             * The Following Code is for demonstration purposes only on accessing StringData.
-             * String data is only available in Falcon 3D
-             */ 
             if (_sharedMemoryStringArea != null & _sharedMemoryStringArea.IsDataAvailable)
             {
                 if (_stringAreaSize != 0 & _stringAreaTime != _oldStringAreaTime)
                 {
+                    _stringDataUpdated = true;
+                    StringData stringData = new StringData();
                     var _rawStringData = new byte[_stringAreaSize];
                     Marshal.Copy(_sharedMemoryStringArea.GetPointer(), _rawStringData, 0, (int)_stringAreaSize);
-                    _lastStringData = StringData.GetStringData(_rawStringData);
-                    NavigationData navPoints = new NavigationData();
-                    _navPoints = navPoints.ParseStringData(StringData.GetStringData(_rawStringData));
+                    _theaterName = stringData.GetValueForStrId(_rawStringData, StringIdentifier.ThrName);
+                    _navPoints = stringData.GetNavPoints(_rawStringData);
                     _oldStringAreaTime = _stringAreaTime;
-
+                }
+                else
+                {
+                    _stringDataUpdated = false;
                 }
             }
         }
@@ -925,6 +924,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             get
             {
                 return _rwrInfo;
+            }
+        }
+
+        internal override bool StringDataUpdated
+        {
+            get
+            {
+                return _stringDataUpdated;
+            }
+        }
+
+        internal override string TheaterName
+        {
+            get
+            {
+                return _theaterName;
             }
         }
 

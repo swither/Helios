@@ -267,6 +267,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         internal List<string> NavPoints => _dataExporter?.NavPoints;
 
+        internal string TheaterName => _dataExporter?.TheaterName;
+
+        internal bool StringDataUpdated => (bool)(_dataExporter?.StringDataUpdated);
+
         public string[] RwrInfo => _dataExporter?.RwrInfo;
 
         #endregion
