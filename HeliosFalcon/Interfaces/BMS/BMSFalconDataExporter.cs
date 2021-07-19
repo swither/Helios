@@ -67,9 +67,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         private DateTime _unkLastTick;
         private bool _unkOnState;
         private List<string> _navPoints;
-        private uint _oldStringAreaTime;
         private bool _stringDataUpdated;
-        private string _theaterName;
+        private uint _lastStringAreaTime;
 
         public BMSFalconDataExporter(FalconInterface falconInterface)
             : base(falconInterface)
@@ -373,6 +372,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Electronic", "flcs rly indicator", "Electronic panel flcs rly indicator.", "True if lit.", BindingValueUnits.Boolean);
             AddValue("Electronic", "bat fail indicator", "Electronic panel battery fail indicator.", "True if lit.", BindingValueUnits.Boolean);
 
+            // Falcon RunTime Data
+            AddValue("Runtime", "Current Theater", "Name of the Current Theater", "", BindingValueUnits.Text);
         }
 
         internal override void InitData()
@@ -478,13 +479,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
                 //ADI ILS with AOA consideration value
                 SetValue("ADI", "ils vertical to flight path", new BindingValue(((_lastFlightData.AdiIlsVerPos * 2f) - 1f) - ClampAOA(_lastFlightData.alpha)));
+
+                //Runtime bindings
+                SetValue("Runtime", "Current Theater", new BindingValue(FalconInterface.CurrentTheater));
             }
             if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
             {
                 _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
-
-                _stringAreaSize = _lastFlightData2.StringAreaSize;
                 _stringAreaTime = _lastFlightData2.StringAreaTime;
+                _stringAreaSize = _lastFlightData2.StringAreaSize;
 
                 SetValue("Altimeter", "indicated altitude", new BindingValue(-_lastFlightData2.aauz));
                 SetValue("Altimeter", "barimetric pressure", new BindingValue(_lastFlightData2.AltCalReading));
@@ -538,15 +541,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             }
             if (_sharedMemoryStringArea != null & _sharedMemoryStringArea.IsDataAvailable)
             {
-                if (_stringAreaSize != 0 & _stringAreaTime != _oldStringAreaTime)
+                if (_stringAreaTime != _lastStringAreaTime)
                 {
-                    _stringDataUpdated = true;
-                    StringData stringData = new StringData();
-                    var _rawStringData = new byte[_stringAreaSize];
-                    Marshal.Copy(_sharedMemoryStringArea.GetPointer(), _rawStringData, 0, (int)_stringAreaSize);
-                    _theaterName = stringData.GetValueForStrId(_rawStringData, StringIdentifier.ThrName);
-                    _navPoints = stringData.GetNavPoints(_rawStringData);
-                    _oldStringAreaTime = _stringAreaTime;
+                    if(_stringAreaSize != 0)
+                    {
+                        _stringDataUpdated = true;
+                        StringData stringData = new StringData();
+                        var _rawStringData = new byte[_stringAreaSize];
+                        Marshal.Copy(_sharedMemoryStringArea.GetPointer(), _rawStringData, 0, (int)_stringAreaSize);
+                        _navPoints = stringData.GetNavPoints(_rawStringData);
+                    }
                 }
                 else
                 {
@@ -932,14 +936,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             get
             {
                 return _stringDataUpdated;
-            }
-        }
-
-        internal override string TheaterName
-        {
-            get
-            {
-                return _theaterName;
             }
         }
 

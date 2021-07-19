@@ -30,7 +30,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         public uint dataSize;          // the overall size of the StringData/FalconSharedMemoryAreaString shared memory area
         public IEnumerable<StringStruct> data = new List<StringStruct>();
         private List<string> _navPoints = new List<string>();
-        Dictionary<StringIdentifier, string> dict = new Dictionary<StringIdentifier, string>();
 
 
         private static StringData GetStringData(byte[] data)
@@ -65,6 +64,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             string rtnValue = "";
             foreach(var item in GetStringData(data).data)
             {
+                Console.WriteLine($"'{(StringIdentifier)item.strId}' = '{item.value}'");
                 if ((StringIdentifier)item.strId == stringIdentifier)
                 {
                     rtnValue = item.value;
@@ -79,9 +79,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             StringData stringData = GetStringData(data);
             foreach (var item in stringData.data)
             {
-                if (item.value.Contains("NP:")) { _navPoints.Add(item.value.Replace(";", "")); }
+                if ((StringIdentifier)item.strId == StringIdentifier.NavPoint)
+                {
+                    _navPoints.Add(item.value.Replace(";", ""));
+                }
             }
-            return _navPoints;
+            return _navPoints.Count != 0 ? null : _navPoints;
         }
     }
 

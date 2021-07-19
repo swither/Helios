@@ -34,6 +34,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private FalconTypes _falconType;
         private string _falconPath;
         private string _pilotCallsign;
+        private string _currentTheater;
         private string _keyFile;
         private string _cockpitDatFile;
         private bool _focusAssist;
@@ -52,7 +53,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             _falconVersions = GetFalconVersions();
             _falconPath = GetFalconPath();
             _pilotCallsign = GetpilotCallsign();
-            
+            _currentTheater = GetCurrentTheater();
+
             _dataExporter = new BMS.BMSFalconDataExporter(this);
 
             HeliosAction sendAction = new HeliosAction(this, "", "callback", "send", "Press and releases a keyboard callback for falcon.", "Callback name", BindingValueUnits.Text)
@@ -85,6 +87,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         #region Properties
 
+        public string CurrentTheater { get { return _currentTheater; } }
         public string PilotCallsign { get { return _pilotCallsign; } }
         
         public bool ForceKeyFile
@@ -267,8 +270,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         internal List<string> NavPoints => _dataExporter?.NavPoints;
 
-        internal string TheaterName => _dataExporter?.TheaterName;
-
         internal bool StringDataUpdated => (bool)(_dataExporter?.StringDataUpdated);
 
         public string[] RwrInfo => _dataExporter?.RwrInfo;
@@ -307,6 +308,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             }
             return pathValue;
         }
+
+        public string GetCurrentTheater()
+        {
+            RegistryKey pathKey = null;
+            string pathValue = null;
+            pathKey = Registry.LocalMachine.OpenSubKey(falconRootKey + FalconVersion);
+
+            if (pathKey != null)
+            {
+                pathValue = (string)pathKey.GetValue("curTheater");
+            }
+            else
+            {
+                pathValue = "";
+            }
+            return pathValue;
+        }
+
         public string GetpilotCallsign()
         {
             string callsign = "";
