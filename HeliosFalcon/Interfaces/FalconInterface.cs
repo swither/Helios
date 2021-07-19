@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Xml;
@@ -29,29 +30,28 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
     [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconIntefaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class FalconInterface : HeliosInterface, IReadyCheck, IStatusReportNotify, IExtendedDescription
     {
+        const string falconRootKey = @"SOFTWARE\WOW6432Node\Benchmark Sims\";
         private FalconTypes _falconType;
         private string _falconPath;
+        private string _pilotCallsign;
         private string _keyFile;
         private string _cockpitDatFile;
         private bool _focusAssist;
         private string _falconVersion;
         private string[] _falconVersions;
         private Version _falconProfileVersion;
-
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
         private FalconDataExporter _dataExporter;
-
         private FalconKeyFile _callbacks = new FalconKeyFile("");
+        private bool _forceKeyFile;
         private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
-
         public FalconInterface()
             : base("Falcon")
         {
             FalconType = FalconTypes.BMS;
-
             _falconVersions = GetFalconVersions();
             _falconPath = GetFalconPath();
+            _pilotCallsign = GetpilotCallsign();
             
             _dataExporter = new BMS.BMSFalconDataExporter(this);
 
@@ -85,6 +85,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         #region Properties
 
+        public string PilotCallsign { get { return _pilotCallsign; } }
+        
+        public bool ForceKeyFile
+        {
+            get { return _forceKeyFile; }
+            set
+            {
+                var oldValue = _forceKeyFile;
+                _forceKeyFile = value;
+                OnPropertyChanged("ForceKeyFile", oldValue, value, true);
+            }
+        }
         public bool FocusAssist
         {
             get { return _focusAssist; }
@@ -265,20 +277,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public string[] GetFalconVersions()
         {
             string[] subkeys = null;
-            string regkey = @"SOFTWARE\WOW6432Node\Benchmark Sims";
-            if(Registry.LocalMachine.OpenSubKey(regkey) != null)
+            if(Registry.LocalMachine.OpenSubKey(falconRootKey) != null)
             {
-                subkeys = Registry.LocalMachine.OpenSubKey(regkey).GetSubKeyNames();
+                subkeys = Registry.LocalMachine.OpenSubKey(falconRootKey).GetSubKeyNames();
                 Array.Reverse(subkeys);
             }
             return subkeys;
-        }
-
+        }     
         public string GetFalconPath()
         {
             RegistryKey pathKey = null;
             string pathValue = null;
-            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Benchmark Sims\" + FalconVersion);
+            pathKey = Registry.LocalMachine.OpenSubKey(falconRootKey + FalconVersion);
 
             if (pathKey != null)
             {
@@ -289,6 +299,70 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 pathValue = "";
             }
             return pathValue;
+        }
+        public string GetpilotCallsign()
+        {
+            string callsign = "";
+            RegistryKey pathKey = Registry.LocalMachine.OpenSubKey(falconRootKey + FalconVersion);
+
+            if (pathKey != null)
+            {
+                try
+                {
+                    callsign = System.Text.Encoding.UTF8.GetString((byte[])pathKey.GetValue("PilotCallsign")).Replace("\0", "");
+                }
+                catch { }
+            }
+            return callsign;
+        }
+        private void SetPilotOptions()
+        {
+            var popFile = Path.Combine(FalconPath,"User","Config",PilotCallsign + ".pop");
+            var backupDir = Path.Combine(FalconPath,"User","Config","Helios");
+            var backupPopFile = Path.Combine(backupDir,PilotCallsign + ".pop");
+
+            if (File.Exists(popFile))
+            {
+                if (!File.Exists(backupPopFile))
+                {
+                    if (!Directory.Exists(backupDir))
+                    {
+                        _ = Directory.CreateDirectory(backupDir);
+                    }
+                    File.Copy(popFile, backupPopFile, true);
+                    Logger.Debug("File " + Path.GetFileName(popFile) + " has been backed up to " + backupDir);
+                }
+                //}
+
+                File.SetAttributes(popFile, File.GetAttributes(popFile) & ~FileAttributes.ReadOnly);
+
+                FileStream fileStream = new FileStream(popFile, FileMode.Open, FileAccess.Read);
+                byte[] bytes = new byte[fileStream.Length];
+                _ = fileStream.Read(bytes, 0, bytes.Length);
+                fileStream.Close();
+
+
+                byte[] keyFileName = System.Text.Encoding.ASCII.GetBytes(Path.GetFileName(KeyFileName).Replace(".key", ""));
+                for (int i = 0; i <= 15; i++)
+                {
+                    if (i >= keyFileName.Length)
+                    {
+                        bytes[336 + i] = 0x00;
+                        continue;
+                    }
+                    bytes[336 + i] = keyFileName[i];
+                }
+
+                fileStream = new FileStream
+                    (popFile, FileMode.Create, FileAccess.Write);
+                fileStream.Write(bytes, 0, bytes.Length);
+                fileStream.Close();
+                Logger.Debug(popFile + " has been modified to load key file " + Path.GetFileName(KeyFileName) + " by default");
+            }
+            else
+            {
+                Logger.Error("FILE NOT FOUND! " + popFile + " Failed to force key file usage in Falcon");
+            }
         }
         public BindingValue GetValue(string device, string name)
         {
@@ -326,6 +400,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         void Profile_ProfileStarted(object sender, EventArgs e)
         {
+            /*
+             * Check to see if we need to rewrite pilot options file
+             */
+            if (ForceKeyFile)
+            {
+                if(PilotCallsign != "")
+                {
+                    Logger.Info("Profile has set pilot callsign " + PilotCallsign + " to use key file " + KeyFileName);
+                    SetPilotOptions();
+                }
+                else
+                {
+                    Logger.Warn("Profile is set to force key file usage but the pilot callsign is not set in Falcon install");
+                }
+            }
             _dataExporter?.InitData();
         }
 
@@ -391,6 +480,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "FocusAssist":
                         FocusAssist = Convert.ToBoolean(reader.ReadElementString("FocusAssist"));
                         break;
+                    case "ForceKeyFile":
+                        ForceKeyFile = Convert.ToBoolean(reader.ReadElementString("ForceKeyFile"));
+                        break;
                     case "FalconVersion":
                         FalconVersion = reader.ReadElementString("FalconVersion");
                         break;
@@ -411,6 +503,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             writer.WriteElementString("KeyFile", KeyFileName);
             //writer.WriteElementString("CockpitDatFile", CockpitDatFile);
             writer.WriteElementString("FocusAssist", FocusAssist.ToString());
+            writer.WriteElementString("ForceKeyFile", ForceKeyFile.ToString());
         }
 
         
@@ -426,7 +519,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 Severity = StatusReportItem.SeverityCode.Info,
                 Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
             };
-
 
             if (KeyFileName != null)
             {
@@ -457,6 +549,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     Recommendation = "Please configure this interface with a valid key file if this profile is designed to interact with Falcon",
                     Severity = StatusReportItem.SeverityCode.Warning,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+            if (PilotCallsign.Equals(""))
+            {
+                yield return new StatusReportItem
+                {
+                    Status = $"Pilot Callsign not set in BMS",
+                    Severity = StatusReportItem.SeverityCode.Error,
+                    Recommendation = "Run Falcon and set your pilot callsign"
                 };
             }
         }
