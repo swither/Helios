@@ -24,16 +24,20 @@ using System.Windows.Input;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
+using GadrocsWorkshop.Helios.Util.Shadow;
 using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
+    /// <summary>
+    /// view model for preview and interaction with DCS Monitor Setup
+    /// </summary>
     internal class MonitorSetupViewModel : HeliosViewModel<MonitorSetup>, IStatusReportObserver
     {
         private const double DEFAULT_SCALE = 0.075;
 
-        private readonly Dictionary<ShadowMonitor, MonitorViewModel> _monitors =
-            new Dictionary<ShadowMonitor, MonitorViewModel>();
+        private readonly Dictionary<DCSMonitor, MonitorViewModel> _monitors =
+            new Dictionary<DCSMonitor, MonitorViewModel>();
 
         private readonly Dictionary<ShadowVisual, ViewportViewModel> _viewports =
             new Dictionary<ShadowVisual, ViewportViewModel>();
@@ -59,7 +63,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             SourceOfAdditionalViewports = Data.UsingViewportProvider
                 ? SourceOfAdditionalViewports.AdditionalViewportsInterface
                 : SourceOfAdditionalViewports.ThirdPartySolution;
-            foreach (ShadowMonitor monitor in Data.Monitors)
+            foreach (DCSMonitor monitor in Data.Monitors)
             {
                 AddMonitor(monitor, Data.GlobalOffset);
             }
@@ -156,7 +160,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Viewports.Add(model);
         }
 
-        private void Data_MonitorRemoved(object sender, ShadowMonitorEventArgs e)
+        private void Data_MonitorRemoved(object sender, DCSMonitorEventArgs e)
         {
             if (_monitors.TryGetValue(e.Data, out MonitorViewModel model))
             {
@@ -166,7 +170,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
         }
 
-        private void Data_MonitorAdded(object sender, ShadowMonitorEventArgs e)
+        private void Data_MonitorAdded(object sender, DCSMonitorEventArgs e)
         {
             IShadowVisualParent parent = (IShadowVisualParent) sender;
             AddMonitor(e.Data, parent.GlobalOffset);
@@ -178,7 +182,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             UpdateAllGeometry();
         }
 
-        private void AddMonitor(ShadowMonitor shadow, Vector globalOffset)
+        private void AddMonitor(DCSMonitor shadow, Vector globalOffset)
         {
             MonitorViewModel model = new MonitorViewModel(shadow, globalOffset, Scale);
             _monitors[shadow] = model;

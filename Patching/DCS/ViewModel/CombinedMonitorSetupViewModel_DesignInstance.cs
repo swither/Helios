@@ -20,6 +20,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 {
     public partial class CombinedMonitorSetupViewModel
     {
+        /// <summary>
+        /// constructor that is only used to create a design-time mock instance
+        /// </summary>
         public CombinedMonitorSetupViewModel()
             : base(new MonitorSetup())
         {

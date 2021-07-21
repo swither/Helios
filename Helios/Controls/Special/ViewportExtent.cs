@@ -2,6 +2,7 @@
 using System.Windows.Media;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 
 namespace GadrocsWorkshop.Helios.Controls.Special
 {

@@ -92,6 +92,7 @@
     <Compile Include="Gauges\RWR\RWR.cs" />
     <Compile Include="Gauges\RWR\RWRRenderer.cs" />
     <Compile Include="Interfaces\TextLines.cs" />
+    <Compile Include="SampleViewportCompiler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Helios\Helios.csproj">

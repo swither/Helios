@@ -17,7 +17,7 @@
 using System.Windows;
 using GadrocsWorkshop.Helios.Windows;
 
-namespace GadrocsWorkshop.Helios.Patching.DCS
+namespace GadrocsWorkshop.Helios.Util.Shadow
 {
     public class ViewportViewModel : HeliosViewModel<ShadowVisual>
     {
@@ -30,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         #endregion
 
-        internal ViewportViewModel(ShadowVisual data, Vector globalOffset, double scale) : base(data)
+        public ViewportViewModel(ShadowVisual data, Vector globalOffset, double scale) : base(data)
         {
             _globalOffset = globalOffset;
             _scale = scale;
@@ -48,7 +48,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         // not automatically called because we are strongly referenced by event
-        internal void Dispose()
+        public void Dispose()
         {
             Data.ViewportChanged -= Data_ViewportChanged;
             Data.MonitorChanged -= Data_MonitorChanged;
@@ -60,7 +60,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Update(e.Raw);
         }
 
-        internal void Update(Monitor monitor)
+        public void Update(Monitor monitor)
         {
             _monitor.X = monitor.Left;
             _monitor.Y = monitor.Top;
@@ -69,13 +69,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Update();
         }
 
-        internal void Update(Vector globalOffset)
+        public void Update(Vector globalOffset)
         {
             _globalOffset = globalOffset;
             Update();
         }
 
-        internal void Update(HeliosVisual viewport)
+        public void Update(HeliosVisual viewport)
         {
             _viewport.X = viewport.Left;
             _viewport.Y = viewport.Top;
@@ -84,7 +84,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             Update();
         }
 
-        internal void Update(double scale)
+        public void Update(double scale)
         {
             _scale = scale;
             Update();
@@ -97,7 +97,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             absolute.Offset(_globalOffset);
             absolute.Scale(_scale, _scale);
             Rect = absolute;
-            // ConfigManager.LogManager.LogDebug($"scaled viewport view {GetHashCode()} for monitor setup UI is {Rect}");
         }
 
         public static readonly DependencyProperty RectProperty =

@@ -1,11 +1,11 @@
 ﻿// Copyright 2020 Ammo Goettsch
 // 
-// Helios is free software: you can redistribute it and/or modify
+// Patching is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// Helios is distributed in the hope that it will be useful,
+// Patching is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -17,77 +17,32 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using GadrocsWorkshop.Helios.Util.Shadow;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    public class ShadowMonitorEventArgs : EventArgs
+    public class DCSMonitorEventArgs : EventArgs
     {
-        #region Private
-
-        public ShadowMonitor Data { get; }
-
-        #endregion
-
-        public ShadowMonitorEventArgs(ShadowMonitor shadow)
+        public DCSMonitorEventArgs(DCSMonitor shadow)
         {
             Data = shadow;
         }
-    }
 
-    public class RawMonitorEventArgs : EventArgs
-    {
-        #region Private
+        #region Properties
 
-        public Monitor Raw { get; }
+        public DCSMonitor Data { get; }
 
         #endregion
-
-        public RawMonitorEventArgs(Monitor monitor)
-        {
-            Raw = monitor;
-        }
     }
 
     /// <summary>
-    /// This class represents a Helios monitor being observed.
+    /// This class represents a Helios monitor being observed for use with DCS.
     /// It is the model class.
     /// </summary>
     [DebuggerDisplay("Shadow for {" + nameof(Monitor) + "}")]
-    public class ShadowMonitor : ShadowVisual
+    public class DCSMonitor : ShadowMonitorBase<DCSMonitorEventArgs>
     {
-        #region Delegates
-
         public event EventHandler<KeyChangeEventArgs> KeyChanged;
-
-        #endregion
-
-        #region Nested
-
-        public class KeyChangeEventArgs : EventArgs
-        {
-            public KeyChangeEventArgs(string oldKey, string newKey)
-            {
-                OldKey = oldKey;
-                NewKey = newKey;
-            }
-
-            public string OldKey { get; }
-            public string NewKey { get; }
-        }
-
-        /// <summary>
-        /// operations that are currently valid on this monitor based on layout mode
-        /// </summary>
-        [Flags]
-        public enum PermissionsFlags
-        {
-            None = 0,
-            CanInclude = 1,
-            CanExclude = 2
-        }
-        #endregion
-
-        #region Private
 
         /// <summary>
         /// backing field for property Included, contains
@@ -107,9 +62,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private bool _userInterface;
 
-        #endregion
-
-        internal ShadowMonitor(IShadowVisualParent parent, Monitor monitor)
+        internal DCSMonitor(IShadowVisualParent parent, Monitor monitor)
             : base(parent, monitor, monitor, false)
         {
             Key = CreateKey(monitor);
@@ -122,6 +75,26 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static string CreateKey(Monitor display) =>
             $"{display.Left}_{display.Top}_{display.Width}_{display.Height}";
 
+        /// <summary>
+        /// operations that are currently valid on this monitor based on layout mode
+        /// </summary>
+        [Flags]
+        public enum PermissionsFlags
+        {
+            None = 0,
+            CanInclude = 1,
+            CanExclude = 2
+        }
+
+        // this key represents the entire configuration state for this monitor when used for DCS
+        public string CreateStateKey()
+        {
+            string main = Main ? " MAIN" : "";
+            string ui = UserInterface ? " UI" : "";
+            return
+                $"{Monitor.Left} {Monitor.Top} {Monitor.Width} {Monitor.Height}{main}{ui}";
+        }
+
         internal static IEnumerable<string> GetAllKeys(Monitor monitor)
         {
             string baseKey = CreateKey(monitor);
@@ -130,21 +103,27 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             yield return $"{baseKey}_UserInterface";
         }
 
-        public string Key { get; private set; }
+        internal void Lockout()
+        {
+            UserInterface = false;
+            Main = false;
+            Included = false;
+            Permissions = PermissionsFlags.CanExclude;
+        }
 
         private void LoadSettings()
         {
             _included = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, Key, true);
-            _main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_Main", false);
+            _main = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_Main",
+                false);
             _userInterface = ConfigManager.SettingsManager.LoadSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP,
                 $"{Key}_UserInterface",
                 false);
         }
 
-        /// <summary>
-        /// deferred initialization so our factory can index this before we add children to it
-        /// </summary>
-        internal void Instrument()
+        #region Overrides
+
+        public override void Instrument()
         {
             Instrument(Monitor, Monitor);
         }
@@ -168,27 +147,25 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             KeyChanged?.Invoke(this, new KeyChangeEventArgs(oldKey, newKey));
         }
 
-        internal bool AddViewport()
+        public override bool AddViewport()
         {
             ViewportCount++;
             return ViewportCount == 1;
         }
 
-        internal bool RemoveViewport()
+        public override bool RemoveViewport()
         {
             ViewportCount--;
             return ViewportCount == 0;
         }
 
-        internal void Lockout()
-        {
-            UserInterface = false;
-            Main = false;
-            Included = false;
-            Permissions = PermissionsFlags.CanExclude;
-        }
+        public override DCSMonitorEventArgs CreateEvent() => new DCSMonitorEventArgs(this);
 
-        internal int ViewportCount { get; private set; }
+        #endregion
+
+        #region Properties
+
+        public string Key { get; private set; }
 
         /// <summary>
         /// true if this monitor is included in Main 3D view
@@ -207,12 +184,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 _main = value;
                 if (ConfigManager.Application.SettingsAreWritable)
                 {
-                    ConfigManager.SettingsManager.SaveSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_Main", value);
+                    ConfigManager.SettingsManager.SaveSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_Main",
+                        value);
                 }
                 else
                 {
-                    ConfigManager.LogManager.LogWarning($"unable to persist unexpected monitor setup override that does not match current settings: {Key} Main set to {value}");
+                    ConfigManager.LogManager.LogWarning(
+                        $"unable to persist unexpected monitor setup override that does not match current settings: {Key} Main set to {value}");
                 }
+
                 OnPropertyChanged("Main", oldValue, value, true);
             }
         }
@@ -234,12 +214,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 _userInterface = value;
                 if (ConfigManager.Application.SettingsAreWritable)
                 {
-                    ConfigManager.SettingsManager.SaveSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP, $"{Key}_UserInterface", value);
+                    ConfigManager.SettingsManager.SaveSetting(MonitorSetup.DISPLAYS_SETTINGS_GROUP,
+                        $"{Key}_UserInterface", value);
                 }
                 else
                 {
-                    ConfigManager.LogManager.LogWarning($"unable to persist unexpected monitor setup override that does not match current settings: {Key} UserInterface set to {value}");
+                    ConfigManager.LogManager.LogWarning(
+                        $"unable to persist unexpected monitor setup override that does not match current settings: {Key} UserInterface set to {value}");
                 }
+
                 OnPropertyChanged("UserInterface", oldValue, value, true);
             }
         }
@@ -265,8 +248,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 }
                 else
                 {
-                    ConfigManager.LogManager.LogWarning($"unable to persist unexpected monitor setup override that does not match current settings: {Key} Included set to {value}");
+                    ConfigManager.LogManager.LogWarning(
+                        $"unable to persist unexpected monitor setup override that does not match current settings: {Key} Included set to {value}");
                 }
+
                 OnPropertyChanged("Included", oldValue, value, true);
             }
         }
@@ -277,5 +262,25 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public PermissionsFlags Permissions { get; internal set; }
 
         public bool HasContent => Main || UserInterface || ViewportCount > 0;
+
+        internal int ViewportCount { get; private set; }
+
+        #endregion
+
+        public class KeyChangeEventArgs : EventArgs
+        {
+            public KeyChangeEventArgs(string oldKey, string newKey)
+            {
+                OldKey = oldKey;
+                NewKey = newKey;
+            }
+
+            #region Properties
+
+            public string OldKey { get; }
+            public string NewKey { get; }
+
+            #endregion
+        }
     }
 }
