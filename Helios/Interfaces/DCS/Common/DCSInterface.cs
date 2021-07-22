@@ -422,7 +422,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         break;
                     default:
                         string elementName = reader.Name;
-                        string discard = reader.ReadElementString(elementName);
+                        string discard = reader.ReadInnerXml();
                         Logger.Warn(
                             $"Ignored unsupported DCS Interface setting '{elementName}' with value '{discard}'");
                         break;

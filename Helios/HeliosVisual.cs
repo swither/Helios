@@ -15,18 +15,23 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 
 namespace GadrocsWorkshop.Helios
 {
     /// <summary>
     /// HeliosVisual objects are helios objects which will be rendered on screen.
     /// </summary>
-    public abstract class HeliosVisual : HeliosObject
+    [DebuggerDisplay("Visual {Name} @{GetHashCode()}")]
+    public abstract class HeliosVisual : HeliosObject, INamedControl
     {
         private HeliosVisualRenderer _renderer;
 
@@ -445,35 +450,137 @@ namespace GadrocsWorkshop.Helios
             Matrix m1 = new Matrix();
             Rect newRect = _rectangle;
 
+            if (WriteTransform(ref m1))
+            {
+                newRect.Transform(m1);
+            }
+            PostUpdateRectangle(DisplayRectangle, newRect);
+            DisplayRectangle = newRect;
+        }
+
+        /// <summary>
+        /// adds transformations for rotating this control's rectangle to the given matrix, if rotated
+        /// </summary>
+        /// <param name="m1"></param>
+        /// <returns>true if any transforms were written</returns>
+        public bool WriteTransform(ref Matrix m1)
+        {
             switch (Rotation)
             {
                 case HeliosVisualRotation.CW:
                     m1.RotateAt(90, _rectangle.X, _rectangle.Y);
                     m1.Translate(_rectangle.Height, 0);
-                    newRect.Transform(m1);
-                    break;
+                    return true;
 
                 case HeliosVisualRotation.CCW:
                     m1.RotateAt(-90, _rectangle.X, _rectangle.Y);
                     m1.Translate(0, _rectangle.Width);
-                    newRect.Transform(m1);
-                    break;
+                    return true;
 
-				case HeliosVisualRotation.ROT180:
-					m1.RotateAt(180, _rectangle.X + (_rectangle.Width/2), _rectangle.Y + (_rectangle.Height/2));
-					m1.Translate(0, 0);
-					newRect.Transform(m1);
-					break;
+                case HeliosVisualRotation.ROT180:
+                    m1.RotateAt(180, _rectangle.X + (_rectangle.Width / 2), _rectangle.Y + (_rectangle.Height / 2));
+                    m1.Translate(0, 0);
+                    return true;
 
                 case HeliosVisualRotation.None:
-                    // newRect is already equal to untransformed _rectangle
-                    break;
+                    return false;
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            PostUpdateRectangle(DisplayRectangle, newRect);
-            DisplayRectangle = newRect;
+        }
+
+        /// <summary>
+        /// creates a transform that can be used to transform the visual to its rotated position
+        /// when rendered
+        ///
+        /// NOTE: this is not the same as the transform used in UpdateRectangle, because this one
+        /// transforms a rectangle located at (0, 0)
+        /// </summary>
+        /// <returns>a transform or null if no rotation</returns>
+        public TransformGroup CreateTransform()
+        {
+            // NOTE: intentionally uninitialized so compiler can check we all switch cases
+            TransformGroup transform;
+            switch (Rotation)
+            {
+                case HeliosVisualRotation.CW:
+                    transform = new TransformGroup();
+                    transform.Children.Add(new RotateTransform(90));
+                    transform.Children.Add(new TranslateTransform(this.Height, 0));
+                    break;
+                case HeliosVisualRotation.CCW:
+                    transform = new TransformGroup();
+                    transform.Children.Add(new RotateTransform(-90));
+                    transform.Children.Add(new TranslateTransform(0, this.Width));
+                    break;
+                case HeliosVisualRotation.ROT180:
+                    transform = new TransformGroup();
+                    transform.Children.Add(new RotateTransform(180));
+                    transform.Children.Add(new TranslateTransform(0, 0));
+                    break;
+                // ReSharper disable once RedundantCaseLabel for documentation
+                case HeliosVisualRotation.None:
+                default:
+                    transform = null;
+                    break;
+            }
+            return transform;
+        }
+
+        /// <summary>
+        /// calculate current absolute windows coordinates for this control
+        ///
+        /// NOTE: this will be invalid as soon as something moves or gets scaled
+        /// </summary>
+        /// <returns></returns>
+        public Rect CalculateWindowsDesktopRect()
+        {
+            Matrix transform = new Matrix();
+
+            // now adjust for ancestry
+            for (HeliosVisual ancestor = this; ancestor != null; ancestor = ancestor.Parent)
+            {
+                // adjust for position of the control
+                transform.Translate(ancestor.Left, ancestor.Top);
+
+                // adjust for rotation of the control
+                ancestor.WriteTransform(ref transform);
+            }
+
+            // transform the viewport extent to its final location on screen, assuming no scaling
+            Rect viewport = new Rect(0, 0, Width, Height);
+            viewport.Transform(transform);
+            return viewport;
+        }
+
+        /// <summary>
+        /// log all the tranforms that contribute to the screen rectangle
+        /// </summary>
+        /// <returns></returns>
+        public void LogWindowsDesktopRectCalculation(Action<string, object> logAction)
+        {
+            Matrix transform = new Matrix();
+
+            // now adjust for ancestry
+            for (HeliosVisual ancestor = this; ancestor != null; ancestor = ancestor.Parent)
+            {
+                logAction("transform for {Name}", ancestor.Name);
+
+                // adjust for position of the control
+                transform.Translate(ancestor.Left, ancestor.Top);
+                logAction("after translation {Matrix}", transform);
+
+                // adjust for rotation of the control
+                ancestor.WriteTransform(ref transform);
+                logAction("after rotation {Matrix}", transform);
+            }
+
+            // transform the viewport extent to its final location on screen, assuming no scaling
+            Rect viewport = new Rect(0, 0, Width, Height);
+            logAction("local viewport {Rect}", viewport);
+            viewport.Transform(transform);
+            logAction("transformed viewport {Rect}", viewport);
         }
 
         /// 
@@ -482,7 +589,6 @@ namespace GadrocsWorkshop.Helios
         protected virtual void PostUpdateRectangle(Rect previous, Rect current) {
             // no code in base
         }
-
 
         /// <summary>
         /// Method call used to linear scale this control and it's components.
@@ -570,26 +676,30 @@ namespace GadrocsWorkshop.Helios
         /// <param name="location">Current location of the mouse relative to this controls upper left corner.</param>
         public abstract void MouseUp(Point location);
 
-        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if ((e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) ||
-                (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace))
+            if ((e.Action == NotifyCollectionChangedAction.Add) ||
+                (e.Action == NotifyCollectionChangedAction.Replace))
             {
                 foreach (HeliosVisual control in e.NewItems)
                 {
                     control.Parent = this;
                     control.Profile = Profile;
+                    Profile?.ProfileInstances.Attach(control);
                     control.PropertyChanged += Child_PropertyChanged;
                     control.ReconnectBindings();
                 }
             }
 
-            if ((e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) ||
-                (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace))
+            if ((e.Action == NotifyCollectionChangedAction.Remove) ||
+                (e.Action == NotifyCollectionChangedAction.Replace))
             {
                 foreach (HeliosVisual control in e.OldItems)
                 {
+                    control.Profile?.ProfileInstances.Detach(control);
                     control.Parent = null;
+                    // XXX this is a disgusting hack that allows reset monitors and copy/paste to preserve bindings regardless of the order of placing the controls back
+                    // REVISIT: otherwise this should be null as it is for Monitors and Interfaces but then we have to fix up copy/paste and reset monitors
                     control.Profile = Profile;
                     control.PropertyChanged -= Child_PropertyChanged;
                     control.DisconnectBindings();
@@ -620,7 +730,9 @@ namespace GadrocsWorkshop.Helios
             base.OnProfileChanged(oldProfile);
             foreach (HeliosVisual child in Children)
             {
+                child.Profile?.ProfileInstances.Detach(child);
                 child.Profile = Profile;
+                Profile?.ProfileInstances.Attach(child);
             }
         }
 
@@ -636,8 +748,8 @@ namespace GadrocsWorkshop.Helios
             TypeConverter sizeConverter = TypeDescriptor.GetConverter(typeof(Size));
             TypeConverter pointConverter = TypeDescriptor.GetConverter(typeof(Point));
 
-            writer.WriteElementString("Location", pointConverter.ConvertToString(null, System.Globalization.CultureInfo.InvariantCulture, new Point(Left, Top)));
-            writer.WriteElementString("Size", sizeConverter.ConvertToString(null, System.Globalization.CultureInfo.InvariantCulture, new Size(Width, Height)));
+            writer.WriteElementString("Location", pointConverter.ConvertToString(null, CultureInfo.InvariantCulture, new Point(Left, Top)));
+            writer.WriteElementString("Size", sizeConverter.ConvertToString(null, CultureInfo.InvariantCulture, new Size(Width, Height)));
             if (Rotation != HeliosVisualRotation.None)
             {
                 writer.WriteElementString("Rotation", Rotation.ToString());
@@ -654,11 +766,11 @@ namespace GadrocsWorkshop.Helios
 
             if (reader.Name.Equals("Location"))
             {
-                Point location = (Point)pointConverter.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, reader.ReadElementString("Location"));
+                Point location = (Point)pointConverter.ConvertFromString(null, CultureInfo.InvariantCulture, reader.ReadElementString("Location"));
                 Left = location.X;
                 Top = location.Y;
 
-                Size size = (Size)sizeConverter.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, reader.ReadElementString("Size"));
+                Size size = (Size)sizeConverter.ConvertFromString(null, CultureInfo.InvariantCulture, reader.ReadElementString("Size"));
                 Width = size.Width;
                 Height = size.Height;
             }
@@ -672,6 +784,5 @@ namespace GadrocsWorkshop.Helios
                 IsHidden = IsDefaultHidden;
             }
         }
-
     }
 }

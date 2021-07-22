@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,19 +12,18 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
-using System;
-using GadrocsWorkshop.Helios.Controls.Capabilities;
-
-namespace GadrocsWorkshop.Helios.Controls
+namespace GadrocsWorkshop.Helios.Controls.Capabilities
 {
-    public class ControlEventArgs: EventArgs
+    /// <summary>
+    /// controls that implement this interface will be connected to a per-profile
+    /// singleton of the specified type T, so they can share per-profile state
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IControlWithProfileInstance<T>
     {
-        public ControlEventArgs(INamedControl control)
-        {
-            Control = control;
-        }
-
-        public INamedControl Control { get; }
+        void AttachToProfileInstance(T profileInstance);
+        void DetachFromProfileInstance(T profileInstance);
     }
 }

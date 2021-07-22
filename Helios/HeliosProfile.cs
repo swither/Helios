@@ -15,6 +15,7 @@
 
 using System.Linq;
 using GadrocsWorkshop.Helios.Controls;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 
@@ -154,10 +155,10 @@ namespace GadrocsWorkshop.Helios
         /// called when a control that allows being connected to control routers
         ///  has been selected for input in some way
         /// </summary>
-        /// <param name="visual"></param>
-        public void OnRoutableControlSelected(HeliosVisual visual)
+        /// <param name="control"></param>
+        public void OnRoutableControlSelected(INamedControl control)
         {
-            RoutableControlSelected?.Invoke(this, new ControlEventArgs(visual));
+            RoutableControlSelected?.Invoke(this, new ControlEventArgs(control));
         }
 
         public bool IsInvalidVersion
@@ -263,6 +264,11 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        /// <summary>
+        /// profile instance tracking implementation
+        /// </summary>
+        internal ProfileInstances ProfileInstances { get; } = new ProfileInstances();
+
         #endregion
 
         #region Methods
@@ -309,8 +315,12 @@ namespace GadrocsWorkshop.Helios
             foreach (HeliosInterface heliosInterface in Interfaces)
             {
                 // detach interfaces, so they can shut down
+                ProfileInstances.Detach(heliosInterface);
                 heliosInterface.Profile = null;
             }
+
+            // clean up
+            ProfileInstances.Dispose();
         }
 
         protected virtual void OnProfileStarted()
@@ -367,6 +377,7 @@ namespace GadrocsWorkshop.Helios
                 foreach (HeliosInterface heliosInterface in e.NewItems)
                 {
                     heliosInterface.Profile = this;
+                    ProfileInstances.Attach(heliosInterface);
                     heliosInterface.ReconnectBindings();
                     heliosInterface.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
                     if (heliosInterface is IProfileAwareInterface profileAware)
@@ -384,6 +395,7 @@ namespace GadrocsWorkshop.Helios
             {
                 foreach (HeliosInterface heliosInterface in e.OldItems)
                 {
+                    ProfileInstances.Detach(heliosInterface);
                     heliosInterface.Profile = null;
                     heliosInterface.DisconnectBindings();
                     heliosInterface.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
@@ -429,6 +441,7 @@ namespace GadrocsWorkshop.Helios
                     foreach (Monitor monitor in e.NewItems)
                     {
                         monitor.Profile = this;
+                        ProfileInstances.Attach(monitor);
                         monitor.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
                     }
             }
@@ -438,6 +451,7 @@ namespace GadrocsWorkshop.Helios
             {
                 foreach (Monitor monitor in e.OldItems)
                 {
+                    ProfileInstances.Detach(monitor);
                     monitor.Profile = null;
                     monitor.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
                 }
@@ -472,6 +486,39 @@ namespace GadrocsWorkshop.Helios
                     {
                         yield return item;
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Enumerate the entire tree of HeliosVisuals, including Monitors
+        ///
+        /// NOTE: This is very slow and must not be used repeatedly at run time
+        /// </summary>
+        public IEnumerable<HeliosVisual> WalkVisuals()
+        {
+            foreach (Monitor monitor in Monitors)
+            {
+                foreach (HeliosVisual visited in WalkVisuals(monitor))
+                {
+                    yield return visited;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Recursively enumerate the visual given and all its descendants
+        ///
+        /// NOTE: This is very slow and must not be used repeatedly at run time
+        /// </summary>
+        public IEnumerable<HeliosVisual> WalkVisuals(HeliosVisual visual)
+        {
+            yield return visual;
+            foreach (HeliosVisual child in visual.Children)
+            {
+                foreach (HeliosVisual visited in WalkVisuals(child))
+                {
+                    yield return visited;
                 }
             }
         }

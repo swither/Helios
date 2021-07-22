@@ -47,11 +47,15 @@
                         <controls:HeliosTextBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center"
                                                 Padding="3,0" Text="{Binding ValuePerRevolution}" />
                         <Label Grid.Row="1" Grid.Column="3" Style="{StaticResource InterfaceEditorLabel}"
+                               VerticalAlignment="Center" Content="Pulses per Detent" />
+                        <controls:HeliosTextBox Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center"
+                                                Padding="3,0" Text="{Binding PulsesPerDetent}" />
+                        <Label Grid.Row="2" Grid.Column="3" Style="{StaticResource InterfaceEditorLabel}"
                                VerticalAlignment="Center" Content="Move Switches by Detents" />
-                        <CheckBox Grid.Row="1" Grid.Column="4" VerticalAlignment="Center"
+                        <CheckBox Grid.Row="2" Grid.Column="4" VerticalAlignment="Center"
                                                 Padding="0" Margin="0,5,0,0" IsChecked="{Binding PulseSwitches}">
                             <CheckBox.ToolTip>
-                                If checked, then switches with well-defined detents will be moved by one detent for each pulse, instead of trying to match rotation angles.
+                                If checked, then "Value from Pulses" will move switches with well-defined detents by one detent for each pulse, instead of trying to match rotation angles.
                             </CheckBox.ToolTip>
                         </CheckBox>
                     </Grid>

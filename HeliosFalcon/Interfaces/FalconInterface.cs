@@ -487,9 +487,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                         FalconVersion = reader.ReadElementString("FalconVersion");
                         break;
                     default:
-                        // ignore unsupported settings
+                        // ignore unsupported settings, including structured ones
                         string elementName = reader.Name;
-                        string discard = reader.ReadElementString(reader.Name);
+                        string discard = reader.ReadInnerXml();
                         Logger.Warn($"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
                         break;
                 }
