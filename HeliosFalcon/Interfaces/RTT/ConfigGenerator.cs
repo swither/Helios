@@ -75,6 +75,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
 
         internal void Update(IEnumerable<ShadowVisual> viewports)
         {
+            if (!Enabled)
+            {
+                return;
+            }
+
             IEnumerable<string> lines = GenerateConfig(viewports);
 
             // write to file, if applicable
@@ -83,6 +88,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
 
         internal IEnumerable<StatusReportItem> CreateStatusReport(IEnumerable<ShadowVisual> viewports)
         {
+            if (!Enabled)
+            {
+                return new StatusReportItem[0];
+            }
+
             // REVISIT: for now, we show the whole generated file
             return GenerateConfig(viewports)
                 .Select(line => new StatusReportItem
@@ -188,6 +198,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             // XXX write file
         }
 
+        #region Event Handlers
+
+        private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // bubble this up without invalidating the entire LocalOptions or NetworkOptions
+            OnPropertyChanged(
+                new PropertyNotificationEventArgs(this, "ChildProperty", e as PropertyNotificationEventArgs));
+        }
+
+        #endregion
+
         #region IDisposable
 
         public void Dispose()
@@ -242,6 +263,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 {
                     oldValue.PropertyChanged -= Child_PropertyChanged;
                 }
+
                 if (null != value)
                 {
                     value.PropertyChanged += Child_PropertyChanged;
@@ -272,10 +294,33 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 {
                     oldValue.PropertyChanged -= Child_PropertyChanged;
                 }
+
                 if (null != value)
                 {
                     value.PropertyChanged += Child_PropertyChanged;
                 }
+            }
+        }
+
+        /// <summary>
+        /// backing field for property Enabled, contains
+        /// true if RTT functionality is enabled
+        /// </summary>
+        private bool _enabled;
+
+        /// <summary>
+        /// true if RTT functionality is enabled
+        /// </summary>
+        [XmlAttribute("Enabled")]
+        public bool Enabled
+        {
+            get => _enabled;
+            set
+            {
+                if (_enabled == value) return;
+                bool oldValue = _enabled;
+                _enabled = value;
+                OnPropertyChanged("Enabled", oldValue, value, true);
             }
         }
 
@@ -296,22 +341,5 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
 
             #endregion
         }
-
-        #region Overrides of HeliosXmlModel
-
-        protected override void AfterDeserialization()
-        {
-            base.AfterDeserialization();
-            LocalOptions.PropertyChanged += Child_PropertyChanged;
-            NetworkOptions.PropertyChanged += Child_PropertyChanged;
-        }
-
-        private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            // bubble this up without invalidating the entire LocalOptions or NetworkOptions
-            OnPropertyChanged(new PropertyNotificationEventArgs(this, "ChildProperty", e as PropertyNotificationEventArgs));
-        }
-
-        #endregion
     }
 }

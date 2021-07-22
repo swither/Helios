@@ -89,6 +89,7 @@
     <Compile Include="Interfaces\RTT\LocalOptions.cs" />
     <Compile Include="Interfaces\RTT\ConfigGenerator.cs" />
     <Compile Include="Interfaces\RTT\NetworkOptions.cs" />
+    <Compile Include="Interfaces\RTT\ShadowMonitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\RadarContact.cs" />
     <Compile Include="Interfaces\RadarSymbols.cs" />

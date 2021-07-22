@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2021 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,20 +16,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
-using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using GadrocsWorkshop.Helios.Interfaces.Common;
 using Microsoft.Win32;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
     [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconIntefaceEditor), typeof(UniqueHeliosInterfaceFactory))]
-    public class FalconInterface : HeliosInterface, IReadyCheck, IStatusReportNotify, IExtendedDescription
+    public class FalconInterface : ViewportCompilerInterface<
+        Interfaces.RTT.ShadowMonitor, Interfaces.RTT.ShadowMonitorEventArgs>
     {
         const string falconRootKey = @"SOFTWARE\WOW6432Node\Benchmark Sims\";
         private FalconTypes _falconType;
@@ -44,7 +44,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private FalconDataExporter _dataExporter;
         private FalconKeyFile _callbacks = new FalconKeyFile("");
         private bool _forceKeyFile;
-        private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
+
         public FalconInterface()
             : base("Falcon")
         {
@@ -61,7 +61,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 ActionInputBindingDescription = "send %value% callback",
                 ValueEditorType = typeof(FalconCallbackValueEditor)
             };
-            sendAction.Execute += new HeliosActionHandler(SendAction_Execute);
+            sendAction.Execute += SendAction_Execute;
             Actions.Add(sendAction);
 
             HeliosAction pressAction = new HeliosAction(this, "", "callback", "press", "Press a keyboard callback for falcon and leave it pressed.", "Callback name", BindingValueUnits.Text)
@@ -70,7 +70,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 ActionInputBindingDescription = "press %value% callback",
                 ValueEditorType = typeof(FalconCallbackValueEditor)
             };
-            pressAction.Execute += new HeliosActionHandler(PressAction_Execute);
+            pressAction.Execute += PressAction_Execute;
             Actions.Add(pressAction);
 
             HeliosAction releaseAction = new HeliosAction(this, "", "callback", "release", "Releases a previously pressed keyboard callback for falcon.", "Callback name", BindingValueUnits.Text)
@@ -79,7 +79,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 ActionInputBindingDescription = "release %value% callback",
                 ValueEditorType = typeof(FalconCallbackValueEditor)
             };
-            releaseAction.Execute += new HeliosActionHandler(ReleaseAction_Execute);
+            releaseAction.Execute += ReleaseAction_Execute;
             Actions.Add(releaseAction);
         }
 
@@ -226,7 +226,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             }
         }
 
-
         public string CockpitDatFile
         {
             get
@@ -265,6 +264,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         internal RadarContact[] RadarContacts => _dataExporter?.RadarContacts;
         public string[] RwrInfo => _dataExporter?.RwrInfo;
+
+        public Interfaces.RTT.ConfigGenerator Rtt { get; private set; }
 
         #endregion
 
@@ -375,19 +376,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             if (oldProfile != null)
             {
-                oldProfile.ProfileStarted -= new EventHandler(Profile_ProfileStarted);
-                oldProfile.ProfileTick -= new EventHandler(Profile_ProfileTick);
-                oldProfile.ProfileStopped -= new EventHandler(Profile_ProfileStopped);
+                oldProfile.ProfileStarted -= Profile_ProfileStarted;
+                oldProfile.ProfileTick -= Profile_ProfileTick;
+                oldProfile.ProfileStopped -= Profile_ProfileStopped;
             }
 
             if (Profile != null)
             {
-                Profile.ProfileStarted += new EventHandler(Profile_ProfileStarted);
-                Profile.ProfileTick += new EventHandler(Profile_ProfileTick);
-                Profile.ProfileStopped += new EventHandler(Profile_ProfileStopped);
+                Profile.ProfileStarted += Profile_ProfileStarted;
+                Profile.ProfileTick += Profile_ProfileTick;
+                Profile.ProfileStopped += Profile_ProfileStopped;
             }
             InvalidateStatusReport();
         }
+
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
             _dataExporter?.CloseData();
@@ -458,12 +460,41 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             }
         }
 
+        private void Rtt_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // bubble up any undoable events without invalidating Rtt, to generate an
+            // Undo record that will set our child's property back if called
+            OnPropertyChanged(
+                new PropertyNotificationEventArgs(this, "ChildProperty", e as PropertyNotificationEventArgs));
+
+            // handle any changes we might care about
+            switch (e.PropertyName)
+            {
+                case nameof(Interfaces.RTT.ConfigGenerator.Enabled):
+                    HandleRttEnabledState();
+                    break;
+            }
+        }
+
+        private void HandleRttEnabledState()
+        {
+            if (Rtt?.Enabled ?? false)
+            {
+                // just switched this on, need to start listening to viewports
+                StartShadowing();
+            }
+            else
+            {
+                // don't bother tracking viewports
+                StopShadowing();
+            }
+        }
+
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
         public override void ReadXml(XmlReader reader)
         {
-
             while (reader.NodeType == XmlNodeType.Element)
             {
                 switch (reader.Name)
@@ -486,6 +517,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "FalconVersion":
                         FalconVersion = reader.ReadElementString("FalconVersion");
                         break;
+                    case "RTT":
+                        {
+                            Rtt = HeliosXmlModel.ReadXml<Interfaces.RTT.ConfigGenerator>(reader);
+                            break;
+                        }
                     default:
                         // ignore unsupported settings
                         string elementName = reader.Name;
@@ -499,17 +535,50 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public override void WriteXml(XmlWriter writer)
         {
             writer.WriteElementString("FalconType", FalconType.ToString());
-            writer.WriteElementString("FalconVersion", FalconVersion.ToString());
+            if (!string.IsNullOrEmpty(FalconVersion))
+            {
+                writer.WriteElementString("FalconVersion", FalconVersion);
+            }
             writer.WriteElementString("KeyFile", KeyFileName);
             //writer.WriteElementString("CockpitDatFile", CockpitDatFile);
             writer.WriteElementString("FocusAssist", FocusAssist.ToString());
             writer.WriteElementString("ForceKeyFile", ForceKeyFile.ToString());
+
+            if (null != Rtt)
+            {
+                HeliosXmlModel.WriteXml(writer, Rtt);
+            }
         }
 
-        
+        #region Overrides of ViewportCompilerInterface<SampleMonitor,SampleMonitorEventArgs>
+
+        protected override void AttachToProfileOnMainThread()
+        {
+            base.AttachToProfileOnMainThread();
+            if (null == Rtt)
+            {
+                Rtt = new Interfaces.RTT.ConfigGenerator();
+            }
+            Rtt.PropertyChanged += Rtt_PropertyChanged;
+            HandleRttEnabledState();
+        }
+
+        protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
+        {
+            base.DetachFromProfileOnMainThread(oldProfile);
+            if (Rtt != null)
+            {
+                Rtt.PropertyChanged -= Rtt_PropertyChanged;
+                Rtt.Dispose();
+                Rtt = null;
+            }
+        }
+
+        #endregion
 
         #region IReadyCheck
-        public IEnumerable<StatusReportItem> PerformReadyCheck()
+
+        public override IEnumerable<StatusReportItem> PerformReadyCheck()
         {
             // XXX perform integrity check.  any warnings will light caution on Control Center
             // XXX any error will block control center from starting profile unless user selects to disable ready check
@@ -591,41 +660,41 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         }
         #endregion
 
-        #region IStatusReportNotify
-        public void Subscribe(IStatusReportObserver observer)
+        protected override Interfaces.RTT.ShadowMonitor CreateShadowMonitor(Monitor monitor) => new Interfaces.RTT.ShadowMonitor(this, monitor, monitor, false);
+
+        protected override void UpdateAllGeometry()
         {
-            _observers.Add(observer);
+            Logger.Debug("RTT geometry update due to possible change in viewports");
+            Rtt?.Update(Viewports);
         }
 
-        public void Unsubscribe(IStatusReportObserver observer)
-        {
-            _observers.Remove(observer);
-        }
-
-        public void PublishStatusReport(IList<StatusReportItem> statusReport)
-        {
-            foreach (IStatusReportObserver observer in _observers)
-            {
-                observer.ReceiveStatusReport(Name, Description, statusReport);
-            }
-        }
-
-        public void InvalidateStatusReport()
+        protected override List<StatusReportItem> CreateStatusReport()
         {
             List<StatusReportItem> newReport = new List<StatusReportItem>();
             newReport.AddRange(PerformReadyCheck());
-            if(_callbacks.IsParsed)
+            if (_callbacks.IsParsed)
             {
                 newReport.AddRange(ReportBindings(CheckBindings(InputBindings)));
             }
-            PublishStatusReport(newReport);
+            if (null != Rtt)
+            {
+                // write the RTT configuration status report
+                newReport.AddRange(Rtt.CreateStatusReport(Viewports));
+            }
+            return newReport;
         }
-        #endregion
-        
-        #region IExtendedDescription
-        public string Description => $"Interface to {FalconType}";
-        public string RemovalNarrative => $"Delete this interface and remove all of its bindings from the Profile";
 
+        public override InstallationResult Install(IInstallationCallbacks callbacks)
+        {
+            // there is currently no interactive creation of config, as the FalconInterface
+            // just configures settings and profile options
+            return InstallationResult.Success;
+        }
+
+        #region IExtendedDescription
+        public override string Description => $"Interface to {FalconType}";
+        public override string RemovalNarrative => $"Delete this interface and remove all of its bindings from the Profile";
         #endregion
+
     }
 }
