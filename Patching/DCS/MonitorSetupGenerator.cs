@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -737,6 +738,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         // check if monitor setup selected in DCS
                         yield return ReportMonitorSetupSelected(location, options, monitorSetupName);
                     }
+                    
+                    // check on full screen
+                    yield return ReportFullScreen(location, options);
                 }
                 else
                 {
@@ -824,6 +828,45 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 };
             }
             
+            return new StatusReportItem
+            {
+                Status = status,
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+            };
+        }
+
+        private StatusReportItem ReportFullScreen(InstallationLocation location, DCSOptions options)
+        {
+            string status = $"{location.DescribeOptionsPath} has 'Fullscreen' set to {options.Graphics.FullScreen.ToString(CultureInfo.InvariantCulture)}";
+
+            if ((!options.Graphics.FullScreen) ||
+                _parent.MonitorLayoutMode == MonitorLayoutMode.PrimaryOnly)
+            {
+                // no problem
+                return new StatusReportItem
+                {
+                    Status = status,
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+
+            // check if we are trying to use Fullscreen with multiple displays
+            Monitor primary = _parent.Profile.CheckedDisplays?.FirstOrDefault(m => m.IsPrimaryDisplay);
+            if (null != primary && 
+                (primary.Width < options.Graphics.Width ||
+                 primary.Height < options.Graphics.Height))
+            {
+                return new StatusReportItem
+                {
+                    Status = status,
+                    Recommendation =
+                        $"Using DCS, uncheck 'Full Screen' in the 'System' options, or DCS may position your views incorrectly or even collapse all your content to the main monitor",
+                    // not a warning, because the user may simply not have configured DCS yet.  once we do that automatically,
+                    // this can be an out of date warning
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+
             return new StatusReportItem
             {
                 Status = status,
