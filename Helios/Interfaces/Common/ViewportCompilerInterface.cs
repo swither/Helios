@@ -99,9 +99,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             // test instantiated for add interface dialog        }
         }
 
-        public static Rect VisualToRect(HeliosVisual visual) =>
-            new Rect(visual.Left, visual.Top, visual.Width, visual.Height);
-
         protected void CreateShadowObjects()
         {
             // recursively walk profile and track every visual

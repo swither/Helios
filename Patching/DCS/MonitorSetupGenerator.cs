@@ -131,7 +131,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     continue;
                 }
 
-                Rect rect = MonitorSetup.VisualToRect(monitor.Monitor);
+                Rect rect = monitor.Monitor.CalculateWindowsDesktopRect();
                 if (monitor.Main)
                 {
                     if (_parent.MonitorLayoutMode == MonitorLayoutMode.TopLeftQuarter)
@@ -289,9 +289,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     continue;
                 }
 
-                Rect rect = MonitorSetup.VisualToRect(shadow.Visual);
-                rect.Offset(shadow.Monitor.Left, shadow.Monitor.Top);
-                _localViewports.Viewports.Add(name, rect);
+                // calculate effective screen coordinates by tracing ancestry
+                _localViewports.Viewports.Add(name, shadow.Visual.CalculateWindowsDesktopRect());
             }
 
             // now check against our saved state, which we also have to update
