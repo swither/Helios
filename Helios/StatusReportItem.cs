@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GadrocsWorkshop.Helios.Util;
@@ -216,7 +217,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public static string CreateTimeStamp(DateTime dateTime) => dateTime.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
+        public static string CreateTimeStamp(DateTime dateTime) => dateTime.ToString("MM/dd/yyyy hh:mm:ss.fff tt", CultureInfo.InvariantCulture);
 
         // utility to encapsulate this as a status report when it is the only item in the report
         public IList<StatusReportItem> AsReport()

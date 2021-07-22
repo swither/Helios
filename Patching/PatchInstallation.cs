@@ -285,6 +285,14 @@ namespace GadrocsWorkshop.Helios.Patching
                     results.Add(result);
                     if (result.Severity >= StatusReportItem.SeverityCode.Error)
                     {
+                        // add additional context information we know about
+                        results.Add(new StatusReportItem
+                        {
+                            Severity = StatusReportItem.SeverityCode.Error,
+                            Status = $"{item.Destination.Description} could not be patched using version {item.SelectedVersion} of the patches.  You may need a newer distribution of Helios or of the patches.",
+                            Recommendation = item.Destination.FailedPatchRecommendation
+                        });
+
                         failed = true;
                         item.Status = StatusCodes.Incompatible;
                     }

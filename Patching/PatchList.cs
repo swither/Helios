@@ -175,20 +175,10 @@ namespace GadrocsWorkshop.Helios.Patching
 
                 if (!patch.TryApply(source, out string patched, out string failureStatus, out string expectedCode))
                 {
-                    // send a general failure message that will become the header of the dialog box if any
-                    string failedPatchRecommendation = "Please make sure you do not have viewport mods installed.  If your DCS installation is free from modifications and patches still fail, then install a newer Helios distribution or patches with support for this DCS version.";
-                    yield return new StatusReportItem
-                    {
-                        Status = $"{destination.LongDescription} could not install patches.  You may have viewport mods installed that need to be removed or DCS may have changed too much during a recent update.",
-                        Recommendation = failedPatchRecommendation,
-                        Severity = StatusReportItem.SeverityCode.Error
-                    };
-
                     // send detail including code
                     yield return new StatusReportItem
                     {
                         Status = $"{destination.LongDescription} {failureStatus}",
-                        Recommendation = failedPatchRecommendation,
                         Severity = StatusReportItem.SeverityCode.Error,
                         Code = expectedCode
                     };
