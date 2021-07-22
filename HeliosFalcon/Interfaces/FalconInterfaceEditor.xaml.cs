@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Windows;
+using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Windows.Controls;
 using Microsoft.Win32;
 
@@ -24,9 +25,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
     /// <summary>
     /// Interaction logic for FalconIntefaceEditor.xaml
     /// </summary>
-    public partial class FalconIntefaceEditor : HeliosInterfaceEditor
+    public partial class FalconInterfaceEditor : HeliosInterfaceEditor
     {
-        public FalconIntefaceEditor()
+        public FalconInterfaceEditor()
         {
             InitializeComponent();
         }
@@ -65,5 +66,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 ((FalconInterface)Interface).KeyFileName = ConfigManager.ImageManager.MakeImagePathRelative(ofd.FileName);
             }
         }
+    }
+
+    public class DesignTimeFalconInterface : DesignTimeInterface<FalconInterface>
+    {
+        // no code
     }
 }

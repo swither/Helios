@@ -65,8 +65,8 @@
       <DependentUpon>FalconCallbackValueEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\FalconDataExporter.cs" />
-    <Compile Include="Interfaces\FalconIntefaceEditor.xaml.cs">
-      <DependentUpon>FalconIntefaceEditor.xaml</DependentUpon>
+    <Compile Include="Interfaces\FalconInterfaceEditor.xaml.cs">
+      <DependentUpon>FalconInterfaceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\FalconInterface.cs" />
     <Compile Include="Interfaces\FalconKeyCallback.cs" />
@@ -129,7 +129,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Interfaces\FalconIntefaceEditor.xaml">
+    <Page Include="Interfaces\FalconInterfaceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

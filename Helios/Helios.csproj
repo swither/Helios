@@ -147,6 +147,7 @@
     </Compile>
     <Compile Include="Util\CommandLineOptions.cs" />
     <Compile Include="Util\DesignTimeControl.cs" />
+    <Compile Include="Util\DesignTimeInterface.cs" />
     <Compile Include="Util\ElevatedProcess.cs" />
     <Compile Include="Util\ElevatedProcessResponsePipe.cs" />
     <Compile Include="Util\Shadow\IShadowVisualParent.cs" />

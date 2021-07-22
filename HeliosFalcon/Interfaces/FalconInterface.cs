@@ -27,7 +27,7 @@ using Microsoft.Win32;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
-    [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconIntefaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class FalconInterface : HeliosInterface, IReadyCheck, IStatusReportNotify, IExtendedDescription
     {
         const string falconRootKey = @"SOFTWARE\WOW6432Node\Benchmark Sims\";
