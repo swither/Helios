@@ -26,6 +26,9 @@ using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
+    /// <summary>
+    /// view model for DCS Monitor Setup interaction with the list of separated monitor setups versus a single combined monitor setup
+    /// </summary>
     public partial class CombinedMonitorSetupViewModel : HeliosViewModel<MonitorSetup>
     {
         /// <summary>

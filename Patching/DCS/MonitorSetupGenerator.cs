@@ -19,9 +19,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
+using GadrocsWorkshop.Helios.Util.Shadow;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
@@ -115,7 +117,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // find main and ui view extents
             Rect mainView = Rect.Empty;
             Rect uiView = Rect.Empty;
-            foreach (ShadowMonitor monitor in _parent.Monitors)
+            foreach (DCSMonitor monitor in _parent.Monitors)
             {
                 string monitorDescription =
                     $"Monitor at Windows coordinates ({monitor.Monitor.Left},{monitor.Monitor.Top}) of size {monitor.Monitor.Width}x{monitor.Monitor.Height}";

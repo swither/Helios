@@ -17,42 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Windows;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 
-namespace GadrocsWorkshop.Helios.Patching.DCS
+namespace GadrocsWorkshop.Helios.Util.Shadow
 {
-    public class ShadowViewportEventArgs : EventArgs
-    {
-        public ShadowVisual Data { get; }
-
-        public ShadowViewportEventArgs(ShadowVisual shadow)
-        {
-            Data = shadow;
-        }
-    }
-
-    public class RawViewportEventArgs : EventArgs
-    {
-        public HeliosVisual Raw { get; }
-
-        public RawViewportEventArgs(HeliosVisual visual)
-        {
-            Raw = visual;
-        }
-    }
-
-    /// <summary>
-    /// callbacks from objects shadowing visuals (viewports, monitors) in the Helios Profile
-    /// to implement our model
-    /// </summary>
-    public interface IShadowVisualParent
-    {
-        Vector GlobalOffset { get; }
-        double Scale { get; }
-        void AddViewport(ShadowVisual viewport);
-        void RemoveViewport(ShadowVisual viewport);
-    }
-
     /// <summary>
     /// This class represents a Helios visual being observed.
     /// It is the model class.
@@ -60,6 +28,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     public class ShadowVisual : NotificationObject
     {
         public event EventHandler<RawViewportEventArgs> ViewportChanged;
+
         public event EventHandler<RawMonitorEventArgs> MonitorChanged;
 
         /// <summary>
@@ -102,6 +71,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             if (IsViewport)
             {
                 _parent.AddViewport(this);
+                visual.PropertyChanged += Viewport_PropertyChanged;
             }
 
             // observe changes
@@ -116,6 +86,20 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             if (recurse)
             {
                 Instrument(monitor, visual);
+            }
+        }
+
+        private void Viewport_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // scan for changes to viewport extents, which our customers might care about
+            switch (e.PropertyName)
+            {
+                case nameof(IViewportExtent.ViewportName):
+                case nameof(IViewportExtent.RequiresPatches):
+                {
+                    ViewportChanged?.Invoke(this, new RawViewportEventArgs(Visual));
+                    break;
+                }
             }
         }
 
@@ -198,6 +182,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             if (IsViewport)
             {
                 _parent.RemoveViewport(this);
+                Visual.PropertyChanged -= Viewport_PropertyChanged;
             }
 
             Visual.Moved -= Visual_Modified;

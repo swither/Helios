@@ -19,7 +19,7 @@ using GadrocsWorkshop.Helios.Windows;
 namespace GadrocsWorkshop.Helios.Patching.DCS.ViewModel
 {
     /// <summary>
-    /// view model for the configuration and application of viewport patches
+    /// view model for the configuration and application of DCS viewport patches
     ///
     /// this will grow if the additional viewports interface ever does something else
     /// </summary>
