@@ -42,7 +42,6 @@ namespace GadrocsWorkshop.Helios
         private bool _started;
         private string _name = "Untitled";
         private string _path = "";
-        Dispatcher _dispatcher;
         private readonly HashSet<string> _tags = new HashSet<string>();
 
         public HeliosProfile() : this(true)
@@ -101,21 +100,6 @@ namespace GadrocsWorkshop.Helios
         public event EventHandler<ControlEventArgs> RoutableControlSelected;
 
         #region Properties
-
-        public Dispatcher Dispatcher
-        {
-            get => _dispatcher;
-            set
-            {
-                if ((_dispatcher == null && value != null)
-                    || (_dispatcher != null && !_dispatcher.Equals(value)))
-                {
-                    Dispatcher oldValue = _dispatcher;
-                    _dispatcher = value;
-                    OnPropertyChanged("Dispatcher", oldValue, value, false);
-                }
-            }
-        }
 
         public IEnumerable<string> Tags => _tags;
 

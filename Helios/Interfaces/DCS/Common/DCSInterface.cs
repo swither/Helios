@@ -352,7 +352,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected override void OnProfileStarted()
         {
             // these parts are only used at run time (i.e. not in the Profile Editor)
-            _protocol = new DCSExportProtocol(this, Profile.Dispatcher);
+            _protocol = new DCSExportProtocol(this);
             _phantomFix = new DCSPhantomMonitorFix(this);
         }
 
