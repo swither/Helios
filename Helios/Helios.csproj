@@ -79,6 +79,7 @@
     <Compile Include="Controls\BackgroundImageAppearanceEditor.xaml.cs">
       <DependentUpon>BackgroundImageAppearanceEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Capabilities\IViewportExtent.cs" />
     <Compile Include="Controls\Special\CalibrationFilter.cs" />
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
@@ -103,6 +104,7 @@
     <Compile Include="Gauges\CompositeVisualWithBackgroundImage.cs" />
     <Compile Include="HeliosCapabilityEditorDescriptor.cs" />
     <Compile Include="IInstallation2.cs" />
+    <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
     <Compile Include="StructuredInfo.cs" />
@@ -144,6 +146,13 @@
     <Compile Include="Util\DesignTimeControl.cs" />
     <Compile Include="Util\ElevatedProcess.cs" />
     <Compile Include="Util\ElevatedProcessResponsePipe.cs" />
+    <Compile Include="Util\Shadow\IShadowVisualParent.cs" />
+    <Compile Include="Util\Shadow\RawMonitorEventArgs.cs" />
+    <Compile Include="Util\Shadow\RawViewportEventArgs.cs" />
+    <Compile Include="Util\Shadow\ShadowMonitorBase.cs" />
+    <Compile Include="Util\Shadow\ShadowViewportEventArgs.cs" />
+    <Compile Include="Util\Shadow\ShadowVisual.cs" />
+    <Compile Include="Util\Shadow\ViewportViewModel.cs" />
     <Compile Include="Windows\Controls\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -313,7 +322,6 @@
     <Compile Include="Interfaces\Capabilities\IResetMonitorsObserver.cs" />
     <Compile Include="ISettingsManager2.cs" />
     <Compile Include="Interfaces\Capabilities\IStatusReportNotify.cs" />
-    <Compile Include="IViewportExtent.cs" />
     <Compile Include="Controls\CustomGaugeNeedle.cs" />
     <Compile Include="Controls\CustomDrum.cs" />
     <Compile Include="Controls\CustomTape.cs" />

@@ -22,6 +22,9 @@ using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
+    /// <summary>
+    /// view model for the state of a specific profile's DCS viewports, as cached by Helios
+    /// </summary>
     public class ViewportSetupFileViewModel : HeliosViewModel<ViewportSetupFile>
     {
         public ViewportSetupFileViewModel(string profileName, ViewportSetupFile data) : base(data)

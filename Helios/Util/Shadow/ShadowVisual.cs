@@ -17,42 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Windows;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 
-namespace GadrocsWorkshop.Helios.Patching.DCS
+namespace GadrocsWorkshop.Helios.Util.Shadow
 {
-    public class ShadowViewportEventArgs : EventArgs
-    {
-        public ShadowVisual Data { get; }
-
-        public ShadowViewportEventArgs(ShadowVisual shadow)
-        {
-            Data = shadow;
-        }
-    }
-
-    public class RawViewportEventArgs : EventArgs
-    {
-        public HeliosVisual Raw { get; }
-
-        public RawViewportEventArgs(HeliosVisual visual)
-        {
-            Raw = visual;
-        }
-    }
-
-    /// <summary>
-    /// callbacks from objects shadowing visuals (viewports, monitors) in the Helios Profile
-    /// to implement our model
-    /// </summary>
-    public interface IShadowVisualParent
-    {
-        Vector GlobalOffset { get; }
-        double Scale { get; }
-        void AddViewport(ShadowVisual viewport);
-        void RemoveViewport(ShadowVisual viewport);
-    }
-
     /// <summary>
     /// This class represents a Helios visual being observed.
     /// It is the model class.
