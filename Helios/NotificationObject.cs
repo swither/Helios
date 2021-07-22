@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios
         /// <summary>
         /// WARNING:  This is an event that is declared to have the correct signature for
         /// IPropertyNotification, but we actually pass our own extended PropertyNotificationEventArgs
-        /// argument instead, to tunnel the old and new values.  This means any all of our handlers
+        /// argument instead, to tunnel the old and new values.  This means all of our handlers
         /// assume this event is only raised from our classes and cast this event DOWN to our derived
         /// event.
         /// </summary>
