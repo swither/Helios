@@ -14,13 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Util.Shadow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
-using GadrocsWorkshop.Helios.ComponentModel;
-using GadrocsWorkshop.Helios.Util.Shadow;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
 {

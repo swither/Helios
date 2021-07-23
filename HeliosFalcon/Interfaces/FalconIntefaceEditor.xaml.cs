@@ -13,11 +13,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Windows.Controls;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Windows;
-using GadrocsWorkshop.Helios.Windows.Controls;
-using Microsoft.Win32;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
@@ -65,5 +65,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 ((FalconInterface)Interface).KeyFileName = ConfigManager.ImageManager.MakeImagePathRelative(ofd.FileName);
             }
         }
+
+        #region Overrides of HeliosInterfaceEditor
+
+        protected override void OnInterfaceChanged(HeliosInterface oldInterface, HeliosInterface newInterface)
+        {
+            RttViewModel = new Interfaces.RTT.ViewModel((newInterface as FalconInterface)?.Rtt);
+        }
+
+        #endregion
+
+        public Interfaces.RTT.ViewModel RttViewModel
+        {
+            get => (Interfaces.RTT.ViewModel)GetValue(RttViewModelProperty);
+            set => SetValue(RttViewModelProperty, value);
+        }
+
+        public static readonly DependencyProperty RttViewModelProperty =
+            DependencyProperty.Register("RttViewModel", typeof(Interfaces.RTT.ViewModel), typeof(FalconIntefaceEditor), new PropertyMetadata(null));
     }
 }

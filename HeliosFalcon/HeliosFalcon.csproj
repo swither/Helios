@@ -86,6 +86,10 @@
     <Compile Include="Gauges\Textures\PFL.cs" />
     <Compile Include="Gauges\Textures\RightMFD.cs" />
     <Compile Include="Gauges\Textures\RWR.cs" />
+    <Compile Include="Interfaces\RTT\ViewModel.cs" />
+    <Compile Include="Interfaces\RTT\InterfaceEditor.xaml.cs">
+      <DependentUpon>InterfaceEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\RTT\LocalOptions.cs" />
     <Compile Include="Interfaces\RTT\ConfigGenerator.cs" />
     <Compile Include="Interfaces\RTT\NetworkOptions.cs" />
@@ -135,8 +139,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interfaces\RTT\InterfaceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup />

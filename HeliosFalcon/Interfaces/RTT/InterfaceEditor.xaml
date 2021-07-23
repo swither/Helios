@@ -1,12 +1,12 @@
 ﻿<Grid x:Class="GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT.InterfaceEditor"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT"
-      d:DataContext="{d:DesignInstance Type=local:ConfigGenerator}"
-      mc:Ignorable="d">
-
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type={x:Type local:ViewModel}}"
+             d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="57" />
@@ -28,7 +28,7 @@
                HorizontalAlignment="Right"
                Margin="0,8,0,7"
                Height="26" />
-        <CheckBox IsChecked="{Binding Enabled}"
+        <CheckBox IsChecked="{Binding RttEnabled}"
                   Grid.Column="1"
                   Grid.Row="0"
                   Height="14"
@@ -36,18 +36,12 @@
                   HorizontalAlignment="Left"
                   Margin="0,14,0,13"
                   Width="16">
-            <CheckBox.DataContext>
-                <local:ConfigGenerator />
-            </CheckBox.DataContext>
         </CheckBox>
         <GroupBox Header="Configuration"
-                  IsEnabled="{Binding Enabled}"
+                  IsEnabled="{Binding RttEnabled}"
                   Margin="10,4"
                   Grid.ColumnSpan="2"
                   Grid.Row="1">
-            <GroupBox.DataContext>
-                <local:ConfigGenerator />
-            </GroupBox.DataContext>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -65,13 +59,13 @@
                        Grid.Column="0"
                        Content="Networked"
                        HorizontalAlignment="Right" />
-
-                <CheckBox IsChecked="False"
+                <CheckBox IsChecked="{Binding NetworkingEnabled}"
                           Grid.Column="1"
                           Grid.Row="0"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
 
+                <!-- NOTE: the text can be bound directly to data, since nobody else is notified, while the enabled state is view model -->
                 <Label Grid.Column="0"
                        Grid.Row="2"
                        HorizontalAlignment="Right"
@@ -82,7 +76,9 @@
                          HorizontalAlignment="Left"
                          Width="200"
                          MaxWidth="200"
-                         Text="" />
+                         Text="{Binding Data.IPAddress}" 
+                         IsEnabled="{Binding NetworkingEnabled}"/>
+
                 <Label Content="Port"
                        HorizontalAlignment="Right"
                        Grid.Column="0"
@@ -92,10 +88,11 @@
                          Grid.Row="3"
                          Width="40"
                          MaxWidth="40"
-                         Text=""
+                         Text="{Binding Data.Port}"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
-                         Height="18" />
+                         Height="18" 
+                         IsEnabled="{Binding NetworkingEnabled}"/>
             </Grid>
         </GroupBox>
     </Grid>
