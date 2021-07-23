@@ -65,23 +65,5 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 ((FalconInterface)Interface).KeyFileName = ConfigManager.ImageManager.MakeImagePathRelative(ofd.FileName);
             }
         }
-
-        #region Overrides of HeliosInterfaceEditor
-
-        protected override void OnInterfaceChanged(HeliosInterface oldInterface, HeliosInterface newInterface)
-        {
-            RttViewModel = new Interfaces.RTT.ViewModel((newInterface as FalconInterface)?.Rtt);
-        }
-
-        #endregion
-
-        public Interfaces.RTT.ViewModel RttViewModel
-        {
-            get => (Interfaces.RTT.ViewModel)GetValue(RttViewModelProperty);
-            set => SetValue(RttViewModelProperty, value);
-        }
-
-        public static readonly DependencyProperty RttViewModelProperty =
-            DependencyProperty.Register("RttViewModel", typeof(Interfaces.RTT.ViewModel), typeof(FalconIntefaceEditor), new PropertyMetadata(null));
     }
 }

@@ -102,7 +102,7 @@
                      Style="{StaticResource GroupBoxWithExpanderStyle}"
                      IsExpanded="True"
                      Margin="4,4,4,4">
-            <rtt:InterfaceEditor DataContext="{Binding RttViewModel}"/> 
+            <rtt:InterfaceEditor DataContext="{Binding Interface.Rtt}"/> 
         </av:Expander>
         <av:Expander Margin="4,4,4,4"
                      Header="Falcon Runtime"

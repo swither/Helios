@@ -86,7 +86,6 @@
     <Compile Include="Gauges\Textures\PFL.cs" />
     <Compile Include="Gauges\Textures\RightMFD.cs" />
     <Compile Include="Gauges\Textures\RWR.cs" />
-    <Compile Include="Interfaces\RTT\ViewModel.cs" />
     <Compile Include="Interfaces\RTT\InterfaceEditor.xaml.cs">
       <DependentUpon>InterfaceEditor.xaml</DependentUpon>
     </Compile>
