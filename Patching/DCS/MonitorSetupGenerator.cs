@@ -666,6 +666,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // calculate shared monitor config
             // and see if it is up to date in all locations
+            // NOTE: we have to do this even if this profile uses a separate setup, in case we just removed ourselves,
+            // invalidating the combined setup
             MonitorSetupTemplate combinedTemplate = CreateCombinedTemplate();
             string monitorSetupName = combinedTemplate.MonitorSetupName;
             foreach (StatusReportItem item in UpdateMonitorSetup(combinedTemplate, true))
@@ -684,10 +686,26 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return item;
             }
 
-            // also calculate separate config, if applicable
-            // and see if it is up to date in all locations
-            if (!_parent.GenerateCombined)
+            if (_parent.GenerateCombined)
             {
+                // check to make sure our viewports are actually included in the combined config, because
+                // settings may not match the profile (https://github.com/HeliosVirtualCockpit/Helios/issues/344)
+                if (!_parent.Combined.IsCombined(combinedTemplate.ProfileName))
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"current profile specifies using combined monitor setup, but its own viewports are not included",
+                        Recommendation =
+                            "Configure DCS Monitor Setup and save the Profile to repair corrupted configuration",
+                        Link = StatusReportItem.ProfileEditor,
+                        Severity = StatusReportItem.SeverityCode.Error
+                    };
+                }                        
+            }
+            else
+            {
+                // also calculate separate config, if applicable
+                // and see if it is up to date in all locations
                 MonitorSetupTemplate separateTemplate = CreateSeparateTemplate();
                 monitorSetupName = separateTemplate.MonitorSetupName;
                 foreach (StatusReportItem item in UpdateMonitorSetup(separateTemplate, false))
