@@ -55,19 +55,42 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Label Content="Renderer"
                        HorizontalAlignment="Right"
                        Grid.Row="0"
                        Grid.Column="0" />
-                
+
                 <ComboBox Grid.Row="0"
                           Grid.Column="1"
                           HorizontalAlignment="Left"
-                          
-                    
-                          Width="100" />
+                          Width="160"
+                          MinWidth="160"
+                          VerticalAlignment="Center"
+                          SelectedValue="{Binding Renderer}"
+                          SelectedValuePath="Tag">
+                    <ComboBox.Items>
+                        <ComboBoxItem Tag="0"
+                                      Content="SDL2: pick automatically" />
+                        <ComboBoxItem Tag="1"
+                                      Content="SDL2: Direct3D 9" />
+                        <ComboBoxItem Tag="2"
+                                      Content="SDL2: Direct3D 11" />
+                        <ComboBoxItem Tag="3"
+                                      Content="SDL2: OpenGL" />
+                        <ComboBoxItem Tag="4"
+                                      Content="SDL2: OpenGL ES" />
+                        <ComboBoxItem Tag="5"
+                                      Content="SDL2: Software" />
+                        <ComboBoxItem Tag="6"
+                                      Content="SFML: OpenGL" />
+                    </ComboBox.Items>
+                </ComboBox>
 
                 <Label Grid.Row="1"
                        Grid.Column="0"
@@ -78,16 +101,28 @@
                           Grid.Row="1"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
+                
                 <Label Content="Frame Per Second"
-                       Grid.Row="1"
+                       Grid.Row="0"
                        Grid.Column="2" 
                        HorizontalAlignment="Right"/>
-                <CheckBox IsChecked="{Binding FramesPerSecond}" 
-                          Grid.Row="1"
-                          Grid.Column="3"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Center"/>
+                <TextBox Text="{Binding LocalOptions.FramesPerSecond}"
+                         Grid.Row="0"
+                         Grid.Column="3"
+                         MinWidth="20"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"/>
 
+                <Label Grid.Row="1"
+                       Grid.Column="2"
+                       Content="RWR Grid"
+                       HorizontalAlignment="Right" />
+                <CheckBox IsChecked="{Binding LocalOptions.RWRGrid}"
+                          Grid.Column="3"
+                          Grid.Row="1"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center" />
+                
                 <Label Grid.Column="0"
                        Grid.Row="3"
                        HorizontalAlignment="Right"
@@ -98,23 +133,62 @@
                          HorizontalAlignment="Left"
                          Width="200"
                          MaxWidth="200"
-                         Text="{Binding IPAddress}" 
+                         Text="{Binding NetworkOptions.IPAddress}" 
                          IsEnabled="{Binding Networked}"/>
 
                 <Label Content="Port"
                        HorizontalAlignment="Right"
                        Grid.Column="0"
                        Grid.Row="4" />
-
                 <TextBox Grid.Column="1"
                          Grid.Row="4"
                          Width="40"
                          MaxWidth="40"
-                         Text="{Binding Port}"
+                         Text="{Binding NetworkOptions.Port}"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
                          Height="18" 
                          IsEnabled="{Binding Networked}"/>
+
+                <Label Content="DATA__F4"
+                       HorizontalAlignment="Right"
+                       Grid.Column="0"
+                       Grid.Row="5" />
+                <CheckBox IsChecked="{Binding Networked}"
+                          Grid.Column="1"
+                          Grid.Row="5"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center" />
+
+                <Label Content="DATA__BMS"
+                       HorizontalAlignment="Right"
+                       Grid.Column="1"
+                       Grid.Row="5" />
+                <CheckBox IsChecked="{Binding Networked}"
+                          Grid.Column="2"
+                          Grid.Row="5"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center" />
+
+                <Label Content="DATA__OSB"
+                       HorizontalAlignment="Right"
+                       Grid.Column="0"
+                       Grid.Row="6" />
+                <CheckBox IsChecked="{Binding Networked}"
+                          Grid.Column="1"
+                          Grid.Row="6"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center" />
+
+                <Label Content="DATA__IVIBE"
+                       HorizontalAlignment="Right"
+                       Grid.Column="1"
+                       Grid.Row="6" />
+                <CheckBox IsChecked="{Binding Networked}"
+                          Grid.Column="2"
+                          Grid.Row="6"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center" />
             </Grid>
         </GroupBox>
     </Grid>

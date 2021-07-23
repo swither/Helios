@@ -29,6 +29,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// RTT updates per second
         /// </summary>
         private int _framesPerSecond = DEFAULT_FPS;
+        private bool _rwrGrid;
 
         #region Properties
 
@@ -50,6 +51,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 int oldValue = _framesPerSecond;
                 _framesPerSecond = value;
                 OnPropertyChanged(nameof(FramesPerSecond), oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// RWR GRID enabled
+        /// </summary>
+        [XmlElement("RWRGrid")]
+        public bool RWRGrid
+        {
+            get => _rwrGrid;
+            set
+            {
+                if (_rwrGrid == value)
+                {
+                    return;
+                }
+
+                bool oldValue = _rwrGrid;
+                _rwrGrid = value;
+                OnPropertyChanged(nameof(_rwrGrid), oldValue, value, true);
             }
         }
 

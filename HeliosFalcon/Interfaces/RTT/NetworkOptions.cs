@@ -21,5 +21,48 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
     [XmlRoot("Network", Namespace = ConfigGenerator.XML_NAMESPACE)]
     public class NetworkOptions : NotificationObject
     {
+        private string _ipAddress;
+        private string _port;
+
+        #region Properties
+
+        /// <summary>
+        /// IPAddress of remote RTT Server
+        /// </summary>
+        [XmlAttribute("IPAddress")]
+        public string IPAddress
+        {
+            get => _ipAddress;
+            set
+            {
+                if(_ipAddress == value)
+                {
+                    return;
+                }
+                string oldValue = _ipAddress;
+                _ipAddress = value;
+                OnPropertyChanged("IPAddress", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// Port of remote RTT Server
+        /// </summary>
+        [XmlAttribute("Port")]
+        public string Port
+        {
+            get => _port;
+            set
+            {
+                if (_port == value)
+                {
+                    return;
+                }
+                string oldValue = _port;
+                _port = value;
+                OnPropertyChanged("Port", oldValue, value, true);
+            }
+        }
+        #endregion
     }
 }

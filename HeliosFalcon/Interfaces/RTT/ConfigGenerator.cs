@@ -140,7 +140,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         private IEnumerable<string> WriteGlobalConfig()
         {
             // TODO: yield return each line of configuration based on configured options, remove yield break
-            yield return "RENDERER = 0";
+            yield return $"RENDERER = {Renderer}";
         }
 
         private IEnumerable<string> EnableViewport(string candidateDisplay, Dictionary<string, ShadowVisual> present)
@@ -219,6 +219,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Type of renderer selected
+        /// </summary>
+        [XmlAttribute("Renderer")]
+        public int Renderer
+        {
+            get => _renderer;
+            set
+            {
+                if (_renderer == value)
+                {
+                    return;
+                }
+
+                int oldValue = _renderer;
+                _renderer = value;
+                OnPropertyChanged("Renderer", oldValue, value, true);
+            }
+        }
 
         /// <summary>
         /// true if RTT will run networked
@@ -307,6 +327,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// true if RTT functionality is enabled
         /// </summary>
         private bool _enabled;
+        private int _renderer;
 
         /// <summary>
         /// true if RTT functionality is enabled
