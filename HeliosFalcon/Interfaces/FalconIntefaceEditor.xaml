@@ -11,10 +11,12 @@
                                 xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Interfaces.Falcon"
                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                 xmlns:wpf="http://schemas.microsoft.com/netfx/2007/xaml/presentation"
+                                xmlns:rtt="clr-namespace:GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT"
                                 d:DesignHeight="650"
                                 d:DesignWidth="600"
                                 DataContext="{av:Binding RelativeSource={av:RelativeSource Self}}"
                                 mc:Ignorable="d">
+
     <controls:HeliosInterfaceEditor.Resources>
         <Util:EnumBooleanConverter x:Key="EnumBooleanConverter" />
         <!--<helios:EnumConverter x:Key="FalconTypes" Type="{x:Type local:FalconTypes}" />-->
@@ -32,9 +34,8 @@
         </av:Style>
     </controls:HeliosInterfaceEditor.Resources>
     <av:StackPanel Orientation="Vertical">
-        <av:Expander Margin="4,4,4,4"
-                     Header="Falcon Setup"
-                     IsExpanded="True">
+        <av:GroupBox Margin="4,4,4,4"
+                     Header="Falcon Setup">
             <av:Grid Margin="4">
                 <av:Grid.ColumnDefinitions>
                     <av:ColumnDefinition Width="Auto" />
@@ -95,6 +96,11 @@
                            Click="Button_Click"
                            Content="..." />
             </av:Grid>
+        </av:GroupBox>
+        <av:Expander Header="RTT Client"
+                     IsExpanded="False"
+                     Margin="4,4,4,4">
+            <rtt:InterfaceEditor />
         </av:Expander>
         <av:Expander Margin="4,4,4,4"
                      Header="Falcon Runtime"
@@ -143,26 +149,6 @@
                              IsChecked="{av:Binding Interface.ForceKeyFile,
                                            Mode=TwoWay}" />
             </av:Grid>
-        </av:Expander>
-        <av:Expander Margin="4,4,4,4"
-                     Header="RTT Configuration"
-                     IsExpanded="False">
-            <av:Grid>
-                <av:Grid.RowDefinitions>
-                    <av:RowDefinition Height="Auto" />
-                    <av:RowDefinition Height="Auto" />
-                    <av:RowDefinition Height="Auto" />
-                </av:Grid.RowDefinitions>
-                <av:Grid.ColumnDefinitions>
-                    <av:ColumnDefinition Width="9" />
-                    <av:ColumnDefinition Width="43" />
-                    <av:ColumnDefinition Width="Auto" />
-                    <av:ColumnDefinition Width="Auto" />
-                </av:Grid.ColumnDefinitions>
-                
-
-            </av:Grid>
-
         </av:Expander>
         <av:Expander Height="456"
                      Margin="4,4,4,4"
