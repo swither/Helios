@@ -58,6 +58,7 @@
                               Text="Select which version of Falcon you are running."
                               TextWrapping="Wrap" />
                 <av:ComboBox Margin="10,21,47,10"
+                             MinWidth="70"
                              VerticalAlignment="Center"
                              IsEnabled="True"
                              ItemsSource="{av:Binding Interface.FalconVersions}"
@@ -171,6 +172,8 @@
                 </av:Grid.ColumnDefinitions>
 
                 <local:FalconCallbackValueEditor Margin="4,10,4,4"
+                                                 MinWidth="300"
+                                                 MinHeight="200"
                                                  av:Grid.Column="1"
                                                  av:Grid.ColumnSpan="2"
                                                  av:Grid.Row="2"

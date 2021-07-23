@@ -46,6 +46,8 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -55,22 +57,43 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0"
+                <Label Content="Renderer"
+                       HorizontalAlignment="Right"
+                       Grid.Row="0"
+                       Grid.Column="0" />
+                
+                <ComboBox Grid.Row="0"
+                          Grid.Column="1"
+                          HorizontalAlignment="Left"
+                          
+                    
+                          Width="100" />
+
+                <Label Grid.Row="1"
                        Grid.Column="0"
                        Content="Networked"
                        HorizontalAlignment="Right" />
                 <CheckBox IsChecked="{Binding Networked}"
                           Grid.Column="1"
-                          Grid.Row="0"
+                          Grid.Row="1"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
+                <Label Content="Frame Per Second"
+                       Grid.Row="1"
+                       Grid.Column="2" 
+                       HorizontalAlignment="Right"/>
+                <CheckBox IsChecked="{Binding FramesPerSecond}" 
+                          Grid.Row="1"
+                          Grid.Column="3"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"/>
 
                 <Label Grid.Column="0"
-                       Grid.Row="2"
+                       Grid.Row="3"
                        HorizontalAlignment="Right"
                        Content="IP Address" />
                 <TextBox Grid.Column="1"
-                         Grid.Row="2"
+                         Grid.Row="3"
                          VerticalAlignment="Center"
                          HorizontalAlignment="Left"
                          Width="200"
@@ -81,10 +104,10 @@
                 <Label Content="Port"
                        HorizontalAlignment="Right"
                        Grid.Column="0"
-                       Grid.Row="3" />
+                       Grid.Row="4" />
 
                 <TextBox Grid.Column="1"
-                         Grid.Row="3"
+                         Grid.Row="4"
                          Width="40"
                          MaxWidth="40"
                          Text="{Binding Port}"
