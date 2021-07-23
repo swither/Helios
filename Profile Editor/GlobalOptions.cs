@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     /// NOTE: the string names of properties in the XML file are intentionally not set from the property names
     /// in case the property names change later.
     /// </summary>
-    public class GlobalOptions : NotificationObject
+    public class GlobalOptions : Helios.GlobalOptions
     {
         private const string SETTINGS_GROUP = "ProfileEditor";
 
@@ -96,8 +96,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
-        #endregion
-
         /// <summary>
         /// true if all monitors are set to always display on top in newly
         /// created profiles
@@ -118,6 +116,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 OnPropertyChanged(nameof(DefaultAlwaysOnTop), oldValue, value, true);
             }
         }
+
+        #endregion
 
         #region Static Client Interface
 
