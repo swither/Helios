@@ -23,6 +23,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
     {
         private string _ipAddress;
         private string _port;
+        private bool _dataF4;
+        private bool _dataBms;
+        private bool _dataOsb;
+        private bool _dataIvibe;
 
         #region Properties
 
@@ -61,6 +65,82 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 string oldValue = _port;
                 _port = value;
                 OnPropertyChanged("Port", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// DATA_F4 switch
+        /// </summary>
+        [XmlAttribute("DataF4")]
+        public bool DataF4
+        {
+            get => _dataF4;
+            set
+            {
+                if(_dataF4 == value)
+                {
+                    return;
+                }
+                bool oldValue = _dataF4;
+                _dataF4 = value;
+                OnPropertyChanged(nameof(_dataF4), oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// DATA_BMS switch
+        /// </summary>
+        [XmlAttribute("DataBms")]
+        public bool DataBms
+        {
+            get => _dataBms;
+            set
+            {
+                if (_dataBms == value)
+                {
+                    return;
+                }
+                bool oldValue = _dataBms;
+                _dataBms = value;
+                OnPropertyChanged(nameof(_dataBms), oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// DATA_OSB switch
+        /// </summary>
+        [XmlAttribute("DataOsb")]
+        public bool DataOsb
+        {
+            get => _dataOsb;
+            set
+            {
+                if (_dataOsb == value)
+                {
+                    return;
+                }
+                bool oldValue = _dataOsb;
+                _dataOsb = value;
+                OnPropertyChanged(nameof(_dataOsb), oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// DATA_IVIBE switch
+        /// </summary>
+        [XmlAttribute("DataIvibe")]
+        public bool DataIvibe
+        {
+            get => _dataIvibe;
+            set
+            {
+                if (_dataIvibe == value)
+                {
+                    return;
+                }
+                bool oldValue = _dataIvibe;
+                _dataIvibe = value;
+                OnPropertyChanged(nameof(_dataIvibe), oldValue, value, true);
             }
         }
         #endregion

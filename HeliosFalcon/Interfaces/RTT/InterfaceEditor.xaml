@@ -4,10 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT"
-             mc:Ignorable="d"
+      xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
+      xmlns:system="clr-namespace:System;assembly=mscorlib"
+      mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type={x:Type local:ConfigGenerator}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.Resources>
+            <ResourceDictionary>
+                <system:Boolean x:Key="False">False</system:Boolean>
+                <util:EnumBooleanConverter x:Key="EnumBooleanConverter" />
+                <ResourceDictionary.MergedDictionaries>
+                    <util:DesignTimeEditorResources />
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="57" />
             <ColumnDefinition Width="541" />
@@ -111,7 +122,8 @@
                          Grid.Column="3"
                          MinWidth="20"
                          HorizontalAlignment="Left"
-                         VerticalAlignment="Center"/>
+                         VerticalAlignment="Center"
+                         IsEnabled="{Binding Networked, Mode=OneWay, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={StaticResource False}}"/>
 
                 <Label Grid.Row="1"
                        Grid.Column="2"
@@ -154,7 +166,7 @@
                        HorizontalAlignment="Right"
                        Grid.Column="0"
                        Grid.Row="5" />
-                <CheckBox IsChecked="{Binding Networked}"
+                <CheckBox IsChecked="{Binding NetworkOptions.DataF4}"
                           Grid.Column="1"
                           Grid.Row="5"
                           HorizontalAlignment="Left"
@@ -164,7 +176,7 @@
                        HorizontalAlignment="Right"
                        Grid.Column="1"
                        Grid.Row="5" />
-                <CheckBox IsChecked="{Binding Networked}"
+                <CheckBox IsChecked="{Binding NetworkOptions.DataBms}"
                           Grid.Column="2"
                           Grid.Row="5"
                           HorizontalAlignment="Left"
@@ -174,7 +186,7 @@
                        HorizontalAlignment="Right"
                        Grid.Column="0"
                        Grid.Row="6" />
-                <CheckBox IsChecked="{Binding Networked}"
+                <CheckBox IsChecked="{Binding NetworkOptions.DataOsb}"
                           Grid.Column="1"
                           Grid.Row="6"
                           HorizontalAlignment="Left"
@@ -184,7 +196,7 @@
                        HorizontalAlignment="Right"
                        Grid.Column="1"
                        Grid.Row="6" />
-                <CheckBox IsChecked="{Binding Networked}"
+                <CheckBox IsChecked="{Binding NetworkOptions.DataIvibe}"
                           Grid.Column="2"
                           Grid.Row="6"
                           HorizontalAlignment="Left"
