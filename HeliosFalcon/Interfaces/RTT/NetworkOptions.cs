@@ -21,11 +21,40 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
     [XmlRoot("Network", Namespace = ConfigGenerator.XML_NAMESPACE)]
     public class NetworkOptions : NotificationObject
     {
+        /// <summary>
+        /// backing field for remote ip address, contains
+        /// ip address of remote RTT server
+        /// </summary>
         private string _ipAddress;
+
+        /// <summary>
+        /// backing field for remote port, contains
+        /// port of remote RTT server
+        /// </summary>
         private string _port;
+
+        /// <summary>
+        /// backing field for DataF4 options, contains
+        /// true if you wish to enable remote sharedmemory support for F4 Data
+        /// </summary>
         private bool _dataF4;
+
+        /// <summary>
+        /// backing field for DataBms options, contains
+        /// true if you wish to enable remote sharedmemory support for BMS Data
+        /// </summary>
         private bool _dataBms;
+
+        /// <summary>
+        /// backing field for DataOsb options, contains
+        /// true if you wish to enable remote sharedmemory support for OSB Data
+        /// </summary>
         private bool _dataOsb;
+
+        /// <summary>
+        /// backing field for DataIvibe options, contains
+        /// true if you wish to enable remote sharedmemory support for IVibe Data
+        /// </summary>
         private bool _dataIvibe;
 
         #region Properties

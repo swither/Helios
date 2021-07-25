@@ -141,6 +141,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         {
             // TODO: yield return each line of configuration based on configured options, remove yield break
             yield return $"RENDERER = {Renderer}";
+            yield return $"NETWORKED = {(Networked ? "1" : "0")}";
+            yield return $"FPS = {LocalOptions.FramesPerSecond}";
+            yield return $"HOST = {NetworkOptions.IPAddress}";  //TODO loopback should be a default unless specified
+            yield return $"PORT = {NetworkOptions.Port}"; //TODO port 44000 should be a default unless specified
+            yield return $"DATA_F4 = {(NetworkOptions.DataF4 ? "1" : "0")}";
+            yield return $"DATA_BMS = {(NetworkOptions.DataBms ? "1" : "0")}";
+            yield return $"DATA_Osb = {(NetworkOptions.DataOsb ? "1" : "0")}";
+            yield return $"DATA_IVIBE = {(NetworkOptions.DataIvibe ? "1" : "0")}";
         }
 
         private IEnumerable<string> EnableViewport(string candidateDisplay, Dictionary<string, ShadowVisual> present)
@@ -196,6 +204,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
 
             _contents = contents;
             // XXX write file
+            FalconInterface falconInterface = new FalconInterface();
+            string _rttClientIni = System.IO.Path.Combine(falconInterface.FalconPath, "Tools", "RTTRemote", "RTTClient.INI");
+            if(System.IO.File.Exists(_rttClientIni))
+            {
+                System.IO.File.WriteAllText(_rttClientIni, contents);
+            }
         }
 
         #region Event Handlers
@@ -327,6 +341,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// true if RTT functionality is enabled
         /// </summary>
         private bool _enabled;
+
+        /// <summary>
+        /// backing field for property Renderer, contains
+        /// int value from 0-6 defining which type of renderer
+        /// will be used.
+        /// </summary>
         private int _renderer;
 
         /// <summary>

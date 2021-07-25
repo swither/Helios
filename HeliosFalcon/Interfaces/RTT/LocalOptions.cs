@@ -29,6 +29,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// RTT updates per second
         /// </summary>
         private int _framesPerSecond = DEFAULT_FPS;
+
+        /// <summary>
+        /// backing field for property RwrGrid, contains
+        /// true if RWR Grid functionality is enabled
+        /// </summary>
         private bool _rwrGrid;
 
         #region Properties
