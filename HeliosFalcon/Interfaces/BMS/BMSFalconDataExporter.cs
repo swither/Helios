@@ -374,6 +374,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
             // Falcon RunTime Data
             AddValue("Runtime", "Current Theater", "Name of the Current Theater", "", BindingValueUnits.Text);
+            AddValue("Runtime", "Flying", "Player flying state", "True if in 3D.", BindingValueUnits.Boolean);
         }
 
         internal override void InitData()
@@ -543,6 +544,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             {
                 if (_stringAreaTime != _lastStringAreaTime)
                 {
+                    _lastStringAreaTime = _stringAreaTime;
                     if(_stringAreaSize != 0)
                     {
                         _stringDataUpdated = true;
@@ -826,6 +828,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             SetValue("VVI", "off flag", new BindingValue(bits.HasFlag(HsiBits.VVI)));
             SetValue("AOA", "off flag", new BindingValue(bits.HasFlag(HsiBits.AOA)));
             SetValue("AVTR", "avtr indicator", new BindingValue(bits.HasFlag(HsiBits.AVTR)));
+            SetValue("Runtime", "Flying", new BindingValue(bits.HasFlag(HsiBits.Flying)));
 
             UpdateBlinkingLightState(bits.HasFlag(HsiBits.OuterMarker), blinkBits.HasFlag(BlinkBits.OuterMarker), ref _outerMarkerLastTick, ref _outerMarkerOnState);
             SetValue("HSI", "Outer marker indicator", new BindingValue(_outerMarkerOnState));

@@ -84,7 +84,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                     _navPoints.Add(item.value.Replace(";", ""));
                 }
             }
-            return _navPoints.Count != 0 ? null : _navPoints;
+            return _navPoints.Count > 0 ? _navPoints : null;
         }
     }
 
