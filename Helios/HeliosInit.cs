@@ -14,7 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Diagnostics;
+using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -191,27 +193,46 @@ namespace GadrocsWorkshop.Helios
             NLog.LogManager.Flush();
         }
 
+        // special cases of libraries that we fail to properly ignore otherwise
+        private static readonly HashSet<string> ForbiddenPlugins = new HashSet<string>
+        {
+            "Phidget22.NET.dll",
+            "phidget22.dll"
+        };
+
         private static void LoadModule(string moduleFileName)
         {
-            if (File.Exists(moduleFileName))
+            if (!File.Exists(moduleFileName))
             {
-                Logger.Debug($"Loading library: '{moduleFileName}'");
-                try
-                {
-                    Assembly asm = Assembly.LoadFrom(moduleFileName);
-                    if (asm != null)
-                    {
-                        LoadModule(asm);
-                    }
-                    else
-                    {
-                        Logger.Warn($"Failed to load library '{moduleFileName}'");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e, $"Failed to load library '{moduleFileName}' due to error");
-                }
+                return;
+            }
+
+            if (ForbiddenPlugins.Contains(Path.GetFileName(moduleFileName)))
+            {
+                Logger.Info($"Ignoring library that is known to not be one of our plugins: '{moduleFileName}'");
+                return;
+            }
+
+            if (!ModuleUtility.IsProbablyAssembly(moduleFileName))
+            {
+                Logger.Info($"Ignoring library that does not appear to be a .NET assembly: '{moduleFileName}'");
+                return;
+            }
+
+            Logger.Debug($"Loading library: '{moduleFileName}'");
+            try
+            {
+                Assembly asm = Assembly.LoadFrom(moduleFileName);
+                LoadModule(asm);
+            }
+            catch (BadImageFormatException)
+            {
+                // not a .NET assembly we can load
+                Logger.Info($"Ignoring CLR library that could not be loaded as a .NET assembly: '{moduleFileName}'");
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, $"Failed to load library '{moduleFileName}' due to error");
             }
         }
 
