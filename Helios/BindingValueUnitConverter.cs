@@ -18,6 +18,12 @@ namespace GadrocsWorkshop.Helios
     public abstract class BindingValueUnitConverter
     {
         /// <summary>
+        /// If true, this converter is dropping units on one side of the conversion,
+        /// so accurate scaling must be ensured by the user.
+        /// </summary>
+        public virtual bool IsRaw => false;
+
+        /// <summary>
         /// Returns a list of units which this converter can convert between.  Converter must be able to convert betwen any of the
         /// given return units.
         /// </summary>

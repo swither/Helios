@@ -561,6 +561,15 @@ namespace GadrocsWorkshop.Helios
                     return;
                 }
 
+                if (ValueSource == BindingValueSources.TriggerValue 
+                    && _needsConversion 
+                    && _converter.IsRaw)
+                {
+                    IsValid = true;
+                    ErrorMessage = "Disregarding Units - Scaling may need to be adjusted by Lua script.";
+                    return;
+                }
+
                 if (ValueSource == BindingValueSources.StaticValue && (Value == null || Value.Length == 0))
                 {
                     IsValid = true;
