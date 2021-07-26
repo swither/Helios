@@ -370,6 +370,34 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             return _dataExporter?.GetValue(device, name) ?? BindingValue.Empty;
         }
 
+
+        private void StartRTTClient(string process)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = Path.GetFileName(process);
+            psi.WorkingDirectory = Path.GetDirectoryName(process);
+            psi.UseShellExecute = true;
+            psi.RedirectStandardOutput = false;
+            Process.Start(psi);
+        }
+
+        private void KillRTTCllient(string process)
+        {
+            try
+            {
+                Process[] localProcessesByName = Process.GetProcessesByName(process);
+                foreach (Process proc in localProcessesByName)
+                {
+                    Logger.Info("Killing process image name {ProcessImageName}", process);
+                    proc.Kill();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Error caught during kill processing for process image name {ProcessImageName}", process);
+            }
+        }
+
         protected override void OnProfileChanged(HeliosProfile oldProfile)
         {
             base.OnProfileChanged(oldProfile);
@@ -393,6 +421,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
             _dataExporter?.CloseData();
+
+            if(Rtt?.Enabled?? false)
+            {
+                KillRTTCllient(Path.GetFileNameWithoutExtension(Rtt.SelectClient(Environment.Is64BitProcess)));
+            }
         }
 
         void Profile_ProfileTick(object sender, EventArgs e)
@@ -416,6 +449,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 {
                     Logger.Warn("Profile is set to force key file usage but the pilot callsign is not set in Falcon install");
                 }
+            }
+
+            if(Rtt?.Enabled?? false)
+            {
+                //TODO Launch RTTClient
+                StartRTTClient(Path.Combine(FalconPath, "Tools", "RTTRemote", Rtt.SelectClient(Environment.Is64BitProcess)));
             }
             _dataExporter?.InitData();
         }

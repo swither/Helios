@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
@@ -21,17 +22,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
     [XmlRoot("Network", Namespace = ConfigGenerator.XML_NAMESPACE)]
     public class NetworkOptions : NotificationObject
     {
+        public const string DEFAULT_IP = "127.0.0.1";
+        public const string DEFAULT_PORT = "44000";
         /// <summary>
         /// backing field for remote ip address, contains
         /// ip address of remote RTT server
         /// </summary>
-        private string _ipAddress;
+        private string _ipAddress = DEFAULT_IP;
 
         /// <summary>
         /// backing field for remote port, contains
         /// port of remote RTT server
         /// </summary>
-        private string _port;
+        private string _port = DEFAULT_PORT;
 
         /// <summary>
         /// backing field for DataF4 options, contains
@@ -63,6 +66,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// IPAddress of remote RTT Server
         /// </summary>
         [XmlAttribute("IPAddress")]
+        [DefaultValue(DEFAULT_IP)]
         public string IPAddress
         {
             get => _ipAddress;
@@ -82,6 +86,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// Port of remote RTT Server
         /// </summary>
         [XmlAttribute("Port")]
+        [DefaultValue(DEFAULT_PORT)]
         public string Port
         {
             get => _port;
