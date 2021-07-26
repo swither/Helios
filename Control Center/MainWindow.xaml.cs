@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
 using System.Windows.Controls;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 using GadrocsWorkshop.Helios.Util;
@@ -859,14 +860,21 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             _profileIndex = -1;
             _profiles.Clear();
 
-            foreach (string file in Directory.GetFiles(ConfigManager.ProfilePath, "*.hpf"))
+            IEnumerable<string> profilePaths = Directory.GetFiles(ConfigManager.ProfilePath, "*.hpf");
+            string secondaryDirectory =
+                ConfigManager.SettingsManager.LoadSetting("Helios", "SecondaryProfileDirectory", null);
+            if (null != secondaryDirectory)
             {
-                if (currentProfilePath != null && file.Equals(currentProfilePath))
+                profilePaths = profilePaths.Concat(Directory.GetFiles(secondaryDirectory, "*.hpf"));
+            }
+            foreach (string path in profilePaths)
+            {
+                if (currentProfilePath != null && path.Equals(currentProfilePath))
                 {
                     _profileIndex = _profiles.Count;
-                    SelectedProfileName = System.IO.Path.GetFileNameWithoutExtension(file);
+                    SelectedProfileName = System.IO.Path.GetFileNameWithoutExtension(path);
                 }
-                _profiles.Add(file);
+                _profiles.Add(path);
             }
         }
 
