@@ -76,12 +76,15 @@
     <Compile Include="Controls\Capabilities\IConfigurableBackgroundImage.cs" />
     <Compile Include="Controls\Capabilities\IControlWithProfileInstance.cs" />
     <Compile Include="Controls\Capabilities\INamedControl.cs" />
-    <Compile Include="Controls\Capabilities\IPreviewInput.cs" />
     <Compile Include="Controls\Capabilities\IRotarySwitch.cs" />
     <Compile Include="Controls\BackgroundImageAppearanceEditor.xaml.cs">
       <DependentUpon>BackgroundImageAppearanceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Capabilities\IViewportExtent.cs" />
+    <Compile Include="Controls\Capabilities\IWindowsManipulationAware.cs" />
+    <Compile Include="Controls\Capabilities\IWindowsMouseInput.cs" />
+    <Compile Include="Controls\Capabilities\IWindowsPreviewInput.cs" />
+    <Compile Include="Controls\RendererCapabilities\IWindowsControl.cs" />
     <Compile Include="Controls\Special\CalibrationFilter.cs" />
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
@@ -90,6 +93,7 @@
       <DependentUpon>TimerPanelBehaviorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TimerPanel.cs" />
+    <Compile Include="EnumDisplayEntry.cs" />
     <Compile Include="Gauges\A-10\Common\Blanking Panel Left.cs" />
     <Compile Include="Gauges\A-10\Radios\UHFRadio.cs" />
     <Compile Include="Gauges\A-10\Radios\UHFFreqDisplay.cs" />
@@ -626,7 +630,6 @@
     <Compile Include="DisplayManager.cs" />
     <Compile Include="DisplayOrientation.cs" />
     <Compile Include="EnumConverter.cs" />
-    <Compile Include="EnumDisplayEntery.cs" />
     <Compile Include="Gauges\A-10\ADI\ADI.cs" />
     <Compile Include="Gauges\A-10\ADI\BackupADI.cs" />
     <Compile Include="Gauges\A-10\Altimeter\Altimeter.cs" />

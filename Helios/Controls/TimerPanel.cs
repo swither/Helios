@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
     [HeliosControl("Helios.Panel.Timer", "Timer Panel", "Panels",
         typeof(HeliosPanelRenderer))]
-    public class TimerPanel : HeliosPanel, IPreviewInput
+    public class TimerPanel : HeliosPanel, IWindowsPreviewInput
     {
         private bool _timerEnabled;
         private DispatcherTimer _timer;
