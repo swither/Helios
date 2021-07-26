@@ -41,6 +41,7 @@
                Margin="0,8,0,7"
                Height="26" />
         <CheckBox IsChecked="{Binding Enabled}"
+                  Command="{Binding EnabledCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
                   Grid.Column="1"
                   Grid.Row="0"
                   Height="14"

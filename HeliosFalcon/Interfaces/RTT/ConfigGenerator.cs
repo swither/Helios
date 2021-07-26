@@ -16,12 +16,16 @@
 
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Util.Shadow;
+using GadrocsWorkshop.Helios.Windows;
+using GadrocsWorkshop.Helios.Windows.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Xml.Serialization;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
@@ -419,6 +423,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// </summary>
         private int _renderer;
 
+
+        /// <summary>
+        /// backing field for property EnabledCommand, contains
+        /// handler for interaction with the visual representation (such as checkbox) of the Enabled property
+        /// </summary>
+        private ICommand _enabledCommand;
+
         /// <summary>
         /// true if RTT functionality is enabled
         /// </summary>
@@ -432,6 +443,43 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 bool oldValue = _enabled;
                 _enabled = value;
                 OnPropertyChanged("Enabled", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// handler for interaction with the visual representation (such as checkbox) of the Enabled property
+        /// </summary>
+        public ICommand EnabledCommand
+        {
+            get
+            {
+                _enabledCommand = _enabledCommand ?? new RelayCommand(parameter =>
+                {
+                    CheckBox source = (CheckBox)parameter;
+                    if (!source.IsChecked ?? false)
+                    {
+                        // nothing to do here
+                        return;
+                    }
+
+                    //display a warning
+                    InstallationDangerPromptModel warningModel = new InstallationDangerPromptModel
+                    {
+                        Title = "Advanced Operation Reqeuested",
+                        Message = "You are about to enable the Falcon RTT management configuration feature of Helios. Doing so will grant Helios permission to manage this file from within the Helios environment. A backup of your current RTT config file will be taken prior to any changes to the RTTClient.ini file."
+                    };
+                    Dialog.ShowModalCommand.Execute(new ShowModalParameter
+                    {
+                        Content = warningModel
+                    }, source);
+
+                    if (warningModel.Result == InstallationPromptResult.Cancel)
+                    {
+                        //undo it
+                        Enabled = false;
+                    }
+                });
+                return _enabledCommand;
             }
         }
 
