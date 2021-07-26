@@ -12,8 +12,10 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
 
 namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
@@ -22,7 +24,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         typeof(UniqueHeliosInterfaceFactory))]
     public class ControlRouter : HeliosInterfaceWithXml<ControlRouterModel>
     {
-        private HeliosVisual _mostRecentlySelected;
+        private INamedControl _mostRecentlySelected;
+
+        private readonly HeliosValue _mostRecentName;
+
+        private readonly HeliosValue _unclaimedName;
 
         // deserialization constructor
         public ControlRouter() : this("Control Router")
@@ -32,8 +38,44 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
 
         public ControlRouter(string name) : base(name)
         {
-            // no code
+            _mostRecentName = new HeliosValue(this, new BindingValue(""), "Most Recent Control", null,
+                "most recently selected control", "name of the control", BindingValueUnits.Text);
+            Values.Add(_mostRecentName);
+            Triggers.Add(_mostRecentName);
+
+            _unclaimedName = new HeliosValue(this, new BindingValue(""), "Unclaimed Control", null,
+                "control that will be claimed by next active port", "name of the control", BindingValueUnits.Text);
+            Values.Add(_unclaimedName);
+            Triggers.Add(_unclaimedName);
         }
+
+        internal bool TryClaimControl(out INamedControl control)
+        {
+            control = _mostRecentlySelected;
+            if (_mostRecentlySelected == null)
+            {
+                return false;
+            }
+
+            // claimed
+            _mostRecentlySelected = null;
+            _unclaimedName.SetValue(new BindingValue(""), false);
+            return true;
+        }
+
+        #region Event Handlers
+
+        private void Profile_RoutableControlSelected(object sender, Controls.ControlEventArgs e)
+        {
+            _mostRecentlySelected = e.Control;
+            string controlName = e.Control?.Name ?? "";
+            _mostRecentName.SetValue(new BindingValue(controlName), false);
+            _unclaimedName.SetValue(new BindingValue(controlName), false);
+        }
+
+        #endregion
+
+        #region Overrides
 
         protected override void AttachToProfileOnMainThread()
         {
@@ -58,28 +100,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
             Profile.RoutableControlSelected += Profile_RoutableControlSelected;
         }
 
-        private void Profile_RoutableControlSelected(object sender, Controls.ControlEventArgs e)
-        {
-            _mostRecentlySelected = e.Visual;
-        }
-
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
         {
             oldProfile.RoutableControlSelected -= Profile_RoutableControlSelected;
             base.DetachFromProfileOnMainThread(oldProfile);
-        }
-
-        internal bool TryClaimControl(out HeliosVisual visual)
-        {
-            visual = _mostRecentlySelected;
-            if (_mostRecentlySelected == null)
-            {
-                return false;
-            }
-
-            // claimed
-            _mostRecentlySelected = null;
-            return true;
         }
 
         public override void Reset()
@@ -88,5 +112,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
             Model.Ports.ForEach(port => port.Reset());
             base.Reset();
         }
+
+        #endregion
     }
 }

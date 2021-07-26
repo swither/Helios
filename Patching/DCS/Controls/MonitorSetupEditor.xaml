@@ -663,8 +663,8 @@
                     <TextBlock Style="{StaticResource DocumentationTopLeftMode}">Minimum resolution that must be selected in DCS Options.</TextBlock>
                     <TextBlock Style="{StaticResource DocumentationNotTopLeftMode}">Exact resolution that must be selected in DCS Options.</TextBlock>
                     <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationTopLeftMode}">If this resolution is not available in DCS, you can choose any larger resolution.</TextBlock>
-                    <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationTopLeftMode}">If you are technical or very brave, you can hack DCS options.lua to add this as a custom resolution.</TextBlock>
-                    <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationNotTopLeftMode}">If this resolution is not available in DCS, you must either create a custom resolution by editing the DCS file "options.lua" or choose another layout here.</TextBlock>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationTopLeftMode}">Alternatively, you may type it into the DCS Options "Resolution" combo box instead of selecting one.</TextBlock>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationNotTopLeftMode}">If this resolution is not available in DCS, you must type it into the DCS Options "Resolution" combo box instead of selecting one.</TextBlock>
                 </WrapPanel>
             </Grid>
         </GroupBox>

@@ -41,6 +41,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public string Description => $"DCS {DisplayVersion}";
         public string LongDescription => $"DCS installation in '{_dcsRoot}'";
+        public string FailedPatchRecommendation => "Please make sure you do not have viewport mods installed and run a DCS Repair (slow mode) to clean up DCS.";
 
         public string RootFolder => _dcsRoot;
 

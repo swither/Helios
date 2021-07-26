@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2021 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,19 +12,19 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
-using System;
-using GadrocsWorkshop.Helios.Controls.Capabilities;
-
-namespace GadrocsWorkshop.Helios.Controls
+namespace GadrocsWorkshop.Helios.Controls.Capabilities
 {
-    public class ControlEventArgs: EventArgs
+    /// <summary>
+    /// controls that implement this interface have a name, which includes all Helios controls
+    /// </summary>
+    public interface INamedControl
     {
-        public ControlEventArgs(INamedControl control)
-        {
-            Control = control;
-        }
+        #region Properties
 
-        public INamedControl Control { get; }
+        string Name { get; }
+
+        #endregion
     }
 }

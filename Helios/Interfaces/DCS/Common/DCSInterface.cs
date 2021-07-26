@@ -352,7 +352,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         protected override void OnProfileStarted()
         {
             // these parts are only used at run time (i.e. not in the Profile Editor)
-            _protocol = new DCSExportProtocol(this, Profile.Dispatcher);
+            _protocol = new DCSExportProtocol(this);
             _phantomFix = new DCSPhantomMonitorFix(this);
         }
 
@@ -422,7 +422,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         break;
                     default:
                         string elementName = reader.Name;
-                        string discard = reader.ReadElementString(elementName);
+                        string discard = reader.ReadInnerXml();
                         Logger.Warn(
                             $"Ignored unsupported DCS Interface setting '{elementName}' with value '{discard}'");
                         break;

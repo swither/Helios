@@ -15,6 +15,7 @@
 // 
 
 using System.Timers;
+using System.Windows;
 using System.Windows.Threading;
 using GadrocsWorkshop.Helios.UDPInterface;
 
@@ -22,14 +23,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     public class DCSExportProtocol
     {
-        private readonly Dispatcher _dispatcher;
         private readonly RetriedRequest _requestExport;
         private DCSExportModuleFormat _requestedExports;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public class RetriedRequest
         {
-            private readonly Dispatcher _dispatcher;
             private readonly BaseUDPInterface _udp;
 
             private string _request;
@@ -40,9 +39,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             private readonly int _retryLimit;
             private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-            public RetriedRequest(BaseUDPInterface udp, Dispatcher dispatcher)
+            public RetriedRequest(BaseUDPInterface udp)
             {
-                _dispatcher = dispatcher;
                 _udp = udp;
 
                 // REVISIT: configurable?
@@ -95,7 +93,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             private void Timer_Elapsed(object sender, ElapsedEventArgs e)
             {
                 // if profile is unloaded, do nothing
-                _dispatcher?.Invoke(OnRetry, DispatcherPriority.Normal);
+                Application.Current.Dispatcher.Invoke(OnRetry, DispatcherPriority.Normal);
             }
 
             private void OnRetry()
@@ -127,10 +125,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        public DCSExportProtocol(BaseUDPInterface udp, Dispatcher dispatcher)
+        public DCSExportProtocol(BaseUDPInterface udp)
         {
-            _dispatcher = dispatcher;
-            _requestExport = new RetriedRequest(udp, _dispatcher);
+            _requestExport = new RetriedRequest(udp);
         }
 
         public void SendDriverRequest(DCSExportModuleFormat driver)

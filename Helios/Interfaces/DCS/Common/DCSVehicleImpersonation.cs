@@ -32,6 +32,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             "P-51D", "SA342L", "SA342M", "SA342Minigun", "SA342Mistral", "SpitfireLFMkIX", "SpitfireLFMkIXCW", "TF-51D",
             "UH-1H", "Yak-52", "JF-17",
 
+            "F-14A-135-GR",
+
             // flaming cliffs, no special treatment so far
             "A-10A", "F-15C", "F-16A", "J-11A", "MiG-29A", "MiG-29G", "MiG-29S", "Su-25", "Su-25T", "Su-27", "Su-33",
 

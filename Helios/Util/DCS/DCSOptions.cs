@@ -25,17 +25,19 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
         public class GraphicsTable
         {
-            public GraphicsTable(long width, long height, string multiMonitorSetup)
+            public GraphicsTable(long width, long height, string multiMonitorSetup, bool fullscreen)
             {
                 Width = width;
                 Height = height;
                 MultiMonitorSetup = multiMonitorSetup;
+                FullScreen = fullscreen;
             }
 
             public long Width { get; }
             public long Height { get; }
 
             public string MultiMonitorSetup { get; }
+            public bool FullScreen { get; }
         }
 
         public GraphicsTable Graphics { get; private set; }
@@ -69,11 +71,12 @@ namespace GadrocsWorkshop.Helios.Util.DCS
                 if (graphics is NLua.LuaTable graphicsTable && 
                     graphicsTable["width"] is long width &&
                     graphicsTable["height"] is long height &&
-                    graphicsTable["multiMonitorSetup"] is string multiMonitorSetup)
+                    graphicsTable["multiMonitorSetup"] is string multiMonitorSetup &&
+                    graphicsTable["fullScreen"] is bool fullscreen)
                 {
                     options = new DCSOptions
                     {
-                        Graphics = new GraphicsTable(width, height, multiMonitorSetup)
+                        Graphics = new GraphicsTable(width, height, multiMonitorSetup, fullscreen)
                     };
                     return true;
                 }

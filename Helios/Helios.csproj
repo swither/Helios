@@ -74,6 +74,8 @@
     <Compile Include="ComponentModel\HeliosToolAttribute.cs" />
     <Compile Include="Controls\Capabilities\IBackgroundImage.cs" />
     <Compile Include="Controls\Capabilities\IConfigurableBackgroundImage.cs" />
+    <Compile Include="Controls\Capabilities\IControlWithProfileInstance.cs" />
+    <Compile Include="Controls\Capabilities\INamedControl.cs" />
     <Compile Include="Controls\Capabilities\IPreviewInput.cs" />
     <Compile Include="Controls\Capabilities\IRotarySwitch.cs" />
     <Compile Include="Controls\BackgroundImageAppearanceEditor.xaml.cs">
@@ -102,11 +104,13 @@
     <Compile Include="Gauges\A-10\HARS\HARSSync_1.cs" />
     <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
     <Compile Include="Gauges\CompositeVisualWithBackgroundImage.cs" />
+    <Compile Include="GlobalOptions.cs" />
     <Compile Include="HeliosCapabilityEditorDescriptor.cs" />
     <Compile Include="IInstallation2.cs" />
     <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
+    <Compile Include="ProfileInstances.cs" />
     <Compile Include="StructuredInfo.cs" />
     <Compile Include="Tools\Capabilities\IProfileTool.cs" />
     <Compile Include="Tools\HeliosToolDescriptor.cs" />
@@ -144,6 +148,7 @@
     </Compile>
     <Compile Include="Util\CommandLineOptions.cs" />
     <Compile Include="Util\DesignTimeControl.cs" />
+    <Compile Include="Util\DesignTimeInterface.cs" />
     <Compile Include="Util\ElevatedProcess.cs" />
     <Compile Include="Util\ElevatedProcessResponsePipe.cs" />
     <Compile Include="Util\Shadow\IShadowVisualParent.cs" />

@@ -27,7 +27,7 @@ using Microsoft.Win32;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
-    [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconIntefaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class FalconInterface : HeliosInterface, IReadyCheck, IStatusReportNotify, IExtendedDescription
     {
         const string falconRootKey = @"SOFTWARE\WOW6432Node\Benchmark Sims\";
@@ -513,9 +513,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                         FalconVersion = reader.ReadElementString("FalconVersion");
                         break;
                     default:
-                        // ignore unsupported settings
+                        // ignore unsupported settings, including structured ones
                         string elementName = reader.Name;
-                        string discard = reader.ReadElementString(reader.Name);
+                        string discard = reader.ReadInnerXml();
                         Logger.Warn($"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
                         break;
                 }
