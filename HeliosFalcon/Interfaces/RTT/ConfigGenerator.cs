@@ -214,7 +214,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             {
                 if(File.Exists(_rttClientConfig) && !CheckForFileHeader()) 
                 {
-                    File.Copy(_rttClientConfig, _rttClientBackup);
+                    if(!File.Exists(_rttClientBackup))
+                    {
+                        File.Copy(_rttClientConfig, _rttClientBackup);
+                    }
+                    else
+                    {
+                        Logger.Info("RTT Client backup file {_rttClientBackup} already exists. Skipping backup.");
+                    }
                 }
                 WriteFile(_rttClientConfig, contents);
             }

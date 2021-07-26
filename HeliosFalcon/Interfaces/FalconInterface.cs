@@ -453,8 +453,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             if(Rtt?.Enabled?? false)
             {
-                //TODO Launch RTTClient
-                StartRTTClient(Path.Combine(FalconPath, "Tools", "RTTRemote", Rtt.SelectClient(Environment.Is64BitProcess)));
+                if(Rtt?.CheckForFileHeader() ?? false)
+                {
+                    StartRTTClient(Path.Combine(FalconPath, "Tools", "RTTRemote", Rtt.SelectClient(Environment.Is64BitProcess)));
+                }
+                else
+                {
+                    Logger.Error("Profile has RTT Enabled set to true but the RTTClient.ini file is not being managed by Helios. Please open the profile in Profile Editor and complete the RTT Configuration");
+                }
+                
             }
             _dataExporter?.InitData();
         }
