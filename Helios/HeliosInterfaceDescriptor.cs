@@ -56,6 +56,16 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        public string UniquenessKey
+        {
+            get => _interfaceAttribute.UniquenessKey ?? _interfaceAttribute.TypeIdentifier;
+        }
+
+        public string ParentTypeIdentifier
+        {
+            get => _interfaceAttribute.Parent;
+        }
+
         public string Name
         {
             get
@@ -89,8 +99,27 @@ namespace GadrocsWorkshop.Helios
 
         public HeliosInterface CreateInstance()
         {
+            // does this interface require its name?
+            System.Reflection.ConstructorInfo ctor = _interfaceType.GetConstructor(new[] { typeof(string) });
+            if (ctor != null)
+            {
+                return (HeliosInterface)Activator.CreateInstance(_interfaceType, new object[] { Name });
+            }
             return (HeliosInterface)Activator.CreateInstance(_interfaceType);
         }
+
+        public HeliosInterface CreateInstance(HeliosInterface parent)
+        {
+            // does this interface require its name?
+            System.Reflection.ConstructorInfo ctor = _interfaceType.GetConstructor(new[] { typeof(HeliosInterface), typeof(string) });
+            if (ctor != null)
+            {
+                return (HeliosInterface)Activator.CreateInstance(_interfaceType, new object[] { parent, Name });
+            }
+            // intentionally crash if incorrect constructor
+            return (HeliosInterface)Activator.CreateInstance(_interfaceType, new object[] { parent });
+        }
+
 
         public List<HeliosInterface> GetNewInstances(HeliosProfile profile)
         {

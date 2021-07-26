@@ -15,7 +15,6 @@
 
 namespace GadrocsWorkshop.Helios
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -37,12 +36,7 @@ namespace GadrocsWorkshop.Helios
             {
                 if (IsUnique(descriptor, profile))
                 {
-                    HeliosInterface newInterface = (HeliosInterface)Activator.CreateInstance(descriptor.InterfaceType);
-                    if (newInterface == null)
-                    {
-                        Logger.Warn("New interface is null.");
-                    }
-                    interfaces.Add(newInterface);
+                    AddInterfaceIfReady(interfaces, descriptor, CreateIndex(profile));
                 }
                 else
                 {
@@ -59,7 +53,7 @@ namespace GadrocsWorkshop.Helios
 
             if (descriptor != null && descriptor.AutoAdd && IsUnique(descriptor, profile))
             {
-                interfaces.Add((HeliosInterface)Activator.CreateInstance(descriptor.InterfaceType));
+                AddInterfaceIfReady(interfaces, descriptor, CreateIndex(profile));
             }
 
             return interfaces;
@@ -78,17 +72,9 @@ namespace GadrocsWorkshop.Helios
             foreach (HeliosInterface heliosInterface in profile.Interfaces)
             {
                 HeliosInterfaceDescriptor interfaceDescriptor = ConfigManager.ModuleManager.InterfaceDescriptors[heliosInterface.GetType()];
-                if (interfaceDescriptor.TypeIdentifier.Equals(descriptor.TypeIdentifier))
+                if (interfaceDescriptor.UniquenessKey.Equals(descriptor.UniquenessKey))
                 {
-                    // If any existing interfaces in the profile have the same type identifier do not add them.
-                    return false;
-                }
-
-                // XXX this hack is going away in helios17 and interface2 branches
-                if (_udpInterfaceTypes.Contains(descriptor.InterfaceType.BaseType.Name) &&
-                    _udpInterfaceTypes.Contains(heliosInterface.GetType().BaseType.Name))
-                {
-                    // don't add descendants of BaseUDPInterface
+                    // If any existing interfaces in the profile are in the same uniqueness class, do not add it
                     return false;
                 }
             }

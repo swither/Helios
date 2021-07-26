@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,29 +14,37 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+
 namespace GadrocsWorkshop.Helios.ProfileEditor.UndoEvents
 {
     public class InterfaceDeleteUndoEvent : IUndoItem
     {
         private HeliosProfile _profile;
-        private HeliosInterface _interface;
+        private List<HeliosInterface> _interfaces;
 
-        public InterfaceDeleteUndoEvent(HeliosProfile profile, HeliosInterface oldInterface)
+        public InterfaceDeleteUndoEvent(HeliosProfile profile, IEnumerable<HeliosInterface> oldInterfaces)
         {
             _profile = profile;
-            _interface = oldInterface;
+            _interfaces = new List<HeliosInterface>(oldInterfaces);
         }
 
         #region IUndoEvent Members
 
         public void Undo()
         {
-            _profile.Interfaces.Add(_interface);
+            foreach(HeliosInterface heliosInterface in _interfaces)
+            {
+                _profile.Interfaces.Add(heliosInterface);
+            }
         }
 
         public void Do()
         {
-            _profile.Interfaces.Remove(_interface);
+            foreach (HeliosInterface heliosInterface in _interfaces)
+            {
+                _profile.Interfaces.Remove(heliosInterface);
+            }
         }
 
         #endregion
