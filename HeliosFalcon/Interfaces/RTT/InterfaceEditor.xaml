@@ -1,14 +1,15 @@
 ﻿<Grid x:Class="GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT.InterfaceEditor"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT"
       xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
       xmlns:system="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type={x:Type local:ConfigGenerator}}"
-             d:DesignHeight="450" d:DesignWidth="800">
+      d:DataContext="{d:DesignInstance Type={x:Type local:ConfigGenerator}}"
+      d:DesignHeight="450"
+      d:DesignWidth="800">
     <Grid>
         <Grid.Resources>
             <ResourceDictionary>
@@ -25,7 +26,7 @@
             <ColumnDefinition Width="80" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -48,10 +49,18 @@
                   Margin="0,14,0,13"
                   Width="16">
         </CheckBox>
+
+        <TextBlock Text="This feature provides the configuration and control of the RTT client process from within the Helios environment."
+                   TextWrapping="Wrap"
+                   HorizontalAlignment="Stretch"
+                   Grid.Column="1"
+                   Grid.Row="0"
+                   Margin="44,0,80,0" />
+
         <GroupBox Header="Configuration"
                   IsEnabled="{Binding Enabled}"
                   Margin="10,4"
-                  Grid.ColumnSpan="2"
+                  Grid.ColumnSpan="3"
                   Grid.Row="1">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -112,18 +121,18 @@
                           Grid.Row="1"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
-                
+
                 <Label Content="Frame Per Second"
                        Grid.Row="0"
-                       Grid.Column="2" 
-                       HorizontalAlignment="Right"/>
+                       Grid.Column="2"
+                       HorizontalAlignment="Right" />
                 <TextBox Text="{Binding LocalOptions.FramesPerSecond}"
                          Grid.Row="0"
                          Grid.Column="3"
                          MinWidth="20"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
-                         IsEnabled="{Binding Networked, Mode=OneWay, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={StaticResource False}}"/>
+                         IsEnabled="{Binding Networked, Mode=OneWay, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={StaticResource False}}" />
 
                 <Label Grid.Row="1"
                        Grid.Column="2"
@@ -134,7 +143,7 @@
                           Grid.Row="1"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
-                
+
                 <Label Grid.Column="0"
                        Grid.Row="3"
                        HorizontalAlignment="Right"
@@ -145,8 +154,8 @@
                          HorizontalAlignment="Left"
                          Width="200"
                          MaxWidth="200"
-                         Text="{Binding NetworkOptions.IPAddress}" 
-                         IsEnabled="{Binding Networked}"/>
+                         Text="{Binding NetworkOptions.IPAddress}"
+                         IsEnabled="{Binding Networked}" />
 
                 <Label Content="Port"
                        HorizontalAlignment="Right"
@@ -159,46 +168,58 @@
                          Text="{Binding NetworkOptions.Port}"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
-                         Height="18" 
-                         IsEnabled="{Binding Networked}"/>
+                         Height="18"
+                         IsEnabled="{Binding Networked}" />
+
+                <TextBlock Text="If you use RTT client on a PC not local to where Falcon BMS is running, it is possible not only to receive the RTT images, but also the normal shared memory areas. Just enable the ones below that you want to access remotely, they will be created on the client side for you. Please refer to the Falcon BMS technical manual for client server setup of RTT."
+                           TextWrapping="Wrap"
+                           Width="500"
+                           Grid.Row="5"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           IsEnabled="{Binding Networked}" />
 
                 <Label Content="DATA__F4"
                        HorizontalAlignment="Right"
                        Grid.Column="0"
-                       Grid.Row="5" />
+                       Grid.Row="6" />
                 <CheckBox IsChecked="{Binding NetworkOptions.DataF4}"
+                          IsEnabled="{Binding Networked}"
                           Grid.Column="1"
-                          Grid.Row="5"
+                          Grid.Row="6"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
 
                 <Label Content="DATA__BMS"
                        HorizontalAlignment="Right"
                        Grid.Column="1"
-                       Grid.Row="5" />
+                       Grid.Row="6" />
                 <CheckBox IsChecked="{Binding NetworkOptions.DataBms}"
+                          IsEnabled="{Binding Networked}"
                           Grid.Column="2"
-                          Grid.Row="5"
+                          Grid.Row="6"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
 
                 <Label Content="DATA__OSB"
                        HorizontalAlignment="Right"
                        Grid.Column="0"
-                       Grid.Row="6" />
+                       Grid.Row="7" />
                 <CheckBox IsChecked="{Binding NetworkOptions.DataOsb}"
+                          IsEnabled="{Binding Networked}"
                           Grid.Column="1"
-                          Grid.Row="6"
+                          Grid.Row="7"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
 
                 <Label Content="DATA__IVIBE"
                        HorizontalAlignment="Right"
                        Grid.Column="1"
-                       Grid.Row="6" />
+                       Grid.Row="7" />
                 <CheckBox IsChecked="{Binding NetworkOptions.DataIvibe}"
+                          IsEnabled="{Binding Networked}"
                           Grid.Column="2"
-                          Grid.Row="6"
+                          Grid.Row="7"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
             </Grid>
