@@ -15,6 +15,7 @@
 
 using System;
 using System.Windows;
+using System.Windows.Threading;
 using NLog;
 using NLog.Targets;
 
@@ -36,18 +37,20 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             string message = Layout.Render(logEvent);
 
             // note: exceptions here will bring down the application
-            Application.Current?.Dispatcher.InvokeAsync(() =>
+            Application.Current?.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action<LogEventInfo, string>(WriteToConsole), logEvent, message);
+        }
+
+        private void WriteToConsole(LogEventInfo logEvent, string message)
+        {
+            try
             {
-                try
-                {
-                    Parent.WriteLogMessage(logEvent, message);
-                }
-                catch (Exception ex)
-                {
-                    // can't log from here
-                    Console.WriteLine($@"log consumer failed to write message: {ex}");
-                }
-            });
+                Parent.WriteLogMessage(logEvent, message);
+            }
+            catch (Exception ex)
+            {
+                // can't log from here
+                Console.WriteLine($@"log consumer failed to write message: {ex}");
+            }
         }
     }
 }
