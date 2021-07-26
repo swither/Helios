@@ -14,26 +14,36 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Diagnostics;
 using GadrocsWorkshop.Helios.Controls.Capabilities;
+using GadrocsWorkshop.Helios.Controls.RendererCapabilities;
+using NLog;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace GadrocsWorkshop.Helios.Windows.Controls
 {
     using System;
     using System.Collections.Generic;
     using System.Windows;
-    using System.Windows.Input;
     using System.Windows.Media;
 
-    [DebuggerDisplay("View for {Visual?.Name}")]
+    [DebuggerDisplay("View for {Visual?.Name} @{GetHashCode()}")]
     public class HeliosVisualView : FrameworkElement
     {
-        private List<HeliosVisualView> _children;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private DateTime? _touchDownTime;
+
+        /// <summary>
+        /// if not null, this is a windows control that the renderer for this visual has presented to us for inclusion in the tree
+        /// </summary>
+        private FrameworkElement _rendererElement;
 
         public HeliosVisualView()
         {
-            _children = new List<HeliosVisualView>();
+            Children = new List<HeliosVisualView>();
         }
 
         #region Properties
@@ -44,7 +54,6 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             set {SetValue(VisualProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Profile.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VisualProperty =
             DependencyProperty.Register("Visual", typeof(HeliosVisual), typeof(HeliosVisualView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender, OnVisualChanged));
 
@@ -54,7 +63,6 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             set { SetValue(ZoomFactorProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ZoomFactor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ZoomFactorProperty =
             DependencyProperty.Register("ZoomFactor", typeof(double), typeof(HeliosVisualView), new FrameworkPropertyMetadata(1d, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
@@ -64,7 +72,6 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             set { SetValue(DisplayRotationProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for DisplayRotation.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DisplayRotationProperty =
             DependencyProperty.Register("DisplayRotation", typeof(bool), typeof(HeliosVisualView), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure, OnDisplayRotationChanged));
 
@@ -74,15 +81,10 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             set { SetValue(IgnoreHiddenProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IgnoreHidden.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IgnoreHiddenProperty =
             DependencyProperty.Register("IgnoreHidden", typeof(bool), typeof(HeliosVisualView), new PropertyMetadata(false, OnIgnoreHidden));
 
-        private List<HeliosVisualView> Children
-        {
-            get { return _children; }
-        }
-
+        private List<HeliosVisualView> Children { get; }
 
         /// <summary>
         /// if true, this visual and all its descendants will use slower "Fant" scaling for bitmaps to increase visual quality
@@ -99,22 +101,35 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         #region Visual Methods
 
-        protected override int VisualChildrenCount
-        {
-            get
-            {
-                return _children.Count;
-            }
-        }
+        /// <summary>
+        /// WARNING: this has to already reflect the new state when AddVisualChild is called, but not if RemoveVisualChild is called, because
+        /// of how .NET works
+        /// </summary>
+        protected override int VisualChildrenCount => Children.Count + ((_rendererElement != null) ? 1 : 0);
 
+        /// <summary>
+        /// WARNING: this has to already reflect the new state when AddVisualChild is called, but not if RemoveVisualChild is called, because
+        /// of how .NET works
+        /// </summary>
         protected override Visual GetVisualChild(int index)
         {
-            if (index < 0 || index >= _children.Count)
+            if (_rendererElement != null)
+            {
+                if (index == 0)
+                {
+                    return _rendererElement;
+                }
+
+                // otherwise interpret as index into Children
+                index--;
+            }
+            
+            if (index < 0 || index >= Children.Count)
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-            return _children[index];
+            return Children[index];
         }
 
         #endregion
@@ -123,17 +138,18 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         private static void OnIgnoreHidden(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            HeliosVisualView view = d as HeliosVisualView;
-            if (view != null)
+            if (!(d is HeliosVisualView view))
             {
-                if (view.IgnoreHidden)
-                {
-                    view.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    view.SetHidden();
-                }
+                return;
+            }
+
+            if (view.IgnoreHidden)
+            {
+                view.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                view.SetHidden();
             }
         }
 
@@ -151,36 +167,79 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         {
             if (oldVisual != null)
             {
+                // clean up event handling
                 oldVisual.Children.CollectionChanged -= VisualChildren_CollectionChanged;
                 oldVisual.DisplayUpdate -= Visual_DisplayUpdate;
                 oldVisual.Resized -= Visual_ResizeMove;
                 oldVisual.Moved -= Visual_ResizeMove;
                 oldVisual.HiddenChanged -= Visual_HiddenChanged;
-
-                if (oldVisual is IPreviewInput oldPreview)
-                {
-                    PreviewMouseDown -= oldPreview.PreviewMouseDown;
-                    PreviewMouseUp -= oldPreview.PreviewMouseUp;
-                    PreviewTouchDown -= oldPreview.PreviewTouchDown;
-                    PreviewTouchUp -= oldPreview.PreviewTouchUp;
-                }
             }
 
+            // ReSharper disable once ConvertIfStatementToSwitchStatement
+            if (oldVisual is IPreviewInput oldPreview)
+            {
+                PreviewMouseDown -= oldPreview.PreviewMouseDown;
+                PreviewMouseUp -= oldPreview.PreviewMouseUp;
+                PreviewTouchDown -= oldPreview.PreviewTouchDown;
+                PreviewTouchUp -= oldPreview.PreviewTouchUp;
+            }
+
+            if (oldVisual is IWindowsManipulationAware oldManipulationHandlers)
+            {
+                ManipulationStarting -= oldManipulationHandlers.ManipulationStarting;
+                ManipulationStarted -= oldManipulationHandlers.ManipulationStarted;
+                ManipulationBoundaryFeedback -= oldManipulationHandlers.ManipulationBoundaryFeedback;
+                ManipulationDelta -= oldManipulationHandlers.ManipulationDelta;
+                ManipulationInertiaStarting -= oldManipulationHandlers.ManipulationInertiaStarting;
+                ManipulationCompleted -= oldManipulationHandlers.ManipulationCompleted;
+                IsManipulationEnabled = false;
+            }
+
+            // tear down the old tree
+            if (_rendererElement != null)
+            {
+                RemoveVisualChild(_rendererElement);
+                _rendererElement = null;
+            }
             Children.Clear();
 
+            // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (Visual == null)
             {
-                // no new visual to connect to
+                // view is now not drawing anything
                 return;
             }
 
-            if (DisplayRotation)
+            if (Visual is IWindowsManipulationAware manipulationAware)
             {
-                if (Visual.Renderer.Dispatcher == null)
-                {
-                    Visual.Renderer.Dispatcher = Dispatcher;
-                }
+                IsManipulationEnabled = true;
+                ManipulationStarting += manipulationAware.ManipulationStarting;
+                ManipulationStarted += manipulationAware.ManipulationStarted;
+                ManipulationBoundaryFeedback += manipulationAware.ManipulationBoundaryFeedback;
+                ManipulationDelta += manipulationAware.ManipulationDelta;
+                ManipulationInertiaStarting += manipulationAware.ManipulationInertiaStarting;
+                ManipulationCompleted += manipulationAware.ManipulationCompleted;
+            }
 
+            if (Visual is IPreviewInput newPreview)
+            {
+                PreviewMouseDown += newPreview.PreviewMouseDown;
+                PreviewMouseUp += newPreview.PreviewMouseUp;
+                PreviewTouchDown += newPreview.PreviewTouchDown;
+                PreviewTouchUp += newPreview.PreviewTouchUp;
+            }
+
+            if (Visual.Renderer is IWindowsControl windowsControl)
+            {
+                if (_rendererElement == null)
+                {
+                    // no currently installed element
+                    InstallWindowsControl(windowsControl);
+                }
+            }
+
+            if (DisplayRotation && Visual.Renderer != null)
+            {
                 Visual.Renderer.Refresh();
                 LayoutTransform = Visual.Renderer.Transform;
             }
@@ -200,44 +259,31 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             {
                 Visibility = Visual.IsHidden ? Visibility.Hidden : Visibility.Visible;
             }
-
-            if (Visual is IPreviewInput newPreview)
-            {
-                PreviewMouseDown += newPreview.PreviewMouseDown;
-                PreviewMouseUp += newPreview.PreviewMouseUp;
-                PreviewTouchDown += newPreview.PreviewTouchDown;
-                PreviewTouchUp += newPreview.PreviewTouchUp;
-            }
         }
 
         protected static void OnDisplayRotationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            HeliosVisualView view = d as HeliosVisualView;
-            if (view != null)
+            if (!(d is HeliosVisualView view))
             {
-                if (view.DisplayRotation)
-                {
-                    view.Visual.Renderer.Refresh();
-                    view.LayoutTransform = view.Visual.Renderer.Transform;
-                    view.InvalidateVisual();
-                }
-                else
-                {
-                    view.LayoutTransform = null;
-                }
+                return;
+            }
+
+            if (view.DisplayRotation)
+            {
+                Logger.Debug("Invalidating Helios control due to rotation change");
+                view.Visual.Renderer.Refresh();
+                view.LayoutTransform = view.Visual.Renderer.Transform;
+                view.InvalidateVisual();
+            }
+            else
+            {
+                view.LayoutTransform = null;
             }
         }
 
         private void Visual_HiddenChanged(object sender, EventArgs e)
         {
-            if (CheckAccess())
-            {
-                SetHidden();
-            }
-            else
-            {
-                Dispatcher.BeginInvoke((Action)SetHidden);
-            }
+            SetHidden();
         }
 
         private static void OnHighQualityBitmapScalingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -246,7 +292,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             RenderOptions.SetBitmapScalingMode(d, ((bool)e.NewValue) ? BitmapScalingMode.HighQuality : BitmapScalingMode.Linear);
 
             // cascade change to all descendants
-            ((HeliosVisualView)d)._children.ForEach(child => child.HighQualityBitmapScaling = (bool)e.NewValue);
+            ((HeliosVisualView)d).Children.ForEach(child => child.HighQualityBitmapScaling = (bool)e.NewValue);
         }
 
         private void SetHidden()
@@ -260,33 +306,35 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         private void CascadeRedraw()
         {
-            if (Visual.IsVisible)
+            if (!Visual.IsVisible)
             {
-                InvalidateVisual();
+                return;
+            }
 
-                foreach (HeliosVisualView child in _children)
-                {
-                    child.CascadeRedraw();
-                }
+            // this window is out of date
+            Logger.Debug("Invalidating Helios control due to forced redraw cascade");
+            InvalidateVisual();
+
+            // directly rendered windows control is out of date, if any
+            _rendererElement?.InvalidateVisual();
+
+            // let each Helios child invalidate their visuals also
+            foreach (HeliosVisualView child in Children)
+            {
+                child.CascadeRedraw();
             }
         }
 
         private void Visual_ResizeMove(object sender, EventArgs e)
         {
-            if (CheckAccess())
-            {
-                OnResize();
-            }
-            else
-            {
-                Dispatcher.BeginInvoke(new Action(OnResize));
-            }
+            OnResize();
         }
 
         private void OnResize()
         {
             LayoutTransform = DisplayRotation ? Visual.Renderer.Transform : null;
 
+            Logger.Debug("Invalidating Helios control due to resize");
             InvalidateMeasure();
             InvalidateArrange();
             UpdateLayout();
@@ -297,12 +345,14 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 return;
             }
 
+            Logger.Debug("Invalidating Helios control's parents due to resize");
             parent.InvalidateMeasure();
             parent.InvalidateArrange();
         }
 
         private void VisualChildren_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            // can't modify anything during a visual tree event, so we must call this indirect
             Dispatcher.BeginInvoke((Action)UpdateChildren);
         }
 
@@ -310,67 +360,98 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         {
             if (Visual.IsVisible)
             {
-                if (CheckAccess())
-                {
-                    InvalidateVisual();
-                }
-                else
-                {
-                    Dispatcher.BeginInvoke(new Action(InvalidateVisual), null);
-                }
+                // Logger.Debug("Invalidating Helios control due to requested display update");
+                InvalidateVisual();
             }
         }
 
         private void UpdateChildren()
         {
-            if (Visual != null)
+            Logger.Debug("Updating entire Helios control to check for child changes");
+            if (Visual == null)
             {
-                int i = 0;
-                for (i = Children.Count-1; i >= 0; i--)
-                {
-                    HeliosVisualView view = Children[i] as HeliosVisualView;
-                    if (!Visual.Children.Contains(view.Visual))
-                    {
-                        RemoveVisualChild(view);
-                        Children.RemoveAt(i);
-                    }
-                }
+                // we don't event need to invalidate (older code was still calling those)
+                return;
+            }
 
-                for (i = 0; i < Visual.Children.Count; i++)
+            int i;
+            for (i = Children.Count-1; i >= 0; i--)
+            {
+                HeliosVisualView view = Children[i];
+                if (!Visual.Children.Contains(view.Visual))
                 {
-                    int viewIndex = IndexOfChildView(Visual.Children[i]);
-                    HeliosVisualView view;
-                    if (viewIndex == -1)
-                    {
-                        view = new HeliosVisualView
-                        {
-                            HighQualityBitmapScaling = HighQualityBitmapScaling, 
-                            Visual = Visual.Children[i]
-                        };
-                        Children.Add(view);
-                        AddVisualChild(view);
-                    }
-                    else
-                    {
-                        view = Children[viewIndex];
-                        RemoveVisualChild(view);
-                        if (viewIndex != i)
-                        {
-                            Children.RemoveAt(viewIndex);
-                            if (i >= Children.Count)
-                            {
-                                Children.Add(view);
-                            }
-                            else
-                            {
-                                Children.Insert(i, view);
-                            }
-                        }
-                        AddVisualChild(view);
-                    }
+                    Logger.Debug("Helios control removing stale visual child {HeliosVisualView}", view);
+                    RemoveVisualChild(view);
+                    Children.RemoveAt(i);
                 }
             }
 
+            for (i = 0; i < Visual.Children.Count; i++)
+            {
+                int viewIndex = IndexOfChildView(Visual.Children[i]);
+                HeliosVisualView view;
+                if (viewIndex == -1)
+                {
+                    view = new HeliosVisualView
+                    {
+                        HighQualityBitmapScaling = HighQualityBitmapScaling, 
+                        Visual = Visual.Children[i]
+                    };
+                    Logger.Debug("Helios control adding new visual child {HeliosVisualView}", view);
+                    Children.Add(view);
+                    AddVisualChild(view);
+                }
+                else
+                {
+                    view = Children[viewIndex];
+                    Logger.Debug("Helios control temporarily removing visual child {HeliosVisualView}", view);
+                    RemoveVisualChild(view);
+                    if (viewIndex != i)
+                    {
+                        Logger.Debug("Helios control sorting visual child {HeliosVisualView} to its correct position {Index}", view, i);
+                        Children.RemoveAt(viewIndex);
+
+                        if (i >= Children.Count)
+                        {
+                            Children.Add(view);
+                        }
+                        else
+                        {
+                            Children.Insert(i, view);
+                        }
+                    }
+                    Logger.Debug("Helios control restoring visual child {HeliosVisualView}", view);
+                    AddVisualChild(view);
+                }
+            }
+
+            Logger.Debug("Invalidating Helios control due to child updates");
+            InvalidateMeasure();
+            InvalidateArrange();
+            InvalidateVisual();
+        }
+
+        private void InstallWindowsControl(IWindowsControl windowsControl)
+        {
+            FrameworkElement rendererElement = windowsControl.CreateNewFrameworkElement();
+            if (rendererElement == null)
+            {
+                // we don't always create a live element, for example in design mode
+                return;
+            }
+
+            // have to do this indirect to avoid editing visual tree in this stack
+            Dispatcher.BeginInvoke(new Action<FrameworkElement>(InstallRendererElement), rendererElement);
+        }
+
+        private void InstallRendererElement(FrameworkElement rendererElement)
+        {
+            Logger.Debug("Installed Windows child control into Helios control");
+            _rendererElement = rendererElement;
+            AddVisualChild(_rendererElement);
+            _rendererElement.InvalidateVisual();
+
+            Logger.Debug("Invalidating Helios control due to newly installed Windows child control");
             InvalidateMeasure();
             InvalidateArrange();
             InvalidateVisual();
@@ -380,8 +461,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         {
             for (int i = 0; i < Children.Count; i++)
             {
-                HeliosVisualView view = Children[i] as HeliosVisualView;
-                if (view != null && view.Visual == visual)
+                if (Children[i] is HeliosVisualView view && view.Visual == visual)
                 {
                     return i;
                 }
@@ -389,24 +469,24 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             return -1;
         }
 
-        #endregion
+#endregion
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (Visual != null)
-            {
-                Visual.Renderer.Render(drawingContext, RenderSize);
-            }
+            base.OnRender(drawingContext);
+            Visual?.Renderer?.Render(drawingContext, RenderSize);
         }
 
-        #region Layout Methods
+#region Layout Methods
 
         protected override Size MeasureOverride(Size availableSize)
         {
+            Logger.Debug("Helios control measuring for {Size}", availableSize);
             Size resultSize = new Size(1, 1);
 
             if (Visual == null)
             {
+                Logger.Debug("Helios control has no visual, so we will ask for one pixel");
                 return resultSize;
             }
 
@@ -418,6 +498,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             resultSize.Width = Visual.Width * scale;
             resultSize.Height = Visual.Height * scale;
 
+            _rendererElement?.Measure(availableSize);
             foreach (HeliosVisualView child in Children)
             {
                 child.Measure(new Size(Math.Max(1, child.Visual.DisplayRectangle.Width) * scale, Math.Max(1, child.Visual.DisplayRectangle.Height) * scale));
@@ -428,14 +509,17 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override Size ArrangeOverride(Size finalSize)
         {
+            Logger.Debug("Helios control arranging for {Size}", finalSize);
             if (Visual == null)
             {
+                Logger.Debug("Helios control has no visual, so we will acccept {Size}", finalSize);
                 return finalSize;
             }
 
             double scaleX = finalSize.Width / Math.Max(1, Visual.Width);
             double scaleY = finalSize.Height / Math.Max(1, Visual.Height);
 
+            _rendererElement?.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
             foreach (HeliosVisualView child in Children)
             {
                 Rect childRect = new Rect(child.Visual.DisplayRectangle.Left * scaleX, child.Visual.DisplayRectangle.Top * scaleY, child.Visual.DisplayRectangle.Width * scaleX, child.Visual.DisplayRectangle.Height * scaleY);
@@ -445,7 +529,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             return finalSize;
         }
 
-        #endregion
+#endregion
 
         protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
         {
@@ -453,23 +537,10 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             {
                 return new PointHitTestResult(this, hitTestParameters.HitPoint);
             }
-            else
-            {
-                return null;
-            }
-        }
-
-        public HeliosVisualView GetViewerForVisual(HeliosVisual visual)
-        {
-            foreach (HeliosVisualView view in Children)
-            {
-                if (view.Visual == visual)
-                {
-                    return view;
-                }
-            }
             return null;
         }
+
+        public HeliosVisualView GetViewerForVisual(HeliosVisual visual) => Children.FirstOrDefault(view => view.Visual == visual);
 
         private bool SuppressMouseClick()
         {
@@ -490,11 +561,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 return false;
             }
             TimeSpan since = DateTime.Now - _touchDownTime.Value;
-            if (since.TotalMilliseconds > Visual.Monitor.SuppressMouseAfterTouchDuration)
-            {
-                return false;
-            }
-            return true;
+            return !(since.TotalMilliseconds > Visual.Monitor.SuppressMouseAfterTouchDuration);
         }
 
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
@@ -518,14 +585,16 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override void OnTouchDown(TouchEventArgs e)
         {
-            if (this.IsEnabled)
+            if (!IsEnabled)
             {
-                _touchDownTime = DateTime.Now;
-                Point location = e.GetTouchPoint(this).Position;
-                Visual.MouseDown(location);
-                CaptureTouch(e.TouchDevice);
-                e.Handled = true;
+                return;
             }
+
+            _touchDownTime = DateTime.Now;
+            Point location = e.GetTouchPoint(this).Position;
+            Visual.MouseDown(location);
+            CaptureTouch(e.TouchDevice);
+            e.Handled = true;
         }
 
         protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
