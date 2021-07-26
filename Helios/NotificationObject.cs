@@ -36,8 +36,7 @@ namespace GadrocsWorkshop.Helios
 
         protected virtual void OnPropertyChanged(PropertyNotificationEventArgs args)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            handler?.Invoke(this, args);
+            PropertyChanged?.Invoke(this, args);
         }
 
         public void OnPropertyChanged(string childPropertyName, PropertyNotificationEventArgs args)

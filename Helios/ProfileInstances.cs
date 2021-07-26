@@ -36,8 +36,7 @@ namespace GadrocsWorkshop.Helios
                     instance = Activator.CreateInstance(instanceType);
                     _instances[instanceType] = instance;
                 }
-
-                AttachToProfileInstance(interfaceType).Invoke(client, new[] {instance});
+                AttachToProfileInstance(interfaceType).Invoke(client, new[] { instance });
             }
         }
 
@@ -68,13 +67,12 @@ namespace GadrocsWorkshop.Helios
         {
             string methodName = nameof(IControlWithProfileInstance<object>.AttachToProfileInstance);
             Type instanceType = InstanceType(interfaceType);
-            MethodInfo methodInfo = interfaceType.GetMethod(methodName, new[] {instanceType});
+            MethodInfo methodInfo = interfaceType.GetMethod(methodName, new[] { instanceType });
             if (methodInfo == null)
             {
                 throw new Exception(
                     $"missing method AttachToProfileInstance in class that implements interface IControlWithProfileInstance<{instanceType.Name}>");
             }
-
             return methodInfo;
         }
 
