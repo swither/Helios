@@ -18,6 +18,9 @@
   <PropertyGroup>
     <ApplicationIcon>Helios.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AvalonDock, Version=4.20.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Dirkster.AvalonDock.4.20.0\lib\net40\AvalonDock.dll</HintPath>
@@ -37,6 +40,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Schema, Version=3.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.Schema.3.0.13\lib\net45\Newtonsoft.Json.Schema.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
@@ -110,13 +116,17 @@
     <Compile Include="Gauges\CompositeVisualWithBackgroundImage.cs" />
     <Compile Include="GlobalOptions.cs" />
     <Compile Include="HeliosCapabilityEditorDescriptor.cs" />
+    <Compile Include="HeliosVisualWithXml.cs" />
     <Compile Include="IInstallation2.cs" />
     <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
+    <Compile Include="Util\FileUtility.cs" />
+    <Compile Include="Util\ModuleUtility.cs" />
     <Compile Include="ProfileInstances.cs" />
     <Compile Include="StructuredInfo.cs" />
     <Compile Include="Tools\Capabilities\IProfileTool.cs" />
+    <Compile Include="Tools\Capabilities\ISelectionAwareTool.cs" />
     <Compile Include="Tools\HeliosToolDescriptor.cs" />
     <Compile Include="Tools\MenuItemModel.cs" />
     <Compile Include="Tools\MenuSectionModel.cs" />
@@ -134,6 +144,11 @@
     <Compile Include="Interfaces\Profile\ProfileInterfaceViewModel.cs" />
     <Compile Include="Util\CodeLine.cs" />
     <Compile Include="Controls\TextScalingMode.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSFunction.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSFunctionPair.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSFunctionWithActions.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSFunctionWithButtons.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSVehicleSelection.cs" />
     <Compile Include="Interfaces\DCS\Common\ExportConfigurationSection.xaml.cs">
       <DependentUpon>ExportConfigurationSection.xaml</DependentUpon>
     </Compile>
@@ -144,12 +159,23 @@
     <Compile Include="Interfaces\DCS\Common\ExportLuaOutputSection.xaml.cs">
       <DependentUpon>ExportLuaOutputSection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\DCS\Common\NetworkTrigger.cs" />
+    <Compile Include="Interfaces\DCS\Common\NetworkTriggerValue.cs" />
     <Compile Include="Interfaces\DCS\Common\PhantomMonitorFixSection.xaml.cs">
       <DependentUpon>PhantomMonitorFixSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\DCS\Generic\GenericInterfaceEditor.xaml.cs">
       <DependentUpon>GenericInterfaceEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Json\IBuildableFunction.cs" />
+    <Compile Include="Json\InterfaceExport.cs" />
+    <Compile Include="Json\ISoftInterface.cs" />
+    <Compile Include="Json\JsonBindingValue.cs" />
+    <Compile Include="Json\JsonBindingValueUnit.cs" />
+    <Compile Include="Json\JsonFunction.cs" />
+    <Compile Include="Json\JsonInterface.cs" />
+    <Compile Include="Json\JsonLicenses.cs" />
+    <Compile Include="Json\JsonNetworkFunction.cs" />
     <Compile Include="Util\CommandLineOptions.cs" />
     <Compile Include="Util\DesignTimeControl.cs" />
     <Compile Include="Util\DesignTimeInterface.cs" />
@@ -217,6 +243,7 @@
     <Compile Include="Windows\Controls\StructuredInfoListControl.xaml.cs">
       <DependentUpon>StructuredInfoListControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ViewModel\EditableComboBoxModel.cs" />
     <Compile Include="Windows\ViewModel\InstallationResultViewModel.cs" />
     <Compile Include="Windows\ViewModel\ShareInstallationResults.cs" />
     <Compile Include="Windows\ViewModel\VersionCheckViewModel.cs" />
@@ -372,8 +399,6 @@
       <DependentUpon>DCSInterfaceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\DCS\Common\DCSPhantomMonitorFix.cs" />
-    <Compile Include="Interfaces\DCS\Common\DCSVehicleImpersonation.cs" />
-    <Compile Include="Interfaces\DCS\Common\EditableComboBoxModel.cs" />
     <Compile Include="Interfaces\Capabilities\IProfileAwareInterface.cs" />
     <Compile Include="Interfaces\DCS\Common\SilentValueConsumer.cs" />
     <Compile Include="NonClickableZone.cs" />
@@ -630,6 +655,7 @@
     <Compile Include="DisplayManager.cs" />
     <Compile Include="DisplayOrientation.cs" />
     <Compile Include="EnumConverter.cs" />
+    <Compile Include="EnumDisplayEntery.cs" />
     <Compile Include="Gauges\A-10\ADI\ADI.cs" />
     <Compile Include="Gauges\A-10\ADI\BackupADI.cs" />
     <Compile Include="Gauges\A-10\Altimeter\Altimeter.cs" />
@@ -729,6 +755,7 @@
     <Content Include="Fonts\*.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="BindingValueUnits.cd" />
     <None Include="Images\A-10\readme.md" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
     <None Include="Interfaces\Falcon\readme.md" />
@@ -878,8 +905,6 @@
     <Compile Include="Interfaces\DCS\Common\DualNetworkValue.cs" />
     <Compile Include="Interfaces\DCS\Common\DualRocker.cs" />
     <Compile Include="StatusReportItem.cs" />
-    <Compile Include="UDPInterface\NetworkTriggerValue.cs" />
-    <Compile Include="UDPInterface\NetworkTrigger.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInterface.cs" />
     <Compile Include="Interfaces\DCS\F14B\F14BInterface.cs" />
     <Compile Include="Interfaces\DCS\FA18C\FA18CInterface.cs" />
@@ -2888,6 +2913,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Gauges\FA-18C\Controls\" />
+    <Folder Include="Interfaces\DCS\Common\Functions\" />
     <Folder Include="Interfaces\DCS\F14B\Functions\" />
     <Folder Include="Interfaces\DCS\M2000C\Functions\" />
     <Folder Include="Interfaces\DCS\Mi8Simple\Functions\" />
