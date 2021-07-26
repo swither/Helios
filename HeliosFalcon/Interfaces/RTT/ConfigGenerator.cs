@@ -206,15 +206,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             }
 
             _contents = contents;
-            // XXX write file
-            FalconInterface falconInterface = new FalconInterface();
-            string _rttClientConfig = Path.Combine(falconInterface.FalconPath, "Tools", "RTTRemote", "RTTClient.ini");
+            string _rttClientConfig = Path.Combine(new FalconInterface().FalconPath, "Tools", "RTTRemote", "RTTClient.ini");
             string _rttClientBackup = Path.Combine(Path.GetDirectoryName(_rttClientConfig), "RTTClient.original.txt");
 
 
             if (Directory.Exists(Path.GetDirectoryName(_rttClientConfig)))
             {
-                if(File.Exists(_rttClientConfig) && !ReadFile(_rttClientConfig).Contains(_rttFileHeader)) 
+                if(File.Exists(_rttClientConfig) && !CheckForFileHeader()) 
                 {
                     File.Copy(_rttClientConfig, _rttClientBackup);
                 }
@@ -277,6 +275,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             }
 
             return selected;
+        }
+
+        /// <summary>
+        /// Check the contents of the RTTClient.ini file and determine if the Helios Header is within
+        /// </summary>
+        /// <returns>bool</returns>
+        internal bool CheckForFileHeader()
+        {
+
+            FalconInterface falconInterface = new FalconInterface();
+            return ReadFile(Path.Combine(new FalconInterface().FalconPath, "Tools", "RTTRemote", "RTTClient.ini")).Contains(_rttFileHeader) ? true : false;
         }
 
         public void Dispose()
