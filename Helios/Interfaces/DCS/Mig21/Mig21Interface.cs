@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.MiG21
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    [HeliosInterface("Helios.MiG21", "DCS MiG21", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.MiG21", "DCS MiG21", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class MiG21Interface : DCSInterface
     {
         #region Devices

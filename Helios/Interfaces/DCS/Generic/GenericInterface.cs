@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    [HeliosInterface("Helios.DCS", "DCS Generic Interface", typeof(GenericInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.DCS", "DCS Generic Interface", typeof(GenericInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class GenericInterface : DCSInterface
     {
         /// <summary>
@@ -45,7 +45,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
         #endregion
 
         public GenericInterface()
-            : base("DCS Generic", null, "pack://application:,,,/Helios;component/Interfaces/DCS/Generic/ExportFunctions.lua")
+            : base("DCS Generic", "DCSGeneric", "pack://application:,,,/Helios;component/Interfaces/DCS/Generic/ExportFunctions.lua")
         {
             for (int i = 1; i < 200; i++)   // 200 Network values
             {

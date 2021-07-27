@@ -59,14 +59,6 @@ namespace GadrocsWorkshop.Helios
             return interfaces;
         }
 
-        // XXX this hack is going away in helios17 and interface2 branches
-        private static readonly HashSet<string> _udpInterfaceTypes = new HashSet<string>
-        {
-            "BaseUDPInterface",
-            "DCSInterface",
-            "A10CInterface"
-        };
-
         private bool IsUnique(HeliosInterfaceDescriptor descriptor, HeliosProfile profile)
         {
             foreach (HeliosInterface heliosInterface in profile.Interfaces)

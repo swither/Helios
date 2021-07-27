@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Mi8Simple
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    [HeliosInterface("Helios.Mi8Simple", "DCS  Mi8 (Simple)", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.Mi8Simple", "DCS  Mi8 (Simple)", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class Mi8SimpleInterface : DCSInterface
     {
         #region Devices

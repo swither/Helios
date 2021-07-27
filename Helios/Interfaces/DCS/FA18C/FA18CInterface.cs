@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.Interfaces.DCS.FA18C.Functions;
 
-    [HeliosInterface("Helios.FA18C", "DCS F/A-18C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.FA18C", "DCS F/A-18C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class FA18CInterface : DCSInterface
     {
         #region Devices

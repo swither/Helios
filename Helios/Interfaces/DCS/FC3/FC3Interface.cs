@@ -19,11 +19,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FC2
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
     // WARNING: the type ID must forever stay FC2 so we don't break profiles
-    [HeliosInterface("Helios.FC2", "Flaming Cliffs 3", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.FC2", "Flaming Cliffs 3", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class FC3Interface : DCSInterface
     {
         public FC3Interface()
-            : base("Flaming Cliffs 3", "FC3", "pack://application:,,,/Helios;component/Interfaces/DCS/FC2/ExportFunctions.lua")
+            : base("Flaming Cliffs 3", "FC3", "pack://application:,,,/Helios;component/Interfaces/DCS/FC3/ExportFunctions.lua")
         {
             Functions.Add(new NetworkValue(this, "6", "HSI", "ADF bearing", "Current ADF heading.", "(0 - 360)", BindingValueUnits.Degrees, null));
             Functions.Add(new NetworkValue(this, "7", "HSI", "RMI bearing", "Current RMI heading.", "(0 - 360)", BindingValueUnits.Degrees, null));

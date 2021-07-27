@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
 
-    [HeliosInterface("Helios.M2000C", "DCS M-2000C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.M2000C", "DCS M-2000C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class M2000CInterface : DCSInterface
     {
         #region Devices

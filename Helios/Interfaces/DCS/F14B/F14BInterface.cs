@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F14B
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    // [HeliosInterface("Helios.F14B", "DCS F-14B", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    // [HeliosInterface("Helios.F14B", "DCS F-14B", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class F14BInterface : DCSInterface
     {
         #region Devices
