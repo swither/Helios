@@ -1,4 +1,4 @@
-﻿//  Copyright 2014 Craig Courtney
+﻿//  Copyright 2014 Todd Kennedy
 //  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
