@@ -453,15 +453,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             if(Rtt?.Enabled?? false)
             {
-                if(Rtt?.CheckForFileHeader() ?? false)
+                if(Rtt?.CheckForMagicHeader() ?? false)
                 {
                     StartRTTClient(Path.Combine(FalconPath, "Tools", "RTTRemote", Rtt.SelectClient(Environment.Is64BitProcess)));
+                    Logger.Info($"launching RTT client: {Rtt.SelectClient(Environment.Is64BitProcess)}");
                 }
-                else
-                {
-                    Logger.Error("Profile has RTT Enabled set to true but the RTTClient.ini file is not being managed by Helios. Please open the profile in Profile Editor and complete the RTT Configuration");
-                }
-                
             }
             _dataExporter?.InitData();
         }
@@ -637,7 +633,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             if (KeyFileName != null)
             {
-                if (!System.IO.File.Exists(KeyFileName))
+                if (!File.Exists(KeyFileName))
                 {
                     yield return new StatusReportItem
                     {
@@ -673,6 +669,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     Status = $"Pilot Callsign not set in BMS",
                     Severity = StatusReportItem.SeverityCode.Error,
                     Recommendation = "Run Falcon and set your pilot callsign"
+                };
+            }
+            if ((Rtt?.Enabled ?? false) && (!Rtt.CheckForMagicHeader()))
+            {
+                yield return new StatusReportItem
+                {
+                    Status = $"Helios magic header not found in RTTClient.ini",
+                    Severity = StatusReportItem.SeverityCode.Error,
+                    Recommendation = "Please go to Profile Editor and configure the RTT Client if you wish to use it with Helios"
                 };
             }
         }

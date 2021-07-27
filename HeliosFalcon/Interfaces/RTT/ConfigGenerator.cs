@@ -216,7 +216,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
 
             if (Directory.Exists(Path.GetDirectoryName(_rttClientConfig)))
             {
-                if(File.Exists(_rttClientConfig) && !CheckForFileHeader()) 
+                if(File.Exists(_rttClientConfig) && !CheckForMagicHeader()) 
                 {
                     if(!File.Exists(_rttClientBackup))
                     {
@@ -227,7 +227,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                         Logger.Info("RTT Client backup file {_rttClientBackup} already exists. Skipping backup.");
                     }
                 }
-                WriteFile(_rttClientConfig, contents);
+                try
+                {
+                    WriteFile(_rttClientConfig, contents);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"Unable to update file: {ex.Message}");
+                }
             }
         }
 
@@ -292,9 +299,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// Check the contents of the RTTClient.ini file and determine if the Helios Header is within
         /// </summary>
         /// <returns>bool</returns>
-        internal bool CheckForFileHeader()
+        internal bool CheckForMagicHeader()
         {
-
             FalconInterface falconInterface = new FalconInterface();
             return ReadFile(Path.Combine(new FalconInterface().FalconPath, "Tools", "RTTRemote", "RTTClient.ini")).Contains(_rttFileHeader) ? true : false;
         }
