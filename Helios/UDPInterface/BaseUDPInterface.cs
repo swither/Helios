@@ -14,19 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Windows;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 using GadrocsWorkshop.Helios.Windows;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
 using System.Timers;
 using System.Windows.Threading;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
-    public class BaseUDPInterface : HeliosInterface
+    public class BaseUDPInterface : HeliosInterface, ISoftInterface
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -425,7 +431,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     Actions.RemoveSlave(function.Actions);
                     Values.RemoveSlave(function.Values);
 
-                    foreach (ExportDataElement element in function.GetDataElements())
+                    foreach (ExportDataElement element in function.DataElements)
                     {
                         if (_main.FunctionsById.ContainsKey(element.ID))
                         {
@@ -444,7 +450,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     Actions.AddSlave(function.Actions);
                     Values.AddSlave(function.Values);
 
-                    foreach (ExportDataElement element in function.GetDataElements())
+                    foreach (ExportDataElement element in function.DataElements)
                     {
                         if (!_main.FunctionsById.ContainsKey(element.ID))
                         {
@@ -483,6 +489,74 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         }
 
         public NetworkFunctionCollection Functions => _main.Functions;
+
+        /// <summary>
+        /// Global set to disable reading of JSON files and instead use code definitions of interfaces,
+        /// so we can generate the JSON.  This is temporary while we have the code in there and the JSON
+        /// isn't final.
+        ///
+        /// XXX eliminate?
+        /// </summary>
+        public static bool IsWritingFunctionsToJson { get; set; }
+
+        protected bool LoadFunctionsFromJson()
+        {
+            if (IsWritingFunctionsToJson)
+            {
+                return false;
+            }
+
+            // XXX try / catch once this is working
+            string jsonPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", $"{TypeIdentifier}.hif.json");
+            if (!File.Exists(jsonPath))
+            {
+                ConfigManager.LogManager.LogDebug($"requested soft interface definition {jsonPath} not found");
+                return false;
+            }
+
+            // load from Json
+            Json.InterfaceFile<NetworkFunction> loaded;
+            using (StreamReader file = File.OpenText(jsonPath))
+            {
+                // XXX check schema first and see if we can get decent readable error messages from that
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Converters.Add(new Json.Function.ConverterForJsonNet<NetworkFunction, BaseUDPInterface>());
+                serializer.Converters.Add(new Json.BindingValueUnit.ConverterForJsonNet());
+
+                // don't append to arrays
+                serializer.ObjectCreationHandling = ObjectCreationHandling.Replace;
+
+                // this isn't a cross process capable context, so we are zeroing all the bits of the valid states
+                serializer.Context = new StreamingContext(0, this);
+                loaded = (Json.InterfaceFile<NetworkFunction>)serializer.Deserialize(file, typeof(Json.InterfaceFile<NetworkFunction>));
+                if (null == loaded)
+                {
+                    throw new Exception("failed to load any functions from interface JSON");
+                }
+            }
+
+            // WARNING: all base inherited functions will already exist and will need to be removed
+            // in this implementation, because we are loading into an actual instance of the interface class
+            Dictionary<string, NetworkFunction> predefined = new Dictionary<string, NetworkFunction>(Functions.ToDictionary(f => f.LocalKey, f => f));
+
+            // if we survive the loading, install all these functions
+            foreach (NetworkFunction function in loaded.Functions)
+            {
+                if (predefined.TryGetValue(function.LocalKey, out NetworkFunction oldFunction))
+                {
+                    // remove the implementation we inherited
+                    Functions.Remove(oldFunction);
+
+                    // only remove it once
+                    predefined.Remove(function.LocalKey);
+                }
+
+                // now install the new implementation
+                AddFunction(function);
+            }
+
+            return true;            // XXX integrate any changes user made in Documents folder, same relative path
+        }
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
         {
@@ -741,7 +815,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         /// </summary>
         /// <param name="id"></param>
         /// <param name="value"></param>
-        public bool DispatchReceived(string id, string value)
+        public virtual bool DispatchReceived(string id, string value)
         {
             if (!_main.FunctionsById.TryGetValue(id, out NetworkFunction function))
             {
@@ -996,6 +1070,16 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             _main.NetworkAliases.Add(firstId, secondId);
             _main.NetworkAliases.Add(secondId, firstId);
+        }
+
+        public Type ResolveFunctionType(string typeName)
+        {
+            // this will intentionally break attempts to instantiate things outside the prefix
+            if (!typeName.StartsWith(NetworkFunction.OMITTED_PREFIX))
+            {
+                typeName = $"{NetworkFunction.OMITTED_PREFIX}{typeName}";
+            }
+            return Type.GetType(typeName);
         }
     }
 }

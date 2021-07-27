@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,30 +21,43 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions
     using System;
     using System.Globalization;
 
-    public class HSIRange : NetworkFunction
+    public class HSIRange : DCSFunction
     {
-        private static DCSDataElement[] _dataElements = new DCSDataElement[] { new DCSDataElement("117", "%0.4f", true), new DCSDataElement("527", "%0.4f", true), new DCSDataElement("528", "%0.4f", true) };
+        private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("117", "%0.4f", true), new DCSDataElement("527", "%0.4f", true), new DCSDataElement("528", "%0.4f", true) };
 
-        private double _hundreds = 0;
-        private double _tens = 0;
-        private double _units = 0;
+        private double _hundreds;
+        private double _tens;
+        private double _units;
 
         private HeliosValue _range;
 
         public HSIRange(BaseUDPInterface sourceInterface)
-            : base(sourceInterface)
+            : base(sourceInterface, "HSI", "Range to bearing", "Range in kilometers to current beacon.")
         {
-            //            AddFunction(new ScaledNetworkValue(this, "117", 100d, "HSI", "Range to bearing", "Range in kilometers to current beacon.", "", BindingValueUnits.Kilometers), true);
+            DoBuild();
+        }
 
-            _range = new HeliosValue(sourceInterface, BindingValue.Empty, "HSI", "Range to bearing", "Range in kilometers to current beacon.", "", BindingValueUnits.Kilometers);
+        // deserialization constructor
+        public HSIRange(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _range = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "", BindingValueUnits.Kilometers);
             Values.Add(_range);
             Triggers.Add(_range);
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return _dataElements;
-        }
+        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
 
         public override void ProcessNetworkData(string id, string value)
         {
@@ -65,34 +79,38 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions
 
         private double Parse(string value, double scale)
         {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double scaledValue))
             {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue *= scale * 10d;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+                return scaledValue;
+            }
+
+            if (scaledValue < 1.0d)
+            {
+                scaledValue *= scale * 10d;
+            }
+            else
+            {
+                scaledValue = 0d;
             }
             return scaledValue;
         }
 
         private double ClampedParse(string value, double scale)
         {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double scaledValue))
             {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue = Math.Truncate(scaledValue * 10d) * scale;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+                return scaledValue;
+            }
+
+            if (scaledValue < 1.0d)
+            {
+                scaledValue = Math.Truncate(scaledValue * 10d) * scale;
+            }
+            else
+            {
+                scaledValue = 0d;
             }
             return scaledValue;
         }

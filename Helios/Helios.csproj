@@ -117,10 +117,19 @@
     <Compile Include="GlobalOptions.cs" />
     <Compile Include="HeliosCapabilityEditorDescriptor.cs" />
     <Compile Include="HeliosVisualWithXml.cs" />
+    <Compile Include="IBuildableFunction.cs" />
     <Compile Include="IInstallation2.cs" />
     <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
+    <Compile Include="Interfaces\DCS\Template\Functions\ExampleFunction.cs" />
+    <Compile Include="Interfaces\DCS\Template\TemplateInterface.cs" />
+    <Compile Include="Json\BindingValueUnit\ConverterForJsonNet.cs" />
+    <Compile Include="Json\BindingValueUnit\SchemaGenerationProviderForJsonNet.cs" />
+    <Compile Include="Json\BindingValue\ConverterForJsonNet.cs" />
+    <Compile Include="Json\Function\ConverterForJsonNet.cs" />
+    <Compile Include="Json\InterfaceFile.cs" />
+    <Compile Include="Json\NetworkFunction\SchemaGenerationProviderForJsonNet.cs" />
     <Compile Include="Util\FileUtility.cs" />
     <Compile Include="Util\ModuleUtility.cs" />
     <Compile Include="ProfileInstances.cs" />
@@ -167,15 +176,9 @@
     <Compile Include="Interfaces\DCS\Generic\GenericInterfaceEditor.xaml.cs">
       <DependentUpon>GenericInterfaceEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Json\IBuildableFunction.cs" />
     <Compile Include="Json\InterfaceExport.cs" />
-    <Compile Include="Json\ISoftInterface.cs" />
-    <Compile Include="Json\JsonBindingValue.cs" />
-    <Compile Include="Json\JsonBindingValueUnit.cs" />
-    <Compile Include="Json\JsonFunction.cs" />
-    <Compile Include="Json\JsonInterface.cs" />
+    <Compile Include="Interfaces\Capabilities\ISoftInterface.cs" />
     <Compile Include="Json\JsonLicenses.cs" />
-    <Compile Include="Json\JsonNetworkFunction.cs" />
     <Compile Include="Util\CommandLineOptions.cs" />
     <Compile Include="Util\DesignTimeControl.cs" />
     <Compile Include="Util\DesignTimeInterface.cs" />
@@ -655,7 +658,6 @@
     <Compile Include="DisplayManager.cs" />
     <Compile Include="DisplayOrientation.cs" />
     <Compile Include="EnumConverter.cs" />
-    <Compile Include="EnumDisplayEntery.cs" />
     <Compile Include="Gauges\A-10\ADI\ADI.cs" />
     <Compile Include="Gauges\A-10\ADI\BackupADI.cs" />
     <Compile Include="Gauges\A-10\Altimeter\Altimeter.cs" />

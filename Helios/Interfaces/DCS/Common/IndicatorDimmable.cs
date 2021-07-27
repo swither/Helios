@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     {
         private readonly string _id;
         private readonly string _format;
-        private readonly HeliosValue _brightness;
+        private HeliosValue _brightness;
 
         public IndicatorDimmable(BaseUDPInterface sourceInterface, string id, string device, string name,
             string description, string exportFormat)
@@ -31,11 +31,28 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             _id = id;
             _format = exportFormat;
+            DoBuild();
+        }
 
-            _brightness = new HeliosValue(sourceInterface, BindingValue.Empty, device,
-                $"{name} brightness", $"{description} brightness percentage", "", BindingValueUnits.Numeric);
+        // deserialization constructor
+        public IndicatorDimmable(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        private void DoBuild()
+        {
+            _brightness = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName,
+                $"{SerializedFunctionName} brightness", $"{SerializedDescription} brightness percentage", "", BindingValueUnits.Numeric);
             Values.Add(_brightness);
             Triggers.Add(_brightness);
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            base.BuildAfterDeserialization();
+            DoBuild();
         }
 
         public override void ProcessNetworkData(string id, string value)
@@ -50,10 +67,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             base.ProcessNetworkData(id, value);
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return new ExportDataElement[] {new DCSDataElement(_id, _format, true)};
-        }
+        protected override ExportDataElement[] DefaultDataElements => new ExportDataElement[] {new DCSDataElement(_id, _format, true)};
 
         public override void Reset()
         {

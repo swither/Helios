@@ -40,6 +40,7 @@ namespace GadrocsWorkshop.Helios
         public HeliosTrigger(HeliosObject source, string device, string name, string verb, string description,
             string valueDescription, BindingValueUnit unit)
         {
+            TriggerID = "";
             _device = device;
             _name = name;
             TriggerVerb = verb;
@@ -64,18 +65,26 @@ namespace GadrocsWorkshop.Helios
 
         private void UpdateId()
         {
-            TriggerID = "";
+            if (TriggerID.Length < 1)
+            {
+                TriggerID = _name;
+            }
+            string prefix = "";
             if (!string.IsNullOrEmpty(_device))
             {
-                TriggerID += _device + ".";
+                prefix = $"{_device}.";
             }
-
-            if (!string.IsNullOrEmpty(_name))
+            if (TriggerID.Length < 1)
             {
-                TriggerID += _name + ".";
+                // NOTE: this was allowed for some reason in original
+                // code for HeliosTrigger, but it is unclear why
+                // NOTE: this will generate the same id as a HeliosAction without a name
+                TriggerID = $"{prefix}{TriggerVerb}";
             }
-
-            TriggerID += TriggerVerb;
+            else
+            {
+                TriggerID = $"{prefix}{TriggerID}.{TriggerVerb}";
+            }
         }
 
         #region IBindingElement Members
@@ -125,7 +134,7 @@ namespace GadrocsWorkshop.Helios
 
         public string TriggerID { get; private set; }
 
-        public string TriggerName => _name + " " + TriggerVerb;
+        public string TriggerName => string.IsNullOrEmpty(_name)? TriggerVerb : $"{_name} {TriggerVerb}";
 
         /// <summary>
         /// Name used to identify this binding trigger. (Ex: Button 1 Pressed)

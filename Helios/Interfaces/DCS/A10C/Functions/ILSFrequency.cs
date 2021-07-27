@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,9 +22,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
     using System.Collections.ObjectModel;
     using System.Globalization;
 
-    class ILSFrequency : NetworkFunction
+    public class ILSFrequency : DCSFunction
     {
-        private static DCSDataElement[] _dataElements = new DCSDataElement[] { new DCSDataElement("251", "%0.1f", false), new DCSDataElement("252", "%0.1f", false) };
+        private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("251", "%0.1f", false), new DCSDataElement("252", "%0.1f", false) };
 
         private double _mhz = 108;
         private double _khz = .10;
@@ -31,16 +32,31 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
         private HeliosValue _frequency;
 
         public ILSFrequency(BaseUDPInterface sourceInterface)
-            : base(sourceInterface)
+            : base(sourceInterface, "ILS", "Frequency", "Currently tuned ILS frequency.")
         {
-            _frequency = new HeliosValue(sourceInterface, BindingValue.Empty, "ILS", "Frequency", "Currently tuned ILS frequency.", "", BindingValueUnits.Numeric);
-            Values.Add(_frequency);
-            Triggers.Add(_frequency);
+            DoBuild();
         }
 
-        public override ExportDataElement[] GetDataElements()
+        // deserialization constructor
+        public ILSFrequency(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
         {
-            return _dataElements;
+            // no code
+        }
+
+        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _frequency = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "", BindingValueUnits.Numeric);
+            Values.Add(_frequency);
+            Triggers.Add(_frequency);
         }
 
         public override void ProcessNetworkData(string id, string value)

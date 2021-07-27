@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,27 +20,41 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
     using GadrocsWorkshop.Helios.UDPInterface;
     using GadrocsWorkshop.Helios.Util;
     using System;
-    using System.Collections.ObjectModel;
     using System.Globalization;
 
-    class HSIMiles : NetworkFunction
+    public class HSIMiles : DCSFunction
     {
-        private static DCSDataElement[] _dataElements = new DCSDataElement[] { new DCSDataElement("2029", null, true) };
+        private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("2029", null, true) };
 
         private HeliosValue _distance;
 
         public HSIMiles(BaseUDPInterface sourceInterface)
-            : base(sourceInterface)
+            : base(sourceInterface, "HSI", "Distance to beacon", "Range in nautical miles to the currently selected steerpoint or TACAN station.")
         {
-            _distance = new HeliosValue(sourceInterface, BindingValue.Empty, "HSI", "Distance to beacon", "Range in nautical miles to the currently selected steerpoint or TACAN station.", "", BindingValueUnits.NauticalMiles);
+            DoBuild();
+        }
+
+        // deserialization constructor
+        public HSIMiles(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _distance = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "", BindingValueUnits.NauticalMiles);
             Values.Add(_distance);
             Triggers.Add(_distance);
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return _dataElements;
-        }
+        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
 
         public override void ProcessNetworkData(string id, string value)
         {

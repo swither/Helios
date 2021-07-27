@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,39 +18,53 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
 {
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
-    using System;
     using System.Globalization;
 
-    public class FuelTotalDisplay : NetworkFunction
+    public class FuelTotalDisplay : DCSFunction
     {
-        private static DCSDataElement[] _dataElements = new DCSDataElement[] { new DCSDataElement("2010", null, false) };
+        private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("2010", null, false) };
 
-        private HeliosValue _five_digit_display;
+        private HeliosValue _fiveDigitDisplay;
 
         public FuelTotalDisplay(BaseUDPInterface sourceInterface)
-            : base(sourceInterface)
+            : base(sourceInterface, "Fuel Quantity", "Total display", "Fuel Total value")
         {
-            _five_digit_display = new HeliosValue(sourceInterface, BindingValue.Empty, "Fuel Quantity", "Total display", "Fuel Total value", "", BindingValueUnits.Numeric);
-            Values.Add(_five_digit_display);
-            Triggers.Add(_five_digit_display);
+            DoBuild();
         }
 
-        public override ExportDataElement[] GetDataElements()
+        // deserialization constructor
+        public FuelTotalDisplay(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
         {
-            return _dataElements;
+            // no code
         }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _fiveDigitDisplay = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName,
+                SerializedFunctionName, SerializedDescription, "", BindingValueUnits.Numeric);
+            Values.Add(_fiveDigitDisplay);
+            Triggers.Add(_fiveDigitDisplay);
+        }
+
+        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
 
         public override void ProcessNetworkData(string id, string value)
         {
             if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out double parsedValue))
             {
-                _five_digit_display.SetValue(new BindingValue(parsedValue), false);
+                _fiveDigitDisplay.SetValue(new BindingValue(parsedValue), false);
             }
         }
 
         public override void Reset()
         {
-            _five_digit_display.SetValue(BindingValue.Empty, true);
+            _fiveDigitDisplay.SetValue(BindingValue.Empty, true);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,12 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Globalization;
+using GadrocsWorkshop.Helios.UDPInterface;
+
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using System.Globalization;
-
-    public class FlagValue : NetworkFunction
+    public class FlagValue : DCSFunction
     {
         private string _id;
         private string _format;
@@ -31,12 +32,29 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 
         public FlagValue(BaseUDPInterface sourceInterface, string id, string device, string name, string description, string exportFormat)
-            : base(sourceInterface)
+            : base(sourceInterface, device, name, description)
         {
             _id = id;
             _format = exportFormat;
+            DoBuild();
+        }
 
-            _value = new HeliosValue(sourceInterface, BindingValue.Empty, device, name, description, "", BindingValueUnits.Boolean);
+        // deserialization constructor
+        public FlagValue(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _value = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "", BindingValueUnits.Boolean);
             Values.Add(_value);
             Triggers.Add(_value);
         }
@@ -50,10 +68,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return new ExportDataElement[] { new DCSDataElement(_id, _format, true) };
-        }
+        protected override ExportDataElement[] DefaultDataElements => new ExportDataElement[] { new DCSDataElement(_id, _format, true) };
 
         public override void Reset()
         {

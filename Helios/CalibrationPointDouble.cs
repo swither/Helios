@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using Newtonsoft.Json;
+
 namespace GadrocsWorkshop.Helios
 {
     public class CalibrationPointDouble : NotificationObject
@@ -43,6 +45,10 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        /// <summary>
+        /// WARNING: this is not actually a multiplier, it is the mapped output value but it is named wrong
+        /// </summary>
+        [JsonProperty("MappedValue")]
         public double Multiplier
         {
             get
@@ -56,5 +62,8 @@ namespace GadrocsWorkshop.Helios
                 OnPropertyChanged("Value", oldValue, value, true);
             }
         }
+
+        [JsonIgnore]
+        public double MappedValue => Multiplier; // name correction for code readability
     }
 }

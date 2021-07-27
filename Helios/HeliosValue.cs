@@ -30,6 +30,32 @@ namespace GadrocsWorkshop.Helios
         public HeliosValue(HeliosObject owner, BindingValue initialValue, string device, string name,
             string description, string valueDescription, BindingValueUnit unit)
         {
+            ValueID = "";
+            _device = device;
+            _name = name;
+            ActionDescription = description;
+            ValueDescription = valueDescription;
+            _owner = new WeakReference(owner);
+            Value = initialValue;
+            Unit = unit;
+
+            UpdateId();
+        }
+
+        /// <summary>
+        /// to be used if id is different from name
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="initialValue"></param>
+        /// <param name="device"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="valueDescription"></param>
+        /// <param name="unit"></param>
+        public HeliosValue(HeliosObject owner, BindingValue initialValue, string device, string id, string name, string description, string valueDescription, BindingValueUnit unit)
+        {
+            ValueID = id;
             _device = device;
             _name = name;
             ActionDescription = description;
@@ -51,19 +77,20 @@ namespace GadrocsWorkshop.Helios
 
         private void UpdateId()
         {
-            ValueID = "";
-            ActionID = "";
-            TriggerID = "";
+            if (ValueID.Length < 1)
+            {
+                ValueID = _name;
+            }
             if (!string.IsNullOrEmpty(_device))
             {
-                ValueID += _device + ".";
-                ActionID += _device + ".";
-                TriggerID += _device + ".";
+                ActionID = $"{_device}.set.{ValueID}";
+                ValueID = $"{_device}.{ValueID}";
             }
-
-            TriggerID += _name + ".changed";
-            ActionID += "set." + _name;
-            ValueID += _name;
+            else
+            {
+                ActionID = $"set.{ValueID}";
+            }
+            TriggerID = $"{ValueID}.changed";
         }
 
         /// <summary>

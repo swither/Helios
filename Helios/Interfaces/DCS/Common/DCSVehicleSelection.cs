@@ -15,6 +15,7 @@
 
 using System.Collections.Generic;
 using System.Windows;
+using GadrocsWorkshop.Helios.Windows.ViewModel;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {

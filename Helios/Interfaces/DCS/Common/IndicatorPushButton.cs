@@ -1,20 +1,24 @@
-﻿//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+using GadrocsWorkshop.Helios.UDPInterface;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.UDPInterface;
-
-    public class IndicatorPushButton : NetworkFunction
+    public class IndicatorPushButton : DCSFunctionWithButtons
     {
         private string _id;
         private string _format;
@@ -37,34 +41,69 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 
         public IndicatorPushButton(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, string device, string name, string pushValue, string releaseValue)
-            : base(sourceInterface)
+            : base(sourceInterface, device, name, null)
         {
+            SerializedButtons.Add(new SerializedButton()
+            {
+                DeviceID = deviceId,
+                PushID = buttonId,
+                PushValue = pushValue,
+                ReleaseID = buttonId,
+                ReleaseValue = releaseValue
+            });
             _id = argId;
             _format = "%0.1f";
+            DoBuild();
+        }
 
-            _pushValue = pushValue;
-            _releaseValue = releaseValue;
+        // deserialization constructor
+        public IndicatorPushButton(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
 
-            _pushActionData = "C" + deviceId + "," + buttonId + "," + pushValue;
-            _releaseActionData = "C" + deviceId + "," + buttonId + "," + releaseValue;
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
 
-            _value = new HeliosValue(sourceInterface, BindingValue.Empty, device, name, "Current state of this button.", "True if the button is currently pushed(either via pressure or toggle), otherwise false.", BindingValueUnits.Boolean);
+        private void DoBuild()
+        {
+            _pushValue = SerializedButtons[0].PushValue;
+            _releaseValue = SerializedButtons[0].ReleaseValue;
+
+            _pushActionData = "C" + SerializedButtons[0].DeviceID + "," + SerializedButtons[0].PushID + "," +
+                              SerializedButtons[0].PushValue;
+            _releaseActionData = "C" + SerializedButtons[0].DeviceID + "," + SerializedButtons[0].ReleaseID + "," +
+                                 SerializedButtons[0].ReleaseValue;
+
+            _value = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                "Current state of this button.",
+                "True if the button is currently pushed(either via pressure or toggle), otherwise false.",
+                BindingValueUnits.Boolean);
             Values.Add(_value);
             Triggers.Add(_value);
 
-            _indicatorValue = new HeliosValue(sourceInterface, BindingValue.Empty, device, name + " indicator", "Current state of the indicator lamp on this button.", "True if the indicator is on, otherwise false.", BindingValueUnits.Boolean);
+            _indicatorValue = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName,
+                SerializedFunctionName + " indicator", "Current state of the indicator lamp on this button.",
+                "True if the indicator is on, otherwise false.", BindingValueUnits.Boolean);
             Values.Add(_indicatorValue);
             Triggers.Add(_indicatorValue);
 
-            _pushedTrigger = new HeliosTrigger(sourceInterface, device, name, "pushed", "Fired when this button is pushed in the simulator.");
+            _pushedTrigger = new HeliosTrigger(SourceInterface, SerializedDeviceName, SerializedFunctionName, "pushed",
+                "Fired when this button is pushed in the simulator.");
             Triggers.Add(_pushedTrigger);
-            _releasedTrigger = new HeliosTrigger(sourceInterface, device, name, "released", "Fired when this button is released in the simulator.");
+            _releasedTrigger = new HeliosTrigger(SourceInterface, SerializedDeviceName, SerializedFunctionName, "released",
+                "Fired when this button is released in the simulator.");
             Triggers.Add(_releasedTrigger);
 
-            _pushAction = new HeliosAction(sourceInterface, device, name, "push", "Pushes this button in the simulator");
+            _pushAction = new HeliosAction(SourceInterface, SerializedDeviceName, SerializedFunctionName, "push",
+                "Pushes this button in the simulator");
             _pushAction.Execute += new HeliosActionHandler(PushAction_Execute);
             Actions.Add(_pushAction);
-            _releaseAction = new HeliosAction(sourceInterface, device, name, "release", "Releases the button in the simulator.");
+            _releaseAction = new HeliosAction(SourceInterface, SerializedDeviceName, SerializedFunctionName, "release",
+                "Releases the button in the simulator.");
             _releaseAction.Execute += new HeliosActionHandler(ReleaseAction_Execute);
             Actions.Add(_releaseAction);
         }
@@ -102,10 +141,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return new ExportDataElement[] { new DCSDataElement(_id, _format, true) };
-        }
+        protected override ExportDataElement[] DefaultDataElements =>
+            new ExportDataElement[] { new DCSDataElement(_id, _format, true) };
 
         public override void Reset()
         {

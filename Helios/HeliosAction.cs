@@ -45,6 +45,7 @@ namespace GadrocsWorkshop.Helios
         public HeliosAction(HeliosObject target, string device, string name, string verb, string description,
             string valueDescription, BindingValueUnit unit)
         {
+            ActionID = "";
             _device = device;
             _target = new WeakReference(target);
             _name = name;
@@ -65,6 +66,37 @@ namespace GadrocsWorkshop.Helios
             RecalculateName();
         }
 
+        /// <summary>
+        /// constructor to be used when id does not match name
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="device"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="verb"></param>
+        /// <param name="description"></param>
+        /// <param name="valueDescription"></param>
+        /// <param name="unit"></param>
+        public HeliosAction(HeliosObject target, string device, string id, string name, string verb, string description, string valueDescription, BindingValueUnit unit)
+        {
+            ActionID = id;
+            _device = device;
+            _target = new WeakReference(target);
+            _name = name;
+            ActionVerb = verb;
+            ActionDescription = description;
+            ActionValueDescription = valueDescription;
+            Unit = unit;
+
+            UpdateId();
+
+            ActionBindingDescription = ActionVerb + (Device.Length > 0 ? " " + _device : "") + (_name.Length > 0 ? " " + _name + " on" : "") + " " + Target.Name + (ActionRequiresValue ? " to %value%" : "");
+            if (ActionRequiresValue)
+            {
+                ActionInputBindingDescription = "to %value%";
+            }
+        }
+
         public void RecalculateName()
         {
             string targetName = _target.IsAlive ? Target.Name : "";
@@ -75,16 +107,25 @@ namespace GadrocsWorkshop.Helios
 
         private void UpdateId()
         {
-            ActionID = "";
+            if (ActionID.Length < 1)
+            {
+                ActionID = _name;
+            }
+            string prefix = "";
             if (!string.IsNullOrEmpty(_device))
             {
-                ActionID += _device + ".";
+                prefix = $"{_device}.";
             }
-
-            ActionID += ActionVerb;
-            if (!string.IsNullOrEmpty(_name))
+            if (ActionID.Length < 1)
             {
-                ActionID += "." + _name;
+                // NOTE: this was allowed for some reason in original
+                // code for HeliosAction, but it is unclear why
+                // NOTE: this will generate the same id as a HeliosTrigger without a name
+                ActionID = $"{prefix}{ActionVerb}";
+            }
+            else
+            {
+                ActionID = $"{prefix}{ActionVerb}.{ActionID}";
             }
         }
 

@@ -1,28 +1,38 @@
-﻿//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+using System.Collections.Generic;
+using GadrocsWorkshop.Helios.UDPInterface;
+using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using System.Globalization;
-
-    class GuardedSwitch : Switch
+    public class GuardedSwitch : Switch
     {
-        private int _guardPosition = 2;
+        private enum GuardPositionValue {
+            guardUp = 1,
+            guardDown = 2
+        };
+        private GuardPositionValue _guardPosition = GuardPositionValue.guardDown;
 
-        private string _guardArgId;
-        private string[] _actionData = new string[2];
-        private string _guardUpValue;
-        private string _guardDownValue;
+        // this ends up in our serialized ExportDataElement array, so we don't need to persist it
+        private readonly string _guardArgId;
+
+        [JsonProperty("Actions")]
+        protected Dictionary<string, DCSFunctionWithActions.SerializedAction> SerializedActions { get; private set; } = new Dictionary<string, DCSFunctionWithActions.SerializedAction>();
 
         private HeliosValue _guardValue;
         private HeliosAction _autoguardPositionAction;
@@ -58,57 +68,87 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 
         public GuardedSwitch(BaseUDPInterface sourceInterface, string deviceId, string argId, string guardAction, string guardArgId, string guardUpValue, string guardDownValue, SwitchPosition[] positions, string device, string name, string exportFormat, bool everyFrame)
-            : base(sourceInterface, deviceId, argId, positions, device, name, exportFormat, everyFrame)
+            : base(sourceInterface, deviceId, argId, positions, device, name, exportFormat, everyFrame, false)
         {
+            // base does not call its DoBuild, because we are using a special constructor
             _guardArgId = guardArgId;
-            _guardUpValue = guardUpValue;
-            _guardDownValue = guardDownValue;
+            SerializedActions.Add(GuardPositionValue.guardUp.ToString(), new DCSFunctionWithActions.SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = guardAction,
+                ActionValue = guardUpValue
+            });
+            SerializedActions.Add(GuardPositionValue.guardDown.ToString(), new DCSFunctionWithActions.SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = guardAction,
+                ActionValue = guardDownValue
+            });
 
-            _actionData[0] = "C" + deviceId + "," + guardAction + "," + guardUpValue;
-            _actionData[1] = "C" + deviceId + "," + guardAction + "," + guardDownValue;
+            // now build everything with the additional actions
+            base.DoBuild();
+            DoBuild();
+        }
 
-            _guardValue = new HeliosValue(sourceInterface, BindingValue.Empty, device, name + " guard", "Current position of the guard for this switch.", "1 = Up, 2 = Down", BindingValueUnits.Numeric);
+        // deserialization constructor
+        public GuardedSwitch(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            base.BuildAfterDeserialization();
+            DoBuild();
+        }
+
+        private new void DoBuild()
+        {
+            _guardValue = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName,
+                SerializedFunctionName + " guard", "Current position of the guard for this switch.", "1 = Up, 2 = Down",
+                BindingValueUnits.Numeric);
             _guardValue.Execute += new HeliosActionHandler(GuardValue_Execute);
             Actions.Add(_guardValue);
             Triggers.Add(_guardValue);
             Values.Add(_guardValue);
 
-            _autoguardPositionAction = new HeliosAction(sourceInterface, device, name, "autoguard set", "Sets the position of this switch, and automatically switches the guard up if necessary.", ValueDescriptions, BindingValueUnits.Numeric);
+            _autoguardPositionAction = new HeliosAction(SourceInterface, SerializedDeviceName, SerializedFunctionName,
+                "autoguard set", "Sets the position of this switch, and automatically switches the guard up if necessary.",
+                ValueDescriptions, BindingValueUnits.Numeric);
             _autoguardPositionAction.Execute += new HeliosActionHandler(AutoguardPositionAction_Execute);
             Actions.Add(_autoguardPositionAction);
         }
 
         public int GuardPosition
         {
-            get
-            {
-                return _guardPosition;
-            }
+            get => (int)_guardPosition;
             private set
             {
-                if (value >= 1 && value <= 2 && value != _guardPosition)
+                if (value >= 1 && value <= 2 && value != (int)_guardPosition)
                 {
                     switch (value)
                     {
                         case 1:
+                            _guardPosition = GuardPositionValue.guardUp;
                             break;
                         case 2:
+                            _guardPosition = GuardPositionValue.guardDown;
                             break;
                     }
 
-                    _guardPosition = value;
-                    _guardValue.SetValue(new BindingValue(_guardPosition.ToString(CultureInfo.InvariantCulture)), SourceInterface.BypassTriggers);
+                    _guardValue.SetValue(new BindingValue(_guardPosition.ToString()), SourceInterface.BypassTriggers);
                 }
             }
         }
 
         void AutoguardPositionAction_Execute(object action, HeliosActionEventArgs e)
         {
-            if (GuardPosition == 2)
+            if (_guardPosition == GuardPositionValue.guardDown)
             {
                 SourceInterface.BeginTriggerBypass(e.BypassCascadingTriggers);
-                GuardPosition = 1;
-                SourceInterface.SendData(_actionData[GuardPosition - 1]);
+                _guardPosition = GuardPositionValue.guardUp;
+                SourceInterface.SendData(SerializedActions[_guardPosition.ToString()].CommandString);
                 SourceInterface.EndTriggerBypass(e.BypassCascadingTriggers);
             }
         }
@@ -117,25 +157,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             SourceInterface.BeginTriggerBypass(e.BypassCascadingTriggers);
             GuardPosition = (int)e.Value.DoubleValue;
-            SourceInterface.SendData(_actionData[GuardPosition - 1]);
+            SourceInterface.SendData(SerializedActions[_guardPosition.ToString()].CommandString);
             SourceInterface.EndTriggerBypass(e.BypassCascadingTriggers);
         }
 
         public override void ProcessNetworkData(string id, string value)
         {
-            if (_guardArgId.Equals(id))
+            if (DataElements[1].ID.Equals(id))
             {
-                int newGuardPosition = _guardPosition;
-                if (_guardUpValue.Equals(value))
+                GuardPositionValue newGuardPosition = _guardPosition;
+                if (SerializedActions["guardUp"].ActionValue.Equals(value))
                 {
-                    newGuardPosition = 1;
+                    newGuardPosition = GuardPositionValue.guardUp;
                 }
-                else if (_guardDownValue.Equals(value))
+                else if (SerializedActions["guardDown"].ActionValue.Equals(value))
                 {
-                    newGuardPosition = 2;
+                    newGuardPosition = GuardPositionValue.guardDown;
                 }
-
-                GuardPosition = newGuardPosition;
+                _guardPosition = newGuardPosition;
             }
             else
             {
@@ -143,9 +182,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return new ExportDataElement[] { new DCSDataElement(_id, _format, _everyframe), new DCSDataElement(_guardArgId, _format, _everyframe)  };
-        }
+        protected override ExportDataElement[] DefaultDataElements =>
+            new ExportDataElement[] { new DCSDataElement(_id, _format, _everyframe), new DCSDataElement(_guardArgId, _format, _everyframe)  };
     }
 }

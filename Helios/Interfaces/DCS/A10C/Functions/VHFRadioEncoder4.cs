@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,15 +21,36 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
     using System;
     using System.Globalization;
 
-    class VHFRadioEncoder4 : Axis
+    public class VHFRadioEncoder4 : Axis
     {
-        private double _lastData = 0d;
+        private double _lastData;
         private HeliosValue _windowValue;
 
-		public VHFRadioEncoder4(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double argValue, double argMin, double argMax, string device, string name)
+        public VHFRadioEncoder4(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double argValue, double argMin, double argMax, string device, string name)
 			: base(sourceInterface, deviceId, buttonId, argId, argValue, argMin, argMax, device, name, false, "%.3f")
 		{
-            _windowValue = new HeliosValue(sourceInterface, new BindingValue(0.0d), device, name + " window", "Current value displayed in this encoder.", argMin.ToString() + "-" + argMax.ToString(), BindingValueUnits.Text);
+            // base calls DoBuild, we add ours
+            DoBuild();
+        }
+
+        // deserialization constructor
+        public VHFRadioEncoder4(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            base.BuildAfterDeserialization();
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _windowValue = new HeliosValue(SourceInterface, new BindingValue(0.0d), SerializedDeviceName,
+                SerializedFunctionName + " window", "Current value displayed in this encoder.",
+                _argMin.ToString(CultureInfo.CurrentCulture) + "-" + _argMax.ToString(CultureInfo.CurrentCulture), BindingValueUnits.Text);
             Values.Add(_windowValue);
             Triggers.Add(_windowValue);
         }
@@ -36,30 +58,31 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
         public override void ProcessNetworkData(string id, string value)
         {
             base.ProcessNetworkData(id, value);
-            double parseValue;
-            if (double.TryParse(value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out parseValue))
+            if (!double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out double parseValue))
             {
-                double newValue = parseValue;
-
-                if (newValue < _lastData)
-                {
-                    newValue = Math.Floor(Math.Truncate(newValue * 100)/25) * 25;                    
-                }
-                else if (newValue > _lastData)
-                {
-                    newValue = Math.Ceiling(Math.Truncate(newValue * 100)/25) * 25;
-                    if (newValue == 100) newValue = 0;
-                }
-                else
-                {
-                    return;
-                }
-
-                _lastData = parseValue;
-
-                string formattedValue = String.Format(CultureInfo.InvariantCulture, "{0:00}", newValue);
-                _windowValue.SetValue(new BindingValue(formattedValue), false);
+                return;
             }
+
+            double newValue = parseValue;
+
+            if (newValue < _lastData)
+            {
+                newValue = Math.Floor(Math.Truncate(newValue * 100)/25) * 25;                    
+            }
+            else if (newValue > _lastData)
+            {
+                newValue = Math.Ceiling(Math.Truncate(newValue * 100)/25) * 25;
+                if (newValue == 100) newValue = 0;
+            }
+            else
+            {
+                return;
+            }
+
+            _lastData = parseValue;
+
+            string formattedValue = string.Format(CultureInfo.InvariantCulture, "{0:00}", newValue);
+            _windowValue.SetValue(new BindingValue(formattedValue), false);
         }
     }
 }

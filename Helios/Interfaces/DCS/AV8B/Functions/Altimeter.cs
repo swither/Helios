@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,43 +19,65 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
     using GadrocsWorkshop.Helios.Util;
+    using Newtonsoft.Json;
     using System;
-    using System.Collections.ObjectModel;
     using System.Globalization;
 
-    class Altimeter : NetworkFunction
+    public class Altimeter : DCSFunctionPair
     {
-        private static DCSDataElement[] _dataElements;
         private HeliosValue _altitude;
         private HeliosValue _pressure;
-        private string _altID;
-        private string _pressID;
 
-        public Altimeter(BaseUDPInterface sourceInterface, string instrumentClass, string altitudeDeviceId, string altitudeName, string altitudeDescription,string altitudeComments, string pressureDeviceId,string pressureName,string pressureDescription, string pressureComments)
-            : base(sourceInterface)
+        [JsonProperty("AltitudeComments")]
+        private string _altitudeComments;
+
+        [JsonProperty("PressureComments")]
+        private string _pressureComments;
+
+        public Altimeter(BaseUDPInterface sourceInterface, string instrumentClass, string altitudeId, string altitudeName, string altitudeDescription,string altitudeComments, string pressureId,string pressureName,string pressureDescription, string pressureComments)
+            : base(sourceInterface, 
+                  instrumentClass, altitudeName, altitudeDescription,
+                  instrumentClass, pressureName, pressureDescription)
         {
-            _altID = altitudeDeviceId;
-            _pressID = pressureDeviceId;
-            _dataElements = new DCSDataElement[] { new DCSDataElement(altitudeDeviceId, null, true), new DCSDataElement(pressureDeviceId, null, true) };
-            _altitude = new HeliosValue(sourceInterface, BindingValue.Empty, instrumentClass, altitudeName, altitudeDescription, altitudeComments, BindingValueUnits.Feet);
+            _altitudeComments = altitudeComments;
+            _pressureComments = pressureComments;
+            DefaultDataElements = new ExportDataElement[] { new DCSDataElement(altitudeId, null, true), new DCSDataElement(pressureId, null, true) };
+            DoBuild();
+        }
+
+        // deserialization constructor
+        public Altimeter(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _altitude = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, _altitudeComments, BindingValueUnits.Feet);
             Values.Add(_altitude);
             Triggers.Add(_altitude);
 
-            _pressure = new HeliosValue(sourceInterface, BindingValue.Empty, instrumentClass, pressureName, pressureDescription, pressureComments, BindingValueUnits.InchesOfMercury);
+            _pressure = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName2, SerializedFunctionName2,
+                SerializedDescription2, _pressureComments, BindingValueUnits.InchesOfMercury);
             Values.Add(_pressure);
             Triggers.Add(_pressure);
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return _dataElements;
-        }
+        protected override ExportDataElement[] DefaultDataElements { get; }
 
         public override void ProcessNetworkData(string id, string value)
         {
             string[] parts;
 
-            if (id == _altID) {
+            if (id == DataElements[0].ID)
+            {
                 parts = Tokenizer.TokenizeAtLeast(value, 3, ';');
                 double tenThousands = ClampedParse(parts[0], 10000d);
                 double thousands = ClampedParse(parts[1], 1000d);
@@ -63,7 +86,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
                 double altitude = tenThousands + thousands + hundreds;
                 _altitude.SetValue(new BindingValue(altitude), false);
             }
-            else if (id == _pressID) {
+            else if (id == DataElements[1].ID)
+            {
                 parts = Tokenizer.TokenizeAtLeast(value, 4, ';');
                 double tens = ClampedParse(parts[0], 10d);
                 double ones = ClampedParse(parts[1], 1d);
@@ -73,40 +97,42 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
                 double pressure = tens + ones + tenths + hundredths;
                 _pressure.SetValue(new BindingValue(pressure), false);
             }
-            else {
-            }
         }
 
         private double Parse(string value, double scale)
         {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double scaledValue))
             {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue *= scale * 10d;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+                return scaledValue;
+            }
+
+            if (scaledValue < 1.0d)
+            {
+                scaledValue *= scale * 10d;
+            }
+            else
+            {
+                scaledValue = 0d;
             }
             return scaledValue;
         }
 
         private double ClampedParse(string value, double scale)
         {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double scaledValue))
             {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue = Math.Truncate(scaledValue * 10d) * scale;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+                return scaledValue;
+            }
+
+            if (scaledValue < 1.0d)
+            {
+                scaledValue = Math.Truncate(scaledValue * 10d) * scale;
+            }
+            else
+            {
+                scaledValue = 0d;
             }
             return scaledValue;
         }
@@ -116,6 +142,5 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
             _altitude.SetValue(BindingValue.Empty, true);
             _pressure.SetValue(BindingValue.Empty, true);
         }
-
     }
 }

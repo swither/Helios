@@ -38,7 +38,7 @@ namespace HeliosInstallerSupport
             CommonCommandLineOptions options = new CommonCommandLineOptions();
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) ?? "",
-                RunningVersion.IsDevelopmentPrototype ? options.DevDocumentPath : options.DocumentPath);
+                RunningVersion.IsDevelopmentPrototype ? options.DevDocumentsName: options.DocumentsName);
         }
 
         public void Dispose()

@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,6 +21,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
     class CommandLineOptions : Util.CommonCommandLineOptions
     {
+        [Option('g', "generateInterfaceJson")]
+        public bool GenerateInterfaceJson { get; set; }
+
+        [Option('s', "generateInterfaceSchema")]
+        public bool GenerateInterfaceSchema { get; set; }
+
         [Value(0, MetaName = "[Profile]", HelpText = "Startup profile name")]
         public IEnumerable<string> Profiles
         {

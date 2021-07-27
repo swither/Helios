@@ -136,7 +136,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
             HeliosBinding.BindingTracer = new SoftLoopTracer();
             foreach (NetworkFunction networkFunction in Target.Functions)
             {
-                foreach (DCSDataElement dataElement in networkFunction.GetDataElements().OfType<DCSDataElement>())
+                foreach (DCSDataElement dataElement in networkFunction.DataElements.OfType<DCSDataElement>())
                 {
                     TesterBase tester = CreateTester(networkFunction, dataElement);
                     if (dataElement.IsExportedEveryFrame)

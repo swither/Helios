@@ -389,7 +389,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 // Persist window placement details to application settings
                 IntPtr hwnd = new WindowInteropHelper(this).Handle;
                 NativeMethods.GetWindowPlacement(hwnd, out NativeMethods.WINDOWPLACEMENT wp);
-                ConfigManager.SettingsManager.SaveSetting("ProfileEditor", "WindowLocation", wp.normalPosition);
+                if (wp.normalPosition.Width > 0)
+                { 
+                    // if running non-interactive, our window size is 0 and we don't want to store that
+                    ConfigManager.SettingsManager.SaveSetting("ProfileEditor", "WindowLocation", wp.normalPosition);
+                }
 
                 // Close all open documents so they can clean up
                 while (_documents.Count > 0)

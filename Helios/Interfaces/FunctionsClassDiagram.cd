@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GadrocsWorkshop.Helios.UDPInterface.NetworkFunction" Collapsed="true">
+    <Position X="6.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAIAAIBAAAAACAAAAAKCBAhAAQAAAgIAAEQCQ=</HashCode>
+      <FileName>UDPInterface\NetworkFunction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSFunction" Collapsed="true">
+    <Position X="14.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAQAoAAAAAIAAAAAAAiAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Interfaces\DCS\Common\DCSFunction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.SilentValueConsumer" Collapsed="true">
+    <Position X="3.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIBAAAAABAAAAAACBAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\Common\SilentValueConsumer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.HSIMiles" Collapsed="true">
+    <Position X="1.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAIBAAAAAAggAAAAABAgAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\HSIMiles.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.ILSFrequency" Collapsed="true">
+    <Position X="3.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIBAAAAAAgBAAAAABAgAIAAAAAAQAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\ILSFrequency.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.TotalFuel" Collapsed="true">
+    <Position X="5.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAIBAAAAAAggAAEAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\TotalFuel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions.Digits2Display" Collapsed="true">
+    <Position X="8" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIBAAAAgAggAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\AV8B\Functions\Digits2Display.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions.Digits3Display" Collapsed="true">
+    <Position X="1.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIBAAAAAAggAAAAIBAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\AV8B\Functions\Digits3Display.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions.Digits4Display" Collapsed="true">
+    <Position X="3.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAIBAAAAAAggAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\AV8B\Functions\Digits4Dispaly.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions.FuelTotalDisplay" Collapsed="true">
+    <Position X="5.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIBABAAAAggAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\AV8B\Functions\FuelTotalDisplay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions.SMCFuzeDisplay" Collapsed="true">
+    <Position X="8" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIBAAAAAAggAAAAABAgAAAAAAAAAAAABA=</HashCode>
+      <FileName>Interfaces\DCS\AV8B\Functions\SMCFuzeDisplay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions.SMCMultipleDisplay" Collapsed="true">
+    <Position X="1.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIBAAABAAggAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\AV8B\Functions\SMCMultipleDisplay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions.HSIRange" Collapsed="true">
+    <Position X="3.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAIBAAAEAAggAAAAEBAgAAAAAAAAABAAAI=</HashCode>
+      <FileName>Interfaces\DCS\BlackShark\Functions\HSIRange.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions.LatitudeEntry" Collapsed="true">
+    <Position X="5.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAIBAAAAAAggAAAAEBAgAIAAAAAAAAAAAI=</HashCode>
+      <FileName>Interfaces\DCS\BlackShark\Functions\LatitudeEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions.MagVariation" Collapsed="true">
+    <Position X="8" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAIBAAAAAAggAAAAEBAgAIAAAAAAAAAAAI=</HashCode>
+      <FileName>Interfaces\DCS\BlackShark\Functions\MagVariation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions.VHF2Rotary1" Collapsed="true">
+    <Position X="1.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAABAAIBAAAAAAAAAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\BlackShark\Functions\VHF2Rotary1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions.VHF2Rotary23" Collapsed="true">
+    <Position X="3.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAABAAIBAAAAAAAAAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\BlackShark\Functions\VHF2Rotary23.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions.VHF2Rotary4" Collapsed="true">
+    <Position X="5.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAABAAIBAAAAAAAAAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\BlackShark\Functions\VHF2Rotary4.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSFunctionPair" Collapsed="true">
+    <Position X="8" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQgAAAAIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\Common\DCSFunctionPair.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSFunctionWithActions" Collapsed="true">
+    <Position X="8" Y="19.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\Common\DCSFunctionWithActions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DCSFunctionWithButtons" Collapsed="true">
+    <Position X="8" Y="16.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Interfaces\DCS\Common\DCSFunctionWithButtons.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.FlagValue" Collapsed="true">
+    <Position X="8" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAIBAAAAABAAAAAAABAgAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Interfaces\DCS\Common\FlagValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.LockedEncoder" Collapsed="true">
+    <Position X="10.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAARQAIJABAAAAAAwgAgABAgAAAAEAAABAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\Common\LockedEncoder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkValue" Collapsed="true">
+    <Position X="10.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAIBAAAAABAAAAAAABAgAAAAAAAACAAAEI=</HashCode>
+      <FileName>Interfaces\DCS\Common\NetworkValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.ScaledNetworkValue" Collapsed="true">
+    <Position X="10.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AJAQAGAAAAAIBAAAIAJAAAAAEABAgAAAAAAQAAAAAEA=</HashCode>
+      <FileName>Interfaces\DCS\Common\ScaledNetworkValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.Switch" Collapsed="true">
+    <Position X="12.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ARAACAAABAAIBAAIAiFAAAAIAABAwgAAAAQAACCAAUA=</HashCode>
+      <FileName>Interfaces\DCS\Common\Switch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.Text" Collapsed="true">
+    <Position X="10.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAIBAAAAABAAAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\Common\Text.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.FA18C.Functions.Altimeter" Collapsed="true">
+    <Position X="4.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAgAAABCgAIRAAAAAAggAAAAABAgAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Interfaces\DCS\FA18C\Functions\Altimeter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.GuardedSwitch" Collapsed="true">
+    <Position X="12.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gACAAAAEAAAIAAAAQAACAEAAIABAggAAAAAAABCAABA=</HashCode>
+      <FileName>Interfaces\DCS\Common\GuardedSwitch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.HatSwitch" Collapsed="true">
+    <Position X="3.25" Y="20.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIBAAAACBAEIAIAABAoQAAAAAAAAAAAEA=</HashCode>
+      <FileName>Interfaces\DCS\Common\HatSwitch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.IndicatorPushButton" Collapsed="true">
+    <Position X="4.5" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAIAgAAAAoBAAAAABAAABACAFAgAABAAUAAAQAAEA=</HashCode>
+      <FileName>Interfaces\DCS\Common\IndicatorPushButton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.PushButton" Collapsed="true">
+    <Position X="9" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAIAgAAAAoBAAAAABAAABACAFAgAABAAUAAAQAAEA=</HashCode>
+      <FileName>Interfaces\DCS\Common\PushButton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.Rocker" Collapsed="true">
+    <Position X="11.25" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAIIEAAAAIBAABAABACCBQAABAhggBAAcEAAAAAEA=</HashCode>
+      <FileName>Interfaces\DCS\Common\Rocker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.RotaryEncoder" Collapsed="true">
+    <Position X="1" Y="20.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAQQAIJABAAAAAAwgAAABAgAAAAAAAABAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\Common\RotaryEncoder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DualRocker" Collapsed="true">
+    <Position X="6.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAIIEAAAAIBAABAABQCCBQAABAhkgBAAcEAAAAAEA=</HashCode>
+      <FileName>Interfaces\DCS\Common\DualRocker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.DualNetworkValue" Collapsed="true">
+    <Position X="10.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAABAgAAIAAAAAAABAAA=</HashCode>
+      <FileName>Interfaces\DCS\Common\DualNetworkValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.Axis" Collapsed="true">
+    <Position X="10" Y="20.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAQAIBAAAAgBAAwAAAABAgAQAAAAAABFAAFA=</HashCode>
+      <FileName>Interfaces\DCS\Common\Axis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.Common.AbsoluteEncoder" Collapsed="true">
+    <Position X="5.5" Y="20.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAQQAIJAAAAgBAAwAAAABAgAQAAAAAABFAAEA=</HashCode>
+      <FileName>Interfaces\DCS\Common\AbsoluteEncoder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions.Altimeter" Collapsed="true">
+    <Position X="6.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAgAAABCgAIRAAAAAAggAAAAABAgAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Interfaces\DCS\AV8B\Functions\Altimeter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.Altimeter" Collapsed="true">
+    <Position X="9" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAABAAAIRAAAAAAggAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\Altimeter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.TACANChannel" Collapsed="true">
+    <Position X="11.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAIBAAAAiAggAAAAEBAgAAAAEAAABBAAAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\TACANChannel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.VHFPresetSelector" Collapsed="true">
+    <Position X="6.5" Y="22.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAABAgAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\VHFPresetSelector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.VHFRadioEncoder" Collapsed="true">
+    <Position X="11" Y="22.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAABAgAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\VHFRadioEncoder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.VHFRadioEncoder1" Collapsed="true">
+    <Position X="2" Y="22.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAABAgAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\VHFRadioEncoder1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.VHFRadioEncoder3" Collapsed="true">
+    <Position X="4.25" Y="22.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAABAgAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\VHFRadioEncoder3.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions.VHFRadioEncoder4" Collapsed="true">
+    <Position X="8.75" Y="22.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAABAgAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Interfaces\DCS\A10C\Functions\VHFRadioEncoder4.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

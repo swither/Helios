@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,16 +21,33 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions
     using System;
     using System.Globalization;
 
-    class VHF2Rotary4 : NetworkFunction
+    public class VHF2Rotary4 : DCSFunction
     {
-        private ExportDataElement[] _elements;
         private HeliosValue _value;
 
         public VHF2Rotary4(BaseUDPInterface sourceInterface, string id, string device, string name)
-            : base(sourceInterface)
+            : base(sourceInterface, device, name, null)
         {
-            _elements = new ExportDataElement[] { new DCSDataElement(id, "%.2f", true) };
-            _value = new HeliosValue(sourceInterface, BindingValue.Empty, device, name, "", "", BindingValueUnits.Numeric);
+            DefaultDataElements = new ExportDataElement[] { new DCSDataElement(id, "%.2f", true) };
+            DoBuild();
+        }
+
+        // deserialization constructor
+        public VHF2Rotary4(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _value = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "", BindingValueUnits.Numeric);
             Values.Add(_value);
             Triggers.Add(_value);
         }
@@ -44,10 +62,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions
             }
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return _elements;
-        }
+        protected override ExportDataElement[] DefaultDataElements { get; }
 
         public override void Reset()
         {

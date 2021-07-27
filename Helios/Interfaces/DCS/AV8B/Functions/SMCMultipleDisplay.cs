@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,36 +21,51 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
     using System;
     using System.Globalization;
 
-    public class SMCMultipleDisplay : NetworkFunction
+    public class SMCMultipleDisplay : DCSFunction
     {
-        private static DCSDataElement[] _dataElements = new DCSDataElement[] { new DCSDataElement("2021", null, false) };
+        private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("2021", null, false) };
 
-        private HeliosValue _one_digit_display;
+        private HeliosValue _oneDigitDisplay;
 
         public SMCMultipleDisplay(BaseUDPInterface sourceInterface)
-            : base(sourceInterface)
+            : base(sourceInterface, "Stores Management", "Stores multiple display", "Multiple value")
         {
-            _one_digit_display = new HeliosValue(sourceInterface, BindingValue.Empty, "Stores Management", "Stores multiple display", "Multiple value", "", BindingValueUnits.Numeric);
-            Values.Add(_one_digit_display);
-            Triggers.Add(_one_digit_display);
+            DoBuild();
         }
 
-        public override ExportDataElement[] GetDataElements()
+        // deserialization constructor
+        public SMCMultipleDisplay(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
         {
-            return _dataElements;
+            // no code
         }
 
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _oneDigitDisplay = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName,
+                SerializedFunctionName, SerializedDescription, "", BindingValueUnits.Numeric);
+            Values.Add(_oneDigitDisplay);
+            Triggers.Add(_oneDigitDisplay);
+        }
+
+        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
+        
         public override void ProcessNetworkData(string id, string value)
         {
             if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out double parsedValue))
             {
-                _one_digit_display.SetValue(new BindingValue(parsedValue), false);
+                _oneDigitDisplay.SetValue(new BindingValue(parsedValue), false);
             }
         }
 
         public override void Reset()
         {
-            _one_digit_display.SetValue(BindingValue.Empty, true);
+            _oneDigitDisplay.SetValue(BindingValue.Empty, true);
         }
     }
 }

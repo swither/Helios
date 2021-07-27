@@ -29,11 +29,11 @@ namespace GadrocsWorkshop.Helios.Util
 
         [Option('d', "documents", Required = false, Default = "Helios",
             HelpText = "Set the Documents folder name to use.")]
-        public string DocumentPath { get; set; } = "Helios";
+        public string DocumentsName { get; set; } = "Helios";
 
         [Option('e', "devdocuments", Required = false, Default = "HeliosDev",
             HelpText = "Set the Documents folder name to use for a Development Prototype build.")]
-        public string DevDocumentPath { get; set; } = "HeliosDev";
+        public string DevDocumentsName { get; set; } = "HeliosDev";
 
     }
 }

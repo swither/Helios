@@ -198,10 +198,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
             }
         }
 
-        protected override void AttachToProfileOnMainThread()
+        protected override void CustomizeGenerator()
         {
-            base.AttachToProfileOnMainThread();
-
             // for the generic interface, drivers cannot be generated but may be attached
             Configuration.ExportModuleFormatInfo[DCSExportModuleFormat.HeliosDriver16] =
                 new DCSExportConfiguration.ModuleFormatInfo

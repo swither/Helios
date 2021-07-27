@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,13 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Globalization;
+using GadrocsWorkshop.Helios.UDPInterface;
+using Newtonsoft.Json;
+
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using System;
-    using System.Globalization;
-
-    class AbsoluteEncoder : NetworkFunction
+    public class AbsoluteEncoder : DCSFunctionWithActions
     {
         private string _id;
         private string _format;
@@ -27,10 +29,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private string _incrementData;
         private string _decrementData;
 
+        [JsonProperty("ArgumentValue")]
         private double _argValue;
+
+        [JsonProperty("ArgumentMin")]
         private double _argMin;
+
+        [JsonProperty("ArgumentMax")]
         private double _argMax;
 
+        [JsonProperty("Loop")]
         private bool _loop;
 
         private HeliosValue _value;
@@ -39,29 +47,59 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private HeliosAction _decrementAction;
 
         public AbsoluteEncoder(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string button2Id, string argId, double argValue, double argMin, double argMax, string device, string name, bool loop, string exportFormat)
-            : base(sourceInterface)
+            : base(sourceInterface, device, name, "Current value of this encoder.")
         {
             _id = argId;
             _format = exportFormat;
             _loop = loop;
-
             _argValue = argValue;
             _argMin = argMin;
             _argMax = argMax;
+            SerializedActions.Add("increment", new SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = button2Id
+            });
+            SerializedActions.Add("decrement", new SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = buttonId
+            });
+            DoBuild();
+        }
 
-            _incrementData = "C" + deviceId + "," + button2Id + ",";
-            _decrementData = "C" + deviceId + "," + buttonId + ",";
+        // deserialization constructor
+        public AbsoluteEncoder(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
 
-            _value = new HeliosValue(sourceInterface, new BindingValue(0.0d), device, name, "Current value of this encoder.", argMin.ToString() + "-" + argMax.ToString(), BindingValueUnits.Numeric);
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _incrementData = "C" + SerializedActions["increment"].DeviceID + "," + SerializedActions["increment"].ActionID +
+                             ",";
+            _decrementData = "C" + SerializedActions["decrement"].DeviceID + "," + SerializedActions["decrement"].ActionID +
+                             ",";
+
+            _value = new HeliosValue(SourceInterface, new BindingValue(0.0d), SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, _argMin.ToString() + "-" + _argMax.ToString(), BindingValueUnits.Numeric);
             _value.Execute += new HeliosActionHandler(Value_Execute);
             Values.Add(_value);
             Triggers.Add(_value);
 
-            _incrementAction = new HeliosAction(sourceInterface, device, name, "increment", "Increments this encoder value.");
+            _incrementAction = new HeliosAction(SourceInterface, SerializedDeviceName, SerializedFunctionName, "increment",
+                "Increments this encoder value.");
             _incrementAction.Execute += new HeliosActionHandler(IncrementAction_Execute);
             Actions.Add(_incrementAction);
 
-            _decrementAction = new HeliosAction(sourceInterface, device, name, "decrement", "Decrement this encoder value.");
+            _decrementAction = new HeliosAction(SourceInterface, SerializedDeviceName, SerializedFunctionName, "decrement",
+                "Decrement this encoder value.");
             _decrementAction.Execute += new HeliosActionHandler(DecrementAction_Execute);
             Actions.Add(_decrementAction);
         }
@@ -119,10 +157,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }          
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return new ExportDataElement[] { new DCSDataElement(_id, _format) };
-        }
+        protected override ExportDataElement[] DefaultDataElements => new ExportDataElement[] { new DCSDataElement(_id, _format) };
 
         public override void Reset()
         {
