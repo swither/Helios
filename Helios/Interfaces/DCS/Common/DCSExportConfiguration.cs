@@ -1057,7 +1057,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        private string GenerateFunction(DCSDataElement element) => $"[{element.ID}]=\"{element.Format}\"";
+        private string GenerateElement(DCSDataElement element)
+        {
+            string luaTableIndex = element.ID;
+            if (int.TryParse(luaTableIndex, out int numericValue) 
+                && numericValue > 0
+                && numericValue < 10000)
+            {
+                // use integer index, which is faster in Lua
+                // so don't quote the index
+            }
+            else
+            {
+                // use string index
+                luaTableIndex = $"\"{luaTableIndex}\"";
+            }
+            return $"[{luaTableIndex}]=\"{element.Format}\"";
+        }
 
         /// <summary>
         /// generates the export format strings for any DCS functions that export something
@@ -1069,7 +1085,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             return SelectElements(everyFrame)
                 .OrderBy(element => element.ID.Length)
                 .ThenBy(element => element.ID)
-                .Select(GenerateFunction);
+                .Select(GenerateElement);
         }
 
         /// <summary>
