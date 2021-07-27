@@ -14,9 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Util;
 using System.Collections.Generic;
 using System.Diagnostics;
-using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -103,29 +103,76 @@ namespace GadrocsWorkshop.Helios
             Assembly execAssembly = Assembly.GetExecutingAssembly();
             LoadModule(execAssembly);
 
-            if (ConfigManager.Application.AllowPlugins)
-            {
-                string pluginsFolder = Path.Combine(Path.GetDirectoryName(execAssembly.Location) ?? "", "Plugins");
-                if (Directory.Exists(pluginsFolder))
-                {
-                    foreach (string pluginPath in Directory.EnumerateFiles(pluginsFolder, "*.dll", SearchOption.AllDirectories))
-                    {
-                        LoadModule(pluginPath);
-                    }
-                }
+            LoadPlugins(execAssembly);
 
-                // REVISIT: move this to plugins folder and get rid of special case if we can add the check for system libraries
-                // to HeliosModuleAttribute.  This would be relevant if we create other plugins for DCSFlightPanels and the like
-                String phidgetsDllPath = Path.Combine(Environment.SystemDirectory, "phidget21.dll");
-                if (File.Exists("Phidgets.dll") && File.Exists(phidgetsDllPath))
-                {
-                    LoadModule("Phidgets.dll");
-                }
-            }
+            LoadSoftInterfaces();
 
             if (RenderCapability.Tier == 0)
             {
                 Logger.Warn("Hardware rendering is not available on this machine.  Helios will consume large amounts of CPU.");
+            }
+        }
+
+        private static void LoadSoftInterfaces()
+        {
+            if (!(ConfigManager.Application.AllowSoftInterfaces && GlobalOptions.HasAllowSoftInterfaces))
+            {
+                Logger.Debug("Soft interfaces disabled on this installation");
+                return;
+            }
+
+            string userInterfacesFolder = Path.Combine(ConfigManager.DocumentPath, "Interfaces");
+
+            // XXX load installed interfaces
+
+            // XXX load and merge user interfaces
+            LoadSoftInterfacesFromFolder(userInterfacesFolder);
+        }
+
+        private static void LoadSoftInterfacesFromFolder(string interfaceSpecsFolder)
+        {
+            if (!Directory.Exists(interfaceSpecsFolder))
+            {
+                Logger.Debug("Soft interface folder {Path} not found", interfaceSpecsFolder);
+                return;
+            }
+
+            foreach (string specFilePath in Directory.EnumerateFiles(interfaceSpecsFolder, "*.hif.json",
+                SearchOption.AllDirectories))
+            {
+                HeliosInterfaceDescriptor interfaceDescriptor = Json.InterfaceHeader.Load(specFilePath);
+                if (null == interfaceDescriptor)
+                {
+                    Logger.Debug("Soft interface file {Path} does not create a new interface type", specFilePath);
+                    continue;
+                }
+                ((IModuleManagerWritable) ConfigManager.ModuleManager).InterfaceDescriptors.Add(interfaceDescriptor);
+            }
+        }
+
+        private static void LoadPlugins(Assembly execAssembly)
+        {
+            if (!ConfigManager.Application.AllowPlugins)
+            {
+                Logger.Debug("Plugins disabled on this installation");
+                return;
+            }
+
+            string pluginsFolder = Path.Combine(Path.GetDirectoryName(execAssembly.Location) ?? "", "Plugins");
+            if (Directory.Exists(pluginsFolder))
+            {
+                foreach (string pluginPath in Directory.EnumerateFiles(pluginsFolder, "*.dll", SearchOption.AllDirectories))
+                {
+                    LoadModule(pluginPath);
+                }
+            }
+
+            // REVISIT: move this to plugins folder and get rid of special case if we can add the check for system libraries
+            // to HeliosModuleAttribute.  This would be relevant if we create other plugins for DCSFlightPanels and the like
+            String phidgetsDllPath = Path.Combine(Environment.SystemDirectory, "phidget21.dll");
+            if (File.Exists("Phidgets.dll") && File.Exists(phidgetsDllPath))
+            {
+                LoadModule("Phidgets.dll");
             }
         }
 
@@ -240,7 +287,7 @@ namespace GadrocsWorkshop.Helios
         {
             string moduleName = asm.GetName().Name;
             Logger.Debug($"Helios is searching for Helios components in library '{moduleName}'");
-            ((ModuleManager)ConfigManager.ModuleManager).RegisterModule(asm);
+            ((IModuleManagerWritable)ConfigManager.ModuleManager).RegisterModule(asm);
 
             string directoryName = moduleName;
             HeliosModuleAttribute[] moduleAttributes = (HeliosModuleAttribute[])asm.GetCustomAttributes(typeof(HeliosModuleAttribute), false);

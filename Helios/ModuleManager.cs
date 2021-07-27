@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios
     /// <summary>
     /// ModuleManager gives access to all plugin component (Controls, Interfaces, Converters and Property Editors).
     /// </summary>
-    internal class ModuleManager : IModuleManager2
+    internal class ModuleManager : IModuleManager2, IModuleManagerWritable
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -127,7 +127,7 @@ namespace GadrocsWorkshop.Helios
             return BindingValue.Empty;
         }
 
-        internal void RegisterModule(Assembly asm)
+        public void RegisterModule(Assembly asm)
         {
             if (asm == null)
             {

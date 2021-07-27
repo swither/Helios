@@ -53,19 +53,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         [JsonConstructor]
         private DCSDataElement()
         {
-            // no code
+            // default is true if not mentioned in JSON
+            IsExportedEveryFrame = true;
         }
 
         [JsonProperty("Format", NullValueHandling = NullValueHandling.Ignore)]
         public string Format { get; private set; }
 
-        [JsonProperty("IsExportedEveryFrame", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("IsExportedEveryFrame")]
         public bool IsExportedEveryFrame { get; private set; }
 
         #region JsonOnly
         public bool ShouldSerializeIsExportedEveryFrame()
         {
-            return IsExportedEveryFrame;
+            return !IsExportedEveryFrame;
         }
         #endregion
     }

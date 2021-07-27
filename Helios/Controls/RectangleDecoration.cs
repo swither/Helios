@@ -35,7 +35,13 @@ namespace GadrocsWorkshop.Helios.Controls
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public RectangleDecoration()
-            : base("Rectangle", new Size(100, 100))
+            : this("Rectangle", new Size(100, 100))
+        {
+            // all code in utility constructor
+        }
+
+        protected RectangleDecoration(string name, Size nativeSize) 
+            : base (name, nativeSize)
         {
             IsSnapTarget = false;
             HeliosAction fillColorAction = new HeliosAction(this, "", "fill color", "set", "Sets the fill color for the rectangle", "Color in the hex format #AARRGGBB.", BindingValueUnits.Text);

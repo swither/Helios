@@ -50,5 +50,11 @@ namespace GadrocsWorkshop.Helios
         /// if set to false, logging is initialized in such a way as to discard all log messages
         /// </summary>
         public bool AllowLogging { get; set; } = true;
+
+        /// <summary>
+        /// if set to false, interface classes can not be defined from external files alone, and must be
+        /// instantiated from code, even if their details are stored externally
+        /// </summary>
+        public bool AllowSoftInterfaces { get; set; } = true;
     }
 }

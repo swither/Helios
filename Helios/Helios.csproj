@@ -95,6 +95,7 @@
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Special\TestControl.cs" />
     <Compile Include="Controls\TimerPanelBehaviorEditor.xaml.cs">
       <DependentUpon>TimerPanelBehaviorEditor.xaml</DependentUpon>
     </Compile>
@@ -119,9 +120,11 @@
     <Compile Include="HeliosVisualWithXml.cs" />
     <Compile Include="IBuildableFunction.cs" />
     <Compile Include="IInstallation2.cs" />
+    <Compile Include="IModuleManagerWritable.cs" />
     <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
+    <Compile Include="Interfaces\DCS\Soft\SoftInterface.cs" />
     <Compile Include="Interfaces\DCS\Template\Functions\ExampleFunction.cs" />
     <Compile Include="Interfaces\DCS\Template\TemplateInterface.cs" />
     <Compile Include="Json\BindingValueUnit\ConverterForJsonNet.cs" />
@@ -941,7 +944,7 @@
     <Compile Include="Interfaces\DCS\Common\SwitchPosition.cs" />
     <Compile Include="Interfaces\DCS\Common\Text.cs" />
     <Compile Include="Interfaces\DCS\FA18C\Functions\Altimeter.cs" />
-    <Compile Include="Interfaces\DCS\FC2\FC3Interface.cs" />
+    <Compile Include="Interfaces\DCS\FC3\FC3Interface.cs" />
     <Compile Include="Interfaces\DCS\Generic\GenericInterface.cs" />
     <Compile Include="Interfaces\DCS\M2000C\M2000CInterface.cs" />
     <Compile Include="Interfaces\DCS\Mi8Simple\Mi8SimpleInterface.cs" />
@@ -1146,7 +1149,7 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Resource>
-    <Resource Include="Interfaces\DCS\FC2\ExportFunctions.lua" />
+    <Resource Include="Interfaces\DCS\FC3\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\MiG21\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\FA18C\ExportFunctions.lua" />
@@ -1158,6 +1161,7 @@
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C1.lua" />
     <Resource Include="Interfaces\DCS\Common\Export.lua" />
     <Resource Include="Interfaces\DCS\BlackShark\ExportFunctions.lua" />
+    <None Include="Interfaces\FunctionsClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -2915,7 +2919,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Gauges\FA-18C\Controls\" />
-    <Folder Include="Interfaces\DCS\Common\Functions\" />
     <Folder Include="Interfaces\DCS\F14B\Functions\" />
     <Folder Include="Interfaces\DCS\M2000C\Functions\" />
     <Folder Include="Interfaces\DCS\Mi8Simple\Functions\" />

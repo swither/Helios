@@ -14,8 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Windows;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+using GadrocsWorkshop.Helios.Json;
 using GadrocsWorkshop.Helios.Windows;
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.Serialization;
 using System.Timers;
 using System.Windows.Threading;
-using GadrocsWorkshop.Helios.Interfaces.Capabilities;
-using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
@@ -515,31 +513,23 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
 
             // load from Json
-            Json.InterfaceFile<NetworkFunction> loaded;
-            using (StreamReader file = File.OpenText(jsonPath))
-            {
-                // XXX check schema first and see if we can get decent readable error messages from that
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Converters.Add(new Json.Function.ConverterForJsonNet<NetworkFunction, BaseUDPInterface>());
-                serializer.Converters.Add(new Json.BindingValueUnit.ConverterForJsonNet());
-
-                // don't append to arrays
-                serializer.ObjectCreationHandling = ObjectCreationHandling.Replace;
-
-                // this isn't a cross process capable context, so we are zeroing all the bits of the valid states
-                serializer.Context = new StreamingContext(0, this);
-                loaded = (Json.InterfaceFile<NetworkFunction>)serializer.Deserialize(file, typeof(Json.InterfaceFile<NetworkFunction>));
-                if (null == loaded)
-                {
-                    throw new Exception("failed to load any functions from interface JSON");
-                }
-            }
-
-            // WARNING: all base inherited functions will already exist and will need to be removed
-            // in this implementation, because we are loading into an actual instance of the interface class
-            Dictionary<string, NetworkFunction> predefined = new Dictionary<string, NetworkFunction>(Functions.ToDictionary(f => f.LocalKey, f => f));
+            InterfaceFile<NetworkFunction> loaded = InterfaceFile<NetworkFunction>.LoadFunctions(this, jsonPath);
 
             // if we survive the loading, install all these functions
+            InstallFunctions(loaded);
+
+            return true;            
+            // XXX integrate any changes user made in Documents folder, same relative path
+        }
+
+        public void InstallFunctions(InterfaceFile<NetworkFunction> loaded)
+        {
+            // WARNING: all base inherited functions will already exist and will need to be removed
+            // in this implementation, because we are loading into an actual instance of the interface class
+            Dictionary<string, NetworkFunction> predefined =
+                new Dictionary<string, NetworkFunction>(Functions.ToDictionary(f => f.LocalKey, f => f));
+
+            // add or replace functions
             foreach (NetworkFunction function in loaded.Functions)
             {
                 if (predefined.TryGetValue(function.LocalKey, out NetworkFunction oldFunction))
@@ -554,9 +544,8 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 // now install the new implementation
                 AddFunction(function);
             }
-
-            return true;            // XXX integrate any changes user made in Documents folder, same relative path
         }
+
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
         {

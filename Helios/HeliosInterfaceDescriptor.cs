@@ -1,134 +1,108 @@
-﻿//  Copyright 2014 Craig Courtney
-//    
-//  Helios is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2014 Craig Courtney
+// Copyright 2021 Ammo Goettsch
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+using System;
+using System.Collections.Generic;
+using GadrocsWorkshop.Helios.ComponentModel;
 
 namespace GadrocsWorkshop.Helios
 {
-    using System;
-    using System.Collections.Generic;
-
-    using GadrocsWorkshop.Helios.ComponentModel;
-
     public class HeliosInterfaceDescriptor
     {
-        private HeliosInterfaceAttribute _interfaceAttribute;
-        private Type _interfaceType;
         private HeliosInterfaceFactory _factory;
 
         public HeliosInterfaceDescriptor(Type type, HeliosInterfaceAttribute attribute)
         {
-            _interfaceType = type;
-            _interfaceAttribute = attribute;
+            InterfaceType = type;
+
+            // copy data from interface attribute markup
+            Name = attribute.Name;
+            TypeIdentifier = attribute.TypeIdentifier;
+            ParentTypeIdentifier = attribute.Parent;
+            InterfaceEditorType = attribute.InterfaceEditorType;
+            FactoryType = attribute.Factory;
+            UniquenessKey = attribute.UniquenessKey ?? attribute.TypeIdentifier;
+            AutoAdd = attribute.AutoAdd;
         }
 
-        public Type InterfaceType
+        protected HeliosInterfaceDescriptor(Type interfaceType, string name, string typeIdentifier, string parentTypeIdentifier, Type interfaceEditorType, Type factoryType, string uniquenessKey, bool autoAdd)
         {
-            get
+            InterfaceType = interfaceType;
+            Name = name;
+            TypeIdentifier = typeIdentifier;
+            ParentTypeIdentifier = parentTypeIdentifier;
+            InterfaceEditorType = interfaceEditorType;
+            FactoryType = factoryType;
+            UniquenessKey = uniquenessKey;
+            AutoAdd = autoAdd;
+        }
+
+        public virtual HeliosInterface CreateInstance()
+        {
+            // does this interface require its name?
+            System.Reflection.ConstructorInfo ctor = InterfaceType.GetConstructor(new[] {typeof(string)});
+            if (ctor != null)
             {
-                return _interfaceType;
+                return (HeliosInterface) Activator.CreateInstance(InterfaceType, Name);
             }
+
+            // default construct or crash if no such constructor defined
+            return (HeliosInterface) Activator.CreateInstance(InterfaceType);
         }
 
-        public Type InterfaceEditorType
+        public virtual HeliosInterface CreateInstance(HeliosInterface parent)
         {
-            get
+            // does this interface require its parent and its own name?
+            System.Reflection.ConstructorInfo ctor =
+                InterfaceType.GetConstructor(new[] {typeof(HeliosInterface), typeof(string)});
+            if (ctor != null)
             {
-                return _interfaceAttribute.InterfaceEditorType;
+                return (HeliosInterface) Activator.CreateInstance(InterfaceType, parent, Name);
             }
+
+            // construct with reference to parent or crash if no such constructor defined
+            return (HeliosInterface) Activator.CreateInstance(InterfaceType, parent);
         }
 
-        public string TypeIdentifier
-        {
-            get
-            {
-                return _interfaceAttribute.TypeIdentifier;
-            }
-        }
+        public List<HeliosInterface> GetNewInstances(HeliosProfile profile) =>
+            Factory.GetInterfaceInstances(this, profile);
 
-        public string UniquenessKey
-        {
-            get => _interfaceAttribute.UniquenessKey ?? _interfaceAttribute.TypeIdentifier;
-        }
+        public List<HeliosInterface> GetAutoAddInstances(HeliosProfile profile) =>
+            Factory.GetAutoAddInterfaces(this, profile);
 
-        public string ParentTypeIdentifier
-        {
-            get => _interfaceAttribute.Parent;
-        }
+        #region Properties
 
-        public string Name
-        {
-            get
-            {
-                return _interfaceAttribute.Name;
-            }
-        }
-
-        public HeliosInterfaceFactory Factory
-        {
-            get
-            {
-                if (_factory == null)
-                {
-                    _factory = (HeliosInterfaceFactory)Activator.CreateInstance(_interfaceAttribute.Factory);
-                }
-                return _factory;
-            }
-        }
+        public Type InterfaceType { get; }
+        public string Name { get; }
+        public string TypeIdentifier { get; }
+        public string ParentTypeIdentifier { get; }
+        public Type InterfaceEditorType { get; }
+        public Type FactoryType { get; }
+        public string UniquenessKey { get; }
 
         /// <summary>
-        /// If true an isntance of this control will automatically be added to a new profile.
+        /// true if an instance of this control will automatically be added to a new profile.
         /// </summary>
-        public bool AutoAdd
-        {
-            get
-            {
-                return _interfaceAttribute.AutoAdd;
-            }
-        }
+        public bool AutoAdd { get; }
 
-        public HeliosInterface CreateInstance()
-        {
-            // does this interface require its name?
-            System.Reflection.ConstructorInfo ctor = _interfaceType.GetConstructor(new[] { typeof(string) });
-            if (ctor != null)
-            {
-                return (HeliosInterface)Activator.CreateInstance(_interfaceType, new object[] { Name });
-            }
-            return (HeliosInterface)Activator.CreateInstance(_interfaceType);
-        }
+        public HeliosInterfaceFactory Factory =>
+            _factory ??
+            (_factory = (HeliosInterfaceFactory) Activator.CreateInstance(FactoryType));
 
-        public HeliosInterface CreateInstance(HeliosInterface parent)
-        {
-            // does this interface require its name?
-            System.Reflection.ConstructorInfo ctor = _interfaceType.GetConstructor(new[] { typeof(HeliosInterface), typeof(string) });
-            if (ctor != null)
-            {
-                return (HeliosInterface)Activator.CreateInstance(_interfaceType, new object[] { parent, Name });
-            }
-            // intentionally crash if incorrect constructor
-            return (HeliosInterface)Activator.CreateInstance(_interfaceType, new object[] { parent });
-        }
-
-
-        public List<HeliosInterface> GetNewInstances(HeliosProfile profile)
-        {
-            return Factory.GetInterfaceInstances(this, profile);
-        }
-
-        public List<HeliosInterface> GetAutoAddInstances(HeliosProfile profile)
-        {
-            return Factory.GetAutoAddInterfaces(this, profile);
-        }
+        #endregion
     }
 }

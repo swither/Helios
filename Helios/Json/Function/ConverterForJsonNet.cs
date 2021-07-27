@@ -21,41 +21,52 @@ using Newtonsoft.Json.Linq;
 
 namespace GadrocsWorkshop.Helios.Json.Function
 {
-    public class ConverterForJsonNet<F, I> : JsonConverter
-        where F : class, IBuildableFunction where I : class, ISoftInterface
+    public class ConverterForJsonNet<TFunction, TInterface> : JsonConverter
+        where TFunction : class, IBuildableFunction where TInterface : class, ISoftInterface
     {
         #region Overrides
 
-        public override bool CanConvert(Type objectType) => typeof(F).IsAssignableFrom(objectType);
+        public override bool CanConvert(Type objectType) => typeof(TFunction).IsAssignableFrom(objectType);
 
         public override object ReadJson(JsonReader reader,
             Type objectType, object existingValue, JsonSerializer serializer)
         {
             JObject json = JObject.Load(reader);
-            I parent = serializer.Context.Context as I;
+            TInterface parent = (TInterface)serializer.Context.Context;
 
+            // let the container class dereference this type name
             string typeName = json.Value<string>("Type");
             Type classType = parent.ResolveFunctionType(typeName);
-
+            if (null == classType)
+            {
+                string unsafeString = typeName;
+                if (unsafeString.Length > 256)
+                {
+                    unsafeString = unsafeString.Substring(0, 256);
+                }
+                throw new JsonException($"{unsafeString} is not a valid type that may appear in a Helios interface");
+            }
+             
+            // now instantiate the function
             System.Reflection.ConstructorInfo deserializationConstructor =
-                classType.GetConstructor(new[] {typeof(I), typeof(System.Runtime.Serialization.StreamingContext)});
-            F item;
+                classType.GetConstructor(new[] {typeof(TInterface), typeof(System.Runtime.Serialization.StreamingContext)});
+            TFunction item;
             if (deserializationConstructor != null)
             {
                 // create an instance of the correct type, using the preferred constructor
-                item = (F) Activator.CreateInstance(classType, parent, serializer.Context);
+                item = (TFunction) Activator.CreateInstance(classType, parent, serializer.Context);
             }
             else
             {
-                System.Reflection.ConstructorInfo parentOnlyConstructor = classType.GetConstructor(new[] {typeof(I)});
+                System.Reflection.ConstructorInfo parentOnlyConstructor = classType.GetConstructor(new[] {typeof(TInterface)});
                 if (parentOnlyConstructor == null)
                 {
                     throw new JsonException(
-                        $"{classType} does not define a constructor from {typeof(I)} and cannot be deserialized from JSON");
+                        $"{classType} does not define a constructor from {typeof(TInterface)} and cannot be deserialized from JSON");
                 }
 
                 // create an instance of the correct type
-                item = (F) Activator.CreateInstance(classType, serializer.Context.Context as I);
+                item = (TFunction) Activator.CreateInstance(classType, serializer.Context.Context as TInterface);
             }
 
 
@@ -72,6 +83,7 @@ namespace GadrocsWorkshop.Helios.Json.Function
         public override void WriteJson(JsonWriter writer,
             object value, JsonSerializer serializer)
         {
+            // this converter is only for reading
             throw new NotImplementedException();
         }
 

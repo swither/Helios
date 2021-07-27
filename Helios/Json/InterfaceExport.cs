@@ -28,52 +28,25 @@ namespace GadrocsWorkshop.Helios.Json
 {
     public class InterfaceExport
     {
-        public static List<System.Type> KnownTypes = new List<System.Type>
+        /// <summary>
+        /// find all the network functions; slow
+        /// </summary>
+        private IEnumerable<System.Type> FindNetworkFunctions() => FindAssemblies()
+            .SelectMany(assembly => assembly.ExportedTypes)
+            .Where(type => !type.IsAbstract)
+            .Where(type => typeof(UDPInterface.NetworkFunction).IsAssignableFrom(type));
+
+        /// <summary>
+        /// enumerate all assemblies that may contains network functions; slow
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<Assembly> FindAssemblies()
         {
-            // REVISIT: could we walk the assemblies and figure out which types are concrete?
-            // or are there concrete types that aren't intended for use?
-            typeof(Interfaces.DCS.A10C.Functions.Altimeter),
-            typeof(Interfaces.DCS.A10C.Functions.HSIMiles),
-            typeof(Interfaces.DCS.A10C.Functions.ILSFrequency),
-            typeof(Interfaces.DCS.A10C.Functions.TACANChannel),
-            typeof(Interfaces.DCS.A10C.Functions.TotalFuel),
-            typeof(Interfaces.DCS.A10C.Functions.VHFPresetSelector),
-            typeof(Interfaces.DCS.A10C.Functions.VHFRadioEncoder),
-            typeof(Interfaces.DCS.A10C.Functions.VHFRadioEncoder1),
-            typeof(Interfaces.DCS.A10C.Functions.VHFRadioEncoder3),
-            typeof(Interfaces.DCS.A10C.Functions.VHFRadioEncoder4),
-            typeof(Interfaces.DCS.AV8B.Functions.Altimeter),
-            typeof(Interfaces.DCS.AV8B.Functions.Digits2Display),
-            typeof(Interfaces.DCS.AV8B.Functions.Digits3Display),
-            typeof(Interfaces.DCS.AV8B.Functions.Digits4Display),
-            typeof(Interfaces.DCS.AV8B.Functions.FuelTotalDisplay),
-            typeof(Interfaces.DCS.AV8B.Functions.SMCFuzeDisplay),
-            typeof(Interfaces.DCS.AV8B.Functions.SMCMultipleDisplay),
-            typeof(Interfaces.DCS.BlackShark.Functions.HSIRange),
-            typeof(Interfaces.DCS.BlackShark.Functions.LatitudeEntry),
-            typeof(Interfaces.DCS.BlackShark.Functions.MagVariation),
-            typeof(Interfaces.DCS.BlackShark.Functions.VHF2Rotary1),
-            typeof(Interfaces.DCS.BlackShark.Functions.VHF2Rotary23),
-            typeof(Interfaces.DCS.BlackShark.Functions.VHF2Rotary4),
-            typeof(AbsoluteEncoder),
-            typeof(Axis),
-            typeof(DualNetworkValue),
-            typeof(DualRocker),
-            typeof(FlagValue),
-            typeof(GuardedSwitch),
-            typeof(HatSwitch),
-            typeof(IndicatorPushButton),
-            typeof(LockedEncoder),
-            typeof(NetworkValue),
-            typeof(PushButton),
-            typeof(Rocker),
-            typeof(RotaryEncoder),
-            typeof(ScaledNetworkValue),
-            typeof(SilentValueConsumer),
-            typeof(Switch),
-            typeof(Text),
-            typeof(Interfaces.DCS.FA18C.Functions.Altimeter)
-        };
+            // core assembly, presumably Helios.dll
+            yield return Assembly.GetAssembly(typeof(UDPInterface.NetworkFunction));
+
+            // REVISIT: if we end up refactoring DCS interfaces out to other plugin assemblies, we will need a mechanism to find these
+        }
 
         /// <summary>
         /// configures all our generator options except the special handling for NetworkFunction, so we can disable it
@@ -85,6 +58,7 @@ namespace GadrocsWorkshop.Helios.Json
             // generator.SchemaIdGenerationHandling = SchemaIdGenerationHandling.TypeName;
             generator.DefaultRequired = Required.DisallowNull;
             generator.GenerationProviders.Add(new BindingValueUnit.SchemaGenerationProviderForJsonNet());
+            generator.GenerationProviders.Add(new StringEnumGenerationProvider());
         }
 
         public void GenerateInterfaceJson()
@@ -99,48 +73,52 @@ namespace GadrocsWorkshop.Helios.Json
                 }
 
                 HeliosInterface newInterface = descriptor.CreateInstance();
-                if (newInterface is UDPInterface.BaseUDPInterface udpInterface)
+                if (!(newInterface is UDPInterface.BaseUDPInterface udpInterface))
                 {
-                    string name = udpInterface.TypeIdentifier;
-                    if ((name == null) || (name.Length < 1))
-                    {
-                        name = udpInterface.Name;
-                    }
-
-                    string moduleName = name;
-                    IEnumerable<string> vehicles = new string[0];
-                    if (udpInterface is DCSInterface dcs)
-                    {
-                        moduleName = dcs.ModuleName;
-                        vehicles = dcs.Vehicles;
-                    }
-
-                    InterfaceFile<UDPInterface.NetworkFunction> jsonObject =
-                        new InterfaceFile<UDPInterface.NetworkFunction>
-                        {
-                            VersionString =
-                                VersionChecker.VersionToString(Assembly.GetEntryAssembly().GetName().Version),
-                            Module = moduleName,
-                            Functions = udpInterface.Functions.Where(func => func.Serializable),
-                            Vehicles = vehicles
-                        };
-                    string jsonPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", $"{name}.hif.json");
-                    Directory.CreateDirectory(Path.GetDirectoryName(jsonPath));
-                    File.WriteAllText(
-                        jsonPath,
-                        JsonConvert.SerializeObject(
-                            jsonObject,
-                            new JsonSerializerSettings
-                            {
-                                Formatting = Formatting.Indented,
-                                Converters = new List<JsonConverter>
-                                {
-                                    new BindingValueUnit.ConverterForJsonNet(),
-                                    new ConverterForJsonNet()
-                                }
-                            })
-                    );
+                    // we currently only export these types of interfaces
+                    continue;
                 }
+
+                string name = udpInterface.TypeIdentifier;
+                if ((name == null) || (name.Length < 1))
+                {
+                    name = udpInterface.Name;
+                }
+
+                string moduleName = name;
+                IEnumerable<string> vehicles = new string[0];
+                if (udpInterface is DCSInterface dcs)
+                {
+                    moduleName = dcs.ModuleName;
+                    vehicles = dcs.Vehicles;
+                }
+
+                InterfaceFile<UDPInterface.NetworkFunction> jsonObject =
+                    new InterfaceFile<UDPInterface.NetworkFunction>
+                    {
+                        VersionString =
+                            VersionChecker.VersionToString(Assembly.GetEntryAssembly()?.GetName().Version ?? new System.Version(0, 0, 0, 0)),
+                        Module = moduleName,
+                        Name = udpInterface.Name,
+                        Functions = udpInterface.Functions.Where(func => func.Serializable),
+                        Vehicles = vehicles
+                    };
+                string jsonPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", $"{name}.hif.json");
+                Directory.CreateDirectory(Path.GetDirectoryName(jsonPath) ?? throw new System.Exception("document path must have a directory component"));
+                File.WriteAllText(
+                    jsonPath,
+                    JsonConvert.SerializeObject(
+                        jsonObject,
+                        new JsonSerializerSettings
+                        {
+                            Formatting = Formatting.Indented,
+                            Converters = new List<JsonConverter>
+                            {
+                                new BindingValueUnit.ConverterForJsonNet(),
+                                new ConverterForJsonNet()
+                            }
+                        })
+                );
             }
 
             UDPInterface.BaseUDPInterface.IsWritingFunctionsToJson = false;
@@ -154,9 +132,9 @@ namespace GadrocsWorkshop.Helios.Json
             generator.GenerationProviders.Add(new NetworkFunction.SchemaGenerationProviderForJsonNet());
 
             JSchema functions = new JSchema();
-            foreach (System.Type knownType in KnownTypes)
+            foreach (System.Type networkFunctionType in FindNetworkFunctions())
             {
-                functions.OneOf.Add(generator.Generate(knownType));
+                functions.OneOf.Add(generator.Generate(networkFunctionType));
             }
 
             JSchema schema = generator.Generate(typeof(InterfaceFile<UDPInterface.NetworkFunction>));
@@ -164,7 +142,7 @@ namespace GadrocsWorkshop.Helios.Json
             schema.Properties["functions"].Items.Add(functions);
 
             string schemaPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", "hif.schema.json");
-            Directory.CreateDirectory(Path.GetDirectoryName(schemaPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(schemaPath) ?? throw new System.Exception("document path for schema generation must have a directory component"));
             using (StreamWriter file = File.CreateText(schemaPath))
             using (JsonTextWriter writer = new JsonTextWriter(file)
             {

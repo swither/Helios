@@ -25,7 +25,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Xml;
 using Path = System.IO.Path;
 
@@ -85,9 +84,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <summary>
         /// these are allowable export device names in addition to real known vehicles
         /// </summary>
-        private string[] _specialExportDeviceNames = new[] { null, "FC2", "DCSGeneric" };
+        private readonly string[] _specialExportDeviceNames = { null, "FC2", "DCSGeneric" };
 
-        public DCSInterface(string name, string exportDeviceName, string exportFunctionsPath)
+        protected DCSInterface(string name, string exportDeviceName, string exportFunctionsPath)
             : base(name)
         {
             VehicleName = exportDeviceName;
@@ -164,7 +163,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <summary>
         /// vehicle-specific file resource to include
         /// </summary>
-        public string ExportFunctionsPath { get; }
+        public string ExportFunctionsPath { get; protected set; }
 
         public DCSExportConfiguration Configuration => _configuration;
 
@@ -313,9 +312,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             base.DetachFromProfileOnMainThread(oldProfile);
             oldProfile.ProfileTick -= Profile_Tick;
-            _configuration.Dispose();
+            _configuration?.Dispose();
             _configuration = null;
-            _vehicleImpersonation.Dispose();
+            _vehicleImpersonation?.Dispose();
             _vehicleImpersonation = null;
         }
 

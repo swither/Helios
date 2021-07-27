@@ -24,6 +24,19 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class GlobalOptions : NotificationObject
     {
+        /// <summary>
+        /// name used in the settings; may differ from property name and must never change
+        /// </summary>
+        private const string SETTING_ALLOW_SOFT_INTERFACES = "AllowSoftInterfaces";
+
+        /// <summary>
+        /// name used in the settings; may differ from property name and must never change
+        /// </summary>
+        private const string SETTING_SCALE_ALL_TEXT = "ScaleAllText";
+
+        /// <summary>
+        /// global options group name used in the settings, must never change
+        /// </summary>
         private const string SETTINGS_GROUP = "Helios";
 
         /// <summary>
@@ -54,8 +67,8 @@ namespace GadrocsWorkshop.Helios
 
                 bool oldValue = _scaleAllText;
                 _scaleAllText = value;
-                ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, "ScaleAllText", value);
-                OnPropertyChanged("ScaleAllText", oldValue, value, true);
+                ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, SETTING_SCALE_ALL_TEXT, value);
+                OnPropertyChanged(nameof(ScaleAllText), oldValue, value, true);
             }
         }
 
@@ -66,7 +79,16 @@ namespace GadrocsWorkshop.Helios
         /// true if text attached to buttons and similar controls is scaled during reset monitors and similar operations
         /// </returns>
         public static bool HasScaleAllText =>
-            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, "ScaleAllText", true);
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_SCALE_ALL_TEXT, true);
+
+        /// <summary>
+        /// accessible as utility for client code that can't get access to the GlobalOptions instance readily
+        /// </summary>
+        /// <returns>
+        /// true if interface classes may be defined entirely in external files without being instantiated in the code
+        /// </returns>
+        public static bool HasAllowSoftInterfaces =>
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_ALLOW_SOFT_INTERFACES, false);
 
         #endregion
     }
