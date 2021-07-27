@@ -326,7 +326,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             if (activeDocument != CurrentEditor)
             {
+                // this switches all of our UI panels to show content for this editor, because of XAML bindings to this property
                 CurrentEditor = activeDocument;
+
+                // find selection-capable editor or null
+                HeliosVisualContainerEditor editor = (activeDocument as PanelDocument)?.PanelEditor ??
+                                                     (activeDocument as MonitorDocument)?.MonitorEditor;
+
+                // also notify tools, which do not have a UI element that they could be binding
+                foreach (ISelectionAwareTool tool in _tools.Values.OfType<ISelectionAwareTool>())
+                {
+                    tool.AttachToSelection(editor?.SelectedItems);
+                }
             }
         }
 
@@ -870,7 +881,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void LoadVisual(HeliosVisual visual)
         {
-            visual.Renderer.Dispatcher = Dispatcher;
             visual.Renderer.Refresh();
             foreach (HeliosVisual control in visual.Children)
             {
@@ -1259,7 +1269,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 Logger.Error(ex, "Reset Monitors - Unhandled exception");
                 Logger.Error("Rolling back any undoable operations from monitor reset");
                 ConfigManager.UndoManager.UndoBatch();
-                MessageBox.Show("Error encountered while resetting monitors; please file a bug with the contents of the application log", "Error");
+                MessageBox.Show($"Error encountered while resetting monitors:{Environment.NewLine}{ex.Message}{Environment.NewLine}Please file a bug with the contents of the application log", "Error");
             }
             finally
             {
