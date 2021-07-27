@@ -57,11 +57,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Helios\Helios.csproj">
-      <Project>{E5ABE3F5-46EC-46D1-9330-D42311471A93}</Project>
-      <Name>Helios</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Patching\Patching.csproj">
       <Project>{85e85bdf-eb98-4440-bc7d-52cd44176bd9}</Project>
       <Name>Patching</Name>
