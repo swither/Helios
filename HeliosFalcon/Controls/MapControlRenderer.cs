@@ -54,6 +54,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		private const double _minThreatCircleRadius = 30000d;
 		private const double _mapBaseUnit = 1000d;
+		private const double _mapScaleModifier = 1.33d;
 		private double _mapScaleUnit;
 		private const double _waypointBaseScale = 30d;
 		private double _waypointSize;
@@ -205,16 +206,18 @@ namespace GadrocsWorkshop.Helios.Controls
 
 			drawingContext.PushTransform(transform);
 
-			drawingContext.PushOpacity(ThreatVisibility);
-			DrawThreatCircles(drawingContext);
-			DrawDesignatedTargets(drawingContext);
-			DrawThreatNames(drawingContext);
-			drawingContext.Pop();
+			if (ThreatVisibility)
+			{
+				DrawThreatCircles(drawingContext);
+				DrawDesignatedTargets(drawingContext);
+				DrawThreatNames(drawingContext);
+			}
 
-			drawingContext.PushOpacity(WaypointVisibility);
-			DrawWaypointLines(drawingContext);
-			DrawWaypointImages(drawingContext);
-			drawingContext.Pop();
+			if (WaypointVisibility)
+			{
+				DrawWaypointLines(drawingContext);
+				DrawWaypointImages(drawingContext);
+			}
 
 			drawingContext.Pop();
 		}
@@ -258,6 +261,14 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		void DrawThreatNames(DrawingContext drawingContext)
 		{
+			double sizeOffset = _fontScaleSize * 0.1d;
+			double xPosOffset = _mapScaleUnit * 20d;
+			double yPosOffset = _mapScaleUnit * 15d + _fontScaleSize * 1.1d;
+
+			_lineBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+			_linePen = new Pen(_lineBrush, _fontScaleSize * 0.11d);
+			_backgroundFillBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
 			// This prevents jittery text when there is no rotation.
 			drawingContext.PushTransform(new RotateTransform(0.000001d));
 
@@ -265,10 +276,17 @@ namespace GadrocsWorkshop.Helios.Controls
 			{
 				if (_mapPoints_PT[i, 0] > 0d && !string.IsNullOrEmpty(_navNames_PT[i]))
 				{
-					_formattedText = new FormattedText(_navNames_PT[i], CultureInfo.GetCultureInfo("en-us"),
-						FlowDirection.LeftToRight, new Typeface("Lucida Console Regular"), _fontScaleSize, Brushes.White, _pixelsPerDip);
+					double xPos = _mapPoints_PT[i, 0] + xPosOffset;
+					double yPos = _mapPoints_PT[i, 1] - yPosOffset;
 
-					drawingContext.DrawText(_formattedText, new Point(_mapPoints_PT[i, 0] + _fontScaleSize * 0.5d, _mapPoints_PT[i, 1] - _fontScaleSize * 1.2d));
+					_formattedText = new FormattedText(_navNames_PT[i], CultureInfo.GetCultureInfo("en-us"),
+						FlowDirection.LeftToRight, new Typeface("Lucida Console Regular"), _fontScaleSize, Brushes.Black, _pixelsPerDip);
+
+					Rect _textBounds = new Rect(xPos - sizeOffset, yPos - sizeOffset, _formattedText.Width + sizeOffset * 2.5d, _formattedText.Height + sizeOffset);
+
+					drawingContext.DrawRectangle(_backgroundFillBrush, _linePen, _textBounds);
+
+					drawingContext.DrawText(_formattedText, new Point(xPos, yPos));
 				}
 			}
 
@@ -311,16 +329,17 @@ namespace GadrocsWorkshop.Helios.Controls
 
 			_mapScaleUnit = FeetToMapUnits_ScaleUnit(_mapBaseUnit, _xScale, _yScale);
 			_fontScaleSize = _mapScaleUnit * _fontBaseSize;
-
 			_waypointSize = MapShortestSize / _waypointBaseScale * MapScaleMultiplier;
 
 			if (MapScaleMultiplier == 1d)
 			{
-				_waypointSize = _waypointSize * 1.33d;
+				_fontScaleSize = _fontScaleSize * _mapScaleModifier;
+				_waypointSize = _waypointSize * _mapScaleModifier;
 			}
 			else if (MapScaleMultiplier == 4d)
 			{
-				_waypointSize = _waypointSize / 1.33d;
+				_fontScaleSize = _fontScaleSize / _mapScaleModifier;
+				_waypointSize = _waypointSize / _mapScaleModifier;
 			}
 
 			_waypointLineWidth = _waypointSize / 10d;
@@ -409,9 +428,9 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Properties
 
-		public double ThreatVisibility { get; set; }
+		public bool ThreatVisibility { get; set; }
 
-		public double WaypointVisibility { get; set; }
+		public bool WaypointVisibility { get; set; }
 
 		public double MapShortestSize { get; set; }
 
