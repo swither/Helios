@@ -34,6 +34,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             "UH-1H", "Yak-52", "JF-17",
 
             "F-14A-135-GR",
+            "Mi-24P",
 
             // flaming cliffs, no special treatment so far
             "A-10A", "F-15C", "F-16A", "J-11A", "MiG-29A", "MiG-29G", "MiG-29S", "Su-25", "Su-25T", "Su-27", "Su-33",

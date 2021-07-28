@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     public class SilentValueConsumer : NetworkFunction
     {
-        [JsonProperty("ID")]
+        [JsonProperty("id")]
         protected string _id;
 
         public override ExportDataElement[] DataElements => DefaultDataElements;

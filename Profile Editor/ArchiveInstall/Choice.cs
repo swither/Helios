@@ -20,14 +20,14 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
 {
     public class Choice
     {
-        [JsonProperty("Message", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message
         {
             get;
             set;
         }
 
-        [JsonProperty("Options")]
+        [JsonProperty("options")]
         public List<Option> Options
         {
             get;

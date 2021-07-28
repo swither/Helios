@@ -24,14 +24,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     {
         protected class SerializedButton
         {
+            [JsonProperty("deviceId", Required = Required.Always)]
             public string DeviceID { get; set; }
+
+            [JsonProperty("pushId", Required = Required.Always)]
             public string PushID { get; set; }
-            public string PushValue { get; set; }
+
+            [JsonProperty("pushValue", Required = Required.DisallowNull)]
+            public string PushValue { get; set; } = "1.0";
+
+            [JsonProperty("releaseId")]
             public string ReleaseID { get; set; }
+
+            [JsonProperty("releaseValue")]
             public string ReleaseValue { get; set; }
         }
 
-        [JsonProperty("Buttons")]
+        [JsonProperty("buttons")]
         protected List<SerializedButton> SerializedButtons { get; private set; } = new List<SerializedButton>();
 
         protected DCSFunctionWithButtons(BaseUDPInterface sourceInterface, string device, string name, string description) 

@@ -30,8 +30,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private HeliosValue _value;
         private HeliosTrigger _receivedTrigger;
 
-        [JsonProperty("ValueDescription")]
+        [JsonProperty("valueDescription")]
         private string ValueDescription { get; set; }
+
         public bool ShouldSerializeValueDescription()
         {
             return !string.IsNullOrEmpty(ValueDescription);

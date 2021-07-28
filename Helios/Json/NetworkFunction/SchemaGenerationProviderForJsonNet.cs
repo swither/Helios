@@ -42,7 +42,7 @@ namespace GadrocsWorkshop.Helios.Json.NetworkFunction
             }
 
             constType.Enum.Add(typeName);
-            schema.Properties["Type"] = constType;
+            schema.Properties[UDPInterface.NetworkFunction.HELIOS_TYPE_PROPERTY] = constType;
             return schema;
         }
 

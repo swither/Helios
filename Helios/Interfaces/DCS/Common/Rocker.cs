@@ -49,7 +49,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private bool _release2 = false;
 
-        [JsonProperty("Vertical")]
+        [JsonProperty("vertical")]
         private bool _vertical;
 
         public Rocker(BaseUDPInterface sourceInterface, string deviceId, string button1Id, string button2Id, string releaseButtonId, string releaseButton2Id, string argId, string device, string name, bool vertical)

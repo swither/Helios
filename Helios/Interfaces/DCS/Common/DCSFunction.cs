@@ -72,16 +72,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         #region Properties
 
-        [JsonProperty("Device", Order = -9, Required = Required.Always)]
+        [JsonProperty("device", Order = -9, Required = Required.Always)]
         protected string SerializedDeviceName { get; private set; }
 
-        [JsonProperty("Name", Order = -8, Required = Required.Always)]
+        [JsonProperty("name", Order = -8, Required = Required.Always)]
         protected string SerializedFunctionName { get; private set; }
 
-        [JsonProperty("Description", Order = -7)]
+        [JsonProperty("description", Order = -7)]
         protected string SerializedDescription { get; private set; }
 
-        [JsonProperty("Exports", Order = -6, Required = Required.Always)]
+        [JsonProperty("exports", Order = -6, Required = Required.Always)]
         protected DCSDataElement[] SerializedDataElements
         {
             get

@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             public string ActionID { get; set; }
 
             // can be null when used with an axis or other function that calculates its argument value
-            [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+            [JsonProperty("actionValue", NullValueHandling=NullValueHandling.Ignore)]
             public string ActionValue { get; set; }
 
             // calculated protocol value
@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             public string CommandString => $"C{DeviceID},{ActionID},{ActionValue}";
         }
 
-        [JsonProperty("Actions")]
+        [JsonProperty("actions")]
         protected Dictionary<string, SerializedAction> SerializedActions { get; private set; } = new Dictionary<string, SerializedAction>();
 
         protected DCSFunctionWithActions(BaseUDPInterface sourceInterface, string device, string name, string description) 

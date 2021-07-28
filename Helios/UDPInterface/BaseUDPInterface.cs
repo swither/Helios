@@ -532,6 +532,12 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             // add or replace functions
             foreach (NetworkFunction function in loaded.Functions)
             {
+                if (null == function)
+                {
+                    // failed to deserialize or unsupported
+                    continue;
+                }
+
                 if (predefined.TryGetValue(function.LocalKey, out NetworkFunction oldFunction))
                 {
                     // remove the implementation we inherited

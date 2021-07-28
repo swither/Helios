@@ -40,11 +40,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 
         #region JsonOnly
-        [JsonProperty("Device2")]
+        [JsonProperty("device2")]
         protected string SerializedDeviceName2 { get; private set; }
-        [JsonProperty("Name2")]
+        [JsonProperty("name2")]
         protected string SerializedFunctionName2 { get; private set; }
-        [JsonProperty("Description2")]
+        [JsonProperty("description2")]
         protected string SerializedDescription2 { get; private set; }
 
         public bool ShouldSerializeSerializedDescription2()

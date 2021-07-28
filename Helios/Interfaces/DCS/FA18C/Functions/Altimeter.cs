@@ -33,11 +33,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C.Functions
         private string _pressureID;
 
         // NOTE: currently unused, but shortly will be factored to same class that uses these, so put them in the Json
-        [JsonProperty("AltitudeComments")]
+        [JsonProperty("altitudeComments")]
         private string _altitudeComments;
 
         // NOTE: currently unused, but shortly will be factored to same class that uses these, so put them in the Json
-        [JsonProperty("PressureComments")]
+        [JsonProperty("pressureComments")]
         private string _pressureComments;
 
         public Altimeter(BaseUDPInterface sourceInterface, string instrumentClass, string altitudeDeviceId, string altitudeName, string altitudeDescription, string altitudeComments, string pressureDeviceId, string pressureName, string pressureDescription, string pressureComments)

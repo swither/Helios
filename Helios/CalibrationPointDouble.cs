@@ -28,6 +28,7 @@ namespace GadrocsWorkshop.Helios
             _output = outputValue;
         }
 
+        [JsonProperty("value")]
         public double Value
         {
             get
@@ -48,7 +49,7 @@ namespace GadrocsWorkshop.Helios
         /// <summary>
         /// WARNING: this is not actually a multiplier, it is the mapped output value but it is named wrong
         /// </summary>
-        [JsonProperty("MappedValue")]
+        [JsonProperty("mappedValue")]
         public double Multiplier
         {
             get

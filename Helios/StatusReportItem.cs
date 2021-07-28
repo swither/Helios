@@ -71,17 +71,17 @@ namespace GadrocsWorkshop.Helios
         /// <summary>
         /// optional time stamp or null
         /// </summary>
-        [JsonProperty("TimeStamp", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("timeStamp", NullValueHandling = NullValueHandling.Ignore)]
         public string TimeStamp { get; set; } = CreateTimeStamp(DateTime.Now);
 
-        [JsonProperty("Severity", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("severity", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public SeverityCode Severity { get; set; } = SeverityCode.Info;
 
         /// <summary>
         /// the status message, which may be more than one line long
         /// but should generally be short
         /// </summary>
-        [JsonProperty("Status")]
+        [JsonProperty("status")]
         public string Status { get; set; }
 
         /// <summary>
@@ -123,13 +123,13 @@ namespace GadrocsWorkshop.Helios
         /// Any flags set in this value (combined via binary 'or') indicate that
         /// the corresponding fact is true about this status report item.
         /// </summary>
-        [JsonProperty("Flags", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("flags", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public StatusFlags Flags { get; set; }
 
         /// <summary>
         /// a recommendation to the user or null
         /// </summary>
-        [JsonProperty("Recommendation", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("recommendation", NullValueHandling = NullValueHandling.Ignore)]
         public string Recommendation { get; set; }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace GadrocsWorkshop.Helios
         /// property will have the original full text, which is not safe for UI display
         /// and should only be used for logging or sharing purposes
         /// </summary>
-        [JsonProperty("FullText", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("fullText", NullValueHandling = NullValueHandling.Ignore)]
         public string FullText { get; set; }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         [JsonIgnore] public Uri Link;
 
-        [JsonProperty("Code", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("code", NullValueHandling = NullValueHandling.Ignore)]
         public IList<CodeLine> CodeLines { get; private set; }
 
         [JsonIgnore]

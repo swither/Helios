@@ -29,17 +29,9 @@ namespace GadrocsWorkshop.Helios
 
         public HeliosValue(HeliosObject owner, BindingValue initialValue, string device, string name,
             string description, string valueDescription, BindingValueUnit unit)
+            : this(owner, initialValue, device, "", name, description, valueDescription, unit)
         {
-            ValueID = "";
-            _device = device;
-            _name = name;
-            ActionDescription = description;
-            ValueDescription = valueDescription;
-            _owner = new WeakReference(owner);
-            Value = initialValue;
-            Unit = unit;
-
-            UpdateId();
+            // all code in referenced constructor
         }
 
         /// <summary>
@@ -60,6 +52,7 @@ namespace GadrocsWorkshop.Helios
             _name = name;
             ActionDescription = description;
             ActionValueDescription = valueDescription;
+
             _owner = new WeakReference(owner);
             Value = initialValue;
             Unit = unit;

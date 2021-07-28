@@ -29,16 +29,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private string _incrementData;
         private string _decrementData;
 
-        [JsonProperty("ArgumentValue")]
+        [JsonProperty("argumentValue")]
         private double _argValue;
 
-        [JsonProperty("ArgumentMin")]
+        [JsonProperty("argumentMin")]
         private double _argMin;
 
-        [JsonProperty("ArgumentMax")]
+        [JsonProperty("argumentMax")]
         private double _argMax;
 
-        [JsonProperty("Loop")]
+        [JsonProperty("loop")]
         private bool _loop;
 
         private HeliosValue _value;

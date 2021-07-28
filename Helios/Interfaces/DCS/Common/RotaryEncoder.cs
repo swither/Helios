@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private HeliosAction _incrementAction;
         private HeliosAction _decrementAction;
 
-        [JsonProperty("ArgumentValue")]
+        [JsonProperty("argumentValue")]
         private double _argValue;
 
         public RotaryEncoder(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double argValue, string device, string name)

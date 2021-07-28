@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         // this ends up in our serialized ExportDataElement array, so we don't need to persist it
         private readonly string _guardArgId;
 
-        [JsonProperty("Actions")]
+        [JsonProperty("actions")]
         protected Dictionary<string, DCSFunctionWithActions.SerializedAction> SerializedActions { get; private set; } = new Dictionary<string, DCSFunctionWithActions.SerializedAction>();
 
         private HeliosValue _guardValue;

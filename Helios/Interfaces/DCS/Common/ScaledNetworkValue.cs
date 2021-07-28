@@ -26,31 +26,31 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private string _format;
         private HeliosValue _value;
 
-        [JsonProperty("Calibration", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("calibration", NullValueHandling = NullValueHandling.Ignore)]
         protected CalibrationPointCollectionDouble CalibratedScale { get; set; }
 
-        [JsonProperty("BaseValue")]
+        [JsonProperty("baseValue")]
         protected double BaseValue { get; set; }
         public bool ShouldSerializeBaseValue()
         {
             return CalibratedScale == null;
         }
 
-        [JsonProperty("Scale")]
+        [JsonProperty("scale")]
         protected double Scale { get; set; }
         public bool ShouldSerializeScale()
         {
             return CalibratedScale == null;
         }
 
-        [JsonProperty("ValueDescription")]
+        [JsonProperty("valueDescription")]
         private string ValueDescription { get; set; }
         public bool ShouldSerializeValueDescription()
         {
             return !string.IsNullOrEmpty(ValueDescription);
         }
 
-        [JsonProperty("Unit")]
+        [JsonProperty("unit")]
         protected BindingValueUnit Unit { get; set; }
 
         public ScaledNetworkValue(BaseUDPInterface sourceInterface, string id, CalibrationPointCollectionDouble calibration, string device, string name, string description, string valueDescription, BindingValueUnit unit)

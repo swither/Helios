@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             // no code
         }
 
-        [JsonProperty("ID")]
+        [JsonProperty("id", Required = Required.Always)]
         public string ID { get; private set; }
     }
 }

@@ -49,22 +49,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         #region Properties
 
-        [JsonProperty("ExitValue", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("exitValue", NullValueHandling = NullValueHandling.Ignore)]
         public string ExitValue { get; private set; }
 
-        [JsonProperty("ArgumentValue")]
+        [JsonProperty("argumentValue")]
         public string ArgValue { get; private set; }
 
-        [JsonProperty("Name")]
+        [JsonProperty("name")]
         public string Name { get; private set; }
 
-        [JsonProperty("ActionID", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("actionID", NullValueHandling = NullValueHandling.Ignore)]
         public string Action { get; private set; }
 
-        [JsonProperty("StopActionID", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("stopActionID", NullValueHandling = NullValueHandling.Ignore)]
         public string StopAction { get; private set; }
 
-        [JsonProperty("StopActionValue", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("stopActionValue", NullValueHandling = NullValueHandling.Ignore)]
         public string StopActionValue { get; private set; }
 
         #endregion

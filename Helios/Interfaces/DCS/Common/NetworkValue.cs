@@ -25,10 +25,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private string _format;
         private HeliosValue _value;
 
-        [JsonProperty("ValueDescription")]
+        [JsonProperty("valueDescription")]
         private string _valueDescription;
 
-        [JsonProperty("Unit")]
+        [JsonProperty("unit")]
         private BindingValueUnit _unit;
 
         public NetworkValue(BaseUDPInterface sourceInterface, string id, string device, string name, string description, string valueDescription, BindingValueUnit unit)

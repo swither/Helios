@@ -1,4 +1,4 @@
-// Copyright 2020 Ammo Goettsch
+// Copyright 2021 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
     [DebuggerDisplay("{SerializedTypeName} {DebugIdentity}")]
     public abstract class NetworkFunction : IBuildableFunction
     {
+        public const string HELIOS_TYPE_PROPERTY = "heliosType";
         public const string OMITTED_PREFIX = "GadrocsWorkshop.Helios.Interfaces.";
 
         protected NetworkFunction(BaseUDPInterface sourceInterface)
@@ -44,7 +45,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         [JsonIgnore]
         public virtual string LocalKey => string.Join(",", DataElements.Select(d => $"#{d.ID}"));
 
-        [JsonProperty("Type", Order = -10, Required = Required.Always)]
+        [JsonProperty(HELIOS_TYPE_PROPERTY, Order = -10, Required = Required.Always)]
         protected virtual string SerializedTypeName
         {
             get

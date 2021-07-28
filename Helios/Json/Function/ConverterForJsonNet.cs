@@ -24,6 +24,8 @@ namespace GadrocsWorkshop.Helios.Json.Function
     public class ConverterForJsonNet<TFunction, TInterface> : JsonConverter
         where TFunction : class, IBuildableFunction where TInterface : class, ISoftInterface
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         #region Overrides
 
         public override bool CanConvert(Type objectType) => typeof(TFunction).IsAssignableFrom(objectType);
@@ -35,7 +37,13 @@ namespace GadrocsWorkshop.Helios.Json.Function
             TInterface parent = (TInterface)serializer.Context.Context;
 
             // let the container class dereference this type name
-            string typeName = json.Value<string>("Type");
+            string typeName = json.Value<string>(UDPInterface.NetworkFunction.HELIOS_TYPE_PROPERTY);
+            if (typeName == null)
+            {
+                Logger.Warn("unsupported function {id} with key {key} detected in interface file",
+                    json.Value<string>("id"), json.Value<string>("key"));
+                return null;
+            }
             Type classType = parent.ResolveFunctionType(typeName);
             if (null == classType)
             {

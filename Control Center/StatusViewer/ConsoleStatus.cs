@@ -20,9 +20,9 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
 {
     public class ConsoleStatus
     {
-        [JsonProperty("Name")] public string Name => "Control Center Console";
+        [JsonProperty("name")] public string Name => "Control Center Console";
 
-        [JsonProperty("Report")] public IEnumerable<StatusReportItem> Report;
+        [JsonProperty("report")] public IEnumerable<StatusReportItem> Report;
 
         public ConsoleStatus(IEnumerable<StatusReportItem> report)
         {

@@ -24,19 +24,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
         /// <summary>
         /// primary unstructured description about this option
         /// </summary>
-        [JsonProperty("Description")]
+        [JsonProperty("description")]
         public string Description { get; set; }
 
         /// <summary>
         /// optional additional structured information about this option
         /// </summary>
-        [JsonProperty("Info", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("info", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public IEnumerable<StructuredInfo> Info { get; internal set; }
 
-        [JsonProperty("Excludes")]
+        [JsonProperty("excludes")]
         public IEnumerable<string> PathExclusions { get; internal set; }
 
-        [JsonProperty("VersionsRequired", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("versionsRequired", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public IEnumerable<VersionRequired> VersionsRequired { get; internal set; }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios
     [JsonObject]
     public class CalibrationPointCollectionDouble : NotificationObject, ICollection<CalibrationPointDouble>, INotifyCollectionChanged
     {
-        [JsonProperty("Points")]
+        [JsonProperty("points")]
         private LinkedList<CalibrationPointDouble> _points = new LinkedList<CalibrationPointDouble>();
 
         private int _precision = 1;
@@ -127,7 +127,7 @@ namespace GadrocsWorkshop.Helios
             return OutputLimitMax != double.MaxValue;
         }
 
-        [JsonProperty("Precision")]
+        [JsonProperty("precision")]
         public int Preceision
         {
             get { return _precision; }

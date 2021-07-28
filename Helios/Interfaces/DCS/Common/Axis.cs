@@ -28,16 +28,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private string _actionData;
 
-        [JsonProperty("ArgumentValue")]
+        [JsonProperty("argumentValue")]
         protected double _argValue;
 
-        [JsonProperty("ArgumentMin")]
+        [JsonProperty("argumentMin")]
         protected double _argMin;
 
-        [JsonProperty("ArgumentMax")]
+        [JsonProperty("argumentMax")]
         protected double _argMax;
 
-        [JsonProperty("Loop")]
+        [JsonProperty("loop")]
         protected bool _loop;
 
         private HeliosValue _value;

@@ -57,10 +57,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             IsExportedEveryFrame = true;
         }
 
-        [JsonProperty("Format", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("format", NullValueHandling = NullValueHandling.Ignore)]
         public string Format { get; private set; }
 
-        [JsonProperty("IsExportedEveryFrame")]
+        [JsonProperty("isExportedEveryFrame")]
         public bool IsExportedEveryFrame { get; private set; }
 
         #region JsonOnly

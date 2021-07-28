@@ -28,10 +28,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
         private HeliosValue _altitude;
         private HeliosValue _pressure;
 
-        [JsonProperty("AltitudeComments")]
+        [JsonProperty("altitudeComments")]
         private string _altitudeComments;
 
-        [JsonProperty("PressureComments")]
+        [JsonProperty("pressureComments")]
         private string _pressureComments;
 
         public Altimeter(BaseUDPInterface sourceInterface, string instrumentClass, string altitudeId, string altitudeName, string altitudeDescription,string altitudeComments, string pressureId,string pressureName,string pressureDescription, string pressureComments)

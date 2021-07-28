@@ -38,10 +38,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private int _lastSetPosition = -1;
 
-        [JsonProperty("DeviceID")]
+        [JsonProperty("deviceId")]
         private string _deviceId;
 
-        [JsonProperty("Positions")]
+        [JsonProperty("positions")]
         private SwitchPosition[] _positions;
 
         #region Static Factories
@@ -166,6 +166,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         protected string ValueDescriptions { get; private set; } = "";
 
+        [JsonIgnore]
         public IEnumerable<string> PositionValues => _positions.Select(pos => pos.ArgValue);
 
         #endregion
