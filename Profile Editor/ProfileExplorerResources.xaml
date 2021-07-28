@@ -70,15 +70,15 @@
                         <TextBlock Style="{StaticResource PropertyName}">Requires Input Value</TextBlock>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource PropertyName}">Value Type:</TextBlock>
-                            <TextBlock FontSize="10" Text="{Binding ContextItem.Unit.LongName}" Margin="4,0,0,0" />
+                            <TextBlock Style="{StaticResource PropertyName}" Text="{Binding ContextItem.Unit.LongName}" Margin="4,0,0,0" />
                         </StackPanel>
-                        <TextBlock Margin="10,0,0,0" FontSize="10" Text="{Binding ContextItem.ActionValueDescription}" MaxWidth="300" TextWrapping="Wrap" />
+                        <TextBlock Margin="10,0,0,0" Style="{StaticResource Documentation}" Text="{Binding ContextItem.ActionValueDescription}" MaxWidth="300" />
                     </StackPanel>
                 </ToolTip>
             </Border.ToolTip>
             <StackPanel>
                 <TextBlock Text="{Binding Name}" FontSize="12" />
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="10" Foreground="{StaticResource GrayText}"  />
+                <TextBlock Text="{Binding Description}" Style="{StaticResource Documentation}"/>
             </StackPanel>
         </Border>
         <HierarchicalDataTemplate.Triggers>
@@ -98,15 +98,15 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource PropertyName}">Value Type:</TextBlock>
-                            <TextBlock FontSize="10" Text="{Binding ContextItem.Unit.LongName}" Margin="4,0,0,0" />
+                            <TextBlock Style="{StaticResource PropertyName}" Text="{Binding ContextItem.Unit.LongName}" Margin="4,0,0,0" />
                         </StackPanel>
-                        <TextBlock Margin="10,0,0,0" FontSize="10" Text="{Binding ContextItem.TriggerValueDescription}" MaxWidth="300" TextWrapping="Wrap" />
+                        <TextBlock Margin="10,0,0,0" Style="{StaticResource Documentation}" Text="{Binding ContextItem.TriggerValueDescription}" MaxWidth="300" />
                     </StackPanel>
                 </ToolTip>
             </Border.ToolTip>
             <StackPanel>
                 <TextBlock Text="{Binding Name}" FontSize="12" />
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="10" Foreground="{StaticResource GrayText}"  />
+                <TextBlock Text="{Binding Description}" Style="{StaticResource Documentation}"/>
             </StackPanel>
         </Border>
         <HierarchicalDataTemplate.Triggers>
