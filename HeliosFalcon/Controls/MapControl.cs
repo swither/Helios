@@ -319,8 +319,8 @@ namespace GadrocsWorkshop.Helios.Controls
 			BeginTriggerBypass(true);
 
 			_Bullseye.IsHidden = true;
-			_MapOverlays.ThreatVisibility = 0d;
-			_MapOverlays.WaypointVisibility = 0d;
+			_MapOverlays.ThreatVisibility = false;
+			_MapOverlays.WaypointVisibility = false;
 			_mapRotation_Enabled = false;
 			MapRotationAngle = 0d;
 			MapScaleChange(2d);
@@ -351,7 +351,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			_threatsVisible.SetValue(e.Value, e.BypassCascadingTriggers);
 			bool value = _threatsVisible.Value.BoolValue;
 
-			_MapOverlays.ThreatVisibility = value ? 1.0d : 0d;
+			_MapOverlays.ThreatVisibility = value;
 			_refreshPending = true;
 		}
 
@@ -360,7 +360,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			_waypointsVisible.SetValue(e.Value, e.BypassCascadingTriggers);
 			bool value = _waypointsVisible.Value.BoolValue;
 
-			_MapOverlays.WaypointVisibility = value ? 1.0d : 0d;
+			_MapOverlays.WaypointVisibility = value;
 			_refreshPending = true;
 		}
 
