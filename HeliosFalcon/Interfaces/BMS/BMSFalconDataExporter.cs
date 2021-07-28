@@ -484,7 +484,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 //Runtime bindings
                 SetValue("Runtime", "Current Theater", new BindingValue(FalconInterface.CurrentTheater));
             }
-            if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
+            if (_sharedMemory2 != null && _sharedMemory2.IsDataAvailable)
             {
                 _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
                 _stringAreaTime = _lastFlightData2.StringAreaTime;
@@ -540,7 +540,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessLightBits2(_lastFlightData.lightBits2, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits3(_lastFlightData.lightBits3);
             }
-            if (_sharedMemoryStringArea != null & _sharedMemoryStringArea.IsDataAvailable)
+            if (_sharedMemoryStringArea != null && _sharedMemoryStringArea.IsDataAvailable)
             {
                 if (_stringAreaTime != _lastStringAreaTime)
                 {
