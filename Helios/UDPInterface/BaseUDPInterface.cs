@@ -505,10 +505,11 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
 
             // XXX try / catch once this is working
-            string jsonPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", $"{TypeIdentifier}.hif.json");
-            if (!File.Exists(jsonPath))
+            string jsonFileName = $"{TypeIdentifier}.hif.json";
+            string jsonPath = Directory.EnumerateFiles(Path.Combine(ConfigManager.DocumentPath, "Interfaces"), jsonFileName, SearchOption.AllDirectories).FirstOrDefault();
+            if (null == jsonPath || !File.Exists(jsonPath))
             {
-                ConfigManager.LogManager.LogDebug($"requested soft interface definition {jsonPath} not found");
+                ConfigManager.LogManager.LogDebug($"requested soft interface definition {jsonFileName} not found");
                 return false;
             }
 
