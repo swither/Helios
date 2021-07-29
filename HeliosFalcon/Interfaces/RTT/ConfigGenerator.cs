@@ -118,11 +118,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 return new StatusReportItem[0];
             }
 
-            if ((Enabled) && (!CheckForMagicHeader()))
-            {
-                return ReportMagicHeaders();
-            }
-
             // REVISIT: for now, we show the whole generated file
             return GenerateConfig(viewports)
                 .Select(line => new StatusReportItem
@@ -133,7 +128,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 });
         }
 
-        private IEnumerable<StatusReportItem> ReportMagicHeaders()
+        internal IEnumerable<StatusReportItem> ReportMagicHeaders()
         {
             yield return new StatusReportItem
             {
@@ -247,7 +242,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             if (Directory.Exists(Path.GetDirectoryName(Parent.FalconPath)))
             {
                 string _rttClientConfig = Path.Combine(Parent.FalconPath, "Tools", "RTTRemote", "RTTClient.ini");
-                if (File.Exists(_rttClientConfig) && !CheckForMagicHeader()) 
+                if (File.Exists(_rttClientConfig) & !CheckForMagicHeader()) 
                 {
                     string _rttClientBackup = Path.Combine(Path.GetDirectoryName(_rttClientConfig), "RTTClient.original.txt");
                     if (!File.Exists(_rttClientBackup))
@@ -257,16 +252,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                     else
                     {
                         Logger.Info($"RTT Client backup file {_rttClientBackup} already exists. Skipping backup.");
-                    }
-
-                    try
-                    {
-                        WriteFile(_rttClientConfig, contents);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error($"Unable to update file: {ex.Message}");
-                    }
+                    }                    
+                }
+                try
+                {
+                    WriteFile(_rttClientConfig, contents);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"Unable to update file: {ex.Message}");
                 }
             }
         }
@@ -334,7 +328,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <returns>bool</returns>
         internal bool CheckForMagicHeader()
         {
-            return ReadFile(Path.Combine(Parent.FalconPath, "Tools", "RTTRemote", "RTTClient.ini")).Contains(_rttFileHeader) ? true : false;
+                return ReadFile(Path.Combine(Parent.FalconPath, "Tools", "RTTRemote", "RTTClient.ini")).Contains(_rttFileHeader) ? true : false;
         }
 
         public void Dispose()

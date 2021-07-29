@@ -729,6 +729,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 // write the RTT configuration status report
                 newReport.AddRange(Rtt.CreateStatusReport(Viewports));
             }
+            if ((Rtt.Enabled) & (!Rtt.CheckForMagicHeader()))
+            {
+                newReport.AddRange(Rtt.ReportMagicHeaders());
+            }
             return newReport;
         }
 
