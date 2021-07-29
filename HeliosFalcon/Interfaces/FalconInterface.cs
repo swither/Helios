@@ -441,7 +441,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     Logger.Warn("Profile is set to force key file usage but the pilot callsign is not set in Falcon install");
                 }
             }
+
+            _currentTheater = GetCurrentTheater();
+
             _dataExporter?.InitData();
+        }
+
+        public override void Reset()
+        {
+            _currentTheater = GetCurrentTheater();
         }
 
         void PressAction_Execute(object action, HeliosActionEventArgs e)
