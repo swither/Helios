@@ -73,6 +73,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// </summary>
         private LocalOptions _localOptions = new LocalOptions();
 
+        /// <summary>
+        /// backing field for property Enabled, contains
+        /// true if RTT functionality is enabled
+        /// </summary>
+        private bool _enabled;
+
+        /// <summary>
+        /// backing field for property Renderer, contains
+        /// int value from 0-6 defining which type of renderer
+        /// will be used.
+        /// </summary>
+        private int _renderer;
+
+        /// <summary>
+        /// backing field for property EnabledCommand, contains
+        /// handler for interaction with the visual representation (such as checkbox) of the Enabled property
+        /// </summary>
+        private ICommand _enabledCommand;
+
         public ConfigGenerator() : base(XML_NAMESPACE)
         {
             _localOptions.PropertyChanged += Child_PropertyChanged;
@@ -99,6 +118,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 return new StatusReportItem[0];
             }
 
+            if ((Enabled) && (!CheckForMagicHeader()))
+            {
+                return ReportMagicHeaders();
+            }
+
             // REVISIT: for now, we show the whole generated file
             return GenerateConfig(viewports)
                 .Select(line => new StatusReportItem
@@ -107,6 +131,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                     Status = line,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
                 });
+        }
+
+        private IEnumerable<StatusReportItem> ReportMagicHeaders()
+        {
+            yield return new StatusReportItem
+            {
+                Status = $"Helios magic header not found in RTTClient.ini",
+                Severity = StatusReportItem.SeverityCode.Error,
+                Recommendation = "RTTClient.ini configuration is contained within this profile. Helios needs permission to overwrite it"
+            };
         }
 
         /// <summary>
@@ -210,30 +244,29 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             }
 
             _contents = contents;
-            string _rttClientConfig = Path.Combine(new FalconInterface().FalconPath, "Tools", "RTTRemote", "RTTClient.ini");
-            string _rttClientBackup = Path.Combine(Path.GetDirectoryName(_rttClientConfig), "RTTClient.original.txt");
-
-
-            if (Directory.Exists(Path.GetDirectoryName(_rttClientConfig)))
+            if (Directory.Exists(Path.GetDirectoryName(Parent.FalconPath)))
             {
-                if(File.Exists(_rttClientConfig) && !CheckForMagicHeader()) 
+                string _rttClientConfig = Path.Combine(Parent.FalconPath, "Tools", "RTTRemote", "RTTClient.ini");
+                if (File.Exists(_rttClientConfig) && !CheckForMagicHeader()) 
                 {
-                    if(!File.Exists(_rttClientBackup))
+                    string _rttClientBackup = Path.Combine(Path.GetDirectoryName(_rttClientConfig), "RTTClient.original.txt");
+                    if (!File.Exists(_rttClientBackup))
                     {
                         File.Copy(_rttClientConfig, _rttClientBackup);
                     }
                     else
                     {
-                        Logger.Info("RTT Client backup file {_rttClientBackup} already exists. Skipping backup.");
+                        Logger.Info($"RTT Client backup file {_rttClientBackup} already exists. Skipping backup.");
                     }
-                }
-                try
-                {
-                    WriteFile(_rttClientConfig, contents);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error($"Unable to update file: {ex.Message}");
+
+                    try
+                    {
+                        WriteFile(_rttClientConfig, contents);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"Unable to update file: {ex.Message}");
+                    }
                 }
             }
         }
@@ -301,8 +334,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <returns>bool</returns>
         internal bool CheckForMagicHeader()
         {
-            FalconInterface falconInterface = new FalconInterface();
-            return ReadFile(Path.Combine(new FalconInterface().FalconPath, "Tools", "RTTRemote", "RTTClient.ini")).Contains(_rttFileHeader) ? true : false;
+            return ReadFile(Path.Combine(Parent.FalconPath, "Tools", "RTTRemote", "RTTClient.ini")).Contains(_rttFileHeader) ? true : false;
         }
 
         public void Dispose()
@@ -417,26 +449,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         }
 
         /// <summary>
-        /// backing field for property Enabled, contains
-        /// true if RTT functionality is enabled
-        /// </summary>
-        private bool _enabled;
-
-        /// <summary>
-        /// backing field for property Renderer, contains
-        /// int value from 0-6 defining which type of renderer
-        /// will be used.
-        /// </summary>
-        private int _renderer;
-
-
-        /// <summary>
-        /// backing field for property EnabledCommand, contains
-        /// handler for interaction with the visual representation (such as checkbox) of the Enabled property
-        /// </summary>
-        private ICommand _enabledCommand;
-
-        /// <summary>
         /// true if RTT functionality is enabled
         /// </summary>
         [XmlAttribute("Enabled")]
@@ -489,6 +501,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             }
         }
 
+        [XmlIgnore]
+        public IRttGeneratorHost Parent { get; internal set; }
         #endregion
 
         /// <summary>

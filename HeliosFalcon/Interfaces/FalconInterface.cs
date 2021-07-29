@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Xml;
+using System.Xml.Serialization;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.Common;
 using Microsoft.Win32;
@@ -28,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
     [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconIntefaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class FalconInterface : ViewportCompilerInterface<
-        Interfaces.RTT.ShadowMonitor, Interfaces.RTT.ShadowMonitorEventArgs>
+        Interfaces.RTT.ShadowMonitor, Interfaces.RTT.ShadowMonitorEventArgs>, Interfaces.RTT.IRttGeneratorHost
     {
         const string falconRootKey = @"SOFTWARE\WOW6432Node\Benchmark Sims\";
         private FalconTypes _falconType;
@@ -562,6 +563,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "RTT":
                         {
                             Rtt = HeliosXmlModel.ReadXml<Interfaces.RTT.ConfigGenerator>(reader);
+                            Rtt.Parent = this;
                             break;
                         }
                     default:
@@ -599,8 +601,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             base.AttachToProfileOnMainThread();
             if (null == Rtt)
             {
-                Rtt = new Interfaces.RTT.ConfigGenerator();
+                // this happens when we create the interface initially, otherwise Rtt is already deserialized from XML
+                Rtt = new Interfaces.RTT.ConfigGenerator
+                {
+                    Parent = this
+                };
             }
+
+            // observe the Rtt object, either the one we deserialized or the one we just created
             Rtt.PropertyChanged += Rtt_PropertyChanged;
             HandleRttEnabledState();
         }
@@ -622,8 +630,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         public override IEnumerable<StatusReportItem> PerformReadyCheck()
         {
-            // XXX perform integrity check.  any warnings will light caution on Control Center
-            // XXX any error will block control center from starting profile unless user selects to disable ready check
             yield return new StatusReportItem
             {
                 Status = $"Selected Falcon interface driver is '{FalconType}' version '{FalconVersion}'",
@@ -669,15 +675,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     Status = $"Pilot Callsign not set in BMS",
                     Severity = StatusReportItem.SeverityCode.Error,
                     Recommendation = "Run Falcon and set your pilot callsign"
-                };
-            }
-            if ((Rtt?.Enabled ?? false) && (!Rtt.CheckForMagicHeader()))
-            {
-                yield return new StatusReportItem
-                {
-                    Status = $"Helios magic header not found in RTTClient.ini",
-                    Severity = StatusReportItem.SeverityCode.Error,
-                    Recommendation = "Please go to Profile Editor and configure the RTT Client if you wish to use it with Helios"
                 };
             }
         }
