@@ -59,7 +59,7 @@ namespace GadrocsWorkshop.Helios
             return interfaces;
         }
 
-        private bool IsUnique(HeliosInterfaceDescriptor descriptor, HeliosProfile profile)
+        protected bool IsUnique(HeliosInterfaceDescriptor descriptor, HeliosProfile profile)
         {
             foreach (HeliosInterface heliosInterface in profile.Interfaces)
             {

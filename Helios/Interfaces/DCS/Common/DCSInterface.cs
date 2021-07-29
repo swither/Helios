@@ -93,9 +93,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             ExportFunctionsPath = exportFunctionsPath;
 
             // make sure we keep our list up to date and don't typo on the name of an export device
+#if false
+// NOTE: can't use this right now because interface files reference many unknown aircraft
             Debug.Assert(null == exportDeviceName || 
                          _specialExportDeviceNames.Contains(exportDeviceName) || 
                          DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
+#endif
 
             // create handling for DCS export meta information we handle ourselves
             NetworkTriggerValue activeVehicle = new NetworkTriggerValue(this, "ACTIVE_VEHICLE", "ActiveVehicle",
@@ -128,16 +131,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             AddFunction(new NetworkValue(this, "T20", "Simulator Telemetry", "G", "Current G load", "number in g", BindingValueUnits.Numeric, null));
         }
 
-        #region Events
+#region Events
 
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         /// <summary>
         /// The vehicle (usually an aircraft) that DCS will report in LoGetSelfData when we are using this interface.
         /// </summary>
-        public string VehicleName { get; }
+        public string VehicleName { get; protected set; }
 
         /// <summary>
         /// If not null, the this interface instance is configured to impersonate the specified vehicle name.  This means
@@ -252,7 +255,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        #endregion
+#endregion
 
         internal string LoadSetting(string key, string defaultValue)
         {
@@ -532,7 +535,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             ExportModuleBaseName = Path.GetFileNameWithoutExtension(path);
         }
 
-        #region IReadyCheck
+#region IReadyCheck
 
         public IEnumerable<StatusReportItem> PerformReadyCheck()
         {
@@ -545,9 +548,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        #endregion
+#endregion
 
-        #region IProfileAwareInterface
+#region IProfileAwareInterface
 
         // NOTE: ClientChanged event is in base class
 
@@ -580,9 +583,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _protocol.SendDriverRequest(_exportModuleFormat);
         }
 
-        #endregion
+#endregion
 
-        #region IStatusReportNotify
+#region IStatusReportNotify
 
         public void Subscribe(IStatusReportObserver observer)
         {
@@ -616,6 +619,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        #endregion
+#endregion
     }
 }

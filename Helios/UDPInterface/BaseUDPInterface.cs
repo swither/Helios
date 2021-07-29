@@ -504,9 +504,10 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 return false;
             }
 
-            // XXX try / catch once this is working
+            // XXX try / catch once this is working?
+            // XXX load from installed interfaces and then merge any user changes
             string jsonFileName = $"{TypeIdentifier}.hif.json";
-            string jsonPath = Directory.EnumerateFiles(Path.Combine(ConfigManager.DocumentPath, "Interfaces"), jsonFileName, SearchOption.AllDirectories).FirstOrDefault();
+            string jsonPath = Directory.EnumerateFiles(InterfaceHeader.UserInterfaceSpecsFolder, jsonFileName, SearchOption.AllDirectories).FirstOrDefault();
             if (null == jsonPath || !File.Exists(jsonPath))
             {
                 ConfigManager.LogManager.LogDebug($"requested soft interface definition {jsonFileName} not found");
@@ -514,16 +515,15 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
 
             // load from Json
-            InterfaceFile<NetworkFunction> loaded = InterfaceFile<NetworkFunction>.LoadFunctions(this, jsonPath);
+            InterfaceFile<NetworkFunction> loaded = InterfaceFile<NetworkFunction>.Load(this, jsonPath);
 
             // if we survive the loading, install all these functions
             InstallFunctions(loaded);
 
-            return true;            
-            // XXX integrate any changes user made in Documents folder, same relative path
+            return true;
         }
 
-        public void InstallFunctions(InterfaceFile<NetworkFunction> loaded)
+        protected void InstallFunctions(InterfaceFile<NetworkFunction> loaded)
         {
             // WARNING: all base inherited functions will already exist and will need to be removed
             // in this implementation, because we are loading into an actual instance of the interface class

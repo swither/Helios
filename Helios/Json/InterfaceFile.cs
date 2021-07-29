@@ -20,8 +20,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
-using GadrocsWorkshop.Helios.Interfaces.DCS.Soft;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GadrocsWorkshop.Helios.Json
 {
@@ -56,28 +56,6 @@ namespace GadrocsWorkshop.Helios.Json
             [Description("DCS interface")] DCS
         }
 
-        internal static HeliosInterfaceDescriptor Load(string specFilePath)
-        {
-            InterfaceHeader header = LoadHeader(specFilePath);
-            switch (header.Type)
-            {
-                case InterfaceType.Existing:
-                {
-                    // don't create a new type, this spec will be read by their owner
-                    return null;
-                }
-                case InterfaceType.DCS:
-                {
-                    // XXX this should not know about DCS code; fix this by making a plugin attribute for interface descriptor factories
-                    // remove .hif.json extension by removing extension twice
-                    string typeIdentifier = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(specFilePath));
-                    return new SoftInterfaceDescriptor(header.Name, typeIdentifier, header.Module, specFilePath);
-                }
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
         #region Properties
 
         [JsonProperty("source", Order = -16)] public string Source { get; set; } = "Helios";
@@ -87,7 +65,7 @@ namespace GadrocsWorkshop.Helios.Json
         [JsonProperty("commit", Order = -14)] public string Commit { get; set; } = "";
 
         [JsonProperty("type", Order = -13)]
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public InterfaceType Type { get; set; } = InterfaceType.Existing;
 
         /// <summary>
@@ -99,11 +77,20 @@ namespace GadrocsWorkshop.Helios.Json
         [JsonProperty("module", Order = -11)] public string Module { get; set; }
 
         #endregion
+
+        public static string UserInterfaceSpecsFolder => Path.Combine(ConfigManager.DocumentPath, "Interfaces");
     }
 
     public class InterfaceFile<TFunction> : InterfaceHeader where TFunction : class, IBuildableFunction
     {
-        public static InterfaceFile<TFunction> LoadFunctions<TInterface>(TInterface functionHost, string jsonPath)
+        /// <summary>
+        /// load function definitions into an existing interface
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <param name="functionHost"></param>
+        /// <param name="jsonPath"></param>
+        /// <returns></returns>
+        public static InterfaceFile<TFunction> Load<TInterface>(TInterface functionHost, string jsonPath)
             where TInterface : class, ISoftInterface
         {
             using (StreamReader file = File.OpenText(jsonPath))
@@ -133,7 +120,8 @@ namespace GadrocsWorkshop.Helios.Json
 
         [JsonProperty("vehicles", Order = -2)] public IEnumerable<string> Vehicles { get; set; }
 
-        [JsonProperty("functions", Order = -1)] public IEnumerable<TFunction> Functions { get; set; }
+        [JsonProperty("functions", Order = -1)]
+        public IEnumerable<TFunction> Functions { get; set; }
 
         #endregion
     }

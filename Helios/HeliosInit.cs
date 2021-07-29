@@ -105,48 +105,9 @@ namespace GadrocsWorkshop.Helios
 
             LoadPlugins(execAssembly);
 
-            LoadSoftInterfaces();
-
             if (RenderCapability.Tier == 0)
             {
                 Logger.Warn("Hardware rendering is not available on this machine.  Helios will consume large amounts of CPU.");
-            }
-        }
-
-        private static void LoadSoftInterfaces()
-        {
-            if (!(ConfigManager.Application.AllowSoftInterfaces && GlobalOptions.HasAllowSoftInterfaces))
-            {
-                Logger.Debug("Soft interfaces disabled on this installation");
-                return;
-            }
-
-            string userInterfacesFolder = Path.Combine(ConfigManager.DocumentPath, "Interfaces");
-
-            // XXX load installed interfaces
-
-            // XXX load and merge user interfaces
-            LoadSoftInterfacesFromFolder(userInterfacesFolder);
-        }
-
-        private static void LoadSoftInterfacesFromFolder(string interfaceSpecsFolder)
-        {
-            if (!Directory.Exists(interfaceSpecsFolder))
-            {
-                Logger.Debug("Soft interface folder {Path} not found", interfaceSpecsFolder);
-                return;
-            }
-
-            foreach (string specFilePath in Directory.EnumerateFiles(interfaceSpecsFolder, "*.hif.json",
-                SearchOption.AllDirectories))
-            {
-                HeliosInterfaceDescriptor interfaceDescriptor = Json.InterfaceHeader.Load(specFilePath);
-                if (null == interfaceDescriptor)
-                {
-                    Logger.Debug("Soft interface file {Path} does not create a new interface type", specFilePath);
-                    continue;
-                }
-                ((IModuleManagerWritable) ConfigManager.ModuleManager).InterfaceDescriptors.Add(interfaceDescriptor);
             }
         }
 

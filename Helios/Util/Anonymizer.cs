@@ -35,6 +35,10 @@ namespace GadrocsWorkshop.Helios.Util
 
         public static string Anonymize(string value)
         {
+            if (null == value)
+            {
+                return null;
+            }
             string working = value;
             IDictionaryEnumerator iterator = Replacements.GetEnumerator();
             while (iterator.MoveNext())

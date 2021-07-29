@@ -14,74 +14,88 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using System;
 using System.IO;
+using System.Linq;
+using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
+using GadrocsWorkshop.Helios.Json;
 using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
 {
+    /// <summary>
+    /// DCS interface that is entirely defined in an Interface File and can become an interface for any aircraft
+    /// </summary>
+    [HeliosInterface("Helios.DCSInterfaceFile", "DCS Interface File", typeof(DCSInterfaceEditor),
+        typeof(SoftInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class SoftInterface : DCSInterface
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public SoftInterface(string name, string exportDeviceName, string specFilePath) : base(name,
-            exportDeviceName, Path.ChangeExtension(specFilePath, "lua"))
+        /// <summary>
+        /// constructor used during Add Interface discovery
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="exportDeviceName"></param>
+        /// <param name="specFilePath"></param>
+        public SoftInterface(string name, string exportDeviceName, string specFilePath) : base(name, exportDeviceName,
+            null)
         {
             SpecFilePath = specFilePath;
-
-            if (!File.Exists(ExportFunctionsPath))
-            {
-                // not all interfaces have custom Lua code, that is ok
-                Logger.Info("no custom Lua export functions found at {Path}; there will be no custom code in the associated interface", Anonymizer.Anonymize(ExportFunctionsPath));
-                
-                // tell export generator to not even try to load this
-                ExportFunctionsPath = null;
-            }
         }
 
-        public string SpecFilePath { get; }
+        /// <summary>
+        /// constructor used when deserializing from profile XML
+        /// </summary>
+        /// <param name="name"></param>
+        public SoftInterface(string name) : base(name, null, null)
+        {
+            // leave everything null until Attach so we can get our XML read first
+        }
 
-        #region Overrides of DCSInterface
+        #region Overrides
 
         protected override void AttachToProfileOnMainThread()
         {
+            // if we are being deserialized, we need to find the current spec file for this interface
+            string specFilePath = SpecFilePath ?? SoftInterfaceFactory.FindInterfaceFileByName(Name);
+
             // we are being instantiated for use, not just for the interface picker, so now we really load
-            Json.InterfaceFile<UDPInterface.NetworkFunction> functions = Json.InterfaceFile<UDPInterface.NetworkFunction>.LoadFunctions(this, SpecFilePath);
-            InstallFunctions(functions);
-            
+            InterfaceFile<UDPInterface.NetworkFunction> loaded =
+                InterfaceFile<UDPInterface.NetworkFunction>.Load(this, specFilePath);
+
+            // find the Lua code next to the interface spec file
+            string exportFunctionsPath = Path.ChangeExtension(specFilePath, "lua");
+            if (File.Exists(exportFunctionsPath))
+            {
+                ExportFunctionsPath = exportFunctionsPath;
+            }
+            else
+            {
+                // not all interfaces have custom Lua code, that is ok
+                Logger.Info(
+                    "no custom Lua export functions found at {Path}; there will be no custom code in the associated interface",
+                    Anonymizer.Anonymize(exportFunctionsPath));
+            }
+
+            // the first listed vehicle is all we support right now
+            VehicleName = loaded.Vehicles.FirstOrDefault();
+
+            // XXX enable this once implemented
+            // ModuleName = loaded.Module
+
+            // add all the functions we read
+            InstallFunctions(loaded);
+
             // now we are completely defined; start up
             base.AttachToProfileOnMainThread();
         }
 
         #endregion
-    }
-
-    public class SoftInterfaceDescriptor : HeliosInterfaceDescriptor
-    {
-        public SoftInterfaceDescriptor(string name, string typeIdentifier, string moduleName, string specFilePath)
-            : base(typeof(SoftInterface), name, typeIdentifier, null, typeof(DCSInterfaceEditor),
-                typeof(UniqueHeliosInterfaceFactory), "Helios.DCSInterface", false)
-        {
-            SpecFilePath = specFilePath;
-            ModuleName = moduleName;
-        }
-
-        #region Overrides
-
-        public override HeliosInterface CreateInstance() =>
-            new SoftInterface(Name, ModuleName, SpecFilePath);
-
-        public override HeliosInterface CreateInstance(HeliosInterface parent) =>
-            throw new Exception($"{typeof(SoftInterface)} does not support parent interfaces");
-
-        public string SpecFilePath { get; }
-
-        #endregion
 
         #region Properties
 
-        public string ModuleName { get; }
+        public string SpecFilePath { get; }
 
         #endregion
     }
