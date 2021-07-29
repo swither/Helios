@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios
 
     public class HeliosInterfaceDescriptorCollection : ICollection<HeliosInterfaceDescriptor>
     {
-        List<HeliosInterfaceDescriptor> _controlDescriptors = new List<HeliosInterfaceDescriptor>();
+        List<HeliosInterfaceDescriptor> _interfaceDescriptors = new List<HeliosInterfaceDescriptor>();
         Dictionary<string, HeliosInterfaceDescriptor> _typeIdentifiers = new Dictionary<string, HeliosInterfaceDescriptor>();
         Dictionary<Type, HeliosInterfaceDescriptor> _types = new Dictionary<Type, HeliosInterfaceDescriptor>();
 
@@ -58,33 +58,33 @@ namespace GadrocsWorkshop.Helios
 
         public void Add(HeliosInterfaceDescriptor item)
         {
-            _controlDescriptors.Add(item);
+            _interfaceDescriptors.Add(item);
             _typeIdentifiers.Add(item.TypeIdentifier, item);
             _types.Add(item.InterfaceType, item);
         }
 
         public void Clear()
         {
-            _controlDescriptors.Clear();
+            _interfaceDescriptors.Clear();
             _typeIdentifiers.Clear();
             _types.Clear();
         }
 
         public bool Contains(HeliosInterfaceDescriptor item)
         {
-            return _controlDescriptors.Contains(item);
+            return _interfaceDescriptors.Contains(item);
         }
 
         public void CopyTo(HeliosInterfaceDescriptor[] array, int arrayIndex)
         {
-            _controlDescriptors.CopyTo(array, arrayIndex);
+            _interfaceDescriptors.CopyTo(array, arrayIndex);
         }
 
         public int Count
         {
             get 
             {
-                return _controlDescriptors.Count;
+                return _interfaceDescriptors.Count;
             }
         }
 
@@ -100,7 +100,7 @@ namespace GadrocsWorkshop.Helios
         {
             _typeIdentifiers.Remove(item.TypeIdentifier);
             _types.Remove(item.InterfaceType);
-            return _controlDescriptors.Remove(item);
+            return _interfaceDescriptors.Remove(item);
         }
 
         #endregion
@@ -109,7 +109,7 @@ namespace GadrocsWorkshop.Helios
 
         public IEnumerator<HeliosInterfaceDescriptor> GetEnumerator()
         {
-            return _controlDescriptors.GetEnumerator();
+            return _interfaceDescriptors.GetEnumerator();
         }
 
         #endregion
@@ -118,7 +118,7 @@ namespace GadrocsWorkshop.Helios
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _controlDescriptors.GetEnumerator();
+            return _interfaceDescriptors.GetEnumerator();
         }
 
         #endregion
