@@ -75,7 +75,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
 
                 bool oldValue = _rwrGrid;
                 _rwrGrid = value;
-                OnPropertyChanged(nameof(_rwrGrid), oldValue, value, true);
+                OnPropertyChanged(nameof(RWRGrid), oldValue, value, true);
             }
         }
 

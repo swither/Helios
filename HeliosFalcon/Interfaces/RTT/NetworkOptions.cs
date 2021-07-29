@@ -117,7 +117,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 }
                 bool oldValue = _dataF4;
                 _dataF4 = value;
-                OnPropertyChanged(nameof(_dataF4), oldValue, value, true);
+                OnPropertyChanged(nameof(DataF4), oldValue, value, true);
             }
         }
 
@@ -136,7 +136,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 }
                 bool oldValue = _dataBms;
                 _dataBms = value;
-                OnPropertyChanged(nameof(_dataBms), oldValue, value, true);
+                OnPropertyChanged(nameof(DataBms), oldValue, value, true);
             }
         }
 
@@ -155,7 +155,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 }
                 bool oldValue = _dataOsb;
                 _dataOsb = value;
-                OnPropertyChanged(nameof(_dataOsb), oldValue, value, true);
+                OnPropertyChanged(nameof(DataOsb), oldValue, value, true);
             }
         }
 
@@ -174,7 +174,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 }
                 bool oldValue = _dataIvibe;
                 _dataIvibe = value;
-                OnPropertyChanged(nameof(_dataIvibe), oldValue, value, true);
+                OnPropertyChanged(nameof(DataIvibe), oldValue, value, true);
             }
         }
         #endregion
