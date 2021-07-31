@@ -347,8 +347,9 @@ namespace GadrocsWorkshop.Helios.Controls
                 }
             }
 
-            // Need to do it twice to prevent duplicates...  this is
-            // just an easy way to do it instead of reordering everything in the loops above.
+            // Need to do it twice to prevent collisions.  This is
+            // just an easy way to do it instead of reordering everything
+            // in the loops above.
             int i = 1000000;
             foreach (RotarySwitchPosition position in Positions)
             {

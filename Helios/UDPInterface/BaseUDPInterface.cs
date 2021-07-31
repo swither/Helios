@@ -531,14 +531,9 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 new Dictionary<string, NetworkFunction>(Functions.ToDictionary(f => f.LocalKey, f => f));
 
             // add or replace functions
-            foreach (NetworkFunction function in loaded.Functions)
+            foreach (NetworkFunction function in loaded.Functions
+                .Where(f => f != null))
             {
-                if (null == function)
-                {
-                    // failed to deserialize or unsupported
-                    continue;
-                }
-
                 if (predefined.TryGetValue(function.LocalKey, out NetworkFunction oldFunction))
                 {
                     // remove the implementation we inherited
