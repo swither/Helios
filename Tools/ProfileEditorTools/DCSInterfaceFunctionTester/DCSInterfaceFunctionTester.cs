@@ -113,11 +113,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                                 // all other switch position numbers: rotary switch
                                 Controls.RotarySwitch rotarySwitchControl =
                                     PlaceFullSize<Controls.RotarySwitch>(panel, dcsFunction);
+
+                                // remove pre-created switch positions
+                                rotarySwitchControl.Positions.RemoveAt(rotarySwitchControl.Positions.Count - 1);
+                                rotarySwitchControl.Positions.RemoveAt(rotarySwitchControl.Positions.Count - 1);
+
+
+                                // create ours
                                 int i = 0;
                                 foreach (SwitchPosition switchFunctionPosition in switchFunction.Positions)
                                 {
                                     rotarySwitchControl.Positions.Add(new Controls.RotarySwitchPosition(
-                                        rotarySwitchControl, rotarySwitchControl.Positions.Count + 1,
+                                        rotarySwitchControl, i+1,
                                         switchFunctionPosition.Name, 270.0 * i / numPositions));
                                     i++;
                                 }
@@ -125,9 +132,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                                 // not enough space for these
                                 rotarySwitchControl.DrawLabels = false;
 
-                                // remove pre-created switch positions
-                                rotarySwitchControl.Positions.RemoveAt(0);
-                                rotarySwitchControl.Positions.RemoveAt(0);
 
                                 AddBinding(switchFunction, "changed", rotarySwitchControl, "set position", true);
                                 AddBinding(rotarySwitchControl, "position changed", switchFunction, "set", true);
