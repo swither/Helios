@@ -72,6 +72,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         #region Properties
 
+        [JsonIgnore]
+        public string DeviceName => SerializedDeviceName;
+
+        [JsonIgnore]
+        public string Name => SerializedFunctionName;
+
         [JsonProperty("device", Order = -9, Required = Required.Always)]
         protected string SerializedDeviceName { get; private set; }
 

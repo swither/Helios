@@ -25,6 +25,7 @@ namespace GadrocsWorkshop.Helios.Json.Function
         where TFunction : class, IBuildableFunction where TInterface : class, ISoftInterface
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        public const string IGNORE_TYPE = "Ignored";
 
         #region Overrides
 
@@ -40,10 +41,18 @@ namespace GadrocsWorkshop.Helios.Json.Function
             string typeName = json.Value<string>(UDPInterface.NetworkFunction.HELIOS_TYPE_PROPERTY);
             if (typeName == null)
             {
+                // not a recognized type, continue but log
                 Logger.Warn("unsupported function {id} with key {key} detected in interface file",
                     json.Value<string>("id"), json.Value<string>("key"));
                 return null;
             }
+
+            if (string.Equals(typeName, IGNORE_TYPE, StringComparison.InvariantCultureIgnoreCase))
+            {
+                // silently ignore this record
+                return null;
+            }
+
             Type classType = parent.ResolveFunctionType(typeName);
             if (null == classType)
             {

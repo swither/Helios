@@ -103,7 +103,7 @@ namespace GadrocsWorkshop.Helios.Json
                         Functions = udpInterface.Functions.Where(func => func.Serializable),
                         Vehicles = vehicles
                     };
-                string jsonPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", $"{name}.hif.json");
+                string jsonPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", "HeliosInterfaces", $"{name}.hif.json");
                 Directory.CreateDirectory(Path.GetDirectoryName(jsonPath) ?? throw new System.Exception("document path must have a directory component"));
                 File.WriteAllText(
                     jsonPath,
@@ -141,7 +141,7 @@ namespace GadrocsWorkshop.Helios.Json
             schema.Properties["functions"].Items.Clear();
             schema.Properties["functions"].Items.Add(functions);
 
-            string schemaPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", "hif.schema.json");
+            string schemaPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", "HeliosInterfaces", "hif.schema.json");
             Directory.CreateDirectory(Path.GetDirectoryName(schemaPath) ?? throw new System.Exception("document path for schema generation must have a directory component"));
             using (StreamWriter file = File.CreateText(schemaPath))
             using (JsonTextWriter writer = new JsonTextWriter(file)

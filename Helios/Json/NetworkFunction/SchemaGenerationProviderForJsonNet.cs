@@ -14,6 +14,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System.Diagnostics;
+using System.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 
@@ -21,6 +23,34 @@ namespace GadrocsWorkshop.Helios.Json.NetworkFunction
 {
     public class SchemaGenerationProviderForJsonNet : JSchemaGenerationProvider
     {
+        private static void PatchHeliosTypeName(JSchemaTypeGenerationContext context, JSchema schema)
+        {
+            JSchema constType = new JSchema();
+            string typeName = context.ObjectType.FullName;
+            Debug.Assert(typeName != null, nameof(typeName) + " != null");
+            if (typeName.StartsWith(UDPInterface.NetworkFunction.OMITTED_PREFIX))
+            {
+                typeName = typeName.Substring(UDPInterface.NetworkFunction.OMITTED_PREFIX.Length);
+            }
+
+            constType.Enum.Add(typeName);
+            schema.Properties[UDPInterface.NetworkFunction.HELIOS_TYPE_PROPERTY] = constType;
+        }
+
+        private static void PatchIgnoredType(JSchema schema)
+        {
+            JSchema anyType = new JSchema();
+            foreach (JSchemaType type in System.Enum.GetValues(typeof(JSchemaType))
+                .Cast<JSchemaType>()
+                .Where(s => s != JSchemaType.None))
+            {
+                anyType.AnyOf.Add(new JSchema {Type = type});
+            }
+
+            // schema.PatternProperties.Add("^.*$", anyType);
+            schema.AdditionalProperties = anyType;
+        }
+
         #region Overrides
 
         public override bool CanGenerateSchema(JSchemaTypeGenerationContext context) =>
@@ -33,16 +63,15 @@ namespace GadrocsWorkshop.Helios.Json.NetworkFunction
             InterfaceExport.ConfigureGenerator(generator);
             JSchema schema = generator.Generate(context.ObjectType);
 
-            // now fix the typename
-            JSchema constType = new JSchema();
-            string typeName = context.ObjectType.FullName;
-            if (typeName.StartsWith(UDPInterface.NetworkFunction.OMITTED_PREFIX))
+            // now fix the helios type name property to be an enum with a single constant value
+            PatchHeliosTypeName(context, schema);
+
+            // for our special Ignored item, allow any properties whatsoever
+            if (context.ObjectType == typeof(Interfaces.Ignored))
             {
-                typeName = typeName.Substring(UDPInterface.NetworkFunction.OMITTED_PREFIX.Length);
+                PatchIgnoredType(schema);
             }
 
-            constType.Enum.Add(typeName);
-            schema.Properties[UDPInterface.NetworkFunction.HELIOS_TYPE_PROPERTY] = constType;
             return schema;
         }
 

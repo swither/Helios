@@ -26,8 +26,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
 		private double _lastData = 0d;
 		private HeliosValue _windowValue;
 
-		public VHFRadioEncoder1(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double argValue, double argMin, double argMax, string device, string name)
-			: base(sourceInterface, deviceId, buttonId, argId, argValue, argMin, argMax, device, name, false, "%.3f")
+		public VHFRadioEncoder1(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double stepValue, double argMin, double argMax, string device, string name)
+			: base(sourceInterface, deviceId, buttonId, argId, stepValue, argMin, argMax, device, name, false, "%.3f")
 		{
 			// base calls DoBuild, we add ours
             DoBuild();

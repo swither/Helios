@@ -26,8 +26,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
         private double _lastData;
         private HeliosValue _windowValue;
 
-        public VHFPresetSelector(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double argValue, double argMin, double argMax, string device, string name)
-			 : base(sourceInterface, deviceId, buttonId, argId, argValue, argMin, argMax, device, name, false, "%.3f")
+        public VHFPresetSelector(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double stepValue, double argMin, double argMax, string device, string name)
+			 : base(sourceInterface, deviceId, buttonId, argId, stepValue, argMin, argMax, device, name, false, "%.3f")
 		{
             // base does its DoBuild and we add ours
             DoBuild();
@@ -50,7 +50,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
         {
             _windowValue = new HeliosValue(SourceInterface, new BindingValue(0.0d), SerializedDeviceName,
                 SerializedFunctionName + " window", "Current value displayed in this encoder.",
-                _argMin.ToString(CultureInfo.CurrentCulture) + "-" + _argMax.ToString(CultureInfo.CurrentCulture), BindingValueUnits.Text);
+                ArgumentMin.ToString(CultureInfo.CurrentCulture) + "-" + ArgumentMax.ToString(CultureInfo.CurrentCulture), BindingValueUnits.Text);
             Values.Add(_windowValue);
             Triggers.Add(_windowValue);
         }

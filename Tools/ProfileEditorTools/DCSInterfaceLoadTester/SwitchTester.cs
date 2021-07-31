@@ -33,7 +33,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 
         public SwitchTester(DCSDataElement dataElement, Switch switchFunction) : base(dataElement)
         {
-            _values = switchFunction.PositionValues.ToList();
+            _values = switchFunction.Positions.Select(p => p.ArgValue).ToList();
         }
 
         public override string Update(DateTime now, TimeSpan elapsed)

@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Newtonsoft.Json;
@@ -91,6 +92,13 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         public abstract ExportDataElement[] DataElements { get; }
 
         protected abstract ExportDataElement[] DefaultDataElements { get; }
+
+        /// <summary>
+        /// if true, this function is missing some implementation and will not operate correctly
+        /// </summary>
+        [JsonProperty("unimplemented", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [DefaultValue(false)]
+        public bool Unimplemented { get; set; }
 
         #endregion
     }

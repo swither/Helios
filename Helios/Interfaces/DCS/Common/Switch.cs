@@ -164,10 +164,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         #region Properties
 
-        protected string ValueDescriptions { get; private set; } = "";
+        [JsonIgnore] 
+        public IEnumerable<SwitchPosition> Positions => _positions;
 
         [JsonIgnore]
-        public IEnumerable<string> PositionValues => _positions.Select(pos => pos.ArgValue);
+        protected string ValueDescriptions { get; private set; } = "";
 
         #endregion
 
