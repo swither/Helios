@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="CascadeRemover.cs" />
     <Compile Include="DCSInterfaceFunctionTester\DCSInterfaceFunctionTester.cs" />
+    <Compile Include="DCSInterfaceFunctionTester\Panel.cs" />
     <Compile Include="DCSInterfaceLoadTester\BooleanTester.cs" />
     <Compile Include="DCSInterfaceLoadTester\DCSInterfaceLoadTester.cs" />
     <Compile Include="ProfileTool.cs" />

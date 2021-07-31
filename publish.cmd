@@ -1,6 +1,6 @@
 @echo off
 REM output location (you will need to change this for your local folder structure)
-set HELIOS_SHARE_FOLDER=C:\google\wheelchock.github\Helios
+set HELIOS_SHARE_FOLDER=%USER_PROFILE%\Dropbox\HeliosBuilds
 
 REM arguments and validation
 set HELIOS_BUILT_VERSION=%1
@@ -20,7 +20,7 @@ REM publish tag
 git push origin %HELIOS_BUILT_VERSION%
 
 REM publish installer files to direct share for testers and developers
-mkdir %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%
+mkdir -p %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%
 copy "Helios Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 copy "Helios Installer\Release32\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 copy "Keypress Receiver Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 

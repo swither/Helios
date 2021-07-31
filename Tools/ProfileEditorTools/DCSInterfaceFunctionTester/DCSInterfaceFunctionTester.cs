@@ -23,24 +23,20 @@ using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 using GadrocsWorkshop.Helios.Tools;
 using GadrocsWorkshop.Helios.Tools.Capabilities;
 using GadrocsWorkshop.Helios.UDPInterface;
-using PushButton = GadrocsWorkshop.Helios.Interfaces.DCS.Common.PushButton;
-using RotaryEncoder = GadrocsWorkshop.Helios.Interfaces.DCS.Common.RotaryEncoder;
 
 namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
 {
     [HeliosTool]
     internal class DCSInterfaceFunctionTester : ProfileTool, IMenuSectionFactory
     {
-        private const double CONTROL_HEIGHT = 100;
-        private const double CONTROL_WIDTH = 100;
-        private const double LABEL_FONT_SIZE = 14;
-        private const double LABEL_HEIGHT = 100;
+        internal const double CONTROL_HEIGHT = 100;
+        internal const double CONTROL_WIDTH = 100;
+        internal const double LABEL_FONT_SIZE = 14;
+        internal const double LABEL_HEIGHT = 100;
 
         private void Excecute()
         {
-            TargetMonitor = Profile.Monitors.OrderByDescending(m => m.Right).First();
-            TargetMonitor.AlwaysOnTop = true;
-            TargetMonitor.FillBackground = true;
+            SelectAndConfigureMonitor();
 
             DCSInterface dcs = Profile.Interfaces.OfType<DCSInterface>().First();
             foreach (DCSFunction dcsFunction in dcs.Functions.OfType<DCSFunction>())
@@ -48,27 +44,14 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                 Panel panel = GetOrCreatePanel(dcsFunction.DeviceName);
                 if (dcsFunction.Unimplemented)
                 {
-                    // this function is marked as missing code or implementation from the generator, so call attention to it
-                    Controls.TextDecoration textDecorationControl =
-                        PlaceFullSize<Controls.TextDecoration>(panel, dcsFunction);
-                    textDecorationControl.FontColor = Color.FromRgb(255, 0, 0);
-                    textDecorationControl.Text = "Needs Code";
-                    textDecorationControl.Format.FontSize = 20;
-                    textDecorationControl.Format.HorizontalAlignment = TextHorizontalAlignment.Center;
-                    textDecorationControl.Format.VerticalAlignment = TextVerticalAlignment.Center;
+                    ConfigureAsNeedsCode(panel, dcsFunction);
                     continue;
                 }
 
                 switch (dcsFunction)
                 {
                     case PushButton pushButtonFunction:
-                        Controls.PushButton pushButtonControl =
-                            PlaceFullSize<Controls.PushButton>(panel, dcsFunction);
-                        // WARNING: note the trailing spaces on the action names due to Helios' appending a space and an empty name
-                        AddBinding(pushButtonFunction, "pushed", pushButtonControl, "push ", true);
-                        AddBinding(pushButtonFunction, "released", pushButtonControl, "release ", true);
-                        AddBinding(pushButtonControl, "pushed", pushButtonFunction, "push", true);
-                        AddBinding(pushButtonControl, "released", pushButtonFunction, "release", true);
+                        ConfigureAsPushButton(panel, pushButtonFunction);
                         break;
                     case Switch switchFunction:
                         int numPositions = switchFunction.Positions.Count();
@@ -84,57 +67,22 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                             }
                             case 2:
                             {
-                                // toggle switch
-                                Controls.ToggleSwitch toggleSwitchControl =
-                                    PlaceFullSize<Controls.ToggleSwitch>(panel, dcsFunction);
-                                toggleSwitchControl.Left += toggleSwitchControl.Width / 4;
-                                toggleSwitchControl.Width /= 2;
-                                AddBinding(switchFunction, "changed", toggleSwitchControl, "set position", true);
-                                AddBinding(toggleSwitchControl, "position changed", switchFunction, "set", true);
+                                // 2-position toggle switch
+                                ConfigureAsToggleSwitch(panel, switchFunction);
 
                                 break;
                             }
                             case 3:
                             {
-                                // three-way toggle
-                                Controls.ThreeWayToggleSwitch threeWayToggleSwitchControl =
-                                    PlaceFullSize<Controls.ThreeWayToggleSwitch>(panel, dcsFunction);
-                                threeWayToggleSwitchControl.Left += threeWayToggleSwitchControl.Width / 4;
-                                threeWayToggleSwitchControl.Width /= 2;
-                                AddBinding(switchFunction, "changed", threeWayToggleSwitchControl, "set position",
-                                    true);
-                                AddBinding(threeWayToggleSwitchControl, "position changed", switchFunction, "set",
-                                    true);
+                                // 3-position toggle switch
+                                ConfigureAsThreeWayToggle(panel, switchFunction);
 
                                 break;
                             }
                             default:
                             {
-                                // all other switch position numbers: rotary switch
-                                Controls.RotarySwitch rotarySwitchControl =
-                                    PlaceFullSize<Controls.RotarySwitch>(panel, dcsFunction);
-
-                                // remove pre-created switch positions
-                                rotarySwitchControl.Positions.RemoveAt(rotarySwitchControl.Positions.Count - 1);
-                                rotarySwitchControl.Positions.RemoveAt(rotarySwitchControl.Positions.Count - 1);
-
-
-                                // create ours
-                                int i = 0;
-                                foreach (SwitchPosition switchFunctionPosition in switchFunction.Positions)
-                                {
-                                    rotarySwitchControl.Positions.Add(new Controls.RotarySwitchPosition(
-                                        rotarySwitchControl, i+1,
-                                        switchFunctionPosition.Name, 270.0 * i / numPositions));
-                                    i++;
-                                }
-
-                                // not enough space for these
-                                rotarySwitchControl.DrawLabels = false;
-
-
-                                AddBinding(switchFunction, "changed", rotarySwitchControl, "set position", true);
-                                AddBinding(rotarySwitchControl, "position changed", switchFunction, "set", true);
+                                // all other amounts of switch position: rotary switch
+                                ConfigureAsRotarySwitch(panel, switchFunction, numPositions);
 
                                 break;
                             }
@@ -217,12 +165,121 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                     }
                 }
             }
+
+            ArrangeButtons();
+        }
+
+        private void ArrangeButtons()
+        {
+            int buttonRow = 0;
+            int buttonColumn = 0;
+            foreach (Controls.PushButton selectButton in Panels.OrderBy(pair => pair.Key).SelectMany(pair => pair.Value.SelectButtons, (p, s) => s))
+            {
+                if ((buttonColumn + 1) * Panel.SELECT_BUTTON_WIDTH > TargetMonitor.Width)
+                {
+                    // row full
+                    buttonColumn = 0;
+                    buttonRow++;
+                }
+
+                if ((buttonRow + 1) * Panel.SELECT_BUTTON_HEIGHT > Panel.TOP_SPACE)
+                {
+                    // out of space for buttons
+                    break;
+                }
+
+                // now place
+                selectButton.Left = buttonColumn * Panel.SELECT_BUTTON_WIDTH;
+                selectButton.Top = buttonRow * Panel.SELECT_BUTTON_HEIGHT;
+                TargetMonitor.Children.Add(selectButton);
+                buttonColumn++;
+            }
+        }
+
+        private void ConfigureAsRotarySwitch(Panel panel, Switch switchFunction, int numPositions)
+        {
+            Controls.RotarySwitch rotarySwitchControl =
+                PlaceFullSize<Controls.RotarySwitch>(panel, switchFunction);
+
+            // remove pre-created switch positions
+            rotarySwitchControl.Positions.RemoveAt(rotarySwitchControl.Positions.Count - 1);
+            rotarySwitchControl.Positions.RemoveAt(rotarySwitchControl.Positions.Count - 1);
+
+
+            // create ours
+            int i = 0;
+            foreach (SwitchPosition switchFunctionPosition in switchFunction.Positions)
+            {
+                rotarySwitchControl.Positions.Add(new Controls.RotarySwitchPosition(
+                    rotarySwitchControl, i + 1,
+                    switchFunctionPosition.Name, 270.0 * i / numPositions));
+                i++;
+            }
+
+            // not enough space for these
+            rotarySwitchControl.DrawLabels = false;
+
+
+            AddBinding(switchFunction, "changed", rotarySwitchControl, "set position", true);
+            AddBinding(rotarySwitchControl, "position changed", switchFunction, "set", true);
+        }
+
+        private void ConfigureAsThreeWayToggle(Panel panel, Switch switchFunction)
+        {
+            Controls.ThreeWayToggleSwitch threeWayToggleSwitchControl =
+                PlaceFullSize<Controls.ThreeWayToggleSwitch>(panel, switchFunction);
+            threeWayToggleSwitchControl.Left += threeWayToggleSwitchControl.Width / 4;
+            threeWayToggleSwitchControl.Width /= 2;
+            AddBinding(switchFunction, "changed", threeWayToggleSwitchControl, "set position",
+                true);
+            AddBinding(threeWayToggleSwitchControl, "position changed", switchFunction, "set",
+                true);
+        }
+
+        private void ConfigureAsToggleSwitch(Panel panel, Switch switchFunction)
+        {
+            Controls.ToggleSwitch toggleSwitchControl =
+                PlaceFullSize<Controls.ToggleSwitch>(panel, switchFunction);
+            toggleSwitchControl.Left += toggleSwitchControl.Width / 4;
+            toggleSwitchControl.Width /= 2;
+            AddBinding(switchFunction, "changed", toggleSwitchControl, "set position", true);
+            AddBinding(toggleSwitchControl, "position changed", switchFunction, "set", true);
+        }
+
+        private void ConfigureAsPushButton(Panel panel, PushButton pushButtonFunction)
+        {
+            Controls.PushButton pushButtonControl =
+                PlaceFullSize<Controls.PushButton>(panel, pushButtonFunction);
+            // WARNING: note the trailing spaces on the action names due to Helios' appending a space and an empty name
+            AddBinding(pushButtonFunction, "pushed", pushButtonControl, "push ", true);
+            AddBinding(pushButtonFunction, "released", pushButtonControl, "release ", true);
+            AddBinding(pushButtonControl, "pushed", pushButtonFunction, "push", true);
+            AddBinding(pushButtonControl, "released", pushButtonFunction, "release", true);
+        }
+
+        private void ConfigureAsNeedsCode(Panel panel, DCSFunction dcsFunction)
+        {
+            // this function is marked as missing code or implementation from the generator, so call attention to it
+            Controls.TextDecoration textDecorationControl =
+                PlaceFullSize<Controls.TextDecoration>(panel, dcsFunction);
+            textDecorationControl.FontColor = Color.FromRgb(255, 0, 0);
+            textDecorationControl.Text = "Needs Code";
+            textDecorationControl.Format.FontSize = 20;
+            textDecorationControl.Format.HorizontalAlignment = TextHorizontalAlignment.Center;
+            textDecorationControl.Format.VerticalAlignment = TextVerticalAlignment.Center;
+        }
+
+        private void SelectAndConfigureMonitor()
+        {
+            TargetMonitor = Profile.Monitors.OrderByDescending(m => m.Right).First();
+            TargetMonitor.AlwaysOnTop = true;
+            TargetMonitor.FillBackground = true;
         }
 
         private TType PlaceFullSize<TType>(Panel panel, DCSFunction dcsFunction) where TType : HeliosVisual
         {
             panel.PlaceControlAndLabel(dcsFunction, out double left, out double top, out double width,
-                out double height);
+                out double height, out bool addedNewPanel);
             TType control = Activator.CreateInstance<TType>();
 
             control.Name = $"{dcsFunction.DeviceName} {dcsFunction.Name}";
@@ -230,7 +287,24 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
             control.Top = top;
             control.Width = width;
             control.Height = height;
-            panel.Control.Children.Insert(0, control);
+            panel.Container.Children.Insert(0, control);
+
+            // also add new panels to button handlers
+            if (addedNewPanel)
+            {
+                // hook up hide actions for new panel
+                foreach (Controls.PushButton pushButton in Panels.Values.SelectMany(p => p.SelectButtons, (p, b) => b))
+                {
+                    AddSetHiddenBinding(pushButton, "pushed", panel.Container, "true");
+                }
+
+                // hook up show/hide actions for new button
+                AddSetHiddenBinding(panel.SelectButton, "pushed", panel.Container, "false");
+                foreach (Controls.HeliosPanel existingPanel in Panels.Values.SelectMany(p => p.Containers, (p, c) => c))
+                {
+                    AddSetHiddenBinding(panel.SelectButton, "pushed", existingPanel, "true");
+                }
+            }
             return control;
         }
 
@@ -246,66 +320,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                 return panel;
             }
 
-            int numPanels = Panels.Count();
-            const double topSpace = 100;
-            const double buttonWidth = 75;
-            panel = new Panel
-            {
-                // create a full screen panel with some reserved space at the top
-                Control = new Controls.HeliosPanel
-                {
-                    Name = deviceName,
-                    Left = 0,
-                    Width = TargetMonitor.Width,
-                    Top = topSpace,
-                    Height = TargetMonitor.Height - topSpace,
-                    IsDefaultHidden = true
-                },
-
-                // create a button for it
-                SelectButton = new Controls.PushButton
-                {
-                    Name = $"select {deviceName}",
-                    Left = numPanels * buttonWidth,
-                    Width = buttonWidth,
-                    Top = topSpace / 2,
-                    Height = topSpace / 2,
-                    Text = deviceName
-                }
-            };
-            panel.SelectButton.TextFormat.FontSize = 14;
-
-            // title each panel so we know where we are
-            Controls.TextDecoration panelTitle = new Controls.TextDecoration
-            {
-                Left = 20,
-                Top = 0,
-                Width = panel.Control.Width,
-                Height = LABEL_HEIGHT,
-                Text = deviceName
-            };
-            panelTitle.Format.HorizontalAlignment = TextHorizontalAlignment.Left;
-            panelTitle.Format.VerticalAlignment = TextVerticalAlignment.Center;
-            panelTitle.Format.FontSize = 20;
-            panel.Control.Children.Add(panelTitle);
-
-            // hook up hide actions for new panel
-            foreach (Controls.PushButton existingButton in Panels.Values.Select(p => p.SelectButton))
-            {
-                AddSetHiddenBinding(existingButton, "pushed", panel.Control, "true");
-            }
-
-            // hook up show/hide actions for new button
-            AddSetHiddenBinding(panel.SelectButton, "pushed", panel.Control, "false");
-            foreach (Controls.HeliosPanel existingPanel in Panels.Values.Select(p => p.Control))
-            {
-                AddSetHiddenBinding(panel.SelectButton, "pushed", existingPanel, "true");
-            }
-
+            panel = new Panel(TargetMonitor, deviceName);
             Panels.Add(deviceName, panel);
-
-            TargetMonitor.Children.Add(panel.Control);
-            TargetMonitor.Children.Add(panel.SelectButton);
             return panel;
         }
 
@@ -397,49 +413,5 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
         internal Monitor TargetMonitor { get; private set; }
 
         #endregion
-
-        internal class Panel
-        {
-            public void PlaceControlAndLabel(DCSFunction dcsFunction, out double left, out double top, out double width,
-                out double height)
-            {
-                left = CONTROL_WIDTH * Column;
-                double rowHeight = CONTROL_HEIGHT + LABEL_HEIGHT;
-                top = LABEL_HEIGHT + rowHeight * Row;
-                width = CONTROL_WIDTH;
-                height = CONTROL_HEIGHT;
-                Column++;
-                if (left + width > Control.Width)
-                {
-                    // next row
-                    Column = 1;
-                    Row++;
-                    left = 0;
-                    top += rowHeight;
-                }
-
-                // create label
-                Controls.TextDecoration label = new Controls.TextDecoration
-                {
-                    Name = $"Label {dcsFunction.DeviceName} {dcsFunction.Name}",
-                    Text = dcsFunction.Name,
-                    Left = left,
-                    Top = top + height,
-                    Width = width,
-                    Height = LABEL_HEIGHT
-                };
-                label.Format.FontSize = LABEL_FONT_SIZE;
-                Control.Children.Add(label);
-            }
-
-            #region Properties
-
-            public Controls.HeliosPanel Control { get; set; }
-            public Controls.PushButton SelectButton { get; set; }
-            private int Row { get; set; }
-            private int Column { get; set; }
-
-            #endregion
-        }
     }
 }
