@@ -75,6 +75,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             Triggers.Add(_value);
             _receivedTrigger = new HeliosTrigger(SourceInterface, SerializedDeviceName, SerializedFunctionName, "received",
                 SerializedDescription);
+            Triggers.Add(_receivedTrigger);
         }
 
         // optional additional trigger for received event regardless of whether the data changes
