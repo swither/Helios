@@ -194,6 +194,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                         binding.Value = "return tostring(TriggerValue)";
                         break;
                     }
+                    case NetworkTriggerValue networkTriggerValueFunction:
+                    {
+                        Controls.TextDisplay textDisplayControl =
+                            PlaceFullSize<Controls.TextDisplay>(panel, dcsFunction);
+                        HeliosBinding binding = AddBinding(networkTriggerValueFunction, "changed", textDisplayControl,
+                            "set TextDisplay",
+                            true);
+                        binding.ValueSource = BindingValueSources.LuaScript;
+                        binding.Value = "return tostring(TriggerValue)";
+                        break;
+                    }
                     default:
                     {
                         // unsupported
