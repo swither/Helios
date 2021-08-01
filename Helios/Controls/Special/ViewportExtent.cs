@@ -22,8 +22,21 @@ using GadrocsWorkshop.Helios.Controls.Capabilities;
 
 namespace GadrocsWorkshop.Helios.Controls.Special
 {
+    /// <summary>
+    /// viewport extent with an associated editor, so the user can control the name of the viewport being represented
+    /// </summary>
     [HeliosControl("Helios.Base.ViewportExtent", "Simulator Viewport", "Miscellaneous", typeof(ViewportExtentRenderer))]
-    public class ViewportExtent : TextDecoration, IViewportExtent
+    public class ViewportExtent : ViewportExtentBase
+    {
+        // no code
+    }
+
+    /// <summary>
+    /// a generic viewport extent that is recognized as a viewport by various simulator-specific tools
+    ///
+    /// does not include any knowledge about what viewports are in various simulators, just that it is a named screen rectangle
+    /// </summary>
+    public class ViewportExtentBase : TextDecoration, IViewportExtent
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private const string DEFAULT_NAME = "Simulator Viewport";
@@ -37,7 +50,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         /// </summary>
         private bool _requiresPatches;
 
-        public ViewportExtent()
+        public ViewportExtentBase()
             : base(DEFAULT_NAME)
         {
             FillBackground = true;
