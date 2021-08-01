@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
         {
             // NOTE: this doesn't work as we have plenty of values with high precision that use the whole range
             // _range = Math.Pow(10, 3 - precision);
-            _range = 3d;
+            _range = 1d;
         }
 
         /// <summary>
