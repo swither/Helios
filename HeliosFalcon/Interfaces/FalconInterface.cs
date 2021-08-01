@@ -449,9 +449,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             _dataExporter?.CloseData();
 
-            if(Rtt?.Enabled?? false)
+            if (Rtt?.Enabled ?? false)
             {
-                KillRTTCllient(Path.GetFileNameWithoutExtension(Rtt.SelectClient(Environment.Is64BitProcess)));
+                Rtt.OnProfileStop();
             }
         }
 
@@ -478,14 +478,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 }
             }
 
-            if(Rtt?.Enabled?? false)
+            if (Rtt?.Enabled ?? false)
             {
-                if(Rtt?.CheckForMagicHeader() ?? false)
-                {
-                    StartRTTClient(Path.Combine(FalconPath, "Tools", "RTTRemote", Rtt.SelectClient(Environment.Is64BitProcess)));
-                    Logger.Info($"launching RTT client: {Rtt.SelectClient(Environment.Is64BitProcess)}");
-                }
+                Rtt.OnProfileStart();
             }
+
             _dataExporter?.InitData();
         }
 
@@ -548,6 +545,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     HandleRttEnabledState();
                     break;
             }
+
+            // no matter what changed, need to update the report
+            InvalidateStatusReport();
         }
 
         private void HandleRttEnabledState()
@@ -639,6 +639,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 };
             }
 
+            // fix up the Rtt configuration, now that it is loaded
+            Rtt.OnLoaded();
+
             // observe the Rtt object, either the one we deserialized or the one we just created
             Rtt.PropertyChanged += Rtt_PropertyChanged;
             HandleRttEnabledState();
@@ -661,6 +664,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         public override IEnumerable<StatusReportItem> PerformReadyCheck()
         {
+            foreach (StatusReportItem statusReportItem in GenerateCommonStatusItems())
+            {
+                yield return statusReportItem;
+            }
+
+            if (Rtt != null)
+            {
+                yield return Rtt.OnReadyCheck();
+            }
+        }
+
+        private IEnumerable<StatusReportItem> GenerateCommonStatusItems()
+        {
             yield return new StatusReportItem
             {
                 Status = $"Selected Falcon interface driver is '{FalconType}' version '{FalconVersion}'",
@@ -674,7 +690,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 {
                     yield return new StatusReportItem
                     {
-                        Status = $"The key file configured in this profile does not exist at the path specified '{KeyFileName}'",
+                        Status =
+                            $"The key file configured in this profile does not exist at the path specified '{KeyFileName}'",
                         Recommendation = "Configure this interface with a valid key file",
                         Severity = StatusReportItem.SeverityCode.Error,
                     };
@@ -694,11 +711,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 yield return new StatusReportItem
                 {
                     Status = $"Key file not defined",
-                    Recommendation = "Please configure this interface with a valid key file if this profile is designed to interact with Falcon",
+                    Recommendation =
+                        "Please configure this interface with a valid key file if this profile is designed to interact with Falcon",
                     Severity = StatusReportItem.SeverityCode.Warning,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
+
             if (PilotCallsign.Equals(""))
             {
                 yield return new StatusReportItem
@@ -749,24 +768,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         protected override List<StatusReportItem> CreateStatusReport()
         {
-            List<StatusReportItem> newReport = new List<StatusReportItem>();
-            newReport.AddRange(PerformReadyCheck());
+            List<StatusReportItem> newReport = new List<StatusReportItem> (GenerateCommonStatusItems());
+
             if (_callbacks.IsParsed)
             {
                 newReport.AddRange(ReportBindings(CheckBindings(InputBindings)));
             }
+
             if (null != Rtt)
             {
                 // write the RTT configuration status report
-                newReport.AddRange(Rtt.CreateStatusReport(Viewports));
+                newReport.AddRange(Rtt.OnStatusReport(Viewports));
             }
-            if (Rtt?.Enabled ?? false)
-            {
-                if(!Rtt.CheckForMagicHeader())
-                {
-                    newReport.AddRange(Rtt.ReportMagicHeaders());
-                }
-            }
+
             return newReport;
         }
 
