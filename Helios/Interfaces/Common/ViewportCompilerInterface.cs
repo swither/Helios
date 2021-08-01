@@ -1,11 +1,11 @@
 ﻿// Copyright 2021 Ammo Goettsch
 // 
-// Patching is free software: you can redistribute it and/or modify
+// Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// Patching is distributed in the hope that it will be useful,
+// Helios is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -27,13 +27,16 @@ using GadrocsWorkshop.Helios.Util.Shadow;
 namespace GadrocsWorkshop.Helios.Interfaces.Common
 {
     /// <summary>
-    /// a Helios interface that monitors any viewport extents and tracks which monitors they fall on, in order to create configuration
+    /// a Helios interface that monitors any viewport extents and tracks which monitors they fall on, in order to create
+    /// configuration
     /// output based on the true screen coordinates of those viewports
     /// </summary>
     /// <typeparam name="TMonitor"></typeparam>
     /// <typeparam name="TMonitorEventArgs"></typeparam>
-    public abstract class ViewportCompilerInterface<TMonitor, TMonitorEventArgs> : HeliosInterface, IReadyCheck, IStatusReportNotify,
-        IShadowVisualParent, IInstallation, IResetMonitorsObserver, IExtendedDescription where TMonitorEventArgs: EventArgs where TMonitor : ShadowMonitorBase<TMonitorEventArgs>
+    public abstract class ViewportCompilerInterface<TMonitor, TMonitorEventArgs> : HeliosInterface, IReadyCheck,
+        IStatusReportNotify,
+        IShadowVisualParent, IInstallation, IResetMonitorsObserver,
+        IExtendedDescription where TMonitorEventArgs : EventArgs where TMonitor : ShadowMonitorBase<TMonitorEventArgs>
     {
         /// <summary>
         /// fired when the bounds of some view model items may have changed, delayed to batch many changes
@@ -75,6 +78,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
         protected bool _monitorsValid;
 
         private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
+
+        /// <summary>
+        /// if true, we are tracking visuals
+        /// </summary>
+        protected bool _started;
 
         /// <summary>
         /// live inventory of our profile, indexed by source visual
@@ -154,6 +162,31 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             _geometryChangeTimer?.Start();
         }
 
+        protected void StartShadowing()
+        {
+            if (_started)
+            {
+                return;
+            }
+            _started = true;
+
+            // instrument all current monitors and visuals
+            CreateShadowObjects();
+
+            // we only update our models if the monitor layout matches
+            _monitorsValid = CheckMonitorsValid;
+
+            // calculate initial geometry, if we can
+            UpdateAllGeometry();
+        }
+
+        protected void StopShadowing()
+        {
+            _geometryChangeTimer?.Stop();
+            ClearShadowObjects();
+            _started = false;
+        }
+
         private void AddMonitor(Monitor monitor)
         {
             TMonitor shadow = CreateShadowMonitor(monitor);
@@ -168,8 +201,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             MonitorAdded?.Invoke(this, shadow.CreateEvent());
         }
 
-        protected abstract TMonitor CreateShadowMonitor(Monitor monitor);
-
         private void RemoveMonitor(Monitor monitor)
         {
             TMonitor shadow = _monitors[monitor];
@@ -178,6 +209,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             _monitors.Remove(monitor);
             shadow.Dispose();
         }
+
+        #region Hooks
+
+        protected abstract TMonitor CreateShadowMonitor(Monitor monitor);
+
+        protected abstract List<StatusReportItem> CreateStatusReport();
+        public abstract InstallationResult Install(IInstallationCallbacks callbacks);
+
+        public abstract IEnumerable<StatusReportItem> PerformReadyCheck();
+
+        protected abstract void UpdateAllGeometry();
+
+        #endregion
 
         #region Event Handlers
 
@@ -189,6 +233,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
         /// <param name="e"></param>
         protected void Monitors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (!_started)
+            {
+                // not tracking
+                return;
+            }
+
             if (e.NewItems != null)
             {
                 foreach (Monitor monitor in e.NewItems)
@@ -208,6 +258,45 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             ScheduleGeometryChange();
         }
 
+        /// <summary>
+        /// react to a batch of changes to the viewport and monitor geometries
+        /// </summary>
+        protected void OnDelayedGeometryChange(object sender, EventArgs e)
+        {
+            if (!_monitorsValid)
+            {
+                // don't process events if monitors are not valid
+                // we will schedule an update once they are
+                _geometryChangeTimer?.Stop();
+                return;
+            }
+
+            // recursion prevention flag
+            _geometryChanging = true;
+            try
+            {
+                _geometryChangeTimer?.Stop();
+                if (Profile == null)
+                {
+                    // although we turn off the timer when we are removed from the profile, this call is still
+                    // delivered late
+                    return;
+                }
+
+                UpdateAllGeometry();
+            }
+            finally
+            {
+                _geometryChanging = false;
+            }
+
+            // notify anyone configuring or monitoring us
+            GeometryChangeDelayed?.Invoke(this, EventArgs.Empty);
+
+            // also send new status report
+            InvalidateStatusReport();
+        }
+
         protected void Profile_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -217,6 +306,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
                     CurrentProfileName = string.IsNullOrWhiteSpace(Profile.Path) ? null : Profile.Name;
                     break;
                 case nameof(Profile.Path):
+                    if (!_started)
+                    {
+                        // not tracking
+                        return;
+                    }
                     InvalidateStatusReport();
                     break;
             }
@@ -260,6 +354,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             ScheduleGeometryChange();
         }
 
+        #endregion
+
+        #region Overrides
+
         protected override void AttachToProfileOnMainThread()
         {
             CurrentProfileName = string.IsNullOrWhiteSpace(Profile.Path) ? null : Profile.Name;
@@ -274,13 +372,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
                 IsEnabled = false
             };
 
-            CreateShadowObjects();
-
-            // we only update our models if the monitor layout matches
-            _monitorsValid = CheckMonitorsValid;
-
-            // calculate initial geometry, if we can
-            UpdateAllGeometry();
+            StartShadowing();
 
             // register for changes
             Profile.Monitors.CollectionChanged += Monitors_CollectionChanged;
@@ -302,47 +394,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             ClearShadowObjects();
         }
 
-        /// <summary>
-        /// react to a batch of changes to the viewport and monitor geometries
-        /// </summary>
-        protected void OnDelayedGeometryChange(object sender, EventArgs e)
-        {
-            if (!_monitorsValid)
-            {
-                // don't process events if monitors are not valid
-                // we will schedule an update once they are
-                _geometryChangeTimer?.Stop();
-                return;
-            }
-
-            // recursion prevention flag
-            _geometryChanging = true;
-            try
-            {
-                _geometryChangeTimer?.Stop();
-                if (Profile == null)
-                {
-                    // although we turn off the timer when we are removed from the profile, this call is still
-                    // delivered late
-                    return;
-                }
-
-                UpdateAllGeometry();
-            }
-            finally
-            {
-                _geometryChanging = false;
-            }
-
-            // notify anyone configuring or monitoring us
-            GeometryChangeDelayed?.Invoke(this, EventArgs.Empty);
-
-            // also send new status report
-            InvalidateStatusReport();
-        }
-
-        protected abstract void UpdateAllGeometry();
-
         #endregion
 
         #region IExtendedDescription
@@ -356,12 +407,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
 
         public void NotifyResetMonitorsStarting()
         {
+            if (!_started)
+            {
+                // not tracking
+                return;
+            }
+
             // not volatile, only main thread access
             _monitorsValid = false;
         }
 
         public void NotifyResetMonitorsComplete()
         {
+            if (!_started)
+            {
+                // not tracking
+                return;
+            }
+
             // not volatile, only main thread access
             _monitorsValid = CheckMonitorsValid;
             if (!_monitorsValid)
@@ -455,8 +518,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
             PublishStatusReport(newReport);
         }
 
-        protected abstract List<StatusReportItem> CreateStatusReport();
-
         public void PublishStatusReport(IList<StatusReportItem> statusReport)
         {
             foreach (IStatusReportObserver observer in _observers)
@@ -466,9 +527,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
                     statusReport);
             }
         }
-
-        public abstract IEnumerable<StatusReportItem> PerformReadyCheck();
-        public abstract InstallationResult Install(IInstallationCallbacks callbacks);
 
         #endregion
 
