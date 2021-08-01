@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2021 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -30,7 +31,6 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.IAS
         private GaugeNeedle _limitingAirSpeedNeedle;
         private CalibrationPointCollectionDouble _needleCalibration;
         private CalibrationPointCollectionDouble _tapeCalibration;
-        private CalibrationPointCollectionDouble _limitingAirSpeedNeedleCalibration;
 
         public IAS()
             : base("IAS", new Size(364, 376))
@@ -43,12 +43,14 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.IAS
 
             Components.Add(new GaugeImage("{Helios}/Gauges/A-10/IAS/ias_faceplate.xaml", new Rect(32d, 38d, 300, 300)));
 
-            _limitingAirSpeedNeedleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 550d, 335d);
             _limitingAirSpeedNeedle = new GaugeNeedle("{Helios}/Gauges/A-10/IAS/needle_ias_limit.xaml", new Point(182d, 188d), new Size(22, 165), new Point(11, 130), 10d);
             Components.Add(_limitingAirSpeedNeedle);
 
-            _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 550d, 340d);
-            _needleCalibration.Add(new CalibrationPointDouble(100d, 34d));
+            _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 550d, 340d)
+            {
+                // change of scale at 100 knots
+                new CalibrationPointDouble(100d, 34d)
+            };
             _needle = new GaugeNeedle("{Helios}/Gauges/A-10/Common/needle_a.xaml", new Point(182d, 188d), new Size(22, 165), new Point(11, 130), 10d);
             Components.Add(_needle);
 
@@ -71,7 +73,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.IAS
 
         void LimitingAirSpeed_Execute(object action, HeliosActionEventArgs e)
         {
-            _limitingAirSpeedNeedle.Rotation = _limitingAirSpeedNeedleCalibration.Interpolate(e.Value.DoubleValue);
+            _limitingAirSpeedNeedle.Rotation = _needleCalibration.Interpolate(e.Value.DoubleValue);
         }
     }
 }

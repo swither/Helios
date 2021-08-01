@@ -30,7 +30,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceLoadTester
 
         public NumericTester(DCSDataElement dataElement, int precision) : base(dataElement)
         {
-            _range = Math.Pow(10, 3 - precision);
+            // NOTE: this doesn't work as we have plenty of values with high precision that use the whole range
+            // _range = Math.Pow(10, 3 - precision);
+            _range = 3d;
         }
 
         /// <summary>
