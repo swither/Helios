@@ -27,7 +27,7 @@ using Microsoft.Win32;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
-    [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconIntefaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.Falcon.Interface", "Falcon", typeof(FalconInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
     public class FalconInterface : ViewportCompilerInterface<
         Interfaces.RTT.ShadowMonitor, Interfaces.RTT.ShadowMonitorEventArgs>, Interfaces.RTT.IRttGeneratorHost
     {
@@ -760,9 +760,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 // write the RTT configuration status report
                 newReport.AddRange(Rtt.CreateStatusReport(Viewports));
             }
-            if ((Rtt.Enabled) & (!Rtt.CheckForMagicHeader()))
+            if (Rtt?.Enabled ?? false)
             {
-                newReport.AddRange(Rtt.ReportMagicHeaders());
+                if(!Rtt.CheckForMagicHeader())
+                {
+                    newReport.AddRange(Rtt.ReportMagicHeaders());
+                }
             }
             return newReport;
         }

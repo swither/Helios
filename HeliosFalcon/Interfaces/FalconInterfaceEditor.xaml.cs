@@ -23,7 +23,7 @@ using Microsoft.Win32;
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
     /// <summary>
-    /// Interaction logic for FalconIntefaceEditor.xaml
+    /// Interaction logic for FalconInterfaceEditor.xaml
     /// </summary>
     public partial class FalconInterfaceEditor : HeliosInterfaceEditor
     {
