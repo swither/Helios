@@ -65,7 +65,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <summary>
         /// IPAddress of remote RTT Server
         /// </summary>
-        [XmlAttribute("IPAddress")]
+        [XmlElement("IPAddress")]
         [DefaultValue(DEFAULT_IP)]
         public string IPAddress
         {
@@ -85,7 +85,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <summary>
         /// Port of remote RTT Server
         /// </summary>
-        [XmlAttribute("Port")]
+        [XmlElement("Port")]
         [DefaultValue(DEFAULT_PORT)]
         public string Port
         {
@@ -105,7 +105,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <summary>
         /// DATA_F4 switch
         /// </summary>
-        [XmlAttribute("DataF4")]
+        [DefaultValue(false)]
+        [XmlElement("DataF4")]
         public bool DataF4
         {
             get => _dataF4;
@@ -124,7 +125,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <summary>
         /// DATA_BMS switch
         /// </summary>
-        [XmlAttribute("DataBms")]
+        [DefaultValue(false)]
+        [XmlElement("DataBms")]
         public bool DataBms
         {
             get => _dataBms;
@@ -143,7 +145,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <summary>
         /// DATA_OSB switch
         /// </summary>
-        [XmlAttribute("DataOsb")]
+        [DefaultValue(false)]
+        [XmlElement("DataOsb")]
         public bool DataOsb
         {
             get => _dataOsb;
@@ -162,7 +165,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <summary>
         /// DATA_IVIBE switch
         /// </summary>
-        [XmlAttribute("DataIvibe")]
+        [DefaultValue(false)]
+        [XmlElement("DataIvibe")]
         public bool DataIvibe
         {
             get => _dataIvibe;
