@@ -480,9 +480,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
                 //ADI ILS with AOA consideration value
                 SetValue("ADI", "ils vertical to flight path", new BindingValue(((_lastFlightData.AdiIlsVerPos * 2f) - 1f) - ClampAOA(_lastFlightData.alpha)));
-
-                //Runtime bindings
-                SetValue("Runtime", "Current Theater", new BindingValue(FalconInterface.CurrentTheater));
             }
             if (_sharedMemory2 != null && _sharedMemory2.IsDataAvailable)
             {
@@ -559,6 +556,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                     _stringDataUpdated = false;
                 }
             }
+
+            //Runtime bindings
+            SetValue("Runtime", "Current Theater", new BindingValue(FalconInterface.CurrentTheater));
         }
 
         internal float ClampAOA(float alpha)
