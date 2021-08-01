@@ -229,9 +229,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 			AddFunction(new Axis(this, AN_ALR69V, BUTTON_1, "16", 0.05d, 0.15d, 0.85d, "Misc", "RWR Adjust Display Brightness"));
 
             CalibrationPointCollectionDouble airspeedScale =
-                new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 550d) {new CalibrationPointDouble(0.14d, 100d)};
+                new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 550d)
+                {
+                    // non linear section at start
+                    new CalibrationPointDouble(0.0488, 50d),
+                    new CalibrationPointDouble(0.14d, 100d)
+                };
             AddFunction(new DualNetworkValue(this, "48", airspeedScale, "IAS", "Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots));
-			AddFunction(new NetworkValue(this, "50", "IAS", "Pure Max Airspeed", "Position of the needle.", "(0 to 1)", BindingValueUnits.Numeric));
+			AddFunction(new DualNetworkValue(this, "50", airspeedScale, "IAS", "Max Airspeed", "Current altitude compensated, limiting structural airspeed of the aircraft.", "(0 to 550)", BindingValueUnits.Knots));
 
             CalibrationPointCollectionDouble vviScale = new CalibrationPointCollectionDouble(-1.0d, -6000d, 1.0d, 6000d)
             {
