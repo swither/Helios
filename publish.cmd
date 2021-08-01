@@ -37,7 +37,7 @@ if exist "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets" (
 	rmdir /s /q "..\Releases\Helios\%HELIOS_BUILT_VERSION%"
 )
 mkdir ..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets
-tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip" -C "Helios Installer\Release" *.msi -C "..\..\Keypress Receiver Installer\Release" *.msi
+tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip" -C "Helios Installer\Release" *.msi -C "..\..\Keypress Receiver Installer\Release" *.msi -C "..\..\Tools Installer\Release" *.msi
 tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip" -C "Helios Installer\Release32" *.msi
 echo Helios %HELIOS_BUILT_VERSION% > "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
