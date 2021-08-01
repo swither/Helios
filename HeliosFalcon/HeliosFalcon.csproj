@@ -54,6 +54,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\RTT\IRttGeneratorHost.cs" />
+    <Compile Include="Controls\MapControl.cs" />
+    <Compile Include="Controls\MapControlRenderer.cs" />
+    <Compile Include="Controls\MapControlUserMapEditor.xaml.cs">
+      <DependentUpon>MapControlUserMapEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MapControlBaseMapEditor.xaml.cs">
+      <DependentUpon>MapControlBaseMapEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Gauges\Altimeter.cs" />
     <Compile Include="Interfaces\BMS\BMSFalconDataExporter.cs" />
     <Compile Include="Interfaces\BMS\BMSLightBits.cs" />
@@ -61,12 +70,14 @@
     <Compile Include="Interfaces\BMS\BMSLightBits3.cs" />
     <Compile Include="Interfaces\BMS\FlightData.cs" />
     <Compile Include="Interfaces\BMS\FlightData2.cs" />
+    <Compile Include="Interfaces\BMS\StringData.cs" />
+    <Compile Include="Interfaces\BMS\StringIdentifier.cs" />
     <Compile Include="Interfaces\FalconCallbackValueEditor.xaml.cs">
       <DependentUpon>FalconCallbackValueEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\FalconDataExporter.cs" />
-    <Compile Include="Interfaces\FalconIntefaceEditor.xaml.cs">
-      <DependentUpon>FalconIntefaceEditor.xaml</DependentUpon>
+    <Compile Include="Interfaces\FalconInterfaceEditor.xaml.cs">
+      <DependentUpon>FalconInterfaceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\FalconInterface.cs" />
     <Compile Include="Interfaces\FalconKeyCallback.cs" />
@@ -86,6 +97,14 @@
     <Compile Include="Gauges\Textures\PFL.cs" />
     <Compile Include="Gauges\Textures\RightMFD.cs" />
     <Compile Include="Gauges\Textures\RWR.cs" />
+    <Compile Include="Interfaces\RTT\InterfaceEditor.xaml.cs">
+      <DependentUpon>InterfaceEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\RTT\LocalOptions.cs" />
+    <Compile Include="Interfaces\RTT\ConfigGenerator.cs" />
+    <Compile Include="Interfaces\RTT\NetworkOptions.cs" />
+    <Compile Include="Interfaces\RTT\ProcessControl.cs" />
+    <Compile Include="Interfaces\RTT\ShadowMonitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\RadarContact.cs" />
     <Compile Include="Interfaces\RadarSymbols.cs" />
@@ -122,18 +141,117 @@
     <Resource Include="Images\Textures\rwr.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\MapControlUserMapEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\MapControlBaseMapEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interfaces\FalconCallbackValueEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Interfaces\FalconIntefaceEditor.xaml">
+    <Page Include="Interfaces\FalconInterfaceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Interfaces\RTT\InterfaceEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <Content Include="Templates\HeliosFalcon\Falcon RTT DED.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\HeliosFalcon\Falcon RTT HUD.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\HeliosFalcon\Falcon RTT MFDLEFT.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\HeliosFalcon\Falcon RTT MFDRIGHT.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\HeliosFalcon\Falcon RTT PFL.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\HeliosFalcon\Falcon RTT RWR.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MapControl\Map Bullseye 64.png" />
+    <Resource Include="Images\MapControl\Map Bullseye 128.png" />
+    <Resource Include="Images\MapControl\Map Range Rings.png" />
+    <Resource Include="Images\MapControl\Map Aircraft.png" />
+    <Resource Include="Images\MapControl\Map No Data.png" />
+    <Resource Include="Images\MapControl\Foreground.png" />
+    <Resource Include="Images\MapControl\Background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Maps\Aegean\Map.jpg" />
+    <Resource Include="Images\Maps\Balkans\Map.jpg" />
+    <Resource Include="Images\Maps\CentralEurope\Map.jpg" />
+    <Resource Include="Images\Maps\EMF\Map.jpg" />
+    <Resource Include="Images\Maps\Iberia\Map.jpg" />
+    <Resource Include="Images\Maps\Ikaros\Map.jpg" />
+    <Resource Include="Images\Maps\Israel\Map.jpg" />
+    <Resource Include="Images\Maps\Korea\Map.jpg" />
+    <Resource Include="Images\Maps\Kuwait\Map.jpg" />
+    <Resource Include="Images\Maps\Libya\Map.jpg" />
+    <Resource Include="Images\Maps\Nevada\Map.jpg" />
+    <Resource Include="Images\Maps\Nordic\Map.jpg" />
+    <Resource Include="Images\Maps\Panama\Map.jpg" />
+    <Resource Include="Images\Maps\Taiwan\Map.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Navpoints\Pospoint_81.png" />
+    <Resource Include="Images\Navpoints\Pospoint_82.png" />
+    <Resource Include="Images\Navpoints\Pospoint_83.png" />
+    <Resource Include="Images\Navpoints\Pospoint_84.png" />
+    <Resource Include="Images\Navpoints\Pospoint_85.png" />
+    <Resource Include="Images\Navpoints\Pospoint_86.png" />
+    <Resource Include="Images\Navpoints\Pospoint_87.png" />
+    <Resource Include="Images\Navpoints\Pospoint_88.png" />
+    <Resource Include="Images\Navpoints\Pospoint_89.png" />
+    <Resource Include="Images\Navpoints\Pospoint_90.png" />
+    <Resource Include="Images\Navpoints\Pospoint_91.png" />
+    <Resource Include="Images\Navpoints\Pospoint_92.png" />
+    <Resource Include="Images\Navpoints\Pospoint_93.png" />
+    <Resource Include="Images\Navpoints\Pospoint_94.png" />
+    <Resource Include="Images\Navpoints\Pospoint_95.png" />
+    <Resource Include="Images\Navpoints\Pospoint_96.png" />
+    <Resource Include="Images\Navpoints\Pospoint_97.png" />
+    <Resource Include="Images\Navpoints\Pospoint_98.png" />
+    <Resource Include="Images\Navpoints\Pospoint_99.png" />
+    <Resource Include="Images\Navpoints\Waypoint_01.png" />
+    <Resource Include="Images\Navpoints\Waypoint_02.png" />
+    <Resource Include="Images\Navpoints\Waypoint_03.png" />
+    <Resource Include="Images\Navpoints\Waypoint_04.png" />
+    <Resource Include="Images\Navpoints\Waypoint_05.png" />
+    <Resource Include="Images\Navpoints\Waypoint_06.png" />
+    <Resource Include="Images\Navpoints\Waypoint_07.png" />
+    <Resource Include="Images\Navpoints\Waypoint_08.png" />
+    <Resource Include="Images\Navpoints\Waypoint_09.png" />
+    <Resource Include="Images\Navpoints\Waypoint_10.png" />
+    <Resource Include="Images\Navpoints\Waypoint_11.png" />
+    <Resource Include="Images\Navpoints\Waypoint_12.png" />
+    <Resource Include="Images\Navpoints\Waypoint_13.png" />
+    <Resource Include="Images\Navpoints\Waypoint_14.png" />
+    <Resource Include="Images\Navpoints\Waypoint_15.png" />
+    <Resource Include="Images\Navpoints\Waypoint_16.png" />
+    <Resource Include="Images\Navpoints\Waypoint_17.png" />
+    <Resource Include="Images\Navpoints\Waypoint_18.png" />
+    <Resource Include="Images\Navpoints\Waypoint_19.png" />
+    <Resource Include="Images\Navpoints\Waypoint_20.png" />
+    <Resource Include="Images\Navpoints\Waypoint_21.png" />
+    <Resource Include="Images\Navpoints\Waypoint_22.png" />
+    <Resource Include="Images\Navpoints\Waypoint_23.png" />
+    <Resource Include="Images\Navpoints\Waypoint_24.png" />
   </ItemGroup>
   <Import Project="..\HeliosPlugin.targets" />
 </Project>

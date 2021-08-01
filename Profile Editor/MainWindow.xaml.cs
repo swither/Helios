@@ -897,35 +897,32 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void WriteProfile(HeliosProfile profile)
         {
+            Logger.Debug("saving profile to file");
             StatusBarMessage = "Saving Profile...";
             GetLoadingAdorner();
-
-            // XXX can't save on another thread because of potential access to dependency properties (crashed in InstallLocations)
-            System.Threading.Thread t = new System.Threading.Thread(delegate()
+            if (!ConfigManager.ProfileManager.SaveProfile(profile))
             {
-                if (!ConfigManager.ProfileManager.SaveProfile(profile))
-                {
-                    Dispatcher.Invoke(DispatcherPriority.Normal, (Action)ErrorDuringSave);
-                }
-                ConfigManager.UndoManager.ClearHistory();
-                profile.IsDirty = false;
-                Dispatcher.Invoke(DispatcherPriority.Background, new Action(RemoveLoadingAdorner));
-                Dispatcher.Invoke(DispatcherPriority.Background, (System.Threading.SendOrPostCallback)delegate { SetValue(StatusBarMessageProperty, ""); }, "");
+                throw new Exception("There was an error saving your profile.  Please contact support.");
+            }
+            ConfigManager.UndoManager.ClearHistory();
+            profile.IsDirty = false;
 
-                string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
-                if (File.Exists(layoutFileName))
-                {
-                    // ReSharper disable once AssignNullToNotNullAttribute file exists asserted above
-                    File.Delete(layoutFileName);
-                }
-                Dispatcher.Invoke(DispatcherPriority.Background, (LayoutDelegate)_layoutSerializer.Serialize, layoutFileName);
-            });
-            t.Start();
-        }
+            Logger.Debug("profile saved");
+            RemoveLoadingAdorner();
+            StatusBarMessage = "";
 
-        private void ErrorDuringSave()
-        {
-            MessageBox.Show(this, "There was an error saving your profile.  Please contact support.", "Save Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
+            if (File.Exists(layoutFileName))
+            {
+                Logger.Debug("deleting previous layout file");
+                // ReSharper disable once AssignNullToNotNullAttribute file exists asserted above
+                File.Delete(layoutFileName);
+            }
+
+            Logger.Debug("saving layout to file");
+            _layoutSerializer.Serialize(layoutFileName);
+
+            Logger.Debug("layout saved");
         }
 
         private bool SaveAsProfile()

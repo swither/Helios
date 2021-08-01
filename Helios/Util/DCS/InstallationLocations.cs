@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using Microsoft.Win32;
@@ -232,22 +233,29 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
             // generate a lot of guesses where it might be
             HashSet<string> guesses = new HashSet<string>(guessPaths);
-            foreach (System.IO.DriveInfo drive in System.IO.DriveInfo.GetDrives()
-                .Where(d => (d.DriveType == System.IO.DriveType.Fixed) && (d.IsReady))
-                .Where(d => d.Name.Substring(1) == ":\\"))
+            IEnumerable<DriveInfo> drives = DriveInfo.GetDrives()
+                .Where(d => 
+                     d.DriveType == DriveType.Fixed && 
+                     d.IsReady &&
+                     !string.IsNullOrEmpty(d.Name) &&
+                     d.Name.Substring(1) == ":\\");
+            foreach (DriveInfo drive in drives)
             {
                 string letter = drive.Name.Substring(0, 1);
 
                 // generate guess for every drive
                 foreach (string guess in guessPaths
-                    .Where(g => g.Substring(1, 2) == ":\\"))
+                    .Where(g => 
+                        !string.IsNullOrEmpty(g) &&
+                        g.Length > 2 &&
+                        g.Substring(1, 2) == ":\\"))
                 {
                     guesses.Add($"{letter}{guess.Substring(1)}");
                 }
             }
 
             // now filter to existing directories we haven't already added
-            return guesses.Where(guess => (!existing.Contains(guess)) && (System.IO.Directory.Exists(guess))).ToList();
+            return guesses.Where(guess => (!existing.Contains(guess)) && Directory.Exists(guess)).ToList();
         }
 
         private static void GenerateGuessesFromRegistry(HashSet<string> guessPaths, RegistryKey pathKey)

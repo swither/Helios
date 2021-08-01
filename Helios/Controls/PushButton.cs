@@ -531,5 +531,18 @@ namespace GadrocsWorkshop.Helios.Controls
                 writer.WriteEndElement();
             }
         }
+
+        #region Overrides of HeliosVisual
+
+        public override void ScaleChildren(double scaleX, double scaleY)
+        {
+            if (GlobalOptions.HasScaleAllText)
+            {
+                _labelFormat.FontSize *= Math.Max(scaleX, scaleY);
+            }
+            base.ScaleChildren(scaleX, scaleY);
+        }
+
+        #endregion
     }
 }

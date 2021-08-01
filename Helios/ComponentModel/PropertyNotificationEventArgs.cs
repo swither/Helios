@@ -58,7 +58,7 @@ namespace GadrocsWorkshop.Helios.ComponentModel
         /// <param name="childPropertyName">Name of the property which represents the child object whose property has chagned.</param>
         /// <param name="childNotification">Event args for child's property notification.</param>
         public PropertyNotificationEventArgs(object eventSource, string childPropertyName, PropertyNotificationEventArgs childNotification)
-            : this(eventSource, childPropertyName, null, null, childNotification.IsUndoable)
+            : this(eventSource, childPropertyName, null, null, childNotification?.IsUndoable ?? false)
         {
             _childNotification = childNotification;
         }

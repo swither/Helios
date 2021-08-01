@@ -160,7 +160,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             }
             
             _textureMemory = new SharedMemory("FalconTexturesSharedMemoryArea");
-            _textureMemory.CheckValue = 0;
             _textureMemory.Open();
 
             IsRunning = true;

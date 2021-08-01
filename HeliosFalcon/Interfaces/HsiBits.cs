@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
     [Flags]
     enum HsiBits : uint
     {
-        ToTrue = 0x01,    // HSI_FLAG_TO_TRUE
+        ToTrue = 0x01,    // HSI_FLAG_TO_TRUE == 1, TO
         IlsWarning = 0x02,    // HSI_FLAG_ILS_WARN
         CourseWarning = 0x04,    // HSI_FLAG_CRS_WARN
         Init = 0x08,    // HSI_FLAG_INIT
@@ -37,5 +37,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         OuterMarker = 0x4000,  // MARKER beacon light for outer marker
         MiddleMarker = 0x8000,  // MARKER beacon light for middle marker
         FromTrue = 0x10000, // HSI_FLAG_TO_TRUE == 2, FROM
+
+        Flying = 0x80000000, // true if player is attached to an aircraft (i.e. not in UI state).  NOTE: Not a lamp bit
+
+        // Used with the MAL/IND light code to light up "everything"
+        // please update this is you add/change bits!
+        AllLampHsiBitsOn = 0xE000
     };
 }

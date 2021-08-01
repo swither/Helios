@@ -26,6 +26,8 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 {
     public class InstallationLocation : DependencyObject
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public event EventHandler ChangeEnabled;
 
         private const string SETTINGS_GROUP = "DCSInstallationLocations";
@@ -78,7 +80,16 @@ namespace GadrocsWorkshop.Helios.Util.DCS
             // XXX can we register for changes on these files without breaking DCS?  how does that work in Windows?
             if (File.Exists(autoUpdatePath))
             {
-                version = JsonConvert.DeserializeObject<AutoUpdateConfig>(File.ReadAllText(autoUpdatePath)).Version;
+                string contents = File.ReadAllText(autoUpdatePath);
+                try
+                {
+                    version = JsonConvert.DeserializeObject<AutoUpdateConfig>(contents).Version;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error("Invalid file contents: {Contents}", contents);
+                    throw new Exception($"Failed to parse {AUTO_UPDATE_CONFIG}; Run DCS repair or reinstall the DCS installation in {rootPath}", ex);
+                }
             }
             else {
                 string exePath = System.IO.Path.Combine(rootPath ?? ".", "bin", "DCS.exe");

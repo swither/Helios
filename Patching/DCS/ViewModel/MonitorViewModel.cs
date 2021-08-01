@@ -17,11 +17,16 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using GadrocsWorkshop.Helios.Util.Shadow;
 using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
-    public class MonitorViewModel : HeliosViewModel<ShadowMonitor>
+    /// <summary>
+    /// view model for a monitor's DCS usage, such as whether it is included in the DCS resolution and how it is used
+    /// when the menu is loaded versus when the simulation is running
+    /// </summary>
+    public class MonitorViewModel : HeliosViewModel<DCSMonitor>
     {
         #region Private
 
@@ -32,7 +37,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         #endregion
 
-        internal MonitorViewModel(ShadowMonitor monitor, Vector globalOffset, double scale)
+        internal MonitorViewModel(DCSMonitor monitor, Vector globalOffset, double scale)
             : base(monitor)
         {
             _scale = scale;
@@ -54,7 +59,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 case "Main":
                 case "UserInterface":
-                    if (Data.Permissions.HasFlag(ShadowMonitor.PermissionsFlags.CanExclude) && !Data.HasContent)
+                    if (Data.Permissions.HasFlag(DCSMonitor.PermissionsFlags.CanExclude) && !Data.HasContent)
                     {
                         Data.Included = false;
                         UpdateInclusionNarrative();
@@ -165,7 +170,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         internal void UpdateFromPermissions()
         {
-            if (!Data.Permissions.HasFlag(ShadowMonitor.PermissionsFlags.CanInclude))
+            if (!Data.Permissions.HasFlag(DCSMonitor.PermissionsFlags.CanInclude))
             {
                 _includedNarrative = "UI Error: this monitor was supposed to be excluded due to monitor layout mode";
                 _excludedNarrative = "This monitor can not be included due to the current monitor layout mode.";
@@ -183,7 +188,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     _excludedNarrative = "UI Error: this monitor was supposed to be included due to content on it";
                     InclusionCanBeChanged = false;
                 }
-                else if (!Data.Permissions.HasFlag(ShadowMonitor.PermissionsFlags.CanExclude))
+                else if (!Data.Permissions.HasFlag(DCSMonitor.PermissionsFlags.CanExclude))
                 {
                     _includedNarrative = Data.Monitor.IsPrimaryDisplay ? 
                         "This monitor can not be excluded in the current monitor layout mode because it is configured as the primary display." : 

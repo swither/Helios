@@ -15,9 +15,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Eventing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Data;
@@ -34,12 +36,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
         private SharedMemory _sharedMemory = null;
         private SharedMemory _sharedMemory2 = null;
+        private SharedMemory _sharedMemoryStringArea = null;
 
         private RadarContact[] _contacts = new RadarContact[40];
         private string[] _rwrInfo;
 
         private FlightData _lastFlightData;
         private FlightData2 _lastFlightData2;
+        private uint _stringAreaSize;
+        private uint _stringAreaTime;
 
         private DateTime _outerMarkerLastTick;
         private bool _outerMarkerOnState;
@@ -61,6 +66,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
         private DateTime _unkLastTick;
         private bool _unkOnState;
+        private List<string> _navPoints;
+        private bool _stringDataUpdated;
+        private uint _lastStringAreaTime;
 
         public BMSFalconDataExporter(FalconInterface falconInterface)
             : base(falconInterface)
@@ -364,6 +372,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Electronic", "flcs rly indicator", "Electronic panel flcs rly indicator.", "True if lit.", BindingValueUnits.Boolean);
             AddValue("Electronic", "bat fail indicator", "Electronic panel battery fail indicator.", "True if lit.", BindingValueUnits.Boolean);
 
+            // Falcon RunTime Data
+            AddValue("Runtime", "Current Theater", "Name of the Current Theater", "", BindingValueUnits.Text);
+            AddValue("Runtime", "Flying", "Player flying state", "True if in 3D.", BindingValueUnits.Boolean);
         }
 
         internal override void InitData()
@@ -373,6 +384,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
             _sharedMemory2 = new SharedMemory("FalconSharedMemoryArea2");
             _sharedMemory2.Open();
+
+            _sharedMemoryStringArea = new SharedMemory("FalconSharedMemoryAreaString");
+            _sharedMemoryStringArea.Open();
         }
 
         internal override void PollData()
@@ -466,10 +480,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
                 //ADI ILS with AOA consideration value
                 SetValue("ADI", "ils vertical to flight path", new BindingValue(((_lastFlightData.AdiIlsVerPos * 2f) - 1f) - ClampAOA(_lastFlightData.alpha)));
+
+                //Runtime bindings
+                SetValue("Runtime", "Current Theater", new BindingValue(FalconInterface.CurrentTheater));
             }
-            if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
+            if (_sharedMemory2 != null && _sharedMemory2.IsDataAvailable)
             {
                 _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
+                _stringAreaTime = _lastFlightData2.StringAreaTime;
+                _stringAreaSize = _lastFlightData2.StringAreaSize;
+
                 SetValue("Altimeter", "indicated altitude", new BindingValue(-_lastFlightData2.aauz));
                 SetValue("Altimeter", "barimetric pressure", new BindingValue(_lastFlightData2.AltCalReading));
 
@@ -519,6 +539,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessLightBits(_lastFlightData.lightBits);
                 ProcessLightBits2(_lastFlightData.lightBits2, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits3(_lastFlightData.lightBits3);
+            }
+            if (_sharedMemoryStringArea != null && _sharedMemoryStringArea.IsDataAvailable)
+            {
+                if (_stringAreaTime != _lastStringAreaTime)
+                {
+                    _lastStringAreaTime = _stringAreaTime;
+                    if(_stringAreaSize != 0)
+                    {
+                        _stringDataUpdated = true;
+                        StringData stringData = new StringData();
+                        var _rawStringData = new byte[_stringAreaSize];
+                        Marshal.Copy(_sharedMemoryStringArea.GetPointer(), _rawStringData, 0, (int)_stringAreaSize);
+                        _navPoints = stringData.GetNavPoints(_rawStringData);
+                    }
+                }
+                else
+                {
+                    _stringDataUpdated = false;
+                }
             }
         }
 
@@ -789,6 +828,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             SetValue("VVI", "off flag", new BindingValue(bits.HasFlag(HsiBits.VVI)));
             SetValue("AOA", "off flag", new BindingValue(bits.HasFlag(HsiBits.AOA)));
             SetValue("AVTR", "avtr indicator", new BindingValue(bits.HasFlag(HsiBits.AVTR)));
+            SetValue("Runtime", "Flying", new BindingValue(bits.HasFlag(HsiBits.Flying)));
 
             UpdateBlinkingLightState(bits.HasFlag(HsiBits.OuterMarker), blinkBits.HasFlag(BlinkBits.OuterMarker), ref _outerMarkerLastTick, ref _outerMarkerOnState);
             SetValue("HSI", "Outer marker indicator", new BindingValue(_outerMarkerOnState));
@@ -870,6 +910,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             _sharedMemory2 = null;
         }
 
+        override internal List<string> NavPoints
+        {
+            get
+            {
+                return _navPoints;
+            }
+        }
+        
         override internal RadarContact[] RadarContacts
         {
             get
@@ -883,6 +931,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             get
             {
                 return _rwrInfo;
+            }
+        }
+
+        internal override bool StringDataUpdated
+        {
+            get
+            {
+                return _stringDataUpdated;
             }
         }
 

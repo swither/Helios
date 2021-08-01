@@ -44,6 +44,11 @@ namespace GadrocsWorkshop.Helios.Patching
         string LongDescription { get; }
 
         /// <summary>
+        /// human-readable recommendations for what to do if patching has failed
+        /// </summary>
+        string FailedPatchRecommendation { get; }
+
+        /// <summary>
         /// tries to read the full text of the target file
         /// </summary>
         /// <param name="targetPath"></param>

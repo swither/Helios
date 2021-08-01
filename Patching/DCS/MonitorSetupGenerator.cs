@@ -16,12 +16,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
+using GadrocsWorkshop.Helios.Util.Shadow;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
 {
@@ -115,7 +118,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // find main and ui view extents
             Rect mainView = Rect.Empty;
             Rect uiView = Rect.Empty;
-            foreach (ShadowMonitor monitor in _parent.Monitors)
+            foreach (DCSMonitor monitor in _parent.Monitors)
             {
                 string monitorDescription =
                     $"Monitor at Windows coordinates ({monitor.Monitor.Left},{monitor.Monitor.Top}) of size {monitor.Monitor.Width}x{monitor.Monitor.Height}";
@@ -129,7 +132,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     continue;
                 }
 
-                Rect rect = MonitorSetup.VisualToRect(monitor.Monitor);
+                Rect rect = monitor.Monitor.CalculateWindowsDesktopRect();
                 if (monitor.Main)
                 {
                     if (_parent.MonitorLayoutMode == MonitorLayoutMode.TopLeftQuarter)
@@ -287,9 +290,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     continue;
                 }
 
-                Rect rect = MonitorSetup.VisualToRect(shadow.Visual);
-                rect.Offset(shadow.Monitor.Left, shadow.Monitor.Top);
-                _localViewports.Viewports.Add(name, rect);
+                // calculate effective screen coordinates by tracing ancestry
+                _localViewports.Viewports.Add(name, shadow.Visual.CalculateWindowsDesktopRect());
             }
 
             // now check against our saved state, which we also have to update
@@ -664,6 +666,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             // calculate shared monitor config
             // and see if it is up to date in all locations
+            // NOTE: we have to do this even if this profile uses a separate setup, in case we just removed ourselves,
+            // invalidating the combined setup
             MonitorSetupTemplate combinedTemplate = CreateCombinedTemplate();
             string monitorSetupName = combinedTemplate.MonitorSetupName;
             foreach (StatusReportItem item in UpdateMonitorSetup(combinedTemplate, true))
@@ -682,10 +686,26 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return item;
             }
 
-            // also calculate separate config, if applicable
-            // and see if it is up to date in all locations
-            if (!_parent.GenerateCombined)
+            if (_parent.GenerateCombined)
             {
+                // check to make sure our viewports are actually included in the combined config, because
+                // settings may not match the profile (https://github.com/HeliosVirtualCockpit/Helios/issues/344)
+                if (!_parent.Combined.IsCombined(combinedTemplate.ProfileName))
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"current profile specifies using combined monitor setup, but its own viewports are not included",
+                        Recommendation =
+                            "Configure DCS Monitor Setup and save the Profile to repair corrupted configuration",
+                        Link = StatusReportItem.ProfileEditor,
+                        Severity = StatusReportItem.SeverityCode.Error
+                    };
+                }                        
+            }
+            else
+            {
+                // also calculate separate config, if applicable
+                // and see if it is up to date in all locations
                 MonitorSetupTemplate separateTemplate = CreateSeparateTemplate();
                 monitorSetupName = separateTemplate.MonitorSetupName;
                 foreach (StatusReportItem item in UpdateMonitorSetup(separateTemplate, false))
@@ -718,6 +738,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         // check if monitor setup selected in DCS
                         yield return ReportMonitorSetupSelected(location, options, monitorSetupName);
                     }
+                    
+                    // check on full screen
+                    yield return ReportFullScreen(location, options);
                 }
                 else
                 {
@@ -805,6 +828,45 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 };
             }
             
+            return new StatusReportItem
+            {
+                Status = status,
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+            };
+        }
+
+        private StatusReportItem ReportFullScreen(InstallationLocation location, DCSOptions options)
+        {
+            string status = $"{location.DescribeOptionsPath} has 'Fullscreen' set to {options.Graphics.FullScreen.ToString(CultureInfo.InvariantCulture)}";
+
+            if ((!options.Graphics.FullScreen) ||
+                _parent.MonitorLayoutMode == MonitorLayoutMode.PrimaryOnly)
+            {
+                // no problem
+                return new StatusReportItem
+                {
+                    Status = status,
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+
+            // check if we are trying to use Fullscreen with multiple displays
+            Monitor primary = _parent.Profile.CheckedDisplays?.FirstOrDefault(m => m.IsPrimaryDisplay);
+            if (null != primary && 
+                (primary.Width < options.Graphics.Width ||
+                 primary.Height < options.Graphics.Height))
+            {
+                return new StatusReportItem
+                {
+                    Status = status,
+                    Recommendation =
+                        $"Using DCS, uncheck 'Full Screen' in the 'System' options, or DCS may position your views incorrectly or even collapse all your content to the main monitor",
+                    // not a warning, because the user may simply not have configured DCS yet.  once we do that automatically,
+                    // this can be an out of date warning
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+
             return new StatusReportItem
             {
                 Status = status,

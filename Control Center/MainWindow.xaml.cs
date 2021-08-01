@@ -569,8 +569,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             {
                 return;
             }
-
-            ActiveProfile.Dispatcher = Dispatcher;
+            
             if (Preferences.PreflightCheck)
             {
                 if (!PerformReadyCheck())

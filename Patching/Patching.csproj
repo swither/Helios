@@ -58,9 +58,7 @@
     <Compile Include="DCS\MonitorSetup.cs" />
     <Compile Include="DCS\ViewModel\MonitorViewModel.cs" />
     <Compile Include="DCS\PatchVersion.cs" />
-    <Compile Include="DCS\ShadowMonitor.cs" />
-    <Compile Include="DCS\ShadowVisual.cs" />
-    <Compile Include="DCS\ViewModel\ViewportViewModel.cs" />
+    <Compile Include="DCS\DCSMonitor.cs" />
     <Compile Include="PatchApplication.cs" />
     <Compile Include="PatchedPath.cs" />
     <Compile Include="PatchInstallation.cs" />

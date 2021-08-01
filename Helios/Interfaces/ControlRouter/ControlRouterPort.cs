@@ -45,10 +45,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         private double _pulsesPerRevolution = 72d;
 
         /// <summary>
+        /// backing field for property PulsesPerDetent, contains
+        /// the number of pulses that the input control generates per detent on the input control
+        /// </summary>
+        private double _pulsesPerDetent = 4d;
+
+        /// <summary>
         /// backing field for property PulseSwitches, contains
         /// true if switches should be incremented by one position per pulse instead of by converting to angles
         /// </summary>
         private bool _pulseSwitches;
+
+        /// <summary>
+        /// backing field for property PulseAll, contains
+        /// true if all pulse-capable controls should be incremented by one position per pulse instead of by converting to angles
+        /// </summary>
+        private bool _pulseAll;
 
         /// <summary>
         /// backing field for property ValuePerRevolution, contains
@@ -78,7 +90,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         // the angle to which we set the bound control on the last update
         private double _lastAngle;
 
-        // just for debugging purposes, track how many pulses we have delivered
+        // pulses that are not yet delivered, because we are accumulating them
+        private double _undeliveredPulses;
+
+        // just for debugging purposes, track how many pulses we have received
         private double _pulsesSinceBinding;
 
         /// <summary>
@@ -155,10 +170,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
 
             Logger.Debug("received change by pulses of {Pulses}", e.Value.DoubleValue);
 
+            // track total change
+            _pulsesSinceBinding += e.Value.DoubleValue;
+
             if (_boundRotaryControl != null && !_pulseMode)
             {
                 // convert to angle
-                _pulsesSinceBinding += e.Value.DoubleValue;
                 _boundRotaryControl.ControlAngle += e.Value.DoubleValue * 360d / _pulsesPerRevolution;
                 Logger.Debug("after {Pulses} pulses, set control to {Angle}", _pulsesSinceBinding, _boundRotaryControl.ControlAngle);
                 return;
@@ -166,8 +183,40 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
 
             if (_boundPulsedControl != null)
             {
-                // deliver raw pulses
-                _boundPulsedControl.Pulse((int)e.Value.DoubleValue);
+                // deliver as pulses
+                int discretePulses;
+
+                // this functionality does not work with < 1 pulse per detent, so eliminate that case along with zero division
+                if (_pulsesPerDetent > 1d)
+                {
+                    // remainder from previous pulses, including negative remainders
+                    _undeliveredPulses += e.Value.DoubleValue / _pulsesPerDetent;
+                    if (_undeliveredPulses >= 1d)
+                    {
+                        discretePulses = (int) _undeliveredPulses;
+                        Logger.Debug("accumulated {Pulses} detents, sending {DiscretePulses} to increment", _undeliveredPulses, discretePulses);
+                        _undeliveredPulses %= 1d;
+                    }
+                    else if (_undeliveredPulses <= -1d)
+                    {
+                        discretePulses = (int) _undeliveredPulses;
+                        Logger.Debug("accumulated {Pulses} detents, sending {DiscretePulses} to decrement", _undeliveredPulses, discretePulses);
+                        _undeliveredPulses %= 1d;
+                    }
+                    else
+                    {
+                        discretePulses = 0;
+                    }
+                }
+                else
+                {
+                    discretePulses = (int) e.Value.DoubleValue;
+                }
+
+                if (discretePulses != 0)
+                {
+                    _boundPulsedControl.Pulse(discretePulses);
+                }
                 return;
             }
 
@@ -214,19 +263,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
 
         private void ClaimControlIfAvailable(HeliosActionEventArgs e)
         {
-            if (!_parent.TryClaimControl(out HeliosVisual visual))
+            if (!_parent.TryClaimControl(out INamedControl control))
             {
                 return;
             }
 
-            _boundRotaryControl = visual as IRotaryControl;
-            _boundPulsedControl = visual as IPulsedControl;
-            _controlName.SetValue(new BindingValue(visual.Name), false);
+            _boundRotaryControl = control as IRotaryControl;
+            _boundPulsedControl = control as IPulsedControl;
+            _controlName.SetValue(new BindingValue(control.Name), false);
             _initialAngle = _boundRotaryControl?.ControlAngle ?? 0d;
             _lastAngle = _initialAngle;
             _initialInputValue = e.Value;
             _pulsesSinceBinding = 0d;
-            _pulseMode = PulseSwitches && (visual is IRotarySwitch);
+            _pulseMode = PulseAll || (PulseSwitches && (control is IRotarySwitch));
         }
 
         /// <summary>
@@ -252,6 +301,28 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
         }
 
         /// <summary>
+        /// the number of pulses that the input control generates per detent on the input control
+        /// </summary>
+        [DefaultValue(4d)]
+        [XmlElement("PulsesPerDetent")]
+        public double PulsesPerDetent
+        {
+            get => _pulsesPerDetent;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator we really do want to process every change
+                if (_pulsesPerDetent == value)
+                {
+                    return;
+                }
+
+                double oldValue = _pulsesPerDetent;
+                _pulsesPerDetent = value;
+                OnPropertyChanged("PulsesPerDetent", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
         /// true if switches should be incremented by one position per pulse instead of by converting to angles
         /// </summary>
         [DefaultValue(false)]
@@ -268,6 +339,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
                 bool oldValue = _pulseSwitches;
                 _pulseSwitches = value;
                 OnPropertyChanged("PulseSwitches", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// true if all pulse-capable controls should be incremented by one position per pulse instead of by converting to angles
+        /// </summary>
+        [DefaultValue(false)]
+        [XmlElement("PulseAll")]
+        public bool PulseAll
+        {
+            get => _pulseAll;
+            set
+            {
+                if (_pulseAll == value)
+                {
+                    return;
+                }
+                bool oldValue = _pulseAll;
+                _pulseAll = value;
+                OnPropertyChanged("PulseAll", oldValue, value, true);
             }
         }
 

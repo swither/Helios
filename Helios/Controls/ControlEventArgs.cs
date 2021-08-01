@@ -14,16 +14,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 
 namespace GadrocsWorkshop.Helios.Controls
 {
     public class ControlEventArgs: EventArgs
     {
-        public ControlEventArgs(HeliosVisual visual)
+        public ControlEventArgs(INamedControl control)
         {
-            Visual = visual;
+            Control = control;
         }
 
-        public HeliosVisual Visual { get; }
+        public INamedControl Control { get; }
     }
 }

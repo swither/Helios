@@ -3,7 +3,7 @@
 namespace GadrocsWorkshop.Helios.Util
 {
     /// <summary>
-    /// a design instance for an editor of a helios control, because "Control" is pointlessly in the paths
+    /// a design instance for an editor of a helios control, because "Control" is in the paths
     /// in all legacy code instead of making "Control" the data context
     ///
     /// using a concretized descendant of this class as the design instance in a property editor will allow path

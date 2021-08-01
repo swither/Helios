@@ -1,11 +1,11 @@
-﻿// Copyright 2020 Ammo Goettsch
+﻿// Copyright 2021 Ammo Goettsch
 // 
-// Helios is free software: you can redistribute it and/or modify
+// Patching is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// Helios is distributed in the hope that it will be useful,
+// Patching is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -16,15 +16,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Threading;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
-using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using GadrocsWorkshop.Helios.Interfaces.Common;
 using GadrocsWorkshop.Helios.Patching.DCS.Controls;
 
 // REVISIT missing feature: support explicit view ports for MAIN and UI
@@ -36,105 +34,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
     /// </summary>
     [HeliosInterface("Patching.DCS.MonitorSetup", "DCS Monitor Setup", typeof(MonitorSetupEditor),
         Factory = typeof(UniqueHeliosInterfaceFactory))]
-    public class MonitorSetup : HeliosInterface, IReadyCheck, IStatusReportNotify,
-        IShadowVisualParent, IInstallation, IExtendedDescription, IResetMonitorsObserver
+    public class MonitorSetup : ViewportCompilerInterface<DCSMonitor, DCSMonitorEventArgs>
     {
-        #region Delegates
-
-        /// <summary>
-        /// fired when the bounds of some view model items may have changed, delayed to batch many changes
-        /// </summary>
-        public event EventHandler GeometryChangeDelayed;
-
-        /// <summary>
-        /// fired when the offset of the top left corner from Windows screen coordinates to
-        /// DCS (0,0)-based coordinates has changed
-        /// </summary>
-        public event EventHandler<GlobalOffsetEventArgs> GlobalOffsetChanged;
-
-        public event EventHandler<ShadowMonitorEventArgs> MonitorAdded;
-        public event EventHandler<ShadowMonitorEventArgs> MonitorRemoved;
-        public event EventHandler<ShadowViewportEventArgs> ViewportAdded;
-        public event EventHandler<ShadowViewportEventArgs> ViewportRemoved;
+        internal const string DISPLAYS_SETTINGS_GROUP = "DCSMonitorSetup";
+        internal const string PREFERENCES_SETTINGS_GROUP = "DCSMonitorSetupPreferences";
 
         /// <summary>
         /// fired when new viewport configuration is calculated
         /// </summary>
         public event EventHandler<UpdatedViewportsEventArgs> UpdatedViewports;
 
-        #endregion
-
-        #region Constant
-
-        internal const string DISPLAYS_SETTINGS_GROUP = "DCSMonitorSetup";
-        internal const string PREFERENCES_SETTINGS_GROUP = "DCSMonitorSetupPreferences";
-
-        #endregion
-
-        #region Nested
-
-        public class GlobalOffsetEventArgs : EventArgs
-        {
-            public GlobalOffsetEventArgs(Vector globalOffset)
-            {
-                GlobalOffset = globalOffset;
-            }
-
-            public Vector GlobalOffset { get; }
-        }
-
-        public class UpdatedViewportsEventArgs : EventArgs
-        {
-            public UpdatedViewportsEventArgs(ViewportSetupFile localViewports)
-            {
-                LocalViewports = localViewports;
-            }
-
-            public ViewportSetupFile LocalViewports { get; }
-        }
-
-        #endregion
-
-        #region Private
-
-        /// <summary>
-        /// live inventory of our profile, indexed by Helios monitor object
-        /// </summary>
-        private readonly Dictionary<Monitor, ShadowMonitor> _monitors = new Dictionary<Monitor, ShadowMonitor>();
-
-        private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
-
-        /// <summary>
-        /// live inventory of our profile, indexed by source visual
-        /// </summary>
-        private readonly Dictionary<HeliosVisual, ShadowVisual> _viewports =
-            new Dictionary<HeliosVisual, ShadowVisual>();
-
         private MonitorSetupGenerator _renderer;
-
-        /// <summary>
-        /// timer to delay execution of change in geometry because we sometimes receive thousands of events,
-        /// such as on reset monitors
-        /// </summary>
-        private DispatcherTimer _geometryChangeTimer;
-
-
-        /// <summary>
-        /// scale used for the viewmodels
-        /// </summary>
-        private double _scale = 0.1;
 
         /// <summary>
         /// backing field for property CombinedMonitorSetupName, contains
         /// the name of the combined monitor setup that needs to be selected in DCS
         /// </summary>
         private string _combinedMonitorSetupName;
-
-        /// <summary>
-        /// backing field for property CurrentProfileName, contains
-        /// short name of profile currently being edited
-        /// </summary>
-        private string _currentProfileName;
 
         /// <summary>
         /// backing field for property GenerateCombined, contains
@@ -157,22 +73,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         /// <summary>
         /// backing field for property Rendered, contains
-        /// The desktop rectangle (in Windows coordinates) that DCS will select for rendering, based on specifying its size as the "Resolution" parameter
+        /// The desktop rectangle (in Windows coordinates) that DCS will select for rendering, based on specifying its size as the
+        /// "Resolution" parameter
         /// </summary>
         private Rect _rendered;
-
-        /// <summary>
-        /// if true, then we are currently processing a geometry change and making changes that could schedule
-        /// further geometry change timer calls, so we should suppress those
-        /// </summary>
-        private bool _geometryChanging;
-
-        /// <summary>
-        /// if true, then monitors are either invalid or currently being reset, so we should not do any automatic configurations
-        /// </summary>
-        private bool _monitorsValid;
-
-        #endregion
 
         public MonitorSetup()
             : base("DCS Monitor Setup")
@@ -181,261 +85,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // test instantiated for add interface dialog
         }
 
-        public static Rect VisualToRect(HeliosVisual visual) =>
-            new Rect(visual.Left, visual.Top, visual.Width, visual.Height);
-
-        protected override void AttachToProfileOnMainThread()
-        {
-            base.AttachToProfileOnMainThread();
-
-            // customize naming in case of custom Documents folder
-            string documentsFolderName = Path.GetFileName(ConfigManager.DocumentPath);
-            _combinedMonitorSetupName = string.IsNullOrEmpty(documentsFolderName) ? "Helios" : documentsFolderName;
-
-            // read persistent config
-            _monitorLayoutMode = ConfigManager.SettingsManager.LoadSetting(PREFERENCES_SETTINGS_GROUP,
-                "MonitorLayoutMode", MonitorLayoutMode.FromTopLeftCorner);
-
-            // real initialization, not just a test instantiation
-            Combined.Initialize();
-            CurrentProfileName = string.IsNullOrWhiteSpace(Profile.Path) ? null : Profile.Name;
-
-            // NOTE: intentional crash if there is no Application.Current.Dispatcher
-            _geometryChangeTimer = new DispatcherTimer(
-                TimeSpan.FromMilliseconds(100),
-                DispatcherPriority.Normal,
-                OnDelayedGeometryChange,
-                Application.Current.Dispatcher)
-            {
-                IsEnabled = false
-            };
-            _renderer = new MonitorSetupGenerator(this);
-
-            CreateShadowObjects();
-
-            // we only update our models if the monitor layout matches
-            _monitorsValid = CheckMonitorsValid;
-
-            // calculate initial geometry, if we can
-            UpdateAllGeometry();
-
-            // register for changes
-            Profile.Monitors.CollectionChanged += Monitors_CollectionChanged;
-            Profile.PropertyChanged += Profile_PropertyChanged;
-        }
-
-        private void CreateShadowObjects()
-        {
-            // recursively walk profile and track every visual
-            foreach (Monitor monitor in Profile.Monitors)
-            {
-                AddMonitor(monitor);
-            }
-        }
-
-        protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
-        {
-            // stop updating shadow collections
-            oldProfile.Monitors.CollectionChanged -= Monitors_CollectionChanged;
-            oldProfile.PropertyChanged -= Profile_PropertyChanged;
-
-            base.DetachFromProfileOnMainThread(oldProfile);
-
-            // deallocate timer we allocate on Attach
-            _geometryChangeTimer?.Stop();
-            _geometryChangeTimer = null;
-
-            // deallocate renderer we allocate on Attach
-            _renderer?.Dispose();
-            _renderer = null;
-
-            ClearShadowObjects();
-        }
-
-        private void ClearShadowObjects()
-        {
-            // clean up shadow collections
-            foreach (ShadowMonitor shadow in _monitors.Values)
-            {
-                shadow.Dispose();
-                MonitorRemoved?.Invoke(this, new ShadowMonitorEventArgs(shadow));
-            }
-
-            foreach (ShadowVisual shadow in _viewports.Values)
-            {
-                shadow.Dispose();
-                ViewportRemoved?.Invoke(this, new ShadowViewportEventArgs(shadow));
-            }
-
-            _monitors.Clear();
-            _viewports.Clear();
-        }
-
-        private void AddMonitor(Monitor monitor)
-        {
-            ShadowMonitor shadow = new ShadowMonitor(this, monitor);
-            _monitors[monitor] = shadow;
-
-            // now that we can find the monitor in our index, we can safely add viewports
-            // and other children
-            shadow.Instrument();
-            shadow.KeyChanged += Shadow_KeyChanged;
-            shadow.PropertyChanged += Shadow_PropertyChanged;
-            shadow.MonitorChanged += Raw_MonitorChanged;
-
-            MonitorAdded?.Invoke(this, new ShadowMonitorEventArgs(shadow));
-        }
-
-        private void RemoveMonitor(Monitor monitor)
-        {
-            ShadowMonitor shadow = _monitors[monitor];
-            shadow.MonitorChanged -= Raw_MonitorChanged;
-            MonitorRemoved?.Invoke(this, new ShadowMonitorEventArgs(shadow));
-            _monitors.Remove(monitor);
-            shadow.Dispose();
-        }
-
-        public void AddViewport(ShadowVisual shadowViewport)
-        {
-            _viewports[shadowViewport.Visual] = shadowViewport;
-            ViewportAdded?.Invoke(this, new ShadowViewportEventArgs(shadowViewport));
-
-            // update viewport count on hosting monitor
-            ShadowMonitor monitor = _monitors[shadowViewport.Monitor];
-            monitor.AddViewport();
-
-            shadowViewport.ViewportChanged += Raw_ViewportChanged;
-
-            // recalculate, delayed
-            ScheduleGeometryChange();
-        }
-
-        public void RemoveViewport(ShadowVisual shadowViewport)
-        {
-            shadowViewport.ViewportChanged -= Raw_ViewportChanged;
-            _viewports.Remove(shadowViewport.Visual);
-            ViewportRemoved?.Invoke(this, new ShadowViewportEventArgs(shadowViewport));
-
-            // update viewport count on hosting monitor
-            ShadowMonitor monitor = _monitors[shadowViewport.Monitor];
-            monitor.RemoveViewport();
-
-            // recalculate, delayed
-            ScheduleGeometryChange();
-        }
-
-        private void Profile_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(Profile.Name):
-                    // WARNING: Path is changed before Name is set, so don't do this update on the change of "Path"
-                    CurrentProfileName = string.IsNullOrWhiteSpace(Profile.Path) ? null : Profile.Name;
-                    break;
-                case nameof(Profile.Path):
-                    InvalidateStatusReport();
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// called when a configuration property on our model has changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Shadow_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            // configuration of our shadow object changed by UI, need to re-evaluate
-            // configuration state
-            ScheduleGeometryChange();
-        }
-
-        /// <summary>
-        /// called when a monitor has changed enough to require a new
-        /// key (currently this happens every time the dimensions are changed because
-        /// the dimensions are the key)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Shadow_KeyChanged(object sender, ShadowMonitor.KeyChangeEventArgs e)
-        {
-            // no code in this implementation, as we track monitors by the actual Helios Monitor object
-        }
-
-        /// <summary>
-        /// called when the viewport dimensions are modified
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Raw_ViewportChanged(object sender, RawViewportEventArgs e)
-        {
-            _ = sender;
-            _ = e;
-            ScheduleGeometryChange();
-        }
-
-        /// <summary>
-        /// called when the monitor dimensions are modified
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Raw_MonitorChanged(object sender, RawMonitorEventArgs e)
-        {
-            _ = sender;
-            _ = e;
-            UpdateGlobalOffset();
-            ScheduleGeometryChange();
-        }
-
-        /// <summary>
-        /// called when the collection of monitors is changed after we initially instrumented everything,
-        /// such as during reset monitors
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Monitors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (Monitor monitor in e.NewItems)
-                {
-                    AddMonitor(monitor);
-                }
-            }
-
-            if (e.OldItems != null)
-            {
-                foreach (Monitor monitor in e.OldItems)
-                {
-                    RemoveMonitor(monitor);
-                }
-            }
-
-            ScheduleGeometryChange();
-        }
-
-        /// <summary>
-        /// find the offset between windows coordinates and the 0,0 coordinate system used by DCS
-        /// </summary>
-        private void UpdateGlobalOffset()
-        {
-            double globalX = -_monitors.Values.Select(m => m.Visual.Left).Min<double>();
-            double globalY = -_monitors.Values.Select(m => m.Visual.Top).Min<double>();
-            GlobalOffset = new Vector(globalX, globalY);
-            ConfigManager.LogManager.LogDebug(
-                $"new top left corner offset to translate from windows coordinates to DCS coordinates is {GlobalOffset}");
-
-            // push this value to all viewports and monitors
-            GlobalOffsetChanged?.Invoke(this, new GlobalOffsetEventArgs(GlobalOffset));
-        }
-
         /// <summary>
         /// find the minimum required DCS resolution to contain all the configured content
         /// </summary>
         private void UpdateRenderedRectangle()
         {
             // NOTE: we need this for status reporting, so this can't be in view model only
-            IList<ShadowMonitor> included = _monitors.Values.Where(m => m.Included).ToList();
+            IList<DCSMonitor> included = _monitors.Values.Where(m => m.Included).ToList();
             Point topLeft;
             Point bottomRight;
             switch (_monitorLayoutMode)
@@ -455,6 +111,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         // transient state during reset monitors can end up here
                         return;
                     }
+
                     bottomRight = new Point(
                         primary.Right,
                         included.Select(m => m.Visual.Top + m.Visual.Height).Max<double>());
@@ -472,6 +129,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         // transient state during reset monitors can end up here
                         return;
                     }
+
                     bottomRight = new Point(
                         included.Select(m => m.Visual.Left + m.Visual.Width).Max<double>(),
                         primary.Bottom);
@@ -490,6 +148,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         // transient state during reset monitors can end up here
                         return;
                     }
+
                     bottomRight = new Point(primary.Right, primary.Bottom);
                     topLeft = new Point(primary.Left, primary.Top);
                     break;
@@ -519,7 +178,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return;
             }
 
-            IList<ShadowMonitor> selectedMonitors = _monitors.Values
+            IList<DCSMonitor> selectedMonitors = _monitors.Values
                 .Where(m => m.Included)
                 .ToList();
 
@@ -527,7 +186,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             int min = selectedMonitors
                 .Select(m => m.ViewportCount)
                 .Min<int>();
-            foreach (ShadowMonitor monitor in selectedMonitors.Where(m => m.ViewportCount == min))
+            foreach (DCSMonitor monitor in selectedMonitors.Where(m => m.ViewportCount == min))
             {
                 monitor.Main = true;
             }
@@ -546,7 +205,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return;
             }
 
-            IList<ShadowMonitor> selectedMonitors = _monitors.Values
+            IList<DCSMonitor> selectedMonitors = _monitors.Values
                 .Where(m => m.Included)
                 .ToList();
 
@@ -554,109 +213,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             int minViewports = selectedMonitors
                 .Select(m => m.ViewportCount)
                 .Min<int>();
-            IList<ShadowMonitor> sortedMinPopulated = selectedMonitors
+            IList<DCSMonitor> sortedMinPopulated = selectedMonitors
                 .Where(m => m.ViewportCount == minViewports)
                 .OrderBy(m => m.Monitor.Left)
                 .ToList();
             double maxSize = sortedMinPopulated.Select(m => m.Monitor.Width).Max<double>();
-            ShadowMonitor ui = sortedMinPopulated.First(m => Math.Abs(m.Monitor.Width - maxSize) < 0.001);
+            DCSMonitor ui = sortedMinPopulated.First(m => Math.Abs(m.Monitor.Width - maxSize) < 0.001);
             ui.UserInterface = true;
-        }
-
-        private void ScheduleGeometryChange()
-        {
-            if (_geometryChanging)
-            {
-                // we are the source of whatever change caused us to call this, don't recurse
-                return;
-            }
-
-            // eat all events for a short duration and process only once in case there are a lot of updates
-            _geometryChangeTimer?.Start();
-        }
-
-        public override void ReadXml(XmlReader reader)
-        {
-            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
-            while (reader.NodeType == XmlNodeType.Element)
-            {
-                switch (reader.Name)
-                {
-                    case "GenerateCombined":
-                    {
-                        string text = reader.ReadElementString("GenerateCombined");
-                        _generateCombined = bc.ConvertFromInvariantString(text) as bool? ?? true;
-                        break;
-                    }
-                    case "UsingViewportProvider":
-                    {
-                        string text = reader.ReadElementString("UsingViewportProvider");
-                        _usingViewportProvider = bc.ConvertFromInvariantString(text) as bool? ?? true;
-                        break;
-                    }
-                    default:
-                    {
-                        // ignore unsupported settings
-                        string elementName = reader.Name;
-                        string discard = reader.ReadElementString(elementName);
-                            ConfigManager.LogManager.LogWarning(
-                            $"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
-                        break;
-                    }
-                }
-            }
-        }
-
-        public override void WriteXml(XmlWriter writer)
-        {
-            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
-            if (!_generateCombined)
-            {
-                writer.WriteElementString("GenerateCombined", bc.ConvertToInvariantString(false));
-            }
-
-            if (!_usingViewportProvider)
-            {
-                writer.WriteElementString("UsingViewportProvider", bc.ConvertToInvariantString(false));
-            }
-        }
-
-        /// <summary>
-        /// react to a batch of changes to the viewport and monitor geometries
-        /// </summary>
-        private void OnDelayedGeometryChange(object sender, EventArgs e)
-        {
-            if (!_monitorsValid)
-            {
-                // don't process events if monitors are not valid
-                // we will schedule an update once they are
-                _geometryChangeTimer?.Stop();
-                return;
-            }
-
-            // recursion prevention flag
-            _geometryChanging = true;
-            try
-            {
-                _geometryChangeTimer?.Stop();
-                if (Profile == null)
-                {
-                    // although we turn off the timer when we are removed from the profile, this call is still
-                    // delivered late
-                    return;
-                }
-                UpdateAllGeometry();
-            }
-            finally
-            {
-                _geometryChanging = false;
-            }
-
-            // notify anyone configuring or monitoring us
-            GeometryChangeDelayed?.Invoke(this, EventArgs.Empty);
-
-            // also send new status report
-            InvalidateStatusReport();
         }
 
         /// <summary>
@@ -672,7 +235,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             HashSet<string> displayKeys = new HashSet<string>();
             foreach (Monitor monitor in ConfigManager.DisplayManager.Displays)
             {
-                displayKeys.UnionWith(ShadowMonitor.GetAllKeys(monitor));
+                displayKeys.UnionWith(DCSMonitor.GetAllKeys(monitor));
             }
 
             if (!(ConfigManager.SettingsManager is ISettingsManager2 settings))
@@ -708,36 +271,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 .Where(m => m.Included)
                 .OrderBy(m => m.Monitor.Left)
                 .ThenBy(m => m.Monitor.Top)
-                .Select(CalculateMonitorKey)
+                .Select(m => m.CreateStateKey())
                 .Append(_monitorLayoutMode.ToString());
 
             return string.Join(", ", keys);
-        }
-
-        private static string CalculateMonitorKey(ShadowMonitor shadow)
-        {
-            string main = shadow.Main ? " MAIN" : "";
-            string ui = shadow.UserInterface ? " UI" : "";
-            return
-                $"{shadow.Monitor.Left} {shadow.Monitor.Top} {shadow.Monitor.Width} {shadow.Monitor.Height}{main}{ui}";
-        }
-
-        private void UpdateAllGeometry()
-        {
-            if (!_monitorsValid)
-            {
-                // don't process events if monitors are not valid
-                // we will schedule an update once they are
-                MonitorLayoutKey = null;
-                return;
-            }
-            CheckMonitorSettings();
-            EnsureValidMonitorSelections();
-            AutoSelectMainView();
-            AutoSelectUserInterfaceView();
-            UpdateGlobalOffset();
-            UpdateRenderedRectangle();
-            MonitorLayoutKey = CalculateMonitorLayoutKey();
         }
 
         private void EnsureValidMonitorSelections()
@@ -766,10 +303,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void EnsureTopLeftLayout()
         {
             // NOTE: always legal, just reset defaults
-            foreach (ShadowMonitor shadow in _monitors.Values)
+            foreach (DCSMonitor shadow in _monitors.Values)
             {
                 shadow.Included = shadow.Included || shadow.HasContent;
-                shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
+                shadow.Permissions = DCSMonitor.PermissionsFlags.CanInclude |
+                                     DCSMonitor.PermissionsFlags.CanExclude;
             }
         }
 
@@ -781,11 +319,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 // transient state during reset monitors can end up here
                 return;
             }
+
             // WARNING: Rect does not understand rectangles that extend to negative infinity
             Rect allowed = new Rect(
                 new Point(double.MinValue, primary.DisplayRectangle.Top),
                 new Point(double.MaxValue, primary.DisplayRectangle.Bottom));
-            foreach (ShadowMonitor shadow in _monitors.Values)
+            foreach (DCSMonitor shadow in _monitors.Values)
             {
                 Rect intersection = shadow.Monitor.DisplayRectangle;
                 intersection.Intersect(allowed);
@@ -796,12 +335,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     {
                         // cannot exclude main and area to the left of main
                         shadow.Included = true;
-                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
+                        shadow.Permissions = DCSMonitor.PermissionsFlags.CanInclude;
                     }
                     else
                     {
                         shadow.Included = shadow.Included || shadow.HasContent;
-                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
+                        shadow.Permissions = DCSMonitor.PermissionsFlags.CanInclude |
+                                             DCSMonitor.PermissionsFlags.CanExclude;
                     }
                 }
                 else
@@ -820,11 +360,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 // transient state during reset monitors can end up here
                 return;
             }
+
             // WARNING: Rect does not understand rectangles that extend to negative infinity
             Rect allowed = new Rect(
                 new Point(primary.DisplayRectangle.Left, double.MinValue),
                 new Point(primary.DisplayRectangle.Right, double.MaxValue));
-            foreach (ShadowMonitor shadow in _monitors.Values)
+            foreach (DCSMonitor shadow in _monitors.Values)
             {
                 Rect intersection = shadow.Monitor.DisplayRectangle;
                 intersection.Intersect(allowed);
@@ -835,12 +376,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     {
                         // cannot exclude main and area above main
                         shadow.Included = true;
-                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
+                        shadow.Permissions = DCSMonitor.PermissionsFlags.CanInclude;
                     }
                     else
                     {
                         shadow.Included = shadow.Included || shadow.HasContent;
-                        shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude | ShadowMonitor.PermissionsFlags.CanExclude;
+                        shadow.Permissions = DCSMonitor.PermissionsFlags.CanInclude |
+                                             DCSMonitor.PermissionsFlags.CanExclude;
                     }
                 }
                 else
@@ -854,13 +396,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void EnsurePrimaryLayout()
         {
-            foreach (ShadowMonitor shadow in _monitors.Values)
+            foreach (DCSMonitor shadow in _monitors.Values)
             {
                 if (shadow.Monitor.IsPrimaryDisplay)
                 {
                     // cannot exclude main
                     shadow.Included = true;
-                    shadow.Permissions = ShadowMonitor.PermissionsFlags.CanInclude;
+                    shadow.Permissions = DCSMonitor.PermissionsFlags.CanInclude;
                 }
                 else
                 {
@@ -869,6 +411,126 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 }
             }
         }
+
+        #region Overrides
+
+        // all we have right now is the monitor setup file generator
+        public override InstallationResult Install(IInstallationCallbacks callbacks) => _renderer.Install(callbacks);
+
+        protected override List<StatusReportItem> CreateStatusReport()
+        {
+            // all we have right now is the monitor setup file generator
+            // actually enumerate the report now and store it
+            List<StatusReportItem> newReport = _renderer.PerformReadyCheck().ToList();
+
+            // send newly calculated viewports data to any observers (such as combined monitor setup view model)
+            UpdatedViewports?.Invoke(this, new UpdatedViewportsEventArgs(_renderer.LocalViewports));
+            return newReport;
+        }
+
+        public override IEnumerable<StatusReportItem> PerformReadyCheck() => _renderer.PerformReadyCheck();
+
+        protected override void UpdateAllGeometry()
+        {
+            if (!_monitorsValid)
+            {
+                // don't process events if monitors are not valid
+                // we will schedule an update once they are
+                MonitorLayoutKey = null;
+                return;
+            }
+
+            CheckMonitorSettings();
+            EnsureValidMonitorSelections();
+            AutoSelectMainView();
+            AutoSelectUserInterfaceView();
+            UpdateGlobalOffset();
+            UpdateRenderedRectangle();
+            MonitorLayoutKey = CalculateMonitorLayoutKey();
+        }
+
+        protected override void AttachToProfileOnMainThread()
+        {
+            // customize naming in case of custom Documents folder
+            string documentsFolderName = Path.GetFileName(ConfigManager.DocumentPath);
+            _combinedMonitorSetupName = string.IsNullOrEmpty(documentsFolderName) ? "Helios" : documentsFolderName;
+
+            // read persistent config
+            _monitorLayoutMode = ConfigManager.SettingsManager.LoadSetting(PREFERENCES_SETTINGS_GROUP,
+                "MonitorLayoutMode", MonitorLayoutMode.FromTopLeftCorner);
+
+            // real initialization, not just a test instantiation
+            Combined.Initialize();
+
+            _renderer = new MonitorSetupGenerator(this);
+
+            base.AttachToProfileOnMainThread();
+        }
+
+        protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
+        {
+            base.DetachFromProfileOnMainThread(oldProfile);
+
+            // deallocate renderer we allocate on Attach
+            _renderer?.Dispose();
+            _renderer = null;
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
+            while (reader.NodeType == XmlNodeType.Element)
+            {
+                switch (reader.Name)
+                {
+                    case "GenerateCombined":
+                    {
+                        string text = reader.ReadElementString("GenerateCombined");
+                        _generateCombined = bc.ConvertFromInvariantString(text) as bool? ?? true;
+                        break;
+                    }
+                    case "UsingViewportProvider":
+                    {
+                        string text = reader.ReadElementString("UsingViewportProvider");
+                        _usingViewportProvider = bc.ConvertFromInvariantString(text) as bool? ?? true;
+                        break;
+                    }
+                    default:
+                    {
+                        // ignore unsupported settings
+                        string elementName = reader.Name;
+                        string discard = reader.ReadInnerXml();
+                        ConfigManager.LogManager.LogWarning(
+                            $"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
+                        break;
+                    }
+                }
+            }
+        }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
+            if (!_generateCombined)
+            {
+                writer.WriteElementString("GenerateCombined", bc.ConvertToInvariantString(false));
+            }
+
+            if (!_usingViewportProvider)
+            {
+                writer.WriteElementString("UsingViewportProvider", bc.ConvertToInvariantString(false));
+            }
+        }
+
+        protected override DCSMonitor CreateShadowMonitor(Monitor monitor) => new DCSMonitor(this, monitor);
+
+        public override string Description =>
+            "Utility interface that writes a DCS MonitorSetup Lua file to configure screen layout for the current profile.";
+
+        public override string RemovalNarrative =>
+            "Delete this interface to no longer let Helios manage the monitor setup file for this profile";
+
+        #endregion
 
         #region Properties
 
@@ -892,23 +554,19 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         /// <summary>
-        /// functionality supporting combined monitor setups
-        /// </summary>
-        internal CombinedMonitorSetup Combined { get; } = new CombinedMonitorSetup();
-
-        internal IEnumerable<ShadowMonitor> Monitors => _monitors.Values;
-
-        internal IEnumerable<ShadowVisual> Viewports => _viewports.Values;
-
-        /// <summary>
-        /// The desktop rectangle (in Windows coordinates) that DCS will select for rendering, based on specifying its size as the "Resolution" parameter, not persisted
+        /// The desktop rectangle (in Windows coordinates) that DCS will select for rendering, based on specifying its size as the
+        /// "Resolution" parameter, not persisted
         /// </summary>
         public Rect Rendered
         {
             get => _rendered;
             set
             {
-                if (_rendered == value) return;
+                if (_rendered == value)
+                {
+                    return;
+                }
+
                 Rect oldValue = _rendered;
                 _rendered = value;
                 OnPropertyChanged("Rendered", oldValue, value, false);
@@ -933,27 +591,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 OnPropertyChanged("CombinedMonitorSetupName", oldValue, value, true);
             }
         }
-
-        /// <summary>
-        /// short name of profile currently being edited
-        /// </summary>
-        public string CurrentProfileName
-        {
-            get => _currentProfileName;
-            set
-            {
-                if (_currentProfileName != null && _currentProfileName == value)
-                {
-                    return;
-                }
-
-                string oldValue = _currentProfileName;
-                _currentProfileName = value;
-                OnPropertyChanged("CurrentProfileName", oldValue, value, true);
-            }
-        }
-
-        internal string MonitorLayoutKey { get; private set; }
 
         /// <summary>
         /// true if Helios IViewportProvider is the source of
@@ -991,137 +628,40 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
                 MonitorLayoutMode oldValue = _monitorLayoutMode;
                 _monitorLayoutMode = value;
-                ConfigManager.SettingsManager.SaveSetting(PREFERENCES_SETTINGS_GROUP, "MonitorLayoutMode", _monitorLayoutMode);
+                ConfigManager.SettingsManager.SaveSetting(PREFERENCES_SETTINGS_GROUP, "MonitorLayoutMode",
+                    _monitorLayoutMode);
                 ScheduleGeometryChange();
                 OnPropertyChanged("MonitorLayoutMode", oldValue, value, false);
             }
         }
 
+        public string StatusName => Name;
+
+        /// <summary>
+        /// functionality supporting combined monitor setups
+        /// </summary>
+        internal CombinedMonitorSetup Combined { get; } = new CombinedMonitorSetup();
+
+        internal string MonitorLayoutKey { get; private set; }
+
         internal MonitorSetupGenerator Renderer => _renderer;
+
+        #endregion
 
         // having a subset or superset of the monitors in the profile is considered reset but it may
         // break monitor setup, so we have to do this additional check
-        private bool SameNumberOfMonitors => Profile != null &&
-            ConfigManager.DisplayManager.Displays.Count == Profile.Monitors.Count;
-
-        public bool CheckMonitorsValid => Profile != null && Profile.IsValidMonitorLayout && SameNumberOfMonitors;
-
-        #endregion
-
-        #region IExtendedDescription
-
-        public string Description =>
-            "Utility interface that writes a DCS MonitorSetup Lua file to configure screen layout for the current profile.";
-
-        public string RemovalNarrative =>
-            "Delete this interface to no longer let Helios manage the monitor setup file for this profile";
-
-        #endregion
-
-        #region IInstallation
-
-        // all we have right now is the monitor setup file generator
-        public InstallationResult Install(IInstallationCallbacks callbacks) => _renderer.Install(callbacks);
-
-        #endregion
-
-        #region IReadyCheck
-
-        // all we have right now is the monitor setup file generator
-        public IEnumerable<StatusReportItem> PerformReadyCheck() => _renderer.PerformReadyCheck();
-
-        #endregion
-
-        #region IShadowVisualParent
-
-        public double Scale
+        public class UpdatedViewportsEventArgs : EventArgs
         {
-            get => _scale;
-            set
+            public UpdatedViewportsEventArgs(ViewportSetupFile localViewports)
             {
-                double oldValue = _scale;
-                if (Math.Abs(oldValue - value) < 0.001)
-                {
-                    return;
-                }
-
-                _scale = value;
-                OnPropertyChanged("Scale", oldValue, value, true);
-            }
-        }
-
-        public Vector GlobalOffset { get; private set; }
-
-        #endregion
-
-        #region IStatusReportNotify
-
-        public void Subscribe(IStatusReportObserver observer)
-        {
-            _observers.Add(observer);
-        }
-
-        public void Unsubscribe(IStatusReportObserver observer)
-        {
-            _observers.Remove(observer);
-        }
-
-        public void InvalidateStatusReport()
-        {
-            if (_observers.Count < 1)
-            {
-                return;
+                LocalViewports = localViewports;
             }
 
-            // actually enumerate the report now and store it
-            List<StatusReportItem> newReport = _renderer.PerformReadyCheck().ToList();
+            #region Properties
 
-            // send newly calculated viewports data to any observers (such as combined monitor setup view model)
-            UpdatedViewports?.Invoke(this, new UpdatedViewportsEventArgs(_renderer.LocalViewports));
+            public ViewportSetupFile LocalViewports { get; }
 
-            // publish report
-            PublishStatusReport(newReport);
+            #endregion
         }
-
-        public void PublishStatusReport(IList<StatusReportItem> statusReport)
-        {
-            foreach (IStatusReportObserver observer in _observers)
-            {
-                observer.ReceiveStatusReport(Name,
-                    Description,
-                    statusReport);
-            }
-        }
-
-        public string StatusName => Name;
-
-        #endregion
-
-        #region IResetMonitorsObserver
-
-        public void NotifyResetMonitorsStarting()
-        {
-            // not volatile, only main thread access
-            _monitorsValid = false;
-        }
-
-        public void NotifyResetMonitorsComplete()
-        {
-            // not volatile, only main thread access
-            _monitorsValid = CheckMonitorsValid;
-            if (!_monitorsValid)
-            {
-                return;
-            }
-
-            // rebuild the entire shadow tree because monitors may have switched 
-            // identities due to their geometries being changed but the monitor
-            // object stayed the same (problem caused by 69f90d13)
-            ClearShadowObjects();
-            CreateShadowObjects();
-            ScheduleGeometryChange();
-        }
-
-        #endregion
     }
 }

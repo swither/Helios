@@ -74,15 +74,19 @@
     <Compile Include="ComponentModel\HeliosToolAttribute.cs" />
     <Compile Include="Controls\Capabilities\IBackgroundImage.cs" />
     <Compile Include="Controls\Capabilities\IConfigurableBackgroundImage.cs" />
+    <Compile Include="Controls\Capabilities\IControlWithProfileInstance.cs" />
+    <Compile Include="Controls\Capabilities\INamedControl.cs" />
     <Compile Include="Controls\Capabilities\IPreviewInput.cs" />
     <Compile Include="Controls\Capabilities\IRotarySwitch.cs" />
     <Compile Include="Controls\BackgroundImageAppearanceEditor.xaml.cs">
       <DependentUpon>BackgroundImageAppearanceEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Capabilities\IViewportExtent.cs" />
     <Compile Include="Controls\Special\CalibrationFilter.cs" />
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Special\LockedViewportExtent.cs" />
     <Compile Include="Controls\TimerPanelBehaviorEditor.xaml.cs">
       <DependentUpon>TimerPanelBehaviorEditor.xaml</DependentUpon>
     </Compile>
@@ -102,10 +106,13 @@
     <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
     <Compile Include="Gauges\CompositeVisualWithBackgroundImage.cs" />
     <Compile Include="Gauges\M2000C\VTBPanel\VTB_Panel.cs" />
+    <Compile Include="GlobalOptions.cs" />
     <Compile Include="HeliosCapabilityEditorDescriptor.cs" />
     <Compile Include="IInstallation2.cs" />
+    <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
+    <Compile Include="ProfileInstances.cs" />
     <Compile Include="StructuredInfo.cs" />
     <Compile Include="Tools\Capabilities\IProfileTool.cs" />
     <Compile Include="Tools\HeliosToolDescriptor.cs" />
@@ -143,8 +150,16 @@
     </Compile>
     <Compile Include="Util\CommandLineOptions.cs" />
     <Compile Include="Util\DesignTimeControl.cs" />
+    <Compile Include="Util\DesignTimeInterface.cs" />
     <Compile Include="Util\ElevatedProcess.cs" />
     <Compile Include="Util\ElevatedProcessResponsePipe.cs" />
+    <Compile Include="Util\Shadow\IShadowVisualParent.cs" />
+    <Compile Include="Util\Shadow\RawMonitorEventArgs.cs" />
+    <Compile Include="Util\Shadow\RawViewportEventArgs.cs" />
+    <Compile Include="Util\Shadow\ShadowMonitorBase.cs" />
+    <Compile Include="Util\Shadow\ShadowViewportEventArgs.cs" />
+    <Compile Include="Util\Shadow\ShadowVisual.cs" />
+    <Compile Include="Util\Shadow\ViewportViewModel.cs" />
     <Compile Include="Windows\Controls\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -314,7 +329,6 @@
     <Compile Include="Interfaces\Capabilities\IResetMonitorsObserver.cs" />
     <Compile Include="ISettingsManager2.cs" />
     <Compile Include="Interfaces\Capabilities\IStatusReportNotify.cs" />
-    <Compile Include="IViewportExtent.cs" />
     <Compile Include="Controls\CustomGaugeNeedle.cs" />
     <Compile Include="Controls\CustomDrum.cs" />
     <Compile Include="Controls\CustomTape.cs" />
