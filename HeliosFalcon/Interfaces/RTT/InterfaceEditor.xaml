@@ -8,7 +8,7 @@
       xmlns:system="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance Type={x:Type local:ConfigGenerator}}"
-      d:DesignHeight="450"
+      d:DesignHeight="550"
       d:DesignWidth="800">
     <Grid>
         <Grid.Resources>
@@ -41,7 +41,8 @@
                Margin="0,8,0,7"
                Height="26" />
         <CheckBox IsChecked="{Binding Enabled}"
-                  Command="{Binding EnabledCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                  Command="{Binding EnabledCommand}"
+                  CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
                   Grid.Column="1"
                   Grid.Row="0"
                   Height="14"
@@ -54,17 +55,20 @@
         <TextBlock Text="This feature provides the configuration and control of the RTT client process from within the Helios environment."
                    TextWrapping="Wrap"
                    HorizontalAlignment="Stretch"
+                   VerticalAlignment="Center"
                    Grid.Column="1"
                    Grid.Row="0"
-                   Margin="44,0,80,0" />
+                   Grid.ColumnSpan="2"
+                   Margin="44,0,-109,0" />
 
         <GroupBox Header="Configuration"
                   IsEnabled="{Binding Enabled}"
-                  Margin="10,4"
+                  Margin="10,4,-109,4"
                   Grid.ColumnSpan="3"
                   Grid.Row="1">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -80,14 +84,66 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+
+                <TextBlock Text="Allow Falcon profiles on this computer to start or stop  the RTT process"
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       HorizontalAlignment="Stretch" 
+                       VerticalAlignment="Center"
+                           TextWrapping="Wrap"
+                           Width="150"/>
+                
+                <CheckBox Grid.Row="0"
+                          Grid.Column="1"
+                          VerticalAlignment="Center" />
+
+                <GroupBox Grid.Row="0"
+                          Grid.Column="1"
+                          HorizontalAlignment="Left"
+                          Margin="39,2,0,3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Label Content="Start"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                        <CheckBox Grid.Row="1"
+                                  Grid.Column="1"
+                                  VerticalAlignment="Center" />
+
+                        <Label Content="Stop"
+                               Grid.Row="2"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                        <CheckBox Grid.Row="2"
+                                  Grid.Column="1"
+                                  VerticalAlignment="Center" />
+                    </Grid>
+                </GroupBox>
 
                 <Label Content="Renderer"
                        HorizontalAlignment="Right"
-                       Grid.Row="0"
+                       VerticalAlignment="Center"
+                       Grid.Row="1"
                        Grid.Column="0" />
-
-                <ComboBox Grid.Row="0"
+                <ComboBox Grid.Row="1"
                           Grid.Column="1"
                           HorizontalAlignment="Left"
                           Width="160"
@@ -112,58 +168,83 @@
                                       Content="SFML: OpenGL" />
                     </ComboBox.Items>
                 </ComboBox>
+                <TextBlock Text="The prefered renderer to be used by RTT"
+                           Grid.Row="2"
+                           Grid.Column="1" />
 
-                <Label Grid.Row="1"
+                <Label Grid.Row="3"
                        Grid.Column="0"
                        Content="Networked"
-                       HorizontalAlignment="Right" />
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center" />
                 <CheckBox IsChecked="{Binding Networked}"
                           Grid.Column="1"
-                          Grid.Row="1"
+                          Grid.Row="3"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
 
                 <Label Content="Frame Per Second"
-                       Grid.Row="0"
+                       Grid.Row="1"
                        Grid.Column="2"
+                       VerticalAlignment="Center"
                        HorizontalAlignment="Right" />
                 <TextBox Text="{Binding LocalOptions.FramesPerSecond}"
-                         Grid.Row="0"
+                         Grid.Row="1"
                          Grid.Column="3"
                          MinWidth="20"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
                          IsEnabled="{Binding Networked, Mode=OneWay, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={StaticResource False}}" />
+                <Border BorderBrush="Gray"
+                        CornerRadius="1"
+                        BorderThickness="2"
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Grid.ColumnSpan="3"
+                        Width="350">
+                    <TextBlock
+                            Text="How often should the client poll the RTT are to check for changes? The higher the value, the more GPU/CPU load you generate. Note that this value does NOT affect the smoothness of the display animations. The display can not draw more frames than BMS is currently exporting to RTT (which by default is BMS FPS / 2)"
+                               TextWrapping="Wrap"
+                               HorizontalAlignment="Stretch" />
+                </Border>
 
-                <Label Grid.Row="1"
+                <Label Grid.Row="4"
                        Grid.Column="2"
                        Content="RWR Grid"
-                       HorizontalAlignment="Right" />
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center" />
                 <CheckBox IsChecked="{Binding LocalOptions.RWRGrid}"
                           Grid.Column="3"
-                          Grid.Row="1"
+                          Grid.Row="4"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
+                <TextBlock Text="Enable simple grid overlay on RWR"
+                           VerticalAlignment="Center"
+                           Grid.Row="4"
+                           Grid.Column="4" />
 
                 <Label Grid.Column="0"
-                       Grid.Row="3"
+                       Grid.Row="4"
                        HorizontalAlignment="Right"
                        Content="IP Address" />
                 <TextBox Grid.Column="1"
-                         Grid.Row="3"
+                         Grid.Row="4"
                          VerticalAlignment="Center"
                          HorizontalAlignment="Left"
                          Width="200"
                          MaxWidth="200"
                          Text="{Binding NetworkOptions.IPAddress}"
                          IsEnabled="{Binding Networked}" />
+                <TextBlock Text="The IP Address where the RTT Server is running"
+                           Grid.Row="5"
+                           Grid.Column="1" />
 
                 <Label Content="Port"
                        HorizontalAlignment="Right"
                        Grid.Column="0"
-                       Grid.Row="4" />
+                       Grid.Row="6" />
                 <TextBox Grid.Column="1"
-                         Grid.Row="4"
+                         Grid.Row="6"
                          Width="40"
                          MaxWidth="40"
                          Text="{Binding NetworkOptions.Port}"
@@ -171,56 +252,65 @@
                          VerticalAlignment="Center"
                          Height="18"
                          IsEnabled="{Binding Networked}" />
+                <TextBlock Text="The Port of the remote RTT Server"
+                           Grid.Row="7"
+                           Grid.Column="1" />
 
-                <TextBlock Text="If you use RTT client on a PC not local to where Falcon BMS is running, it is possible not only to receive the RTT images, but also the normal shared memory areas. Just enable the ones below that you want to access remotely, they will be created on the client side for you. Please refer to the Falcon BMS technical manual for client server setup of RTT."
-                           TextWrapping="Wrap"
-                           Width="500"
-                           Grid.Row="5"
-                           Grid.Column="0"
-                           Grid.ColumnSpan="3"
-                           IsEnabled="{Binding Networked}" />
+                <Border BorderBrush="Yellow"
+                        CornerRadius="1"
+                        BorderThickness="2"
+                        Grid.Row="10"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Margin="4,4,4,4">
+                    <TextBlock Text="If you use RTT client on a PC not local to where Falcon BMS is running, it is possible not only to receive the RTT images, but also the normal shared memory areas. Just enable the ones below that you want to access remotely, they will be created on the client side for you. Please refer to the Falcon BMS technical manual for client server setup of RTT."
+                               TextWrapping="Wrap"
+                               Width="500"
+                               Margin="4,4,4,4"
+                               IsEnabled="{Binding Networked}" />
+                </Border>
 
                 <Label Content="DATA__F4"
                        HorizontalAlignment="Right"
                        Grid.Column="0"
-                       Grid.Row="6" />
+                       Grid.Row="11" />
                 <CheckBox IsChecked="{Binding NetworkOptions.DataF4}"
                           IsEnabled="{Binding Networked}"
                           Grid.Column="1"
-                          Grid.Row="6"
+                          Grid.Row="11"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
 
                 <Label Content="DATA__BMS"
                        HorizontalAlignment="Right"
                        Grid.Column="1"
-                       Grid.Row="6" />
+                       Grid.Row="11" />
                 <CheckBox IsChecked="{Binding NetworkOptions.DataBms}"
                           IsEnabled="{Binding Networked}"
                           Grid.Column="2"
-                          Grid.Row="6"
+                          Grid.Row="11"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
 
                 <Label Content="DATA__OSB"
                        HorizontalAlignment="Right"
                        Grid.Column="0"
-                       Grid.Row="7" />
+                       Grid.Row="12" />
                 <CheckBox IsChecked="{Binding NetworkOptions.DataOsb}"
                           IsEnabled="{Binding Networked}"
                           Grid.Column="1"
-                          Grid.Row="7"
+                          Grid.Row="12"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
 
                 <Label Content="DATA__IVIBE"
                        HorizontalAlignment="Right"
                        Grid.Column="1"
-                       Grid.Row="7" />
+                       Grid.Row="12" />
                 <CheckBox IsChecked="{Binding NetworkOptions.DataIvibe}"
                           IsEnabled="{Binding Networked}"
                           Grid.Column="2"
-                          Grid.Row="7"
+                          Grid.Row="12"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center" />
             </Grid>
