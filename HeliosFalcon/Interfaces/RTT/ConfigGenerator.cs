@@ -180,24 +180,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                     "RTTClient.ini configuration is contained within this profile. Helios needs permission to overwrite it"
             };
 
-        /// <summary>
-        /// Select which RTTClient executable is going to be used
-        /// </summary>
-        /// <returns>selected</returns>
-        internal string SelectClient(bool is64BitProcess)
-        {
-            string selected;
-            if (is64BitProcess)
-            {
-                selected = Networked ? "RTTClient64_FakeBMS.exe" : "RTTClient64.exe";
-            }
-            else
-            {
-                selected = Networked ? "RTTClient32_FakeBMS.exe" : "RTTClient32.exe";
-            }
-
-            return selected;
-        }
+        
 
         /// <summary>
         /// called when added to the profile, to fix up the configuration before changes are observed
@@ -237,7 +220,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 {
                     Severity = StatusReportItem.SeverityCode.Error,
                     Status =
-                        "RTT feature has been disabled, because an existing RTT configuration would be overwritten by the this profile",
+                        "RTT feature has been disabled, because an existing RTT configuration would be overwritten by this profile",
                     Recommendation =
                         "Enable the RTT feature again to back up the existing file and let Helios to generate RTT displays"
                 }.AsReport();
@@ -409,11 +392,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 return;
             }
 
-            // launch RTT
-            string selectedClient = SelectClient(Environment.Is64BitProcess);
-            StartedProcess =
-                ProcessControl.StartRTTClient(Path.Combine(Parent.FalconPath, "Tools", "RTTRemote", selectedClient));
-            Logger.Info($"launching RTT client: {selectedClient}");
+            if (ProcessControl?.StartRtt ?? false)
+            {
+                // launch RTT
+                string selectedClient = ProcessControl.SelectClient(Networked);
+                StartedProcess =
+                    ProcessControl.StartRTTClient(Path.Combine(Parent.FalconPath, "Tools", "RTTRemote", selectedClient));
+                Logger.Info($"launching RTT client: {selectedClient}");
+            }
         }
 
         internal void OnProfileStop()
@@ -423,7 +409,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 return;
             }
 
-            ProcessControl.KillRTTCllient(Path.GetFileNameWithoutExtension(SelectClient(Environment.Is64BitProcess)));
+            if (ProcessControl?.StopRtt ?? false)
+            {
+                ProcessControl.KillRTTCllient(Path.GetFileNameWithoutExtension(ProcessControl.SelectClient(Networked)));
+            }
         }
 
         /// <summary>

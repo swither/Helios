@@ -82,6 +82,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             }
         }
 
+        /// <summary>
+        /// Returns the correct executable to run based on architecture and networked values
+        /// </summary>
+        /// <param name="networked"></param>
+        /// <returns>selected</returns>
+        internal string SelectClient(bool networked)
+        {
+            string selected;
+            if (Environment.Is64BitProcess)
+            {
+                selected = networked ? "RTTClient64_FakeBMS.exe" : "RTTClient64.exe";
+            }
+            else
+            {
+                selected = networked ? "RTTClient32_FakeBMS.exe" : "RTTClient32.exe";
+            }
+
+            return selected;
+        }
+
         #region Properties
 
         /// <summary>
