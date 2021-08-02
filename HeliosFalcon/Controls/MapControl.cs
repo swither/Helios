@@ -435,19 +435,19 @@ namespace GadrocsWorkshop.Helios.Controls
 				MapControlDynamicResize(true);
 				CalculateOffsets();
 			}
+		}
 
-			void MapImageAssign(string[,] mapImages, double mapNum)
+		void MapImageAssign(string[,] mapImages, double mapNumber)
+		{
+			for (int i = 0; i < mapImages.GetLength(0); i++)
 			{
-				for (int i = 0; i < mapImages.GetLength(0); i++)
+				if (mapNumber == Convert.ToDouble(mapImages[i, 0]))
 				{
-					if (mapNumber == Convert.ToDouble(mapImages[i, 0]))
+					if (_Map.Image != mapImages[i, 1])
 					{
-						if (_Map.Image != mapImages[i, 1])
-						{
-							_Map.Image = mapImages[i, 1];
-							_mapSizeMultiplier = Convert.ToDouble(mapImages[i, 2]);
-							_mapImageChanged = true;
-						}
+						_Map.Image = mapImages[i, 1];
+						_mapSizeMultiplier = Convert.ToDouble(mapImages[i, 2]);
+						_mapImageChanged = true;
 					}
 				}
 			}
