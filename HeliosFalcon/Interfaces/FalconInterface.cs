@@ -397,34 +397,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             return _dataExporter?.GetValue(device, name) ?? BindingValue.Empty;
         }
 
-
-        private void StartRTTClient(string process)
-        {
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = Path.GetFileName(process);
-            psi.WorkingDirectory = Path.GetDirectoryName(process);
-            psi.UseShellExecute = true;
-            psi.RedirectStandardOutput = false;
-            Process.Start(psi);
-        }
-
-        private void KillRTTCllient(string process)
-        {
-            try
-            {
-                Process[] localProcessesByName = Process.GetProcessesByName(process);
-                foreach (Process proc in localProcessesByName)
-                {
-                    Logger.Info("Killing process image name {ProcessImageName}", process);
-                    proc.Kill();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error caught during kill processing for process image name {ProcessImageName}", process);
-            }
-        }
-
         protected override void OnProfileChanged(HeliosProfile oldProfile)
         {
             base.OnProfileChanged(oldProfile);
