@@ -46,7 +46,11 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.IAS
             _limitingAirSpeedNeedle = new GaugeNeedle("{Helios}/Gauges/A-10/IAS/needle_ias_limit.xaml", new Point(182d, 188d), new Size(22, 165), new Point(11, 130), 10d);
             Components.Add(_limitingAirSpeedNeedle);
 
-            _needleCalibration = new CalibrationPointCollectionDouble(50d, 0d, 550d, 340d);
+            // note: the needles are prerotated at 10 degrees
+            _needleCalibration = new CalibrationPointCollectionDouble(0d, -10d, 550d, 340d)
+            {
+                new CalibrationPointDouble(50d, 0d)
+            };
             _needle = new GaugeNeedle("{Helios}/Gauges/A-10/Common/needle_a.xaml", new Point(182d, 188d), new Size(22, 165), new Point(11, 130), 10d);
             Components.Add(_needle);
 
