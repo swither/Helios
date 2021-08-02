@@ -62,6 +62,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <summary>
         /// RWR GRID enabled
         /// </summary>
+        [DefaultValue(false)]
         [XmlElement("RWRGrid")]
         public bool RWRGrid
         {
