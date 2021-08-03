@@ -8,15 +8,17 @@
                                 xmlns:rtt="clr-namespace:GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT"
                                 xmlns:Util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
                                 xmlns:controls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
-                                d:DesignHeight="650"
-                                d:DesignWidth="600"
+                                Height="Auto"
+                                Width="Auto"
+                                Background="{StaticResource ToolBackground}"
+                                Padding="5"
                                 DataContext="{av:Binding RelativeSource={av:RelativeSource Self}}"
                                 d:DataContext="{d:DesignInstance Type={x:Type local:DesignTimeFalconInterface}, IsDesignTimeCreatable=True}"
                                 mc:Ignorable="d">
     <controls:HeliosInterfaceEditor.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <Util:DesignTimeEditorResources/>
+                <Util:DesignTimeEditorResources />
             </ResourceDictionary.MergedDictionaries>
 
             <Util:EnumBooleanConverter x:Key="EnumBooleanConverter" />
@@ -34,16 +36,15 @@
                 </av:Style.Triggers>
             </av:Style>
         </ResourceDictionary>
-    </controls:HeliosInterfaceEditor.Resources>    
-    <av:StackPanel Orientation="Vertical">
+    </controls:HeliosInterfaceEditor.Resources>
+    <av:WrapPanel Orientation="Vertical">
         <av:GroupBox Margin="4,4,4,4"
                      Header="Falcon Setup">
             <av:Grid Margin="4">
                 <av:Grid.ColumnDefinitions>
-                    <av:ColumnDefinition Width="Auto" />
-                    <av:ColumnDefinition />
-                    <av:ColumnDefinition Width="104" />
-                    <av:ColumnDefinition Width="117" />
+                    <av:ColumnDefinition Width="Auto"
+                                         MinWidth="200" />
+                    <av:ColumnDefinition Width="781" />
                 </av:Grid.ColumnDefinitions>
                 <av:Grid.RowDefinitions>
                     <av:RowDefinition Height="Auto" />
@@ -55,56 +56,68 @@
                 <av:TextBlock Margin="0,4,0,3"
                               av:Grid.Column="0"
                               av:Grid.ColumnSpan="2"
-                              FontStyle="Italic"
                               Text="Select which version of Falcon you are running."
+                              Style="{StaticResource Documentation}"
                               TextWrapping="Wrap" />
-                <av:ComboBox Margin="10,21,47,10"
+                <av:ComboBox Margin="10,34,47,23"
                              MinWidth="70"
                              VerticalAlignment="Center"
                              IsEnabled="True"
                              ItemsSource="{av:Binding Interface.FalconVersions}"
                              SelectedItem="{av:Binding Interface.FalconVersion,
-                                              Mode=TwoWay}" />
-                <av:GroupBox Margin="4,4,4,4"
-                             av:Grid.Column="2"
+                                              Mode=TwoWay}"
+                             Height="22" />
+                <av:GroupBox Margin="80,5,10,3"
+                             av:Grid.Column="1"
                              av:Grid.Row="0"
+                             MinWidth="100"
+                             MaxWidth="200"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Center"
                              Header="Pilot Callsign">
                     <av:Label Margin="0,2,0,19.667"
                               HorizontalContentAlignment="Center"
                               VerticalContentAlignment="Center"
-                              av:Content="{av:Binding Interface.PilotCallsign}"
-                              FontStyle="Italic" />
+                              av:Content="{av:Binding Interface.PilotCallsign}" />
                 </av:GroupBox>
 
                 <av:TextBlock Margin="4,4,10,4"
                               av:Grid.Column="0"
-                              av:Grid.ColumnSpan="5"
+                              av:Grid.ColumnSpan="2"
                               av:Grid.Row="2"
-                              FontSize="11"
-                              FontStyle="Italic"
+                              Style="{StaticResource Documentation}"
                               Text="Select the keyfile you use. Helios uses the keyfile to understand which keystrokes to send to Falcon. If this is not set accurately you will not get the correct actions. Verify the keystrokes in the Key Callbacks section look accurate."
                               TextWrapping="Wrap" />
+
                 <av:Label av:Grid.Column="0"
                           av:Grid.Row="3"
-                          Content="Key File" />
-                <controls:HeliosTextBox Margin="10,4"
-                                        av:Grid.Column="1"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          Content="Key File"
+                          Height="26"
+                          Margin="0,1"
+                          Width="50" />
+                <controls:HeliosTextBox Text="{av:Binding Interface.KeyFileName, Mode=TwoWay}"
                                         av:Grid.Row="3"
-                                        Text="{av:Binding Interface.KeyFileName,
-                                      Mode=TwoWay}" />
+                                        av:Grid.ColumnSpan="2"
+                                        VerticalAlignment="Center"
+                                        MinWidth="200"
+                                        MaxWidth="500"
+                                        Margin="55,0,437,0" />
                 <av:Button Width="30"
-                           Margin="10,4,64,4"
-                           av:Grid.Column="2"
+                           Margin="348,1,403,4"
+                           av:Grid.Column="1"
                            av:Grid.Row="3"
                            Click="Button_Click"
-                           Content="..." />
+                           Content="..."
+                           Height="18" />
             </av:Grid>
         </av:GroupBox>
         <av:Expander Header="RTT Client"
                      Style="{StaticResource GroupBoxWithExpanderStyle}"
                      IsExpanded="True"
                      Margin="4,4,4,4">
-            <rtt:InterfaceEditor DataContext="{Binding Interface.Rtt}"/> 
+            <rtt:InterfaceEditor DataContext="{Binding Interface.Rtt}" />
         </av:Expander>
         <av:Expander Margin="4,4,4,4"
                      Header="Falcon Runtime"
@@ -112,47 +125,46 @@
                      IsExpanded="False">
             <av:Grid Margin="4">
                 <av:Grid.ColumnDefinitions>
-                    <av:ColumnDefinition Width="Auto"
-                                         MinWidth="301" />
+                    <av:ColumnDefinition Width="Auto" />
                     <av:ColumnDefinition />
                 </av:Grid.ColumnDefinitions>
                 <av:Grid.RowDefinitions>
                     <av:RowDefinition Height="Auto" />
                     <av:RowDefinition Height="Auto" />
-                    <av:RowDefinition Height="Auto" />
                 </av:Grid.RowDefinitions>
                 <av:TextBlock Margin="4"
-                              av:Grid.Column="0"
+                              av:Grid.Column="1"
                               av:Grid.Row="0"
-                              FontSize="11"
-                              FontStyle="Italic"
                               Text="Bring focus to the Falcon window before sending callbacks"
+                              Style="{StaticResource Documentation}"
                               TextWrapping="Wrap" />
                 <av:CheckBox Width="89"
                              Height="15"
                              Margin="0,1,0,0"
-                             HorizontalAlignment="Left"
+                             HorizontalAlignment="Right"
                              VerticalAlignment="Center"
-                             av:Grid.Column="1"
-                             Content="Focus Assist?"
+                             av:Grid.Column="0"
+                             Content="Focus Assist"
                              IsChecked="{av:Binding Path=Interface.FocusAssist,
-                                           Mode=TwoWay}" />
+                                           Mode=TwoWay}"
+                             FlowDirection="RightToLeft" />
                 <av:TextBlock Margin="4"
                               av:Grid.Row="1"
-                              FontSize="11"
-                              FontStyle="Italic"
+                              av:Grid.Column="1"
                               Text="Force Falcon pilot callsign to use the key file defined in this profile"
+                              Style="{StaticResource Documentation}"
                               TextWrapping="Wrap" />
                 <av:CheckBox Width="101"
                              Height="15"
                              Margin="1,6,0,4"
-                             HorizontalAlignment="Left"
+                             HorizontalAlignment="Right"
                              VerticalAlignment="Center"
-                             av:Grid.Column="1"
+                             av:Grid.Column="0"
                              av:Grid.Row="1"
-                             Content="Force Key File ?"
+                             Content="Force Key File"
                              IsChecked="{av:Binding Interface.ForceKeyFile,
-                                           Mode=TwoWay}" />
+                                           Mode=TwoWay}"
+                             FlowDirection="RightToLeft" />
             </av:Grid>
         </av:Expander>
         <av:Expander Height="456"
@@ -162,24 +174,18 @@
                      IsExpanded="False">
             <av:Grid>
                 <av:Grid.RowDefinitions>
-                    <av:RowDefinition Height="Auto" />
-                    <av:RowDefinition Height="Auto" />
-                    <av:RowDefinition Height="Auto" />
+                    <av:RowDefinition Height="*" />
                 </av:Grid.RowDefinitions>
                 <av:Grid.ColumnDefinitions>
-                    <av:ColumnDefinition Width="Auto" />
-                    <av:ColumnDefinition Width="Auto" />
-                    <av:ColumnDefinition Width="Auto" />
+                    <av:ColumnDefinition Width="*" />
                 </av:Grid.ColumnDefinitions>
-
                 <local:FalconCallbackValueEditor Margin="4,10,4,4"
                                                  MinWidth="400"
                                                  MinHeight="200"
                                                  av:Grid.Column="1"
-                                                 av:Grid.ColumnSpan="3"
                                                  av:Grid.Row="2"
                                                  Profile="{av:Binding Interface.Profile}" />
             </av:Grid>
         </av:Expander>
-    </av:StackPanel>
+    </av:WrapPanel>
 </controls:HeliosInterfaceEditor>
