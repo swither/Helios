@@ -1,7 +1,7 @@
 ﻿<ControlTemplate>
 	<Name>Falcon RTT DED ONTOP</Name>
 	<Category>Falcon RTT Viewports</Category>
-	<TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+	<TypeIdentifier>Helios.Base.LockedViewportExtent</TypeIdentifier>
 	<Template>
 		<TemplateValues>
 			<FillBackground>True</FillBackground>
