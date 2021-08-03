@@ -88,7 +88,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             {"RWR", "RWR"},
             {"MFDLEFT", "MFDLEFT"},
             {"MFDRIGHT", "MFDRIGHT"},
-            {"HMS", "HMS"}
+            {"HMS", "HMS"},
+            {"HUD_ONTOP", "HUD"},
+            {"PFL_ONTOP", "PFL"},
+            {"DED_ONTOP", "DED"},
+            {"RWR_ONTOP", "RWR"},
+            {"MFDLEFT_ONTOP", "MFDLEFT"},
+            {"MFDRIGHT_ONTOP", "MFDRIGHT"},
+            {"HMS_ONTOP", "HMS"}
         };
 
         // our schema identifier, in case of future configuration model changes
@@ -521,6 +528,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 .Concat(GenerateGlobalConfig())
                 .Concat(supportedDisplays.SelectMany(candidate => EnableViewport(candidate, present)))
                 .Concat(present.SelectMany(DefineViewport))
+                .Concat(present.SelectMany(DefineViewportOnTop))
                 .ToList();
             return lines;
         }
@@ -549,6 +557,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             else
             {
                 yield return $"USE_{candidateDisplay} = 0";
+            }
+        }
+
+        private IEnumerable<string> DefineViewportOnTop(KeyValuePair<string, ShadowVisual> displayRecord)
+        {
+            if (displayRecord.Value.Viewport.ViewportName.Contains("ONTOP"))
+            {
+                yield return $"{displayRecord.Key}_ONTOP = 1";
+            }
+            else
+            {
+                yield return $"{displayRecord.Key}_ONTOP = 0";
             }
         }
 
