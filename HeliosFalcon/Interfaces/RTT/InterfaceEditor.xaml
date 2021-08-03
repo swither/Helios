@@ -98,7 +98,7 @@
                   Grid.Row="2"
                   Grid.Column="0"
                   Grid.ColumnSpan="3"
-                  Margin="10,4,-109,217">
+                  Margin="10,4,10,217">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"
@@ -173,7 +173,7 @@
         </GroupBox>
 
         <GroupBox Header="Local Configuration Options"
-                  Margin="10,185,-109,4"
+                  Margin="10,185,10,4"
                   Grid.ColumnSpan="3"
                   Grid.Row="2"
                   Grid.RowSpan="2">
@@ -287,7 +287,7 @@
 
         <GroupBox Header="Network Configuration Options"
                   IsEnabled="{Binding Enabled}"
-                  Margin="10,1,-109,4"
+                  Margin="10,1,10,4"
                   Grid.ColumnSpan="3"
                   Grid.Row="4">
             <Grid Margin="0,0,0,89">
