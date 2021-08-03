@@ -22,7 +22,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
     [HeliosControl("Helios.Falcon.DED", "DED", "Falcon Textures", typeof(FalconTextureDisplayRenderer))]
     public class DED : FalconTextureDisplay
     {
-        //TODO defaultRec values here were specific to OpenFalcon
         private static readonly Rect _defaultRect = new Rect(5, 270, 160, 63);
 
         public DED()

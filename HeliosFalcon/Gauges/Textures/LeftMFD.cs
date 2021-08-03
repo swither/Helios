@@ -22,7 +22,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
     [HeliosControl("Helios.Falcon.MFDLeft", "MFD (Left)", "Falcon Textures", typeof(FalconTextureDisplayRenderer))]
     public class LeftMFD : FalconTextureDisplay
     {
-        //TODO defaultRec values here were specific to OpenFalcons
         private static readonly Rect _defaultRect = new Rect(265, 5, 175, 175);
 
         public LeftMFD()

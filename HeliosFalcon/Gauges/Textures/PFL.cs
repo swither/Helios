@@ -22,7 +22,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
     [HeliosControl("Helios.Falcon.PFL", "PFL", "Falcon Textures", typeof(FalconTextureDisplayRenderer))]
     public class PFL : FalconTextureDisplay
     {
-        //TODO defaultRec values here were specific to OpenFalcon
         private static readonly Rect _defaultRect = new Rect(5, 345, 150, 70);
 
         public PFL()
