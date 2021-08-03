@@ -132,39 +132,44 @@
                     <av:RowDefinition Height="Auto" />
                     <av:RowDefinition Height="Auto" />
                 </av:Grid.RowDefinitions>
-                <av:TextBlock Margin="4"
-                              av:Grid.Column="1"
-                              av:Grid.Row="0"
-                              Text="Bring focus to the Falcon window before sending callbacks"
-                              Style="{StaticResource Documentation}"
-                              TextWrapping="Wrap" />
-                <av:CheckBox Width="89"
-                             Height="15"
-                             Margin="0,1,0,0"
-                             HorizontalAlignment="Right"
-                             VerticalAlignment="Center"
-                             av:Grid.Column="0"
-                             Content="Focus Assist"
-                             IsChecked="{av:Binding Path=Interface.FocusAssist,
+                <WrapPanel
+                    av:Grid.Row="0">
+                    <av:Label Content="   Focus Assist" 
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Center"/>
+                    <av:CheckBox Width="16"
+                                 Height="16"
+                                 HorizontalAlignment="Right"
+                                 VerticalAlignment="Center"
+                                 IsChecked="{av:Binding Path=Interface.FocusAssist,
                                            Mode=TwoWay}"
-                             FlowDirection="RightToLeft" />
-                <av:TextBlock Margin="4"
-                              av:Grid.Row="1"
-                              av:Grid.Column="1"
-                              Text="Force Falcon pilot callsign to use the key file defined in this profile"
-                              Style="{StaticResource Documentation}"
-                              TextWrapping="Wrap" />
-                <av:CheckBox Width="101"
-                             Height="15"
-                             Margin="1,6,0,4"
-                             HorizontalAlignment="Right"
-                             VerticalAlignment="Center"
-                             av:Grid.Column="0"
-                             av:Grid.Row="1"
-                             Content="Force Key File"
-                             IsChecked="{av:Binding Interface.ForceKeyFile,
-                                           Mode=TwoWay}"
-                             FlowDirection="RightToLeft" />
+                                 RenderTransformOrigin="-0.708,0.646" />
+                    <av:TextBlock Margin="4"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Text="Bring focus to the Falcon window before sending callbacks"
+                                  Style="{StaticResource Documentation}"
+                                  TextWrapping="Wrap" />
+                </WrapPanel>
+
+                <WrapPanel
+                    av:Grid.Row="1">
+                    <av:Label Content="Force Key File"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Right" />
+                    <av:CheckBox
+                                 Height="16"
+                                 Width="16"
+                                 HorizontalAlignment="Right"
+                                 VerticalAlignment="Center"
+                                 IsChecked="{av:Binding Interface.ForceKeyFile,
+                                           Mode=TwoWay}" />
+                    <av:TextBlock Margin="4"
+                                  Text="Force Falcon pilot callsign to use the key file defined in this profile"
+                                  Style="{StaticResource Documentation}"
+                                  TextWrapping="Wrap" />
+                </WrapPanel>
+                
             </av:Grid>
         </av:Expander>
         <av:Expander Height="456"

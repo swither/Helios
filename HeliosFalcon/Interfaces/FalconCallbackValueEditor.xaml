@@ -29,7 +29,8 @@
         <ListBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" FontSize="10" Name="CallbackList" Margin="0,2,0,0" ItemsSource="{Binding ElementName=CallbackEditor,Path=Callbacks}" SelectedValuePath="Name" SelectedValue="{Binding ElementName=CallbackEditor,Path=StaticValue,Mode=TwoWay}" HorizontalAlignment="Stretch" SelectionChanged="ListBox_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>                
-                    <WrapPanel Orientation="Horizontal">
+                    <WrapPanel Orientation="Horizontal"
+                               ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <WrapPanel.ToolTip>
                             <TextBlock Text="{Binding KeyString}" FontSize="10" />
                         </WrapPanel.ToolTip>
