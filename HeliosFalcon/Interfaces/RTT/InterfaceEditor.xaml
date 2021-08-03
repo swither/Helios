@@ -147,7 +147,7 @@
                           Grid.Column="1"
                           VerticalAlignment="Center"
                           IsChecked="{Binding ProcessControl.StartRtt}" />
-                <TextBlock Text="Allow Helios to start the RTT Cllient automatically when the profile starts"
+                <TextBlock Text="Start the RTT Cllient automatically when the profile starts"
                            Style="{StaticResource Documentation}"
                            Grid.Row="1"
                            Grid.Column="2"
@@ -163,7 +163,7 @@
                           Grid.Column="1"
                           VerticalAlignment="Center"
                           IsChecked="{Binding ProcessControl.StopRtt}" />
-                <TextBlock Text="Allow Helios to stop the RTT Cllient automatically when the profile stops"
+                <TextBlock Text="Stop the RTT Cllient automatically when the profile stops"
                            Style="{StaticResource Documentation}"
                            Grid.Row="2"
                            Grid.Column="2"
@@ -257,32 +257,31 @@
 
                 <Label Content="Frames Per Second"
                        Grid.Row="2"
-                       VerticalAlignment="Center"
+                       VerticalAlignment="Top"
                        HorizontalAlignment="Right"
                        Height="26"
-                       Width="115"
-                       Margin="0,25,0,24" />
+                       Width="115" />
                 <TextBox Text="{Binding LocalOptions.FramesPerSecond}"
                          Grid.Row="2"
                          Grid.Column="1"
                          HorizontalAlignment="Left"
-                         VerticalAlignment="Center"
+                         VerticalAlignment="Top"
                          IsEnabled="{Binding Networked, Mode=OneWay, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={StaticResource False}}"
                          Width="16"
                          Height="16"
-                         Margin="0,29,0,30" />
+                         Margin="0,4,0,0" />
 
                 <TextBlock Style="{StaticResource Documentation}"
-                           Text="How often should the client poll the RTT are to check for changes? The higher the value, the more GPU/CPU load you generate. Note that this value does NOT affect the smoothness of the display animations. The display can not draw more frames than BMS is currently exporting to RTT (which by default is BMS FPS / 2)"
+                           Text="How often should the client poll the RTT area to check for changes? The higher the value, the more GPU/CPU load you generate. Note that this value does NOT affect the smoothness of the display animations. The display can not draw more frames than BMS is currently exporting to RTT (which by default is BMS FPS / 2)"
                            TextWrapping="Wrap"
                            HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
+                           VerticalAlignment="Top"
                            Height="52"
                            Width="480"
                            Grid.Row="2"
                            Grid.ColumnSpan="2"
                            Grid.Column="1"
-                           Margin="39,10,10,13" />
+                           />
             </Grid>
         </GroupBox>
 
@@ -368,7 +367,7 @@
                           Grid.ColumnSpan="5"
                           Grid.RowSpan="2"
                           Margin="0,0,-53,12">
-                    <TextBlock Text="If you use RTT client on a PC not local to where Falcon BMS is running, it is possible not only to receive the RTT images, but also the normal shared memory areas. Just enable the ones below that you want to access remotely, they will be created on the client side for you. Please refer to the Falcon BMS technical manual for client server setup of RTT."
+                    <TextBlock Text="If you are running RTT client on a different PC than the one where Falcon BMS is running, it is possible not only to receive the RTT images, but also the normal shared memory areas. Just enable the ones below that you want to access remotely and they will be created on the client side for you. Please refer to the Falcon BMS technical manual for client/server setup of RTT."
                                Style="{StaticResource Documentation}"
                                TextWrapping="Wrap"
                                Width="500"
