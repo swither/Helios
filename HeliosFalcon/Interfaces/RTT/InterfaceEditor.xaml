@@ -28,14 +28,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="41" />
             <RowDefinition Height="41" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto"
-                           MinHeight="391" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="41" />
+            <RowDefinition Height="41" />
+            <RowDefinition Height="80" />
+            <RowDefinition Height="681" />
         </Grid.RowDefinitions>
         <Label Grid.Row="0"
                Content="Enabled"
@@ -62,15 +58,14 @@
                Height="26"
                HorizontalAlignment="Right"
                VerticalAlignment="Center"
-               Width="79"
-               Margin="0,9,508,6"
-               Grid.ColumnSpan="2" />
+               Margin="0,9,0,6"
+               Width="69" />
         <CheckBox IsChecked="{Binding Networked}"
                   Grid.Column="1"
                   Grid.Row="1"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center"
-                  Margin="5,17,0,8"
+                  Margin="5,13,0,12"
                   Height="16"
                   Width="16" />
         <TextBlock Text="Check this box to enable networking features and connect to a remote RTT Server"
@@ -94,19 +89,119 @@
                    Margin="30,16,-95,13"
                    Height="12" />
 
-        <GroupBox Header="Process Control"
+        <Label Content="Renderer"
+               Grid.Row="2"
+               Grid.Column="0"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"
+               Height="26"
+               Margin="0,8,0,7"
+               Width="58" />
+        <ComboBox MinWidth="160"
+                  SelectedValue="{Binding Renderer}"
+                  SelectedValuePath="Tag"
                   Grid.Row="2"
+                  Grid.Column="1"
+                  Width="160"
+                  Height="26"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Margin="0,8,0,7">
+            <ComboBox.Items>
+                <ComboBoxItem Tag="0"
+                              Content="SDL2: pick automatically" />
+                <ComboBoxItem Tag="1"
+                              Content="SDL2: Direct3D 9" />
+                <ComboBoxItem Tag="2"
+                              Content="SDL2: Direct3D 11" />
+                <ComboBoxItem Tag="3"
+                              Content="SDL2: OpenGL" />
+                <ComboBoxItem Tag="4"
+                              Content="SDL2: OpenGL ES" />
+                <ComboBoxItem Tag="5"
+                              Content="SDL2: Software" />
+                <ComboBoxItem Tag="6"
+                              Content="SFML: OpenGL" />
+            </ComboBox.Items>
+        </ComboBox>
+        <TextBlock Text="The prefered renderer to be used by RTT"
+                   Style="{StaticResource Documentation}"
+                   Grid.Row="2"
+                   Grid.Column="1"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Margin="174,15,158,13"
+                   Width="181"
+                   Height="13" />
+
+        <Label Grid.Row="3"
+               Content="RWR Grid"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"
+               Height="26"
+               Width="61"
+               Margin="0,7,0,8" />
+        <CheckBox IsChecked="{Binding LocalOptions.RWRGrid}"
+                  Grid.Column="1"
+                  Grid.Row="3"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Width="16"
+                  Height="16"
+                  Margin="0,13,0,12" />
+        <TextBlock Text="Enable simple grid overlay on RWR"
+                   Style="{StaticResource Documentation}"
+                   VerticalAlignment="Center"
+                   Grid.Row="3"
+                   Grid.Column="1"
+                   MinWidth="100"
+                   Margin="30,14,227,13"
+                   Height="14" />
+
+        <Label Content="Frames Per Second"
+               Grid.Row="4"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Right"
+               Height="26"
+               Width="127"
+               Grid.ColumnSpan="2"
+               Margin="0,0,461,0" />
+        <TextBox Text="{Binding LocalOptions.FramesPerSecond}"
+                 Grid.Row="4"
+                 Grid.Column="1"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 IsEnabled="{Binding Networked, Mode=OneWay, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={StaticResource False}}"
+                 Width="16"
+                 Height="16"
+                 Margin="39,4,0,0" />
+
+        <TextBlock Style="{StaticResource Documentation}"
+                   Text="How often should the client poll the RTT area to check for changes? The higher the value, the more GPU/CPU load you generate. Note that this value does NOT affect the smoothness of the display animations. The display can not draw more frames than BMS is currently exporting to RTT (which by default is BMS FPS / 2)"
+                   TextWrapping="Wrap"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Height="52"
+                   Width="480"
+                   Grid.Row="4"
+                   Grid.ColumnSpan="2"
+                   Grid.Column="1"
+                   Margin="61,0,52,0" />
+
+        <GroupBox Header="Process Control"
+                  Grid.Row="4"
                   Grid.Column="0"
                   Grid.ColumnSpan="3"
-                  Margin="10,4,10,217">
+                  Margin="10,57,10,536"
+                  Grid.RowSpan="2">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"
-                                      MinWidth="125" />
+                    <ColumnDefinition Width="29" />
+                    <ColumnDefinition Width="137" />
                     <ColumnDefinition Width="Auto"
                                       MinWidth="27" />
-                    <ColumnDefinition Width="Auto"
-                                      MinWidth="493" />
+                    <ColumnDefinition Width="39" />
+                    <ColumnDefinition Width="454" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -116,184 +211,77 @@
                 </Grid.RowDefinitions>
                 <Label Content="Allow"
                        Grid.Row="0"
-                       Grid.Column="0"
-                       Margin="0,4,5,20"
+                       Grid.Column="1"
+                       Margin="0,4,5,126"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"
                        Height="31" />
                 <CheckBox Grid.Row="0"
-                          Grid.Column="1"
+                          Grid.Column="2"
                           VerticalAlignment="Center"
                           HorizontalAlignment="Left"
                           IsChecked="{Binding ProcessControl.Enabled}"
                           Height="16"
-                          Margin="0,6,0,27"
+                          Margin="0,9,0,136"
                           Width="16" />
                 <TextBlock Text="Allow Falcon profiles on this computer to start or stop  the RTT process"
                            Style="{StaticResource Documentation}"
                            Grid.Row="0"
-                           Grid.Column="2"
+                           Grid.Column="3"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center"
                            TextWrapping="Wrap"
-                           Margin="0,9,0,32" />
-
-                <Label Content="Start RTT Client Automatically"
-                       Grid.Row="1"
-                       Grid.Column="0"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center" />
-                <CheckBox Grid.Row="1"
-                          Grid.Column="1"
-                          VerticalAlignment="Center"
-                          IsChecked="{Binding ProcessControl.StartRtt}" />
-                <TextBlock Text="Start the RTT Cllient automatically when the profile starts"
-                           Style="{StaticResource Documentation}"
-                           Grid.Row="1"
-                           Grid.Column="2"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center" />
-
-                <Label Content="Stop RTT Client Automatically"
-                       Grid.Row="2"
-                       Grid.Column="0"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center" />
-                <CheckBox Grid.Row="2"
-                          Grid.Column="1"
-                          VerticalAlignment="Center"
-                          IsChecked="{Binding ProcessControl.StopRtt}" />
-                <TextBlock Text="Stop the RTT Cllient automatically when the profile stops"
-                           Style="{StaticResource Documentation}"
-                           Grid.Row="2"
-                           Grid.Column="2"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center" />
-            </Grid>
-        </GroupBox>
-
-        <GroupBox Header="Local Configuration Options"
-                  Margin="10,185,10,4"
-                  Grid.ColumnSpan="3"
-                  Grid.Row="2"
-                  Grid.RowSpan="2">
-            <Grid Height="236">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="116" />
-                    <ColumnDefinition Width="192" />
-                    <ColumnDefinition Width="Auto"
-                                      MinWidth="337" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"
-                                   MinHeight="93" />
-                    <RowDefinition Height="Auto"
-                                   MinHeight="68" />
-                    <RowDefinition Height="Auto"
-                                   MinHeight="75" />
-                </Grid.RowDefinitions>
-
-                <Label Content="Renderer"
-                       Grid.Row="0"
-                       Grid.Column="0"
-                       Margin="10,28,10,39"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center" />
-                <ComboBox MinWidth="160"
-                          SelectedValue="{Binding Renderer}"
-                          SelectedValuePath="Tag"
-                          Grid.Column="1"
-                          Margin="10,32,22,37">
-                    <ComboBox.Items>
-                        <ComboBoxItem Tag="0"
-                                      Content="SDL2: pick automatically" />
-                        <ComboBoxItem Tag="1"
-                                      Content="SDL2: Direct3D 9" />
-                        <ComboBoxItem Tag="2"
-                                      Content="SDL2: Direct3D 11" />
-                        <ComboBoxItem Tag="3"
-                                      Content="SDL2: OpenGL" />
-                        <ComboBoxItem Tag="4"
-                                      Content="SDL2: OpenGL ES" />
-                        <ComboBoxItem Tag="5"
-                                      Content="SDL2: Software" />
-                        <ComboBoxItem Tag="6"
-                                      Content="SFML: OpenGL" />
-                    </ComboBox.Items>
-                </ComboBox>
-                <TextBlock Text="The prefered renderer to be used by RTT"
-                           Style="{StaticResource Documentation}"
-                           Grid.Row="0"
-                           Grid.Column="2"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           Margin="0,40"
-                           Width="181" />
-
-                <Label Grid.Row="1"
-                       Content="RWR Grid"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       Margin="0,25,10,17"
-                       Height="26"
-                       Width="61" />
-                <CheckBox IsChecked="{Binding LocalOptions.RWRGrid}"
-                          Grid.Column="1"
-                          Grid.Row="1"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Center"
-                          Margin="0,29,0,25"
-                          Width="50"
-                          Height="14" />
-                <TextBlock Text="Enable simple grid overlay on RWR"
-                           Style="{StaticResource Documentation}"
-                           VerticalAlignment="Center"
-                           Grid.Row="1"
-                           Grid.Column="1"
-                           MinWidth="100"
-                           Margin="39,29,298,25"
-                           Height="14"
+                           Margin="0,9,0,138"
                            Grid.ColumnSpan="2" />
 
-                <Label Content="Frames Per Second"
-                       Grid.Row="2"
-                       VerticalAlignment="Top"
+                <Label Content="Start RTT Client Automatically"
+                       Grid.Column="0"
                        HorizontalAlignment="Right"
-                       Height="26"
-                       Width="115" />
-                <TextBox Text="{Binding LocalOptions.FramesPerSecond}"
-                         Grid.Row="2"
-                         Grid.Column="1"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Top"
-                         IsEnabled="{Binding Networked, Mode=OneWay, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={StaticResource False}}"
-                         Width="16"
-                         Height="16"
-                         Margin="0,4,0,0" />
-
-                <TextBlock Style="{StaticResource Documentation}"
-                           Text="How often should the client poll the RTT area to check for changes? The higher the value, the more GPU/CPU load you generate. Note that this value does NOT affect the smoothness of the display animations. The display can not draw more frames than BMS is currently exporting to RTT (which by default is BMS FPS / 2)"
-                           TextWrapping="Wrap"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Top"
-                           Height="52"
-                           Width="480"
-                           Grid.Row="2"
+                       VerticalAlignment="Center"
+                       Margin="0,55,0,80"
+                       Grid.ColumnSpan="2" />
+                <CheckBox Grid.Column="2"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding ProcessControl.StartRtt}"
+                          Margin="0,60,0,85" />
+                <TextBlock Text="Start the RTT Cllient automatically when the profile starts"
+                           Style="{StaticResource Documentation}"
+                           Grid.Column="3"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
                            Grid.ColumnSpan="2"
-                           Grid.Column="1"
-                           />
+                           Margin="0,61,0,86" />
+
+                <Label Content="Stop RTT Client Automatically"
+                       Grid.Column="0"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Margin="0,81,0,54"
+                       Grid.ColumnSpan="2" />
+                <CheckBox Grid.Column="2"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding ProcessControl.StopRtt}"
+                          Margin="0,86,0,59" />
+                <TextBlock Text="Stop the RTT Cllient automatically when the profile stops"
+                           Style="{StaticResource Documentation}"
+                           Grid.Column="3"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Grid.ColumnSpan="2"
+                           Margin="0,87,0,60" />
             </Grid>
         </GroupBox>
 
         <GroupBox Header="Network Configuration Options"
                   IsEnabled="{Binding Enabled}"
-                  Margin="10,1,10,4"
+                  Margin="10,150,10,228"
                   Grid.ColumnSpan="3"
-                  Grid.Row="4">
-            <Grid Margin="0,0,0,89">
+                  Grid.Row="5">
+            <Grid Margin="0,0,0,-13">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="41" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -302,7 +290,6 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="41" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -314,6 +301,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+
                 </Grid.RowDefinitions>
 
                 <Label Grid.Column="0"
