@@ -7,8 +7,8 @@
       xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
       xmlns:system="clr-namespace:System;assembly=mscorlib"
       d:DataContext="{d:DesignInstance Type={x:Type local:ConfigGenerator}}"
-      d:DesignHeight="937"
-      d:DesignWidth="800"
+      Height="Auto"
+      Width="Auto"
       mc:Ignorable="d">
     <Grid>
         <Grid.Resources>

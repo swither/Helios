@@ -5,9 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
              xmlns:controls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
-             mc:Ignorable="d" 
+                            xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
+                            mc:Ignorable="d" 
              d:DesignWidth="300" d:DesignHeight="200" x:Name="CallbackEditor">
     <Grid>
+        <Grid.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <util:DesignTimeEditorResources />
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -21,13 +29,13 @@
         <ListBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" FontSize="10" Name="CallbackList" Margin="0,2,0,0" ItemsSource="{Binding ElementName=CallbackEditor,Path=Callbacks}" SelectedValuePath="Name" SelectedValue="{Binding ElementName=CallbackEditor,Path=StaticValue,Mode=TwoWay}" HorizontalAlignment="Stretch" SelectionChanged="ListBox_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>                
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel.ToolTip>
+                    <WrapPanel Orientation="Horizontal">
+                        <WrapPanel.ToolTip>
                             <TextBlock Text="{Binding KeyString}" FontSize="10" />
-                        </StackPanel.ToolTip>
+                        </WrapPanel.ToolTip>
                         <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" FontSize="10" Margin="1,1,8,1" />                        
                         <TextBlock Text="{Binding Description}" FontSize="10" />
-                    </StackPanel>
+                    </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
