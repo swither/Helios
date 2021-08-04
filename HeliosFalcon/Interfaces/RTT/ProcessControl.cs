@@ -52,6 +52,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         {
             if (!File.Exists(executablePath))
             {
+                Logger.Error($"RTT Client {executablePath} does not exist or is not accessible");
                 return false;
             }
 
