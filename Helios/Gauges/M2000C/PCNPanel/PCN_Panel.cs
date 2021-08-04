@@ -32,8 +32,8 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
         public M2000C_PCNPanel()
             : base("PCN Panel", new Size(690, 530))
         {
-            int row0 = 231, row1 = 234, row2 = 233, row3 = 316, row4 = 323, row5 = 396, row6 = 394, row7 = 468, row8 = 481, row9 = 127, row10 = 100, row11 = 140;
-            int column0 = 123, column1 = 221, column2 = 210, column3 = 324, column4 = 327, column5 = 429, column6 = 507, column7 = 587, column8 = 398, column9 = 452, column10 = 503, column11 = 557, column12 = 610;
+            int row0 = 231, row2 = 233, row3 = 316, row4 = 323, row5 = 396, row6 = 394, row7 = 468, row8 = 481, row9 = 127, row10 = 100, row11 = 140;
+            int column0 = 123, column2 = 210, column3 = 324, column4 = 327, column5 = 429, column6 = 507, column7 = 587, column8 = 398, column9 = 452, column10 = 503, column11 = 557, column12 = 610;
             AddIndicatorPushButton("PREP", "prep", new Point(column0, row0), new Size(50, 50));
             AddIndicatorPushButton("DEST", "dest", new Point(column3, row0), new Size(50, 50));
             AddPushButton("INS Button 1", "ins-1" ,new Point(column5, row2), new Size(52, 60));
@@ -48,7 +48,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
             AddPushButton("INS Button 0", "ins-0", new Point(column6, row8), new Size(52, 60));
             AddIndicatorPushButton("EFF", "eff", new Point(column5, row8), new Size(50, 50));
             AddIndicatorPushButton("INS", "ins", new Point(column7, row8), new Size(50, 50));
-
+            //The ENC button has been removed from the aircraft
             //AddIndicatorPushButton("Offset Waypoint/Target", "enc", new Point(column1, row1), new Size(58, 40));
             AddIndicatorPushButton("AUTO Navigation", "bad", new Point(column4, row4), new Size(58, 40));
             AddIndicatorPushButton("INS Update", "rec", new Point(column4, row6), new Size(58, 40));
