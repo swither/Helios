@@ -15,6 +15,7 @@
 // 
 
 using GadrocsWorkshop.Helios.UDPInterface;
+using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace needs to be in this namespace for JSON naming
 namespace GadrocsWorkshop.Helios.Interfaces
@@ -49,6 +50,8 @@ namespace GadrocsWorkshop.Helios.Interfaces
         }
 
         protected override ExportDataElement[] DefaultDataElements => new ExportDataElement[0];
+
+        [JsonIgnore]
         public override ExportDataElement[] DataElements => DefaultDataElements;
 
         #endregion

@@ -93,6 +93,7 @@ namespace GadrocsWorkshop.Helios.Json
                     vehicles = dcs.Vehicles;
                 }
 
+                IComparer<UDPInterface.NetworkFunction> functionComparer = new CanonicalFunctionOrder();
                 InterfaceFile<UDPInterface.NetworkFunction> jsonObject =
                     new InterfaceFile<UDPInterface.NetworkFunction>
                     {
@@ -100,7 +101,9 @@ namespace GadrocsWorkshop.Helios.Json
                             VersionChecker.VersionToString(Assembly.GetEntryAssembly()?.GetName().Version ?? new System.Version(0, 0, 0, 0)),
                         Module = moduleName,
                         Name = udpInterface.Name,
-                        Functions = udpInterface.Functions.Where(func => func.Serializable),
+                        Functions = udpInterface.Functions
+                            .Where(func => func.Serializable)
+                            .OrderBy(func => func, functionComparer),
                         Vehicles = vehicles
                     };
                 string jsonPath = Path.Combine(ConfigManager.DocumentPath, "Interfaces", "HeliosInterfaces", $"{name}.hif.json");
@@ -111,6 +114,7 @@ namespace GadrocsWorkshop.Helios.Json
                         jsonObject,
                         new JsonSerializerSettings
                         {
+                            
                             Formatting = Formatting.Indented,
                             Converters = new List<JsonConverter>
                             {

@@ -132,6 +132,7 @@
     <Compile Include="Json\BindingValueUnit\ConverterForJsonNet.cs" />
     <Compile Include="Json\BindingValueUnit\SchemaGenerationProviderForJsonNet.cs" />
     <Compile Include="Json\BindingValue\ConverterForJsonNet.cs" />
+    <Compile Include="Interfaces\DCS\Common\CanonicalFunctionOrder.cs" />
     <Compile Include="Json\Function\ConverterForJsonNet.cs" />
     <Compile Include="Json\InterfaceFile.cs" />
     <Compile Include="Json\NetworkFunction\SchemaGenerationProviderForJsonNet.cs" />

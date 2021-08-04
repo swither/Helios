@@ -166,7 +166,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                 }
             }
 
+            // place as many panel buttons as we can in order at the top
             ArrangeButtons();
+
+            // connect all the show/hide actions
+            Panel.ConnectButtons(Panels.Values.ToList());
         }
 
         private void ArrangeButtons()
@@ -271,15 +275,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
 
         private void SelectAndConfigureMonitor()
         {
-            TargetMonitor = Profile.Monitors.OrderByDescending(m => m.Right).First();
+            TargetMonitor = SelectMonitor();
             TargetMonitor.AlwaysOnTop = true;
             TargetMonitor.FillBackground = true;
         }
 
+        private Monitor SelectMonitor()
+        {
+            return Profile.Monitors.OrderByDescending(m => m.Right).First();
+        }
+
         private TType PlaceFullSize<TType>(Panel panel, DCSFunction dcsFunction) where TType : HeliosVisual
         {
-            panel.PlaceControlAndLabel(dcsFunction, out double left, out double top, out double width,
-                out double height, out bool addedNewPanel);
+            panel.PlaceControlAndLabel(dcsFunction, out double left, out double top, out double width, out double height);
             TType control = Activator.CreateInstance<TType>();
 
             control.Name = $"{dcsFunction.DeviceName} {dcsFunction.Name}";
@@ -289,22 +297,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
             control.Height = height;
             panel.Container.Children.Insert(0, control);
 
-            // also add new panels to button handlers
-            if (addedNewPanel)
-            {
-                // hook up hide actions for new panel
-                foreach (Controls.PushButton pushButton in Panels.Values.SelectMany(p => p.SelectButtons, (p, b) => b))
-                {
-                    AddSetHiddenBinding(pushButton, "pushed", panel.Container, "true");
-                }
-
-                // hook up show/hide actions for new button
-                AddSetHiddenBinding(panel.SelectButton, "pushed", panel.Container, "false");
-                foreach (Controls.HeliosPanel existingPanel in Panels.Values.SelectMany(p => p.Containers, (p, c) => c))
-                {
-                    AddSetHiddenBinding(panel.SelectButton, "pushed", existingPanel, "true");
-                }
-            }
             return control;
         }
 
@@ -357,21 +349,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
             return binding;
         }
 
-        private HeliosBinding AddSetHiddenBinding(HeliosVisual source, string triggerName, HeliosVisual target,
-            string actionValue)
-        {
-            HeliosBinding binding = new HeliosBinding(
-                source.Triggers.First(t => t.TriggerName == triggerName),
-                target.Actions.First(a => a.ActionName == "set hidden"))
-            {
-                ValueSource = BindingValueSources.StaticValue,
-                Value = actionValue
-            };
-            target.InputBindings.Add(binding);
-            source.OutputBindings.Add(binding);
-            return binding;
-        }
-
         #region Overrides
 
         public override void Close(HeliosProfile oldProfile)
@@ -384,7 +361,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
 
         public override bool CanStart =>
             base.CanStart &&
-            Profile?.Interfaces.FirstOrDefault(i => i is DCSInterface) != null;
+            Profile?.Interfaces.FirstOrDefault(i => i is DCSInterface) != null &&
+            !SelectMonitor().Children.Any();
 
         #endregion
 

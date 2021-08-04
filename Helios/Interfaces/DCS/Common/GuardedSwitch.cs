@@ -120,6 +120,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             Actions.Add(_autoguardPositionAction);
         }
 
+        [JsonProperty("guardPosition")]
         public int GuardPosition
         {
             get => (int)_guardPosition;

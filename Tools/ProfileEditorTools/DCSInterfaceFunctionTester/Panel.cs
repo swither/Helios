@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
         internal const double SELECT_BUTTON_HEIGHT = 33;
 
         internal const double SELECT_BUTTON_WIDTH = 75;
-        internal const double TOP_SPACE = 100;
+        internal const double TOP_SPACE = 166;
 
         private const double ROW_HEIGHT =
             DCSInterfaceFunctionTester.CONTROL_HEIGHT + DCSInterfaceFunctionTester.LABEL_HEIGHT;
@@ -42,7 +42,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
         }
 
         public void PlaceControlAndLabel(DCSFunction dcsFunction, out double left, out double top, out double width,
-            out double height, out bool addedNewPanel)
+            out double height)
         {
             left = DCSInterfaceFunctionTester.CONTROL_WIDTH * Column;
             top = DCSInterfaceFunctionTester.LABEL_HEIGHT + ROW_HEIGHT * Row;
@@ -68,11 +68,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                 top = DCSInterfaceFunctionTester.LABEL_HEIGHT;
                 Row = 0;
                 Column = 1;
-                addedNewPanel = true;
-            }
-            else
-            {
-                addedNewPanel = false;
             }
 
             // create label
@@ -128,6 +123,48 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                 Text = panelName
             });
             SelectButton.TextFormat.FontSize = Math.Ceiling(SELECT_BUTTON_HEIGHT / 3);
+        }
+
+        public static void ConnectButtons(List<Panel> panels)
+        {
+            // step through pairs of containers and their associated buttons
+            foreach (Panel panel in panels)
+            {
+                using (List<Controls.PushButton>.Enumerator buttonEnumerator = panel.SelectButtons.GetEnumerator())
+                {
+                    foreach (Controls.HeliosPanel panelContainer in panel.Containers)
+                    {
+                        // move in lock step with containers enumeration
+                        buttonEnumerator.MoveNext();
+
+                        // hook up hide actions: every other button hides this panel
+                        foreach (Controls.PushButton pushButton in panels
+                            .SelectMany(p => p.SelectButtons, (p, b) => b)
+                            .Where(b => b != buttonEnumerator.Current))
+                        {
+                            AddSetHiddenBinding(pushButton, "pushed", panelContainer, "true");
+                        }
+
+                        // this button shows this panel
+                        AddSetHiddenBinding(buttonEnumerator.Current, "pushed", panelContainer, "false");
+                    }
+                }
+            }
+        }
+
+        private static HeliosBinding AddSetHiddenBinding(HeliosVisual source, string triggerName, HeliosVisual target,
+            string actionValue)
+        {
+            HeliosBinding binding = new HeliosBinding(
+                source.Triggers.First(t => t.TriggerName == triggerName),
+                target.Actions.First(a => a.ActionName == "set hidden"))
+            {
+                ValueSource = BindingValueSources.StaticValue,
+                Value = actionValue
+            };
+            target.InputBindings.Add(binding);
+            source.OutputBindings.Add(binding);
+            return binding;
         }
 
         #region Properties

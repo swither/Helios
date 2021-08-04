@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using GadrocsWorkshop.Helios.UDPInterface;
+using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
@@ -40,8 +41,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private HeliosValue _positionValue;
 
-        private Dictionary<string, HatPosition> _positionByValue = new Dictionary<string, HatPosition>();
-        private Dictionary<HatPosition, string> _sendData = new Dictionary<HatPosition, string>();
+        private readonly Dictionary<string, HatPosition> _positionByValue = new Dictionary<string, HatPosition>();
+        private readonly Dictionary<HatPosition, string> _sendData = new Dictionary<HatPosition, string>();
 
         public HatSwitch(BaseUDPInterface sourceInterface, string deviceId, string argId,
                     string leftAction, string leftValue,
@@ -52,6 +53,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     string device, string name, string exportFormat)
             : this(sourceInterface, deviceId, argId, leftAction, leftValue, upAction, upValue, rightAction, rightValue, downAction, downValue, releaseAction, releaseValue, device, name, exportFormat, false)
         {
+            // all code in referenced constructor
         }
 
         public HatSwitch(BaseUDPInterface sourceInterface, string deviceId, string argId, 
@@ -66,31 +68,31 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _id = argId;
             _format = exportFormat;
             _everyframe = everyFrame;
-            SerializedActions.Add("Left", new SerializedAction()
+            SerializedActions.Add("left", new SerializedAction()
             {
                 DeviceID = deviceId,
                 ActionID = leftAction,
                 ActionValue = leftValue
             });
-            SerializedActions.Add("Up", new SerializedAction()
+            SerializedActions.Add("up", new SerializedAction()
             {
                 DeviceID = deviceId,
                 ActionID = upAction,
                 ActionValue = upValue
             });
-            SerializedActions.Add("Right", new SerializedAction()
+            SerializedActions.Add("right", new SerializedAction()
             {
                 DeviceID = deviceId,
                 ActionID = rightAction,
                 ActionValue = rightValue
             });
-            SerializedActions.Add("Down", new SerializedAction()
+            SerializedActions.Add("down", new SerializedAction()
             {
                 DeviceID = deviceId,
                 ActionID = downAction,
                 ActionValue = downValue
             });
-            SerializedActions.Add("Center", new SerializedAction()
+            SerializedActions.Add("center", new SerializedAction()
             {
                 DeviceID = deviceId,
                 ActionID = releaseAction,
@@ -115,7 +117,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         {
             foreach (HatPosition position in Enum.GetValues(typeof(HatPosition)))
             {
-                string key = position.ToString();
+                string key = position.ToString().ToLowerInvariant();
                 _sendData.Add(position,
                     "C" + SerializedActions[key].DeviceID + "," + SerializedActions[key].ActionID + "," +
                     SerializedActions[key].ActionValue);
@@ -125,12 +127,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _positionValue = new HeliosValue(SourceInterface, new BindingValue((double) _currentPosition), SerializedDeviceName,
                 SerializedFunctionName, SerializedDescription,
                 "Position 0 = center, 1 = up, 2 = down, 3 = left,  or 4 = right.", BindingValueUnits.Numeric);
-            _positionValue.Execute += new HeliosActionHandler(SetPositionAction_Execute);
+            _positionValue.Execute += SetPositionAction_Execute;
             Values.Add(_positionValue);
             Actions.Add(_positionValue);
             Triggers.Add(_positionValue);
         }
 
+        [JsonProperty("switchPosition")]
         public HatPosition SwitchPosition
         {
             get

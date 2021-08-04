@@ -23,6 +23,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         [JsonProperty("id")]
         protected string _id;
 
+        [JsonProperty("exports", Order = -6, Required = Required.Always)]
         public override ExportDataElement[] DataElements => DefaultDataElements;
 
         public SilentValueConsumer(BaseUDPInterface sourceInterface, string id, string description)
