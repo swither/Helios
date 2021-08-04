@@ -178,17 +178,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             _lines = GenerateConfig(viewports);
         }
 
-        internal StatusReportItem ReportMagicHeader() =>
-            new StatusReportItem
-            {
-                Status = "Helios magic header not found in RTTClient.ini",
-                Severity = StatusReportItem.SeverityCode.Error,
-                Recommendation =
-                    "RTTClient.ini configuration is contained within this profile. Helios needs permission to overwrite it"
-            };
-
-        
-
         /// <summary>
         /// called when added to the profile, to fix up the configuration before changes are observed
         /// </summary>
