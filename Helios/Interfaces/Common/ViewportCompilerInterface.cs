@@ -140,6 +140,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
         /// </summary>
         protected void UpdateGlobalOffset()
         {
+            if (!_monitors.Values.Any())
+            {
+                // can happen during reset
+                return;
+            }
             double globalX = -_monitors.Values.Select(m => m.Visual.Left).Min<double>();
             double globalY = -_monitors.Values.Select(m => m.Visual.Top).Min<double>();
             GlobalOffset = new Vector(globalX, globalY);
