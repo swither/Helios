@@ -51,7 +51,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
         public override void ConfigureIcon(HeliosVisual control)
         {
-            // No-Op
+            control.ConfigureTemplateIconInstance();
         }
     }
 }

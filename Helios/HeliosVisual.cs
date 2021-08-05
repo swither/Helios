@@ -641,6 +641,16 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
+        /// Method to fix up configuration when this is used as an icon stored as a template, used to set
+        /// visual options that should be used in the toolbox but not in any instances dragged from there
+        /// to the profile
+        /// </summary>
+        public virtual void ConfigureTemplateIconInstance()
+        {
+            // no code in base
+        }
+
+        /// <summary>
         /// Called to determine if a point inside this location should be handled.  True
         /// should be returned if this control is opaque at that location to prevent
         /// tunneling to visuals below it.
