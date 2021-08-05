@@ -26,7 +26,6 @@ namespace GadrocsWorkshop.Helios
     {
         private const string SETTINGS_GROUP = "Helios";
         private const string SETTING_SCALE_ALL_TEXT = "ScaleAllText";
-        private const string SETTING_SHOW_INDICATORS_ON = "ShowIndicatorsOn";
 
         /// <summary>
         /// backing field for property ScaleAllText, contains
@@ -37,7 +36,6 @@ namespace GadrocsWorkshop.Helios
         public GlobalOptions()
         {
             _scaleAllText = HasScaleAllText;
-            _showIndicatorsOn = HasShowIndicatorsOn;
         }
 
         #region Properties
@@ -69,37 +67,6 @@ namespace GadrocsWorkshop.Helios
         /// true if text attached to buttons and similar controls is scaled during reset monitors and similar operations
         /// </returns>
         public static bool HasScaleAllText => ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_SCALE_ALL_TEXT, true);
-
-
-        /// <summary>
-        /// backing field for property ShowIndicatorsOn, contains
-        /// true if design time views of Indicator type controls should show the indicator set, so any message or light is visible
-        /// </summary>
-        private bool _showIndicatorsOn;
-
-        /// <summary>
-        /// true if design time views of Indicator type controls should show the indicator set, so any message or light is visible
-        /// </summary>
-        public bool ShowIndicatorsOn
-        {
-            get => _showIndicatorsOn;
-            set
-            {
-                if (_showIndicatorsOn == value) return;
-                bool oldValue = _showIndicatorsOn;
-                _showIndicatorsOn = value;
-                ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, SETTING_SHOW_INDICATORS_ON, value);
-                OnPropertyChanged(nameof(ShowIndicatorsOn), oldValue, value, true);
-            }
-        }
-
-        /// <summary>
-        /// accessible as utility for client code that can't get access to the GlobalOptions instance readily
-        /// </summary>
-        /// <returns>
-        /// true if design time views of Indicator type controls should show the indicator set, so any message or light is visible
-        /// </returns>
-        public static bool HasShowIndicatorsOn => ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_SHOW_INDICATORS_ON, true);
 
         #endregion
     }

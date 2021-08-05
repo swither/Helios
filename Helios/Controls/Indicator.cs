@@ -39,12 +39,6 @@ namespace GadrocsWorkshop.Helios.Controls
         private HeliosAction _toggleAction;
         private HeliosValue _value;
 
-        public enum DisplayMode
-        {
-            ShowAlwaysOn,
-            ShowBasedOnData
-        }
-
         public Indicator()
             : base("Indicator", new System.Windows.Size(100, 50))
         {
@@ -185,32 +179,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        /// <summary>
-        /// the current renderer mode to use at design time
-        /// </summary>
-        public DisplayMode DesignTimeDisplayMode { get; private set; } = DisplayMode.ShowAlwaysOn;
-
         #endregion
-
-        private void GlobalOptions_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(GlobalOptions.ShowIndicatorsOn):
-                    if (!(sender is GlobalOptions options))
-                    {
-                        return;
-                    }
-                    UpdateDisplayMode(options);
-                    OnDisplayUpdate();
-                    break;
-            }
-        }
-
-        private void UpdateDisplayMode(GlobalOptions options)
-        {
-            DesignTimeDisplayMode = options.ShowIndicatorsOn ? DisplayMode.ShowAlwaysOn : DisplayMode.ShowBasedOnData;
-        }
 
         void TextFormat_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -257,26 +226,14 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void ConfigureIconInstance()
         {
-            base.ConfigureIconInstance();
             On = true;
+            base.ConfigureIconInstance();
         }
 
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
+        public override void ConfigureTemplateIconInstance()
         {
-            base.OnProfileChanged(oldProfile);
-
-            // unhook from previous profile, if any
-            if (oldProfile != null)
-            {
-                oldProfile.GlobalOptions.PropertyChanged -= GlobalOptions_PropertyChanged;
-            }
-
-            // react to any changes in GlobalOptions
-            if (Profile != null)
-            {
-                UpdateDisplayMode(Profile.GlobalOptions);
-                Profile.GlobalOptions.PropertyChanged += GlobalOptions_PropertyChanged;
-            }
+            On = true;
+            base.ConfigureTemplateIconInstance();
         }
 
         #endregion

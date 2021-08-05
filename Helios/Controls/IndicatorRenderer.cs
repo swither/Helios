@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using GadrocsWorkshop.Helios.Controls.Capabilities;
-
 namespace GadrocsWorkshop.Helios.Controls
 {
     using System.Windows;
@@ -44,17 +42,10 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            ImageSource image = ShowIndicatorOn ? _onImage : _offImage;
-            if (image == null)
-            {
-                image = ShowIndicatorOn ? _offImage : _onImage;
-            }
-
+            ImageSource image = _indicator.On ? _onImage : _offImage;
             drawingContext.DrawImage(image, _imageRect);
-            _indicator.TextFormat.RenderText(drawingContext, ShowIndicatorOn ? _onBrush : _offBrush, _indicator.Text, _imageRect);
+            _indicator.TextFormat.RenderText(drawingContext, _indicator.On ? _onBrush : _offBrush, _indicator.Text, _imageRect);
         }
-
-        private bool ShowIndicatorOn => _indicator.On || (ConfigManager.Application.ShowDesignTimeControls && _indicator.DesignTimeDisplayMode == Indicator.DisplayMode.ShowAlwaysOn);
 
         protected override void OnRefresh()
         {
