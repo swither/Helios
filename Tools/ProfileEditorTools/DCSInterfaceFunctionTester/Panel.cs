@@ -41,21 +41,21 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
             AddPanel();
         }
 
-        public void PlaceControlAndLabel(DCSFunction dcsFunction, out double left, out double top, out double width,
+        public void PlaceControlAndLabel(DCSFunction dcsFunction, int columns, out double left, out double top, out double width,
             out double height)
         {
-            left = DCSInterfaceFunctionTester.CONTROL_WIDTH * Column;
+            left = DCSInterfaceFunctionTester.CONTROL_WIDTH * (Column + (columns - 1d) / 2d);
             top = DCSInterfaceFunctionTester.LABEL_HEIGHT + ROW_HEIGHT * Row;
             width = DCSInterfaceFunctionTester.CONTROL_WIDTH;
             height = DCSInterfaceFunctionTester.CONTROL_HEIGHT;
-            Column++;
+            Column += columns;
 
-            if (left + width > Container.Width)
+            if (Column * DCSInterfaceFunctionTester.CONTROL_WIDTH > Container.Width)
             {
-                // next row
-                Column = 1;
+                // next row, try again
+                Column = columns;
                 Row++;
-                left = 0;
+                left = DCSInterfaceFunctionTester.CONTROL_WIDTH * (columns - 1d) / 2d;
                 top += ROW_HEIGHT;
             }
 
@@ -64,10 +64,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                 // out of space on panel
                 AddPanel();
 
-                left = 0;
+                left = DCSInterfaceFunctionTester.CONTROL_WIDTH * (columns - 1d) / 2d;
                 top = DCSInterfaceFunctionTester.LABEL_HEIGHT;
                 Row = 0;
-                Column = 1;
+                Column = columns;
             }
 
             // create label

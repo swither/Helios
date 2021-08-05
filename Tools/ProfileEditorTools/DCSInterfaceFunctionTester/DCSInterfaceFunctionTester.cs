@@ -61,7 +61,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                             case 1:
                             {
                                 // can't be implemented
-                                PlaceFullSize<Controls.ImageDecoration>(panel, dcsFunction);
+                                PlaceControl<Controls.ImageDecoration>(panel, dcsFunction);
 
                                 break;
                             }
@@ -92,7 +92,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                     case RotaryEncoder rotaryEncoderFunction:
                     {
                         Controls.RotaryEncoder rotaryEncoderControl =
-                            PlaceFullSize<Controls.RotaryEncoder>(panel, dcsFunction);
+                            PlaceControl<Controls.RotaryEncoder>(panel, dcsFunction);
                         AddBinding(rotaryEncoderControl, "encoder incremented", rotaryEncoderFunction, "increment",
                             true);
                         AddBinding(rotaryEncoderControl, "encoder decremented", rotaryEncoderFunction, "decrement",
@@ -103,7 +103,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                     case Axis axisFunction:
                     {
                         Controls.Potentiometer potentiometerControl =
-                            PlaceFullSize<Controls.Potentiometer>(panel, dcsFunction);
+                            PlaceControl<Controls.Potentiometer>(panel, dcsFunction);
                         potentiometerControl.MinValue = axisFunction.ArgumentMin;
                         potentiometerControl.MaxValue = axisFunction.ArgumentMax;
                         potentiometerControl.StepValue = axisFunction.StepValue;
@@ -116,7 +116,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                     case FlagValue flagValueFunction:
                     {
                         Controls.Indicator indicatorControl =
-                            PlaceFullSize<Controls.Indicator>(panel, dcsFunction);
+                            PlaceControl<Controls.Indicator>(panel, dcsFunction);
                         indicatorControl.Text = "";
                         indicatorControl.OnImage = "{Helios}/Images/Indicators/green-light-on.png";
                         indicatorControl.OffImage = "{Helios}/Images/Indicators/green-light-off.png";
@@ -127,7 +127,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                     case ScaledNetworkValue scaledNetworkValueFunction:
                     {
                         Controls.TextDisplay textDisplayControl =
-                            PlaceFullSize<Controls.TextDisplay>(panel, dcsFunction);
+                            PlaceControl<Controls.TextDisplay>(panel, dcsFunction);
                         HeliosBinding binding = AddBinding(scaledNetworkValueFunction, "changed", textDisplayControl,
                             "set TextDisplay",
                             true);
@@ -138,7 +138,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                     case NetworkValue networkValueFunction:
                     {
                         Controls.TextDisplay textDisplayControl =
-                            PlaceFullSize<Controls.TextDisplay>(panel, dcsFunction);
+                            PlaceControl<Controls.TextDisplay>(panel, dcsFunction);
                         HeliosBinding binding = AddBinding(networkValueFunction, "changed", textDisplayControl,
                             "set TextDisplay",
                             true);
@@ -149,7 +149,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                     case NetworkTriggerValue networkTriggerValueFunction:
                     {
                         Controls.TextDisplay textDisplayControl =
-                            PlaceFullSize<Controls.TextDisplay>(panel, dcsFunction);
+                            PlaceControl<Controls.TextDisplay>(panel, dcsFunction);
                         HeliosBinding binding = AddBinding(networkTriggerValueFunction, "changed", textDisplayControl,
                             "set TextDisplay",
                             true);
@@ -160,7 +160,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                     default:
                     {
                         // unsupported
-                        PlaceFullSize<Controls.ImageDecoration>(panel, dcsFunction);
+                        PlaceControl<Controls.ImageDecoration>(panel, dcsFunction);
                         break;
                     }
                 }
@@ -177,7 +177,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
         {
             int buttonRow = 0;
             int buttonColumn = 0;
-            foreach (Controls.PushButton selectButton in Panels.OrderBy(pair => pair.Key).SelectMany(pair => pair.Value.SelectButtons, (p, s) => s))
+            foreach (Controls.PushButton selectButton in Panels.OrderBy(pair => pair.Key)
+                .SelectMany(pair => pair.Value.SelectButtons, (p, s) => s))
             {
                 if ((buttonColumn + 1) * Panel.SELECT_BUTTON_WIDTH > TargetMonitor.Width)
                 {
@@ -202,13 +203,35 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
 
         private void ConfigureAsRotarySwitch(Panel panel, Switch switchFunction, int numPositions)
         {
-            Controls.RotarySwitch rotarySwitchControl =
-                PlaceFullSize<Controls.RotarySwitch>(panel, switchFunction);
+            Controls.RotarySwitch rotarySwitchControl;
+            bool foundNamed = false;
+
+            // check if we will draw labels
+            foreach (SwitchPosition switchFunctionPosition in switchFunction.Positions)
+            {
+                if (!foundNamed && !switchFunctionPosition.Name.StartsWith("Position"))
+                {
+                    foundNamed = true;
+                }
+            }
+
+            // place control accordingly
+            if (switchFunction.Positions.Count() <= 8 && foundNamed)
+            {
+                rotarySwitchControl = PlaceControl<Controls.RotarySwitch>(panel, switchFunction, 2, 0.75d);
+                rotarySwitchControl.LabelFormat.FontSize = 8;
+            }
+            else
+            {
+                // not enough space for these or they just all say "Position..." anyway
+                rotarySwitchControl = PlaceControl<Controls.RotarySwitch>(panel, switchFunction);
+                rotarySwitchControl.DrawLabels = false;
+            }
+
 
             // remove pre-created switch positions
             rotarySwitchControl.Positions.RemoveAt(rotarySwitchControl.Positions.Count - 1);
             rotarySwitchControl.Positions.RemoveAt(rotarySwitchControl.Positions.Count - 1);
-
 
             // create ours
             int i = 0;
@@ -220,10 +243,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                 i++;
             }
 
-            // not enough space for these
-            rotarySwitchControl.DrawLabels = false;
-
-
             AddBinding(switchFunction, "changed", rotarySwitchControl, "set position", true);
             AddBinding(rotarySwitchControl, "position changed", switchFunction, "set", true);
         }
@@ -231,7 +250,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
         private void ConfigureAsThreeWayToggle(Panel panel, Switch switchFunction)
         {
             Controls.ThreeWayToggleSwitch threeWayToggleSwitchControl =
-                PlaceFullSize<Controls.ThreeWayToggleSwitch>(panel, switchFunction);
+                PlaceControl<Controls.ThreeWayToggleSwitch>(panel, switchFunction);
             threeWayToggleSwitchControl.Left += threeWayToggleSwitchControl.Width / 4;
             threeWayToggleSwitchControl.Width /= 2;
             AddBinding(switchFunction, "changed", threeWayToggleSwitchControl, "set position",
@@ -243,7 +262,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
         private void ConfigureAsToggleSwitch(Panel panel, Switch switchFunction)
         {
             Controls.ToggleSwitch toggleSwitchControl =
-                PlaceFullSize<Controls.ToggleSwitch>(panel, switchFunction);
+                PlaceControl<Controls.ToggleSwitch>(panel, switchFunction);
             toggleSwitchControl.Left += toggleSwitchControl.Width / 4;
             toggleSwitchControl.Width /= 2;
             AddBinding(switchFunction, "changed", toggleSwitchControl, "set position", true);
@@ -253,7 +272,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
         private void ConfigureAsPushButton(Panel panel, PushButton pushButtonFunction)
         {
             Controls.PushButton pushButtonControl =
-                PlaceFullSize<Controls.PushButton>(panel, pushButtonFunction);
+                PlaceControl<Controls.PushButton>(panel, pushButtonFunction);
             // WARNING: note the trailing spaces on the action names due to Helios' appending a space and an empty name
             AddBinding(pushButtonFunction, "pushed", pushButtonControl, "push ", true);
             AddBinding(pushButtonFunction, "released", pushButtonControl, "release ", true);
@@ -265,7 +284,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
         {
             // this function is marked as missing code or implementation from the generator, so call attention to it
             Controls.TextDecoration textDecorationControl =
-                PlaceFullSize<Controls.TextDecoration>(panel, dcsFunction);
+                PlaceControl<Controls.TextDecoration>(panel, dcsFunction);
             textDecorationControl.FontColor = Color.FromRgb(255, 0, 0);
             textDecorationControl.Text = "Needs Code";
             textDecorationControl.Format.FontSize = 20;
@@ -285,16 +304,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
             return Profile.Monitors.OrderByDescending(m => m.Right).First();
         }
 
-        private TType PlaceFullSize<TType>(Panel panel, DCSFunction dcsFunction) where TType : HeliosVisual
+        private TType PlaceControl<TType>(Panel panel, DCSFunction dcsFunction, int columns = 1, double scale = 1d) where TType : HeliosVisual
         {
-            panel.PlaceControlAndLabel(dcsFunction, out double left, out double top, out double width, out double height);
+            panel.PlaceControlAndLabel(dcsFunction, columns, out double left, out double top, out double width, out double height);
             TType control = Activator.CreateInstance<TType>();
 
             control.Name = $"{dcsFunction.DeviceName} {dcsFunction.Name}";
-            control.Left = left;
-            control.Top = top;
-            control.Width = width;
-            control.Height = height;
+            control.Left = left + width * (1d - scale) / 2d;
+            control.Top = top + height * (1d - scale) / 2d; 
+            control.Width = width * scale;
+            control.Height = height * scale;
             panel.Container.Children.Insert(0, control);
 
             return control;
