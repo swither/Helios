@@ -253,6 +253,11 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         internal ProfileInstances ProfileInstances { get; } = new ProfileInstances();
 
+        /// <summary>
+        /// access to global options object that will be modified for UI, for notifications
+        /// </summary>
+        public GlobalOptions GlobalOptions { get; } = new GlobalOptions();
+
         #endregion
 
         #region Methods

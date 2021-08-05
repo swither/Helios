@@ -165,10 +165,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             {
                 GlobalOptionsWindow options = new GlobalOptionsWindow
                 {
-                    DataContext = new GlobalOptions()
+                    DataContext = Profile?.GlobalOptions ?? new Helios.GlobalOptions()
                 };
                 options.ShowDialog();
             })));
+
         }
 
         private static void PresentVersionCheck(object sender, RoutedEventArgs e)

@@ -30,6 +30,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="120"/>
@@ -47,6 +49,9 @@
                 <TextBlock Grid.Row="6" Grid.Column="0" Style="{StaticResource PropertyNameSpaced}">Scale All Text</TextBlock>
                 <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding ScaleAllText}"/>
                 <TextBlock Grid.Row="7" Grid.Column="1" Style="{StaticResource Documentation}">If checked, text attached to controls like buttons is automatically scaled.</TextBlock>
+                <TextBlock Grid.Row="8" Grid.Column="0" Style="{StaticResource PropertyNameSpaced}">Show Indicators On</TextBlock>
+                <CheckBox Grid.Row="8" Grid.Column="1" IsChecked="{Binding ShowIndicatorsOn}"/>
+                <TextBlock Grid.Row="9" Grid.Column="1" Style="{StaticResource Documentation}">If checked, design time views of Indicator type controls show the indicator set, so any message or light is visible.</TextBlock>
             </Grid>
         </GroupBox>
         <Button Style="{StaticResource InterfaceEditorButton}" IsDefault="True" Content="OK" Click="OK_OnClick"/>
