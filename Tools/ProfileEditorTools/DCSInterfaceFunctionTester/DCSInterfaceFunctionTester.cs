@@ -157,6 +157,20 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                         binding.Value = "return tostring(TriggerValue)";
                         break;
                     }
+                    case NetworkTrigger networkTriggerFunction:
+                    {
+                        Controls.Indicator indicatorControl =
+                            PlaceControl<Controls.Indicator>(panel, dcsFunction);
+                        indicatorControl.Text = "";
+                        indicatorControl.OnImage = "{Helios}/Images/Indicators/green-light-on.png";
+                        indicatorControl.OffImage = "{Helios}/Images/Indicators/green-light-off.png";
+                        HeliosBinding binding = AddBinding(networkTriggerFunction, "received", indicatorControl,
+                            // NOTE: trailing space
+                            "toggle indicator ", 
+                            true);
+                        binding.ValueSource = BindingValueSources.TriggerValue;
+                        break;
+                    }
                     default:
                     {
                         // unsupported
