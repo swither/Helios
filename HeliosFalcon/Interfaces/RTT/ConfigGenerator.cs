@@ -165,6 +165,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         {
             _localOptions.PropertyChanged += Child_PropertyChanged;
             _networkOptions.PropertyChanged += Child_PropertyChanged;
+            _processControl.PropertyChanged += Child_PropertyChanged;
         }
 
         internal void Update(IEnumerable<ShadowVisual> viewports)
@@ -787,6 +788,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 ProcessControl oldValue = _processControl;
                 _processControl = value;
                 OnPropertyChanged(nameof(ProcessControl), oldValue, value, true);
+
+                // bubble up child property events only for the current object
+                if (null != oldValue)
+                {
+                    oldValue.PropertyChanged -= Child_PropertyChanged;
+                }
+
+                if (null != value)
+                {
+                    value.PropertyChanged += Child_PropertyChanged;
+                }
             }
         }
 
