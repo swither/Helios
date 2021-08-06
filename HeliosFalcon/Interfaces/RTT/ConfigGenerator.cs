@@ -314,6 +314,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// <returns></returns>
         internal StatusReportItem OnReadyCheck()
         {
+            if (!Enabled)
+            {
+                return new StatusReportItem
+                {
+                    Status = "RTT client configuration feature is not enabled",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+
+                };
+            }
+
             if (string.IsNullOrEmpty(Parent.FalconPath))
             {
                 return new StatusReportItem
