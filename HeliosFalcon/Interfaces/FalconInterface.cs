@@ -657,7 +657,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             if (Rtt != null)
             {
-                yield return Rtt.OnReadyCheck();
+                foreach (StatusReportItem statusReportItem in Rtt.OnReadyCheck())
+                {
+                    yield return statusReportItem;
+                }
             }
         }
 
