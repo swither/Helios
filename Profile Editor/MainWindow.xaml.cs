@@ -165,7 +165,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             {
                 GlobalOptionsWindow options = new GlobalOptionsWindow
                 {
-                    DataContext = Profile?.GlobalOptions ?? new Helios.GlobalOptions()
+                    DataContext = new ProfileEditor.GlobalOptions()
                 };
                 options.ShowDialog();
             })));
