@@ -24,7 +24,7 @@ using GadrocsWorkshop.Helios.ComponentModel;
 namespace GadrocsWorkshop.Helios.Controls
 {
     [HeliosControl(TYPE_ID, "Numeric Text Display", "Text Displays", typeof(TextDisplayRenderer))]
-    internal class NumericTextDisplay : TextDisplayRect
+    public class NumericTextDisplay : TextDisplayRect
     {
         public const string TYPE_ID = "Helios.Base.NumericTextDisplay";
         protected const int DEFAULT_PRECISION = 0;

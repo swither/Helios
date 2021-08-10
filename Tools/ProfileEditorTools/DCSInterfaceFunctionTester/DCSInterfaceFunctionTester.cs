@@ -124,37 +124,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                             true);
                         break;
                     }
-                    case ScaledNetworkValue scaledNetworkValueFunction:
+                    case ScaledNetworkValue _:
+                    case NetworkValue _:
+                    case NetworkTriggerValue _:
                     {
-                        Controls.TextDisplay textDisplayControl =
-                            PlaceControl<Controls.TextDisplay>(panel, dcsFunction);
-                        HeliosBinding binding = AddBinding(scaledNetworkValueFunction, "changed", textDisplayControl,
-                            "set TextDisplay",
+                        Controls.NumericTextDisplay numericTextDisplay =
+                            PlaceControl<Controls.NumericTextDisplay>(panel, dcsFunction);
+                        numericTextDisplay.Precision = 4;
+                        HeliosBinding binding = AddBinding(dcsFunction, "changed", numericTextDisplay,
+                            "set Number",
                             true);
-                        binding.ValueSource = BindingValueSources.LuaScript;
-                        binding.Value = "return tostring(TriggerValue)";
-                        break;
-                    }
-                    case NetworkValue networkValueFunction:
-                    {
-                        Controls.TextDisplay textDisplayControl =
-                            PlaceControl<Controls.TextDisplay>(panel, dcsFunction);
-                        HeliosBinding binding = AddBinding(networkValueFunction, "changed", textDisplayControl,
-                            "set TextDisplay",
-                            true);
-                        binding.ValueSource = BindingValueSources.LuaScript;
-                        binding.Value = "return tostring(TriggerValue)";
-                        break;
-                    }
-                    case NetworkTriggerValue networkTriggerValueFunction:
-                    {
-                        Controls.TextDisplay textDisplayControl =
-                            PlaceControl<Controls.TextDisplay>(panel, dcsFunction);
-                        HeliosBinding binding = AddBinding(networkTriggerValueFunction, "changed", textDisplayControl,
-                            "set TextDisplay",
-                            true);
-                        binding.ValueSource = BindingValueSources.LuaScript;
-                        binding.Value = "return tostring(TriggerValue)";
+                        binding.ValueSource = BindingValueSources.TriggerValue;
                         break;
                     }
                     case NetworkTrigger networkTriggerFunction:
