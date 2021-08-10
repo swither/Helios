@@ -95,7 +95,7 @@ namespace GadrocsWorkshop.Helios
         /// true if interface classes may be defined entirely in external files without being instantiated in the code
         /// </returns>
         public static bool HasAllowSoftInterfaces =>
-            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_ALLOW_SOFT_INTERFACES, false);
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_ALLOW_SOFT_INTERFACES, true);
 
         /// <summary>
         /// NOTE: there is current no UI for this
