@@ -128,13 +128,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
                     case NetworkValue _:
                     case NetworkTriggerValue _:
                     {
-                        Controls.NumericTextDisplay numericTextDisplay =
-                            PlaceControl<Controls.NumericTextDisplay>(panel, dcsFunction);
-                        numericTextDisplay.Precision = 4;
-                        HeliosBinding binding = AddBinding(dcsFunction, "changed", numericTextDisplay,
-                            "set Number",
-                            true);
-                        binding.ValueSource = BindingValueSources.TriggerValue;
+                        ConfigureAsNumberDisplay(panel, dcsFunction);
                         break;
                     }
                     case NetworkTrigger networkTriggerFunction:
@@ -165,6 +159,21 @@ namespace GadrocsWorkshop.Helios.ProfileEditorTools.DCSInterfaceFunctionTester
 
             // connect all the show/hide actions
             Panel.ConnectButtons(Panels.Values.ToList());
+        }
+
+        private void ConfigureAsNumberDisplay(Panel panel, DCSFunction dcsFunction)
+        {
+            Controls.NumericTextDisplay numericTextDisplay =
+                PlaceControl<Controls.NumericTextDisplay>(panel, dcsFunction);
+            numericTextDisplay.Precision = 3;
+            numericTextDisplay.TextFormat.FontSize = 20;
+            numericTextDisplay.TextFormat.HorizontalAlignment = TextHorizontalAlignment.Right;
+            numericTextDisplay.TextFormat.PaddingRight = 0.02;
+
+            HeliosBinding binding = AddBinding(dcsFunction, "changed", numericTextDisplay,
+                "set Number",
+                true);
+            binding.ValueSource = BindingValueSources.TriggerValue;
         }
 
         private void ArrangeButtons()
