@@ -46,7 +46,7 @@
         </Label>
         <heliosSdk:HeliosTextBox  Grid.Column="1" Grid.Row="1" FontSize="10" Text="{Binding Control.Precision}" Margin="2"/>
         <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top" Content="Unit">
-            <Label.ToolTip>Unit for the display, controlling how bound values are converted if applicable.  Changing this setting removes any bindings to the numeric value, since their types will have changed. The default unit "Numeric" provides no conversion.</Label.ToolTip>
+            <Label.ToolTip>Unit for the display, controlling how bound values are converted if applicable.  The default unit "Numeric" provides no conversion.</Label.ToolTip>
         </Label>
         <ComboBox Grid.Column="1" Grid.Row="3" Margin="2" MinWidth="118" HorizontalAlignment="Left" ItemsSource="{Binding Units}" DisplayMemberPath="LongName" SelectedItem="{Binding Path=Control.Unit}"/>
     </Grid>

@@ -54,19 +54,12 @@ namespace GadrocsWorkshop.Helios.Controls
         /// </summary>
         private void BuildValue()
         {
-            if (_value != null)
+            HeliosValue oldValue = _value;
+            if (oldValue != null)
             {
-                Values.Remove(_value);
-                Actions.Remove(_value);
-                _value.Execute -= Value_Execute;
-
-                // dump any bindings to it, since we cannot change the target of a binding
-                List<HeliosBinding> dead = InputBindings.Where(binding => ReferenceEquals(binding.Action, _value)).ToList();
-                dead.ForEach(binding =>
-                {
-                    binding.Trigger.Source.OutputBindings.Remove(binding);
-                    binding.Action.Target.InputBindings.Remove(binding);
-                });
+                Values.Remove(oldValue);
+                Actions.Remove(oldValue);
+                oldValue.Execute -= Value_Execute;
             }
 
             _value = new HeliosValue(this, new BindingValue(0.0), "", "Number", "The number to display",
@@ -74,6 +67,16 @@ namespace GadrocsWorkshop.Helios.Controls
             _value.Execute += Value_Execute;
             Values.Add(_value);
             Actions.Add(_value);
+
+            if (oldValue != null)
+            {
+                // update any bindings to it, since we cannot change the target of a binding
+                List<HeliosBinding> redirect = InputBindings.Where(binding => ReferenceEquals(binding.Action, oldValue)).ToList();
+                redirect.ForEach(binding =>
+                {
+                    binding.Action = _value;
+                });
+            }
         }
 
         #region Event Handlers
