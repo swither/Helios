@@ -86,14 +86,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Helios\Helios.csproj">
-      <Project>{e5abe3f5-46ec-46d1-9330-d42311471a93}</Project>
-      <Name>Helios</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Helios.ico" />
   </ItemGroup>
+  <Import Project="..\HeliosProjectReference.properties" />
   <Import Project="..\Helios.targets" />
 </Project>
