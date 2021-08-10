@@ -10,7 +10,7 @@ namespace GadrocsWorkshop.Helios.UnitConverters
 
         public override bool CanConvert(BindingValueUnit from, BindingValueUnit to)
         {
-            if (!_rawConversionsAllowed)
+            if (!GlobalOptions.HasAllowRawConversion)
             {
                 return false;
             }

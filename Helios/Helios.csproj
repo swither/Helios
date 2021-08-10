@@ -90,12 +90,16 @@
     <Compile Include="Controls\Capabilities\IWindowsManipulationAware.cs" />
     <Compile Include="Controls\Capabilities\IWindowsMouseInput.cs" />
     <Compile Include="Controls\Capabilities\IWindowsPreviewInput.cs" />
+    <Compile Include="Controls\NumericTextDisplay.cs" />
     <Compile Include="Controls\RendererCapabilities\IWindowsControl.cs" />
     <Compile Include="Controls\Special\CalibrationFilter.cs" />
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Special\TestControl.cs" />
+    <Compile Include="Controls\NumericTextDisplayBehaviorPropertyEditor.xaml.cs">
+      <DependentUpon>NumericTextDisplayBehaviorPropertyEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TimerPanelBehaviorEditor.xaml.cs">
       <DependentUpon>TimerPanelBehaviorEditor.xaml</DependentUpon>
     </Compile>
@@ -136,6 +140,7 @@
     <Compile Include="Json\Function\ConverterForJsonNet.cs" />
     <Compile Include="Json\InterfaceFile.cs" />
     <Compile Include="Json\NetworkFunction\SchemaGenerationProviderForJsonNet.cs" />
+    <Compile Include="UnitConverters\RawConverters.cs" />
     <Compile Include="Util\FileUtility.cs" />
     <Compile Include="Util\ModuleUtility.cs" />
     <Compile Include="ProfileInstances.cs" />
@@ -268,6 +273,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="Controls\NumericTextDisplayBehaviorPropertyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\TimerPanelBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

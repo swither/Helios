@@ -14,6 +14,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System.Data;
+
 namespace GadrocsWorkshop.Helios
 {
     /// <summary>
@@ -33,6 +35,11 @@ namespace GadrocsWorkshop.Helios
         /// name used in the settings; may differ from property name and must never change
         /// </summary>
         private const string SETTING_SCALE_ALL_TEXT = "ScaleAllText";
+
+        /// <summary>
+        /// name used in he settings; may differ from property name and must never change
+        /// </summary>
+        private const string SETTING_ALLOW_RAW_CONVERSION = "AllowRawConversion";
 
         /// <summary>
         /// global options group name used in the settings, must never change
@@ -89,6 +96,12 @@ namespace GadrocsWorkshop.Helios
         /// </returns>
         public static bool HasAllowSoftInterfaces =>
             ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_ALLOW_SOFT_INTERFACES, false);
+
+        /// <summary>
+        /// NOTE: there is current no UI for this
+        /// </summary>
+        public static bool HasAllowRawConversion =>
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_ALLOW_RAW_CONVERSION, true);
 
         #endregion
     }

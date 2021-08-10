@@ -566,7 +566,7 @@ namespace GadrocsWorkshop.Helios
                     && _converter.IsRaw)
                 {
                     IsValid = true;
-                    ErrorMessage = "Disregarding Units - Scaling may need to be adjusted by Lua script.";
+                    ErrorMessage = "Disregarding Units - Scaling may need to be adjusted by another control or Lua script.";
                     return;
                 }
 
