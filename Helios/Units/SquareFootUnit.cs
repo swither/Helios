@@ -24,7 +24,8 @@ namespace GadrocsWorkshop.Helios.Units
 
         public override string LongName
         {
-            get { return "square feet"; }
+            // NOTE: display names are capitalized in Helios
+            get { return "Square feet"; }
         }
 
         public override double ConversionFactor

@@ -70,17 +70,17 @@ namespace GadrocsWorkshop.Helios
         public static readonly BindingValueUnit FeetPerMinute = new SpeedUnit(Feet, Minutes, "fpm", "Feet per minute");
         public static readonly BindingValueUnit MilesPerHour = new SpeedUnit(Miles, Hours, "mph", "Miles per hour");
         public static readonly BindingValueUnit Knots = new SpeedUnit(NauticalMiles, Hours, "kts", "Knots");
-        public static readonly BindingValueUnit KilometersPerHour = new SpeedUnit(Kilometers, Hours, "km/h", "kilometers per hour");
+        public static readonly BindingValueUnit KilometersPerHour = new SpeedUnit(Kilometers, Hours, "km/h", "Kilometers per hour");
 
         // Mass Flow Units
         public static readonly BindingValueUnit PoundsPerHour = new MassFlowUnit(Pounds, Hours, "PPH", "Pound per hour");
 
         // Pressure Units
         public static readonly BindingValueUnit PoundsPerSquareInch = new PressureUnit(Pounds, SquareInch, "PSI", "Pounds per square inch");
-        public static readonly BindingValueUnit PoundsPerSquareFoot = new PressureUnit(Pounds, SquareFoot, "PSI", "Pounds per square foot");
+        public static readonly BindingValueUnit PoundsPerSquareFoot = new PressureUnit(Pounds, SquareFoot, "lb/ft2", "Pounds per square foot");
         public static readonly BindingValueUnit InchesOfMercury = new InchofMercuryUnit();
         public static readonly BindingValueUnit MilimetersOfMercury = new MilimetersOfMercury();
-        public static readonly BindingValueUnit KilgramsForcePerSquareCentimenter = new PressureUnit(Kilograms, SquareCentimeter, "kgf/cm2", "Kilograms Force per Square Centimeter");
+        public static readonly BindingValueUnit KilgramsForcePerSquareCentimenter = new PressureUnit(Kilograms, SquareCentimeter, "kgf/cm2", "Kilograms force per square centimeter");
 
         // Volume Units
         public static readonly BindingValueUnit Liters = new Liters();

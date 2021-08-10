@@ -29,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Units
 
         public override string LongName
         {
-            get { return "square centimeter"; }
+            get { return "Square centimeters"; }
         }
     }
 }

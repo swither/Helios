@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Units
 
         public override string LongName
         {
-            get { return "Nautical Mile"; }
+            get { return "Nautical mile"; }
         }
 
         public override double ConversionFactor
