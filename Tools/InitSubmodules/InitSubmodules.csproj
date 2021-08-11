@@ -40,7 +40,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <Import Project="..\Helios.targets" />
+  <Import Project="..\..\Helios.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist lib $(TargetPath)</PostBuildEvent>
   </PropertyGroup>

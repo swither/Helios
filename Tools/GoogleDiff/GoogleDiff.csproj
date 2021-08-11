@@ -39,5 +39,6 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\Helios.targets" />
+  <Import Project="..\..\HeliosProjectReference.properties" />
+  <Import Project="..\..\Helios.targets" />
 </Project>
