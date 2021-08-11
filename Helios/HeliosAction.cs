@@ -235,6 +235,11 @@ namespace GadrocsWorkshop.Helios
             handler?.Invoke(this, args);
         }
 
+        public void Reset()
+        {
+            // we don't cache values, no code
+        }
+
         public Type ValueEditorType { get; set; } = null;
 
         #endregion

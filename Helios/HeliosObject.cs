@@ -235,7 +235,10 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public virtual void Reset()
         {
-            // Default No-Op
+            foreach (IBindingAction bindingAction in Actions)
+            {
+                bindingAction.Reset();
+            }
         }
 
         /// <summary>

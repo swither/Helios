@@ -174,6 +174,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void Reset()
         {
+            base.Reset();
+
             BeginTriggerBypass(true);
             Pushed = false;
             IsClosed = false;

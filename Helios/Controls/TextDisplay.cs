@@ -339,6 +339,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void Reset()
         {
+            base.Reset();
+
             BeginTriggerBypass(true);
             TextValue = "";
             EndTriggerBypass(true);

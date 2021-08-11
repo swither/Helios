@@ -27,6 +27,12 @@ namespace GadrocsWorkshop.Helios
         private readonly WeakReference _owner;
         private WeakReference _context = new WeakReference(null);
 
+        /// <summary>
+        /// true if we believe any trigger listeners are up to date, so that we don't fire triggers
+        /// unless the value actually changes
+        /// </summary>
+        private bool _synchronized = GlobalOptions.HasUseLegacyResetBehavior;
+
         public HeliosValue(HeliosObject owner, BindingValue initialValue, string device, string name,
             string description, string valueDescription, BindingValueUnit unit)
             : this(owner, initialValue, device, "", name, description, valueDescription, unit)
@@ -108,9 +114,11 @@ namespace GadrocsWorkshop.Helios
         public void SetValue(BindingValue value, bool bypassCascadingTriggers)
         {
             if ((Value == null && value != null)
-                || (Value != null && !Value.Equals(value)))
+                || (Value != null && !Value.Equals(value))
+                || !_synchronized)
             {
                 Value = value;
+                _synchronized = true;
                 if (!bypassCascadingTriggers)
                 {
                     OnFireTrigger(value);
@@ -202,6 +210,20 @@ namespace GadrocsWorkshop.Helios
         {
             HeliosActionEventArgs args = new HeliosActionEventArgs(value, bypassCascadingTriggers);
             Execute?.Invoke(this, args);
+        }
+
+        public void Reset()
+        {
+            if (GlobalOptions.HasUseLegacyResetBehavior)
+            {
+                // just do nothing here, which happens only once on reset, so we don't have to
+                // do anything special at update time, which happens continuously
+                return;
+            }
+            // the next update to this value should fire triggers, even if the
+            // actual value has not changed.  Observers of related triggers may be
+            // out of sync, because the were reset to their configured initial states.
+            _synchronized = false;
         }
 
         public Type ValueEditorType { get; set; } = typeof(TextStaticEditor);

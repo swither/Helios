@@ -173,8 +173,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         public override void Reset()
         {
-            _profileResetTrigger.FireTrigger(BindingValue.Empty);
             base.Reset();
+            _profileResetTrigger.FireTrigger(BindingValue.Empty);
         }
 
         private void Images_ImageLoadFailure(object sender, ImageLoadEventArgs e)

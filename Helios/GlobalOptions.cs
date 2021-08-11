@@ -14,8 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using System.Data;
-
 namespace GadrocsWorkshop.Helios
 {
     /// <summary>
@@ -26,6 +24,11 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class GlobalOptions : NotificationObject
     {
+        /// <summary>
+        /// name used in he settings; may differ from property name and must never change
+        /// </summary>
+        private const string SETTING_ALLOW_RAW_CONVERSION = "AllowRawConversion";
+
         /// <summary>
         /// name used in the settings; may differ from property name and must never change
         /// </summary>
@@ -39,7 +42,7 @@ namespace GadrocsWorkshop.Helios
         /// <summary>
         /// name used in he settings; may differ from property name and must never change
         /// </summary>
-        private const string SETTING_ALLOW_RAW_CONVERSION = "AllowRawConversion";
+        private const string SETTING_USE_LEGACY_RESET_BEHAVIOR = "UseLegacyResetBehavior";
 
         /// <summary>
         /// global options group name used in the settings, must never change
@@ -51,6 +54,14 @@ namespace GadrocsWorkshop.Helios
         /// true if text attached to buttons and similar controls is scaled during reset monitors and similar operations
         /// </summary>
         private bool _scaleAllText;
+
+        /// <summary>
+        /// backing field for property UseLegacyResetBehavior, contains
+        /// true if profile reset should act like it did in previous releases, not firing bindings for values
+        /// that happen to already have the right value, even though their observers may have just been reset to
+        /// an inconsistent initial state
+        /// </summary>
+        private bool _useLegacyResetBehavior;
 
         public GlobalOptions()
         {
@@ -80,6 +91,27 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
+        /// true if profile reset should act like it did in previous releases, not firing bindings for values
+        /// that happen to already have the right value, even though their observers may have just been reset to
+        /// an inconsistent initial state
+        /// </summary>
+        public bool UseLegacyResetBehavior
+        {
+            get => _useLegacyResetBehavior;
+            set
+            {
+                if (_useLegacyResetBehavior == value)
+                {
+                    return;
+                }
+
+                bool oldValue = _useLegacyResetBehavior;
+                _useLegacyResetBehavior = value;
+                OnPropertyChanged(nameof(UseLegacyResetBehavior), oldValue, value, true);
+            }
+        }
+
+        /// <summary>
         /// accessible as utility for client code that can't get access to the GlobalOptions instance readily
         /// </summary>
         /// <returns>
@@ -102,6 +134,17 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public static bool HasAllowRawConversion =>
             ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_ALLOW_RAW_CONVERSION, true);
+
+        /// <summary>
+        /// accessible as utility for client code that can't get access to the GlobalOptions instance readily
+        /// </summary>
+        /// <returns>
+        /// true if profile reset should act like it did in previous releases, not firing bindings for values
+        /// that happen to already have the right value, even though their observers may have just been reset to
+        /// an inconsistent initial state
+        /// </returns>
+        public static bool HasUseLegacyResetBehavior =>
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_USE_LEGACY_RESET_BEHAVIOR, true);
 
         #endregion
     }

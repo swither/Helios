@@ -108,9 +108,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.ControlRouter
 
         public override void Reset()
         {
+            base.Reset();
             _mostRecentlySelected = null;
             Model.Ports.ForEach(port => port.Reset());
-            base.Reset();
         }
 
         #endregion

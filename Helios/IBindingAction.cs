@@ -78,5 +78,10 @@ namespace GadrocsWorkshop.Helios
         /// <param name="value">Value to be processed by this action.</param>
         /// <param name="bypassCascadingTriggers">If true this action will not fire additional triggers.</param>
         void ExecuteAction(BindingValue value, bool bypassCascadingTriggers);
+
+        /// <summary>
+        /// Called on reset of the containing Helios object
+        /// </summary>
+        void Reset();
     }
 }
