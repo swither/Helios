@@ -123,6 +123,11 @@ namespace GadrocsWorkshop.Helios
 
         public BindingValueUnit Unit { get; }
 
+        public void Reset()
+        {
+            // we don't cache anything, no code
+        }
+
         #endregion
 
         #region IBindingTrigger Members

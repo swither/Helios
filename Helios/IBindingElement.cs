@@ -44,6 +44,11 @@ namespace GadrocsWorkshop.Helios
         /// Returns units for the values produced and accepted for this binding element.
         /// </summary>
         BindingValueUnit Unit { get; }
+
+        /// <summary>
+        /// Called on reset of the containing Helios object
+        /// </summary>
+        void Reset();
     }
 
     public interface IBindingElement2: IBindingElement

@@ -239,6 +239,18 @@ namespace GadrocsWorkshop.Helios
             {
                 bindingAction.Reset();
             }
+
+            // probably no triggers need these resets, but let's be consistent
+            foreach (IBindingTrigger bindingTrigger in Triggers)
+            {
+                bindingTrigger.Reset();
+            }
+
+            // source interfaces have values that are just registered as outputs, but we still need to reset them
+            foreach (IHeliosValue heliosValue in Values)
+            {
+                heliosValue.Reset();
+            }
         }
 
         /// <summary>
