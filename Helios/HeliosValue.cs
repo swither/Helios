@@ -113,16 +113,37 @@ namespace GadrocsWorkshop.Helios
         /// <param name="bypassCascadingTriggers">True if bindings should not trigger further triggers.</param>
         public void SetValue(BindingValue value, bool bypassCascadingTriggers)
         {
-            if ((Value == null && value != null)
-                || (Value != null && !Value.Equals(value))
-                || !_synchronized)
+            // factored this value out for readability
+            bool valueChanged = (Value == null && value != null)
+                                || (Value != null && !Value.Equals(value));
+
+            if (bypassCascadingTriggers)
             {
+                if (valueChanged)
+                {
+                    // a normal local write
+                    Value = value;
+                }
+
+                // either way, we are done.  a local write never sets _synchronized
+                return;
+            }
+
+            // NOTE: cases broken out for breakpointing
+            if (!_synchronized)
+            {
+                // need to send this to our bound targets to synchronize them
                 Value = value;
                 _synchronized = true;
-                if (!bypassCascadingTriggers)
-                {
-                    OnFireTrigger(value);
-                }
+                OnFireTrigger(value);
+                return;
+            }
+
+            if (valueChanged)
+            {
+                // new value of interest to our bound targets
+                Value = value;
+                OnFireTrigger(value);
             }
         }
 

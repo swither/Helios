@@ -66,6 +66,7 @@ namespace GadrocsWorkshop.Helios
         public GlobalOptions()
         {
             _scaleAllText = HasScaleAllText;
+            _useLegacyResetBehavior = HasUseLegacyResetBehavior;
         }
 
         #region Properties
@@ -107,6 +108,7 @@ namespace GadrocsWorkshop.Helios
 
                 bool oldValue = _useLegacyResetBehavior;
                 _useLegacyResetBehavior = value;
+                ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, SETTING_USE_LEGACY_RESET_BEHAVIOR, value);
                 OnPropertyChanged(nameof(UseLegacyResetBehavior), oldValue, value, true);
             }
         }
@@ -144,7 +146,7 @@ namespace GadrocsWorkshop.Helios
         /// an inconsistent initial state
         /// </returns>
         public static bool HasUseLegacyResetBehavior =>
-            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_USE_LEGACY_RESET_BEHAVIOR, true);
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_USE_LEGACY_RESET_BEHAVIOR, false);
 
         #endregion
     }
