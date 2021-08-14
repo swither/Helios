@@ -246,7 +246,6 @@
                        Grid.ColumnSpan="2" />
                 <CheckBox Grid.Column="2"
                           VerticalAlignment="Center"
-                          IsEnabled="{Binding ProcessControl.Enabled}"
                           IsChecked="{Binding ProcessControl.StartRtt}"
                           Margin="0,60,0,85" />
                 <TextBlock Text="Start the RTT Cllient automatically when the profile starts"
@@ -265,7 +264,6 @@
                        Grid.ColumnSpan="2" />
                 <CheckBox Grid.Column="2"
                           VerticalAlignment="Center"
-                          IsEnabled="{Binding ProcessControl.Enabled}"
                           IsChecked="{Binding ProcessControl.StopRtt}"
                           Margin="0,86,0,59" />
                 <TextBlock Text="Stop the RTT Cllient automatically when the profile stops"

@@ -1,5 +1,5 @@
-﻿// Copyright 2021 Ammo Goettsch
-// 
+﻿// Copyright 2021 Helios Contributors
+//
 // HeliosFalcon is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,6 +15,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -48,7 +49,76 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// </summary>
         private bool _enabled = ConfigManager.SettingsManager.LoadSetting(CONFIGURATION_GROUP, CONFIGURATION_SETTING_ENABLED, false);
 
-        public bool StartRTTClient(string executablePath)
+        internal IEnumerable<StatusReportItem> OnStatusReport()
+        {
+            return CheckCommonItems();
+        }
+
+        internal IEnumerable<StatusReportItem> OnReadyCheck()
+        {
+            return CheckCommonItems();
+        }
+
+        internal void OnProfileStart(IRttGeneratorHost parent, bool networked)
+        {
+            StartedProcess = false;
+
+            if (!StartRtt)
+            {
+                return;
+            }
+
+            if (!Enabled)
+            {
+                Logger.Warn("Profile requested starting of RTT Client process, but this operation is not permitted on this computer");
+                return;
+            }
+
+            // launch RTT
+            string selectedClient = SelectClient(networked);
+            Logger.Info($"launching RTT client: {selectedClient}");
+            StartedProcess =
+                StartRTTClient(Path.Combine(parent.FalconPath, "Tools", "RTTRemote", selectedClient));
+        }
+
+        internal void OnProfileStop(IRttGeneratorHost _, bool networked)
+        {
+            if (!StartedProcess)
+            {
+                return;
+            }
+
+            if (!StopRtt)
+            {
+                return;
+            }
+
+            if (!Enabled)
+            {
+                Logger.Warn("Profile requested stopping of RTT Client process, but this operation is not permitted on this computer");
+                return;
+            }
+
+            KillRTTCllient(Path.GetFileNameWithoutExtension(SelectClient(networked)));
+        }
+
+        private IEnumerable<StatusReportItem> CheckCommonItems()
+        {
+            if ((StartRtt || StopRtt) && !Enabled)
+            {
+                // nothing will happen, unless the user opts in
+                yield return new StatusReportItem
+                {
+                    Status =
+                        "The profile requests starting and/or stopping of the RTT Client process, but you have not allowed Helios to do so",
+                    Severity = StatusReportItem.SeverityCode.Error,
+                    Link = StatusReportItem.ProfileEditor,
+                    Recommendation = "Allow the RTT Process Control feature in the Falcon Interface"
+                };
+            }
+        }
+
+        private bool StartRTTClient(string executablePath)
         {
             if (!File.Exists(executablePath))
             {
@@ -65,7 +135,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             return true;
         }
 
-        public void KillRTTCllient(string processName)
+        private void KillRTTCllient(string processName)
         {
             try
             {
@@ -88,7 +158,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         /// </summary>
         /// <param name="networked"></param>
         /// <returns>selected</returns>
-        internal string SelectClient(bool networked)
+        private string SelectClient(bool networked)
         {
             string selected;
             if (Environment.Is64BitProcess)
@@ -167,6 +237,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 ConfigManager.SettingsManager.SaveSetting(CONFIGURATION_GROUP, CONFIGURATION_SETTING_ENABLED, value);
             }
         }
+
+        /// <summary>
+        /// if true, we started RTT process on this run
+        /// </summary>
+        [XmlIgnore]
+        public bool StartedProcess { get; private set; }
 
         #endregion
     }

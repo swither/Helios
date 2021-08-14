@@ -25,7 +25,6 @@ namespace GadrocsWorkshop.Helios
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
-    using System.Windows.Threading;
 
     using GadrocsWorkshop.Helios.ComponentModel;
 
@@ -252,11 +251,6 @@ namespace GadrocsWorkshop.Helios
         /// profile instance tracking implementation
         /// </summary>
         internal ProfileInstances ProfileInstances { get; } = new ProfileInstances();
-
-        /// <summary>
-        /// access to global options object that will be modified for UI, for notifications
-        /// </summary>
-        public GlobalOptions GlobalOptions { get; } = new GlobalOptions();
 
         #endregion
 

@@ -662,7 +662,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             if (Rtt != null)
             {
-                yield return Rtt.OnReadyCheck();
+                foreach (StatusReportItem statusReportItem in Rtt.OnReadyCheck())
+                {
+                    yield return statusReportItem;
+                }
             }
         }
 
@@ -684,7 +687,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                         Status =
                             $"The key file configured in this profile does not exist at the path specified '{KeyFileName}'",
                         Recommendation = "Configure this interface with a valid key file",
-                        Severity = StatusReportItem.SeverityCode.Error,
+                        Severity = StatusReportItem.SeverityCode.Warning,
                     };
                 }
                 else

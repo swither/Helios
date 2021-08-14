@@ -1,4 +1,4 @@
-﻿// Copyright 2021 Ammo Goettsch
+﻿// Copyright 2021 Helios Contributors
 // 
 // HeliosFalcon is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -48,11 +48,11 @@ Profile Users:
 - on status report
     - if disabled due to no magic cookie on load, show special status asking to enable for consent
     - show configuration that will be generated
-    - warn if profile wants to start/stop RTT but global policy disallows it
+    - error if profile wants to start/stop RTT but global policy disallows it
 - on ready check
     - make sure falcon interface is configured 
     - make sure file either does not exist or is helios owned
-    - make sure process control we plan to use is actually permitted (warn or error if start/stop is configurable)
+    - error if profile wants to start/stop RTT but global policy disallows it
 - on profile start
     - refuse to overwrite non-Helios file
     - launch RTT process 
@@ -165,6 +165,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         {
             _localOptions.PropertyChanged += Child_PropertyChanged;
             _networkOptions.PropertyChanged += Child_PropertyChanged;
+            _processControl.PropertyChanged += Child_PropertyChanged;
         }
 
         internal void Update(IEnumerable<ShadowVisual> viewports)
@@ -218,7 +219,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                     Status =
                         "RTT feature has been disabled, because an existing RTT configuration would be overwritten by this profile",
                     Recommendation =
-                        "Enable the RTT feature again to back up the existing file and let Helios to generate RTT displays"
+                        "Enable the RTT feature again to back up the existing file and let Helios generate RTT displays"
                 }.AsReport();
             }
 
@@ -227,7 +228,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 return new StatusReportItem[0];
             }
 
-            // REVISIT: for now, we show the whole generated file
+            // gather status from child objects, if any
+            IEnumerable<StatusReportItem> processControlReport =
+                ProcessControl?.OnStatusReport() ?? new StatusReportItem[0];
+
+            return processControlReport
+                .Concat(ReportLInes());
+        }
+
+        private IEnumerable<StatusReportItem> ReportLInes()
+        {
+            // we show the whole generated file, so it will be in the interface status report
             return _lines
                 .Select(line => new StatusReportItem
                 {
@@ -309,21 +320,49 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
         }
 
         /// <summary>
-        /// create a single ready check item for our parent's ReadyCheck
+        /// create a ready check items for our parent's ReadyCheck
         /// </summary>
         /// <returns></returns>
-        internal StatusReportItem OnReadyCheck()
+        internal IEnumerable<StatusReportItem> OnReadyCheck()
         {
+            if (DisabledUntilConsent)
+            {
+                yield return new StatusReportItem
+                {
+                    Severity = StatusReportItem.SeverityCode.Error,
+                    Status =
+                        "RTT feature has been disabled, because an existing RTT configuration would be overwritten by this profile",
+                    Link = StatusReportItem.ProfileEditor,
+                    Recommendation =
+                        "Enable the RTT feature again to back up the existing file and let Helios generate RTT displays"
+                };
+                yield break;
+            }
+
             if (!Enabled)
             {
-                return new StatusReportItem
+                yield return new StatusReportItem
                 {
                     Status = "RTT client configuration feature is not enabled",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
 
                 };
+                yield break;
             }
 
+            yield return CheckConfigFile();
+
+            if (ProcessControl != null)
+            {
+                foreach (StatusReportItem statusReportItem in ProcessControl.OnReadyCheck())
+                {
+                    yield return statusReportItem;
+                }
+            }
+        }
+
+        private StatusReportItem CheckConfigFile()
+        {
             if (string.IsNullOrEmpty(Parent.FalconPath))
             {
                 return new StatusReportItem
@@ -388,8 +427,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
 
         internal void OnProfileStart()
         {
-            StartedProcess = false;
-
             // check for Helios ownership of the RTT file and if it is ours, write the RTT configuration for the current profile,
             // which may not be the most recent one we configured in Profile Editor
             if (!UpdateRttConfigurationFile())
@@ -398,27 +435,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 return;
             }
 
-            if (ProcessControl?.StartRtt ?? false)
-            {
-                // launch RTT
-                string selectedClient = ProcessControl.SelectClient(Networked);
-                StartedProcess =
-                    ProcessControl.StartRTTClient(Path.Combine(Parent.FalconPath, "Tools", "RTTRemote", selectedClient));
-                Logger.Info($"launching RTT client: {selectedClient}");
-            }
+            ProcessControl?.OnProfileStart(Parent, Networked);
         }
 
         internal void OnProfileStop()
         {
-            if (!StartedProcess)
-            {
-                return;
-            }
-
-            if (ProcessControl?.StopRtt ?? false)
-            {
-                ProcessControl.KillRTTCllient(Path.GetFileNameWithoutExtension(ProcessControl.SelectClient(Networked)));
-            }
+            ProcessControl?.OnProfileStop(Parent, Networked);
         }
 
         /// <summary>
@@ -766,6 +788,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 ProcessControl oldValue = _processControl;
                 _processControl = value;
                 OnPropertyChanged(nameof(ProcessControl), oldValue, value, true);
+
+                // bubble up child property events only for the current object
+                if (null != oldValue)
+                {
+                    oldValue.PropertyChanged -= Child_PropertyChanged;
+                }
+
+                if (null != value)
+                {
+                    value.PropertyChanged += Child_PropertyChanged;
+                }
             }
         }
 
@@ -815,12 +848,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
 
         [XmlIgnore] 
         public IRttGeneratorHost Parent { get; internal set; }
-
-        /// <summary>
-        /// if true, we started RTT process on this run
-        /// </summary>
-        [XmlIgnore]
-        public bool StartedProcess { get; private set; }
 
         #endregion
 
