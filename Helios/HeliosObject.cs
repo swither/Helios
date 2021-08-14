@@ -235,6 +235,12 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public virtual void Reset()
         {
+            // REVISIT: We would have wanted to do all these resets in a "PreviewReset" pass, so that everyone's
+            // bindable entities are reset before anyone potentially writes something during their Reset
+            // behavior.  But do we really want add all those methods throughout the tree?  This is less
+            // important that it appears, because writes with cascading enabled don't usually happen during Reset
+            // and non-cascading writes don't reset the "not synchronized" state of the values.
+
             foreach (IBindingAction bindingAction in Actions)
             {
                 bindingAction.Reset();
