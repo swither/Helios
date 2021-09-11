@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using GadrocsWorkshop.Helios.Json;
 using GadrocsWorkshop.Helios.Util;
 
@@ -29,50 +28,33 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        internal static string FindInterfaceFileByName(string name)
+        private IEnumerable<HeliosInterface> LoadSoftInterfaces()
         {
-            // NOTE: we only instantiate one of these per profile, and we always want latest information,
-            // so there is no reason to cache or index anything and we just linear search all the headers
-            // XXX measure how long this takes and see if maybe we have to something like index caching based on file checksums
-            // XXX merge installed and user interfaces
-            string userInterfaceSpecsFolder = InterfaceHeader.UserInterfaceSpecsFolder;
-            Logger.Info("Searching for interface definition for {Name} in {Path}", name, Anonymizer.Anonymize(userInterfaceSpecsFolder));
-            foreach (string specFilePath in Directory.EnumerateFiles(userInterfaceSpecsFolder, "*.hif.json",
-                SearchOption.AllDirectories))
+            HashSet<string> loadedNames = new HashSet<string>();
+            foreach (string specFilePath in InterfaceHeader.EnumerateInterfaceFilePaths())
             {
                 InterfaceHeader header = InterfaceHeader.LoadHeader(specFilePath);
-                if (header.Type == InterfaceHeader.InterfaceType.DCS &&
-                    header.Name == name)
+                if (header.Type != InterfaceHeader.InterfaceType.DCS)
                 {
-                    Logger.Info("Found interface definition at {Path}", Anonymizer.Anonymize(specFilePath));
-                    return specFilePath;
+                    // only load fully DCS interfaces fully defined by files
+                    continue;
                 }
-            }
 
-            return null;
-        }
-
-        // enumerate all instances we could create without loading them fully
-        private static IEnumerable<HeliosInterface> LoadSoftInterfacesFromFolder(string interfaceSpecsFolder)
-        {
-            if (!Directory.Exists(interfaceSpecsFolder))
-            {
-                Logger.Debug("Soft interface folder {Path} not found", interfaceSpecsFolder);
-                yield break;
-            }
-
-            Logger.Info("Searching for interface definitions in {Path}", Anonymizer.Anonymize(interfaceSpecsFolder));
-            foreach (string specFilePath in Directory.EnumerateFiles(interfaceSpecsFolder, "*.hif.json",
-                SearchOption.AllDirectories))
-            {
-                InterfaceHeader header = InterfaceHeader.LoadHeader(specFilePath);
-                if (header.Type == InterfaceHeader.InterfaceType.DCS)
+                if (loadedNames.Contains(header.Name))
                 {
-                    Logger.Info("Found DCS interface {Name} at {Path}", header.Name, Anonymizer.Anonymize(specFilePath));
-
-                    // create candidate instance, without loading it fully
-                    yield return new SoftInterface(header.Name, header.Module, specFilePath);
+                    // already loaded, presumably because user file overrode a system file
+                    Logger.Debug(
+                        "Ignoring DCS interface {Name} at {Path} because an interface of that name was already loaded",
+                        header.Name, Anonymizer.Anonymize(specFilePath));
+                    continue;
                 }
+
+                Logger.Info("Found DCS interface {Name} at {Path}", header.Name,
+                    Anonymizer.Anonymize(specFilePath));
+                loadedNames.Add(header.Name);
+
+                // create candidate instance, without loading it fully
+                yield return new SoftInterface(header.Name, header.Module, specFilePath);
             }
         }
 
@@ -101,14 +83,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
                 return interfaces;
             }
 
-            // XXX load installed interfaces
-
-            // XXX merge these user interfaces instead of just loading them
-            interfaces.AddRange(LoadSoftInterfacesFromFolder(InterfaceHeader.UserInterfaceSpecsFolder));
+            // load installed interfaces
+            interfaces.AddRange(LoadSoftInterfaces());
 
             return interfaces;
         }
 
+        // no automatically added interfaces (empty list)
         public override List<HeliosInterface> GetAutoAddInterfaces(HeliosInterfaceDescriptor descriptor,
             HeliosProfile profile) => new List<HeliosInterface>();
 

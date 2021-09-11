@@ -537,7 +537,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
 #region IReadyCheck
 
-        public IEnumerable<StatusReportItem> PerformReadyCheck()
+        public virtual IEnumerable<StatusReportItem> PerformReadyCheck()
         {
             // XXX check on our health
 
@@ -597,7 +597,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _observers.Remove(observer);
         }
 
-        public void InvalidateStatusReport()
+        public virtual void InvalidateStatusReport()
         {
             if (_observers.Count < 1)
             {

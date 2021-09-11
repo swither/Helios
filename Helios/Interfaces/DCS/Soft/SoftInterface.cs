@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GadrocsWorkshop.Helios.ComponentModel;
@@ -53,13 +54,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
             // leave everything null until Attach so we can get our XML read first
         }
 
-        #region Overrides
-
-        protected override void AttachToProfileOnMainThread()
+        private void LoadInterfaceFile(string specFilePath)
         {
-            // if we are being deserialized, we need to find the current spec file for this interface
-            string specFilePath = SpecFilePath ?? SoftInterfaceFactory.FindInterfaceFileByName(Name);
-
             // we are being instantiated for use, not just for the interface picker, so now we really load
             InterfaceFile<UDPInterface.NetworkFunction> loaded =
                 InterfaceFile<UDPInterface.NetworkFunction>.Load(this, specFilePath);
@@ -86,16 +82,77 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
 
             // add all the functions we read
             InstallFunctions(loaded);
+        }
+
+        private IList<StatusReportItem> CreateMissingFileStatus() =>
+            new StatusReportItem
+            {
+                Severity = StatusReportItem.SeverityCode.Error,
+                Status = $"The interface definition file for this interface ({Name}) was not found",
+                Recommendation =
+                    $"Please install the matching interface definition file ({InterfaceHeader.FilePattern}) to {InterfaceHeader.UserInterfaceSpecsFolder}",
+                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate,
+                Link = StatusReportItem.ProfileEditor
+            }.AsReport();
+
+        #region Overrides
+
+        protected override void AttachToProfileOnMainThread()
+        {
+            // if we are being deserialized from a profile, SpecFilePath will be null and we need to find the current spec file for this interface
+            SpecFilePath = SpecFilePath ?? InterfaceHeader.FindInterfaceFileByInterfaceName(Name, InterfaceHeader.InterfaceType.DCS);
+
+            if (HasInterfaceFile)
+            {
+                LoadInterfaceFile(SpecFilePath);
+            }
+            else
+            {
+                // graceful failure
+                Logger.Error("Interface definition file for {Name} not installed; DCS interface will not function",
+                    Name);
+
+                // this will suppress an error and also cause this profile not to auto load
+                VehicleName = "MissingFile";
+
+                // XXX enable this once implemented
+                // ModuleName = "MissingFile";
+            }
 
             // now we are completely defined; start up
             base.AttachToProfileOnMainThread();
+        }
+
+        public override IEnumerable<StatusReportItem> PerformReadyCheck()
+        {
+            if (!HasInterfaceFile)
+            {
+                // missing interface file, so our status can't consider the configuration
+                return CreateMissingFileStatus();
+            }
+
+            return base.PerformReadyCheck();
+        }
+
+        public override void InvalidateStatusReport()
+        {
+            if (!HasInterfaceFile)
+            {
+                // missing interface file, so our status can't consider the configuration
+                PublishStatusReport(CreateMissingFileStatus());
+                return;
+            }
+
+            base.InvalidateStatusReport();
         }
 
         #endregion
 
         #region Properties
 
-        public string SpecFilePath { get; }
+        public string SpecFilePath { get; private set; }
+
+        public bool HasInterfaceFile => SpecFilePath != null;
 
         #endregion
     }

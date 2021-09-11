@@ -504,17 +504,18 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                 return false;
             }
 
-            // XXX try / catch once this is working?
-            // XXX load from installed interfaces and then merge any user changes
+            // search for exact name and Existing type
             string jsonFileName = $"{TypeIdentifier}.hif.json";
-            string jsonPath = Directory.EnumerateFiles(InterfaceHeader.UserInterfaceSpecsFolder, jsonFileName, SearchOption.AllDirectories).FirstOrDefault();
+            string jsonPath = InterfaceHeader.FindInterfaceFile(jsonFileName);
             if (null == jsonPath || !File.Exists(jsonPath))
             {
-                ConfigManager.LogManager.LogDebug($"requested soft interface definition {jsonFileName} not found");
+                Logger.Debug("requested soft interface definition {FileName} not found", jsonFileName);
                 return false;
             }
 
+
             // load from Json
+            // WARNING: this can be InterfaceType.Existing or InterfaceType.DCS, but either way we just use the functions
             InterfaceFile<NetworkFunction> loaded = InterfaceFile<NetworkFunction>.Load(this, jsonPath);
 
             // if we survive the loading, install all these functions

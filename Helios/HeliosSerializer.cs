@@ -316,9 +316,9 @@ namespace GadrocsWorkshop.Helios
                 {
                     binding.Trigger = source.Triggers[trigger];
                 }
-                else if (source is HeliosVisual)
+                else if (source is HeliosVisual visual)
                 {
-                    HeliosVisual parent = ((HeliosVisual)source).Parent;
+                    HeliosVisual parent = visual.Parent;
                     if (parent.Triggers.ContainsKey(trigger))
                     {
                         source = parent;
@@ -352,22 +352,19 @@ namespace GadrocsWorkshop.Helios
                 {
                     binding.Action = target.Actions[action];
                 }
-                else if (target is HeliosVisual)
+                else if (target is HeliosVisual visual)
                 {
-                    HeliosVisual parent = ((HeliosVisual)target).Parent;
+                    HeliosVisual parent = visual.Parent;
                     if (parent.Actions.ContainsKey(action))
                     {
                         target = parent;
                         binding.Action = target.Actions[action];
                     }
                 }
-                else
-                {
-                    Logger.Error("Failed to recognize action target {Type} for binding action {ActionId} on target {HeliosPath}", target.GetType().Name, action, targetPath );
-                }
                 if (binding.Action == null)
                 {
-                    Logger.Error("Binding target action {Name} not found at path {HeliosPath}", action, targetPath);
+                    // keep this message short, because it may end up in Control Center console
+                    Logger.Error("Binding action {Name} not found at {HeliosPath}", action, targetPath);
                 }
             }
             else

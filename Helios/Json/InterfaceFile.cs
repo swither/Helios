@@ -14,19 +14,107 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
-using GadrocsWorkshop.Helios.Interfaces.Capabilities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Json
 {
     public class InterfaceHeader
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        
+        public static string FindInterfaceFile(string filePattern)
+        {
+            string userInterfaceSpecsFolder = UserInterfaceSpecsFolder;
+            string jsonPath = null;
+            if (!Directory.Exists(userInterfaceSpecsFolder))
+            {
+                Logger.Debug("no user Interfaces folder at {Path}; not loading interfaces from documents", Anonymizer.Anonymize(userInterfaceSpecsFolder));
+            }
+            else
+            {
+                jsonPath = Directory.EnumerateFiles(userInterfaceSpecsFolder, filePattern, SearchOption.AllDirectories).FirstOrDefault();
+            }
+
+            // if not found in user files, try system files
+            if (jsonPath == null)
+            {
+                string systemInterfaceSpecsFolder = SystemInterfaceSpecsFolder;
+                if (Directory.Exists(systemInterfaceSpecsFolder))
+                {
+                    jsonPath = Directory.EnumerateFiles(systemInterfaceSpecsFolder, filePattern, SearchOption.AllDirectories).FirstOrDefault();
+                }
+                else
+                {
+                    Logger.Info("no system Interfaces folder at {Path}; not loading interfaces from documents", Anonymizer.Anonymize(systemInterfaceSpecsFolder));
+                }
+            }
+
+            // if not a file, report it does not exist
+            if (jsonPath != null && !File.Exists(jsonPath))
+            {
+                return null;
+            }
+
+            return jsonPath;
+        }
+
+        public static string FindInterfaceFileByInterfaceName(string interfaceName, InterfaceType interfaceType)
+        {
+            // NOTE: we only instantiate one of these per profile, and we always want latest information,
+            // so there is no reason to cache or index anything and we just linear search all the headers
+            // XXX measure how long this takes and see if maybe we have to do something like index caching based on file checksums
+            Logger.Info("Searching for interface definition for {Name}", interfaceName);
+            foreach (string specFilePath in EnumerateInterfaceFilePaths())
+            {
+                InterfaceHeader header = LoadHeader(specFilePath);
+                if (header.Type == interfaceType &&
+                    header.Name == interfaceName)
+                {
+                    Logger.Info("Found interface definition at {Path}", Anonymizer.Anonymize(specFilePath));
+                    return specFilePath;
+                }
+            }
+            return null;
+        }
+
+        public static IEnumerable<string> EnumerateInterfaceFilePaths()
+        {
+            IEnumerable<string> userPaths;
+            string userInterfaceSpecsFolder = UserInterfaceSpecsFolder;
+            if (Directory.Exists(userInterfaceSpecsFolder))
+            {
+                userPaths = Directory.EnumerateFiles(userInterfaceSpecsFolder, FilePattern, SearchOption.AllDirectories);
+            }
+            else
+            {
+                Logger.Debug("no user Interfaces folder at {Path}; not enumerating interfaces from documents", Anonymizer.Anonymize(userInterfaceSpecsFolder));
+                userPaths = Array.Empty<string>();
+            }
+
+            IEnumerable<string> systemPaths;
+            string systemInterfaceSpecsFolder = SystemInterfaceSpecsFolder;
+            if (Directory.Exists(systemInterfaceSpecsFolder))
+            {
+                systemPaths = Directory.EnumerateFiles(systemInterfaceSpecsFolder, FilePattern, SearchOption.AllDirectories);
+            }
+            else
+            {
+                Logger.Info("no system Interfaces folder at {Path}; not loading interfaces from documents", Anonymizer.Anonymize(systemInterfaceSpecsFolder));
+                systemPaths = Array.Empty<string>();
+            }
+
+            return userPaths.Concat(systemPaths);
+        }
+
         public static InterfaceHeader LoadHeader(string jsonPath)
         {
             using (StreamReader file = File.OpenText(jsonPath))
@@ -78,7 +166,11 @@ namespace GadrocsWorkshop.Helios.Json
 
         #endregion
 
+        public static string FilePattern => "*.hif.json";
+
         public static string UserInterfaceSpecsFolder => Path.Combine(ConfigManager.DocumentPath, "Interfaces");
+
+        private static string SystemInterfaceSpecsFolder => Path.Combine(ConfigManager.ApplicationPath, "Interfaces");
     }
 
     public class InterfaceFile<TFunction> : InterfaceHeader where TFunction : class, IBuildableFunction
