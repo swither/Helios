@@ -55,14 +55,26 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             public override HeliosInterface HeliosInterface => _factory.CreateInstance(_context);
         }
 
-        public AvailableInterfaces(HeliosProfile profile)
+        public AvailableInterfaces()
         {
+            // create fresh collection, instead of relying on dependency property initializer
             Items = new ObservableCollection<Item>();
+        }
+
+        /// <summary>
+        /// enumerate the initial synchronous set of interfaces and start asynchronously scanning for more
+        /// until Dispose() is called
+        ///
+        /// </summary>
+        /// <exception cref="Exception">if interface factories throw anything</exception>
+        /// <param name="profile"></param>
+        public void Start(HeliosProfile profile)
+        {
             if (profile == null)
             {
                 throw new Exception("available interface list instantiated without a profile; UI logic error");
             }
-
+            
             foreach (HeliosInterfaceDescriptor descriptor in ConfigManager.ModuleManager.InterfaceDescriptors)
             {
                 ConfigManager.LogManager.LogInfo("Checking for available instances of " + descriptor.Name +
@@ -90,6 +102,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 {
                     ConfigManager.LogManager.LogError(
                         "Error trying to get available instances for " + descriptor.Name + " interface.", e);
+                    throw;
                 }
             }
         }
@@ -101,8 +114,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         {
             get => (ObservableCollection<Item>) GetValue(ItemsProperty);
             set => SetValue(ItemsProperty, value);
-        }
-
+        } 
         public static readonly DependencyProperty ItemsProperty =
             DependencyProperty.Register("Items", typeof(ObservableCollection<Item>),
                 typeof(AvailableInterfaces), new PropertyMetadata(null));

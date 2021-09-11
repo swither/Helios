@@ -1047,15 +1047,27 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void AddInterface_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            AvailableInterfaces availableInterfaces = new AvailableInterfaces(Profile);
-            AddInterfaceDialog dialog = new AddInterfaceDialog
-            {
-                DataContext = availableInterfaces,
-                Owner = this
-            };
-
             try
             {
+                AvailableInterfaces availableInterfaces = new AvailableInterfaces();
+
+                try
+                {
+                    availableInterfaces.Start(Profile);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "Error from interface enumeration during Add Interface dialog; some interfaces will not be available");
+
+                    // show the user, but survive
+                    ExceptionViewer.DisplayException(ex);
+                }
+
+                AddInterfaceDialog dialog = new AddInterfaceDialog
+                {
+                    DataContext = availableInterfaces,
+                    Owner = this
+                };
                 bool? result = dialog.ShowDialog();
 
                 // shut down async searches
@@ -1084,7 +1096,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "AddInterface - Error during add Interface dialog or creation");
+                Logger.Error(ex, "Error during Add Interface dialog or interface creation");
             }
         }
 
