@@ -194,7 +194,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             // get global configuration parameters that are not serialized to the profile
             _ipAddress = _parent.LoadSetting("IPAddress", System.Net.IPAddress.Loopback.ToString());
-            _exportFrequency = _parent.LoadSetting("ExportFrequency", 15);
+            _exportFrequency = _parent.LoadSetting("ExportFrequency", 30);
             _exportModuleText = _parent.ExportModuleText;
 
             // load dofiles settings first, because we may need that for upgrade 
