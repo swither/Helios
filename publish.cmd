@@ -1,6 +1,6 @@
 @echo off
-REM output location (you will need to change this for your local folder structure)
-set HELIOS_SHARE_FOLDER=%USERPROFILE%\Dropbox\HeliosBuilds
+REM output location (you will need to change this for your local folder structure or mklink to where you want the files)
+set HELIOS_SHARE_FOLDER=..\HeliosBuilds
 
 REM arguments and validation
 set HELIOS_BUILT_VERSION=%1
