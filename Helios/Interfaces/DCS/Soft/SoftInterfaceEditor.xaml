@@ -1,0 +1,43 @@
+﻿<dcs:DCSInterfaceEditorBase x:Class="GadrocsWorkshop.Helios.Interfaces.DCS.Soft.SoftInterfaceEditor"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:helios="clr-namespace:GadrocsWorkshop.Helios"
+                            xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
+                            xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS"
+                            xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
+                            xmlns:dcs="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
+                            xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Soft"
+                            mc:Ignorable="d"
+                            d:DataContext="{d:DesignInstance Type=local:SoftInterfaceEditor}"
+                            Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
+    <FrameworkElement.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </FrameworkElement.Resources>
+    <StackPanel>
+        <heliosDcs:InstallationLocationsGroup/>
+        <dcs:ExportConfigurationSection/>
+        <dcs:RemoteConfigurationSection/>
+        <GroupBox Header="Caution" Style="{StaticResource BasicGroup}" BorderBrush="DarkOrange"
+                  Visibility="{Binding Path=Interface.Incomplete, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <WrapPanel Orientation="Vertical" Margin="6">
+                <TextBlock TextWrapping="Wrap">
+                    This interface was generated from the DCS-BIOS interface for this same aircraft.  It is not complete and not all functions will work correctly.  
+                    It may also report some errors from duplicate functions.  There is no end user support for this interface in this state, so please don't file any
+                    related bugs. 
+                </TextBlock>
+                <TextBlock Margin="0,6,0,0" FontStyle="Italic" TextWrapping="Wrap">
+                    This interface needs work from a contributor capable of reading/writing JSON and Lua.  To contribute improvements to this interface, please consult https://github.com/HeliosVirtualCockpit/HeliosInterfaces
+                </TextBlock>
+            </WrapPanel>
+        </GroupBox>
+        <dcs:ExportLuaOutputSection/>
+        <dcs:ExportFilesOutputSection/>
+    </StackPanel>
+</dcs:DCSInterfaceEditorBase>

@@ -28,140 +28,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     /// Using this class will avoid duplicating the XAML.
     ///
     /// NOTE: this class is its own DataContext
-    /// TODO: implement a content container into which specific options can be added.
     /// </summary>
-    public partial class DCSInterfaceEditor : HeliosInterfaceEditor
+    public partial class DCSInterfaceEditor : DCSInterfaceEditorBase
     {
-        protected DCSPhantomMonitorFixConfig _phantomFix;
-
-        /// <summary>
-        /// backing field for property ConfigureCommand, contains
-        /// handler for Configure button
-        /// </summary>
-        private ICommand _configureCommand;
-
         static DCSInterfaceEditor()
         {
-            Type ownerType = typeof(DCSInterfaceEditor);
-            CommandManager.RegisterClassCommandBinding(ownerType,
-                new CommandBinding(AddDoFileCommand, AddDoFile_Executed));
-            CommandManager.RegisterClassCommandBinding(ownerType,
-                new CommandBinding(RemoveDoFileCommand, RemoveDoFile_Executed));
+            RegisterCommands(typeof(DCSInterfaceEditor));
         }
 
         public DCSInterfaceEditor()
         {
-            DataContext = this;
             InitializeComponent();
         }
-
-        /// <summary>
-        /// Called immediately after construction when our factory installs the Interface property, not
-        /// executed at run time (Profile Editor only)
-        /// </summary>
-        protected override void OnInterfaceChanged(HeliosInterface oldInterface, HeliosInterface newInterface)
-        {
-            base.OnInterfaceChanged(oldInterface, newInterface);
-            DCSExportConfiguration configuration;
-            DCSVehicleImpersonation vehicleImpersonation;
-            if (newInterface is DCSInterface dcsInterface)
-            {
-                // create or connect to configuration objects
-                _phantomFix = new DCSPhantomMonitorFixConfig(dcsInterface);
-                configuration = dcsInterface.Configuration;
-                vehicleImpersonation = dcsInterface.VehicleImpersonation;
-            }
-            else
-            {
-                // provoke crash on attempt to use 
-                _phantomFix = null;
-                configuration = null;
-                vehicleImpersonation = null;
-            }
-
-            // need to rebind everything on the form
-            SetValue(ConfigurationProperty, configuration);
-            SetValue(PhantomFixProperty, _phantomFix);
-            SetValue(VehicleImpersonationProperty, vehicleImpersonation);
-        }
-
-        #region Commands
-
-        public static readonly RoutedUICommand AddDoFileCommand =
-            new RoutedUICommand("Adds a dofile(...) to a DCS config.", "AddDoFile", typeof(DCSInterfaceEditor));
-
-        public static readonly RoutedUICommand RemoveDoFileCommand =
-            new RoutedUICommand("Removes a dofile(...) to a DCS config.", "RemoveDoFile", typeof(DCSInterfaceEditor));
-
-        private static void AddDoFile_Executed(object target, ExecutedRoutedEventArgs e)
-        {
-            DCSInterfaceEditor editor = target as DCSInterfaceEditor;
-            TextBox newDoFile = (TextBox)e.Parameter;
-            string file = newDoFile.Text;
-            if (editor != null && !string.IsNullOrWhiteSpace(file) && !editor.Configuration.DoFiles.Contains(file))
-            {
-                editor.Configuration.DoFiles.Add(file);
-                newDoFile.Text = "";
-            }
-        }
-
-        private static void RemoveDoFile_Executed(object target, ExecutedRoutedEventArgs e)
-        {
-            DCSInterfaceEditor editor = target as DCSInterfaceEditor;
-            string file = e.Parameter as string;
-            if (editor != null && !string.IsNullOrWhiteSpace(file) && editor.Configuration.DoFiles.Contains(file))
-            {
-                editor.Configuration.DoFiles.Remove(file);
-            }
-        }
-
-        /// <summary>
-        /// handler for Configure button
-        /// </summary>
-        public ICommand ConfigureCommand
-        {
-            get
-            {
-                _configureCommand = _configureCommand ?? new RelayCommand(parameter =>
-                {
-                    Configuration.Install(new InstallationDialogs(this));
-                });
-                return _configureCommand;
-            }
-        }
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// used by UI binding paths.
-        /// </summary>
-        public DCSExportConfiguration Configuration => (DCSExportConfiguration) GetValue(ConfigurationProperty);
-
-        public static readonly DependencyProperty ConfigurationProperty =
-            DependencyProperty.Register("Configuration", typeof(DCSExportConfiguration), typeof(DCSInterfaceEditor),
-                new PropertyMetadata(null));
-
-        /// <summary>
-        /// used by UI binding paths
-        /// </summary>
-        public DCSPhantomMonitorFixConfig PhantomFix => (DCSPhantomMonitorFixConfig) GetValue(PhantomFixProperty);
-
-        public static readonly DependencyProperty PhantomFixProperty =
-            DependencyProperty.Register("PhantomFix", typeof(DCSPhantomMonitorFixConfig), typeof(DCSInterfaceEditor),
-                new PropertyMetadata(null));
-
-        /// <summary>
-        /// used by UI binding paths
-        /// </summary>
-        public DCSVehicleImpersonation VehicleImpersonation =>
-            (DCSVehicleImpersonation) GetValue(VehicleImpersonationProperty);
-
-        public static readonly DependencyProperty VehicleImpersonationProperty =
-            DependencyProperty.Register("VehicleImpersonation", typeof(DCSVehicleImpersonation),
-                typeof(DCSInterfaceEditor), new PropertyMetadata(null));
-
-        #endregion
     }
 }

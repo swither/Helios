@@ -129,6 +129,10 @@
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
     <Compile Include="Interfaces\Common\Ignored.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSInterfaceEditorBase.cs" />
+    <Compile Include="Interfaces\DCS\Soft\SoftInterfaceEditor.xaml.cs">
+      <DependentUpon>SoftInterfaceEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\DCS\Soft\SoftInterface.cs" />
     <Compile Include="Interfaces\DCS\Soft\SoftInterfaceFactory.cs" />
     <Compile Include="Interfaces\DCS\Template\Functions\ExampleFunction.cs" />
@@ -282,6 +286,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\DCS\Soft\SoftInterfaceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

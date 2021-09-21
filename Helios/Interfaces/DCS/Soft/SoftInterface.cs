@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
     /// <summary>
     /// DCS interface that is entirely defined in an Interface File and can become an interface for any aircraft
     /// </summary>
-    [HeliosInterface("Helios.DCSInterfaceFile", "DCS Interface File", typeof(DCSInterfaceEditor),
+    [HeliosInterface("Helios.DCSInterfaceFile", "DCS Interface File", typeof(SoftInterfaceEditor),
         typeof(SoftInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class SoftInterface : DCSInterface
     {
@@ -79,6 +79,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
 
             // XXX enable this once implemented
             // ModuleName = loaded.Module
+            
+            // display warning if not done
+            Incomplete = loaded.Functions.Any(interfaceFunction => interfaceFunction.Unimplemented);
 
             // add all the functions we read
             InstallFunctions(loaded);
@@ -153,6 +156,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
         public string SpecFilePath { get; private set; }
 
         public bool HasInterfaceFile => SpecFilePath != null;
+
+        public bool Incomplete { get; private set; }
 
         #endregion
     }
