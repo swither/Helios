@@ -149,7 +149,10 @@ namespace GadrocsWorkshop.Helios
 
             HeliosVisual control = (HeliosVisual)CreateNewObject("Visual", xmlReader.GetAttribute("TypeIdentifier"));
             if (control != null)
-            {
+            {   
+                // NOTE: don't do this in finally block, because we DO want to bypass rendering if we fail to load
+                control.BypassRendering();
+
                 string name = xmlReader.GetAttribute("Name");
                 if (xmlReader.GetAttribute("SnapTarget") != null)
                 {
@@ -176,6 +179,7 @@ namespace GadrocsWorkshop.Helios
                 }
                 control.Name = name;
                 controls.Add(control);
+                control.ResumeRendering();
                 yield return $"loaded {control.TypeIdentifier}";
             }
             else

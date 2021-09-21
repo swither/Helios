@@ -255,6 +255,8 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
+        // XXX this is horrible:  during deserialization, this creates n^2 updates as each insert to the collection renumbers everything
+        // XXX for a large profile, this is on the order of 2.5 seconds wasted
         public RotarySwitchPositionCollection Positions { get; } = new RotarySwitchPositionCollection();
 
         public int CurrentPosition

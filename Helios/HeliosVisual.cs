@@ -229,8 +229,22 @@ namespace GadrocsWorkshop.Helios
 
         /// <summary>
         /// Lazy creates and returns the renderer for this visual
+        ///
+        /// XXX this makes no sense, since we create the renderer as soon as we set any property at all
         /// </summary>
         public virtual HeliosVisualRenderer Renderer => _renderer ?? (_renderer = ConfigManager.ModuleManager.CreaterRenderer(this));
+
+        // XXX rather than fixing the lazy create right now, this patches around the problem that controls are rendering while being loaded
+        public bool RenderingBypassed { get; private set; }
+        public void BypassRendering()
+        {
+            RenderingBypassed = true;
+        } 
+        public void ResumeRendering()
+        {
+            RenderingBypassed = false;
+            Refresh();
+        }
 
         /// <summary>
         /// Top edge of where this visual will be displayed.
@@ -605,6 +619,10 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         protected void Refresh()
         {
+            if (RenderingBypassed)
+            {
+                return;
+            }
             Renderer?.Refresh();
             OnDisplayUpdate();
         }

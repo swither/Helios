@@ -72,7 +72,11 @@ namespace GadrocsWorkshop.Helios
                 return imageUri.Scheme == "pack" ? LoadXamlResource(imageUri, width, height) : LoadXamlFile(imageUri, width, height);
             }
 
-            Logger.Debug("image being loaded from {URI}", Anonymizer.Anonymize(imageUri));
+            if (Logger.IsDebugEnabled)
+            {
+                Logger.Debug("image being loaded from {URI}", Anonymizer.Anonymize(imageUri));
+            }
+            
             BitmapImage image = new BitmapImage();
             image.BeginInit();
 
