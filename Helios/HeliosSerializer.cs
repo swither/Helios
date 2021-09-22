@@ -149,7 +149,10 @@ namespace GadrocsWorkshop.Helios
 
             HeliosVisual control = (HeliosVisual)CreateNewObject("Visual", xmlReader.GetAttribute("TypeIdentifier"));
             if (control != null)
-            {
+            {   
+                // NOTE: don't do this in finally block, because we DO want to bypass rendering if we fail to load
+                control.BypassRendering();
+
                 string name = xmlReader.GetAttribute("Name");
                 if (xmlReader.GetAttribute("SnapTarget") != null)
                 {
@@ -176,6 +179,7 @@ namespace GadrocsWorkshop.Helios
                 }
                 control.Name = name;
                 controls.Add(control);
+                control.ResumeRendering();
                 yield return $"loaded {control.TypeIdentifier}";
             }
             else
@@ -301,7 +305,10 @@ namespace GadrocsWorkshop.Helios
             binding.BypassCascadingTriggers = (bool)boolConverter.ConvertFromString(null, CultureInfo.InvariantCulture, xmlReader.GetAttribute("BypassCascadingTriggers"));
             xmlReader.ReadStartElement("Binding");
 
-            HeliosObject source = ResolveReferenceName(profile, root, copyRoot, localObjects, xmlReader.GetAttribute("Source"));
+            string sourcePath = xmlReader.GetAttribute("Source");
+            // Logger.Debug("Creating binding from {HeliosPath}", sourcePath);
+
+            HeliosObject source = ResolveReferenceName(profile, root, copyRoot, localObjects, sourcePath);
             if (source != null)
             {
                 string trigger = xmlReader.GetAttribute("Name");
@@ -313,23 +320,31 @@ namespace GadrocsWorkshop.Helios
                 {
                     binding.Trigger = source.Triggers[trigger];
                 }
-                else if (source is HeliosVisual)
+                else if (source is HeliosVisual visual)
                 {
-                    HeliosVisual parent = ((HeliosVisual)source).Parent;
+                    HeliosVisual parent = visual.Parent;
                     if (parent.Triggers.ContainsKey(trigger))
                     {
                         source = parent;
                         binding.Trigger = source.Triggers[trigger];
                     }
                 }
+
+                if (binding.Trigger == null)
+                {
+                    Logger.Error("Binding source trigger {Name} not found at path {HeliosPath}", trigger, sourcePath);
+                }
             } 
             else
             {
-                Logger.Error("Binding Source Reference Unresolved: " + xmlReader.GetAttribute("Source"));
+                Logger.Error("Binding source reference unresolved: {HeliosPath}", sourcePath);
             }
-            xmlReader.Read();
 
-            HeliosObject target = ResolveReferenceName(profile, root, copyRoot, localObjects, xmlReader.GetAttribute("Target"));
+            xmlReader.Read();
+            string targetPath = xmlReader.GetAttribute("Target");
+            // Logger.Debug("Creating binding to {HeliosPath}", targetPath);
+
+            HeliosObject target = ResolveReferenceName(profile, root, copyRoot, localObjects, targetPath);
             if (target != null)
             {
                 string action = xmlReader.GetAttribute("Name");
@@ -341,19 +356,24 @@ namespace GadrocsWorkshop.Helios
                 {
                     binding.Action = target.Actions[action];
                 }
-                else if (target is HeliosVisual)
+                else if (target is HeliosVisual visual)
                 {
-                    HeliosVisual parent = ((HeliosVisual)target).Parent;
+                    HeliosVisual parent = visual.Parent;
                     if (parent.Actions.ContainsKey(action))
                     {
                         target = parent;
                         binding.Action = target.Actions[action];
                     }
                 }
+                if (binding.Action == null)
+                {
+                    // keep this message short, because it may end up in Control Center console
+                    Logger.Error("Binding action {Name} not found at {HeliosPath}", action, targetPath);
+                }
             }
             else
             {
-                Logger.Error("Binding Target Reference Unresolved: " + xmlReader.GetAttribute("Target"));
+                Logger.Error("Binding target reference unresolved: {HeliosPath}", targetPath);
             }
             xmlReader.Read();
             switch (xmlReader.Name)
@@ -393,6 +413,10 @@ namespace GadrocsWorkshop.Helios
                     if (binding?.Action != null && binding.Trigger != null)
                     {
                         yield return binding;
+                    }
+                    else
+                    {
+                        Logger.Warn("Dangling binding discarded on Profile load");
                     }
                 }
                 xmlReader.ReadEndElement();
@@ -608,8 +632,20 @@ namespace GadrocsWorkshop.Helios
 
         #region Interfaces
 
-        public void SerializeInterface(HeliosInterface heliosInterface, XmlWriter xmlWriter)
+        public void SerializeInterface(HeliosInterface heliosInterface, HashSet<HeliosInterface> serialized, XmlWriter xmlWriter)
         {
+            if (serialized.Contains(heliosInterface))
+            {
+                // already done
+                return;
+            }
+            // stop any loops
+            serialized.Add(heliosInterface);
+            if (heliosInterface.ParentInterface != null)
+            {
+                // recurse
+                SerializeInterface(heliosInterface.ParentInterface, serialized, xmlWriter);
+            }
             xmlWriter.WriteStartElement("Interface");
             xmlWriter.WriteAttributeString("TypeIdentifier", heliosInterface.TypeIdentifier);
             xmlWriter.WriteAttributeString("Name", heliosInterface.Name);
@@ -626,7 +662,7 @@ namespace GadrocsWorkshop.Helios
             string interfaceType = xmlReader.GetAttribute("TypeIdentifier");
 
             ComponentUnsupportedSeverity unsupportedSeverity = ReadUnsupportedSeverity(xmlReader);
-            HeliosInterface heliosInterface = (HeliosInterface)CreateNewObject("Interface", interfaceType, unsupportedSeverity);
+            HeliosInterface heliosInterface = (HeliosInterface)CreateNewInterface(interfaceType, destination, unsupportedSeverity);
             if (heliosInterface != null)
             {
                 string name = xmlReader.GetAttribute("Name");
@@ -660,10 +696,14 @@ namespace GadrocsWorkshop.Helios
 
         public void SerializeInterfaces(HeliosInterfaceCollection interfaces, XmlWriter xmlWriter)
         {
+            // track what interfaces are already serialized
+            HashSet<HeliosInterface> serialized = new HashSet<HeliosInterface>();
+
+            // now write them, with any parent interfaces emitted first by recursion
             xmlWriter.WriteStartElement("Interfaces");
             foreach (HeliosInterface heliosInterface in interfaces)
             {
-                SerializeInterface(heliosInterface, xmlWriter);
+                SerializeInterface(heliosInterface, serialized, xmlWriter);
             }
             xmlWriter.WriteEndElement(); // Interfaces
         }

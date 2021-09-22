@@ -298,6 +298,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void Reset()
         {
+            base.Reset();
             _heliosValue.SetValue(new BindingValue(InitialValue), true);
             SetRotation();
         }

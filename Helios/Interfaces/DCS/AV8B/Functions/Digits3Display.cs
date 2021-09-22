@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,39 +18,52 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
 {
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
-    using System;
     using System.Globalization;
 
-    public class Digits3Display : NetworkFunction
+    public class Digits3Display : DCSFunction
     {
-        private static DCSDataElement[] _dataElements;
-        private HeliosValue _three_digit_display;
+        private HeliosValue _threeDigitDisplay;
 
-        public Digits3Display(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, string device, string name)
-            : base(sourceInterface)
+        public Digits3Display(BaseUDPInterface sourceInterface, string deviceId, string id, string device, string name, string description)
+            : base(sourceInterface, device, name, description)
         {
-            _dataElements = new DCSDataElement[] { new DCSDataElement(buttonId, null, false) };
-            _three_digit_display = new HeliosValue(sourceInterface, BindingValue.Empty, argId, device, name, "", BindingValueUnits.Numeric);
-            Values.Add(_three_digit_display);
-            Triggers.Add(_three_digit_display);
+            DefaultDataElements = new ExportDataElement[] { new DCSDataElement(id, null, false) };
+            DoBuild();
         }
 
-        public override ExportDataElement[] GetDataElements()
+        // deserialization constructor
+        public Digits3Display(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
         {
-            return _dataElements;
+            // no code
         }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _threeDigitDisplay = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName,
+                SerializedFunctionName, SerializedDescription, "", BindingValueUnits.Numeric);
+            Values.Add(_threeDigitDisplay);
+            Triggers.Add(_threeDigitDisplay);
+        }
+
+        protected override ExportDataElement[] DefaultDataElements { get; }
 
         public override void ProcessNetworkData(string id, string value)
         {
             if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out double parsedValue))
             {
-                _three_digit_display.SetValue(new BindingValue(parsedValue), false);
+                _threeDigitDisplay.SetValue(new BindingValue(parsedValue), false);
             }
         }
 
         public override void Reset()
         {
-            _three_digit_display.SetValue(BindingValue.Empty, true);
+            _threeDigitDisplay.SetValue(BindingValue.Empty, true);
         }
     }
 }

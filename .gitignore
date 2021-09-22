@@ -13,6 +13,9 @@ Helios*.exe
 # mstest test results
 TestResults
 
+# profiler results
+/*.vsp
+
 # version upgrade output
 /UpgradeLog*.htm*
 

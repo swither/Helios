@@ -14,11 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+using GadrocsWorkshop.Helios.Json;
 using GadrocsWorkshop.Helios.Windows;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Timers;
@@ -26,7 +30,7 @@ using System.Windows.Threading;
 
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
-    public class BaseUDPInterface : HeliosInterface
+    public class BaseUDPInterface : HeliosInterface, ISoftInterface
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -425,7 +429,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     Actions.RemoveSlave(function.Actions);
                     Values.RemoveSlave(function.Values);
 
-                    foreach (ExportDataElement element in function.GetDataElements())
+                    foreach (ExportDataElement element in function.DataElements)
                     {
                         if (_main.FunctionsById.ContainsKey(element.ID))
                         {
@@ -444,7 +448,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
                     Actions.AddSlave(function.Actions);
                     Values.AddSlave(function.Values);
 
-                    foreach (ExportDataElement element in function.GetDataElements())
+                    foreach (ExportDataElement element in function.DataElements)
                     {
                         if (!_main.FunctionsById.ContainsKey(element.ID))
                         {
@@ -483,6 +487,68 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         }
 
         public NetworkFunctionCollection Functions => _main.Functions;
+
+        /// <summary>
+        /// Global set to disable reading of JSON files and instead use code definitions of interfaces,
+        /// so we can generate the JSON.  This is temporary while we have the code in there and the JSON
+        /// isn't final.
+        ///
+        /// XXX eliminate?
+        /// </summary>
+        public static bool IsWritingFunctionsToJson { get; set; }
+
+        protected bool LoadFunctionsFromJson()
+        {
+            if (IsWritingFunctionsToJson)
+            {
+                return false;
+            }
+
+            // search for exact name and Existing type
+            string jsonFileName = $"{TypeIdentifier}.hif.json";
+            string jsonPath = InterfaceHeader.FindInterfaceFile(jsonFileName);
+            if (null == jsonPath || !File.Exists(jsonPath))
+            {
+                Logger.Debug("requested soft interface definition {FileName} not found", jsonFileName);
+                return false;
+            }
+
+
+            // load from Json
+            // WARNING: this can be InterfaceType.Existing or InterfaceType.DCS, but either way we just use the functions
+            InterfaceFile<NetworkFunction> loaded = InterfaceFile<NetworkFunction>.Load(this, jsonPath);
+
+            // if we survive the loading, install all these functions
+            InstallFunctions(loaded);
+
+            return true;
+        }
+
+        protected void InstallFunctions(InterfaceFile<NetworkFunction> loaded)
+        {
+            // WARNING: all base inherited functions will already exist and will need to be removed
+            // in this implementation, because we are loading into an actual instance of the interface class
+            Dictionary<string, NetworkFunction> predefined =
+                new Dictionary<string, NetworkFunction>(Functions.ToDictionary(f => f.LocalKey, f => f));
+
+            // add or replace functions
+            foreach (NetworkFunction function in loaded.Functions
+                .Where(f => f != null))
+            {
+                if (predefined.TryGetValue(function.LocalKey, out NetworkFunction oldFunction))
+                {
+                    // remove the implementation we inherited
+                    Functions.Remove(oldFunction);
+
+                    // only remove it once
+                    predefined.Remove(function.LocalKey);
+                }
+
+                // now install the new implementation
+                AddFunction(function);
+            }
+        }
+
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
         {
@@ -741,7 +807,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         /// </summary>
         /// <param name="id"></param>
         /// <param name="value"></param>
-        public bool DispatchReceived(string id, string value)
+        public virtual bool DispatchReceived(string id, string value)
         {
             if (!_main.FunctionsById.TryGetValue(id, out NetworkFunction function))
             {
@@ -996,6 +1062,16 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             _main.NetworkAliases.Add(firstId, secondId);
             _main.NetworkAliases.Add(secondId, firstId);
+        }
+
+        public Type ResolveFunctionType(string typeName)
+        {
+            // this will intentionally break attempts to instantiate things outside the prefix
+            if (!typeName.StartsWith(NetworkFunction.OMITTED_PREFIX))
+            {
+                typeName = $"{NetworkFunction.OMITTED_PREFIX}{typeName}";
+            }
+            return Type.GetType(typeName);
         }
     }
 }

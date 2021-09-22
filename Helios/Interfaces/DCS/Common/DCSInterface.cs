@@ -22,9 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Xml;
 using Path = System.IO.Path;
 
@@ -77,14 +77,28 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         private string _exportModuleBaseName;
 
-        public DCSInterface(string name, string exportDeviceName, string exportFunctionsPath)
+        // XXX temporary adaptatation, as we want to re-write the ModuleName and Vehicles support
+        public string ModuleName => VehicleName;
+        public IList<string> Vehicles => Tags.ToList();
+
+        /// <summary>
+        /// these are allowable export device names in addition to real known vehicles
+        /// </summary>
+        private readonly string[] _specialExportDeviceNames = { null, "FC2", "DCSGeneric" };
+
+        protected DCSInterface(string name, string exportDeviceName, string exportFunctionsPath)
             : base(name)
         {
             VehicleName = exportDeviceName;
             ExportFunctionsPath = exportFunctionsPath;
 
             // make sure we keep our list up to date and don't typo on the name of an export device
-            Debug.Assert(null == exportDeviceName || DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
+#if false
+// NOTE: can't use this right now because interface files reference many unknown aircraft
+            Debug.Assert(null == exportDeviceName || 
+                         _specialExportDeviceNames.Contains(exportDeviceName) || 
+                         DCSVehicleImpersonation.KnownVehicles.Contains(exportDeviceName));
+#endif
 
             // create handling for DCS export meta information we handle ourselves
             NetworkTriggerValue activeVehicle = new NetworkTriggerValue(this, "ACTIVE_VEHICLE", "ActiveVehicle",
@@ -103,30 +117,30 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             alertMessage.ValueReceived += AlertMessage_ValueReceived;
 
             // handle basic telemetry data included in all drivers now
-            Functions.Add(new NetworkValue(this, "T1", "Simulator Telemetry", "pitch", "Current pitch of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
-            Functions.Add(new NetworkValue(this, "T2", "Simulator Telemetry", "bank", "Current bank of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
-            Functions.Add(new NetworkValue(this, "T3", "Simulator Telemetry", "yaw", "Current yaw of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
-            Functions.Add(new NetworkValue(this, "T4", "Simulator Telemetry", "barometric altitude", "Current barometric altitude the aircraft.", "", BindingValueUnits.Meters, null));
-            Functions.Add(new NetworkValue(this, "T5", "Simulator Telemetry", "radar altitude", "Current radar altitude of the aircraft.", "", BindingValueUnits.Meters, null));
-            Functions.Add(new NetworkValue(this, "T13", "Simulator Telemetry", "vertical velocity", "Current vertical velocity of the aircraft.", "", BindingValueUnits.MetersPerSecond, null));
-            Functions.Add(new NetworkValue(this, "T14", "Simulator Telemetry", "indicated airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.MetersPerSecond, null));
-            Functions.Add(new NetworkValue(this, "T16", "Simulator Telemetry", "angle of attack", "Current angle of attack for the aircraft.", "", BindingValueUnits.Degrees, null));
-            Functions.Add(new NetworkValue(this, "T17", "Simulator Telemetry", "glide deviation", "ILS Glide Deviation", "-1 to 1", BindingValueUnits.Numeric, null));
-            Functions.Add(new NetworkValue(this, "T18", "Simulator Telemetry", "side deviation", "ILS Side Deiviation", "-1 to 1", BindingValueUnits.Numeric, null));
-            Functions.Add(new NetworkValue(this, "T19", "Simulator Telemetry", "Mach", "Current Mach number", "number in M", BindingValueUnits.Numeric, null));
-            Functions.Add(new NetworkValue(this, "T20", "Simulator Telemetry", "G", "Current G load", "number in g", BindingValueUnits.Numeric, null));
+            AddFunction(new NetworkValue(this, "T1", "Simulator Telemetry", "pitch", "Current pitch of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
+            AddFunction(new NetworkValue(this, "T2", "Simulator Telemetry", "bank", "Current bank of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
+            AddFunction(new NetworkValue(this, "T3", "Simulator Telemetry", "yaw", "Current yaw of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
+            AddFunction(new NetworkValue(this, "T4", "Simulator Telemetry", "barometric altitude", "Current barometric altitude the aircraft.", "", BindingValueUnits.Meters, null));
+            AddFunction(new NetworkValue(this, "T5", "Simulator Telemetry", "radar altitude", "Current radar altitude of the aircraft.", "", BindingValueUnits.Meters, null));
+            AddFunction(new NetworkValue(this, "T13", "Simulator Telemetry", "vertical velocity", "Current vertical velocity of the aircraft.", "", BindingValueUnits.MetersPerSecond, null));
+            AddFunction(new NetworkValue(this, "T14", "Simulator Telemetry", "indicated airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.MetersPerSecond, null));
+            AddFunction(new NetworkValue(this, "T16", "Simulator Telemetry", "angle of attack", "Current angle of attack for the aircraft.", "", BindingValueUnits.Degrees, null));
+            AddFunction(new NetworkValue(this, "T17", "Simulator Telemetry", "glide deviation", "ILS Glide Deviation", "-1 to 1", BindingValueUnits.Numeric, null));
+            AddFunction(new NetworkValue(this, "T18", "Simulator Telemetry", "side deviation", "ILS Side Deiviation", "-1 to 1", BindingValueUnits.Numeric, null));
+            AddFunction(new NetworkValue(this, "T19", "Simulator Telemetry", "Mach", "Current Mach number", "number in M", BindingValueUnits.Numeric, null));
+            AddFunction(new NetworkValue(this, "T20", "Simulator Telemetry", "G", "Current G load", "number in g", BindingValueUnits.Numeric, null));
         }
 
-        #region Events
+#region Events
 
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         /// <summary>
         /// The vehicle (usually an aircraft) that DCS will report in LoGetSelfData when we are using this interface.
         /// </summary>
-        public string VehicleName { get; }
+        public string VehicleName { get; protected set; }
 
         /// <summary>
         /// If not null, the this interface instance is configured to impersonate the specified vehicle name.  This means
@@ -152,7 +166,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <summary>
         /// vehicle-specific file resource to include
         /// </summary>
-        public string ExportFunctionsPath { get; }
+        public string ExportFunctionsPath { get; protected set; }
 
         public DCSExportConfiguration Configuration => _configuration;
 
@@ -241,7 +255,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        #endregion
+#endregion
 
         internal string LoadSetting(string key, string defaultValue)
         {
@@ -287,16 +301,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             base.AttachToProfileOnMainThread();
             Profile.ProfileTick += Profile_Tick;
             _configuration = new DCSExportConfiguration(this);
+            CustomizeGenerator();
+            _configuration.Initialize();
             _vehicleImpersonation = new DCSVehicleImpersonation(this);
+        }
+
+        protected virtual void CustomizeGenerator()
+        {
+            // no code in base
         }
 
         protected override void DetachFromProfileOnMainThread(HeliosProfile oldProfile)
         {
             base.DetachFromProfileOnMainThread(oldProfile);
             oldProfile.ProfileTick -= Profile_Tick;
-            _configuration.Dispose();
+            _configuration?.Dispose();
             _configuration = null;
-            _vehicleImpersonation.Dispose();
+            _vehicleImpersonation?.Dispose();
             _vehicleImpersonation = null;
         }
 
@@ -449,8 +470,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DCSExportModuleFormat));
 
             // we could have configuration data that is not used and should not be persisted, so clean up if we can
-            // XXX remove this dispatch once we eliminate the profile writing thread
-            Application.Current?.Dispatcher.Invoke(CleanBeforeWriting);
+            CleanBeforeWriting();
 
             if (ExportModuleFormat != DEFAULT_EXPORT_MODULE_FORMAT)
             {
@@ -515,9 +535,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             ExportModuleBaseName = Path.GetFileNameWithoutExtension(path);
         }
 
-        #region IReadyCheck
+#region IReadyCheck
 
-        public IEnumerable<StatusReportItem> PerformReadyCheck()
+        public virtual IEnumerable<StatusReportItem> PerformReadyCheck()
         {
             // XXX check on our health
 
@@ -528,9 +548,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        #endregion
+#endregion
 
-        #region IProfileAwareInterface
+#region IProfileAwareInterface
 
         // NOTE: ClientChanged event is in base class
 
@@ -563,9 +583,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _protocol.SendDriverRequest(_exportModuleFormat);
         }
 
-        #endregion
+#endregion
 
-        #region IStatusReportNotify
+#region IStatusReportNotify
 
         public void Subscribe(IStatusReportObserver observer)
         {
@@ -577,7 +597,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             _observers.Remove(observer);
         }
 
-        public void InvalidateStatusReport()
+        public virtual void InvalidateStatusReport()
         {
             if (_observers.Count < 1)
             {
@@ -599,6 +619,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
-        #endregion
+#endregion
     }
 }

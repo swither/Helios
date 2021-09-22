@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,44 +21,66 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
 	using System;
 	using System.Globalization;
 
-	class VHFRadioEncoder1 : Axis
+	public class VHFRadioEncoder1 : Axis
 	{
 		private double _lastData = 0d;
 		private HeliosValue _windowValue;
 
-		public VHFRadioEncoder1(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double argValue, double argMin, double argMax, string device, string name)
-			: base(sourceInterface, deviceId, buttonId, argId, argValue, argMin, argMax, device, name, false, "%.3f")
+		public VHFRadioEncoder1(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double stepValue, double argMin, double argMax, string device, string name)
+			: base(sourceInterface, deviceId, buttonId, argId, stepValue, argMin, argMax, device, name, false, "%.3f")
 		{
-			_windowValue = new HeliosValue(sourceInterface, new BindingValue(0.0d), device, name + " window", "Current value displayed in this encoder.", "current value converted" , BindingValueUnits.Text);
-			Values.Add(_windowValue);
-			Triggers.Add(_windowValue);
+			// base calls DoBuild, we add ours
+            DoBuild();
+        }
+
+		// deserialization constructor
+		public VHFRadioEncoder1(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+			: base(sourceInterface, context)
+		{
+			// no code
 		}
 
-		public override void ProcessNetworkData(string id, string value)
+		public override void BuildAfterDeserialization()
+        {
+            base.BuildAfterDeserialization();
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _windowValue = new HeliosValue(SourceInterface, new BindingValue(0.0d), SerializedDeviceName,
+                SerializedFunctionName + " window", "Current value displayed in this encoder.", "current value converted",
+                BindingValueUnits.Text);
+            Values.Add(_windowValue);
+            Triggers.Add(_windowValue);
+        }
+
+        public override void ProcessNetworkData(string id, string value)
 		{
 			base.ProcessNetworkData(id, value);
-			double parseValue;
-			if (double.TryParse(value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out parseValue))
-			{
-				double newValue = parseValue;
+            if (!double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out double parseValue))
+            {
+                return;
+            }
 
-				if (newValue < _lastData)
-				{
-					newValue = Math.Floor((Math.Truncate(newValue * 100)) / 5);
-				}
-				else if (newValue > _lastData)
-				{
-					newValue = Math.Ceiling(Math.Truncate((newValue * 100)) / 5);
-				}
-				else
-				{
-					return;
-				}
+            double newValue = parseValue;
 
-				_lastData = parseValue;
+            if (newValue < _lastData)
+            {
+                newValue = Math.Floor((Math.Truncate(newValue * 100)) / 5);
+            }
+            else if (newValue > _lastData)
+            {
+                newValue = Math.Ceiling(Math.Truncate((newValue * 100)) / 5);
+            }
+            else
+            {
+                return;
+            }
 
-				_windowValue.SetValue(new BindingValue(newValue.ToString(CultureInfo.InvariantCulture)), false);
-			}
-		}
+            _lastData = parseValue;
+
+            _windowValue.SetValue(new BindingValue(newValue.ToString(CultureInfo.InvariantCulture)), false);
+        }
 	}
 }

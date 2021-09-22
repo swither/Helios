@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
     /// <summary>
     /// Interface for original DCS A-10C, including devices which are unique to the original A-10C.
     /// </summary>
-    [HeliosInterface("Helios.A10C", "DCS A-10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.A10C", "DCS A-10C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class A10C1Interface: A10CInterface
     {
         #region devices

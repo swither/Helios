@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,12 +22,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
     using System;
     using System.Globalization;
 
-    public class TACANChannel : NetworkFunction
+    public class TACANChannel : DCSFunctionPair
     {
-        private static DCSDataElement[] _dataElements = new DCSDataElement[] { new DCSDataElement("2263", null, false), new DCSDataElement("266", "%0.1f", false) };
+        private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("2263", null, false), new DCSDataElement("266", "%0.1f", false) };
 
-        private static BindingValue _xValue = new BindingValue(1);
-        private static BindingValue _yValue = new BindingValue(2);
+        private static readonly BindingValue XValue = new BindingValue(1);
+        private static readonly BindingValue YValue = new BindingValue(2);
 
         private double _hundreds;
         private double _tens;
@@ -36,21 +37,40 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
         private HeliosValue _mode;
 
         public TACANChannel(BaseUDPInterface sourceInterface)
-            : base(sourceInterface)
+            : base(sourceInterface,
+                   "TACAN", "Channel", "Currently tuned TACAN channel.",
+                   "TACAN", "Channel Mode", "Current TACAN channel mode."
+                  )
         {
-            _channel = new HeliosValue(sourceInterface, BindingValue.Empty, "TACAN", "Channel", "Currently tuned TACAN channel.", "", BindingValueUnits.Numeric);
+            DoBuild();
+        }
+
+        // deserialization constructor
+        public TACANChannel(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _channel = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "", BindingValueUnits.Numeric);
             Values.Add(_channel);
             Triggers.Add(_channel);
 
-            _mode = new HeliosValue(sourceInterface, BindingValue.Empty, "TACAN", "Channel Mode", "Current TACAN channel mode.", "1=X, 2=Y", BindingValueUnits.Numeric);
+            _mode = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName2, SerializedFunctionName2,
+                SerializedDescription2, "1=X, 2=Y", BindingValueUnits.Numeric);
             Values.Add(_mode);
             Triggers.Add(_mode);
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return _dataElements;
-        }
+        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
 
         public override void ProcessNetworkData(string id, string value)
         {
@@ -69,10 +89,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
                     switch (value)
                     {
                         case "0.0":
-                            _mode.SetValue(_xValue, false);
+                            _mode.SetValue(XValue, false);
                             break;
                         case "0.1":
-                            _mode.SetValue(_yValue, false);
+                            _mode.SetValue(YValue, false);
                             break;
                     }
                     break;
@@ -81,21 +101,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
 
         private double ClampedParse(string value, double scale)
         {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double scaledValue))
             {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue = Math.Truncate(scaledValue * 10d) * scale;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+                return scaledValue;
+            }
+
+            if (scaledValue < 1.0d)
+            {
+                scaledValue = Math.Truncate(scaledValue * 10d) * scale;
+            }
+            else
+            {
+                scaledValue = 0d;
             }
             return scaledValue;
         }
-
 
         public override void Reset()
         {

@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
     using GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    [HeliosInterface("Helios.AV8B", "DCS AV-8B", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.AV8B", "DCS AV-8B", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class AV8BInterface : DCSInterface
     {
         #region Devices

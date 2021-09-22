@@ -16,6 +16,7 @@
 namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 {
     using GadrocsWorkshop.Helios.Collections;
+    using System.Collections.Generic;
 
     public class ProfileExplorerTreeItemCollection :  NoResetObservablecollection<ProfileExplorerTreeItem> // KeyedObservableCollection<string, ProfileExplorerTreeItem>
     {
@@ -53,6 +54,33 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             {
                 item.Disconnect();
             }
+        }
+
+        /// <summary>
+        /// these are keys of items that are kept at the front of this collection, in order.
+        /// unordered items are always stored past all these
+        /// </summary>
+        private List<string> _orderedKeys = new List<string>();
+
+        public void AddSorted(string key, ProfileExplorerTreeItem item)
+        {
+            int position = _orderedKeys.BinarySearch(key);
+            if (position < 0)
+            {
+                // not found, but we know where the next highest item is (or end of list)
+                position = ~position;
+            }
+            _orderedKeys.Insert(position, key);
+            base.InsertItem(position, item);
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            if (index < _orderedKeys.Count)
+            {
+                _orderedKeys.RemoveAt(index);
+            }
+            base.RemoveItem(index);
         }
     }
 }

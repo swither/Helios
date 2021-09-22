@@ -28,7 +28,7 @@ namespace GadrocsWorkshop.Helios.Units
 
         public override string LongName
         {
-            get { return "Millimeters of Mercury"; }
+            get { return "Millimeters of mercury"; }
         }
 
         public override double AreaConversionFactor

@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,23 +21,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
 
     public class ItemDeleteEventArgs : EventArgs
     {
-        HeliosObject _deletedItem;
-
         public ItemDeleteEventArgs(HeliosObject item)
         {
-            _deletedItem = item;
+            DeletedItem = item;
         }
 
-        public HeliosObject DeletedItem
-        {
-            get { return _deletedItem; }
-        }
+        public HeliosObject DeletedItem { get; }
     }
 
     /// <summary>
@@ -44,6 +41,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     /// </summary>
     public partial class ProfileExplorerPanel : UserControl
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public ProfileExplorerPanel()
         {
             DataContext = this;
@@ -79,15 +78,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void LoadItems()
         {
+            Logger.Debug("loading items for profile explorer");
+
             ProfileExplorerItems.Disconnect();
             ProfileExplorerItems.Clear();
-            if (Profile != null)
-            {                
-                ProfileExplorerTreeItemType types = ProfileExplorerTreeItemType.Interface | ProfileExplorerTreeItemType.Monitor | ProfileExplorerTreeItemType.Panel;
-                ProfileExplorerTreeItem item = new ProfileExplorerTreeItem(Profile, types);
-                item.ExpandAll();
-                ProfileExplorerItems = item.Children;
+            if (Profile == null)
+            {
+                return;
             }
+
+            ProfileExplorerTreeItemType types = ProfileExplorerTreeItemType.Interface | ProfileExplorerTreeItemType.Monitor | ProfileExplorerTreeItemType.Panel;
+            ProfileExplorerTreeItem item = new ProfileExplorerTreeItem(Profile, types);
+            item.ExpandAll();
+            ProfileExplorerItems = item.Children;
         }
 
         private static void OnItemReload(DependencyObject d, DependencyPropertyChangedEventArgs args)
@@ -98,11 +101,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void TreeView_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ProfileExplorerTreeItem item = ProfileExplorerTree.SelectedItem as ProfileExplorerTreeItem;
-            if (item != null &&
-                    (item.ItemType.HasFlag(ProfileExplorerTreeItemType.Panel) ||
-                    item.ItemType.HasFlag(ProfileExplorerTreeItemType.Monitor) ||
-                    item.ItemType.HasFlag(ProfileExplorerTreeItemType.Interface)))
+            if (ProfileExplorerTree.SelectedItem is ProfileExplorerTreeItem item &&
+                (item.ItemType.HasFlag(ProfileExplorerTreeItemType.Panel) ||
+                 item.ItemType.HasFlag(ProfileExplorerTreeItemType.Monitor) ||
+                 item.ItemType.HasFlag(ProfileExplorerTreeItemType.Interface)))
             {
                 ProfileEditorCommands.OpenProfileItem.Execute(item.ContextItem, this);
             }
@@ -120,49 +122,79 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void Delete_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            ProfileExplorerTreeItem item = ProfileExplorerTree.SelectedItem as ProfileExplorerTreeItem;
-            if (item != null)
+            if (!(ProfileExplorerTree.SelectedItem is ProfileExplorerTreeItem item))
             {
-                if (item.ItemType.HasFlag(ProfileExplorerTreeItemType.Panel) ||
-                            item.ItemType.HasFlag(ProfileExplorerTreeItemType.Visual))
+                return;
+            }
+
+            if (item.ItemType.HasFlag(ProfileExplorerTreeItemType.Panel) ||
+                item.ItemType.HasFlag(ProfileExplorerTreeItemType.Visual))
+            {
+                HeliosVisual visual = item.ContextItem as HeliosVisual;
+                if (!(visual?.Parent is HeliosVisualContainer container))
                 {
-                    HeliosVisual visual = item.ContextItem as HeliosVisual;
-                    HeliosVisualContainer container = visual.Parent as HeliosVisualContainer;
-                    if (container != null)
-                    {
-                        ConfigManager.UndoManager.AddUndoItem(new ControlDeleteUndoEvent(container, new List<HeliosVisual> { visual }, new List<int> { container.Children.IndexOf(visual) } ));
-                        OnDeleting(visual);
-                        container.Children.Remove(visual);
-                    }
+                    return;
                 }
-                else if (item.ItemType.HasFlag(ProfileExplorerTreeItemType.Interface))
+
+                ConfigManager.UndoManager.AddUndoItem(new ControlDeleteUndoEvent(container, new List<HeliosVisual> { visual }, new List<int> { container.Children.IndexOf(visual) } ));
+                OnDeleting(visual);
+                container.Children.Remove(visual);
+            }
+            else if (item.ItemType.HasFlag(ProfileExplorerTreeItemType.Interface))
+            {
+                if (item.ContextItem is HeliosInterface deletedInterface)
                 {
-                    HeliosInterface interfaceItem = item.ContextItem as HeliosInterface;
-                    if (interfaceItem != null)
-                    {
-                        DeleteInterface(interfaceItem);
-                    }
+                    DeleteInterface(deletedInterface);
                 }
             }
         }
 
-        public void DeleteInterface(HeliosInterface interfaceItem)
+        public void DeleteInterface(HeliosInterface deletedInterface)
         {
-            if (MessageBox.Show(Window.GetWindow(this), "Are you sure you want to remove the " + interfaceItem.Name + " interface from the profile?  This will remove all bindings associated with this interface.", "Remove Interface", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No, MessageBoxOptions.None) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Are you sure you want to remove the " + deletedInterface.Name +
+                " interface from the profile?  This will remove all bindings associated with this interface.",
+                "Remove Interface", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No,
+                MessageBoxOptions.None) != MessageBoxResult.Yes)
             {
-                ConfigManager.UndoManager.AddUndoItem(new InterfaceDeleteUndoEvent(Profile, interfaceItem));
-                OnDeleting(interfaceItem);
-                Profile.Interfaces.Remove(interfaceItem);
+                return;
+            }
+
+            // also must delete all child interfaces.  we do it in such an order that children get deleted before their parents
+            Stack<HeliosInterface> descendants = new Stack<HeliosInterface>();
+
+            // brute force find them all
+            descendants.Push(deletedInterface);
+            FindAllDescendants(descendants, Profile, deletedInterface);
+
+            ConfigManager.UndoManager.AddUndoItem(new InterfaceDeleteUndoEvent(Profile, descendants));
+            foreach (HeliosInterface heliosInterface in descendants)
+            {
+                OnDeleting(heliosInterface);
+                Profile.Interfaces.Remove(heliosInterface);
+            }
+        }
+
+        private static void FindAllDescendants(Stack<HeliosInterface> descendants, HeliosProfile profile, HeliosInterface parent)
+        {
+            foreach(HeliosInterface heliosInterface in profile.Interfaces)
+            {
+                if (heliosInterface.ParentInterface != parent)
+                {
+                    continue;
+                }
+
+                // check for infinite loop in Debug
+                Debug.Assert(!descendants.Contains(heliosInterface));
+                descendants.Push(heliosInterface);
+
+                // recurse
+                FindAllDescendants(descendants, profile, heliosInterface);
             }
         }
 
         public void OnDeleting(HeliosObject item)
         {
-            EventHandler<ItemDeleteEventArgs> handler = ItemDeleting;
-            if (handler != null)
-            {
-                handler.Invoke(this, new ItemDeleteEventArgs(item));
-            }
+            ItemDeleting?.Invoke(this, new ItemDeleteEventArgs(item));
         }
     }
 }

@@ -56,10 +56,10 @@ namespace GadrocsWorkshop.Helios.Util
         // conversion from string
         public static implicit operator CodeLine(string line) => new CodeLine(line);
 
-        [JsonProperty("Text")]
+        [JsonProperty("text")]
         public string Text { get; }
 
-        [JsonProperty("LineEnding")]
+        [JsonProperty("lineEnding")]
         public CodeLineEnding LineEnding { get; }
     }
 }

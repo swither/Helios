@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
     [HeliosControl("Helios.Base.Rectangle", "Rectangle", "Panel Decorations", typeof(RectangleDecorationRenderer))]
-    public class RectangleDeocration : HeliosVisual
+    public class RectangleDecoration : HeliosVisual
     {
         private double _borderThickness = 0d;
         private double _cornerRadius = 0d;
@@ -34,8 +34,14 @@ namespace GadrocsWorkshop.Helios.Controls
         private TypeConverter _colorConverter = TypeDescriptor.GetConverter(typeof(Color));
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public RectangleDeocration()
-            : base("Rectangle", new Size(100, 100))
+        public RectangleDecoration()
+            : this("Rectangle", new Size(100, 100))
+        {
+            // all code in utility constructor
+        }
+
+        protected RectangleDecoration(string name, Size nativeSize) 
+            : base (name, nativeSize)
         {
             IsSnapTarget = false;
             HeliosAction fillColorAction = new HeliosAction(this, "", "fill color", "set", "Sets the fill color for the rectangle", "Color in the hex format #AARRGGBB.", BindingValueUnits.Text);

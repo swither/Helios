@@ -25,6 +25,7 @@ namespace GadrocsWorkshop.Helios.Controls
     /// Interaction logic for TextDisplayAppearancePropertyEditor.xaml
     /// </summary>
     [HeliosPropertyEditor("Helios.Base.TextDisplay", "Appearance")]
+    [HeliosPropertyEditor("Helios.Base.NumericTextDisplay", "Appearance")]
     public partial class TextDisplayAppearancePropertyEditor : HeliosPropertyEditor
     {
         public TextDisplayAppearancePropertyEditor()

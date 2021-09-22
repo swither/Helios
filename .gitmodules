@@ -2,3 +2,6 @@
 [submodule "Thirdparty/diff-match-patch"]
 	path = Thirdparty/diff-match-patch
 	url = https://github.com/HeliosVirtualCockpit/diff-match-patch
+[submodule "InterfaceFiles/Interfaces"]
+	path = InterfaceFiles/Interfaces
+	url = https://github.com/HeliosVirtualCockpit/HeliosInterfaces

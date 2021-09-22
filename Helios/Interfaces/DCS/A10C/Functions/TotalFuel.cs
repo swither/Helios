@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,24 +22,39 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
     using System;
     using System.Globalization;
 
-    public class TotalFuel : NetworkFunction
+    public class TotalFuel : DCSFunction
     {
-        private static DCSDataElement[] _dataElements = new DCSDataElement[] { new DCSDataElement("2090", null, true) };
+        private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("2090", null, true) };
 
         private HeliosValue _fuel;
 
         public TotalFuel(BaseUDPInterface sourceInterface)
-            : base(sourceInterface)
+            : base(sourceInterface, "Fuel Gauge", "Total Fuel", "Fuel amount shown on the totalizer.")
         {
-            _fuel = new HeliosValue(sourceInterface, BindingValue.Empty, "Fuel Gauge", "Total Fuel", "Fuel amount shown on the totalizer.", "", BindingValueUnits.Pounds);
+            DoBuild();
+        }
+
+        // deserialization constructor
+        public TotalFuel(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _fuel = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "", BindingValueUnits.Pounds);
             Values.Add(_fuel);
             Triggers.Add(_fuel);
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return _dataElements;
-        }
+        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
 
         public override void ProcessNetworkData(string id, string value)
         {
@@ -54,34 +70,38 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
 
         private double Parse(string value, double scale)
         {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double scaledValue))
             {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue *= scale * 10d;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+                return scaledValue;
+            }
+
+            if (scaledValue < 1.0d)
+            {
+                scaledValue *= scale * 10d;
+            }
+            else
+            {
+                scaledValue = 0d;
             }
             return scaledValue;
         }
 
         private double ClampedParse(string value, double scale)
         {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double scaledValue))
             {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue = Math.Truncate(scaledValue * 10d) * scale;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+                return scaledValue;
+            }
+
+            if (scaledValue < 1.0d)
+            {
+                scaledValue = Math.Truncate(scaledValue * 10d) * scale;
+            }
+            else
+            {
+                scaledValue = 0d;
             }
             return scaledValue;
         }

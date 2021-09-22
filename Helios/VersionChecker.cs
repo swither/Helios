@@ -281,7 +281,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        private static string VersionToString(Version version)
+        internal static string VersionToString(Version version)
         {
             return $"{version.Major}.{version.Minor}.{version.Build:0000}.{version.Revision:0000}";
         }

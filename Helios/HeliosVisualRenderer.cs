@@ -18,7 +18,6 @@ namespace GadrocsWorkshop.Helios
     using System;
     using System.Windows;
     using System.Windows.Media;
-    using System.Windows.Threading;
 
     /// <summary>
     /// Base class for visual renderers.
@@ -27,7 +26,6 @@ namespace GadrocsWorkshop.Helios
     {
         private WeakReference _visual = new WeakReference(null);
         private bool _needsRefresh = true;
-        private Dispatcher _dispatcher;
         private TransformGroup _transform;
 
         #region Properties
@@ -53,24 +51,6 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        public Dispatcher Dispatcher
-        {
-            get
-            {
-                return _dispatcher;
-            }
-            set
-            {
-                if ((_dispatcher == null && value != null)
-                    || (_dispatcher != null && !_dispatcher.Equals(value)))
-                {
-                    Dispatcher oldValue = _dispatcher;
-                    _dispatcher = value;
-                    OnPropertyChanged("Dispatcher", oldValue, value, false);
-                }
-            }
-        }
-
         public Transform Transform
         {
             get { return _transform; }
@@ -79,7 +59,7 @@ namespace GadrocsWorkshop.Helios
         #endregion
 
         /// <summary>
-        /// Renders the visual at it's configured size.
+        /// Renders the visual without pushing a scale transform.
         /// </summary>
         /// <param name="drawingContext">Context on which to draw this control.</param>
         public void Render(DrawingContext drawingContext)
@@ -111,13 +91,16 @@ namespace GadrocsWorkshop.Helios
 
         /// <summary>
         /// Renders this control in the given drawing context.
-        /// Must not do any expensive such as image loads or brush creation, since it is called on every frame.
+        ///
+        /// NOTE: must not do any expensive such as image loads or brush creation, since it is called on every frame
         /// </summary>
         /// <param name="drawingContext">Context on which to draw this control.</param>
         protected abstract void OnRender(DrawingContext drawingContext);
 
         /// <summary>
         /// Renders this control using scale in the given drawing context.
+        ///
+        /// NOTE: may be overridden if the client code has a better way of rendering to scale
         /// </summary>
         /// <param name="drawingContext">Context on which to draw this control.</param>
         /// <param name="scaleX"></param>
@@ -135,17 +118,7 @@ namespace GadrocsWorkshop.Helios
         public void Refresh()
         {
             _needsRefresh = true;
-            if (Dispatcher != null)
-            {
-                if (Dispatcher.CheckAccess())
-                {
-                    CheckRefresh();
-                }
-                else
-                {
-                    Dispatcher.Invoke(new Action(CheckRefresh), null);
-                }
-            }
+            CheckRefresh();
         }
 
         /// <summary>
@@ -155,27 +128,7 @@ namespace GadrocsWorkshop.Helios
 
         private void UpdateTransform()
         {
-            switch (Visual.Rotation)
-            {
-                case HeliosVisualRotation.CW:
-                    _transform = new TransformGroup();
-                    _transform.Children.Add(new RotateTransform(90));
-                    _transform.Children.Add(new TranslateTransform(Visual.Height, 0));
-                    break;
-                case HeliosVisualRotation.CCW:
-                    _transform = new TransformGroup();
-                    _transform.Children.Add(new RotateTransform(-90));
-                    _transform.Children.Add(new TranslateTransform(0, Visual.Width));
-                    break;
-				case HeliosVisualRotation.ROT180:
-					_transform = new TransformGroup();
-					_transform.Children.Add(new RotateTransform(180));
-					_transform.Children.Add(new TranslateTransform(0,0));
-					break;
-				default:
-                    _transform = null;
-                    break;
-            }
+            _transform = Visual?.CreateTransform();
         }
     }
 }

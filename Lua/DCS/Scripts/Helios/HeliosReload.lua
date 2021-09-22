@@ -19,17 +19,37 @@ function helios_reload.hotload(fullPath)
 
     -- start Export script in no-hook mode, so it won't register global callbacks
     log.write("HELIOS.RELOAD", log.INFO, string.format("enabling hot reloading for script '%s'", helios_reload_private.fullPath))
-    helios_reload.impl = loadfile(lfs.writedir().."Scripts\\Helios\\HeliosExport16.lua")("nohooks")
+    if loadfile == nil then
+        log.write("HELIOS.RELOAD", log.ERROR, "sandbox does not provide 'loadfile'; cannot hot reload")
+        return
+    end
+    local loaded, result = loadfile(helios_reload_private.fullPath)
+    if not loaded then
+        log.write("HELIOS.RELOAD", log.ERROR, error)
+        return
+    end
+    -- NOTE: returns from loadfile are actually result/nil,error unlike pcall
+    local success = false
+    success, result = pcall(loaded, "nohooks")
+    if not success then
+        log.write("HELIOS.RELOAD", log.ERROR, result)
+        return
+    end
+    helios_reload.impl = result
 end
 
 -- shut down and reload.  NOTE: we will get a new dynamic local port, so Helios will see this like a DCS restart
 function helios_reload.reload()
     log.write("HELIOS.RELOAD", log.INFO, string.format("hot reloading script '%s'", helios_reload_private.fullPath))
-    helios_reload.impl.unload()
-    local success, result = pcall(loadfile, helios_reload_private.fullPath)
-    if success then
+    if helios_reload.impl ~= nil then
+        helios_reload.impl.unload()
+    end
+    local loaded, result = loadfile(helios_reload_private.fullPath)
+    local success = false
+    if loaded then
+        -- NOTE: returns from loadfile are actually result/nil,error unlike pcall
         -- run it
-        success, result = pcall(result, "nohooks")
+        success, result = pcall(loaded, "nohooks")
     end
     if success then
         -- install new version
@@ -41,7 +61,9 @@ function helios_reload.reload()
         end
     end
     -- NOTE: this either starts the new version or restarts the previous one if we failed to load
-    helios_reload.impl.init()
+    if helios_reload.impl ~= nil then
+        helios_reload.impl.init()
+    end
 end
 
 -- check for file change on main script
@@ -86,14 +108,18 @@ helios_reload_private.previousHooks.LuaExportAfterNextFrame = LuaExportAfterNext
 -- utility to chain one DCS hook without arguments
 function helios_reload_private.chainHook(functionName)
     _G[functionName] = function() -- luacheck: no global
-        -- try execute Helios version of hook
-        local success, result = pcall(helios_reload.impl[functionName])
-        if not success then
-            log.write("HELIOS.RELOAD", log.ERROR, string.format("error return from Helios implementation of '%s'", functionName))
-            if type(result) == "string" then
-                log.write("HELIOS.RELOAD", log.ERROR, result)
+        -- if we never loaded successfully, do nothing
+        if helios_reload.impl ~= nil then
+            -- try execute Helios version of hook
+            local success, result = pcall(helios_reload.impl[functionName])
+            if not success then
+                log.write("HELIOS.RELOAD", log.ERROR, string.format("error return from Helios implementation of '%s'", functionName))
+                if type(result) == "string" then
+                    log.write("HELIOS.RELOAD", log.ERROR, result)
+                end
             end
         end
+
         -- chain to next
         local nextHandler = helios_reload_private.previousHooks[functionName]
         if nextHandler ~= nil then
@@ -128,16 +154,19 @@ function LuaExportActivityNextEvent(timeNow)
         timeNext = timeNow + helios_reload.checkInterval;
     end
 
-    -- try execute Helios version of hook
-    local success, result = pcall(helios_reload.impl.LuaExportActivityNextEvent, timeNow)
-    if success then
-        if result < timeNext then
-            timeNext = result
-        end
-    else
-        log.write("HELIOS.RELOAD", log.ERROR, string.format("error return from Helios implementation of 'LuaExportActivityNextEvent'"))
-        if type(result) == "string" then
-            log.write("HELIOS.RELOAD", log.ERROR, result)
+    -- if we never loaded successfully, do nothing
+    if helios_reload.impl ~= nil then
+        -- try execute Helios version of hook
+        local success, result = pcall(helios_reload.impl.LuaExportActivityNextEvent, timeNow)
+        if success then
+            if result < timeNext then
+                timeNext = result
+            end
+        else
+            log.write("HELIOS.RELOAD", log.ERROR, string.format("error return from Helios implementation of 'LuaExportActivityNextEvent'"))
+            if type(result) == "string" then
+                log.write("HELIOS.RELOAD", log.ERROR, result)
+            end
         end
     end
 

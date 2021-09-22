@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,32 +20,49 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
     using GadrocsWorkshop.Helios.UDPInterface;
     using GadrocsWorkshop.Helios.Util;
     using System;
-    using System.Collections.ObjectModel;
     using System.Globalization;
 
-    class Altimeter : NetworkFunction
+    public class Altimeter : DCSFunctionPair
     {
-        private static DCSDataElement[] _dataElements = new DCSDataElement[] { new DCSDataElement("2051", null, true), new DCSDataElement("2059", null, true) };
+        private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("2051", null, true), new DCSDataElement("2059", null, true) };
 
         private HeliosValue _altitude;
         private HeliosValue _pressure;
 
         public Altimeter(BaseUDPInterface sourceInterface)
-            : base(sourceInterface)
+            : base(sourceInterface,
+                  "Altimeter", "Altitude", "Barometric altitude above sea level of the aircraft.",
+                  "Altimeter", "Pressure", "Manually set barometric altitude.")
         {
-            _altitude = new HeliosValue(sourceInterface, BindingValue.Empty, "Altimeter", "Altitude", "Barometric altitude above sea level of the aircraft.", "Value is adjusted per altimeter pressure setting.", BindingValueUnits.Feet);
+            DoBuild();
+        }
+
+        // deserialization constructor
+        public Altimeter(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _altitude = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "Value is adjusted per altimeter pressure setting.", BindingValueUnits.Feet);
             Values.Add(_altitude);
             Triggers.Add(_altitude);
 
-            _pressure = new HeliosValue(sourceInterface, BindingValue.Empty, "Altimeter", "Pressure", "Manually set barometric altitude.", "", BindingValueUnits.InchesOfMercury);
+            _pressure = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName2, SerializedFunctionName2,
+                SerializedDescription2, "", BindingValueUnits.InchesOfMercury);
             Values.Add(_pressure);
             Triggers.Add(_pressure);
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return _dataElements;
-        }
+        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
 
         public override void ProcessNetworkData(string id, string value)
         {
@@ -75,34 +93,38 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
 
         private double Parse(string value, double scale)
         {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double scaledValue))
             {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue *= scale * 10d;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+                return scaledValue;
+            }
+
+            if (scaledValue < 1.0d)
+            {
+                scaledValue *= scale * 10d;
+            }
+            else
+            {
+                scaledValue = 0d;
             }
             return scaledValue;
         }
 
         private double ClampedParse(string value, double scale)
         {
-            double scaledValue = 0d;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out scaledValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat,
+                out double scaledValue))
             {
-                if (scaledValue < 1.0d)
-                {
-                    scaledValue = Math.Truncate(scaledValue * 10d) * scale;
-                }
-                else
-                {
-                    scaledValue = 0d;
-                }
+                return scaledValue;
+            }
+
+            if (scaledValue < 1.0d)
+            {
+                scaledValue = Math.Truncate(scaledValue * 10d) * scale;
+            }
+            else
+            {
+                scaledValue = 0d;
             }
             return scaledValue;
         }

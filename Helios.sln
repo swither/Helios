@@ -47,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Helios.targets = Helios.targets
 		Helios Installer\HeliosInstallAdjustments.vbs = Helios Installer\HeliosInstallAdjustments.vbs
 		HeliosPlugin.targets = HeliosPlugin.targets
+		HeliosProjectReference.properties = HeliosProjectReference.properties
 		install.cmd = install.cmd
 		Platforms.properties = Platforms.properties
 		PlatformsForPlugin.properties = PlatformsForPlugin.properties
@@ -89,10 +90,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourcesAndPlugins", "Reso
 	ProjectSection(ProjectDependencies) = postProject
 		{80870108-EFE4-4ADF-969D-A0CE06123271} = {80870108-EFE4-4ADF-969D-A0CE06123271}
 		{A7237E1E-B363-491D-9B78-BD46CCE689AA} = {A7237E1E-B363-491D-9B78-BD46CCE689AA}
+		{6297B32B-F34F-4610-9711-E7326907BA39} = {6297B32B-F34F-4610-9711-E7326907BA39}
 		{FA46EA48-0C04-415B-B4AE-9E5DA8445496} = {FA46EA48-0C04-415B-B4AE-9E5DA8445496}
 		{2B00F04B-3CB2-44E7-B49B-DA94FF74C66C} = {2B00F04B-3CB2-44E7-B49B-DA94FF74C66C}
 		{BD8B2678-7D32-4E3D-8A9D-CA1CE201285F} = {BD8B2678-7D32-4E3D-8A9D-CA1CE201285F}
 		{4FDCE381-AA97-4C5E-B4CF-F9EC6792DD2C} = {4FDCE381-AA97-4C5E-B4CF-F9EC6792DD2C}
+		{5326288B-FD5D-48D0-B310-AD66B9C8E777} = {5326288B-FD5D-48D0-B310-AD66B9C8E777}
 		{5F79059E-6954-45C1-8929-27683551D25A} = {5F79059E-6954-45C1-8929-27683551D25A}
 		{4080D4C3-3608-4C3F-A10E-077FAA5EA046} = {4080D4C3-3608-4C3F-A10E-077FAA5EA046}
 		{85E85BDF-EB98-4440-BC7D-52CD44176BD9} = {85E85BDF-EB98-4440-BC7D-52CD44176BD9}
@@ -116,6 +119,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestInstallerSupport", "Tools\TestInstallerSupport\TestInstallerSupport.csproj", "{9CA5E376-5653-4B71-B58B-1685B8227790}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfileEditorTools", "Tools\ProfileEditorTools\ProfileEditorTools.csproj", "{5326288B-FD5D-48D0-B310-AD66B9C8E777}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceFiles", "InterfaceFiles\InterfaceFiles.csproj", "{6297B32B-F34F-4610-9711-E7326907BA39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -738,6 +743,28 @@ Global
 		{5326288B-FD5D-48D0-B310-AD66B9C8E777}.Release|AnyCPU32.Build.0 = Release|AnyCPU32
 		{5326288B-FD5D-48D0-B310-AD66B9C8E777}.Release|x64.ActiveCfg = Release|x64
 		{5326288B-FD5D-48D0-B310-AD66B9C8E777}.Release|x64.Build.0 = Release|x64
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Debug|AnyCPU32.ActiveCfg = Debug|AnyCPU32
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Debug|AnyCPU32.Build.0 = Debug|AnyCPU32
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Debug|x64.ActiveCfg = Debug|x64
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Debug|x64.Build.0 = Debug|x64
+		{6297B32B-F34F-4610-9711-E7326907BA39}.JustInstallers|AnyCPU.ActiveCfg = Debug|Any CPU
+		{6297B32B-F34F-4610-9711-E7326907BA39}.JustInstallers|AnyCPU.Build.0 = Debug|Any CPU
+		{6297B32B-F34F-4610-9711-E7326907BA39}.JustInstallers|AnyCPU32.ActiveCfg = Release|AnyCPU32
+		{6297B32B-F34F-4610-9711-E7326907BA39}.JustInstallers|x64.ActiveCfg = Release|x64
+		{6297B32B-F34F-4610-9711-E7326907BA39}.NoInstallers|AnyCPU.ActiveCfg = Debug|Any CPU
+		{6297B32B-F34F-4610-9711-E7326907BA39}.NoInstallers|AnyCPU.Build.0 = Debug|Any CPU
+		{6297B32B-F34F-4610-9711-E7326907BA39}.NoInstallers|AnyCPU32.ActiveCfg = Release|AnyCPU32
+		{6297B32B-F34F-4610-9711-E7326907BA39}.NoInstallers|AnyCPU32.Build.0 = Release|AnyCPU32
+		{6297B32B-F34F-4610-9711-E7326907BA39}.NoInstallers|x64.ActiveCfg = Release|x64
+		{6297B32B-F34F-4610-9711-E7326907BA39}.NoInstallers|x64.Build.0 = Release|x64
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Release|AnyCPU32.ActiveCfg = Release|AnyCPU32
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Release|AnyCPU32.Build.0 = Release|AnyCPU32
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Release|x64.ActiveCfg = Release|x64
+		{6297B32B-F34F-4610-9711-E7326907BA39}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

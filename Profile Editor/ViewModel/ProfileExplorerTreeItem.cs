@@ -22,6 +22,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
     using GadrocsWorkshop.Helios;
     using GadrocsWorkshop.Helios.Controls;
     using System;
+    using System.Collections.Generic;
 
     public class ProfileExplorerTreeItem : NotificationObject
     {
@@ -34,6 +35,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         private bool _isSelected;
         private bool _isExpanded;
 
+        private ProfileExplorerInterfaceHierarchy _interfaces;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="profile"></param>
+        /// <param name="includeTypes">is a mask of all the sorts of items to show, and differs between the profile explorer, bindings panels, etc.</param>
         public ProfileExplorerTreeItem(HeliosProfile profile, ProfileExplorerTreeItemType includeTypes)
             : this(profile.Name, "", null, includeTypes)
         {
@@ -52,12 +59,22 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 
             if (includeTypes.HasFlag(ProfileExplorerTreeItemType.Interface))
             {
-                ProfileExplorerTreeItem interfaces = new ProfileExplorerTreeItem("Interfaces", profile.Interfaces, this, includeTypes);
-                if (interfaces.HasChildren)
+                _interfaces = new ProfileExplorerInterfaceHierarchy(this, profile, includeTypes);
+                if (_interfaces.HasChildren)
                 {
-                    Children.Add(interfaces);
+                    // if collection of interfaces is not empty (has children), add the whole collection to our children (as one node)
+                    Children.Add(_interfaces.Root);
                 }
                 profile.Interfaces.CollectionChanged += Interfaces_CollectionChanged;
+            }
+        }
+
+        void Interfaces_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            _interfaces.ProcessChanges(e);
+            if (_interfaces.HasChildren && (!HasFolder("Interfaces")))
+            {
+                Children.Add(_interfaces.Root);
             }
         }
 
@@ -78,17 +95,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             ItemType = ProfileExplorerTreeItemType.Folder;
             _includeTypes = includeTypes;
             Children = new ProfileExplorerTreeItemCollection();
-        }
-
-        private ProfileExplorerTreeItem(string name, HeliosInterfaceCollection interfaces, ProfileExplorerTreeItem parent, ProfileExplorerTreeItemType includeTypes)
-            : this(name, "", parent, includeTypes)
-        {
-            ItemType = ProfileExplorerTreeItemType.Folder;
-            foreach (HeliosInterface heliosInterface in interfaces)
-            {
-                ProfileExplorerTreeItem item = new ProfileExplorerTreeItem(heliosInterface, this, includeTypes);
-                Children.Add(item);
-            }
         }
 
         private ProfileExplorerTreeItem(HeliosInterface heliosInterface, ProfileExplorerTreeItem parent, ProfileExplorerTreeItemType includeTypes)
@@ -246,13 +252,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         {
             FolderContentsChanged<Monitor>("Monitors", e.OldItems, e.NewItems,
                 (monitor) => new ProfileExplorerTreeItem(monitor, this, _includeTypes));
-        }
-
-        private void Interfaces_CollectionChanged(object sender,
-            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            FolderContentsChanged<HeliosInterface>("Interfaces", e.OldItems, e.NewItems,
-                (heliosInterface) => new ProfileExplorerTreeItem(heliosInterface, this, _includeTypes));
         }
 
         /// <summary>
@@ -666,6 +665,175 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 }
             }
             return null;
+        }
+
+        // NOTE: implemented as nested class because basically everything we need in ProfileExplorerTreeItem is private
+        private class ProfileExplorerInterfaceHierarchy
+        {
+            public bool HasChildren { get => Root.HasChildren; }
+
+            private ProfileExplorerTreeItemType _includeTypes;
+
+            public ProfileExplorerTreeItem Root { get; internal set; }
+
+            // interfaces for which we have yet to find the parent, indexed by parent type ID
+            private Dictionary<string, List<HeliosInterface>> _orphans = new Dictionary<string, List<HeliosInterface>>();
+
+            // active tree nodes, by type ID
+            private Dictionary<string, List<ProfileExplorerTreeItem>> _active = new Dictionary<string, List<ProfileExplorerTreeItem>>();
+
+            public ProfileExplorerInterfaceHierarchy(ProfileExplorerTreeItem parent, HeliosProfile profile, ProfileExplorerTreeItemType includeTypes)
+            {
+                _includeTypes = includeTypes;
+                Root = new ProfileExplorerTreeItem("Interfaces", "", parent, includeTypes);
+                foreach (HeliosInterface heliosInterface in profile.Interfaces)
+                {
+                    AddItem(heliosInterface);
+                }
+            }
+
+            internal void ProcessChanges(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+            {
+                if (e.OldItems != null)
+                {
+                    foreach (HeliosInterface heliosInterface in e.OldItems)
+                    {
+                        RemoveItem(heliosInterface);
+                    }
+                }
+
+                if (e.NewItems != null)
+                {
+                    foreach (HeliosInterface heliosInterface in e.NewItems)
+                    {
+                        AddItem(heliosInterface);
+                    }
+                }
+            }
+
+            private void AddItem(HeliosInterface newInterface)
+            {
+                // get meta information
+                HeliosInterfaceDescriptor interfaceInfo = ConfigManager.ModuleManager.InterfaceDescriptors[newInterface.TypeIdentifier];
+                if (interfaceInfo.ParentTypeIdentifier != null)
+                {
+                    // sub interface
+                    if (_active.TryGetValue(interfaceInfo.ParentTypeIdentifier, out List<ProfileExplorerTreeItem> interfaceParents))
+                    {
+                        // look for specific parent
+                        foreach (ProfileExplorerTreeItem stranger in interfaceParents)
+                        {
+                            if (stranger.ContextItem == newInterface.ParentInterface)
+                            {
+                                // found it
+                                DoAdd(stranger, newInterface);
+                                ConfigManager.LogManager.LogDebug($"child interface {newInterface.Name} added to tree");
+                                return;
+                            }
+                        }
+                        // ran out of possible parents, need to wait
+                        ConfigManager.LogManager.LogDebug($"child interface {newInterface.Name} cannot be added yet, because its parent is not in the tree; deferring as orphan");
+                        StoreOrphan(newInterface, newInterface.TypeIdentifier);
+                    }
+                }
+                else
+                {
+                    // top-level interface, can just add
+                    DoAdd(Root, newInterface);
+                    ConfigManager.LogManager.LogDebug($"interface {newInterface.Name} added to tree");
+                }
+            }
+
+            private void RemoveItem(HeliosInterface item)
+            {
+                // find object
+                if (_active.TryGetValue(item.TypeIdentifier, out List<ProfileExplorerTreeItem> candidates))
+                {
+                    int index = candidates.FindIndex(candidateItem => candidateItem.ContextItem == item);
+                    if (index >= 0)
+                    {
+                        ProfileExplorerTreeItem existing = candidates[index];
+
+                        // now disconnect item
+                        existing.Disconnect();
+
+                        // remove from tree
+                        existing.Parent.Children.Remove(existing);
+
+                        // unpublish
+                        candidates.RemoveAt(index);
+
+                        ConfigManager.LogManager.LogDebug($"interface {item.Name} removed from tree");
+                    }
+                }
+                else
+                {
+                    ConfigManager.LogManager.LogWarning($"attempt to remove interface {item.Name}, but it was not in tree; ignored");
+                }
+            }
+
+            private void DoAdd(ProfileExplorerTreeItem parent, HeliosInterface newInterface)
+            {
+                ProfileExplorerTreeItem item = new ProfileExplorerTreeItem(newInterface, parent, _includeTypes);
+                parent.Children.Add(item);
+                PublishNode(item, newInterface, newInterface.TypeIdentifier);
+
+                // try to find any affected orphans
+                AdoptOrphans(item, newInterface, newInterface.TypeIdentifier);
+            }
+
+            private void AdoptOrphans(ProfileExplorerTreeItem item, HeliosInterface newInterface, string typeIdentifier)
+            {
+                if (_orphans.TryGetValue(typeIdentifier, out List<HeliosInterface> orphans))
+                {
+                    for (int i = 0; i < orphans.Count; /* no increment */)
+                    {
+                        HeliosInterface orphan = orphans[i];
+                        if (orphan.ParentInterface == newInterface)
+                        {
+                            // we just added the missing parent, adopt the orphan
+                            orphans.RemoveAt(i);
+                            // don't increment i, we just shortened the list
+
+                            // recurse
+                            ConfigManager.LogManager.LogDebug($"child interface {orphan.Name} is no longer an orphan; adding to tree");
+                            DoAdd(item, orphan);
+                        }
+                        else
+                        {
+                            // keep scanning
+                            i++;
+                        }
+                    }
+                }
+            }
+
+            private void PublishNode(ProfileExplorerTreeItem item, HeliosInterface newInterface, string typeIdentifier)
+            {
+                List<ProfileExplorerTreeItem> published;
+                if (!_active.TryGetValue(typeIdentifier, out published))
+                {
+                    published = new List<ProfileExplorerTreeItem>();
+                    _active.Add(typeIdentifier, published);
+                } 
+                else if (null != published.Find(publishedItem => publishedItem.ContextItem == newInterface))
+                {
+                    ConfigManager.LogManager.LogWarning($"added interface {item.Name} to tree, but it was already there; ignored");
+                    return;
+                } 
+                published.Add(item);
+            }
+
+            private void StoreOrphan(HeliosInterface newInterface, string typeIdentifier)
+            {
+                List<HeliosInterface> orphanage;
+                if (!_orphans.TryGetValue(typeIdentifier, out orphanage))
+                {
+                    orphanage = new List<HeliosInterface>();
+                    _orphans.Add(typeIdentifier, orphanage);
+                }
+                orphanage.Add(newInterface);
+            }
         }
     }
 }

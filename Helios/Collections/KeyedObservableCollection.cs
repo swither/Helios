@@ -29,7 +29,15 @@ namespace GadrocsWorkshop.Helios.Collections
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                     foreach (T item in e.NewItems)
                     {
-                        _dictionary.Add(GetKeyForItem(item), item);
+                        try
+                        {
+                            _dictionary.Add(GetKeyForItem(item), item);
+                        } 
+                        catch (System.ArgumentException ex)
+                        {
+                            ConfigManager.LogManager.LogError($"'{GetKeyForItem(item)}' is not unique", ex);
+                            throw;
+                        } 
                     }
                     break;
 

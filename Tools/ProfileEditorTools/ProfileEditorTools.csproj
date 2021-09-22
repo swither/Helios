@@ -38,6 +38,7 @@
       <HintPath>..\..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -55,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CascadeRemover.cs" />
+    <Compile Include="DCSInterfaceFunctionTester\DCSInterfaceFunctionTester.cs" />
+    <Compile Include="DCSInterfaceFunctionTester\Panel.cs" />
     <Compile Include="DCSInterfaceLoadTester\BooleanTester.cs" />
     <Compile Include="DCSInterfaceLoadTester\DCSInterfaceLoadTester.cs" />
     <Compile Include="ProfileTool.cs" />
@@ -67,14 +70,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Helios\Helios.csproj">
-      <Project>{e5abe3f5-46ec-46d1-9330-d42311471a93}</Project>
-      <Name>Helios</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\HeliosPlugin.targets" />
 </Project>

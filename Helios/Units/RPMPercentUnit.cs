@@ -29,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Units
 
         public override string LongName
         {
-            get { return "RPM Percent"; }
+            get { return "RPM percent"; }
         }
     }
 }

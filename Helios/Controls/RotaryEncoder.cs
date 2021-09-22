@@ -182,6 +182,12 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void Reset()
         {
+            base.Reset();
+            ResetRotation();
+        }
+
+        private void ResetRotation()
+        {
             BeginTriggerBypass(true);
             KnobRotation = InitialRotation;
             EndTriggerBypass(true);
@@ -205,7 +211,7 @@ namespace GadrocsWorkshop.Helios.Controls
             StepValue = double.Parse(reader.ReadElementString("StepValue"), CultureInfo.InvariantCulture);
             InitialRotation = double.Parse(reader.ReadElementString("InitialRotation"), CultureInfo.InvariantCulture);
             ReadOptionalXml(reader);
-            Reset();
+            ResetRotation();
         }
     }
 }

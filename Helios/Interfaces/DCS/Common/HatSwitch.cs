@@ -1,23 +1,28 @@
-﻿//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using GadrocsWorkshop.Helios.UDPInterface;
+using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-
-    class HatSwitch : NetworkFunction
+    public class HatSwitch : DCSFunctionWithActions
     {
         public enum HatPosition : int
         {
@@ -30,14 +35,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         protected readonly string _id;
         protected readonly string _format;
-        protected readonly bool _everyframe;
+        protected bool _everyframe;
 
         private HatPosition _currentPosition = HatPosition.Center;
 
         private HeliosValue _positionValue;
 
-        private Dictionary<string, HatPosition> _positionByValue = new Dictionary<string, HatPosition>();
-        private Dictionary<HatPosition, string> _sendData = new Dictionary<HatPosition, string>();
+        private readonly Dictionary<string, HatPosition> _positionByValue = new Dictionary<string, HatPosition>();
+        private readonly Dictionary<HatPosition, string> _sendData = new Dictionary<HatPosition, string>();
 
         public HatSwitch(BaseUDPInterface sourceInterface, string deviceId, string argId,
                     string leftAction, string leftValue,
@@ -48,6 +53,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     string device, string name, string exportFormat)
             : this(sourceInterface, deviceId, argId, leftAction, leftValue, upAction, upValue, rightAction, rightValue, downAction, downValue, releaseAction, releaseValue, device, name, exportFormat, false)
         {
+            // all code in referenced constructor
         }
 
         public HatSwitch(BaseUDPInterface sourceInterface, string deviceId, string argId, 
@@ -57,31 +63,77 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                             string downAction, string downValue, 
                             string releaseAction, string releaseValue,
                             string device, string name, string exportFormat, bool everyFrame)
-            : base(sourceInterface)
+            : base(sourceInterface, device, name, "Current position of the hat switch.")
         {
             _id = argId;
             _format = exportFormat;
             _everyframe = everyFrame;
+            SerializedActions.Add("left", new SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = leftAction,
+                ActionValue = leftValue
+            });
+            SerializedActions.Add("up", new SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = upAction,
+                ActionValue = upValue
+            });
+            SerializedActions.Add("right", new SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = rightAction,
+                ActionValue = rightValue
+            });
+            SerializedActions.Add("down", new SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = downAction,
+                ActionValue = downValue
+            });
+            SerializedActions.Add("center", new SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = releaseAction,
+                ActionValue = releaseValue
+            });
+            DoBuild();
+        }
 
-            _sendData.Add(HatPosition.Center, "C" + deviceId + "," + releaseAction + "," + releaseValue);
-            _sendData.Add(HatPosition.Left, "C" + deviceId + "," + leftAction + "," + leftValue);
-            _sendData.Add(HatPosition.Up, "C" + deviceId + "," + upAction + "," + upValue);
-            _sendData.Add(HatPosition.Right, "C" + deviceId + "," + rightAction + "," + rightValue);
-            _sendData.Add(HatPosition.Down, "C" + deviceId + "," + downAction + "," + downValue);
+        // deserialization constructor
+        public HatSwitch(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
 
-            _positionByValue.Add(releaseValue, HatPosition.Center);
-            _positionByValue.Add(leftValue, HatPosition.Left);
-            _positionByValue.Add(upValue, HatPosition.Up);
-            _positionByValue.Add(rightValue, HatPosition.Right);
-            _positionByValue.Add(downValue, HatPosition.Down);            
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
 
-            _positionValue = new HeliosValue(sourceInterface, new BindingValue((double)_currentPosition), device, name, "Current position of the hat switch.", "Position 0 = center, 1 = up, 2 = down, 3 = left,  or 4 = right.", BindingValueUnits.Numeric);
-            _positionValue.Execute += new HeliosActionHandler(SetPositionAction_Execute);
+        private void DoBuild()
+        {
+            foreach (HatPosition position in Enum.GetValues(typeof(HatPosition)))
+            {
+                string key = position.ToString().ToLowerInvariant();
+                _sendData.Add(position,
+                    "C" + SerializedActions[key].DeviceID + "," + SerializedActions[key].ActionID + "," +
+                    SerializedActions[key].ActionValue);
+                _positionByValue.Add(SerializedActions[key].ActionValue, position);
+            }
+
+            _positionValue = new HeliosValue(SourceInterface, new BindingValue((double) _currentPosition), SerializedDeviceName,
+                SerializedFunctionName, SerializedDescription,
+                "Position 0 = center, 1 = up, 2 = down, 3 = left,  or 4 = right.", BindingValueUnits.Numeric);
+            _positionValue.Execute += SetPositionAction_Execute;
             Values.Add(_positionValue);
             Actions.Add(_positionValue);
             Triggers.Add(_positionValue);
         }
 
+        [JsonProperty("switchPosition")]
         public HatPosition SwitchPosition
         {
             get
@@ -115,16 +167,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public override void ProcessNetworkData(string id, string value)
         {
-            if (_id.Equals(id) && _positionByValue.ContainsKey(value))
+            if (_positionByValue.ContainsKey(value))
             {
                 SwitchPosition = _positionByValue[value];
             }
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return new ExportDataElement[] { new DCSDataElement(_id, _format, _everyframe) };
-        }
+        protected override ExportDataElement[] DefaultDataElements =>
+            new ExportDataElement[] { new DCSDataElement(_id, _format, _everyframe) };
 
         public override void Reset()
         {

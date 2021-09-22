@@ -15,7 +15,6 @@
 
 namespace GadrocsWorkshop.Helios
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -31,10 +30,26 @@ namespace GadrocsWorkshop.Helios
 
             if (descriptor != null)
             {
-                interfaces.Add((HeliosInterface)Activator.CreateInstance(descriptor.InterfaceType));
+                AddInterfaceIfReady(interfaces, descriptor, CreateIndex(profile));
             }
 
             return interfaces;
+        }
+
+        protected static void AddInterfaceIfReady(List<HeliosInterface> interfaces, HeliosInterfaceDescriptor descriptor, Dictionary<string, HeliosInterface> index)
+        {
+            if (descriptor.ParentTypeIdentifier == null)
+            {
+                // create instance
+                interfaces.Add(descriptor.CreateInstance());
+            }
+            else
+            {
+                if (index.TryGetValue(descriptor.ParentTypeIdentifier, out HeliosInterface parent))
+                {
+                    interfaces.Add(descriptor.CreateInstance(parent));
+                }
+            }
         }
 
         public virtual List<HeliosInterface> GetAutoAddInterfaces(HeliosInterfaceDescriptor descriptor, HeliosProfile profile)
@@ -43,10 +58,20 @@ namespace GadrocsWorkshop.Helios
 
             if (descriptor != null && descriptor.AutoAdd)
             {
-                interfaces.Add((HeliosInterface)Activator.CreateInstance(descriptor.InterfaceType));
+                AddInterfaceIfReady(interfaces, descriptor, CreateIndex(profile));
             }
 
             return interfaces;
+        }
+
+        public static Dictionary<string, HeliosInterface> CreateIndex(HeliosProfile profile)
+        {
+            Dictionary<string, HeliosInterface> index = new Dictionary<string, HeliosInterface>();
+            foreach (HeliosInterface heliosInterface in profile.Interfaces)
+            {
+                index[heliosInterface.TypeIdentifier] = heliosInterface;
+            }
+            return index;
         }
     }
 }

@@ -35,6 +35,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     /// </summary>
     public partial class BindingsPanel : UserControl
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private HeliosProfile _actionTriggerProfile = null;
         private ProfileExplorerTreeItem _actionsList = null;
         private ProfileExplorerTreeItem _triggerList = null;
@@ -200,7 +202,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     HeliosProfile newProfile = BindingObject.Profile;
                     if (newProfile != null)
                     {
+                        Logger.Debug("loading actions for bindings");
                         _actionsList = new ProfileExplorerTreeItem(newProfile, actionTypes);
+                        Logger.Debug("loading triggers for bindings");
                         _triggerList = new ProfileExplorerTreeItem(newProfile, triggerTypes);
                     }
                     _actionTriggerProfile = newProfile;

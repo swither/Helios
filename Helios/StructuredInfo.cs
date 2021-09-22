@@ -42,7 +42,7 @@ namespace GadrocsWorkshop.Helios
         ///
         /// can be displayed as a label
         /// </summary>
-        [JsonProperty("Label", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("label", NullValueHandling = NullValueHandling.Ignore)]
         public string Label
         {
             get;
@@ -61,7 +61,7 @@ namespace GadrocsWorkshop.Helios
         /// requires Label
         /// can be displayed as a short value
         /// </summary>
-        [JsonProperty("Value", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]
         public string Value
         {
             get;
@@ -74,7 +74,7 @@ namespace GadrocsWorkshop.Helios
         /// associated with Label (if any)
         /// can be displayed as text
         /// </summary>
-        [JsonProperty("Message", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message
         {
             get;

@@ -244,14 +244,14 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		public override void Reset()
 		{
-			BeginTriggerBypass(true);
+            base.Reset();
+
+            BeginTriggerBypass(true);
 			Value = _default_opacity;
 			EndTriggerBypass(true);
 		}
 
-
-
-		public override void MouseDown(Point location)
+        public override void MouseDown(Point location)
         {
             // No-Op
         }

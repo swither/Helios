@@ -64,11 +64,11 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
         internal class ReportWrapper<TStatusItem>
         {
-            [JsonProperty("Product")] public string Product { get; } = Assembly.GetExecutingAssembly().GetName().Name;
+            [JsonProperty("product")] public string Product { get; } = Assembly.GetExecutingAssembly().GetName().Name;
 
-            [JsonProperty("Version")] public string Version { get; } = ConfigManager.VersionChecker.RunningVersion.ToString();
+            [JsonProperty("version")] public string Version { get; } = ConfigManager.VersionChecker.RunningVersion.ToString();
 
-            [JsonProperty("Items")] public IList<TStatusItem> Items { get; internal set; }
+            [JsonProperty("items")] public IList<TStatusItem> Items { get; internal set; }
 
             public ReportWrapper(IList<TStatusItem> items)
             {

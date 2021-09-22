@@ -24,7 +24,8 @@ namespace GadrocsWorkshop.Helios.Units
 
         public override string LongName
         {
-            get { return "kilometers"; }
+            // NOTE: display names are capitalized in Helios
+            get { return "Kilometers"; }
         }
 
         public override double ConversionFactor

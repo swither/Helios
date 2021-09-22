@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,9 +21,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions
     using System;
     using System.Globalization;
 
-    public class MagVariation : NetworkFunction
+    public class MagVariation : DCSFunction
     {
-        private static DCSDataElement[] _dataElements = new DCSDataElement[] { new DCSDataElement("337", "%0.4f", true), new DCSDataElement("596", "%0.4f", true) };
+        private static ExportDataElement[] DataElementsTemplate = { new DCSDataElement("337", "%0.4f", true), new DCSDataElement("596", "%0.4f", true) };
 
         private double _tens = 0;
         private double _units = 0;
@@ -30,17 +31,32 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark.Functions
         private HeliosValue _variation;
 
         public MagVariation(BaseUDPInterface sourceInterface)
-            : base(sourceInterface)
+            : base(sourceInterface, "ZMS-3 Magnetic Variation", "Variation Display", null)
         {
-            _variation = new HeliosValue(sourceInterface, BindingValue.Empty, "ZMS-3 Magnetic Variation", "Variation Display", "", "", BindingValueUnits.Degrees);
+            DoBuild();
+        }
+
+        // deserialization constructor
+        public MagVariation(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _variation = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "", BindingValueUnits.Degrees);
             Values.Add(_variation);
             Triggers.Add(_variation);
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return _dataElements;
-        }
+        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
 
         public override void ProcessNetworkData(string id, string value)
         {

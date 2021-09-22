@@ -319,8 +319,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             // other UI-scale markers
             ScaledTotalWidth = totalBounds.Width;
             ScaledTotalHeight = totalBounds.Height;
-            ScaledMain = mainBounds;
-            ScaledUserInterface = uiBounds;
+
+            // set valid rectangles to avoid warnings or errors logged from bindings
+            ScaledMain = mainBounds.IsEmpty ? new Rect(0d, 0d, 1d, 1d) : mainBounds;
+            ScaledUserInterface = uiBounds.IsEmpty ? new Rect(0d, 0d, 1d, 1d) : uiBounds;
 
             // reasonable scale for Icons shown inside the screen rectangles
             IconScale = (Scale - 0.02) * 0.3 / 0.02;

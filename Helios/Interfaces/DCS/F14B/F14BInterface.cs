@@ -19,7 +19,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F14B
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 
-    // [HeliosInterface("Helios.F14B", "DCS F-14B", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    // this is an experiment, which does not use correct action IDs (it uses argument IDs, which are wrong)
+    // [HeliosInterface("Helios.F14B", "DCS F-14B", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class F14BInterface : DCSInterface
     {
         #region Devices
@@ -189,7 +190,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F14B
             AddFunction(Switch.CreateToggleSwitch(this, COCKPITMECHANICS, "918", "918", "0", "Position 1", "1", "Position 2", "COCKPITMECHANICS", "Taxi Light", "%1d"));
             AddFunction(Switch.CreateThreeWaySwitch(this, COCKPITMECHANICS, "924", "924", "-1", "Position 1", "0", "Position 2", "1", "Position 3", "COCKPITMECHANICS", "Red Flood Light", "%1d"));
             AddFunction(Switch.CreateThreeWaySwitch(this, COCKPITMECHANICS, "921", "921", "-1", "Position 1", "0", "Position 2", "1", "Position 3", "COCKPITMECHANICS", "White Flood Light", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, COCKPITMECHANICS, "913_22", "913_22", "-1", "Position 1", "0", "Position 2", "1", "Position 3", "COCKPITMECHANICS", "Position Lights Wing", "%1d"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, COCKPITMECHANICS, "913", "913", "-1", "Position 1", "0", "Position 2", "1", "Position 3", "COCKPITMECHANICS", "Position Lights Wing", "%1d"));
             AddFunction(Switch.CreateThreeWaySwitch(this, COCKPITMECHANICS, "916", "916", "-1", "Position 1", "0", "Position 2", "1", "Position 3", "COCKPITMECHANICS", "Position Lights Tail", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, COCKPITMECHANICS, "919", "919", "0", "Position 1", "1", "Position 2", "COCKPITMECHANICS", "Position Lights Flash", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, COCKPITMECHANICS, "923", "923", "0", "Position 1", "1", "Position 2", "COCKPITMECHANICS", "Anti-Collision Lights", "%1d"));
@@ -281,7 +282,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F14B
             AddFunction(new Axis(this, ARC182, "1030", "1030", 0.1d, 0.0d, 1.0d, "ARC182", "VHF/UHF Radio Remote Display Brightness"));
             AddFunction(new PushButton(this, ARC159, "BIT_TEST", "BIT_TEST", "ARC159", "UHF Radio Remote Display Test", "1", "0", "%1d"));
             AddFunction(new PushButton(this, ARC159, "405", "405", "ARC159", "UHF Radio Remote Display Test (2)", "1", "0", "%1d"));
-            AddFunction(new PushButton(this, ARC182, "BIT_TEST", "BIT_TEST", "ARC182", "VHF/UHF Radio Remote Display Test", "1", "0", "%1d"));
+            AddFunction(new PushButton(this, ARC182, "BIT_TEST2", "BIT_TEST2", "ARC182", "VHF/UHF Radio Remote Display Test", "1", "0", "%1d"));
 
             #endregion
             #region DECM Panel
@@ -310,8 +311,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F14B
             AddFunction(Switch.CreateThreeWaySwitch(this, AHRS, "905", "905", "-1", "Position 1", "0", "Position 2", "1", "Position 3", "AHRS", "Compass Mode", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, AHRS, "906", "906", "0", "Position 1", "1", "Position 2", "AHRS", "Compass N-S Hemisphere", "%1d"));
             AddFunction(new Axis(this, AHRS, "909", "909", 0.1d, 0.0d, 1.0d, "AHRS", "Compass LAT Correction"));
-            #endregion
-            #region Copied temp so easy to copy: (I'm lazy, sue me)
             #endregion
             #region Spoiler Overrides
             AddFunction(Switch.CreateToggleSwitch(this, ELECTRICS, "902", "902", "0", "Position 1", "1", "Position 2", "ELECTRICS", "Inboard Spoiler Override Cover", "%1d"));

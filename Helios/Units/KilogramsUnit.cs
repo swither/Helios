@@ -29,7 +29,8 @@ namespace GadrocsWorkshop.Helios.Units
 
         public override string LongName
         {
-            get { return "kilograms"; }
+            // NOTE: display names are capitalized in Helios
+            get { return "Kilograms"; }
         }
     }
 }

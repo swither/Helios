@@ -327,7 +327,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             if (activeDocument != CurrentEditor)
             {
+                // this switches all of our UI panels to show content for this editor, because of XAML bindings to this property
                 CurrentEditor = activeDocument;
+
+                // find selection-capable editor or null
+                HeliosVisualContainerEditor editor = (activeDocument as PanelDocument)?.PanelEditor ??
+                                                     (activeDocument as MonitorDocument)?.MonitorEditor;
+
+                // also notify tools, which do not have a UI element that they could be binding
+                foreach (ISelectionAwareTool tool in _tools.Values.OfType<ISelectionAwareTool>())
+                {
+                    tool.AttachToSelection(editor?.SelectedItems);
+                }
             }
         }
 
@@ -379,7 +390,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 // Persist window placement details to application settings
                 IntPtr hwnd = new WindowInteropHelper(this).Handle;
                 NativeMethods.GetWindowPlacement(hwnd, out NativeMethods.WINDOWPLACEMENT wp);
-                ConfigManager.SettingsManager.SaveSetting("ProfileEditor", "WindowLocation", wp.normalPosition);
+                if (wp.normalPosition.Width > 0)
+                { 
+                    // if running non-interactive, our window size is 0 and we don't want to store that
+                    ConfigManager.SettingsManager.SaveSetting("ProfileEditor", "WindowLocation", wp.normalPosition);
+                }
 
                 // Close all open documents so they can clean up
                 while (_documents.Count > 0)
@@ -659,6 +674,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             StatusBarMessage = "Loading Profile...";
             GetLoadingAdorner();
 
+            // configure image caching appropriately for this load
+            if (ConfigManager.ImageManager is IImageManager4 cacheCapable)
+            {
+                cacheCapable.CacheObjects = GlobalOptions.HasCacheImages;
+
+                if (cacheCapable.CacheObjects)
+                {
+                    // always start fresh
+                    cacheCapable.DropObjectCache();
+                }
+            }
+
             // create profile
             HeliosProfile profile = ConfigManager.ProfileManager.LoadProfile(path, out IEnumerable<string> loadingWork);
 
@@ -871,7 +898,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void LoadVisual(HeliosVisual visual)
         {
-            visual.Renderer.Dispatcher = Dispatcher;
             visual.Renderer.Refresh();
             foreach (HeliosVisual control in visual.Children)
             {
@@ -1272,7 +1298,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 Logger.Error(ex, "Reset Monitors - Unhandled exception");
                 Logger.Error("Rolling back any undoable operations from monitor reset");
                 ConfigManager.UndoManager.UndoBatch();
-                MessageBox.Show("Error encountered while resetting monitors; please file a bug with the contents of the application log", "Error");
+                MessageBox.Show($"Error encountered while resetting monitors:{Environment.NewLine}{ex.Message}{Environment.NewLine}Please file a bug with the contents of the application log", "Error");
             }
             finally
             {

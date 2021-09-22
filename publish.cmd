@@ -1,6 +1,6 @@
 @echo off
-REM output location (you will need to change this for your local folder structure)
-set HELIOS_SHARE_FOLDER=d:\google\derammo.github\Helios
+REM output location (you will need to change this for your local folder structure or mklink to where you want the files)
+set HELIOS_SHARE_FOLDER=..\HeliosBuilds
 
 REM arguments and validation
 set HELIOS_BUILT_VERSION=%1
@@ -20,7 +20,7 @@ REM publish tag
 git push origin %HELIOS_BUILT_VERSION%
 
 REM publish installer files to direct share for testers and developers
-mkdir %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%
+mkdir -p %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%
 copy "Helios Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 copy "Helios Installer\Release32\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 copy "Keypress Receiver Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
@@ -37,7 +37,7 @@ if exist "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets" (
 	rmdir /s /q "..\Releases\Helios\%HELIOS_BUILT_VERSION%"
 )
 mkdir ..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets
-tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip" -C "Helios Installer\Release" *.msi -C "..\..\Keypress Receiver Installer\Release" *.msi
+tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip" -C "Helios Installer\Release" *.msi -C "..\..\Keypress Receiver Installer\Release" *.msi -C "..\..\Tools Installer\Release" *.msi
 tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip" -C "Helios Installer\Release32" *.msi
 echo Helios %HELIOS_BUILT_VERSION% > "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"

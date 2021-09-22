@@ -1,30 +1,33 @@
-﻿//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using GadrocsWorkshop.Helios.UDPInterface;
+using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-
-    public class Switch : NetworkFunction
+    public class Switch : DCSFunction
     {
         protected readonly string _id;
         protected readonly string _format;
-        protected readonly bool _everyframe;
+        protected bool _everyframe;
 
-        private SwitchPosition[] _positions;
         private string[] _sendAction;
         private string[] _sendStopAction;
         private string[] _exitAction;
@@ -35,7 +38,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private int _lastSetPosition = -1;
 
-        private string _valueDescriptions = "";
+        [JsonProperty("deviceId")]
+        private string _deviceId;
+
+        [JsonProperty("positions")]
+        private SwitchPosition[] _positions;
 
         #region Static Factories
 
@@ -77,49 +84,76 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public Switch(BaseUDPInterface sourceInterface, string deviceId, string argId, SwitchPosition[] positions, string device, string name, string exportFormat)
             : this(sourceInterface, deviceId, argId, positions, device, name, exportFormat, false)
         {
+            // all code in referenced constructor
         }
 
-        public Switch(BaseUDPInterface sourceInterface, string deviceId, string argId, SwitchPosition[] positions, string device, string name, string exportFormat, bool everyFrame)
-            : base(sourceInterface)
+        public Switch(BaseUDPInterface sourceInterface, string deviceId, string argId, SwitchPosition[] positions,
+            string device, string name, string exportFormat, bool everyFrame, bool build = true)
+            : base(sourceInterface, device, name, "Current position of this switch.")
         {
             _id = argId;
             _format = exportFormat;
             _everyframe = everyFrame;
-
+            _deviceId = deviceId;
             _positions = positions;
+            if (build)
+            {
+                DoBuild();
+            }
+        }
+
+        // deserialization constructor
+        public Switch(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        protected void DoBuild()
+        {
             _sendAction = new string[_positions.Length];
             _sendStopAction = new string[_positions.Length];
             _exitAction = new string[_positions.Length];
 
-            _valueDescriptions = "";
+            ValueDescriptions = "";
             for (int i = 0; i < _positions.Length; i++)
             {
                 SwitchPosition position = _positions[i];
 
-                if (_valueDescriptions.Length > 0)
+                if (ValueDescriptions.Length > 0)
                 {
-                    _valueDescriptions += ",";
+                    ValueDescriptions += ",";
                 }
-                _valueDescriptions += (i + 1).ToString() + "=" + position.Name;
+
+                ValueDescriptions += (i + 1).ToString() + "=" + position.Name;
                 if (position.Action != null)
                 {
-                    _sendAction[i] = "C" + deviceId + "," + position.Action + "," + position.ArgValue;
+                    _sendAction[i] = "C" + _deviceId + "," + position.Action + "," + position.ArgValue;
                 }
+
                 if (position.StopAction != null)
                 {
-                    _sendStopAction[i] = "C" + deviceId + "," + position.StopAction + "," + position.StopActionValue;
+                    _sendStopAction[i] = "C" + _deviceId + "," + position.StopAction + "," + position.StopActionValue;
                 }
+
                 if (position.ExitValue != null)
                 {
-                    _exitAction[i] = "C" + deviceId + "," + position.Action + "," + position.ExitValue;
+                    _exitAction[i] = "C" + _deviceId + "," + position.Action + "," + position.ExitValue;
                 }
             }
 
-            _releaseAction = new HeliosAction(sourceInterface, device, name, "release", "Releases pressure on current position (allows momentary and electronically held switch to revert to another position if necessary).");
+            _releaseAction = new HeliosAction(SourceInterface, SerializedDeviceName, SerializedFunctionName, "release",
+                "Releases pressure on current position (allows momentary and electronically held switch to revert to another position if necessary).");
             _releaseAction.Execute += new HeliosActionHandler(Release_Execute);
             Actions.Add(_releaseAction);
 
-            _value = new HeliosValue(sourceInterface, BindingValue.Empty, device, name, "Current position of this switch.", _valueDescriptions, BindingValueUnits.Numeric);
+            _value = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, ValueDescriptions, BindingValueUnits.Numeric);
             _value.Execute += new HeliosActionHandler(Value_Execute);
             Actions.Add(_value);
             Triggers.Add(_value);
@@ -130,12 +164,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         #region Properties
 
-        protected string ValueDescriptions
-        {
-            get { return _valueDescriptions; }
-        }
+        [JsonIgnore] 
+        public IEnumerable<SwitchPosition> Positions => _positions;
 
-        public IEnumerable<string> PositionValues => _positions.Select(pos => pos.ArgValue);
+        [JsonIgnore]
+        protected string ValueDescriptions { get; private set; } = "";
 
         #endregion
 
@@ -171,23 +204,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public override void ProcessNetworkData(string id, string value)
         {
-            if (_id.Equals(id))
+            // our descendant classes are supposed to ensure this
+            Debug.Assert(id == DataElements[0].ID);
+
+            for (int i = 0; i < _positions.Length; i++)
             {
-                for (int i = 0; i < _positions.Length; i++)
+                if (_positions[i].ArgValue.Equals(value))
                 {
-                    if (_positions[i].ArgValue.Equals(value))
-                    {
-                        _currentPosition = i;
-                        _value.SetValue(new BindingValue((double)(i + 1)), false);
-                    }
+                    _currentPosition = i;
+                    _value.SetValue(new BindingValue((double)(i + 1)), false);
                 }
             }
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return new ExportDataElement[] { new DCSDataElement(_id, _format, _everyframe) };
-        }
+        protected override ExportDataElement[] DefaultDataElements => new ExportDataElement[] { new DCSDataElement(_id, _format, _everyframe) };
 
         public override void Reset()
         {

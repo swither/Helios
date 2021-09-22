@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,76 +14,103 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Globalization;
+using GadrocsWorkshop.Helios.UDPInterface;
+using Newtonsoft.Json;
+
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
-    using GadrocsWorkshop.Helios.UDPInterface;
-    using System;
-    using System.Globalization;
-
-    public class Axis : NetworkFunction
+    public class Axis : DCSFunctionWithActions
     {
-        private string _id;
-        private string _format;
+        private readonly string _id;
+        private readonly string _format;
 
         private string _actionData;
 
-        private double _argValue;
-        private double _argMin;
-        private double _argMax;
+        [JsonProperty("argumentValue")] public double StepValue { get; protected set; }
 
-        private bool _loop;
+        [JsonProperty("argumentMin")] public double ArgumentMin { get; protected set; }
+
+        [JsonProperty("argumentMax")] public double ArgumentMax { get; protected set; }
+
+        [JsonProperty("loop")]
+        protected bool _loop;
 
         private HeliosValue _value;
 
         private HeliosAction _incrementAction;
         private HeliosAction _decrementAction;
 
-        public Axis(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double argValue, double argMin, double argMax, string device, string name)
-            : this(sourceInterface, deviceId, buttonId, argId, argValue, argMin, argMax, device, name, false, "%.3f")
+        public Axis(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double stepValue, double argMin, double argMax, string device, string name)
+            : this(sourceInterface, deviceId, buttonId, argId, stepValue, argMin, argMax, device, name, false, "%.3f")
         {
         }
 
-        public Axis(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double argValue, double argMin, double argMax, string device, string name, bool loop, string exportFormat)
-            : base(sourceInterface)
+        public Axis(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, double stepValue, double argMin, double argMax, string device, string name, bool loop, string exportFormat)
+            : base(sourceInterface, device, name, "Current value of this axis.")
         {
             _id = argId;
             _format = exportFormat;
             _loop = loop;
+            StepValue = stepValue;
+            ArgumentMin = argMin;
+            ArgumentMax = argMax;
+            SerializedActions.Add("set", new SerializedAction()
+            {
+                DeviceID = deviceId,
+                ActionID = buttonId
+            });
+            DoBuild();
+        }
 
-            _argValue = argValue;
-            _argMin = argMin;
-            _argMax = argMax;
+        // deserialization constructor
+        public Axis(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
+        {
+            // no code
+        }
 
-            _actionData = "C" + deviceId + "," + buttonId + ",";
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
 
-            _value = new HeliosValue(sourceInterface, new BindingValue(0.0d), device, name, "Current value of this axis.", argMin.ToString() + "-" + argMax.ToString(), BindingValueUnits.Numeric);
+        private void DoBuild()
+        {
+            _actionData = "C" + SerializedActions["set"].DeviceID + "," + SerializedActions["set"].ActionID + ",";
+
+            _value = new HeliosValue(SourceInterface, new BindingValue(0.0d), SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, ArgumentMin.ToString(CultureInfo.CurrentCulture) + "-" + ArgumentMax.ToString(CultureInfo.CurrentCulture), BindingValueUnits.Numeric);
             _value.Execute += new HeliosActionHandler(Value_Execute);
             Values.Add(_value);
             Actions.Add(_value);
             Triggers.Add(_value);
 
-            _incrementAction = new HeliosAction(sourceInterface, device, name, "increment", "Increments this axis value.", "Amount to increment by (Default:"+ argValue + ")", BindingValueUnits.Numeric);
+            _incrementAction = new HeliosAction(SourceInterface, SerializedDeviceName, SerializedFunctionName, "increment",
+                "Increments this axis value.", "Amount to increment by (Default:" + StepValue + ")", BindingValueUnits.Numeric);
             _incrementAction.Execute += new HeliosActionHandler(IncrementAction_Execute);
             Actions.Add(_incrementAction);
 
-            _decrementAction = new HeliosAction(sourceInterface, device, name, "decrement", "Decrement this axis value.", "Amount to decrement by (Default:" + -argValue + ")", BindingValueUnits.Numeric);
+            _decrementAction = new HeliosAction(SourceInterface, SerializedDeviceName, SerializedFunctionName, "decrement",
+                "Decrement this axis value.", "Amount to decrement by (Default:" + -StepValue + ")", BindingValueUnits.Numeric);
             _decrementAction.Execute += new HeliosActionHandler(DecrementAction_Execute);
             Actions.Add(_decrementAction);
         }
 
         void DecrementAction_Execute(object action, HeliosActionEventArgs e)
         {
-            double newValue = _value.Value.DoubleValue - _argValue;
+            double newValue = _value.Value.DoubleValue - StepValue;
             if (_loop)
             {
-                while (newValue < _argMin)
+                while (newValue < ArgumentMin)
                 {
-                    newValue += (_argMax - _argMin);
+                    newValue += (ArgumentMax - ArgumentMin);
                 }
             }
             else
             {
-                newValue = Math.Max(_argMin, newValue);
+                newValue = Math.Max(ArgumentMin, newValue);
             }
             _value.SetValue(new BindingValue(newValue), e.BypassCascadingTriggers);
             SourceInterface.SendData(_actionData + _value.Value.DoubleValue.ToString(CultureInfo.InvariantCulture));
@@ -90,17 +118,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         void IncrementAction_Execute(object action, HeliosActionEventArgs e)
         {
-            double newValue = _value.Value.DoubleValue + _argValue;
+            double newValue = _value.Value.DoubleValue + StepValue;
             if (_loop)
             {
-                while (newValue > _argMax)
+                while (newValue > ArgumentMax)
                 {
-                    newValue -= (_argMax - _argMin);
+                    newValue -= (ArgumentMax - ArgumentMin);
                 }
             }
             else
             {
-                newValue = Math.Min(_argMax, newValue);
+                newValue = Math.Min(ArgumentMax, newValue);
             }
             _value.SetValue(new BindingValue(newValue), e.BypassCascadingTriggers);
             SourceInterface.SendData(_actionData + _value.Value.DoubleValue.ToString(CultureInfo.InvariantCulture));
@@ -114,20 +142,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public override void ProcessNetworkData(string id, string value)
         {
-            double newValue;
-            if (double.TryParse(value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out newValue))
+            if (!double.TryParse(value, System.Globalization.NumberStyles.Number,
+                System.Globalization.CultureInfo.InvariantCulture, out double newValue))
             {
-                if (newValue > _argMax) newValue = _argMax;
-                if (newValue < _argMin) newValue = _argMin;
-                _value.SetValue(new BindingValue(newValue), false);
-            }          
+                return;
+            }
+
+            if (newValue > ArgumentMax) newValue = ArgumentMax;
+            if (newValue < ArgumentMin) newValue = ArgumentMin;
+            _value.SetValue(new BindingValue(newValue), false);
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            return new ExportDataElement[] { new DCSDataElement(_id, _format) };
-        }
-
+        protected override ExportDataElement[] DefaultDataElements => new ExportDataElement[] { new DCSDataElement(_id, _format) };
+       
         public override void Reset()
         {
             _value.SetValue(BindingValue.Empty, true);

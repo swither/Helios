@@ -18,18 +18,17 @@ using System.Windows.Input;
 
 namespace GadrocsWorkshop.Helios.Controls.Capabilities
 {
-    /// <summary>
-    /// HeliosVisual controls that implement this interface are aware of Windows native
-    /// APIs for mouse and touch events and will be called on the "Preview" pass of those
-    /// events.
-    ///
-    /// This allows controls to be aware of when their child controls are clicked.
-    /// </summary>
-    public interface IPreviewInput
+    public interface IWindowsManipulationAware
     {
-        void PreviewMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs);
-        void PreviewMouseUp(object sender, MouseButtonEventArgs mouseButtonEventArgs);
-        void PreviewTouchDown(object sender, TouchEventArgs touchEventArgs);
-        void PreviewTouchUp(object sender, TouchEventArgs touchEventArgs);
+        #region Hooks
+
+        void ManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e);
+        void ManipulationCompleted(object sender, ManipulationCompletedEventArgs e);
+        void ManipulationDelta(object sender, ManipulationDeltaEventArgs e);
+        void ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventArgs e);
+        void ManipulationStarted(object sender, ManipulationStartedEventArgs e);
+        void ManipulationStarting(object sender, ManipulationStartingEventArgs e);
+
+        #endregion
     }
 }

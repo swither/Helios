@@ -27,13 +27,38 @@ namespace GadrocsWorkshop.Helios
         private readonly WeakReference _owner;
         private WeakReference _context = new WeakReference(null);
 
+        /// <summary>
+        /// true if we believe any trigger listeners are up to date, so that we don't fire triggers
+        /// unless the value actually changes
+        /// </summary>
+        private bool _synchronized = GlobalOptions.HasUseLegacyResetBehavior;
+
         public HeliosValue(HeliosObject owner, BindingValue initialValue, string device, string name,
             string description, string valueDescription, BindingValueUnit unit)
+            : this(owner, initialValue, device, "", name, description, valueDescription, unit)
         {
+            // all code in referenced constructor
+        }
+
+        /// <summary>
+        /// to be used if id is different from name
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="initialValue"></param>
+        /// <param name="device"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="valueDescription"></param>
+        /// <param name="unit"></param>
+        public HeliosValue(HeliosObject owner, BindingValue initialValue, string device, string id, string name, string description, string valueDescription, BindingValueUnit unit)
+        {
+            ValueID = id;
             _device = device;
             _name = name;
             ActionDescription = description;
             ActionValueDescription = valueDescription;
+
             _owner = new WeakReference(owner);
             Value = initialValue;
             Unit = unit;
@@ -51,19 +76,20 @@ namespace GadrocsWorkshop.Helios
 
         private void UpdateId()
         {
-            ValueID = "";
-            ActionID = "";
-            TriggerID = "";
+            if (ValueID.Length < 1)
+            {
+                ValueID = _name;
+            }
             if (!string.IsNullOrEmpty(_device))
             {
-                ValueID += _device + ".";
-                ActionID += _device + ".";
-                TriggerID += _device + ".";
+                ActionID = $"{_device}.set.{ValueID}";
+                ValueID = $"{_device}.{ValueID}";
             }
-
-            TriggerID += _name + ".changed";
-            ActionID += "set." + _name;
-            ValueID += _name;
+            else
+            {
+                ActionID = $"set.{ValueID}";
+            }
+            TriggerID = $"{ValueID}.changed";
         }
 
         /// <summary>
@@ -87,14 +113,37 @@ namespace GadrocsWorkshop.Helios
         /// <param name="bypassCascadingTriggers">True if bindings should not trigger further triggers.</param>
         public void SetValue(BindingValue value, bool bypassCascadingTriggers)
         {
-            if ((Value == null && value != null)
-                || (Value != null && !Value.Equals(value)))
+            // factored this value out for readability
+            bool valueChanged = (Value == null && value != null)
+                                || (Value != null && !Value.Equals(value));
+
+            if (bypassCascadingTriggers)
             {
-                Value = value;
-                if (!bypassCascadingTriggers)
+                if (valueChanged)
                 {
-                    OnFireTrigger(value);
+                    // a normal local write
+                    Value = value;
                 }
+
+                // either way, we are done.  a local write never sets _synchronized
+                return;
+            }
+
+            // NOTE: cases broken out for breakpointing
+            if (!_synchronized)
+            {
+                // need to send this to our bound targets to synchronize them
+                Value = value;
+                _synchronized = true;
+                OnFireTrigger(value);
+                return;
+            }
+
+            if (valueChanged)
+            {
+                // new value of interest to our bound targets
+                Value = value;
+                OnFireTrigger(value);
             }
         }
 
@@ -182,6 +231,20 @@ namespace GadrocsWorkshop.Helios
         {
             HeliosActionEventArgs args = new HeliosActionEventArgs(value, bypassCascadingTriggers);
             Execute?.Invoke(this, args);
+        }
+
+        public void Reset()
+        {
+            if (GlobalOptions.HasUseLegacyResetBehavior)
+            {
+                // just do nothing here, which happens only once on reset, so we don't have to
+                // do anything special at update time, which happens continuously
+                return;
+            }
+            // the next update to this value should fire triggers, even if the
+            // actual value has not changed.  Observers of related triggers may be
+            // out of sync, because the were reset to their configured initial states.
+            _synchronized = false;
         }
 
         public Type ValueEditorType { get; set; } = typeof(TextStaticEditor);

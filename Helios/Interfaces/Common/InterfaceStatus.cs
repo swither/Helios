@@ -83,7 +83,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
         /// <summary>
         /// the status reporting name for this status item
         /// </summary>
-        [JsonProperty("Name")]
+        [JsonProperty("name")]
         public string Name
         {
             get => _private;
@@ -137,7 +137,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Common
         /// <summary>
         /// the most recently received status report from the managed interface
         /// </summary>
-        [JsonProperty("Report")]
+        [JsonProperty("report")]
         public IList<StatusReportItem> Report
         {
             get => _report;

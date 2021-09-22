@@ -36,6 +36,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     [ContentProperty("View")]
     public class HeliosVisualContainerEditor : FrameworkElement
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private bool _keyMoveBatchOpen = false;
 
         private readonly DrawingBrush _checkerBrush;
@@ -1207,22 +1209,35 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private static void Paste_CanExecute(object target, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Clipboard.ContainsData("Helios.Visuals");
+            e.CanExecute = Clipboard.ContainsData("Helios.Visuals") || Clipboard.ContainsText();
         }
 
         private static void Paste_Executed(object target, ExecutedRoutedEventArgs e)
         {
             HeliosVisualContainerEditor editor = target as HeliosVisualContainerEditor;
 
-            if (editor != null && Clipboard.ContainsData("Helios.Visuals"))
+            if (editor == null) 
             {
-                XmlReaderSettings settings = new XmlReaderSettings();
-                settings.IgnoreComments = true;
-                settings.IgnoreWhitespace = true;
-                settings.CloseInput = true;
+                // no editor selected to receive the paste operation
+                return;
+            }
 
-                StringReader reader = new StringReader(Clipboard.GetText());
-                XmlReader xmlReader = XmlReader.Create(reader, settings);
+            if (!(Clipboard.ContainsData("Helios.Visuals") || Clipboard.ContainsText()))
+            {
+                // nothing we can decode
+                return;
+            }
+
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreWhitespace = true;
+            settings.CloseInput = true;
+
+            StringReader reader = new StringReader(Clipboard.GetText());
+            XmlReader xmlReader = XmlReader.Create(reader, settings);
+
+            try
+            {
                 HeliosSerializer serializer = new HeliosSerializer(editor.Dispatcher);
 
                 ConfigManager.UndoManager.StartBatch();
@@ -1234,7 +1249,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 foreach (string progress in serializer.DeserializeControls(newControls, xmlReader))
                 {
                     ConfigManager.LogManager.LogDebug($"Paste operation {progress}");
-                };
+                }
 
                 List<HeliosVisual> localObjects = new List<HeliosVisual>();
                 foreach (HeliosVisual control in newControls)
@@ -1243,7 +1258,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 }
 
                 // load all these now, instead of streaming enumeration (just for ease of debugging really)
-                IList<HeliosBinding> bindings = serializer.DeserializeBindings(editor.VisualContainer, copyRoot, localObjects, xmlReader).ToList();
+                IList<HeliosBinding> bindings = serializer
+                    .DeserializeBindings(editor.VisualContainer, copyRoot, localObjects, xmlReader).ToList();
 
                 xmlReader.ReadEndElement();
                 newControls.Clear();
@@ -1280,6 +1296,15 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 }
 
                 ConfigManager.UndoManager.CloseBatch();
+            }
+            catch (Exception)
+            {
+                // failed paste operation, probably due to bad format
+                Logger.Error("Failed to paste from clipboard.  Contents must be XML in the HeliosCopyBuffer format.");
+                ConfigManager.UndoManager.UndoBatch();
+            }
+            finally
+            {
                 xmlReader.Close();
             }
         }

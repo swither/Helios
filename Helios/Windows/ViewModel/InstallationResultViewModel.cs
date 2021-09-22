@@ -35,9 +35,9 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
         public class SingleReport
         {
-            [JsonProperty("Name")] public string Name => "Configuration Results";
+            [JsonProperty("name")] public string Name => "Configuration Results";
 
-            [JsonProperty("Report")] public IEnumerable<StatusReportItem> Report;
+            [JsonProperty("report")] public IEnumerable<StatusReportItem> Report;
 
             public SingleReport(IEnumerable<InterfaceStatusViewItem> details)
             {

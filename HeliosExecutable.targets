@@ -10,4 +10,5 @@
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- must be after CSharp targets -->
     <Import Project="AssemblyVersion.targets" />
+    <Import Project="HeliosProjectReference.properties" />
 </Project>

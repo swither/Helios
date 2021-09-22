@@ -45,16 +45,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InstallerExtensions.cs"/>
+    <Compile Include="InstallerExtensions.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MinimalHelios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Helios\Helios.csproj">
-      <Project>{e5abe3f5-46ec-46d1-9330-d42311471a93}</Project>
-      <Name>Helios</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
+  <Import Project="..\HeliosProjectReference.properties" />
   <Import Project="..\Helios.targets" />
 </Project>

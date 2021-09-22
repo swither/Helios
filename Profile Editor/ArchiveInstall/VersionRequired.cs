@@ -21,13 +21,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
 {
     public class VersionRequired
     {
-        [JsonProperty("Product", Required = Required.DisallowNull)]
+        [JsonProperty("product", Required = Required.DisallowNull)]
         public string Product { get; internal set; }
 
-        [JsonProperty("Minimum", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("minimum", NullValueHandling = NullValueHandling.Ignore)]
         public Version Minimum { get; internal set; }
 
-        [JsonProperty("Maximum", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("maximum", NullValueHandling = NullValueHandling.Ignore)]
         public Version Maximum { get; internal set; }
     }
 }

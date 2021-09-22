@@ -339,6 +339,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void Reset()
         {
+            base.Reset();
+
             BeginTriggerBypass(true);
             TextValue = "";
             EndTriggerBypass(true);
@@ -379,6 +381,8 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 writer.WriteElementString("ScalingMode", ScalingMode.ToString());
             }
+
+            WriteAdditionalXml(writer);
             base.WriteXml(writer);
         }
 
@@ -404,6 +408,8 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 ScalingMode = TextScalingMode.Legacy;
             }
+
+            ReadAdditionalXml(reader);
             base.ReadXml(reader);
 
             // now the auto scaling has messed up our font size, so we restore it
@@ -425,33 +431,43 @@ namespace GadrocsWorkshop.Helios.Controls
         }
 
         protected abstract void OnTextValueChange();
+
+        /// <summary>
+        /// hook for descendants to allow for additional XML after the fixed section
+        /// </summary>
+        /// <param name="reader"></param>
+        protected virtual void ReadAdditionalXml(XmlReader reader)
+        {
+            // no code in base
+        }
+
+        /// <summary>
+        /// hook for descendants to allow for additional XML after the fixed section
+        /// </summary>
+        /// <param name="writer"></param>
+        protected virtual void WriteAdditionalXml(XmlWriter writer)
+        {
+            // no code in base
+        }
     }
 
     [HeliosControl("Helios.Base.TextDisplay", "Text Display", "Text Displays", typeof(TextDisplayRenderer))]
     public class TextDisplay : TextDisplayRect
     {
-        private HeliosValue _value;
+        private readonly HeliosValue _value;
 
         public TextDisplay()
             : base("TextDisplay", new System.Windows.Size(100, 50))
         {
-            _value = new HeliosValue(this, new BindingValue(false), "", "TextDisplay", "Value of this Text Display", "String Value Unit.", BindingValueUnits.Text);
-            _value.Execute += new HeliosActionHandler(On_Execute);
+            _value = new HeliosValue(this, new BindingValue(false), "", "TextDisplay", "Value of this Text Display", "A text string.", BindingValueUnits.Text);
+            _value.Execute += On_Execute;
             Values.Add(_value);
             Actions.Add(_value);
         }
 
-
         protected override void OnTextValueChange()
         {
             _value.SetValue(new BindingValue(_textValue), BypassTriggers);
-        }
-
-        void ToggleAction_Execute(object action, HeliosActionEventArgs e)
-        {
-            //BeginTriggerBypass(e.BypassCascadingTriggers);
-            //On = !On;
-            //EndTriggerBypass(e.BypassCascadingTriggers);
         }
 
         void On_Execute(object action, HeliosActionEventArgs e)

@@ -46,11 +46,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// </summary>
         private bool _defaultAlwaysOnTop;
 
+        /// <summary>
+        /// backing field for property CacheImages, contains
+        /// true if image sources and similar objects should be reused by ImageManager
+        /// </summary>
+        private bool _cacheImages;
+
         public GlobalOptions()
         {
             _defaultCascadeTriggers = HasDefaultCascadeTriggers;
             _defaultFillSecondaryMonitors = HasDefaultFillSecondaryMonitors;
             _defaultAlwaysOnTop = HasDefaultAlwaysOnTop;
+            _cacheImages = HasCacheImages;
         }
 
         #region Properties
@@ -117,6 +124,22 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
+        /// <summary>
+        /// true if image sources and similar objects should be reused by ImageManager
+        /// </summary>
+        public bool CacheImages
+        {
+            get => _cacheImages;
+            set
+            {
+                if (_cacheImages == value) return;
+                bool oldValue = _cacheImages;
+                _cacheImages = value;
+                ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, "CacheImages", value);
+                OnPropertyChanged(nameof(CacheImages), oldValue, value, true);
+            }
+        }
+
         #endregion
 
         #region Static Client Interface
@@ -149,6 +172,15 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// </returns>
         public static bool HasDefaultFillSecondaryMonitors =>
             ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, "DefaultFillSecondaryMonitors", false);
+
+        /// <summary>
+        /// accessible as utility for client code that can't get access to the GlobalOptions instance readily
+        /// </summary>
+        /// <returns>
+        /// true if image sources and similar objects should be reused by ImageManager
+        /// </returns>
+        public static bool HasCacheImages=>
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, "CacheImages", true);
 
         #endregion
     }

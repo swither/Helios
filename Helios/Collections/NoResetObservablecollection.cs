@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios.Collections
         {
             foreach (T item in items)
             {
-                Add(item);
+                Remove(item);
             }
         }
 

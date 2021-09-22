@@ -131,6 +131,11 @@
         <Setter Property="FontStyle" Value="Italic" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Foreground" Value="{StaticResource GrayText}" />
+        <Style.Triggers>
+            <Trigger Property="Text" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="InterfaceEditorStatus" TargetType="{x:Type TextBlock}">

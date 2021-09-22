@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,12 +23,6 @@ namespace GadrocsWorkshop.Helios.ComponentModel
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class HeliosInterfaceAttribute : Attribute
     {
-        private Type _interfaceEditorType;
-        private string _typeIdentifier;
-        private string _name;
-        private bool _autoAdd;
-        private Type _factory;
-
         /// <param name="typeIdentifier">Unique identifier used for persistance.
         /// Recommended to follow conventions of {module name}.{interface}.  Helios.* is reserved for helios's included controls.</param>
         /// <param name="name">Display name used for this interface in the ui.</param>
@@ -44,63 +39,46 @@ namespace GadrocsWorkshop.Helios.ComponentModel
         /// <param name="interfaceEditor">Instance factory for interface editor dialog.</param>
         /// <param name="factory">Instance factory used to populate "Add Interface" dialog with available interfaces.</param>
         /// 
-        public HeliosInterfaceAttribute(string typeIdentifier, string name, Type interfaceEditor, Type factory) 
+        public HeliosInterfaceAttribute(string typeIdentifier, string name, Type interfaceEditor, Type factory)
         {
-            _typeIdentifier = typeIdentifier;
-            _interfaceEditorType = interfaceEditor;
-            _name = name;
-            _factory = factory;
+            TypeIdentifier = typeIdentifier;
+            InterfaceEditorType = interfaceEditor;
+            Name = name;
+            Factory = factory;
         }
 
-        public string TypeIdentifier
+        public HeliosInterfaceAttribute(string typeIdentifier, string name) : this(typeIdentifier, name, null, typeof(HeliosInterfaceFactory))
         {
-            get
-            {
-                return _typeIdentifier;
-            }
+            // utility
         }
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
-
-        public Type InterfaceEditorType
-        {
-            get
-            {
-                return _interfaceEditorType;
-            }
-        }
+        public string TypeIdentifier { get; }
 
         /// <summary>
-        /// If true an isntance of this control will automatically be added to a new profile.
+        /// if not null, interface must be created as child of interface with the given type ID
         /// </summary>
-        public bool AutoAdd
+        public string Parent { get; set; }
+
+        /// <summary>
+        /// override of the type identifier to use for uniqueness test;  any interfaces
+        /// with the same TypeIdentifier OR UniquenessKey are considered equivalent for 
+        /// uniqueness test.
+        /// </summary>
+        public string UniquenessKey
         {
-            get
-            {
-                return _autoAdd;
-            }
-            set
-            {
-                _autoAdd = value;
-            }
+            get;
+            set;
         }
 
-        public Type Factory
-        {
-            get
-            {
-                return _factory;
-            }
-            set
-            {
-                _factory = value;
-            }
-        }
+        public string Name { get; }
+
+        public Type InterfaceEditorType { get; }
+
+        /// <summary>
+        /// If true an instance of this control will automatically be added to a new profile.
+        /// </summary>
+        public bool AutoAdd { get; set; }
+
+        public Type Factory { get; set; }
     }
 }

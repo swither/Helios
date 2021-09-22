@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Ammo Goettsch
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,39 +18,52 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B.Functions
 {
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
-    using System;
     using System.Globalization;
 
-    public class SMCFuzeDisplay : NetworkFunction
+    public class SMCFuzeDisplay : DCSFunction
     {
-        private static DCSDataElement[] _dataElements;
-        private HeliosValue _fuze_display;
+        private HeliosValue _fuzeDisplay;
 
-        public SMCFuzeDisplay(BaseUDPInterface sourceInterface, string deviceId, string buttonId, string argId, string device, string name)
-            : base(sourceInterface)
+        public SMCFuzeDisplay(BaseUDPInterface sourceInterface, string deviceId, string id, string device, string name, string description)
+            : base(sourceInterface, device, name, description)
         {
-            _dataElements = new DCSDataElement[] { new DCSDataElement(buttonId, null, false) };
-            _fuze_display = new HeliosValue(sourceInterface, BindingValue.Empty, argId, device, name, "", BindingValueUnits.Numeric);
-            Values.Add(_fuze_display);
-            Triggers.Add(_fuze_display);
+            DefaultDataElements = new ExportDataElement[] { new DCSDataElement(id, null, false) };
+            DoBuild();
         }
 
-        public override ExportDataElement[] GetDataElements()
+        // deserialization constructor
+        public SMCFuzeDisplay(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface, context)
         {
-            return _dataElements;
+            // no code
         }
+
+        public override void BuildAfterDeserialization()
+        {
+            DoBuild();
+        }
+
+        private void DoBuild()
+        {
+            _fuzeDisplay = new HeliosValue(SourceInterface, BindingValue.Empty, SerializedDeviceName, SerializedFunctionName,
+                SerializedDescription, "", BindingValueUnits.Numeric);
+            Values.Add(_fuzeDisplay);
+            Triggers.Add(_fuzeDisplay);
+        }
+
+        protected override ExportDataElement[] DefaultDataElements { get; }
 
         public override void ProcessNetworkData(string id, string value)
         {
             if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out double parsedValue))
             {
-                _fuze_display.SetValue(new BindingValue(parsedValue), false);
+                _fuzeDisplay.SetValue(new BindingValue(parsedValue), false);
             }
         }
 
         public override void Reset()
         {
-            _fuze_display.SetValue(BindingValue.Empty, true);
+            _fuzeDisplay.SetValue(BindingValue.Empty, true);
         }
     }
 }

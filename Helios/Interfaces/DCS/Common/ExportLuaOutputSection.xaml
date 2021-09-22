@@ -38,7 +38,7 @@
         </Style>
         <DataTemplate x:Key="DoFileTemplate">
             <StackPanel Orientation="Horizontal" Margin="6,3">
-                <Button Template="{StaticResource DeleteButton}" Command="common:DCSInterfaceEditor.RemoveDoFileCommand"
+                <Button Template="{StaticResource DeleteButton}" Command="common:DCSInterfaceEditorBase.RemoveDoFileCommand"
                         CommandParameter="{Binding}"/>
                 <TextBlock Margin="6,0,0,0" Text="{Binding}"/>
             </StackPanel>
@@ -87,7 +87,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0" TextWrapping="Wrap" Name="NewDoFile"/>
-                    <Button Grid.Row="0" Grid.Column="1" Margin="0,0,7,0" Width="120" Height="24" Command="common:DCSInterfaceEditor.AddDoFileCommand" CommandParameter="{Binding ElementName=NewDoFile}">Add File</Button>
+                    <Button Grid.Row="0" Grid.Column="1" Margin="0,0,7,0" Width="120" Height="24" Command="common:DCSInterfaceEditorBase.AddDoFileCommand" CommandParameter="{Binding ElementName=NewDoFile}">Add File</Button>
                 </Grid>
             </StackPanel>
         </GroupBox>

@@ -610,6 +610,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void Reset ( )
         {
+            base.Reset();
+
             BeginTriggerBypass( true );
             ValueRotation = InitialValueRotation;
             ValueTranslationX = InitialValueTranslationX;

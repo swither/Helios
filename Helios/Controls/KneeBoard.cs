@@ -244,10 +244,10 @@ namespace GadrocsWorkshop.Helios.Controls
 
         #endregion
 
-
-
         public override void Reset()
         {
+            base.Reset();
+
             BeginTriggerBypass(true);
             CurrentPosition = DefaultPosition;
             EndTriggerBypass(true);
@@ -268,7 +268,6 @@ namespace GadrocsWorkshop.Helios.Controls
                 }
             }
         }
-
 
         public override void MouseDown(Point location)
         {

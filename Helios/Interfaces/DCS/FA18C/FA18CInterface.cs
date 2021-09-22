@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.Interfaces.DCS.FA18C.Functions;
 
-    [HeliosInterface("Helios.FA18C", "DCS F/A-18C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory))]
+    [HeliosInterface("Helios.FA18C", "DCS F/A-18C", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class FA18CInterface : DCSInterface
     {
         #region Devices
@@ -107,9 +107,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
 
         #endregion
 
-        public FA18CInterface()
-            : base("DCS F/A-18C", "FA-18C_hornet", "pack://application:,,,/Helios;component/Interfaces/DCS/FA18C/ExportFunctions.lua")
+        public FA18CInterface(string name)
+            : base(name, "FA-18C_hornet", "pack://application:,,,/Helios;component/Interfaces/DCS/FA18C/ExportFunctions.lua")
         {
+            if (LoadFunctionsFromJson())
+            {
+                // restored all functions from JSON, no need to use code below
+                return;
+            }
+
             #region Caution Indicators
             // Caution Light Indicator Panel
             AddFunction(new FlagValue(this, "298", "Caution Indicators", "CK_SEAT", ""));       // create_caution_lamp(298,CautionLights.CPT_LTS_CK_SEAT)

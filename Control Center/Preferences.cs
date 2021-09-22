@@ -36,6 +36,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             _hotKeyModifiers = LoadSetting("HotKeyModifiers", ModifierKeys.None.ToString());
             _splashScreen = LoadSetting("SplashScreen", true);
             _highQualityBitmapScaling = LoadSetting("HighQualityBitmapScaling", false);
+            _cacheImages = LoadSetting("CacheImages", true);
 
             // NOTE: do not try to implement auto start in registry even if enabled, we may not have rights
             _autoStart = LoadSetting("AutoStart", false);
@@ -290,6 +291,28 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 _highQualityBitmapScaling = value;
                 _preferences.SaveSetting(GROUP_NAME, "HighQualityBitmapScaling", value);
                 OnPropertyChanged("", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// backing field for property CacheImages, contains
+        /// true if object caching should be enabled in ImageManager
+        /// </summary>
+        private bool _cacheImages;
+
+        /// <summary>
+        /// true if object caching should be enabled in ImageManager
+        /// </summary>
+        public bool CacheImages
+        {
+            get => _cacheImages;
+            set
+            {
+                if (_cacheImages == value) return;
+                bool oldValue = _cacheImages;
+                _cacheImages = value;
+                _preferences.SaveSetting(GROUP_NAME, "CacheImages", value);
+                OnPropertyChanged(nameof(CacheImages), oldValue, value, true);
             }
         }
     }

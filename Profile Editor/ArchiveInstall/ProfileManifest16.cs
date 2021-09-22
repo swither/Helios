@@ -21,28 +21,28 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ArchiveInstall
 {
     public class ProfileManifest16
     {
-        [JsonProperty("Description", NullValueHandling = NullValueHandling.Ignore)] 
+        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)] 
         public string Description { get; internal set; }
 
-        [JsonProperty("Version", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("version", NullValueHandling = NullValueHandling.Ignore)]
         public string Version { get; internal set; }
 
-        [JsonProperty("Authors", NullValueHandling = NullValueHandling.Include)]
+        [JsonProperty("authors", NullValueHandling = NullValueHandling.Include)]
         public IEnumerable<string> Authors { get; internal set; }
 
-        [JsonProperty("License", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("license", NullValueHandling = NullValueHandling.Ignore)]
         public string License { get; internal set; }
 
         /// <summary>
         /// optional additional structured information about this archive's contents
         /// </summary>
-        [JsonProperty("Info", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("info", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public IEnumerable<StructuredInfo> Info { get; internal set; }
 
-        [JsonProperty("VersionsRequired", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("versionsRequired", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public IEnumerable<VersionRequired> VersionsRequired { get; internal set; }
 
-        [JsonProperty("Choices")]
+        [JsonProperty("choices")]
         public IEnumerable<Choice> Choices { get; internal set; }
     }
 }

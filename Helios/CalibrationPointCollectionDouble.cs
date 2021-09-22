@@ -17,15 +17,19 @@ using System.Linq;
 
 namespace GadrocsWorkshop.Helios
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Globalization;
     using System.Xml;
 
+    [JsonObject]
     public class CalibrationPointCollectionDouble : NotificationObject, ICollection<CalibrationPointDouble>, INotifyCollectionChanged
     {
+        [JsonProperty("points")]
         private LinkedList<CalibrationPointDouble> _points = new LinkedList<CalibrationPointDouble>();
+
         private int _precision = 1;
 
         private double _outputLimitMax = double.MaxValue;
@@ -98,6 +102,10 @@ namespace GadrocsWorkshop.Helios
                 }
             }
         }
+        public bool ShouldSerializeOutputLimitMin()
+        {
+            return OutputLimitMin != double.MinValue;
+        }
 
         public double OutputLimitMax
         {
@@ -114,7 +122,12 @@ namespace GadrocsWorkshop.Helios
                 }
             }
         }
+        public bool ShouldSerializeOutputLimitMax()
+        {
+            return OutputLimitMax != double.MaxValue;
+        }
 
+        [JsonProperty("precision")]
         public int Preceision
         {
             get { return _precision; }
@@ -125,6 +138,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        [JsonIgnore]
         public double MaximumInputValue
         {
             get
@@ -148,15 +162,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
-        internal void Sort()
-        {
-            List<CalibrationPointDouble> sorted = this.OrderBy(item => item.Value).ToList();
-            _points.Clear();
-            sorted.ForEach(item => _points.AddLast(item));
-            OnCalibrationChanged();
-            OnCollectionChanged();
-        }
-
+        [JsonIgnore]
         public double MaximumOutputValue
         {
             get
@@ -180,6 +186,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        [JsonIgnore]
         public double MinimumInputValue
         {
             get
@@ -203,6 +210,7 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        [JsonIgnore]
         public double MinimumOutputValue
         {
             get
@@ -299,11 +307,13 @@ namespace GadrocsWorkshop.Helios
             _points.CopyTo(array, arrayIndex);
         }
 
+        [JsonIgnore]
         public int Count
         {
             get { return _points.Count; }
         }
 
+        [JsonIgnore]
         public bool IsReadOnly
         {
             get { return false; }
@@ -400,6 +410,15 @@ namespace GadrocsWorkshop.Helios
             }
 
             reader.ReadEndElement();
+        }
+
+        internal void Sort()
+        {
+            List<CalibrationPointDouble> sorted = this.OrderBy(item => item.Value).ToList();
+            _points.Clear();
+            sorted.ForEach(item => _points.AddLast(item));
+            OnCalibrationChanged();
+            OnCollectionChanged();
         }
 
         private CalibrationPointDouble ReadPoint(XmlReader reader)

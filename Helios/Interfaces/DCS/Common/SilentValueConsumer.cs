@@ -14,17 +14,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using GadrocsWorkshop.Helios.UDPInterface;
+using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     public class SilentValueConsumer : NetworkFunction
     {
-        private readonly string _id;
+        [JsonProperty("id")]
+        protected string _id;
+
+        [JsonProperty("exports", Order = -6, Required = Required.Always)]
+        public override ExportDataElement[] DataElements => DefaultDataElements;
 
         public SilentValueConsumer(BaseUDPInterface sourceInterface, string id, string description)
             : base(sourceInterface)
         {
             _id = id;
+            // nothing to build
+        }
+
+        // deserialization constructor
+        public SilentValueConsumer(BaseUDPInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
+            : base(sourceInterface)
+        {
+            // no code
+        }
+
+        public override void BuildAfterDeserialization()
+        {
+            // nothing to do
         }
 
         public override void ProcessNetworkData(string id, string value)
@@ -32,12 +50,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // do nothing with it, just avoid logging it as a warning
         }
 
-        public override ExportDataElement[] GetDataElements()
-        {
-            // return a data element that is not a DCSDataElement, so it does not generate an export
-            // but still consumes its value
-            return new[] {new ExportDataElement(_id)};
-        }
+        // return a data element that does not generate an export
+        // but still consumes its value
+        protected override ExportDataElement[] DefaultDataElements =>
+            new ExportDataElement[] { new DCSDataElement(_id) };
 
         public override void Reset()
         {

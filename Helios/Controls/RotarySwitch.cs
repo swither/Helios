@@ -255,6 +255,8 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
+        // XXX this is horrible:  during deserialization, this creates n^2 updates as each insert to the collection renumbers everything
+        // XXX for a large profile, this is on the order of 2.5 seconds wasted
         public RotarySwitchPositionCollection Positions { get; } = new RotarySwitchPositionCollection();
 
         public int CurrentPosition
@@ -347,8 +349,9 @@ namespace GadrocsWorkshop.Helios.Controls
                 }
             }
 
-            // Need to do it twice to prevent duplicates...  this is
-            // just an easy way to do it instead of reordering everything in the loops above.
+            // Need to do it twice to prevent collisions.  This is
+            // just an easy way to do it instead of reordering everything
+            // in the loops above.
             int i = 1000000;
             foreach (RotarySwitchPosition position in Positions)
             {
@@ -606,6 +609,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void Reset()
         {
+            base.Reset();
+
             BeginTriggerBypass(true);
             CurrentPosition = DefaultPosition;
             EndTriggerBypass(true);

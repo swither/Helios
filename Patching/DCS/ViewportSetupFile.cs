@@ -38,10 +38,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// viewports were generated.  Using these viewports with a different monitor layout
         /// may result in invalid configurations.
         /// </summary>
-        [JsonProperty("MonitorLayoutKey")]
+        [JsonProperty("monitorLayoutKey")]
         public string MonitorLayoutKey { get; internal set; } = "";
 
-        [JsonProperty("Viewports")] public Dictionary<string, Rect> Viewports { get; } = new Dictionary<string, Rect>();
+        [JsonProperty("viewports")] public Dictionary<string, Rect> Viewports { get; } = new Dictionary<string, Rect>();
 
         internal IEnumerable<StatusReportItem> Merge(string name, ViewportSetupFile from)
         {

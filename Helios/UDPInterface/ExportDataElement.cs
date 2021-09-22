@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using Newtonsoft.Json;
+
 namespace GadrocsWorkshop.Helios.UDPInterface
 {
     public class ExportDataElement
@@ -23,6 +25,13 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             ID = id;
         }
 
-        public string ID { get; }
+        // used by deserialization
+        protected ExportDataElement()
+        {
+            // no code
+        }
+
+        [JsonProperty("id", Required = Required.Always)]
+        public string ID { get; private set; }
     }
 }

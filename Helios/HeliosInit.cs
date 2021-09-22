@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Util;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace GadrocsWorkshop.Helios
@@ -101,29 +103,37 @@ namespace GadrocsWorkshop.Helios
             Assembly execAssembly = Assembly.GetExecutingAssembly();
             LoadModule(execAssembly);
 
-            if (ConfigManager.Application.AllowPlugins)
-            {
-                string pluginsFolder = Path.Combine(Path.GetDirectoryName(execAssembly.Location) ?? "", "Plugins");
-                if (Directory.Exists(pluginsFolder))
-                {
-                    foreach (string pluginPath in Directory.EnumerateFiles(pluginsFolder, "*.dll", SearchOption.AllDirectories))
-                    {
-                        LoadModule(pluginPath);
-                    }
-                }
-
-                // REVISIT: move this to plugins folder and get rid of special case if we can add the check for system libraries
-                // to HeliosModuleAttribute.  This would be relevant if we create other plugins for DCSFlightPanels and the like
-                String phidgetsDllPath = Path.Combine(Environment.SystemDirectory, "phidget21.dll");
-                if (File.Exists("Phidgets.dll") && File.Exists(phidgetsDllPath))
-                {
-                    LoadModule("Phidgets.dll");
-                }
-            }
+            LoadPlugins(execAssembly);
 
             if (RenderCapability.Tier == 0)
             {
                 Logger.Warn("Hardware rendering is not available on this machine.  Helios will consume large amounts of CPU.");
+            }
+        }
+
+        private static void LoadPlugins(Assembly execAssembly)
+        {
+            if (!ConfigManager.Application.AllowPlugins)
+            {
+                Logger.Debug("Plugins disabled on this installation");
+                return;
+            }
+
+            string pluginsFolder = Path.Combine(Path.GetDirectoryName(execAssembly.Location) ?? "", "Plugins");
+            if (Directory.Exists(pluginsFolder))
+            {
+                foreach (string pluginPath in Directory.EnumerateFiles(pluginsFolder, "*.dll", SearchOption.AllDirectories))
+                {
+                    LoadModule(pluginPath);
+                }
+            }
+
+            // REVISIT: move this to plugins folder and get rid of special case if we can add the check for system libraries
+            // to HeliosModuleAttribute.  This would be relevant if we create other plugins for DCSFlightPanels and the like
+            String phidgetsDllPath = Path.Combine(Environment.SystemDirectory, "phidget21.dll");
+            if (File.Exists("Phidgets.dll") && File.Exists(phidgetsDllPath))
+            {
+                LoadModule("Phidgets.dll");
             }
         }
 
@@ -191,27 +201,46 @@ namespace GadrocsWorkshop.Helios
             NLog.LogManager.Flush();
         }
 
+        // special cases of libraries that we fail to properly ignore otherwise
+        private static readonly HashSet<string> ForbiddenPlugins = new HashSet<string>
+        {
+            "Phidget22.NET.dll",
+            "phidget22.dll"
+        };
+
         private static void LoadModule(string moduleFileName)
         {
-            if (File.Exists(moduleFileName))
+            if (!File.Exists(moduleFileName))
             {
-                Logger.Debug($"Loading library: '{moduleFileName}'");
-                try
-                {
-                    Assembly asm = Assembly.LoadFrom(moduleFileName);
-                    if (asm != null)
-                    {
-                        LoadModule(asm);
-                    }
-                    else
-                    {
-                        Logger.Warn($"Failed to load library '{moduleFileName}'");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e, $"Failed to load library '{moduleFileName}' due to error");
-                }
+                return;
+            }
+
+            if (ForbiddenPlugins.Contains(Path.GetFileName(moduleFileName)))
+            {
+                Logger.Info($"Ignoring library that is known to not be one of our plugins: '{moduleFileName}'");
+                return;
+            }
+
+            if (!ModuleUtility.IsProbablyAssembly(moduleFileName))
+            {
+                Logger.Info($"Ignoring library that does not appear to be a .NET assembly: '{moduleFileName}'");
+                return;
+            }
+
+            Logger.Debug($"Loading library: '{moduleFileName}'");
+            try
+            {
+                Assembly asm = Assembly.LoadFrom(moduleFileName);
+                LoadModule(asm);
+            }
+            catch (BadImageFormatException)
+            {
+                // not a .NET assembly we can load
+                Logger.Info($"Ignoring CLR library that could not be loaded as a .NET assembly: '{moduleFileName}'");
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, $"Failed to load library '{moduleFileName}' due to error");
             }
         }
 
@@ -219,7 +248,7 @@ namespace GadrocsWorkshop.Helios
         {
             string moduleName = asm.GetName().Name;
             Logger.Debug($"Helios is searching for Helios components in library '{moduleName}'");
-            ((ModuleManager)ConfigManager.ModuleManager).RegisterModule(asm);
+            ((IModuleManagerWritable)ConfigManager.ModuleManager).RegisterModule(asm);
 
             string directoryName = moduleName;
             HeliosModuleAttribute[] moduleAttributes = (HeliosModuleAttribute[])asm.GetCustomAttributes(typeof(HeliosModuleAttribute), false);

@@ -156,7 +156,7 @@ namespace GadrocsWorkshop.Helios
                 ConvertPixels(deviceMode.dmPelsHeight),
                 deviceMode.dmDisplayOrientation);
 
-            Logger.Debug("Created Helios Monitor for display {Name} of size {Width}x{Height} at {Left},{Top}",
+            Logger.Debug("found display {Name} of size {Width}x{Height} at {Left},{Top}",
                 displayDevice.DeviceName,
                 heliosMonitor.Width,
                 heliosMonitor.Height,

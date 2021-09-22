@@ -16,6 +16,7 @@
 namespace GadrocsWorkshop.Helios
 {
     using GadrocsWorkshop.Helios.Units;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Helper class with all default unit constructors.
@@ -69,22 +70,72 @@ namespace GadrocsWorkshop.Helios
         public static readonly BindingValueUnit FeetPerMinute = new SpeedUnit(Feet, Minutes, "fpm", "Feet per minute");
         public static readonly BindingValueUnit MilesPerHour = new SpeedUnit(Miles, Hours, "mph", "Miles per hour");
         public static readonly BindingValueUnit Knots = new SpeedUnit(NauticalMiles, Hours, "kts", "Knots");
-        public static readonly BindingValueUnit KilometersPerHour = new SpeedUnit(Kilometers, Hours, "km/h", "kilometers per hour");
+        public static readonly BindingValueUnit KilometersPerHour = new SpeedUnit(Kilometers, Hours, "km/h", "Kilometers per hour");
 
         // Mass Flow Units
         public static readonly BindingValueUnit PoundsPerHour = new MassFlowUnit(Pounds, Hours, "PPH", "Pound per hour");
 
         // Pressure Units
         public static readonly BindingValueUnit PoundsPerSquareInch = new PressureUnit(Pounds, SquareInch, "PSI", "Pounds per square inch");
-        public static readonly BindingValueUnit PoundsPerSquareFoot = new PressureUnit(Pounds, SquareFoot, "PSI", "Pounds per square foot");
+        public static readonly BindingValueUnit PoundsPerSquareFoot = new PressureUnit(Pounds, SquareFoot, "lb/ft2", "Pounds per square foot");
         public static readonly BindingValueUnit InchesOfMercury = new InchofMercuryUnit();
         public static readonly BindingValueUnit MilimetersOfMercury = new MilimetersOfMercury();
-        public static readonly BindingValueUnit KilgramsForcePerSquareCentimenter = new PressureUnit(Kilograms, SquareCentimeter, "kgf/cm2", "Kilograms Force per Square Centimeter");
+        public static readonly BindingValueUnit KilgramsForcePerSquareCentimenter = new PressureUnit(Kilograms, SquareCentimeter, "kgf/cm2", "Kilograms force per square centimeter");
 
         // Volume Units
         public static readonly BindingValueUnit Liters = new Liters();
 
         //Electrical Units
         public static readonly BindingValueUnit Volts = new NumericUnit();
+
+        // cache all the fields by name
+        private static Dictionary<string, BindingValueUnit> _unitByName;
+        private static Dictionary<string, string> _nameByLongName;
+
+        static BindingValueUnits()
+        {
+            _unitByName = new Dictionary<string, BindingValueUnit>();
+            _nameByLongName = new Dictionary<string, string>();
+            System.Type unitsClass = typeof(BindingValueUnits);
+            foreach (System.Reflection.FieldInfo field in unitsClass.GetFields())
+            {
+                if (field.Name == "Volts")
+                {
+                    // not its own unit
+                    continue;
+                }
+                if (field.GetValue(null) is BindingValueUnit unit)
+                {
+                    _unitByName.Add(field.Name, unit);
+                    _nameByLongName.Add(unit.LongName, field.Name);
+                }
+            }
+        }
+
+        // fetch item by name via reflection, used for deserialization
+        public static BindingValueUnit FetchUnitByName(string name)
+        {
+            if (_unitByName.TryGetValue(name, out BindingValueUnit unit))
+            {
+                return unit;
+            }
+            ConfigManager.LogManager.LogError($"implementation error: '{name}' is not a valid binding value unit; please update BindingValueUnits class");
+            // survive, because this is from external input
+            return null;
+        }
+
+        // fetch name via reflection, used for serialization
+        public static string FetchUnitName(BindingValueUnit unit)
+        {
+            if (_nameByLongName.TryGetValue(unit.LongName, out string name))
+            {
+                return name;
+            }
+            // this does not require input and will happen while still developing
+            throw new System.Exception($"implementation error: binding unit with long name '{unit.LongName}' not found; please update BindingValueUnits class");
+        }
+
+        // all valid unit names
+        public static IEnumerable<string> UnitNames => _unitByName.Keys;
     }
 }

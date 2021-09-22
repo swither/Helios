@@ -56,17 +56,22 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // start up Helios
             string documentPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                RunningVersion.IsDevelopmentPrototype ? options.DevDocumentPath : options.DocumentPath);
+                RunningVersion.IsDevelopmentPrototype ? options.DevDocumentsName : options.DocumentsName);
             HeliosInit.Initialize(documentPath, "ProfileEditor.log", options.LogLevel);
-
-            // need to defer exit until after we initialize Helios or our main window will crash
-            if (exitCode < 0)
+            if (options.GenerateInterfaceSchema)
+            {
+                Json.InterfaceExport exporter = new Json.InterfaceExport();
+                exporter.GenerateInterfaceSchema();
+            }
+            if (options.GenerateInterfaceJson)
+            {
+                Json.InterfaceExport exporter = new Json.InterfaceExport();
+                exporter.GenerateInterfaceJson();
+            }
+            if (options.GenerateInterfaceJson || options.GenerateInterfaceSchema)
             {
                 Current.Shutdown();
-                return;
             }
-
-            // note that we started
             ConfigManager.LogManager.LogInfo("Starting Editor");
         }
 

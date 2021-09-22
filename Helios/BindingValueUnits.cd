@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GadrocsWorkshop.Helios.BindingValueUnit" Collapsed="true">
+    <Position X="17.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAgAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>BindingValueUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.AreaUnit" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\AreaUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.BooleanUnit" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\BooleanUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.CelsiusUnit" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\CelsiusUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.DegreesUnit" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\DegreesUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.DistanceUnit" Collapsed="true">
+    <Position X="9.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\DistanceUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.Liters" Collapsed="true">
+    <Position X="11.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\Liters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.MassFlowUnit" Collapsed="true">
+    <Position X="14" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAEgAAAEgAAAAAAAAEAAAIAAAQAAAAAAAUA=</HashCode>
+      <FileName>Units\MassFlowUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.MassUnit" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\MassUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.NoValueUnit" Collapsed="true">
+    <Position X="2.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\NoValueUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.NozzlePositionPercentUnit" Collapsed="true">
+    <Position X="5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\NozzlePositionPercentUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.NozzlePositionUnit" Collapsed="true">
+    <Position X="7.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAgACAAAAA=</HashCode>
+      <FileName>Units\NozzlePositionUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.NumericUnit" Collapsed="true">
+    <Position X="9.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\NumericUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.PressureUnit" Collapsed="true">
+    <Position X="11.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAEAAAAEgAAAAAAAgEAAAIAAAQAAAAAAAQE=</HashCode>
+      <FileName>Units\PressureUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.RadiansUnit" Collapsed="true">
+    <Position X="14" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\RadiansUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.RPMPercentUnit" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\RPMPercentUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.RPMUnit" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAgACAAAAA=</HashCode>
+      <FileName>Units\RPMUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.SpeedUnit" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEgAAAEgAAAAAgAAEAAAIAAAQAAAAAAIEA=</HashCode>
+      <FileName>Units\SpeedUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.TextUnit" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\TextUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GadrocsWorkshop.Helios.Units.TimeUnit" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Units\TimeUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

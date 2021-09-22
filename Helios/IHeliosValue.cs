@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios
         string ValueID { get; }
 
         /// <summary>
-        /// Returns teh binding value for this value attribute of a HeliosObject
+        /// Returns the binding value for this value attribute of a HeliosObject
         /// </summary>
         BindingValue Value { get; }
     }

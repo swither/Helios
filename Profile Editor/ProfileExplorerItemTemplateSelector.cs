@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using System.Windows;
     using System.Windows.Controls;
 
-    class ProfileExplorerItemTemplateSelector : DataTemplateSelector
+    public class ProfileExplorerItemTemplateSelector : DataTemplateSelector
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {

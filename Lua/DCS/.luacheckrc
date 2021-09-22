@@ -52,17 +52,22 @@ std = {
     },
     read_globals = {
         -- LUA std
+        "assert",
         "dofile",
+        "getfenv",
         "io",
         "ipairs",
+        "loadfile",
         "math",
         "os",
         "pairs",
         "pcall",
         "require",
+        "setfenv",
         "string",
         "table",
         "tonumber",
+        "tostring",
         "type",
 
         -- DCS

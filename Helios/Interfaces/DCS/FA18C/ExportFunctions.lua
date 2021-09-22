@@ -1,5 +1,5 @@
 function driver.processHighImportance(mainPanelDevice)
-    -- Send Altimeter Values
+    -- Altimeter
     helios.send(
         2051,
         string.format(
@@ -18,19 +18,15 @@ function driver.processHighImportance(mainPanelDevice)
             mainPanelDevice:get_argument_value(221)
         )
     )
+
     -- Calcuate HSI Value
     -- helios.send(2029, string.format("%0.2f;%0.2f;%0.4f", mainPanelDevice:get_argument_value(29), mainPanelDevice:get_argument_value(30), mainPanelDevice:get_argument_value(31)))
 
-    --    --IFEI textures
-    --    local IFEI_Textures_table = {}
-    --    for i=1,16 do IFEI_Textures_table[i] = 0 end
-    --
-    --
-    --    -- getting the IFEI data
+    -- IFEI structured data
     local li = helios.parseIndication(5) -- 5 for IFEI
     if li then
         --
-        --        --IFEI data
+        -- IFEI data
         --
         helios.send(2052, string.format("%s", helios.ensureString(li.txt_BINGO)))
         helios.send(2053, string.format("%s", helios.ensureString(li.txt_CLOCK_H)))
@@ -60,8 +56,9 @@ function driver.processHighImportance(mainPanelDevice)
         helios.send(2076, string.format("%s", helios.ensureString(li.txt_DrawChar))) -- not seen this used
         helios.send(2077, string.format("%s", helios.ensureString(li.txt_T)))
         helios.send(2078, string.format("%s", helios.ensureString(li.txt_TimeSetMode)))
+
         --
-        --        --IFEI textures
+        -- IFEI textures
         --
         helios.send(4000, string.format("%s", helios.textureToString(li.RPMTexture)))
         helios.send(4001, string.format("%s", helios.textureToString(li.TempTexture)))
@@ -82,12 +79,9 @@ function driver.processHighImportance(mainPanelDevice)
         helios.send(4016, string.format("%s", helios.textureToString(li.ZTexture)))
         helios.send(4017, string.format("%s", helios.textureToString(li.LTexture)))
         helios.send(4018, string.format("%s", helios.textureToString(li.RTexture)))
-
-    --
-    ----
     end
-    --
-    -- getting the UFC data
+
+    -- UFC structured data
     li = helios.parseIndication(6) -- 6 for UFC
     if li then
         helios.send(2080, string.format("%s", helios.ensureString(li.UFC_MainDummy)))
@@ -105,17 +99,19 @@ function driver.processHighImportance(mainPanelDevice)
         helios.send(2092, string.format("%2s", helios.ensureString(li.UFC_ScratchPadString1Display))) -- 16 Segment
         helios.send(2093, string.format("%2s", helios.ensureString(li.UFC_ScratchPadString2Display))) -- 16 Segment
         helios.send(2094, string.format("%7s", helios.ensureString(li.UFC_ScratchPadNumberDisplay)))  -- 7 Segment numbers
-		helios.send(2095, string.format("%2s", helios.ensureString(li.UFC_Comm1Display)))				-- 16 Segment
+        helios.send(2095, string.format("%2s", helios.ensureString(li.UFC_Comm1Display)))				-- 16 Segment
         helios.send(2096, string.format("%2s", helios.ensureString(li.UFC_Comm2Display)))				-- 16 Segment
     end
 end
 
 function driver.processLowImportance(mainPanelDevice) --luacheck: no unused args
-    -- Get Radio Frequencies
-    --local lUHFRadio = GetDevice(54)
-    --helios.send(2000, string.format("%7.3f", lUHFRadio:get_frequency()/1000000))
+    -- Radio Frequencies
+    -- local lUHFRadio = GetDevice(54)
+    -- helios.send(2000, string.format("%7.3f", lUHFRadio:get_frequency()/1000000))
+
     -- ILS Frequency
-    --helios.send(2251, string.format("%0.1f;%0.1f", mainPanelDevice:get_argument_value(251), mainPanelDevice:get_argument_value(252)))
+    -- helios.send(2251, string.format("%0.1f;%0.1f", mainPanelDevice:get_argument_value(251), mainPanelDevice:get_argument_value(252)))
+
     -- TACAN Channel
-    --helios.send(2263, string.format("%0.2f;%0.2f;%0.2f", mainPanelDevice:get_argument_value(263), mainPanelDevice:get_argument_value(264), mainPanelDevice:get_argument_value(265)))
+    -- helios.send(2263, string.format("%0.2f;%0.2f;%0.2f", mainPanelDevice:get_argument_value(263), mainPanelDevice:get_argument_value(264), mainPanelDevice:get_argument_value(265)))
 end

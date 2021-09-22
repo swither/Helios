@@ -24,8 +24,30 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class GlobalOptions : NotificationObject
     {
-        private const string SETTINGS_GROUP = "Helios";
+        /// <summary>
+        /// name used in he settings; may differ from property name and must never change
+        /// </summary>
+        private const string SETTING_ALLOW_RAW_CONVERSION = "AllowRawConversion";
+
+        /// <summary>
+        /// name used in the settings; may differ from property name and must never change
+        /// </summary>
+        private const string SETTING_ALLOW_SOFT_INTERFACES = "AllowSoftInterfaces";
+
+        /// <summary>
+        /// name used in the settings; may differ from property name and must never change
+        /// </summary>
         private const string SETTING_SCALE_ALL_TEXT = "ScaleAllText";
+
+        /// <summary>
+        /// name used in he settings; may differ from property name and must never change
+        /// </summary>
+        private const string SETTING_USE_LEGACY_RESET_BEHAVIOR = "UseLegacyResetBehavior";
+
+        /// <summary>
+        /// global options group name used in the settings, must never change
+        /// </summary>
+        private const string SETTINGS_GROUP = "Helios";
 
         /// <summary>
         /// backing field for property ScaleAllText, contains
@@ -33,9 +55,18 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         private bool _scaleAllText;
 
+        /// <summary>
+        /// backing field for property UseLegacyResetBehavior, contains
+        /// true if profile reset should act like it did in previous releases, not firing bindings for values
+        /// that happen to already have the right value, even though their observers may have just been reset to
+        /// an inconsistent initial state
+        /// </summary>
+        private bool _useLegacyResetBehavior;
+
         public GlobalOptions()
         {
             _scaleAllText = HasScaleAllText;
+            _useLegacyResetBehavior = HasUseLegacyResetBehavior;
         }
 
         #region Properties
@@ -57,6 +88,30 @@ namespace GadrocsWorkshop.Helios
                 _scaleAllText = value;
                 ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, SETTING_SCALE_ALL_TEXT, value);
                 OnPropertyChanged("ScaleAllText", oldValue, value, true);
+                ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, SETTING_SCALE_ALL_TEXT, value);
+                OnPropertyChanged(nameof(ScaleAllText), oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// true if profile reset should act like it did in previous releases, not firing bindings for values
+        /// that happen to already have the right value, even though their observers may have just been reset to
+        /// an inconsistent initial state
+        /// </summary>
+        public bool UseLegacyResetBehavior
+        {
+            get => _useLegacyResetBehavior;
+            set
+            {
+                if (_useLegacyResetBehavior == value)
+                {
+                    return;
+                }
+
+                bool oldValue = _useLegacyResetBehavior;
+                _useLegacyResetBehavior = value;
+                ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, SETTING_USE_LEGACY_RESET_BEHAVIOR, value);
+                OnPropertyChanged(nameof(UseLegacyResetBehavior), oldValue, value, true);
             }
         }
 
@@ -66,7 +121,34 @@ namespace GadrocsWorkshop.Helios
         /// <returns>
         /// true if text attached to buttons and similar controls is scaled during reset monitors and similar operations
         /// </returns>
-        public static bool HasScaleAllText => ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_SCALE_ALL_TEXT, true);
+        public static bool HasScaleAllText =>
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_SCALE_ALL_TEXT, true);
+
+        /// <summary>
+        /// accessible as utility for client code that can't get access to the GlobalOptions instance readily
+        /// </summary>
+        /// <returns>
+        /// true if interface classes may be defined entirely in external files without being instantiated in the code
+        /// </returns>
+        public static bool HasAllowSoftInterfaces =>
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_ALLOW_SOFT_INTERFACES, true);
+
+        /// <summary>
+        /// NOTE: there is current no UI for this
+        /// </summary>
+        public static bool HasAllowRawConversion =>
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_ALLOW_RAW_CONVERSION, true);
+
+        /// <summary>
+        /// accessible as utility for client code that can't get access to the GlobalOptions instance readily
+        /// </summary>
+        /// <returns>
+        /// true if profile reset should act like it did in previous releases, not firing bindings for values
+        /// that happen to already have the right value, even though their observers may have just been reset to
+        /// an inconsistent initial state
+        /// </returns>
+        public static bool HasUseLegacyResetBehavior =>
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_USE_LEGACY_RESET_BEHAVIOR, false);
 
         #endregion
     }

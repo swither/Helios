@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 
-namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
+namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
     /// <summary>
     /// This is the glue code to interact with an editable combobox in a WPF dialog

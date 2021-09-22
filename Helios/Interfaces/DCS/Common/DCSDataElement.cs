@@ -17,15 +17,25 @@
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
     using GadrocsWorkshop.Helios.UDPInterface;
+    using Newtonsoft.Json;
 
     public class DCSDataElement : ExportDataElement
     {
+        /// <summary>
+        /// This constructor created an element that consumes a value but does not generate an export
+        /// </summary>
+        /// <param name="id"></param>
         public DCSDataElement(string id)
             : this(id, null, false)
         {
             // utility constructor
         }
 
+        /// <summary>
+        /// This constructor creates an element that consumes a value and generates an export with the given format
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="format"></param>
         public DCSDataElement(string id, string format)
             : this (id, format, false)
         {
@@ -39,8 +49,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             IsExportedEveryFrame = everyFrame;
         }
 
-        public string Format { get; }
+        // deserialization constructor called by reflection from JSON library
+        [JsonConstructor]
+        private DCSDataElement()
+        {
+            // default is true if not mentioned in JSON
+            IsExportedEveryFrame = true;
+        }
 
-        public bool IsExportedEveryFrame { get; }
+        [JsonProperty("format", NullValueHandling = NullValueHandling.Ignore)]
+        public string Format { get; private set; }
+
+        [JsonProperty("isExportedEveryFrame")]
+        public bool IsExportedEveryFrame { get; private set; }
+
+        #region JsonOnly
+        public bool ShouldSerializeIsExportedEveryFrame()
+        {
+            return !IsExportedEveryFrame;
+        }
+        #endregion
     }
 }

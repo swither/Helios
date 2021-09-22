@@ -16,6 +16,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         public static IEnumerable<string> ResetMonitors(ICallbacks parent, ResetMonitors resetDialog, HeliosProfile profile)
         {
             Logger.Debug("resetting Monitors");
+            int numEndpointsBefore = CountAllBindingEndpoints(profile);
 
             // WARNING: monitor naming is 1-based but indexing and NewMonitor references are 0-based
             Monitor[] localMonitors = ConfigManager.DisplayManager.Displays.ToArray<Monitor>();
@@ -69,6 +70,30 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 }
                 item.CopySettings(profile.Monitors[item.NewMonitor]);
             }
+
+            int numEndpointsAfter = CountAllBindingEndpoints(profile);
+            if (numEndpointsBefore != numEndpointsAfter)
+            {
+                throw new Exception($"Reset monitors failed.  Before reset, there were {numEndpointsBefore} binding endpoints. After reset, there were {numEndpointsAfter}.  Bindings have been created or destroyed by the reset process, which indicates a program error.");
+            }
+            yield return "completed";
+        }
+
+        private static int CountAllBindingEndpoints(HeliosProfile profile)
+        {
+            int numberOfBindings = profile.Interfaces
+                .SelectMany(heliosInterface => heliosInterface.InputBindings)
+                .Count();
+            numberOfBindings += profile.Interfaces
+                .SelectMany(heliosInterface => heliosInterface.OutputBindings)
+                .Count();
+            numberOfBindings += profile.WalkVisuals()
+                .SelectMany(visual => visual.InputBindings)
+                .Count();
+            numberOfBindings += profile.WalkVisuals()
+                .SelectMany(visual => visual.OutputBindings)
+                .Count();
+            return numberOfBindings;
         }
 
         private static IEnumerable<string> ResetRemovedMonitor(ICallbacks parent, HeliosProfile profile, int monitorIndex, ViewModel.MonitorResetItem item, int monitorToRemove)

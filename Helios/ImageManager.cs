@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios
     /// <summary>
     /// ImageManager gives access to loading and resizing images from the appropriate locations.
     /// </summary>
-    public class ImageManager : IImageManager3
+    public class ImageManager : IImageManager4
     {
         private readonly string _documentImagePath;
         private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -43,6 +43,16 @@ namespace GadrocsWorkshop.Helios
 
         private readonly XamlFirewall _xamlFirewall;
 
+        /// <summary>
+        /// backing field for property CacheObjects, contains
+        /// true if object caching is enabled
+        /// </summary>
+        private bool _cacheObjects;
+
+        // cache and share image source objects, to avoid recreating and loading files
+        // (actual bitmap contents may be evicted due to system caching)
+        private readonly Dictionary<string, ImageSource> _objectCache = new Dictionary<string, ImageSource>();
+
         internal ImageManager(string userImagePath)
         {
             Logger.Debug($"Helios will load user images from {Anonymizer.Anonymize(userImagePath)}");
@@ -53,26 +63,45 @@ namespace GadrocsWorkshop.Helios
 
         private ImageSource DoLoadImage(string uri, int? width, int? height, LoadImageOptions options)
         {
+            if (null == uri)
+            {
+                return null;
+            }
+
+            if (_objectCache.TryGetValue(uri, out ImageSource imageSource))
+            {
+                // NOTE: this caching makes a huge difference (many seconds on a large profile) because there are usually
+                // many hundreds of buttons and switches using the same images, and it also makes restarting a profile faster
+                return imageSource;
+            }
+
             // parse as URI and check for existence of file, return Uri for resource that exists
             // or null (note: resource is not necesarily allowed to be read)
             Uri imageUri = GetImageUri(uri);
             if (imageUri == null)
             {
-                return null;
+                // cache denial
+                return CacheImageSource(uri, null);
             }
 
             // based on protocol/scheme, check to make sure source location is permitted
             if (!CheckImageLocationSecurity(imageUri))
             {
-                return null;
+                // cache denial
+                return CacheImageSource(uri, null);
             }
 
-            if (uri.EndsWith(".xaml"))
+            if (uri.EndsWith(".xaml", StringComparison.InvariantCulture))
             {
-                return imageUri.Scheme == "pack" ? LoadXamlResource(imageUri, width, height) : LoadXamlFile(imageUri, width, height);
+                imageSource = imageUri.Scheme == "pack" ? LoadXamlResource(imageUri, width, height) : LoadXamlFile(imageUri, width, height);
+                return CacheImageSource(uri, imageSource);
             }
 
-            Logger.Debug("image being loaded from {URI}", Anonymizer.Anonymize(imageUri));
+            if (Logger.IsDebugEnabled)
+            {
+                Logger.Debug("image being loaded from {URI}", Anonymizer.Anonymize(imageUri));
+            }
+            
             BitmapImage image = new BitmapImage();
             image.BeginInit();
 
@@ -94,7 +123,16 @@ namespace GadrocsWorkshop.Helios
             }
 
             image.EndInit();
-            return image;
+            return CacheImageSource(uri, image);
+        }
+
+        private ImageSource CacheImageSource(string uri, ImageSource source)
+        {
+            if (_cacheObjects)
+            {
+                _objectCache.Add(uri, source);
+            }
+            return source;
         }
 
         private bool CheckImageLocationSecurity(Uri imageUri)
@@ -430,6 +468,8 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        #region IImageManager2
+
         public void ClearFailureTracking()
         {
             _failedImagePaths.Clear();
@@ -442,5 +482,35 @@ namespace GadrocsWorkshop.Helios
                 imageLoadFailureHandler.Invoke(this, new ImageLoadEventArgs(path));
             }
         }
+
+        #endregion
+        
+        #region IImageManager4
+
+        public void DropObjectCache()
+        {
+            _objectCache.Clear();
+        }
+
+        /// <summary>
+        /// true if object caching is enabled
+        /// </summary>
+        public bool CacheObjects
+        {
+            get => _cacheObjects;
+            set
+            {
+                if (_cacheObjects == value) return;
+                bool oldValue = _cacheObjects;
+                _cacheObjects = value;
+                if (oldValue && !value)
+                {
+                    // turned off
+                    DropObjectCache();;
+                }
+            }
+        }
+
+        #endregion
     }
 }
