@@ -673,6 +673,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             StatusBarMessage = "Loading Profile...";
             GetLoadingAdorner();
 
+            // configure image caching appropriately for this load
+            if (ConfigManager.ImageManager is IImageManager4 cacheCapable)
+            {
+                cacheCapable.CacheObjects = GlobalOptions.HasCacheImages;
+
+                if (cacheCapable.CacheObjects)
+                {
+                    // always start fresh
+                    cacheCapable.DropObjectCache();
+                }
+            }
+
             // create profile
             HeliosProfile profile = ConfigManager.ProfileManager.LoadProfile(path, out IEnumerable<string> loadingWork);
 

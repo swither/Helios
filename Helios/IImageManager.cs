@@ -56,7 +56,7 @@ namespace GadrocsWorkshop.Helios
     /// <summary>
     /// Version 2 of IImageManager interface
     /// </summary>
-    public interface IImageManager2: IImageManager
+    public interface IImageManager2 : IImageManager
     {
         event EventHandler<ImageLoadEventArgs> ImageLoadSuccess;
         event EventHandler<ImageLoadEventArgs> ImageLoadFailure;
@@ -80,7 +80,8 @@ namespace GadrocsWorkshop.Helios
         [Description("Default behavior of LoadImage")]
         None = 0,
 
-        [Description("If the image is loaded from a local file URL and changed on disk, the new version will be used.  In-memory caching of images is disabled.")]
+        [Description(
+            "If the image is loaded from a local file URL and changed on disk, the new version will be used.  In-memory caching of images is disabled.")]
         ReloadIfChangedExternally = 1
     }
 
@@ -108,5 +109,19 @@ namespace GadrocsWorkshop.Helios
         /// <param name="options">Flags set will change the behavior of LoadImage.  LoadImageOptions.None results in the same behavior as LoadImage from the IImageManager interface.</param>
         /// <returns></returns>
         ImageSource LoadImage(string uri, int width, int height, LoadImageOptions options);
+    }
+
+    /// <summary>
+    /// version 4 of public cross-assembly interface IImageManager
+    /// </summary>
+    public interface IImageManager4 : IImageManager3
+    {
+        bool CacheObjects { get; set; }
+
+        /// <summary>
+        /// when called, clears out any cached objects, so that all image sources and similar objects are
+        /// recreated from scratch when they are next loaded
+        /// </summary>
+        void DropObjectCache();
     }
 }

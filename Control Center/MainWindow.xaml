@@ -64,7 +64,7 @@
             <Image Source="ControlCenterBackground.png" Canvas.Top="0" Canvas.Left="0" />
             <Thumb x:Name="ControlCenterDragThumb" Width="504" Height="276" Opacity="0" Canvas.Left="0"/>
             <StackPanel Canvas.Left="16" Canvas.Top="16">
-                <TextBlock Text="PWR" Style="{StaticResource TopLabel}" Height="Auto"/>
+                <TextBlock Text="PWR" Style="{StaticResource TopLabelTall}" Height="Auto"/>
                 <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
                 <CheckBox x:Name="PowerButton" Style="{StaticResource HeliosSwitchStyle}" IsChecked="True" Unchecked="PowerButton_Unchecked" />
                 <TextBlock Text="OFF" Style="{StaticResource UpLabel}"/>
@@ -78,13 +78,13 @@
                     <RowDefinition Height="160"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="PREFS" Style="{StaticResource TopLabel}" Height="Auto"/>
+                    <TextBlock Text="PREFS" Style="{StaticResource TopLabelTall}" Height="Auto"/>
                     <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
                     <CheckBox x:Name="PrefsCheckBox" Style="{StaticResource HeliosSwitchStyle}" IsChecked="false"/>
                     <TextBlock Text="OFF" Style="{StaticResource UpLabel}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="1">
-                    <TextBlock Text="CONSOLE" Style="{StaticResource TopLabel}" Height="Auto"/>
+                    <TextBlock Text="CONSOLE" Style="{StaticResource TopLabelTall}" Height="Auto"/>
                     <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
                     <CheckBox x:Name="StatusCheckBox" Style="{StaticResource HeliosSwitchStyle}" IsChecked="false"/>
                     <TextBlock Text="OFF" Style="{StaticResource UpLabel}"/>
@@ -139,11 +139,12 @@
                     <ColumnDefinition Width="84"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="160"/>
-                    <RowDefinition Height="160"/>
+                    <RowDefinition Height="110"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="110"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="START MINIMIZED" Style="{StaticResource TopLabel}"/>
+                    <TextBlock Text="START MINIMIZED" Style="{StaticResource TopLabel}" Margin="15,10,0,0"/>
                     <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
                     <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding StartMinimized}"/>
                     <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
@@ -168,27 +169,30 @@
                               Style="{StaticResource HeliosSwitchStyle}"/>
                     <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                 </StackPanel>
-                <Grid Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2">
+                <Grid Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Grid.RowSpan="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="24"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="48"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="38"/>
                     </Grid.RowDefinitions>
-                    <Rectangle Grid.Row="0" Grid.Column="0" Margin="9,9,0,0" Height="2" Style="{StaticResource FillWithFontColor}"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="HOTKEY" Style="{StaticResource TopLabel}" Height="Auto"/>
-                    <Rectangle Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Margin="0,9,0,0" Height="2" Width="30" Style="{StaticResource FillWithFontColor}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="SET" Style="{StaticResource UpLabel}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="2" Text="CLEAR" Style="{StaticResource UpLabel}"/>
-                    <Button Grid.Row="2" Grid.Column="0" Width="36" Height="36" Name="SetHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="SetHotkey_Click" />
-                    <Button Grid.Row="2" Grid.Column="2" Width="36" Height="36" Name="ClearHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="ClearHotkey_Click" />
-                    <TextBlock Panel.ZIndex="2" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="13,11,13,11" Style="{StaticResource BaseDisplayText}" FontSize="20" Text="{Binding HotKeyDescription, ElementName=HeliosWindow}" TextAlignment="Center" TextWrapping="Wrap" />
-                    <Border Panel.ZIndex="1" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,8,10,8" CornerRadius="3" BorderBrush="#FF454545" BorderThickness="2" Background="#FF001500" />
+                    <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="9,5,0,0" Height="2" Style="{StaticResource FillWithFontColor}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="HOTKEY" Style="{StaticResource TopLabel}" Height="15" Margin="5,10,5,5"/>
+                    <Rectangle Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,5,0,0" Height="2" Width="25" Style="{StaticResource FillWithFontColor}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="SET" Style="{StaticResource UpLabel}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="3" Text="CLEAR" Style="{StaticResource UpLabel}"/>
+                    <Button Grid.Row="3" Grid.Column="1" Width="36" Height="36" Name="SetHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="SetHotkey_Click" />
+                    <Button Grid.Row="3" Grid.Column="3" Width="36" Height="36" Name="ClearHotkey" Style="{StaticResource HeliosPushButtonStyle}" Click="ClearHotkey_Click" />
+                    <TextBlock Panel.ZIndex="2" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" Margin="13,6" Style="{StaticResource BaseDisplayText}" FontSize="20" Text="{Binding HotKeyDescription, ElementName=HeliosWindow}" TextAlignment="Center" TextWrapping="Wrap" />
+                    <Border Panel.ZIndex="1" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" Margin="10,3" CornerRadius="3" BorderBrush="#FF454545" BorderThickness="2" Background="#FF001500" />
                 </Grid>
                 <StackPanel Grid.Row="1" Grid.Column="0">
                     <TextBlock Text="PREFLIGHT CHECK" Style="{StaticResource TopLabel}"/>
@@ -208,11 +212,15 @@
                     <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding HighQualityBitmapScaling}"/>
                     <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                 </StackPanel>
-                <Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" BorderThickness="1" CornerRadius="4" Padding="2" Style="{StaticResource BorderInFontColor}">
-                </Border>
-                <Grid Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" >
+                <StackPanel Grid.Row="1" Grid.Column="3">
+                    <TextBlock Text="CACHE   IMAGES" Style="{StaticResource TopLabel}"/>
+                    <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
+                    <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding CacheImages}"/>
+                    <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
+                </StackPanel>
+                <Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="3" Margin="0,3,3,20">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="84"/>
+                        <ColumnDefinition Width="64"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -221,15 +229,17 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="TOUCHSCREEN 2ND CLICK SUPPRESSION" Style="{StaticResource TopLabel}"/>
-                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
+                    <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="3" BorderThickness="1" CornerRadius="4" Padding="2" Style="{StaticResource BorderInFontColor}">
+                    </Border>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="TOUCHSCREEN 2ND CLICK SUPPRESSION" Style="{StaticResource TopLabel}" Height="15"/>
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Margin="20,0,0,0">
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
                         <CheckBox Name="TouchscreenCheckBox" ToolTipService.ToolTip="Suppress mouse clicks after touch click if you appear to get double touches from a touchscreen." Style="{StaticResource HeliosSwitchStyle}" Unchecked="TouchscreenCheckBox_Unchecked" />
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                         <TextBlock x:Name="TouchScreenDelayTitle" Text="IGNORE 2ND CLICK FOR" Style="{StaticResource UpLabel}" ToolTipService.ToolTip="The period when a secondary mouse trigger from a touchscreen is ignored."/>
-                        <Border CornerRadius="3" BorderBrush="#FF454545" BorderThickness="1" Background="#FF001500" Padding="0" Width="56" Height="18" Margin="4,0,0,0" >
+                        <Border CornerRadius="3" BorderBrush="#FF454545" BorderThickness="1" Background="#FF001500" Padding="0" Width="56" Height="18" Margin="8,0,0,0" >
                             <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource BaseDisplayText}" FontSize="12" Padding="0,0,2,0" Text="{Binding SuppressMouseAfterTouchDuration}" VerticalAlignment="Center" TextAlignment="Right"/>
                             <TextBlock Style="{StaticResource BaseDisplayText}" FontSize="12" Padding="0,0,2,0" Text=" ms" VerticalAlignment="Center" TextAlignment="Left"/>

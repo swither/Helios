@@ -381,10 +381,10 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     ActiveProfile = null;
                 }
 
-                // try to load the profile, setting SelectedProfileName in the process
+                // try to load the profile, setting SelectedProfileName in the process, and reusing cached images (if enabled) so we can fast switch
                 SettingsLoadTime = DateTime.Now;
                 (ConfigManager.SettingsManager as ISettingsManager2)?.SynchronizeSettings(null);
-                LoadProfile(profileToLoad);
+                LoadProfile(profileToLoad, false);
 
                 if (ActiveProfile != null)
                 {
@@ -432,13 +432,17 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     {
                         ConfigManager.LogManager.LogInfo("Reloading profile due to external settings changes");
                     }
-                    LoadProfile(ActiveProfile.Path);
+
+                    // do the load, synchronous and starting from empty image cache, since this isn't an auto start
+                    LoadProfile(ActiveProfile.Path, true);
                 }
             }
             else if (_profileIndex >= 0)
             {
                 StatusViewer.ResetCautionLight();
-                LoadProfile(_profiles[_profileIndex]);
+
+                // do the load, synchronous and starting from empty image cache, since this isn't an auto start
+                LoadProfile(_profiles[_profileIndex], true);
             }
             
             StartProfile();
@@ -803,12 +807,22 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         #region Profile Persistance
 
-        private void LoadProfile(string path)
+        private void LoadProfile(string path, bool dropImageCache)
         {
             StatusMessage = StatusValue.Loading;
 
             // pump UI events to update UI (NOTE: we are the main thread)
             Dispatcher.Invoke(DispatcherPriority.Loaded, (Action)delegate { });
+
+            // configure ImageManager for this load
+            if (ConfigManager.ImageManager is IImageManager4 cacheCapable) {
+                cacheCapable.CacheObjects = Preferences.CacheImages;
+                if (Preferences.CacheImages && dropImageCache)
+                {
+                    // start with an empty cache, becase this is not a fast switch
+                    cacheCapable.DropObjectCache();
+                }
+            }
 
             // now do the load that might take a while
             ActiveProfile = ConfigManager.ProfileManager.LoadProfile(path);
@@ -1068,7 +1082,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             if (app != null && app.StartupProfile != null && File.Exists(app.StartupProfile))
             {
                 LoadProfileList(app.StartupProfile);
-                LoadProfile(app.StartupProfile);
+                LoadProfile(app.StartupProfile, true);
                 StartProfile();
             }
 
