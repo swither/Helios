@@ -20,7 +20,7 @@ REM publish tag
 git push origin %HELIOS_BUILT_VERSION%
 
 REM publish installer files to direct share for testers and developers
-mkdir -p %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%
+mkdir %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%
 copy "Helios Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 copy "Helios Installer\Release32\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 copy "Keypress Receiver Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
