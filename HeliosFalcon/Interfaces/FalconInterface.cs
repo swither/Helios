@@ -41,7 +41,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private bool _focusAssist;
         private string _falconVersion;
         private string[] _falconVersions;
-        private string _falconProfileVersion;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private FalconDataExporter _dataExporter;
         private FalconKeyFile _callbacks = new FalconKeyFile("");
