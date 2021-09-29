@@ -41,7 +41,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private bool _focusAssist;
         private string _falconVersion;
         private string[] _falconVersions;
-        private Version _falconProfileVersion;
+        private string _falconProfileVersion;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private FalconDataExporter _dataExporter;
         private FalconKeyFile _callbacks = new FalconKeyFile("");
@@ -140,26 +140,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     string oldValue = _falconVersion;
                     _falconVersion = value;
                     OnPropertyChanged("FalconVersion", oldValue, value, false);
-                    FalconProfileVersion = ParseProfileVersion(_falconVersion);
                     FalconPath = GetFalconPath();
-                }
-            }
-        }
-
-        public Version FalconProfileVersion
-        {
-            get
-            {
-                return _falconProfileVersion;
-            }
-            set
-            {
-                if (_falconProfileVersion == null && value != null ||
-                    _falconProfileVersion != null && !_falconProfileVersion.Equals(value))
-                {
-                    Version oldValue = _falconProfileVersion;
-                    _falconProfileVersion = value;
-                    OnPropertyChanged("FalconVersion", oldValue, value, false);
                 }
             }
         }
@@ -279,12 +260,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public Interfaces.RTT.ConfigGenerator Rtt { get; private set; }
 
         #endregion
-
-        public static Version ParseProfileVersion(string versionString)
-        {
-            Version ver = Version.Parse(System.Text.RegularExpressions.Regex.Replace(versionString, "[A-Za-z ]", ""));
-            return ver;
-        }
 
         public string[] GetFalconVersions()
         {
