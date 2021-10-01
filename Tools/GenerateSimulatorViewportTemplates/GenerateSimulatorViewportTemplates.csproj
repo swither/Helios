@@ -41,7 +41,7 @@
   </ItemGroup>
   <Import Project="..\..\Helios.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(TargetPath) $(ProjectDir)..\ToolsCommon\Data\Viewports\ViewportTemplates.json $(ProjectDir)..\..\Patching\Templates\Patching true
-$(TargetPath) $(ProjectDir)..\ToolsCommon\Data\Viewports\ExistingViewportTemplates.json $(ProjectDir)..\..\Helios\Templates\Base false</PostBuildEvent>
+    <PostBuildEvent>"$(TargetPath)" "$(ProjectDir)..\ToolsCommon\Data\Viewports\ViewportTemplates.json" "$(ProjectDir)..\..\Patching\Templates\Patching" true
+"$(TargetPath)" "$(ProjectDir)..\ToolsCommon\Data\Viewports\ExistingViewportTemplates.json" "$(ProjectDir)..\..\Helios\Templates\Base" false</PostBuildEvent>
   </PropertyGroup>
 </Project>
