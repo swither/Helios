@@ -661,17 +661,6 @@
         "y": 350,
         "width": 334,
         "height": 306
-      },
-      {
-        "viewportName": "HUD",
-        "relativeInitFilePath": "Mods/aircraft/AV8BNA/Cockpit/HUD/indicator/HUD_init.lua",
-        "originalDisplayWidth": 1920,
-        "originalDisplayHeight": 1080,
-        "seatIndex": 1,
-        "x": 660,
-        "y": 0,
-        "width": 600,
-        "height": 800
       }
     ]
   },
