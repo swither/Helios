@@ -69,6 +69,17 @@
         "y": 25,
         "width": 380,
         "height": 216
+      },
+      {
+        "viewportName": "HUD",
+        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/HUD_AVQ32/indicator/AVQ32_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 660,
+        "y": 0,
+        "width": 600,
+        "height": 800
       }
     ]
   }
