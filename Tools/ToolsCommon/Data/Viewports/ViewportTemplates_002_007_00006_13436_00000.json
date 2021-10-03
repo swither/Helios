@@ -83,7 +83,7 @@
     "viewports": [
       {
         "viewportName": "LEFT_MFCD",
-        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/MDI_IP1556A/indicator/MDI_left_init.lua",
+        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/MDI_IP1556A/indicator/MDI_left_viewport_cfg.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
@@ -94,7 +94,7 @@
       },
       {
         "viewportName": "RIGHT_MFCD",
-        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/MDI_IP1556A/indicator/MDI_right_init.lua",
+        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/MDI_IP1556A/indicator/MDI_right_viewport_cfg.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
@@ -116,7 +116,7 @@
       },
       {
         "viewportName": "CENTER_MFCD",
-        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/AMPCD/indicator/AMPCD_init.lua",
+        "relativeInitFilePath": "Mods/aircraft/FA-18C/Cockpit/Scripts/Multipurpose_Display_Group/AMPCD/indicator/AMPCD_viewport_cfg.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
