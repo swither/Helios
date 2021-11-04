@@ -786,6 +786,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             {
                 // write the RTT configuration status report
                 newReport.AddRange(Rtt.OnStatusReport(Viewports));
+
+                // check viewport masking
+                newReport.AddRange(Rtt.ReportViewportMasking(Viewports));
             }
 
             return newReport;

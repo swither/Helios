@@ -1,4 +1,4 @@
-﻿// Copyright 2021 Helios Contributors
+﻿ // Copyright 2021 Helios Contributors
 // 
 // HeliosFalcon is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -752,6 +752,33 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
                 {
                     value.PropertyChanged += Child_PropertyChanged;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Reports if the viewports are being hidden by the parent monitor by a Fill Background
+        /// </summary>
+        internal IEnumerable<StatusReportItem> ReportViewportMasking(IEnumerable<ShadowVisual> viewports)
+        {
+            bool isMasked = false;
+
+            foreach (ShadowVisual viewport in viewports)
+            {
+                if (viewport.IsViewport && !viewport.Viewport.ViewportName.Contains("ONTOP"))
+                {
+                    isMasked = viewport.Monitor.FillBackground;
+                }
+            }
+
+            if (isMasked)
+            {
+                yield return new StatusReportItem
+                {
+                    Status = "One or more RTT viewports are masked by a monitor with a fill background. The result is you won't see the RTT viewports being rendered to the monitor.",
+                    Link = StatusReportItem.ProfileEditor,
+                    Severity = StatusReportItem.SeverityCode.Warning,
+                    Recommendation = "Review your profile and ensure monitors do not have Fill Background enabled when a viewport is configured for that monitor"
+                };
             }
         }
 
