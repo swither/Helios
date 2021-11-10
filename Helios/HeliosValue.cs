@@ -76,10 +76,8 @@ namespace GadrocsWorkshop.Helios
 
         private void UpdateId()
         {
-            if (ValueID.Length < 1)
-            {
-                ValueID = _name;
-            }
+            TriggerID = "";
+            ValueID = _name;
             if (!string.IsNullOrEmpty(_device))
             {
                 ActionID = $"{_device}.set.{ValueID}";

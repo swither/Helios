@@ -65,10 +65,7 @@ namespace GadrocsWorkshop.Helios
 
         private void UpdateId()
         {
-            if (TriggerID.Length < 1)
-            {
-                TriggerID = _name;
-            }
+            TriggerID = _name;
             string prefix = "";
             if (!string.IsNullOrEmpty(_device))
             {
