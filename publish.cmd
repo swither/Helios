@@ -55,11 +55,7 @@ echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo Full change notes from previous releases here: https://github.com/HeliosVirtualCockpit/Helios/wiki/Change-Log >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 
 REM create draft on github (requires https://github.com/github/hub/releases/latest)
-hub release create -d ^
-	-a "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip#Helios Installers" ^
-	-a "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip#Helios Installers for 32-bit Systems (untested)" ^
-	-F "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md" ^
-	%HELIOS_BUILT_VERSION%
+gh release create --draft %HELIOS_BUILT_VERSION% "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip#Helios Installers" "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip#Helios Installers for 32-bit Systems (untested)" -F "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 
 :end
 REM clean up (except HELIOS_BUILT_VERSION)
