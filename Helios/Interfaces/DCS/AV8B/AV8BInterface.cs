@@ -608,7 +608,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             CalibrationPointCollectionDouble airspeedScale = new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 1000d);
             AddFunction(new ScaledNetworkValue(this, "346", airspeedScale, "Flight Instruments", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots));
 
-            AddFunction(new RotaryEncoder(this, NAV_INS, "3364", "364", 0.01d, "NAV course", "Course Setting"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, NAV_INS, "3364", "364", "1", "Left", "0", "Centre", "-1", "Right", "NAV course", "Course Setting", "%.1f"));
 
             AddFunction(new ScaledNetworkValue(this, "349", 90d, "Flight Instruments", "SAI Pitch", "Current pitch displayed on the SAI.", "", BindingValueUnits.Degrees));
             AddFunction(new ScaledNetworkValue(this, "348", -180d, "Flight Instruments", "SAI Bank", "Current bank displayed on the SAI.", "", BindingValueUnits.Degrees));

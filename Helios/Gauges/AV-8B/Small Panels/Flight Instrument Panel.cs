@@ -41,7 +41,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             _interfaceDeviceName = "Flight Instruments";
             AddPot("ADI Pitch Adjust", new Point(575, 278), new Size(60, 60), "SAI Cage/Pitch Adjust Knob", "WQHD/Knob/Cage Knob.png");
             _interfaceDeviceName = "NAV course";
-            AddEncoder("Course Set Knob", new Point(150, 40), new Size(80, 80), "Course Setting");
+            AddThreeWayToggleHorizontal("Course Set Switch", 150, 40, new Size(89, 137), "Course Setting", "Horizontal Switch");
             _interfaceDeviceName = "Flight Instruments";
             AddGauge("Altimeter Gauge", new Altimeter(), new Point(727, 351), new Size(261, 272), _interfaceDeviceName, new string[2] { "Air Pressure", "Altitude"  }, _generalComponentName);
             AddEncoder("Altimeter Pressure Adjust", new Point(720, 558), new Size(60,60), "Barometric pressure calibration adjust");
@@ -148,6 +148,25 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 interfaceElementName: interfaceElement,
                 fromCenter: false
                 );
+        }
+        private void AddThreeWayToggleHorizontal(string name, double x, double y, Size size, string interfaceElementName) => AddThreeWayToggleHorizontal(name, x, y, size, interfaceElementName, name);
+        private void AddThreeWayToggleHorizontal(string name, double x, double y, Size size, string interfaceElementName, string imageName)
+        {
+            ThreeWayToggleSwitch toggle = AddThreeWayToggle(
+                name: name,
+                posn: new Point(x, y),
+                size: size,
+                defaultPosition: ThreeWayToggleSwitchPosition.Two,
+                defaultType: ThreeWayToggleSwitchType.MomOnMom,
+                positionOneImage: _imageLocation + "WQHD/Switch/" + imageName + " Right.png",
+                positionTwoImage: _imageLocation + "WQHD/Switch/" + imageName + " Normal.png",
+                positionThreeImage: _imageLocation + "WQHD/Switch/" + imageName + " Left.png",
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElementName,
+                horizontal: true,
+                fromCenter: false
+                );
+            toggle.Name = _generalComponentName + "_" + name;
         }
 
         private void AddPart(string name, CompositeVisual Part, Point posn, Size size, string interfaceDevice, string interfaceElement)
