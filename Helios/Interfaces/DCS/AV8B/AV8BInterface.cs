@@ -593,9 +593,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
 
             AddFunction(new Altimeter(this,"Flight Instruments","2051","Altitude", "Barometric altitude above sea level of the aircraft.", "Value is adjusted per altimeter pressure setting.", "2059","Air Pressure", "Manually set barometric altitude.",""));
             AddFunction(new RotaryEncoder(this, ADC, "3653", "653", 0.01d, "Flight Instruments", "Barometric pressure calibration adjust"));
-            // TODO remove the old axis function
-            //AddFunction(new Axis(this, ADC, "3653", "653", 0.01d, 0d, 1d, "Flight Instruments", "Barometric pressure calibration adjust", true, "%.3f"));
-
+ 
             CalibrationPointCollectionDouble vviScale = new CalibrationPointCollectionDouble(-0.6d, -6000d, 0.6d, 6000d);
             vviScale.Add(new CalibrationPointDouble(0d, 0d));
             AddFunction(new ScaledNetworkValue(this, "362", vviScale, "Flight Instruments", "VVI", "Vertical velocity indicator -6000 to +6000.", "", BindingValueUnits.FeetPerMinute));
@@ -613,7 +611,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(new ScaledNetworkValue(this, "349", 90d, "Flight Instruments", "SAI Pitch", "Current pitch displayed on the SAI.", "", BindingValueUnits.Degrees));
             AddFunction(new ScaledNetworkValue(this, "348", -180d, "Flight Instruments", "SAI Bank", "Current bank displayed on the SAI.", "", BindingValueUnits.Degrees));
             AddFunction(new FlagValue(this, "347", "Flight Instruments", "SAI Warning Flag", "Displayed when SAI is caged or non-functional."));
-            AddFunction(new Axis(this, ADC, "3351", "351", 0.01d, 0d, 1d, "Flight Instruments", "SAI Cage/Pitch Adjust Knob", false, "%.3f"));
+            AddFunction(new Axis(this, FLIGHTINSTRUMENTS, "3351", "351", 0.1d, -1d, 1d, "Flight Instruments", "SAI Pitch Adjust Knob"));
+            AddFunction(new PushButton(this, FLIGHTINSTRUMENTS, "3350", "350", "Flight Instruments", "SAI Cage Pull Switch"));
 
             AddFunction(new NetworkValue(this, "363", "Flight Instruments", "Slip Ball", "Current position of the slip ball relative to the center of the tube.", "(-1 to 1) -1 is full left and 1 is full right.", BindingValueUnits.Numeric));
             AddFunction(new NetworkValue(this, "652", "Flight Instruments", "Turn Indicator", "Current position of the turn indicator.", "(-1 to 1) -1 is full left and 1 is full right.", BindingValueUnits.Numeric));
