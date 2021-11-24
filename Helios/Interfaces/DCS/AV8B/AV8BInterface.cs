@@ -165,8 +165,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(new Axis(this, UFCCONTROL, "3295", "295", 0.1d, 0d, 1d, "UFC", "UFC Brightness Control Knob"));
             AddFunction(new Axis(this, UFCCONTROL, "3298", "298", 0.1d, 0d, 1d, "UFC", "UFC COMM 1 Volume Control Knob"));
             AddFunction(new Axis(this, UFCCONTROL, "3299", "299", 0.1d, 0d, 1d, "UFC", "UFC COMM 2 Volume Control Knob"));
-            AddFunction(new Axis(this, UFCCONTROL, "3300", "300", 0.005d, -1d, 1d, "UFC", "UFC COMM 1 Channel Selector Knob"));
-            AddFunction(new Axis(this, UFCCONTROL, "3301", "301", 0.005d, -1d, 1d, "UFC", "UFC COMM 2 Channel Selector Knob"));
+            AddFunction(new RotaryEncoder(this, UFCCONTROL, "3300", "300", 0.01d, "UFC", "UFC COMM 1 Channel Selector Knob"));
+            AddFunction(new RotaryEncoder(this, UFCCONTROL, "3301", "301", 0.01d, "UFC", "UFC COMM 2 Channel Selector Knob"));
             AddFunction(new PushButton(this, UFCCONTROL, "3178", "178", "UFC", "UFC COMM 1 Channel Selector Pull"));
             AddFunction(new PushButton(this, UFCCONTROL, "3179", "179", "UFC", "UFC COMM 2 Channel Selector Pull"));
             AddFunction(Switch.CreateThreeWaySwitch(this, HUDCONTROL, "3288", "288", "1.0", "Norm", "0.5", "Reject 1", "0.0", "Reject 2", "HUD Control", "Declutter switch", "%.1f"));
