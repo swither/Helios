@@ -538,8 +538,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             #endregion
 
             #region Stopwatch
-            AddFunction(new PushButton(this, MSC, "4121", "121", "Stop Watch", "Stopwatch Start/Stop"));
-            AddFunction(new PushButton(this, MSC, "4122", "122", "Stop Watch", "Stopwatch Lap/Reset"));
+            AddFunction(new PushButton(this, MSC, "3051", "1121", "Stopwatch", "Start/Stop Button"));
+            AddFunction(new PushButton(this, MSC, "3052", "1122", "Stopwatch", "Lap/Reset Button"));
+            AddFunction(new ScaledNetworkValue(this, "1119", 60d, "Stopwatch", "Minutes", "Current minute of the stopwatch.", "(0-60)", BindingValueUnits.Numeric));
+            AddFunction(new ScaledNetworkValue(this, "1120", 60d, "Stopwatch", "Seconds", "Current seconds of the stopwatch.", "(0-60)", BindingValueUnits.Numeric));
+
+            #endregion
+
+            #region Clock
+            AddFunction(new PushButton(this, MSC, "3758", "758", "Clock", "Button"));
+            AddFunction(new RotaryEncoder(this, MSC, "3757", "757", 0.01d, "Clock", "Knob"));
+            AddFunction(new ScaledNetworkValue(this, "759", 12d, "Clock", "Hours", "Current seconds of the clock.", "(0-12)", BindingValueUnits.Numeric));
+            AddFunction(new ScaledNetworkValue(this, "760", 60d, "Clock", "Minutes", "Current minute of the clock.", "(0-60)", BindingValueUnits.Numeric));
+            AddFunction(new ScaledNetworkValue(this, "761", 60d, "Clock", "Seconds", "Current seconds of the clock.", "(0-60)", BindingValueUnits.Numeric));
+
             #endregion
 
             #region ECS
