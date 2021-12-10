@@ -182,8 +182,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             // Arresting Hook Control Handle
             AddFunction(new FlagValue(this, "294", "Caution Indicators", "HOOK", ""));          // create_caution_lamp(294,CautionLights.CPT_LTS_HOOK)
                                                                                                 // Landing Gear 
-                                                                                                //create_caution_lamp(CautionLights.CPT_LTS_LDG_GEAR_HANDLE)
-                                                                                                // APU Control Panel
+            AddFunction(new FlagValue(this, "227", "Caution Indicators", "Landing Gear Handle", "")); //create_caution_lamp(227, CautionLights.CPT_LTS_LDG_GEAR_HANDLE)                                                                                                // APU Control Panel
             AddFunction(new FlagValue(this, "376", "Caution Indicators", "APU_READY", ""));    // create_caution_lamp(376,CautionLights.CPT_LTS_APU_READY)
                                                                                                // ECM Control Panel Assy
                                                                                                //create_caution_lamp(CautionLights.CPT_LTS_SEL)

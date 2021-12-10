@@ -998,7 +998,6 @@ namespace GadrocsWorkshop.Helios
                 }
 
                 AddAction(action, action.Device);
-                // Create the automatic input bindings for the IFEI_Gauge sub component
                 AddDefaultInputBinding(
                     childName: name,
                     deviceActionName: action.ActionVerb + "." + action.Device,
