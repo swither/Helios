@@ -75,6 +75,14 @@
     <Compile Include="ComponentModel\HeliosCapabilityEditorAttribute.cs" />
     <Compile Include="ComponentModel\HeliosEditorAttribute.cs" />
     <Compile Include="ComponentModel\HeliosToolAttribute.cs" />
+    <Compile Include="Controls\BacklitPushButton.cs" />
+    <Compile Include="Controls\BacklitPushButtonAppearanceEditor.xaml.cs">
+      <DependentUpon>BacklitPushButtonAppearanceEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BacklitPushButtonBehaviorEditor.xaml.cs">
+      <DependentUpon>BacklitPushButtonBehaviorEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BacklitPushButtonRenderer.cs" />
     <Compile Include="Controls\Capabilities\IBackgroundImage.cs" />
     <Compile Include="Controls\Capabilities\IConfigurableBackgroundImage.cs" />
     <Compile Include="Controls\Capabilities\IControlWithProfileInstance.cs" />
@@ -283,6 +291,14 @@
     <Page Include="Controls\BackgroundImageAppearanceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\BacklitPushButtonAppearanceEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\BacklitPushButtonBehaviorEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\HeliosPanelBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -842,6 +858,7 @@
     <Content Include="Controls\Special\readme.txt" />
     <Resource Include="Images\General\calibration.png" />
     <Resource Include="Images\General\memory_wire.png" />
+    <Resource Include="Images\Buttons\backlit.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
