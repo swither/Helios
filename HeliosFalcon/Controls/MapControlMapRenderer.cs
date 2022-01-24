@@ -1,6 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
-//  Copyright 2021 Helios Contributors
-//    
+//  Copyright 2022 Helios Contributors
+//
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -16,16 +16,19 @@
 
 namespace GadrocsWorkshop.Helios.Controls
 {
+	using static GadrocsWorkshop.Helios.Controls.MapControls;
 	using GadrocsWorkshop.Helios.Gauges;
 	using System;
-	using System.Collections.Generic;
-	using System.Globalization;
 	using System.Windows;
 	using System.Windows.Media;
+	using System.Collections.Generic;
+	using System.Globalization;
 
 
-	public class MapControlRenderer : GaugeComponent
+	public class MapControlMapRenderer : GaugeComponent
 	{
+		private List<ITargetData> TargetList = new List<ITargetData>();
+
 		private Point _location;
 		private Size _size;
 		private Point _center;
@@ -56,6 +59,11 @@ namespace GadrocsWorkshop.Helios.Controls
 		private Rect[] _waypointRect = new Rect[24];
 		private Rect[] _pospointRect = new Rect[19];
 
+		private double _ownshipVerticalValue;
+		private double _ownshipHorizontalValue;
+		private double _targetVerticalValue;
+		private double _targetHorizontalValue;
+
 		private const double _minThreatCircleRadius = 30000d;
 		private const double _mapBaseUnit = 1000d;
 		private const double _mapScaleModifier = 1.33d;
@@ -63,26 +71,32 @@ namespace GadrocsWorkshop.Helios.Controls
 		private const double _navpointBaseScale = 30d;
 		private double _navpointSize;
 		private double _navpointLineWidth;
+		private double _rotationPositive;
+		private double _rotationNegative;
 
 		private Pen _linePen;
+		private Pen _linePointPen;
 		private Brush _lineBrush;
+		private Brush _linePointBrush;
 		private Brush _pointFillBrush;
 		private Brush _backgroundFillBrush;
 		private Brush _transparentFillBrush;
 
+		private Rect _textBounds;
+		private Geometry _textGeometry;
 		private FormattedText _formattedText;
 		private const double _fontBaseSize = 30d;
 		private double _fontScaleSize;
 
 
-		public MapControlRenderer(Point location, Size size, Point center)
+		public MapControlMapRenderer(Point location, Size size, Point center)
 			: this(location, size, center, 0d)
 		{
-			GetPixelsPerDip();
+			SetPixelsPerDip();
 			InitializeImageArrays();
 		}
 
-		public MapControlRenderer(Point location, Size size, Point center, double baseRotation)
+		public MapControlMapRenderer(Point location, Size size, Point center, double baseRotation)
 		{
 			_location = location;
 			_size = size;
@@ -91,7 +105,12 @@ namespace GadrocsWorkshop.Helios.Controls
 		}
 
 
-		#region Actions
+		#region Methods
+
+		public void SetTargetData(List<ITargetData> targetList)
+		{
+			TargetList = targetList;
+		}
 
 		void InitializeImageArrays()
 		{
@@ -182,6 +201,21 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
+		void SetPixelsPerDip()
+		{
+			DisplayManager displayManager = new DisplayManager();
+
+			if (displayManager.PixelsPerDip != 0d)
+			{
+				_pixelsPerDip = displayManager.PixelsPerDip;
+			}
+		}
+
+		#endregion Methods
+
+
+		#region Functions
+
 		double NavPointToDouble(string navValue)
 		{
 			try
@@ -207,33 +241,45 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void GetPixelsPerDip()
-		{
-			DisplayManager displayManager = new DisplayManager();
-
-			if (displayManager.PixelsPerDip != 0d)
-			{
-				_pixelsPerDip = displayManager.PixelsPerDip;
-			}
-		}
-
-		#endregion Actions
+		#endregion Functions
 
 
 		#region Drawing
 
-		protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+		protected override void OnRender(DrawingContext drawingContext)
 		{
+			_rotationPositive = _rotation + _baseRotation;
+			_rotationNegative = - _rotationPositive;
+
 			TransformGroup transform = new TransformGroup();
 			transform.Children.Add(new TranslateTransform((_location.X + HorizontalOffset) * _xScale, (_location.Y + VerticalOffset) * _yScale));
-			transform.Children.Add(new RotateTransform(_rotation + _baseRotation, _center.X * _xScale, _center.Y * _yScale));
+			transform.Children.Add(new RotateTransform(_rotationPositive, _center.X * _xScale, _center.Y * _yScale));
 
 			drawingContext.PushTransform(transform);
+
+			if (TargetsSelected && TargetsVisible)
+			{
+				DrawTargetLines(drawingContext);
+			}
 
 			if (ThreatsVisible)
 			{
 				DrawThreatCircles(drawingContext);
+			}
+
+			if (TargetsSelected && TargetsVisible)
+			{
+				DrawTargetCircles(drawingContext);
+			}
+
+			if (ThreatsVisible)
+			{
 				DrawThreatNames(drawingContext);
+			}
+
+			if (TargetsSelected && TargetsVisible)
+			{
+				DrawTargetNames(drawingContext);
 			}
 
 			if (WaypointsVisible)
@@ -244,6 +290,20 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 
 			drawingContext.Pop();
+		}
+
+		void DrawTargetLines(DrawingContext drawingContext)
+		{
+			_lineBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+			_linePen = new Pen(_lineBrush, _navpointLineWidth) { DashStyle = DashStyles.Dash };
+
+			for (int i = 0; i < TargetList.Count; i++)
+			{
+				TargetHorizontalValue = TargetList[i].MapTargetHorizontalValue;
+				TargetVerticalValue = TargetList[i].MapTargetVerticalValue;
+
+				drawingContext.DrawLine(_linePen, new Point(OwnshipHorizontalValue, OwnshipVerticalValue), new Point(TargetHorizontalValue, TargetVerticalValue));
+			}
 		}
 
 		void DrawThreatCircles(DrawingContext drawingContext)
@@ -267,6 +327,26 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
+		void DrawTargetCircles(DrawingContext drawingContext)
+		{
+			_lineBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+			_linePen = new Pen(_lineBrush, _mapScaleUnit * 4d);
+			_linePointBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+			_linePointPen = new Pen(_linePointBrush, _mapScaleUnit * 4d);
+
+			_pointFillBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+			_transparentFillBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0)) { Opacity = 0.15d };
+
+			for (int i = TargetList.Count - 1; i >= 0; i--)
+			{
+				TargetHorizontalValue = TargetList[i].MapTargetHorizontalValue;
+				TargetVerticalValue = TargetList[i].MapTargetVerticalValue;
+
+				drawingContext.DrawEllipse(_transparentFillBrush, _linePen, new Point(TargetHorizontalValue, TargetVerticalValue), _mapScaleUnit * 50d, _mapScaleUnit * 50d);
+				drawingContext.DrawEllipse(_pointFillBrush, _linePointPen, new Point(TargetHorizontalValue, TargetVerticalValue), _mapScaleUnit * 14d, _mapScaleUnit * 14d);
+			}
+		}
+
 		void DrawThreatNames(DrawingContext drawingContext)
 		{
 			double sizeOffset = _fontScaleSize * 0.1d;
@@ -277,9 +357,6 @@ namespace GadrocsWorkshop.Helios.Controls
 			_linePen = new Pen(_lineBrush, _fontScaleSize * 0.11d);
 			_backgroundFillBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
-			// This prevents jittery text when there is no rotation.
-			drawingContext.PushTransform(new RotateTransform(0.000001d));
-
 			for (int i = 0; i < _mapPoints_PT.GetLength(0); i++)
 			{
 				if (_mapPoints_PT[i, 0] > 0d && _mapPoints_PT[i, 1] > 0d && !string.IsNullOrEmpty(_navNames_PT[i]))
@@ -287,18 +364,51 @@ namespace GadrocsWorkshop.Helios.Controls
 					double xPos = _mapPoints_PT[i, 0] + xPosOffset;
 					double yPos = _mapPoints_PT[i, 1] - yPosOffset;
 
-					_formattedText = new FormattedText(_navNames_PT[i], CultureInfo.GetCultureInfo("en-us"),
-						FlowDirection.LeftToRight, new Typeface("Lucida Console Regular"), _fontScaleSize, Brushes.Black, _pixelsPerDip);
+					_formattedText = new FormattedText(_navNames_PT[i], CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), _fontScaleSize, Brushes.Black, _pixelsPerDip);
+					_textBounds = new Rect(xPos - sizeOffset * 2.0d, yPos - sizeOffset, _formattedText.Width + sizeOffset * 4.5d, _formattedText.Height + sizeOffset);
+					_textGeometry = _formattedText.BuildGeometry(new Point(xPos, yPos));
 
-					Rect _textBounds = new Rect(xPos - sizeOffset, yPos - sizeOffset, _formattedText.Width + sizeOffset * 2.5d, _formattedText.Height + sizeOffset);
+					drawingContext.PushTransform(new RotateTransform(_rotationNegative, _mapPoints_PT[i, 0], _mapPoints_PT[i, 1]));
 
 					drawingContext.DrawRectangle(_backgroundFillBrush, _linePen, _textBounds);
+					drawingContext.DrawGeometry(Brushes.Black, null, _textGeometry);
 
-					drawingContext.DrawText(_formattedText, new Point(xPos, yPos));
+					drawingContext.Pop();
 				}
 			}
+		}
 
-			drawingContext.Pop();
+		void DrawTargetNames(DrawingContext drawingContext)
+		{
+			double sizeOffset = _fontScaleSize * 0.1d;
+			double xPosOffset = _mapScaleUnit * 20d;
+			double yPosOffset = _mapScaleUnit * 15d + _fontScaleSize * 1.1d;
+
+			_lineBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+			_linePen = new Pen(_lineBrush, _fontScaleSize * 0.11d);
+			_backgroundFillBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+			for (int i = TargetList.Count - 1; i >= 0; i--)
+			{
+				TargetHorizontalValue = TargetList[i].MapTargetHorizontalValue;
+				TargetVerticalValue = TargetList[i].MapTargetVerticalValue;
+
+				double xPos = TargetHorizontalValue + xPosOffset;
+				double yPos = TargetVerticalValue - yPosOffset;
+
+				string target_text = (i + 1).ToString("00") + " " + TargetList[i].CourseBearing.ToString("000") + "° " + TargetList[i].CourseDistance.ToString() + "Nm";
+
+				_formattedText = new FormattedText(target_text, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), _fontScaleSize, Brushes.Black, _pixelsPerDip);
+				_textBounds = new Rect(xPos - sizeOffset * 2.0d, yPos - sizeOffset, _formattedText.Width + sizeOffset * 4.5d, _formattedText.Height + sizeOffset);
+				_textGeometry = _formattedText.BuildGeometry(new Point(xPos, yPos));
+
+				drawingContext.PushTransform(new RotateTransform(_rotationNegative, TargetHorizontalValue, TargetVerticalValue));
+
+				drawingContext.DrawRectangle(_backgroundFillBrush, _linePen, _textBounds);
+				drawingContext.DrawGeometry(Brushes.Black, null, _textGeometry);
+
+				drawingContext.Pop();
+			}
 		}
 
 		void DrawWaypointLines(DrawingContext drawingContext)
@@ -321,7 +431,11 @@ namespace GadrocsWorkshop.Helios.Controls
 			{
 				if (_navPoints_WP[i, 0] > 0d && _navPoints_WP[i, 1] > 0d)
 				{
+					drawingContext.PushTransform(new RotateTransform(_rotationNegative, _mapPoints_WP[i, 0], _mapPoints_WP[i, 1]));
+
 					drawingContext.DrawImage(_waypointImages[i], _waypointRect[i]);
+
+					drawingContext.Pop();
 				}
 				else
 				{
@@ -336,10 +450,19 @@ namespace GadrocsWorkshop.Helios.Controls
 			{
 				if (_navPoints_PO[i, 0] > 0d && _navPoints_PO[i, 1] > 0d)
 				{
+					drawingContext.PushTransform(new RotateTransform(_rotationNegative, _mapPoints_PO[i, 0], _mapPoints_PO[i, 1]));
+
 					drawingContext.DrawImage(_pospointImages[i], _pospointRect[i]);
+
+					drawingContext.Pop();
 				}
 			}
 		}
+
+		#endregion Drawing
+
+
+		#region OnRefresh
 
 		protected override void OnRefresh(double xScale, double yScale)
 		{
@@ -395,6 +518,11 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
+		#endregion OnRefresh
+
+
+		#region Functions
+
 		double FeetToMapUnits_X(double xPosFeet, double xScale)
 		{
 			if (xPosFeet > 0d)
@@ -447,17 +575,16 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		#endregion Drawing
+		#endregion Functions
 
 
 		#region Properties
 
+		public bool TargetsSelected { get; set; }
+		public bool TargetsVisible { get; set; }
 		public bool ThreatsVisible { get; set; }
-
 		public bool WaypointsVisible { get; set; }
-
 		public double MapShortestSize { get; set; }
-
 		public double MapScaleMultiplier { get; set; }
 
 		public double MapWidth
@@ -644,7 +771,55 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		#endregion
+		public double OwnshipVerticalValue
+		{
+			get
+			{
+				return _ownshipVerticalValue;
+			}
+			set
+			{
+				_ownshipVerticalValue = FeetToMapUnits_Y(value, _yScale);
+			}
+		}
+
+		public double OwnshipHorizontalValue
+		{
+			get
+			{
+				return _ownshipHorizontalValue;
+			}
+			set
+			{
+				_ownshipHorizontalValue = FeetToMapUnits_X(value, _xScale);
+			}
+		}
+
+		public double TargetVerticalValue
+		{
+			get
+			{
+				return _targetVerticalValue;
+			}
+			set
+			{
+				_targetVerticalValue = FeetToMapUnits_Y(value, _yScale);
+			}
+		}
+
+		public double TargetHorizontalValue
+		{
+			get
+			{
+				return _targetHorizontalValue;
+			}
+			set
+			{
+				_targetHorizontalValue = FeetToMapUnits_X(value, _xScale);
+			}
+		}
+
+		#endregion Properties
 
 	}
 }

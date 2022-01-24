@@ -1,6 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
-//  Copyright 2021 Helios Contributors
-//    
+//  Copyright 2022 Helios Contributors
+//
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -18,9 +18,9 @@ namespace GadrocsWorkshop.Helios.Controls
 {
 	using GadrocsWorkshop.Helios.ComponentModel;
 	using GadrocsWorkshop.Helios.Interfaces.Falcon;
+	using System;
 	using System.Windows;
 	using System.Windows.Media;
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -31,18 +31,18 @@ namespace GadrocsWorkshop.Helios.Controls
 	{
 		private FalconInterface _falconInterface;
 
-		private Gauges.GaugeImage _Background;
+		private Gauges.GaugeImage _MapBackground;
 		private Gauges.CustomGaugeNeedle _Map;
 		private Gauges.CustomGaugeNeedle _MapZoomIn;
 		private MapViewerRenderer _MapOverlay;
 
 		private Rect _imageSize = new Rect(0d, 0d, 200d, 200d);
 		private Size _needleSize = new Size(200d, 200d);
-		private Rect _needleClip = new Rect(1d, 1d, 198d, 198d);
+		private Rect _needleClip = new Rect(0d, 0d, 200d, 200d);
 		private Point _needleLocation = new Point(0d, 0d);
 		private Point _needleCenter = new Point(100d, 100d);
 
-		private const string _backgroundImage = "{HeliosFalcon}/Images/MapControl/Background 02.png";
+		private const string _mapBackgroundImage = "{HeliosFalcon}/Images/MapControl/MapViewer Background.png";
 		private string _lastTheater;
 		private bool _navPointsInitialized = false;
 
@@ -66,8 +66,19 @@ namespace GadrocsWorkshop.Helios.Controls
 		public MapViewer()
 			: base("MapViewer", new Size(200d, 200d))
 		{
-			_Background = new Gauges.GaugeImage(_backgroundImage, _imageSize);
-			Components.Add(_Background);
+			AddComponents();
+			BaseMapResize();
+			Resized += new EventHandler(OnMapControl_Resized);
+		}
+
+
+		#region Components
+
+		void AddComponents()
+		{
+			_MapBackground = new Gauges.GaugeImage(_mapBackgroundImage, _imageSize);
+			_MapBackground.Clip = new RectangleGeometry(_needleClip);
+			Components.Add(_MapBackground);
 
 			_Map = new Gauges.CustomGaugeNeedle(_mapBaseImages[7, 1], _needleLocation, _needleSize, _needleCenter);
 			_Map.Clip = new RectangleGeometry(_needleClip);
@@ -84,13 +95,12 @@ namespace GadrocsWorkshop.Helios.Controls
 			_MapOverlay.Clip = new RectangleGeometry(_needleClip);
 			_MapOverlay.IsHidden = true;
 			Components.Add(_MapOverlay);
-
-			BaseMapResize();
-			Resized += new EventHandler(OnMapControl_Resized);
 		}
 
+		#endregion Components
 
-		#region Actions
+
+		#region Methods
 
 		public override void MouseDown(Point location)
 		{
@@ -195,7 +205,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			return _falconInterface?.GetValue(device, name) ?? BindingValue.Empty;
 		}
 
-		#endregion Actions
+		#endregion Methods
 
 
 		#region Map Selection
@@ -284,10 +294,10 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		#endregion
+		#endregion Map Selection
 
 
-		#region Map Scaling
+		#region Scaling
 
 		void OnMapControl_Resized(object sender, EventArgs e)
 		{
@@ -400,7 +410,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			Refresh();
 		}
 
-		#endregion
+		#endregion Scaling
 
 	}
 }
