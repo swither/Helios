@@ -67,6 +67,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         private DateTime _unkLastTick;
         private bool _unkOnState;
         private List<string> _navPoints;
+        private string _acName;
+        private string _acNCTR;
         private bool _stringDataUpdated;
         private uint _lastStringAreaTime;
 
@@ -377,6 +379,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Runtime", "Flying", "Player flying state", "True if in 3D.", BindingValueUnits.Boolean);
             AddValue("Runtime", "Flight Start Mode", "Flight initial start mode.", "1 = Ramp Start, 2 = Hot Start, 3 = Air Start", BindingValueUnits.Numeric);
             AddValue("Runtime", "RTT Enabled", "RTT texture extraction state", "True if RTT enabled.", BindingValueUnits.Boolean);
+            AddValue("Runtime", "Aircraft Name", "The name of the aircraft", "Example: F-16B-15 or F/A-18D", BindingValueUnits.Text);
+            AddValue("Runtime", "Aircraft Nomenclature", "The nomenclature of the aircraft", "Example: F16 or F18", BindingValueUnits.Text);
         }
 
         internal override void InitData()
@@ -600,6 +604,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                         var _rawStringData = new byte[_stringAreaSize];
                         Marshal.Copy(_sharedMemoryStringArea.GetPointer(), _rawStringData, 0, (int)_stringAreaSize);
                         _navPoints = stringData.GetNavPoints(_rawStringData);
+
+                        _acName = stringData.GetValueForStrId(_rawStringData, StringIdentifier.AcName);
+                        _acNCTR = stringData.GetValueForStrId(_rawStringData, StringIdentifier.AcNCTR);
                     }
                 }
                 else
@@ -610,6 +617,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
             //Runtime bindings
             SetValue("Runtime", "Current Theater", new BindingValue(FalconInterface.CurrentTheater));
+            SetValue("Runtime", "Aircraft Name", new BindingValue(_acName));
+            SetValue("Runtime", "Aircraft Nomenclature", new BindingValue(_acNCTR));
         }
 
         internal float ClampAOA(float alpha)
