@@ -564,8 +564,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             yield return $"PORT = {NetworkOptions.Port}";
             yield return $"DATA_F4 = {(NetworkOptions.DataF4 ? "1" : "0")}";
             yield return $"DATA_BMS = {(NetworkOptions.DataBms ? "1" : "0")}";
-            yield return $"DATA_Osb = {(NetworkOptions.DataOsb ? "1" : "0")}";
+            yield return $"DATA_OSB = {(NetworkOptions.DataOsb ? "1" : "0")}";
             yield return $"DATA_IVIBE = {(NetworkOptions.DataIvibe ? "1" : "0")}";
+            yield return $"STRING_STR = {(NetworkOptions.StringStr ? "1" : "0")}";
+            yield return $"STRING_DRW = {(NetworkOptions.StringDrw ? "1" : "0")}";
             yield return $"RWR_GRID = {(LocalOptions.RWRGrid ? "1" : "0")}";
         }
 
