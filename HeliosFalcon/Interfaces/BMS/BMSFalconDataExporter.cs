@@ -351,6 +351,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("IFF", "backup mode 3 digit 1", "AUX COMM: Mode 3 left digit", "", BindingValueUnits.Numeric);
             AddValue("IFF", "backup mode 3 digit 2", "AUX COMM: Mode 3 right digit", "", BindingValueUnits.Numeric);
 
+            // Lighting
+            AddValue("Lighting", "instrument backlight", "Instrument panel backlight brightness.", "0 = Off, 1 = Dim, 2 = Bright", BindingValueUnits.Numeric);
+
             // Misc Bits
             AddValue("Misc", "tfs stanby indicator", "Misc panel Terrain Following(TFS) standby indicator.", "True if lit.", BindingValueUnits.Boolean);
             AddValue("Misc", "tfs engaged indicator", "Misc panel Terrain Following(TFS) engaged indicator.", "True if lit.", BindingValueUnits.Boolean);
@@ -572,6 +575,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Hydraulic", "Pressure A", new BindingValue(_lastFlightData2.hydPressureA));
                 SetValue("Hydraulic", "Pressure B", new BindingValue(_lastFlightData2.hydPressureB));
                 SetValue("Time", "Time", new BindingValue(_lastFlightData2.currentTime));
+                SetValue("Lighting", "instrument backlight", new BindingValue((int)_lastFlightData2.instrLight));
 
                 //Bullseye                
                 ProcessOwnshipFromBullseye(_lastFlightData.x, _lastFlightData.y, _lastFlightData2.bullseyeX, _lastFlightData2.bullseyeY);

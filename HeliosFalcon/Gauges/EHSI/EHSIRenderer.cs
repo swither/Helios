@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Controls
+namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 {
 	using GadrocsWorkshop.Helios.Gauges;
 	using System;

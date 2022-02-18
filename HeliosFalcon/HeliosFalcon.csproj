@@ -55,6 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gauges\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\Textures\HUDBehaviorEditor.xaml.cs">
       <DependentUpon>HUDBehaviorEditor.xaml</DependentUpon>
     </Compile>
@@ -73,7 +74,6 @@
     <Compile Include="Controls\MapViewer.cs" />
     <Compile Include="Controls\MapViewerRenderer.cs" />
     <Compile Include="Controls\MapControlBullseye.cs" />
-    <Compile Include="Gauges\Altimeter.cs" />
     <Compile Include="Gauges\EHSI\EHSI.cs" />
     <Compile Include="Gauges\EHSI\EHSIRenderer.cs" />
     <Compile Include="Interfaces\BMS\BMSFalconDataExporter.cs" />
@@ -154,6 +154,58 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Resource Include="Gauges\Altimeter\altimeter_faceplate_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Altimeter\altimeter_needle_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Altimeter\altimeter_faceplate_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Altimeter\altimeter_needle_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Altimeter\alt_drum_tape_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Common\drum_tape_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Common\drum_tape_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Altimeter\alt_drum_tape_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Altimeter\altimeter_backplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Altimeter\altimeter_faceplate_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Altimeter\altimeter_needle_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Altimeter\alt_drum_tape_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Common\drum_tape_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Gauges\Textures\HUDBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -176,6 +228,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Gauges\Common\f16_engine_bezel.png" />
     <Content Include="Templates\HeliosFalcon\Falcon RTT DED.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -307,5 +360,6 @@
     <Resource Include="Images\Navpoints\Waypoint_23.png" />
     <Resource Include="Images\Navpoints\Waypoint_24.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\HeliosPlugin.targets" />
 </Project>
