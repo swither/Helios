@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 	using System.Windows.Media;
 
 
-	[HeliosControl("Helios.Falcon.EHSI", "Falcon EHSI", "Falcon Simulator", typeof(Gauges.GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.EHSI", "Falcon BMS EHSI", "Falcon Simulator", typeof(Gauges.GaugeRenderer))]
 
 	public class EHSI : Gauges.BaseGauge
 	{
