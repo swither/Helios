@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Controls
 	using System.Windows.Media;
 
 
-	[HeliosControl("Helios.Falcon.MapControlBullseye", "Bullseye Control", "Falcon Simulator", typeof(Gauges.GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.MapControlBullseye", "Falcon BMS Bullseye", "Falcon Simulator", typeof(Gauges.GaugeRenderer))]
 
 	public class MapControlBullseye : Gauges.BaseGauge
 	{
