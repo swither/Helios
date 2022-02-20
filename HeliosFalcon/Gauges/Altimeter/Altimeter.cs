@@ -64,13 +64,11 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 
 		private bool _inFlightLastValue = true;
 
-
 		public Altimeter()
 			: base("Altimeter", new Size(300, 300))
 		{
 			AddComponents();
 		}
-
 
 		#region Components
 
@@ -153,7 +151,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 		}
 
 		#endregion Components
-
 
 		#region Methods
 
@@ -295,7 +292,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 		}
 
 		#endregion Methods
-
 
 		#region Properties
 

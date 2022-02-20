@@ -1,5 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
-//    
+//  Copyright 2022 Helios Contributors
+//
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -20,19 +21,21 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.Falcon.FTIT", "FTIT", "Falcon Simulator", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.Falcon.FTIT", "Falcon BMS FTIT", "Falcon Simulator", typeof(GaugeRenderer))]
     public class FTIT : BaseGauge
     {
         private FalconInterface _falconInterface;
         private CalibrationPointCollectionDouble _needleCalibration;
-        private GaugeImage _faceplateOff;
+		private GaugeImage _backplate;
+		private GaugeImage _faceplateOff;
         private GaugeImage _faceplateDim;
         private GaugeImage _faceplateBrt;
         private GaugeNeedle _needleOff;
         private GaugeNeedle _needleDim;
         private GaugeNeedle _needleBrt;
 
-        private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_off.xaml";
+		private const string _backplateImage = "{HeliosFalcon}/Gauges/FTIT/ftit_backplate.xaml";
+		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_off.xaml";
         private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_dim.xaml";
         private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_brt.xaml";
         private const string _needleOffImage = "{HeliosFalcon}/Gauges/FTIT/ftit_needle_off.xaml";
@@ -42,51 +45,56 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
         private bool _inFlightLastValue = true;
 
         public FTIT()
-            : base("FTIT", new Size(360, 360))
+            : base("FTIT", new Size(300, 300))
         {
             AddComponents();
         }
 
         #region Components
+
         private void AddComponents()
         {
-            _faceplateOff =new GaugeImage(_faceplateOffImage, new Rect(30d, 30d, 300d, 300d));
+			_backplate = new GaugeImage(_backplateImage, new Rect(0d, 0d, 300d, 300d));
+			_backplate.IsHidden = false;
+			Components.Add(_backplate);
+
+			_faceplateOff =new GaugeImage(_faceplateOffImage, new Rect(0d, 0d, 300d, 300d));
             _faceplateOff.IsHidden = false;
             Components.Add(_faceplateOff);
 
-            _faceplateDim = new GaugeImage(_faceplateDimImage, new Rect(30d, 30d, 300d, 300d));
+            _faceplateDim = new GaugeImage(_faceplateDimImage, new Rect(0d, 0d, 300d, 300d));
             _faceplateDim.IsHidden = true;
             Components.Add(_faceplateDim);
 
-            _faceplateBrt = new GaugeImage(_faceplateBrtImage, new Rect(30d, 30d, 300d, 300d));
+            _faceplateBrt = new GaugeImage(_faceplateBrtImage, new Rect(0d, 0d, 300d, 300d));
             _faceplateBrt.IsHidden = true;
             Components.Add(_faceplateBrt);
 
-            _needleCalibration = new CalibrationPointCollectionDouble(200d, 18d, 1200d, 342d);
-            _needleCalibration.Add(new CalibrationPointDouble(700d, 108d));
-            _needleCalibration.Add(new CalibrationPointDouble(1000d, 306d));
+			_needleCalibration = new CalibrationPointCollectionDouble(200d, 20d, 1200d, 340d);
+			_needleCalibration.Add(new CalibrationPointDouble(700d, 120d));
+			_needleCalibration.Add(new CalibrationPointDouble(1000d, 300d));
 
-            _needleOff = new GaugeNeedle(_needleOffImage, new Point(180d, 180d), new Size(60d, 144d), new Point(30d, 114d), 90d);
+			_needleOff = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 90d);
             _needleOff.Rotation = _needleCalibration.Interpolate(0);
             _needleOff.IsHidden = false;
             Components.Add(_needleOff);
 
-            _needleDim = new GaugeNeedle(_needleDimImage, new Point(180d, 180d), new Size(60d, 144d), new Point(30d, 114d), 90d);
+            _needleDim = new GaugeNeedle(_needleDimImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 90d);
             _needleDim.Rotation = _needleCalibration.Interpolate(0);
             _needleDim.IsHidden = true;
             Components.Add(_needleDim);
 
-            _needleBrt = new GaugeNeedle(_needleBrtImage, new Point(180d, 180d), new Size(60d, 144d), new Point(30d, 114d), 90d);
+            _needleBrt = new GaugeNeedle(_needleBrtImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 90d);
             _needleBrt.Rotation = _needleCalibration.Interpolate(0);
             _needleBrt.IsHidden = true;
             Components.Add(_needleBrt);
-
-            #endregion Components
         }
 
-        #region Methods
+		#endregion Components
 
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
+		#region Methods
+
+		protected override void OnProfileChanged(HeliosProfile oldProfile)
         {
             base.OnProfileChanged(oldProfile);
 
@@ -138,7 +146,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
             }
         }
 
-        private void ResetFTIT()
+		public override void Reset()
+		{
+			ResetFTIT();
+		}
+
+		private void ResetFTIT()
         {
             Backlight = 0d;
             Temp = 0d;
@@ -159,12 +172,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
             _faceplateBrt.IsHidden = is_hidden_brt;
             _faceplateDim.IsHidden = is_hidden_dim;
             _faceplateOff.IsHidden = is_hidden_off;
-
         }
 
         private void ProcessFTITValues()
         {
-
             double rotation = _needleCalibration.Interpolate(Temp);
 
             _needleOff.Rotation = rotation;
