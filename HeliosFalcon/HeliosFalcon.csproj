@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gauges\Altimeter\Altimeter.cs" />
+    <Compile Include="Gauges\FTIT\FTIT.cs" />
     <Compile Include="Gauges\Textures\HUDBehaviorEditor.xaml.cs">
       <DependentUpon>HUDBehaviorEditor.xaml</DependentUpon>
     </Compile>
@@ -203,6 +204,30 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Gauges\Common\drum_tape_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\FTIT\ftit_needle_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\FTIT\ftit_faceplate_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\FTIT\ftit_faceplate_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\FTIT\ftit_faceplate_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\FTIT\ftit_needle_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\FTIT\ftit_needle_off.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>

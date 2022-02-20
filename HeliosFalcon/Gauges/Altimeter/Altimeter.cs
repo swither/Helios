@@ -274,7 +274,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 			_needleBrt.IsHidden = is_hidden_brt;
 		}
 
-		public override void Reset()
+		public override void Reset() 
 		{
 			ResetAltimeter();
 		}
