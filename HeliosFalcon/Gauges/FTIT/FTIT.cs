@@ -34,7 +34,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
         private GaugeNeedle _needleDim;
         private GaugeNeedle _needleBrt;
 
-		private const string _backplateImage = "{HeliosFalcon}/Gauges/FTIT/ftit_backplate.xaml";
+		private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/gauge_backplate.xaml";
 		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_off.xaml";
         private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_dim.xaml";
         private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_brt.xaml";

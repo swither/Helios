@@ -45,7 +45,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 		private GaugeNeedle _needleDim;
 		private GaugeNeedle _needleBrt;
 
-		private const string _backplateImage = "{HeliosFalcon}/Gauges/Altimeter/altimeter_backplate.xaml";
+		private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/gauge_backplate.xaml";
 		private const string _tensDrumOffImage = "{HeliosFalcon}/Gauges/Altimeter/alt_drum_tape_off.xaml";
 		private const string _tensDrumDimImage = "{HeliosFalcon}/Gauges/Altimeter/alt_drum_tape_dim.xaml";
 		private const string _tensDrumBrtImage = "{HeliosFalcon}/Gauges/Altimeter/alt_drum_tape_brt.xaml";
