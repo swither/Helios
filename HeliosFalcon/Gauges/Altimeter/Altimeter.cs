@@ -28,7 +28,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 		private FalconInterface _falconInterface;
 
 		private CalibrationPointCollectionDouble _needleCalibration;
-		private GaugeImage _backplate;
 		private GaugeDrumCounter _tensDrumOff;
 		private GaugeDrumCounter _tensDrumDim;
 		private GaugeDrumCounter _tensDrumBrt;
@@ -45,7 +44,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 		private GaugeNeedle _needleDim;
 		private GaugeNeedle _needleBrt;
 
-		private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/gauge_backplate.xaml";
 		private const string _tensDrumOffImage = "{HeliosFalcon}/Gauges/Altimeter/alt_drum_tape_off.xaml";
 		private const string _tensDrumDimImage = "{HeliosFalcon}/Gauges/Altimeter/alt_drum_tape_dim.xaml";
 		private const string _tensDrumBrtImage = "{HeliosFalcon}/Gauges/Altimeter/alt_drum_tape_brt.xaml";
@@ -74,10 +72,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 
 		void AddComponents()
 		{
-			_backplate = new GaugeImage(_backplateImage, new Rect(0d, 0d, 300d, 300d));
-			_backplate.IsHidden = false;
-			Components.Add(_backplate);
-
 			_tensDrumOff = new GaugeDrumCounter(_tensDrumOffImage, new Point(39d, 126d), "##", new Size(10d, 15d), new Size(30d, 45d));
 			_tensDrumOff.Clip = new RectangleGeometry(new Rect(39d, 106d, 30d, 81d));
 			_tensDrumOff.IsHidden = false;
