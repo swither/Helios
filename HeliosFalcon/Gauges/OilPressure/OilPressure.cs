@@ -1,5 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
-//    
+//  Copyright 2022 Helios Contributors
+//
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -44,7 +45,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.OilPressure
         private bool _inFlightLastValue = true;
 
         public OilPressure()
-            : base("Oil Pressure", new Size(360, 360))
+            : base("Oil Pressure", new Size(300, 300))
         {
             AddComponents();
         }
@@ -69,8 +70,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.OilPressure
             _faceplateBrt.IsHidden = true;
             Components.Add(_faceplateBrt);
 
-
             _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 100d, 320d);
+
             _needleOff = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 110d);
             _needleOff.Rotation = _needleCalibration.Interpolate(0);
             _needleOff.IsHidden = false;

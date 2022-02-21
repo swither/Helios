@@ -1,5 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
-//    
+//  Copyright 2022 Helios Contributors
+//
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -46,12 +47,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Nozzle
         public Nozzle()
             : base("Nozzle", new Size(300, 300))
         {
-
             AddComponents();
-
-            _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 100d, 280d);
-
-            
         }
 
         #region Components
@@ -62,31 +58,31 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Nozzle
             _backplate.IsHidden = false;
             Components.Add(_backplate);
 
-            _faceplateOff = new GaugeImage(_faceplateOffImage, new Rect(30d, 30d, 300d, 300d));
+            _faceplateOff = new GaugeImage(_faceplateOffImage, new Rect(0d, 0d, 300d, 300d));
             _faceplateOff.IsHidden = false;
             Components.Add(_faceplateOff);
 
-            _faceplateDim = new GaugeImage(_faceplateDimImage, new Rect(30d, 30d, 300d, 300d));
+            _faceplateDim = new GaugeImage(_faceplateDimImage, new Rect(0d, 0d, 300d, 300d));
             _faceplateDim.IsHidden = true;
             Components.Add(_faceplateDim);
 
-            _faceplateBrt = new GaugeImage(_faceplateBrtImage, new Rect(30d, 30d, 300d, 300d));
+            _faceplateBrt = new GaugeImage(_faceplateBrtImage, new Rect(0d, 0d, 300d, 300d));
             _faceplateBrt.IsHidden = true;
             Components.Add(_faceplateBrt);
 
-            _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 100d, 280d);
+            _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 100d, 240d);
 
-            _needleOff = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 40d);
+            _needleOff = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 60d);
             _needleOff.Rotation = _needleCalibration.Interpolate(0);
             _needleOff.IsHidden = false;
             Components.Add(_needleOff);
 
-            _needleDim = new GaugeNeedle(_needleDimImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 40d);
+            _needleDim = new GaugeNeedle(_needleDimImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 60d);
             _needleDim.Rotation = _needleCalibration.Interpolate(0);
             _needleDim.IsHidden = true;
             Components.Add(_needleDim);
 
-            _needleBrt = new GaugeNeedle(_needleBrtImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 40d);
+            _needleBrt = new GaugeNeedle(_needleBrtImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 60d);
             _needleBrt.Rotation = _needleCalibration.Interpolate(0);
             _needleBrt.IsHidden = true;
             Components.Add(_needleBrt);
