@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gauges\Altimeter\Altimeter.cs" />
+    <Compile Include="Gauges\EPU\EPU.cs" />
     <Compile Include="Gauges\FTIT\FTIT.cs" />
     <Compile Include="Gauges\Nozzle\Nozzle.cs" />
     <Compile Include="Gauges\OilPressure\OilPressure.cs" />
