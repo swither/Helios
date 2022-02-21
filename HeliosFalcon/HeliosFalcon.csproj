@@ -57,6 +57,8 @@
   <ItemGroup>
     <Compile Include="Gauges\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\FTIT\FTIT.cs" />
+    <Compile Include="Gauges\Nozzle\Nozzle.cs" />
+    <Compile Include="Gauges\OilPressure\OilPressure.cs" />
     <Compile Include="Gauges\Textures\HUDBehaviorEditor.xaml.cs">
       <DependentUpon>HUDBehaviorEditor.xaml</DependentUpon>
     </Compile>
