@@ -119,18 +119,23 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.OilPressure
             }
         }
 
-        public override void Reset()
+        private void Profile_ProfileStopped(object sender, EventArgs e)
         {
-            ResetOilPressure();
+            _falconInterface = null;
         }
 
-        private void ResetOilPressure()
+        private void ProcessBindingValues()
         {
-            Backlight = 0d;
-            Pressure = 0d;
+            BindingValue backlight = GetValue("Lighting", "instrument backlight");
+            Backlight = backlight.DoubleValue;
 
-            ProcessOilPressureValues();
-            ProcessBacklightValues();
+            BindingValue oilpressure = GetValue("Engine", "oil pressure");
+            Pressure = oilpressure.DoubleValue;
+        }
+
+        private void ProcessOilPressureValues()
+        {
+            _needle.Rotation = _needleCalibration.Interpolate(Pressure);
         }
 
         private void ProcessBacklightValues()
@@ -154,23 +159,18 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.OilPressure
             Refresh();
         }
 
-        private void ProcessBindingValues()
+        public override void Reset()
         {
-            BindingValue backlight = GetValue("Lighting", "instrument backlight");
-            Backlight = backlight.DoubleValue;
-
-            BindingValue oilpressure = GetValue("Engine", "oil pressure");
-            Pressure = oilpressure.DoubleValue;
+            ResetOilPressure();
         }
 
-        private void ProcessOilPressureValues()
+        private void ResetOilPressure()
         {
-             _needle.Rotation = _needleCalibration.Interpolate(Pressure);
-        }
+            Backlight = 0d;
+            Pressure = 0d;
 
-        private void Profile_ProfileStopped(object sender, EventArgs e)
-        {
-            _falconInterface = null;
+            ProcessOilPressureValues();
+            ProcessBacklightValues();
         }
 
         private BindingValue GetValue(string device, string name)

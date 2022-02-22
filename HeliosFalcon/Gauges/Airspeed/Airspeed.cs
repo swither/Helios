@@ -14,35 +14,38 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
+namespace GadrocsWorkshop.Helios.Gauges.Falcon.Airspeed
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.Falcon;
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.Falcon.FTIT", "Falcon BMS FTIT", "Falcon Simulator", typeof(GaugeRenderer))]
-    public class FTIT : BaseGauge
+    [HeliosControl("Helios.Falcon.Airspeed", "Falcon BMS Airspeed", "Falcon Simulator", typeof(GaugeRenderer))]
+    public class Airspeed : BaseGauge
     {
         private FalconInterface _falconInterface;
         private CalibrationPointCollectionDouble _needleCalibration;
-        private GaugeImage _backplate;
+        private CalibrationPointCollectionDouble _machCalibration;
         private GaugeImage _faceplate;
+        private GaugeNeedle _machRing;
         private GaugeNeedle _needle;
 
-        private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/gauge_backplate.xaml";
-        private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_off.xaml";
-        private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_dim.xaml";
-        private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_brt.xaml";
-        private const string _needleOffImage = "{HeliosFalcon}/Gauges/FTIT/ftit_needle_off.xaml";
-        private const string _needleDimImage = "{HeliosFalcon}/Gauges/FTIT/ftit_needle_dim.xaml";
-        private const string _needleBrtImage = "{HeliosFalcon}/Gauges/FTIT/ftit_needle_brt.xaml";
+        private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/Airspeed/asi_faceplate_off.xaml";
+        private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/Airspeed/asi_faceplate_dim.xaml";
+        private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/Airspeed/asi_faceplate_brt.xaml";
+        private const string _machRingOffImage = "{HeliosFalcon}/Gauges/Airspeed/asi_mach_ring_off.xaml";
+        private const string _machRingDimImage = "{HeliosFalcon}/Gauges/Airspeed/asi_mach_ring_dim.xaml";
+        private const string _machRingBrtImage = "{HeliosFalcon}/Gauges/Airspeed/asi_mach_ring_brt.xaml";
+        private const string _needleOffImage = "{HeliosFalcon}/Gauges/Airspeed/asi_needle_off.xaml";
+        private const string _needleDimImage = "{HeliosFalcon}/Gauges/Airspeed/asi_needle_dim.xaml";
+        private const string _needleBrtImage = "{HeliosFalcon}/Gauges/Airspeed/asi_needle_brt.xaml";
 
         private double _backlight;
         private bool _inFlightLastValue = true;
 
-        public FTIT()
-            : base("FTIT", new Size(300, 300))
+        public Airspeed()
+            : base("Airspeed", new Size(300, 300))
         {
             AddComponents();
         }
@@ -51,18 +54,22 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
 
         private void AddComponents()
         {
-            _backplate = new GaugeImage(_backplateImage, new Rect(0d, 0d, 300d, 300d));
-             Components.Add(_backplate);
-
             _faceplate =new GaugeImage(_faceplateOffImage, new Rect(0d, 0d, 300d, 300d));
             Components.Add(_faceplate);
 
-            _needleCalibration = new CalibrationPointCollectionDouble(200d, 20d, 1200d, 340d);
-            _needleCalibration.Add(new CalibrationPointDouble(700d, 120d));
-            _needleCalibration.Add(new CalibrationPointDouble(1000d, 300d));
+            _machCalibration = new CalibrationPointCollectionDouble(0d, 0d, 1.9d, 270d);
+            _machCalibration.Add(new CalibrationPointDouble(0.5d, 60d));
 
-            _needle = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 90d);
-            _needle.Rotation = _needleCalibration.Interpolate(0);
+            _machRing = new GaugeNeedle(_machRingOffImage, new Point(150d, 150d), new Size(188d, 188d), new Point(94d, 94d), -90d);
+            Components.Add(_machRing);
+
+            _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 850d, 350d);
+            _needleCalibration.Add(new CalibrationPointDouble(200d, 135d));
+            _needleCalibration.Add(new CalibrationPointDouble(300d, 195d));
+            _needleCalibration.Add(new CalibrationPointDouble(400d, 235d));
+            _needleCalibration.Add(new CalibrationPointDouble(500d, 267d));
+
+            _needle = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(300d, 300d), new Point(150d, 150d), -90d);
             Components.Add(_needle);
         }
 
@@ -107,14 +114,14 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
                 if (inFlight)
                 {
                     ProcessBindingValues();
-                    ProcessFTITValues();
+                    ProcessAirspeedValues();
                     _inFlightLastValue = true;
                 }
                 else
                 {
                     if (_inFlightLastValue)
                     {
-                        ResetFTIT();
+                        ResetAirspeed();
                         _inFlightLastValue = false;
                     }
                 }
@@ -131,13 +138,17 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
             BindingValue backlight = GetValue("Lighting", "instrument backlight");
             Backlight = backlight.DoubleValue;
 
-            BindingValue temp = GetValue("Engine", "ftit");
-            Temp = temp.DoubleValue;
+            BindingValue airspeed = GetValue("IAS", "indicated air speed");
+            AirSpeed = airspeed.DoubleValue;
+
+            BindingValue mach = GetValue("IAS", "mach");
+            Mach = mach.DoubleValue;
         }
 
-        private void ProcessFTITValues()
+        private void ProcessAirspeedValues()
         {
-            _needle.Rotation = _needleCalibration.Interpolate(Temp);
+            _needle.Rotation = _needleCalibration.Interpolate(AirSpeed);
+            _machRing.Rotation = _needle.Rotation - _machCalibration.Interpolate(Mach);
         }
 
         private void ProcessBacklightValues()
@@ -145,16 +156,19 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
             if (Backlight == 1)
             {
                 _faceplate.Image = _faceplateDimImage;
+                _machRing.Image = _machRingDimImage;
                 _needle.Image = _needleDimImage;
             }
             else if (Backlight == 2)
             {
                 _faceplate.Image = _faceplateBrtImage;
+                _machRing.Image = _machRingBrtImage;
                 _needle.Image = _needleBrtImage;
             }
             else
             {
                 _faceplate.Image = _faceplateOffImage;
+                _machRing.Image = _machRingOffImage;
                 _needle.Image = _needleOffImage;
             }
 
@@ -163,15 +177,16 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
 
         public override void Reset()
         {
-            ResetFTIT();
+            ResetAirspeed();
         }
 
-        private void ResetFTIT()
+        private void ResetAirspeed()
         {
             Backlight = 0d;
-            Temp = 0d;
+            AirSpeed = 0d;
+            Mach = 0d;
 
-            ProcessFTITValues();
+            ProcessAirspeedValues();
             ProcessBacklightValues();
         }
 
@@ -184,7 +199,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
 
         #region Properties
 
-        private double Temp { get; set; }
+        private double AirSpeed { get; set; }
+        private double Mach { get; set; }
 
         private double Backlight
         {

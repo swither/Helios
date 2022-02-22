@@ -119,18 +119,23 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Nozzle
             }
         }
 
-        public override void Reset()
+        private void Profile_ProfileStopped(object sender, EventArgs e)
         {
-            ResetNozzle();
+            _falconInterface = null;
         }
 
-        private void ResetNozzle()
+        private void ProcessBindingValues()
         {
-            Backlight = 0d;
-            NozzlePosition = 0d;
+            BindingValue backlight = GetValue("Lighting", "instrument backlight");
+            Backlight = backlight.DoubleValue;
 
-            ProcessNozzleValues();
-            ProcessBacklightValues();
+            BindingValue nozzleposition = GetValue("Engine", "nozzle position");
+            NozzlePosition = nozzleposition.DoubleValue;
+        }
+
+        private void ProcessNozzleValues()
+        {
+            _needle.Rotation = _needleCalibration.Interpolate(NozzlePosition);
         }
 
         private void ProcessBacklightValues()
@@ -154,23 +159,18 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Nozzle
             Refresh();
         }
 
-        private void ProcessNozzleValues()
+        public override void Reset()
         {
-             _needle.Rotation = _needleCalibration.Interpolate(NozzlePosition);
+            ResetNozzle();
         }
 
-        private void ProcessBindingValues()
+        private void ResetNozzle()
         {
-            BindingValue backlight = GetValue("Lighting", "instrument backlight");
-            Backlight = backlight.DoubleValue;
+            Backlight = 0d;
+            NozzlePosition = 0d;
 
-            BindingValue nozzleposition = GetValue("Engine", "nozzle position");
-            NozzlePosition = nozzleposition.DoubleValue;
-        }
-
-        private void Profile_ProfileStopped(object sender, EventArgs e)
-        {
-            _falconInterface = null;
+            ProcessNozzleValues();
+            ProcessBacklightValues();
         }
 
         private BindingValue GetValue(string device, string name)

@@ -143,9 +143,31 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.RPM
             _falconInterface = null;
         }
 
+        private void ProcessBindingValues()
+        {
+            BindingValue backlight = GetValue("Lighting", "instrument backlight");
+            Backlight = backlight.DoubleValue;
+
+            BindingValue rpmPercent = GetValue("Engine", "rpm");
+            RPMPercent = rpmPercent.DoubleValue;
+        }
+
         void SetGaugeType_Execute(object action, HeliosActionEventArgs e)
         {
             GaugeType = e.Value.DoubleValue;
+        }
+
+        private void ProcessRPMValues()
+        {
+            if (GaugeType == 0)
+            {
+                _needle.Rotation = _needleCalibrationGE.Interpolate(RPMPercent);
+            }
+
+            if (GaugeType == 1)
+            {
+                _needle.Rotation = _needleCalibrationPW.Interpolate(RPMPercent);
+            }
         }
 
         private void ProcessGaugeValues()
@@ -200,28 +222,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.RPM
             }
 
             Refresh();
-        }
-
-        private void ProcessRPMValues()
-        {
-            if (GaugeType == 0)
-            {
-                _needle.Rotation = _needleCalibrationGE.Interpolate(RPMPercent);
-            }
-
-            if (GaugeType == 1)
-            {
-                _needle.Rotation = _needleCalibrationPW.Interpolate(RPMPercent);
-            }
-        }
-
-        private void ProcessBindingValues()
-        {
-            BindingValue backlight = GetValue("Lighting", "instrument backlight");
-            Backlight = backlight.DoubleValue;
-            
-            BindingValue rpmPercent = GetValue("Engine", "rpm");
-            RPMPercent = rpmPercent.DoubleValue;
         }
 
         public override void Reset()

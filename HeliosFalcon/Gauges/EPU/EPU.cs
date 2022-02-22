@@ -119,18 +119,23 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EPU
             }
         }
 
-        public override void Reset()
+        private void Profile_ProfileStopped(object sender, EventArgs e)
         {
-            ResetEPU();
+            _falconInterface = null;
         }
 
-        private void ResetEPU()
+        private void ProcessBindingValues()
         {
-            Backlight = 0d;
-            Fuel = 0d;
+            BindingValue backlight = GetValue("Lighting", "instrument backlight");
+            Backlight = backlight.DoubleValue;
 
-            ProcessEPUValues();
-            ProcessBacklightValues();
+            BindingValue epu = GetValue("EPU", "fuel");
+            Fuel = epu.DoubleValue;
+        }
+
+        private void ProcessEPUValues()
+        {
+            _needle.Rotation = _needleCalibration.Interpolate(Fuel);
         }
 
         private void ProcessBacklightValues()
@@ -154,23 +159,18 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EPU
             Refresh();
         }
 
-        private void ProcessBindingValues()
+        public override void Reset()
         {
-            BindingValue backlight = GetValue("Lighting", "instrument backlight");
-            Backlight = backlight.DoubleValue;
-
-            BindingValue epu = GetValue("EPU", "fuel");
-            Fuel = epu.DoubleValue;
+            ResetEPU();
         }
 
-        private void ProcessEPUValues()
+        private void ResetEPU()
         {
-             _needle.Rotation = _needleCalibration.Interpolate(Fuel);
-        }
+            Backlight = 0d;
+            Fuel = 0d;
 
-        private void Profile_ProfileStopped(object sender, EventArgs e)
-        {
-            _falconInterface = null;
+            ProcessEPUValues();
+            ProcessBacklightValues();
         }
 
         private BindingValue GetValue(string device, string name)

@@ -56,11 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gauges\EPU\EPU.cs" />
-    <Compile Include="Gauges\FTIT\FTIT.cs" />
-    <Compile Include="Gauges\RPM\RPM.cs" />
-    <Compile Include="Gauges\Nozzle\Nozzle.cs" />
     <Compile Include="Gauges\OilPressure\OilPressure.cs" />
+    <Compile Include="Gauges\Nozzle\Nozzle.cs" />
+    <Compile Include="Gauges\FTIT\FTIT.cs" />
     <Compile Include="Gauges\Altimeter\Altimeter.cs" />
+    <Compile Include="Gauges\Airspeed\Airspeed.cs" />
+    <Compile Include="Gauges\RPM\RPM.cs" />
     <Compile Include="Gauges\Textures\HUDBehaviorEditor.xaml.cs">
       <DependentUpon>HUDBehaviorEditor.xaml</DependentUpon>
     </Compile>
@@ -340,6 +341,42 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Gauges\EPU\epu_needle_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Airspeed\asi_faceplate_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Airspeed\asi_faceplate_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Airspeed\asi_faceplate_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Airspeed\asi_mach_ring_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Airspeed\asi_mach_ring_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Airspeed\asi_mach_ring_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Airspeed\asi_needle_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Airspeed\asi_needle_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Airspeed\asi_needle_off.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
