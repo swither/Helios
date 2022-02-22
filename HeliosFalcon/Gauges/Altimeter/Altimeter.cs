@@ -28,21 +28,11 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
         private FalconInterface _falconInterface;
 
         private CalibrationPointCollectionDouble _needleCalibration;
-        private GaugeDrumCounter _tensDrumOff;
-        private GaugeDrumCounter _tensDrumDim;
-        private GaugeDrumCounter _tensDrumBrt;
-        private GaugeDrumCounter _mainDrumOff;
-        private GaugeDrumCounter _mainDrumDim;
-        private GaugeDrumCounter _mainDrumBrt;
-        private GaugeDrumCounter _pressureDrumOff;
-        private GaugeDrumCounter _pressureDrumDim;
-        private GaugeDrumCounter _pressureDrumBrt;
-        private GaugeImage _faceplateOff;
-        private GaugeImage _faceplateDim;
-        private GaugeImage _faceplateBrt;
-        private GaugeNeedle _needleOff;
-        private GaugeNeedle _needleDim;
-        private GaugeNeedle _needleBrt;
+        private GaugeDrumCounter _tensDrum;
+        private GaugeDrumCounter _mainDrum;
+        private GaugeDrumCounter _pressureDrum;
+        private GaugeImage _faceplate;
+        private GaugeNeedle _needle;
 
         private const string _tensDrumOffImage = "{HeliosFalcon}/Gauges/Altimeter/alt_drum_tape_off.xaml";
         private const string _tensDrumDimImage = "{HeliosFalcon}/Gauges/Altimeter/alt_drum_tape_dim.xaml";
@@ -60,6 +50,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
         private const string _needleDimImage = "{HeliosFalcon}/Gauges/Altimeter/altimeter_needle_dim.xaml";
         private const string _needleBrtImage = "{HeliosFalcon}/Gauges/Altimeter/altimeter_needle_brt.xaml";
 
+        private double _backlight;
         private bool _inFlightLastValue = true;
 
         public Altimeter()
@@ -72,76 +63,25 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 
         void AddComponents()
         {
-            _tensDrumOff = new GaugeDrumCounter(_tensDrumOffImage, new Point(39d, 126d), "##", new Size(10d, 15d), new Size(30d, 45d));
-            _tensDrumOff.Clip = new RectangleGeometry(new Rect(39d, 106d, 30d, 81d));
-            _tensDrumOff.IsHidden = false;
-            Components.Add(_tensDrumOff);
+            _tensDrum = new GaugeDrumCounter(_tensDrumOffImage, new Point(39d, 126d), "##", new Size(10d, 15d), new Size(30d, 45d));
+            _tensDrum.Clip = new RectangleGeometry(new Rect(39d, 106d, 30d, 81d));
+            Components.Add(_tensDrum);
 
-            _tensDrumDim = new GaugeDrumCounter(_tensDrumDimImage, new Point(39d, 126d), "##", new Size(10d, 15d), new Size(30d, 45d));
-            _tensDrumDim.Clip = new RectangleGeometry(new Rect(39d, 106d, 30d, 81d));
-            _tensDrumDim.IsHidden = true;
-            Components.Add(_tensDrumDim);
+            _mainDrum = new GaugeDrumCounter(_mainDrumOffImage, new Point(69d, 126d), "#%00", new Size(10d, 15d), new Size(30d, 45d));
+            _mainDrum.Clip = new RectangleGeometry(new Rect(69d, 106d, 150d, 81d));
+            Components.Add(_mainDrum);
 
-            _tensDrumBrt = new GaugeDrumCounter(_tensDrumBrtImage, new Point(39d, 126d), "##", new Size(10d, 15d), new Size(30d, 45d));
-            _tensDrumBrt.Clip = new RectangleGeometry(new Rect(39d, 106d, 30d, 81d));
-            _tensDrumBrt.IsHidden = true;
-            Components.Add(_tensDrumBrt);
+            _pressureDrum = new GaugeDrumCounter(_pressureDrumOffImage, new Point(182d, 195d), "###%", new Size(10d, 15d), new Size(15d, 20d));
+            _pressureDrum.Clip = new RectangleGeometry(new Rect(182d, 195d, 60d, 20d));
+            Components.Add(_pressureDrum);
 
-            _mainDrumOff = new GaugeDrumCounter(_mainDrumOffImage, new Point(69d, 126d), "#%00", new Size(10d, 15d), new Size(30d, 45d));
-            _mainDrumOff.Clip = new RectangleGeometry(new Rect(69d, 106d, 150d, 81d));
-            _mainDrumOff.IsHidden = false;
-            Components.Add(_mainDrumOff);
-
-            _mainDrumDim = new GaugeDrumCounter(_mainDrumDimImage, new Point(69d, 126d), "#%00", new Size(10d, 15d), new Size(30d, 45d));
-            _mainDrumDim.Clip = new RectangleGeometry(new Rect(69d, 106d, 150d, 81d));
-            _mainDrumDim.IsHidden = true;
-            Components.Add(_mainDrumDim);
-
-            _mainDrumBrt = new GaugeDrumCounter(_mainDrumBrtImage, new Point(69d, 126d), "#%00", new Size(10d, 15d), new Size(30d, 45d));
-            _mainDrumBrt.Clip = new RectangleGeometry(new Rect(69d, 106d, 150d, 81d));
-            _mainDrumBrt.IsHidden = true;
-            Components.Add(_mainDrumBrt);
-
-            _pressureDrumOff = new GaugeDrumCounter(_pressureDrumOffImage, new Point(182d, 195d), "###%", new Size(10d, 15d), new Size(15d, 20d));
-            _pressureDrumOff.Clip = new RectangleGeometry(new Rect(182d, 195d, 60d, 20d));
-            _pressureDrumOff.IsHidden = false;
-            Components.Add(_pressureDrumOff);
-
-            _pressureDrumDim = new GaugeDrumCounter(_pressureDrumDimImage, new Point(182d, 195d), "###%", new Size(10d, 15d), new Size(15d, 20d));
-            _pressureDrumDim.Clip = new RectangleGeometry(new Rect(182d, 195d, 60d, 20d));
-            _pressureDrumDim.IsHidden = true;
-            Components.Add(_pressureDrumDim);
-
-            _pressureDrumBrt = new GaugeDrumCounter(_pressureDrumBrtImage, new Point(182d, 195d), "###%", new Size(10d, 15d), new Size(15d, 20d));
-            _pressureDrumBrt.Clip = new RectangleGeometry(new Rect(182d, 195d, 60d, 20d));
-            _pressureDrumBrt.IsHidden = true;
-            Components.Add(_pressureDrumBrt);
-
-            _faceplateOff = new GaugeImage(_faceplateOffImage, new Rect(0d, 0d, 300d, 300d));
-            _faceplateOff.IsHidden = false;
-            Components.Add(_faceplateOff);
-
-            _faceplateDim = new GaugeImage(_faceplateDimImage, new Rect(0d, 0d, 300d, 300d));
-            _faceplateDim.IsHidden = true;
-            Components.Add(_faceplateDim);
-
-            _faceplateBrt = new GaugeImage(_faceplateBrtImage, new Rect(0d, 0d, 300d, 300d));
-            _faceplateBrt.IsHidden = true;
-            Components.Add(_faceplateBrt);
+            _faceplate = new GaugeImage(_faceplateOffImage, new Rect(0d, 0d, 300d, 300d));
+            Components.Add(_faceplate);
 
             _needleCalibration = new CalibrationPointCollectionDouble(-1000d, -360d, 1000d, 360d);
 
-            _needleOff = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(16d, 257d), new Point(8d, 138.5d));
-            _needleOff.IsHidden = false;
-            Components.Add(_needleOff);
-
-            _needleDim = new GaugeNeedle(_needleDimImage, new Point(150d, 150d), new Size(16d, 257d), new Point(8d, 138.5d));
-            _needleDim.IsHidden = true;
-            Components.Add(_needleDim);
-
-            _needleBrt = new GaugeNeedle(_needleBrtImage, new Point(150d, 150d), new Size(16d, 257d), new Point(8d, 138.5d));
-            _needleBrt.IsHidden = true;
-            Components.Add(_needleBrt);
+            _needle = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(16d, 257d), new Point(8d, 138.5d));
+            Components.Add(_needle);
         }
 
         #endregion Components
@@ -186,7 +126,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
                 {
                     ProcessBindingValues();
                     ProcessAltimeterValues();
-                    ProcessBacklightValues();
                     _inFlightLastValue = true;
                 }
                 else
@@ -219,50 +158,40 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 
         void ProcessAltimeterValues()
         {
-            double rotation = _needleCalibration.Interpolate(Altitude % 1000d);
-            double tensValue = (Altitude < 0 ? 99999 - Math.Abs(Altitude) : Altitude) / 1000d;
-            double drumValue = Altitude < 0 ? 99999 - Math.Abs(Altitude) : Altitude;
-
-            _needleOff.Rotation = rotation;
-            _needleDim.Rotation = rotation;
-            _needleBrt.Rotation = rotation;
-
-            _tensDrumOff.Value = tensValue;
-            _tensDrumDim.Value = tensValue;
-            _tensDrumBrt.Value = tensValue;
-
-            _mainDrumOff.Value = drumValue;
-            _mainDrumDim.Value = drumValue;
-            _mainDrumBrt.Value = drumValue;
-
-            _pressureDrumOff.Value = Pressure;
-            _pressureDrumDim.Value = Pressure;
-            _pressureDrumBrt.Value = Pressure;
+             _needle.Rotation = _needleCalibration.Interpolate(Altitude % 1000d);
+            _tensDrum.Value = (Altitude < 0 ? 99999 - Math.Abs(Altitude) : Altitude) / 1000d;
+            _mainDrum.Value = Altitude < 0 ? 99999 - Math.Abs(Altitude) : Altitude;
+            _pressureDrum.Value = Pressure;
         }
 
         void ProcessBacklightValues()
         {
-            bool is_hidden_off = Backlight != 0;
-            bool is_hidden_dim = Backlight != 1;
-            bool is_hidden_brt = Backlight != 2;
+            if (Backlight == 1)
+            {
+                _tensDrum.Image = _tensDrumDimImage;
+                _mainDrum.Image = _mainDrumDimImage;
+                _pressureDrum.Image = _pressureDrumDimImage;
+                _faceplate.Image = _faceplateDimImage;
+                _needle.Image = _needleDimImage;
+            }
+            else if (Backlight == 2)
+            {
+                _tensDrum.Image = _tensDrumBrtImage;
+                _mainDrum.Image = _mainDrumBrtImage;
+                _pressureDrum.Image = _pressureDrumBrtImage;
+                _faceplate.Image = _faceplateBrtImage;
+                _needle.Image = _needleBrtImage;
+            }
+            else
+            {
+                _tensDrum.Image = _tensDrumOffImage;
+                _mainDrum.Image = _mainDrumOffImage;
+                _pressureDrum.Image = _pressureDrumOffImage;
+                _faceplate.Image = _faceplateOffImage;
+                _needle.Image = _needleOffImage;
+            }
 
-            _tensDrumOff.IsHidden = is_hidden_off;
-            _mainDrumOff.IsHidden = is_hidden_off;
-            _pressureDrumOff.IsHidden = is_hidden_off;
-            _faceplateOff.IsHidden = is_hidden_off;
-            _needleOff.IsHidden = is_hidden_off;
-
-            _tensDrumDim.IsHidden = is_hidden_dim;
-            _mainDrumDim.IsHidden = is_hidden_dim;
-            _pressureDrumDim.IsHidden = is_hidden_dim;
-            _faceplateDim.IsHidden = is_hidden_dim;
-            _needleDim.IsHidden = is_hidden_dim;
-
-            _tensDrumBrt.IsHidden = is_hidden_brt;
-            _mainDrumBrt.IsHidden = is_hidden_brt;
-            _pressureDrumBrt.IsHidden = is_hidden_brt;
-            _faceplateBrt.IsHidden = is_hidden_brt;
-            _needleBrt.IsHidden = is_hidden_brt;
+            Refresh();
         }
 
         public override void Reset() 
@@ -289,11 +218,26 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 
         #region Properties
 
-        private double Backlight { get; set; }
         private double Altitude { get; set; }
         private double Pressure { get; set; }
 
-        #endregion Properties
+        private double Backlight
+        {
+            get
+            {
+                return _backlight;
+            }
+            set
+            {
+                double oldValue = _backlight;
+                _backlight = value;
+                if (!_backlight.Equals(oldValue))
+                {
+                    ProcessBacklightValues();
+                }
+            }
+        }
 
+        #endregion Properties
     }
 }
