@@ -9,7 +9,7 @@
 					<TranslateTransform X="-56" Y="-56"/>
 				</TransformGroup>
 			</Canvas.RenderTransform>
-			<Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path4437" Fill="#FF1E1E1E" Stroke="#FF0A0A0A" StrokeThickness="1" StrokeMiterLimit="4" Data="m 243.5 150 c 0 51.63862 -41.86138 93.5 -93.5 93.5 -51.638624 0 -93.5 -41.86138 -93.5 -93.5 0 -51.638624 41.861376 -93.5 93.5 -93.5 51.63862 0 93.5 41.861376 93.5 93.5 z"/>
+			<Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path4437" Fill="#FF151515" Stroke="#FF000000" StrokeThickness="2" StrokeMiterLimit="4" Data="m 243.5 150 c 0 51.63862 -41.86138 93.5 -93.5 93.5 -51.638624 0 -93.5 -41.86138 -93.5 -93.5 0 -51.638624 41.861376 -93.5 93.5 -93.5 51.63862 0 93.5 41.861376 93.5 93.5 z"/>
 		</Canvas>
 	</Canvas>
 	<Canvas Name="layer6">
