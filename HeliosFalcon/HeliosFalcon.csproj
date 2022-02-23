@@ -59,6 +59,7 @@
     <Compile Include="Gauges\OilPressure\OilPressure.cs" />
     <Compile Include="Gauges\Nozzle\Nozzle.cs" />
     <Compile Include="Gauges\FTIT\FTIT.cs" />
+    <Compile Include="Gauges\Fuel\Fuel.cs" />
     <Compile Include="Gauges\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\Airspeed\Airspeed.cs" />
     <Compile Include="Gauges\RPM\RPM.cs" />
@@ -377,6 +378,42 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Gauges\Airspeed\asi_needle_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Fuel\fuel_faceplate_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Fuel\fuel_faceplate_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Fuel\fuel_faceplate_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Fuel\fuel_needle_aft_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Fuel\fuel_needle_aft_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Fuel\fuel_needle_aft_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Fuel\fuel_needle_fwd_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Fuel\fuel_needle_fwd_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Fuel\fuel_needle_fwd_off.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
