@@ -16,273 +16,273 @@
 
 namespace GadrocsWorkshop.Helios.Gauges.Falcon.RPM
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Interfaces.Falcon;
-    using System;
-    using System.Windows;
+	using GadrocsWorkshop.Helios.ComponentModel;
+	using GadrocsWorkshop.Helios.Interfaces.Falcon;
+	using System;
+	using System.Windows;
 
-    [HeliosControl("Helios.Falcon.RPM", "Falcon BMS RPM", "Falcon Simulator", typeof(GaugeRenderer))]
-    public class RPM : BaseGauge
-    {
-        private FalconInterface _falconInterface;
-        private CalibrationPointCollectionDouble _needleCalibrationGE;
-        private CalibrationPointCollectionDouble _needleCalibrationPW;
-        private GaugeImage _backplate;
-        private GaugeImage _faceplate;
-        private GaugeNeedle _needle;
-        private HeliosValue _setGaugeType;
+	[HeliosControl("Helios.Falcon.RPM", "Falcon BMS RPM", "Falcon Simulator", typeof(GaugeRenderer))]
+	public class RPM : BaseGauge
+	{
+		private FalconInterface _falconInterface;
+		private CalibrationPointCollectionDouble _needleCalibrationGE;
+		private CalibrationPointCollectionDouble _needleCalibrationPW;
+		private GaugeImage _backplate;
+		private GaugeImage _faceplate;
+		private GaugeNeedle _needle;
+		private HeliosValue _setGaugeType;
 
-        private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/gauge_backplate.xaml";
-        private const string _faceplateGE_OffImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_ge_off.xaml";
-        private const string _faceplateGE_DimImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_ge_dim.xaml";
-        private const string _faceplateGE_BrtImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_ge_brt.xaml";
-        private const string _faceplatePW_OffImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_pw_off.xaml";
-        private const string _faceplatePW_DimImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_pw_dim.xaml";
-        private const string _faceplatePW_BrtImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_pw_brt.xaml";
-        private const string _needleOffImage = "{HeliosFalcon}/Gauges/RPM/rpm_needle_off.xaml";
-        private const string _needleDimImage = "{HeliosFalcon}/Gauges/RPM/rpm_needle_dim.xaml";
-        private const string _needleBrtImage = "{HeliosFalcon}/Gauges/RPM/rpm_needle_brt.xaml";
+		private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/gauge_backplate.xaml";
+		private const string _faceplateGE_OffImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_ge_off.xaml";
+		private const string _faceplateGE_DimImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_ge_dim.xaml";
+		private const string _faceplateGE_BrtImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_ge_brt.xaml";
+		private const string _faceplatePW_OffImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_pw_off.xaml";
+		private const string _faceplatePW_DimImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_pw_dim.xaml";
+		private const string _faceplatePW_BrtImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_pw_brt.xaml";
+		private const string _needleOffImage = "{HeliosFalcon}/Gauges/RPM/rpm_needle_off.xaml";
+		private const string _needleDimImage = "{HeliosFalcon}/Gauges/RPM/rpm_needle_dim.xaml";
+		private const string _needleBrtImage = "{HeliosFalcon}/Gauges/RPM/rpm_needle_brt.xaml";
 
-        private double _backlight;
-        private double _gaugeType;
-        private bool _inFlightLastValue = true;
+		private double _backlight;
+		private double _gaugeType;
+		private bool _inFlightLastValue = true;
 
-        public RPM()
-            : base("RPM", new Size(300, 300))
-        {
-            AddComponents();
-        }
+		public RPM()
+			: base("RPM", new Size(300, 300))
+		{
+			AddComponents();
+		}
 
-        #region Components
+		#region Components
 
-        private void AddComponents()
-        {
-            _backplate = new GaugeImage(_backplateImage, new Rect(0d, 0d, 300d, 300d));
-             Components.Add(_backplate);
+		private void AddComponents()
+		{
+			_backplate = new GaugeImage(_backplateImage, new Rect(0d, 0d, 300d, 300d));
+			 Components.Add(_backplate);
 
-            _faceplate =new GaugeImage(_faceplateGE_OffImage, new Rect(0d, 0d, 300d, 300d));
-            Components.Add(_faceplate);
+			_faceplate =new GaugeImage(_faceplateGE_OffImage, new Rect(0d, 0d, 300d, 300d));
+			Components.Add(_faceplate);
 
-            _needleCalibrationGE = new CalibrationPointCollectionDouble(0d, 0d, 110d, 326d);
-            _needleCalibrationGE.Add(new CalibrationPointDouble(30d, 54d));
-            _needleCalibrationGE.Add(new CalibrationPointDouble(60d, 115.5d));
-            _needleCalibrationGE.Add(new CalibrationPointDouble(70d, 143d));
-            _needleCalibrationGE.Add(new CalibrationPointDouble(90d, 230d));
+			_needleCalibrationGE = new CalibrationPointCollectionDouble(0d, 0d, 110d, 326d);
+			_needleCalibrationGE.Add(new CalibrationPointDouble(30d, 54d));
+			_needleCalibrationGE.Add(new CalibrationPointDouble(60d, 115.5d));
+			_needleCalibrationGE.Add(new CalibrationPointDouble(70d, 143d));
+			_needleCalibrationGE.Add(new CalibrationPointDouble(90d, 230d));
 
-            _needleCalibrationPW = new CalibrationPointCollectionDouble(0d, 0d, 100d, 324d);
-            _needleCalibrationPW.Add(new CalibrationPointDouble(60d, 124d));
-            _needleCalibrationPW.Add(new CalibrationPointDouble(70d, 172d));
+			_needleCalibrationPW = new CalibrationPointCollectionDouble(0d, 0d, 100d, 324d);
+			_needleCalibrationPW.Add(new CalibrationPointDouble(60d, 124d));
+			_needleCalibrationPW.Add(new CalibrationPointDouble(70d, 172d));
 
-            _needle = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 355d);
-            _needle.Rotation = _needleCalibrationGE.Interpolate(0);
-            Components.Add(_needle);
+			_needle = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 355d);
+			_needle.Rotation = _needleCalibrationGE.Interpolate(0);
+			Components.Add(_needle);
 
-            _setGaugeType = new HeliosValue(this, new BindingValue(0d), "", "rpm gauge type", "Sets the type of RPM gauge.", "0 = GE, 1 = PW", BindingValueUnits.Numeric);
-            _setGaugeType.SetValue(new BindingValue(0), true);
-            _setGaugeType.Execute += new HeliosActionHandler(SetGaugeType_Execute);
-            Actions.Add(_setGaugeType);
-        }
+			_setGaugeType = new HeliosValue(this, new BindingValue(0d), "", "rpm gauge type", "Sets the type of RPM gauge.", "0 = GE, 1 = PW", BindingValueUnits.Numeric);
+			_setGaugeType.SetValue(new BindingValue(0), true);
+			_setGaugeType.Execute += new HeliosActionHandler(SetGaugeType_Execute);
+			Actions.Add(_setGaugeType);
+		}
 
-        #endregion Components
+		#endregion Components
 
-        #region Methods
+		#region Methods
 
-        protected override void OnProfileChanged(HeliosProfile oldProfile)
-        {
-            base.OnProfileChanged(oldProfile);
+		protected override void OnProfileChanged(HeliosProfile oldProfile)
+		{
+			base.OnProfileChanged(oldProfile);
 
-            if (oldProfile != null)
-            {
-                oldProfile.ProfileStarted -= new EventHandler(Profile_ProfileStarted);
-                oldProfile.ProfileTick -= new EventHandler(Profile_ProfileTick);
-                oldProfile.ProfileStopped -= new EventHandler(Profile_ProfileStopped);
-            }
+			if (oldProfile != null)
+			{
+				oldProfile.ProfileStarted -= new EventHandler(Profile_ProfileStarted);
+				oldProfile.ProfileTick -= new EventHandler(Profile_ProfileTick);
+				oldProfile.ProfileStopped -= new EventHandler(Profile_ProfileStopped);
+			}
 
-            if (Profile != null)
-            {
-                Profile.ProfileStarted += new EventHandler(Profile_ProfileStarted);
-                Profile.ProfileTick += new EventHandler(Profile_ProfileTick);
-                Profile.ProfileStopped += new EventHandler(Profile_ProfileStopped);
-            }
-        }
+			if (Profile != null)
+			{
+				Profile.ProfileStarted += new EventHandler(Profile_ProfileStarted);
+				Profile.ProfileTick += new EventHandler(Profile_ProfileTick);
+				Profile.ProfileStopped += new EventHandler(Profile_ProfileStopped);
+			}
+		}
 
-        private void Profile_ProfileStarted(object sender, EventArgs e)
-        {
-            if (Parent.Profile.Interfaces.ContainsKey("Falcon"))
-            {
-                _falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
-            }
-        }
+		private void Profile_ProfileStarted(object sender, EventArgs e)
+		{
+			if (Parent.Profile.Interfaces.ContainsKey("Falcon"))
+			{
+				_falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
+			}
+		}
 
-        private void Profile_ProfileTick(object sender, EventArgs e)
-        {
-            if (_falconInterface != null)
-            {
-                BindingValue runtimeFlying = GetValue("Runtime", "Flying");
-                bool inFlight = runtimeFlying.BoolValue;
+		private void Profile_ProfileTick(object sender, EventArgs e)
+		{
+			if (_falconInterface != null)
+			{
+				BindingValue runtimeFlying = GetValue("Runtime", "Flying");
+				bool inFlight = runtimeFlying.BoolValue;
 
-                if (inFlight)
-                {
-                    ProcessBindingValues();
-                    ProcessRPMValues();
-                    _inFlightLastValue = true;
-                }
-                else
-                {
-                    if (_inFlightLastValue)
-                    {
-                        ResetRPM();
-                        _inFlightLastValue = false;
-                    }
-                }
-            }
-        }
+				if (inFlight)
+				{
+					ProcessBindingValues();
+					ProcessRPMValues();
+					_inFlightLastValue = true;
+				}
+				else
+				{
+					if (_inFlightLastValue)
+					{
+						ResetRPM();
+						_inFlightLastValue = false;
+					}
+				}
+			}
+		}
 
-        private void Profile_ProfileStopped(object sender, EventArgs e)
-        {
-            _falconInterface = null;
-        }
+		private void Profile_ProfileStopped(object sender, EventArgs e)
+		{
+			_falconInterface = null;
+		}
 
-        private void ProcessBindingValues()
-        {
-            BindingValue backlight = GetValue("Lighting", "instrument backlight");
-            Backlight = backlight.DoubleValue;
+		private void ProcessBindingValues()
+		{
+			BindingValue backlight = GetValue("Lighting", "instrument backlight");
+			Backlight = backlight.DoubleValue;
 
-            BindingValue rpmPercent = GetValue("Engine", "rpm");
-            RPMPercent = rpmPercent.DoubleValue;
-        }
+			BindingValue rpmPercent = GetValue("Engine", "rpm");
+			RPMPercent = rpmPercent.DoubleValue;
+		}
 
-        void SetGaugeType_Execute(object action, HeliosActionEventArgs e)
-        {
-            GaugeType = e.Value.DoubleValue;
-        }
+		void SetGaugeType_Execute(object action, HeliosActionEventArgs e)
+		{
+			GaugeType = e.Value.DoubleValue;
+		}
 
-        private void ProcessRPMValues()
-        {
-            if (GaugeType == 0)
-            {
-                _needle.Rotation = _needleCalibrationGE.Interpolate(RPMPercent);
-            }
+		private void ProcessRPMValues()
+		{
+			if (GaugeType == 0)
+			{
+				_needle.Rotation = _needleCalibrationGE.Interpolate(RPMPercent);
+			}
 
-            if (GaugeType == 1)
-            {
-                _needle.Rotation = _needleCalibrationPW.Interpolate(RPMPercent);
-            }
-        }
+			if (GaugeType == 1)
+			{
+				_needle.Rotation = _needleCalibrationPW.Interpolate(RPMPercent);
+			}
+		}
 
-        private void ProcessGaugeValues()
-        {
-            if (Backlight == 1)
-            {
-                 _needle.Image = _needleDimImage;
-            }
-            else if (Backlight == 2)
-            {
-                 _needle.Image = _needleBrtImage;
-            }
-            else
-            {
-                 _needle.Image = _needleOffImage;
-            }
+		private void ProcessGaugeValues()
+		{
+			if (Backlight == 1)
+			{
+				 _needle.Image = _needleDimImage;
+			}
+			else if (Backlight == 2)
+			{
+				 _needle.Image = _needleBrtImage;
+			}
+			else
+			{
+				 _needle.Image = _needleOffImage;
+			}
 
-            if (GaugeType == 0)
-            {
-                if (Backlight == 1)
-                {
-                    _faceplate.Image = _faceplateGE_DimImage;
-                }
-                else if (Backlight == 2)
-                {
-                    _faceplate.Image = _faceplateGE_BrtImage;
-                 }
-                else
-                {
-                    _faceplate.Image = _faceplateGE_OffImage;
-                }
+			if (GaugeType == 0)
+			{
+				if (Backlight == 1)
+				{
+					_faceplate.Image = _faceplateGE_DimImage;
+				}
+				else if (Backlight == 2)
+				{
+					_faceplate.Image = _faceplateGE_BrtImage;
+				 }
+				else
+				{
+					_faceplate.Image = _faceplateGE_OffImage;
+				}
 
-                _needle.BaseRotation = 355d;
-            }
+				_needle.BaseRotation = 355d;
+			}
 
-            if (GaugeType == 1)
-            {
-                if (Backlight == 1)
-                {
-                    _faceplate.Image = _faceplatePW_DimImage;
-                }
-                else if (Backlight == 2)
-                {
-                    _faceplate.Image = _faceplatePW_BrtImage;
-                }
-                else
-                {
-                    _faceplate.Image = _faceplatePW_OffImage;
-                }
+			if (GaugeType == 1)
+			{
+				if (Backlight == 1)
+				{
+					_faceplate.Image = _faceplatePW_DimImage;
+				}
+				else if (Backlight == 2)
+				{
+					_faceplate.Image = _faceplatePW_BrtImage;
+				}
+				else
+				{
+					_faceplate.Image = _faceplatePW_OffImage;
+				}
 
-                _needle.BaseRotation = 0d;
-            }
+				_needle.BaseRotation = 0d;
+			}
 
-            Refresh();
-        }
+			Refresh();
+		}
 
-        public override void Reset()
-        {
-            ResetRPM();
-        }
+		public override void Reset()
+		{
+			ResetRPM();
+		}
 
-        private void ResetRPM()
-        {
-            Backlight = 0d;
-            RPMPercent = 0d;
+		private void ResetRPM()
+		{
+			Backlight = 0d;
+			RPMPercent = 0d;
 
-            ProcessRPMValues();
-            ProcessGaugeValues();
-        }
+			ProcessRPMValues();
+			ProcessGaugeValues();
+		}
 
-        private BindingValue GetValue(string device, string name)
-        {
-            return _falconInterface?.GetValue(device, name) ?? BindingValue.Empty;
-        }
+		private BindingValue GetValue(string device, string name)
+		{
+			return _falconInterface?.GetValue(device, name) ?? BindingValue.Empty;
+		}
 
-        #endregion Methods
+		#endregion Methods
 
-        #region Properties
+		#region Properties
 
-        private double RPMPercent { get; set; }
+		private double RPMPercent { get; set; }
 
-        private double Backlight
-        {
-            get
-            {
-                return _backlight;
-            }
-            set
-            {
-                double oldValue = _backlight;
-                _backlight = value;
-                if (!_backlight.Equals(oldValue))
-                {
-                    ProcessGaugeValues();
-                }
-            }
-        }
+		private double Backlight
+		{
+			get
+			{
+				return _backlight;
+			}
+			set
+			{
+				double oldValue = _backlight;
+				_backlight = value;
+				if (!_backlight.Equals(oldValue))
+				{
+					ProcessGaugeValues();
+				}
+			}
+		}
 
-        private double GaugeType
-        {
-            get
-            {
-                return _gaugeType;
-            }
-            set
-            {
-                double oldValue = _gaugeType;
-                _gaugeType = value;
-                if (!_gaugeType.Equals(oldValue))
-                {
-                    ProcessGaugeValues();
-                }
-            }
-        }
+		private double GaugeType
+		{
+			get
+			{
+				return _gaugeType;
+			}
+			set
+			{
+				double oldValue = _gaugeType;
+				_gaugeType = value;
+				if (!_gaugeType.Equals(oldValue))
+				{
+					ProcessGaugeValues();
+				}
+			}
+		}
 
-        #endregion Properties
-    }
+		#endregion Properties
+	}
 }
