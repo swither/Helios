@@ -34,7 +34,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.AOA
 
 
 
-		private const string _backplateImage = "{HeliosFalcon}/Gauges/AOA/aoa_bezel.png";
+		private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/aoa_vvi_bezel.png";
         private const string _flagImage = "{HeliosFalcon}/Gauges/AOA/aoa_off_flag.xaml";
         private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/AOA/aoa_faceplate_off.xaml";
         private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/AOA/aoa_faceplate_dim.xaml";
