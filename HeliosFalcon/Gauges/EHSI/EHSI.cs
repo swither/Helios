@@ -19,9 +19,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 	using GadrocsWorkshop.Helios.ComponentModel;
 	using GadrocsWorkshop.Helios.Interfaces.Falcon;
 	using System;
+	using System.Xml;
 	using System.Windows;
+	using System.Globalization;
 	using System.Windows.Media;
-
 
 	[HeliosControl("Helios.Falcon.EHSI", "Falcon BMS EHSI", "Falcon Simulator", typeof(Gauges.GaugeRenderer))]
 
@@ -29,8 +30,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 	{
 		private FalconInterface _falconInterface;
 
-		private Gauges.GaugeImage _BackgroundBaseImage;
-		private Gauges.GaugeImage _BackgroundMarkerImage;
+		private Gauges.GaugeImage _BackgroundImage;
+		private Gauges.GaugeImage _HeadingMarkerImage;
 		private Gauges.GaugeImage _AircraftImage;
 		private Gauges.CustomGaugeNeedle _CurrentHeadingScale;
 		private Gauges.CustomGaugeNeedle _DesiredHeadingMarker;
@@ -50,10 +51,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		private Point _needleLocation = new Point(0, 0);
 		private Point _needleCenter = new Point(200, 200);
 
-		private const string _imageBackgroundBaseImage = "{HeliosFalcon}/Images/EHSI/Background Base Image.png";
-		private const string _imageBackgroundMarkerImage = "{HeliosFalcon}/Images/EHSI/Background Marker Image.png";
+		private const string _imageBackgroundDarkImage = "{HeliosFalcon}/Images/EHSI/Background Dark Image.png";
+		private const string _imageBackgroundLightImage = "{HeliosFalcon}/Images/EHSI/Background Light Image.png";
+		private const string _imageCurrentHeadingMarker = "{HeliosFalcon}/Images/EHSI/Current Heading Marker.png";
 		private const string _imageAircraftImage = "{HeliosFalcon}/Images/EHSI/Aircraft Image.png";
-		private const string _imageCurrentHeadingScale = "{HeliosFalcon}/Images/EHSI/Current Heading Scale.xaml";
+		private const string _imageCurrentHeadingScaleDark = "{HeliosFalcon}/Images/EHSI/Current Heading Scale Dark.xaml";
+		private const string _imageCurrentHeadingScaleLight = "{HeliosFalcon}/Images/EHSI/Current Heading Scale Light.xaml";
 		private const string _imageDesiredHeadingMarker = "{HeliosFalcon}/Images/EHSI/Desired Heading Marker.png";
 		private const string _imageILSIndicator = "{HeliosFalcon}/Images/EHSI/ILS Indicator.png";
 		private const string _imageILSToFlagIndicator = "{HeliosFalcon}/Images/EHSI/ILS To Flag Indicator.png";
@@ -65,33 +68,33 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		private const string _imageCourseDeviationNeedle = "{HeliosFalcon}/Images/EHSI/Course Deviation Needle.png";
 
 		private double _deviationScaleFactor;
+		private bool _darkBackground;
 		private bool _inFlightLastValue = true;
-
 
 		public EHSI()
 			: base("EHSI", new Size(400, 400))
 		{
 			AddComponents();
+			SetBackgroundColor();
 			ControlStaticResize();
 			Resized += new EventHandler(OnControl_Resized);
 		}
-
 
 		#region Components
 
 		void AddComponents()
 		{
-			_BackgroundBaseImage = new Gauges.GaugeImage(_imageBackgroundBaseImage, _imageSize);
-			_BackgroundBaseImage.Clip = new RectangleGeometry(_needleClip);
-			_BackgroundBaseImage.IsHidden = false;
-			Components.Add(_BackgroundBaseImage);
+			_BackgroundImage = new Gauges.GaugeImage(_imageBackgroundLightImage, _imageSize);
+			_BackgroundImage.Clip = new RectangleGeometry(_needleClip);
+			_BackgroundImage.IsHidden = false;
+			Components.Add(_BackgroundImage);
 
-			_BackgroundMarkerImage = new Gauges.GaugeImage(_imageBackgroundMarkerImage, _imageSize);
-			_BackgroundMarkerImage.Clip = new RectangleGeometry(_needleClip);
-			_BackgroundMarkerImage.IsHidden = false;
-			Components.Add(_BackgroundMarkerImage);
+			_HeadingMarkerImage = new Gauges.GaugeImage(_imageCurrentHeadingMarker, _imageSize);
+			_HeadingMarkerImage.Clip = new RectangleGeometry(_needleClip);
+			_HeadingMarkerImage.IsHidden = false;
+			Components.Add(_HeadingMarkerImage);
 
-			_CurrentHeadingScale = new Gauges.CustomGaugeNeedle(_imageCurrentHeadingScale, _needleLocation, _needleSize, _needleCenter);
+			_CurrentHeadingScale = new Gauges.CustomGaugeNeedle(_imageCurrentHeadingScaleLight, _needleLocation, _needleSize, _needleCenter);
 			_CurrentHeadingScale.Clip = new RectangleGeometry(_needleClip);
 			_CurrentHeadingScale.IsHidden = false;
 			Components.Add(_CurrentHeadingScale);
@@ -153,7 +156,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		}
 
 		#endregion Components
-
 
 		#region Methods
 
@@ -301,9 +303,25 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			_ILSIndicator.IsHidden = !ILSWarningFlag;
 			_ILSToFlagIndicator.IsHidden = !ILSToFlag;
 			_ILSFromFlagIndicator.IsHidden = !ILSFromFlag;
-			
+
 			_OuterMarkerNeedle.IsHidden = !(OuterMarker && flash2Hz);
 			_MiddleMarkerNeedle.IsHidden = !(MiddleMarker && flash4Hz);
+		}
+
+		void SetBackgroundColor()
+		{
+			if (DarkBackground)
+			{
+				_BackgroundImage.Image = _imageBackgroundDarkImage;
+				_CurrentHeadingScale.Image = _imageCurrentHeadingScaleDark;
+			}
+			else
+			{
+				_BackgroundImage.Image = _imageBackgroundLightImage;
+				_CurrentHeadingScale.Image = _imageCurrentHeadingScaleLight;
+			}
+
+			Refresh();
 		}
 
 		public override void Reset()
@@ -342,8 +360,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		}
 
 		#endregion Methods
-
-
+		
 		#region Functions
 
 		private BindingValue GetValue(string device, string name)
@@ -362,11 +379,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 				deviation = -1;
 			}
 
-			return - (deviation * _deviationScaleFactor * _needleSize.Width / 4.7);
+			return -(deviation * _deviationScaleFactor * _needleSize.Width / 4.7);
 		}
 
 		#endregion Functions
-
 
 		#region Scaling
 
@@ -404,10 +420,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 				_squarePosY = 0;
 			}
 
-			_BackgroundMarkerImage.Width = _squareWidth;
-			_BackgroundMarkerImage.Height = _squareHeight;
-			_BackgroundMarkerImage.PosX = _squarePosX;
-			_BackgroundMarkerImage.PosY = _squarePosY;
+			_HeadingMarkerImage.Width = _squareWidth;
+			_HeadingMarkerImage.Height = _squareHeight;
+			_HeadingMarkerImage.PosX = _squarePosX;
+			_HeadingMarkerImage.PosY = _squarePosY;
 
 			_CurrentHeadingScale.Tape_Width = _squareWidth;
 			_CurrentHeadingScale.Tape_Height = _squareHeight;
@@ -472,7 +488,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 
 		#endregion Scaling
 
-
 		#region Properties
 
 		private bool HSIOffFlag { get; set; }
@@ -492,7 +507,39 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		private double DesiredHeading { get; set; }
 		private double CourseDeviation { get; set; }
 
+		public bool DarkBackground
+		{
+			get
+			{
+				return _darkBackground;
+			}
+			set
+			{
+				bool OldValue = _darkBackground;
+				_darkBackground = value;
+				if (!_darkBackground.Equals(OldValue))
+				{
+					SetBackgroundColor();
+				}
+			}
+		}
+
 		#endregion Properties
 
+		#region Read/Write Xml
+
+		public override void WriteXml(XmlWriter writer)
+		{
+			base.WriteXml(writer);
+			writer.WriteElementString("DarkBackground", DarkBackground.ToString(CultureInfo.InvariantCulture));
+		}
+
+		public override void ReadXml(XmlReader reader)
+		{
+			base.ReadXml(reader);
+			DarkBackground = bool.Parse(reader.ReadElementString("DarkBackground"));
+		}
+
+		#endregion Read/Write Xml
 	}
 }

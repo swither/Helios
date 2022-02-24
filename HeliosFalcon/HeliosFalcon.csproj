@@ -63,6 +63,11 @@
     <Compile Include="Gauges\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\Airspeed\Airspeed.cs" />
     <Compile Include="Gauges\RPM\RPM.cs" />
+    <Compile Include="Gauges\EHSI\EHSI.cs" />
+    <Compile Include="Gauges\EHSI\EHSIRenderer.cs" />
+    <Compile Include="Gauges\EHSI\EHSIBehaviorEditor.xaml.cs">
+      <DependentUpon>EHSIBehaviorEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Gauges\Textures\HUDBehaviorEditor.xaml.cs">
       <DependentUpon>HUDBehaviorEditor.xaml</DependentUpon>
     </Compile>
@@ -81,8 +86,6 @@
     <Compile Include="Controls\MapViewer.cs" />
     <Compile Include="Controls\MapViewerRenderer.cs" />
     <Compile Include="Controls\MapControlBullseye.cs" />
-    <Compile Include="Gauges\EHSI\EHSI.cs" />
-    <Compile Include="Gauges\EHSI\EHSIRenderer.cs" />
     <Compile Include="Interfaces\BMS\BMSFalconDataExporter.cs" />
     <Compile Include="Interfaces\BMS\BMSLightBits.cs" />
     <Compile Include="Interfaces\BMS\BMSLightBits2.cs" />
@@ -417,11 +420,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="Gauges\EHSI\EHSIBehaviorEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Gauges\Textures\HUDBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Resource Include="Images\EHSI\Current Heading Scale.xaml">
+    <Resource Include="Images\EHSI\Current Heading Scale Dark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Images\EHSI\Current Heading Scale Light.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -480,8 +491,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\EHSI\Aircraft Image.png" />
-    <Resource Include="Images\EHSI\Background Base Image.png" />
-    <Resource Include="Images\EHSI\Background Marker Image.png" />
+    <Resource Include="Images\EHSI\Current Heading Marker.png" />
+    <Resource Include="Images\EHSI\Background Dark Image.png" />
+    <Resource Include="Images\EHSI\Background Light Image.png" />
     <Resource Include="Images\EHSI\Beacon Bearing Optional.png" />
     <Resource Include="Images\EHSI\Course Deviation Needle.png" />
     <Resource Include="Images\EHSI\Beacon Bearing Needle.png" />
