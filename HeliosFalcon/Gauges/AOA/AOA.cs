@@ -25,8 +25,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.AOA
     public class AOA : BaseGauge
     {
         private FalconInterface _falconInterface;
-        private HeliosValue _angleOfAttack;
-        private HeliosValue _offFlag;
         private GaugeImage _offFlagImage;
         private GaugeImage _faceplate;
         private GaugeNeedle _aoaTape;
