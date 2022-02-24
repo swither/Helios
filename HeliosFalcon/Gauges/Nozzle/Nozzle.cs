@@ -34,9 +34,9 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Nozzle
 		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/Nozzle/nozzle_faceplate_off.xaml";
 		private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/Nozzle/nozzle_faceplate_dim.xaml";
 		private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/Nozzle/nozzle_faceplate_brt.xaml";
-		private const string _needleOffImage = "{HeliosFalcon}/Gauges/Nozzle/nozzle_needle_off.xaml";
-		private const string _needleDimImage = "{HeliosFalcon}/Gauges/Nozzle/nozzle_needle_dim.xaml";
-		private const string _needleBrtImage = "{HeliosFalcon}/Gauges/Nozzle/nozzle_needle_brt.xaml";
+		private const string _needleOffImage = "{HeliosFalcon}/Gauges/Common/needle_short_off.xaml";
+		private const string _needleDimImage = "{HeliosFalcon}/Gauges/Common/needle_short_dim.xaml";
+		private const string _needleBrtImage = "{HeliosFalcon}/Gauges/Common/needle_short_brt.xaml";
 
 		private double _backlight;
 		private bool _inFlightLastValue = true;

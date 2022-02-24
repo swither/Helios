@@ -73,10 +73,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Fuel
 
 			_needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 42000d, 252d);
 
-			_needleAFT = new GaugeNeedle(_needleAftOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 235d);
+			_needleAFT = new GaugeNeedle(_needleAftOffImage, new Point(150d, 150d), new Size(120d, 200d), new Point(60d, 150d), 235d);
 			Components.Add(_needleAFT);
-
-			_needleFWD = new GaugeNeedle(_needleFwdOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 235d);
+			
+			_needleFWD = new GaugeNeedle(_needleFwdOffImage, new Point(150d, 150d), new Size(120d, 200d), new Point(60d, 150d), 235d);
 			Components.Add(_needleFWD);
 		}
 

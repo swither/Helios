@@ -39,9 +39,9 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.RPM
 		private const string _faceplatePW_OffImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_pw_off.xaml";
 		private const string _faceplatePW_DimImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_pw_dim.xaml";
 		private const string _faceplatePW_BrtImage = "{HeliosFalcon}/Gauges/RPM/rpm_faceplate_pw_brt.xaml";
-		private const string _needleOffImage = "{HeliosFalcon}/Gauges/RPM/rpm_needle_off.xaml";
-		private const string _needleDimImage = "{HeliosFalcon}/Gauges/RPM/rpm_needle_dim.xaml";
-		private const string _needleBrtImage = "{HeliosFalcon}/Gauges/RPM/rpm_needle_brt.xaml";
+		private const string _needleOffImage = "{HeliosFalcon}/Gauges/Common/needle_long_off.xaml";
+		private const string _needleDimImage = "{HeliosFalcon}/Gauges/Common/needle_long_dim.xaml";
+		private const string _needleBrtImage = "{HeliosFalcon}/Gauges/Common/needle_long_brt.xaml";
 
 		private double _backlight;
 		private double _gaugeType;
@@ -73,7 +73,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.RPM
 			_needleCalibrationPW.Add(new CalibrationPointDouble(60d, 124d));
 			_needleCalibrationPW.Add(new CalibrationPointDouble(70d, 172d));
 
-			_needle = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 355d);
+			_needle = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(50d, 200d), new Point(25d, 150d), 355d);
 			_needle.Rotation = _needleCalibrationGE.Interpolate(0);
 			Components.Add(_needle);
 

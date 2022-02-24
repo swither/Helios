@@ -34,9 +34,9 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
 		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_off.xaml";
 		private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_dim.xaml";
 		private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/FTIT/ftit_faceplate_brt.xaml";
-		private const string _needleOffImage = "{HeliosFalcon}/Gauges/FTIT/ftit_needle_off.xaml";
-		private const string _needleDimImage = "{HeliosFalcon}/Gauges/FTIT/ftit_needle_dim.xaml";
-		private const string _needleBrtImage = "{HeliosFalcon}/Gauges/FTIT/ftit_needle_brt.xaml";
+		private const string _needleOffImage = "{HeliosFalcon}/Gauges/Common/needle_long_off.xaml";
+		private const string _needleDimImage = "{HeliosFalcon}/Gauges/Common/needle_long_dim.xaml";
+		private const string _needleBrtImage = "{HeliosFalcon}/Gauges/Common/needle_long_brt.xaml";
 
 		private double _backlight;
 		private bool _inFlightLastValue = true;
@@ -61,7 +61,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
 			_needleCalibration.Add(new CalibrationPointDouble(700d, 120d));
 			_needleCalibration.Add(new CalibrationPointDouble(1000d, 300d));
 
-			_needle = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(60d, 144d), new Point(30d, 114d), 90d);
+			_needle = new GaugeNeedle(_needleOffImage, new Point(150d, 150d), new Size(50d, 200d), new Point(25d, 150d), 90d);
 			_needle.Rotation = _needleCalibration.Interpolate(0);
 			Components.Add(_needle);
 		}

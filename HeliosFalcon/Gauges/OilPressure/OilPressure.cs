@@ -34,9 +34,9 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.OilPressure
 		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/OilPressure/oil_faceplate_off.xaml";
 		private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/OilPressure/oil_faceplate_dim.xaml";
 		private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/OilPressure/oil_faceplate_brt.xaml";
-		private const string _needleOffImage = "{HeliosFalcon}/Gauges/OilPressure/oil_needle_off.xaml";
-		private const string _needleDimImage = "{HeliosFalcon}/Gauges/OilPressure/oil_needle_dim.xaml";
-		private const string _needleBrtImage = "{HeliosFalcon}/Gauges/OilPressure/oil_needle_brt.xaml";
+		private const string _needleOffImage = "{HeliosFalcon}/Gauges/Common/needle_short_off.xaml";
+		private const string _needleDimImage = "{HeliosFalcon}/Gauges/Common/needle_short_dim.xaml";
+		private const string _needleBrtImage = "{HeliosFalcon}/Gauges/Common/needle_short_brt.xaml";
 
 		private double _backlight;
 		private bool _inFlightLastValue = true;
