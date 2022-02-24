@@ -15,7 +15,8 @@
                         <ScaleTransform/>
                         <SkewTransform/>
                         <RotateTransform/>
-                        <TranslateTransform/>
+                        <!--g-->
+                        <TranslateTransform X="0" Y="-25"/>
                     </TransformGroup>
                 </Path.RenderTransform>
             </Path>
@@ -25,7 +26,8 @@
                         <ScaleTransform/>
                         <SkewTransform/>
                         <RotateTransform/>
-                        <TranslateTransform/>
+                        <!--g-->
+                        <TranslateTransform X="0" Y="10"/>
                     </TransformGroup>
                 </Path.RenderTransform>
             </Path>

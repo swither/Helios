@@ -1,5 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
-//    
+//  Copyright 2022 Helios Contributors
+//
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -130,8 +131,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.HydraulicPressure
         {
             BindingValue backlight = GetValue("Lighting", "instrument backlight");
             Backlight = backlight.DoubleValue;
-            BindingValue hydraulicpressure = GetValue("Hydraulic", "Pressure A");
 
+            BindingValue hydraulicpressure = GetValue("Hydraulic", "Pressure A");
             Pressure = hydraulicpressure.DoubleValue;
         }
 
