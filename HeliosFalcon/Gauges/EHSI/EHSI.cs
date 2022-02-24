@@ -82,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 
 		#region Components
 
-		void AddComponents()
+		private void AddComponents()
 		{
 			_BackgroundImage = new Gauges.GaugeImage(_imageBackgroundLightImage, _imageSize);
 			_BackgroundImage.Clip = new RectangleGeometry(_needleClip);
@@ -178,7 +178,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			}
 		}
 
-		void Profile_ProfileStarted(object sender, EventArgs e)
+		private void Profile_ProfileStarted(object sender, EventArgs e)
 		{
 			if (Parent.Profile.Interfaces.ContainsKey("Falcon"))
 			{
@@ -186,7 +186,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			}
 		}
 
-		void Profile_ProfileTick(object sender, EventArgs e)
+		private void Profile_ProfileTick(object sender, EventArgs e)
 		{
 			if (_falconInterface != null)
 			{
@@ -210,12 +210,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			}
 		}
 
-		void Profile_ProfileStopped(object sender, EventArgs e)
+		private void Profile_ProfileStopped(object sender, EventArgs e)
 		{
 			_falconInterface = null;
 		}
 
-		void GetDataValues()
+		private void GetDataValues()
 		{
 			BindingValue hsiOffFlag = GetValue("HSI", "off flag");
 			HSIOffFlag = hsiOffFlag.BoolValue;
@@ -279,7 +279,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			_TextData.DesiredHeading = DesiredHeading;
 		}
 
-		void ProcessDataValues()
+		private void ProcessDataValues()
 		{
 			bool flash2Hz = DateTime.Now.Millisecond % 500 < 250;
 			bool flash4Hz = DateTime.Now.Millisecond % 250 < 125;
@@ -308,7 +308,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			_MiddleMarkerNeedle.IsHidden = !(MiddleMarker && flash4Hz);
 		}
 
-		void SetBackgroundColor()
+		private void SetBackgroundColor()
 		{
 			if (DarkBackground)
 			{
@@ -329,7 +329,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			ResetDataValues();
 		}
 
-		void ResetDataValues()
+		private void ResetDataValues()
 		{
 			HSIOffFlag = true;
 			ILSToFlag = false;
@@ -368,7 +368,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			return _falconInterface?.GetValue(device, name) ?? BindingValue.Empty;
 		}
 
-		double CourseDeviationScaleValue(double deviation)
+		private double CourseDeviationScaleValue(double deviation)
 		{
 			if (deviation >= 1)
 			{
@@ -386,12 +386,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 
 		#region Scaling
 
-		void OnControl_Resized(object sender, EventArgs e)
+		private void OnControl_Resized(object sender, EventArgs e)
 		{
 			ControlStaticResize();
 		}
 
-		void ControlStaticResize()
+		private void ControlStaticResize()
 		{
 			double _squareWidth;
 			double _squareHeight;

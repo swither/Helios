@@ -90,7 +90,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Components
 
-		void AddComponents()
+		private void AddComponents()
 		{
 			_SelectionBackground = new Gauges.GaugeImage(_selectionBackgroundImage, _imageSize);
 			_SelectionBackground.Clip = new RectangleGeometry(_needleClip);
@@ -133,7 +133,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Actions
 
-		void AddActions()
+		private void AddActions()
 		{
 			_selectionTargetsClear = new HeliosValue(this, new BindingValue(false), "", "Target Selection Clear", "Clears the selected targets.", "Set true to clear the selected targets.", BindingValueUnits.Boolean);
 			_selectionTargetsClear.Execute += new HeliosActionHandler(SelectionTargetsClear_Execute);
@@ -146,7 +146,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			Values.Add(_selectionRangeRingsVisible);
 		}
 
-		void SelectionTargetsClear_Execute(object action, HeliosActionEventArgs e)
+		private void SelectionTargetsClear_Execute(object action, HeliosActionEventArgs e)
 		{
 			_selectionTargetsClear.SetValue(e.Value, e.BypassCascadingTriggers);
 			bool selectionTargetsClear = _selectionTargetsClear.Value.BoolValue;
@@ -157,7 +157,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void SelectionRangeRingsVisible_Execute(object action, HeliosActionEventArgs e)
+		private void SelectionRangeRingsVisible_Execute(object action, HeliosActionEventArgs e)
 		{
 			_selectionRangeRingsVisible.SetValue(e.Value, e.BypassCascadingTriggers);
 			_selectionRangeRingsEnabled = _selectionRangeRingsVisible.Value.BoolValue;
@@ -196,7 +196,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void Profile_ProfileStarted(object sender, EventArgs e)
+		private void Profile_ProfileStarted(object sender, EventArgs e)
 		{
 			if (Parent.Profile.Interfaces.ContainsKey("Falcon"))
 			{
@@ -204,7 +204,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void Profile_ProfileTick(object sender, EventArgs e)
+		private void Profile_ProfileTick(object sender, EventArgs e)
 		{
 			if (_falconInterface != null)
 			{
@@ -229,12 +229,12 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void Profile_ProfileStopped(object sender, EventArgs e)
+		private void Profile_ProfileStopped(object sender, EventArgs e)
 		{
 			_falconInterface = null;
 		}
 
-		void ProcessOwnshipValues()
+		private void ProcessOwnshipValues()
 		{
 			BindingValue ownshipRotationAngle = GetValue("HSI", "current heading");
 			OwnshipRotationAngle = ownshipRotationAngle.DoubleValue;
@@ -448,7 +448,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			_inhibitMouseAction = false;
 		}
 
-		int GetTargetAtLocation(double location_X, double location_Y)
+		private int GetTargetAtLocation(double location_X, double location_Y)
 		{
 			double radius_Max = 8d * _controlScaleFactor;
 			double radius_Min = radius_Max;
@@ -475,7 +475,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			return target_Num;
 		}
 
-		void SelectionRemoveTarget(int index)
+		private void SelectionRemoveTarget(int index)
 		{
 			if (TargetDataList.Count > index)
 			{
@@ -499,7 +499,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			Refresh();
 		}
 
-		void SelectionTargetsClear()
+		private void SelectionTargetsClear()
 		{
 			while (TargetDataList.Count > 0)
 			{
@@ -525,7 +525,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			ResetTargetSelection();
 		}
 
-		void ResetTargetSelection()
+		private void ResetTargetSelection()
 		{
 			SelectionTargetsClear();
 
@@ -582,12 +582,12 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Scaling
 
-		void OnMapControl_Resized(object sender, EventArgs e)
+		private void OnMapControl_Resized(object sender, EventArgs e)
 		{
 			MapControlStaticResize();
 		}
 
-		void MapControlStaticResize()
+		private void MapControlStaticResize()
 		{
 			_widthCenterPosition = Width / 2;
 			_heightCenterPosition = Height / 2;

@@ -18,16 +18,16 @@ using GadrocsWorkshop.Helios.Windows.Controls;
 
 namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 {
-    /// <summary>
-    /// Interaction logic for EHSIBehaviorEditor.xaml
-    /// </summary>
-    /// 
-    [HeliosPropertyEditor("Helios.Falcon.EHSI", "Behavior")]
-    public partial class EHSIBehaviorEditor : HeliosPropertyEditor
-    {
-        public EHSIBehaviorEditor()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Interaction logic for EHSIBehaviorEditor.xaml
+	/// </summary>
+	/// 
+	[HeliosPropertyEditor("Helios.Falcon.EHSI", "Behavior")]
+	public partial class EHSIBehaviorEditor : HeliosPropertyEditor
+	{
+		public EHSIBehaviorEditor()
+		{
+			InitializeComponent();
+		}
+	}
 }

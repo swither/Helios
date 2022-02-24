@@ -61,7 +61,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 
 		#region Components
 
-		void AddComponents()
+		private void AddComponents()
 		{
 			_tensDrum = new GaugeDrumCounter(_tensDrumOffImage, new Point(39d, 126d), "##", new Size(10d, 15d), new Size(30d, 45d));
 			_tensDrum.Clip = new RectangleGeometry(new Rect(39d, 106d, 30d, 81d));
@@ -107,7 +107,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 			}
 		}
 
-		void Profile_ProfileStarted(object sender, EventArgs e)
+		private void Profile_ProfileStarted(object sender, EventArgs e)
 		{
 			if (Parent.Profile.Interfaces.ContainsKey("Falcon"))
 			{
@@ -115,7 +115,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 			}
 		}
 
-		void Profile_ProfileTick(object sender, EventArgs e)
+		private void Profile_ProfileTick(object sender, EventArgs e)
 		{
 			if (_falconInterface != null)
 			{
@@ -139,12 +139,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 			}
 		}
 
-		void Profile_ProfileStopped(object sender, EventArgs e)
+		private void Profile_ProfileStopped(object sender, EventArgs e)
 		{
 			_falconInterface = null;
 		}
 
-		void ProcessBindingValues()
+		private void ProcessBindingValues()
 		{
 			BindingValue backlight = GetValue("Lighting", "instrument backlight");
 			Backlight = backlight.DoubleValue;
@@ -156,7 +156,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 			Pressure = pressure.DoubleValue > 0 ? pressure.DoubleValue : 2992d;
 		}
 
-		void ProcessAltimeterValues()
+		private void ProcessAltimeterValues()
 		{
 			 _needle.Rotation = _needleCalibration.Interpolate(Altitude % 1000d);
 			_tensDrum.Value = (Altitude < 0 ? 99999 - Math.Abs(Altitude) : Altitude) / 1000d;
@@ -164,7 +164,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 			_pressureDrum.Value = Pressure;
 		}
 
-		void ProcessBacklightValues()
+		private void ProcessBacklightValues()
 		{
 			if (Backlight == 1)
 			{
@@ -199,7 +199,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 			ResetAltimeter();
 		}
 
-		void ResetAltimeter()
+		private void ResetAltimeter()
 		{
 			Backlight = 0d;
 			Altitude = 0d;

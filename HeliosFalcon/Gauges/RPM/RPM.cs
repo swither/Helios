@@ -152,7 +152,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.RPM
 			RPMPercent = rpmPercent.DoubleValue;
 		}
 
-		void SetGaugeType_Execute(object action, HeliosActionEventArgs e)
+		private void SetGaugeType_Execute(object action, HeliosActionEventArgs e)
 		{
 			GaugeType = e.Value.DoubleValue;
 		}

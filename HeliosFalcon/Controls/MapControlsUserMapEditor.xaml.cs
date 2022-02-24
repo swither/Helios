@@ -18,8 +18,8 @@
 
 namespace GadrocsWorkshop.Helios.Controls
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Windows.Controls;
+	using GadrocsWorkshop.Helios.ComponentModel;
+	using GadrocsWorkshop.Helios.Windows.Controls;
  
 
 	/// <summary>

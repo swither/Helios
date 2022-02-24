@@ -59,7 +59,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Fuel
 
 		#region Components
 
-		void AddComponents()
+		private void AddComponents()
 		{
 			_backplate = new GaugeImage(_backplateImage, new Rect(0d, 0d, 300d, 300d));
 			Components.Add(_backplate);
@@ -103,7 +103,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Fuel
 			}
 		}
 
-		void Profile_ProfileStarted(object sender, EventArgs e)
+		private void Profile_ProfileStarted(object sender, EventArgs e)
 		{
 			if (Parent.Profile.Interfaces.ContainsKey("Falcon"))
 			{
@@ -111,7 +111,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Fuel
 			}
 		}
 
-		void Profile_ProfileTick(object sender, EventArgs e)
+		private void Profile_ProfileTick(object sender, EventArgs e)
 		{
 			if (_falconInterface != null)
 			{
@@ -135,12 +135,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Fuel
 			}
 		}
 
-		void Profile_ProfileStopped(object sender, EventArgs e)
+		private void Profile_ProfileStopped(object sender, EventArgs e)
 		{
 			_falconInterface = null;
 		}
 
-		void ProcessBindingValues()
+		private void ProcessBindingValues()
 		{
 			BindingValue backlight = GetValue("Lighting", "instrument backlight");
 			Backlight = backlight.DoubleValue;
@@ -155,7 +155,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Fuel
 			FuelTotal = fuelTotal.DoubleValue;
 		}
 
-		void ProcessFuelValues()
+		private void ProcessFuelValues()
 		{
 			_needleAFT.Rotation = _needleCalibration.Interpolate(FuelAFT);
 			_needleFWD.Rotation = _needleCalibration.Interpolate(FuelFWD);
@@ -163,7 +163,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Fuel
 			_fuelDrum.Value = FuelTotal;
 		}
 
-		void ProcessBacklightValues()
+		private void ProcessBacklightValues()
 		{
 			if (Backlight == 1)
 			{
@@ -195,7 +195,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Fuel
 			ResetFuel();
 		}
 
-		void ResetFuel()
+		private void ResetFuel()
 		{
 			Backlight = 0d;
 			FuelAFT = 0d;
