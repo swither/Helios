@@ -74,6 +74,7 @@
     <Compile Include="Gauges\Textures\HUDBehaviorEditor.xaml.cs">
       <DependentUpon>HUDBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Gauges\VVI\VVI.cs" />
     <Compile Include="Interfaces\RTT\IRttGeneratorHost.cs" />
     <Compile Include="Controls\MapControls.cs" />
     <Compile Include="Controls\MapControlsUserMapEditor.xaml.cs">
@@ -443,6 +444,34 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Gauges\VVI\vvi_faceplate_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\VVI\vvi_faceplate_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\VVI\vvi_faceplate_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\VVI\vvi_off_flag.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\VVI\vvi_tape_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\VVI\vvi_tape_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\VVI\vvi_tape_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Interfaces\FalconCallbackValueEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -458,7 +487,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Gauges\Common\f16_engine_bezel.png" />
-    <Resource Include="Gauges\AOA\aoa_bezel.png" />
+    <Resource Include="Gauges\Common\aoa_vvi_bezel.png" />
     <Content Include="Templates\HeliosFalcon\Falcon RTT DED.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
