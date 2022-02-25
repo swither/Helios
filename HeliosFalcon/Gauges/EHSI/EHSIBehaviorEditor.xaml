@@ -14,11 +14,11 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
-        <Label Content="Use Darker Background"
+        <Label Content="Enable Transparency"
                Grid.Column="0"
                HorizontalAlignment="Center"
                VerticalAlignment="Center" Height="30" Margin="0,10,0,0"/>
-        <CheckBox IsChecked="{Binding Control.DarkBackground}"
+        <CheckBox IsChecked="{Binding Control.TransparentBackground}"
                   IsEnabled="True"
                   Grid.Column="1"
                   HorizontalAlignment="Center"

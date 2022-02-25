@@ -51,12 +51,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		private Point _needleLocation = new Point(0, 0);
 		private Point _needleCenter = new Point(200, 200);
 
-		private const string _imageBackgroundDarkImage = "{HeliosFalcon}/Images/EHSI/Background Dark Image.png";
-		private const string _imageBackgroundLightImage = "{HeliosFalcon}/Images/EHSI/Background Light Image.png";
+		private const string _imageBackgroundImage = "{HeliosFalcon}/Images/EHSI/Background Image.png";
 		private const string _imageCurrentHeadingMarker = "{HeliosFalcon}/Images/EHSI/Current Heading Marker.png";
 		private const string _imageAircraftImage = "{HeliosFalcon}/Images/EHSI/Aircraft Image.png";
-		private const string _imageCurrentHeadingScaleDark = "{HeliosFalcon}/Images/EHSI/Current Heading Scale Dark.xaml";
-		private const string _imageCurrentHeadingScaleLight = "{HeliosFalcon}/Images/EHSI/Current Heading Scale Light.xaml";
+		private const string _imageCurrentHeadingScale = "{HeliosFalcon}/Images/EHSI/Current Heading Scale.xaml";
 		private const string _imageDesiredHeadingMarker = "{HeliosFalcon}/Images/EHSI/Desired Heading Marker.png";
 		private const string _imageILSIndicator = "{HeliosFalcon}/Images/EHSI/ILS Indicator.png";
 		private const string _imageILSToFlagIndicator = "{HeliosFalcon}/Images/EHSI/ILS To Flag Indicator.png";
@@ -68,14 +66,14 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		private const string _imageCourseDeviationNeedle = "{HeliosFalcon}/Images/EHSI/Course Deviation Needle.png";
 
 		private double _deviationScaleFactor;
-		private bool _darkBackground;
+		private bool _transparentBackground;
 		private bool _inFlightLastValue = true;
 
 		public EHSI()
 			: base("EHSI", new Size(400, 400))
 		{
 			AddComponents();
-			SetBackgroundColor();
+			SetTransparentBackground();
 			ControlStaticResize();
 			Resized += new EventHandler(OnControl_Resized);
 		}
@@ -84,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 
 		private void AddComponents()
 		{
-			_BackgroundImage = new Gauges.GaugeImage(_imageBackgroundLightImage, _imageSize);
+			_BackgroundImage = new Gauges.GaugeImage(_imageBackgroundImage, _imageSize);
 			_BackgroundImage.Clip = new RectangleGeometry(_needleClip);
 			_BackgroundImage.IsHidden = false;
 			Components.Add(_BackgroundImage);
@@ -94,7 +92,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			_HeadingMarkerImage.IsHidden = false;
 			Components.Add(_HeadingMarkerImage);
 
-			_CurrentHeadingScale = new Gauges.CustomGaugeNeedle(_imageCurrentHeadingScaleLight, _needleLocation, _needleSize, _needleCenter);
+			_CurrentHeadingScale = new Gauges.CustomGaugeNeedle(_imageCurrentHeadingScale, _needleLocation, _needleSize, _needleCenter);
 			_CurrentHeadingScale.Clip = new RectangleGeometry(_needleClip);
 			_CurrentHeadingScale.IsHidden = false;
 			Components.Add(_CurrentHeadingScale);
@@ -308,17 +306,15 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			_MiddleMarkerNeedle.IsHidden = !(MiddleMarker && flash4Hz);
 		}
 
-		private void SetBackgroundColor()
+		private void SetTransparentBackground()
 		{
-			if (DarkBackground)
+			if (TransparentBackground)
 			{
-				_BackgroundImage.Image = _imageBackgroundDarkImage;
-				_CurrentHeadingScale.Image = _imageCurrentHeadingScaleDark;
+				_BackgroundImage.IsHidden = true;
 			}
 			else
 			{
-				_BackgroundImage.Image = _imageBackgroundLightImage;
-				_CurrentHeadingScale.Image = _imageCurrentHeadingScaleLight;
+				_BackgroundImage.IsHidden = false;
 			}
 
 			Refresh();
@@ -507,19 +503,19 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		private double DesiredHeading { get; set; }
 		private double CourseDeviation { get; set; }
 
-		public bool DarkBackground
+		public bool TransparentBackground
 		{
 			get
 			{
-				return _darkBackground;
+				return _transparentBackground;
 			}
 			set
 			{
-				bool OldValue = _darkBackground;
-				_darkBackground = value;
-				if (!_darkBackground.Equals(OldValue))
+				bool OldValue = _transparentBackground;
+				_transparentBackground = value;
+				if (!_transparentBackground.Equals(OldValue))
 				{
-					SetBackgroundColor();
+					SetTransparentBackground();
 				}
 			}
 		}
@@ -531,13 +527,13 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		public override void WriteXml(XmlWriter writer)
 		{
 			base.WriteXml(writer);
-			writer.WriteElementString("DarkBackground", DarkBackground.ToString(CultureInfo.InvariantCulture));
+			writer.WriteElementString("TransparentBackground", TransparentBackground.ToString(CultureInfo.InvariantCulture));
 		}
 
 		public override void ReadXml(XmlReader reader)
 		{
 			base.ReadXml(reader);
-			DarkBackground = bool.Parse(reader.ReadElementString("DarkBackground"));
+			TransparentBackground = bool.Parse(reader.ReadElementString("TransparentBackground"));
 		}
 
 		#endregion Read/Write Xml
