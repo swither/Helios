@@ -55,6 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gauges\VVI\VVI.cs" />
     <Compile Include="Gauges\AOA\AOA.cs" />
     <Compile Include="Gauges\EPU\EPU.cs" />
     <Compile Include="Gauges\HydraulicPressure\HydraulicPressureA.cs" />
@@ -74,7 +75,6 @@
     <Compile Include="Gauges\Textures\HUDBehaviorEditor.xaml.cs">
       <DependentUpon>HUDBehaviorEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Gauges\VVI\VVI.cs" />
     <Compile Include="Interfaces\RTT\IRttGeneratorHost.cs" />
     <Compile Include="Controls\MapControls.cs" />
     <Compile Include="Controls\MapControlsUserMapEditor.xaml.cs">
