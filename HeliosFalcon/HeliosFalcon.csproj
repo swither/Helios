@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gauges\Clock\Clock.cs" />
+    <Compile Include="Gauges\FuelFlow\FuelFlow.cs" />
     <Compile Include="Gauges\VVI\VVI.cs" />
     <Compile Include="Gauges\AOA\AOA.cs" />
     <Compile Include="Gauges\EPU\EPU.cs" />
@@ -493,6 +494,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Resource Include="Gauges\FuelFlow\fuelflow_labels_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\FuelFlow\fuelflow_labels_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\FuelFlow\fuelflow_labels_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Gauges\Textures\HUDBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -545,6 +558,7 @@
   <ItemGroup>
     <Resource Include="Gauges\Common\f16_engine_bezel.png" />
     <Resource Include="Gauges\Common\aoa_vvi_bezel.png" />
+    <Resource Include="Gauges\FuelFlow\fuelflow_bezel.png" />
     <Content Include="Templates\HeliosFalcon\Falcon RTT DED.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
