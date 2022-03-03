@@ -14,70 +14,83 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Gauges.Falcon.AOA
+namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIStandby
 {
 	using GadrocsWorkshop.Helios.ComponentModel;
 	using GadrocsWorkshop.Helios.Interfaces.Falcon;
+	using GadrocsWorkshop.Helios.Gauges.Falcon.ADIBallRenderer;
 	using System;
 	using System.Windows;
 	using System.Windows.Media;
 
-	[HeliosControl("Helios.Falcon.AOA", "Falcon BMS AOA", "Falcon Simulator", typeof(GaugeRenderer))]
-	public class AOA : BaseGauge
+	[HeliosControl("Helios.Falcon.ADIStandby", "Falcon BMS Standby ADI", "Falcon Simulator", typeof(GaugeRenderer))]
+	public class ADIStandby : BaseGauge
 	{
 		private FalconInterface _falconInterface;
-		private GaugeImage _offFlagImage;
+
 		private GaugeImage _faceplate;
-		private GaugeNeedle _aoaTape;
-		private CalibrationPointCollectionDouble _tapeCalibration;
+		private GaugeImage _backlightRing;
+		private GaugeImage _offFlag;
 
+		private ADIBallRenderer _ball;
 
+		private const string _faceplateImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_faceplate.png";
+		private const string _offFlagImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_off_flag.png";
 
-		private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/aoa_vvi_bezel.png";
-		private const string _flagImage = "{HeliosFalcon}/Gauges/AOA/aoa_off_flag.xaml";
-		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/AOA/aoa_faceplate_off.xaml";
-		private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/AOA/aoa_faceplate_dim.xaml";
-		private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/AOA/aoa_faceplate_brt.xaml";
-		private const string _tapeOffImage = "{HeliosFalcon}/Gauges/AOA/aoa_tape_off.xaml";
-		private const string _tapeDimImage = "{HeliosFalcon}/Gauges/AOA/aoa_tape_dim.xaml";
-		private const string _tapeBrtImage = "{HeliosFalcon}/Gauges/AOA/aoa_tape_brt.xaml";
+		private const string _ringOffImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_ring_off.xaml";
+		private const string _ringDimImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_ring_dim.xaml";
+		private const string _ringBrtImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_ring_brt.xaml";
+
+		private const string _ballOffImage = "{HeliosFalcon}/Gauges/ADIBall/adi_ball_standby_off.xaml";
+		private const string _ballDimImage = "{HeliosFalcon}/Gauges/ADIBall/adi_ball_standby_dim.xaml";
+		private const string _ballBrtImage = "{HeliosFalcon}/Gauges/ADIBall/adi_ball_standby_brt.xaml";
 
 		private double _backlight;
 		private bool _inFlightLastValue = true;
+		private const double _ballDiameter = 192;
+		private const double _ballVerticalCenter = 145;
+		private const double _ballHorizontalCenter = 155;
+		private const double _ballTapeScaleLength = 960;
 
-		public AOA()
-			: base("AOA", new Size(220, 452))
+		public ADIStandby()
+			: base("ADIStandby", new Size(310, 300))
 		{
 			AddComponents();
+			InitializeBallValues();
 		}
 
 		#region Components
 
 		private void AddComponents()
 		{
-			_tapeCalibration = new CalibrationPointCollectionDouble(-30d, -600d, 30d, 600d);
+			_ball = new ADIBallRenderer();
+			_ball.Clip = new EllipseGeometry(new Point(_ballHorizontalCenter, _ballVerticalCenter), _ballDiameter / 2, _ballDiameter / 2);
+			Components.Add(_ball);
 
-			_aoaTape = new GaugeNeedle(_tapeOffImage, new Point(110, 226), new Size(130, 1482), new Point(65, 741))
-			{
-				Clip = new RectangleGeometry(new Rect(55d, 86d, 130d, 280d))
-			};
-			Components.Add(_aoaTape);
+			_offFlag = new GaugeImage(_offFlagImage, new Rect(40d, 70d, 115d, 180d));
+			_offFlag.IsHidden = true;
+			Components.Add(_offFlag);
 
-			_offFlagImage = new GaugeImage(_flagImage, new Rect(55d, 84d, 110d, 282d))
-			{
-				IsHidden = true
-			};
-			Components.Add(_offFlagImage);
+			_backlightRing = new GaugeImage(_ringOffImage, new Rect(0d, 0d, 310d, 300d));
+			Components.Add(_backlightRing);
 
-			_faceplate = new GaugeImage(_faceplateOffImage, new Rect(0, 0, 220, 452));
+			_faceplate = new GaugeImage(_faceplateImage, new Rect(0d, 0d, 310d, 300d));
 			Components.Add(_faceplate);
-
-			Components.Add(new GaugeImage(_backplateImage, new Rect(0, 0, 220, 452)));
 		}
 
 		#endregion Components
 
 		#region Methods
+
+		private void InitializeBallValues()
+		{
+			_ball.BallImage = _ballOffImage;
+			_ball.BallTapeScaleLength = _ballTapeScaleLength;
+
+			_ball.BallDiameter = _ballDiameter;
+			_ball.BallLeft = _ballHorizontalCenter - _ballDiameter / 2;
+			_ball.BallTop = _ballVerticalCenter - _ballDiameter / 2; ;
+		}
 
 		protected override void OnProfileChanged(HeliosProfile oldProfile)
 		{
@@ -116,14 +129,14 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.AOA
 				if (inFlight)
 				{
 					ProcessBindingValues();
-					ProcessAOAValues();
+					ProcessStandbyADIValues();
 					_inFlightLastValue = true;
 				}
 				else
 				{
 					if (_inFlightLastValue)
 					{
-						ResetAOA();
+						ResetStandbyADI();
 						_inFlightLastValue = false;
 					}
 				}
@@ -140,53 +153,60 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.AOA
 			BindingValue backlight = GetValue("Lighting", "instrument backlight");
 			Backlight = backlight.DoubleValue;
 
-			BindingValue aoa = GetValue("AOA", "angle of attack");
-			AngleOfAttack = aoa.DoubleValue;
+			BindingValue pitch = GetValue("ADI", "pitch");
+			PitchAngle = pitch.DoubleValue * 180 / Math.PI;
 
-			BindingValue off = GetValue("AOA", "off flag");
-			OffFlag = off.BoolValue;
+			BindingValue roll = GetValue("ADI", "roll");
+			RollAngle = roll.DoubleValue * 180 / Math.PI;
+
+			BindingValue flagOFF = GetValue("Backup ADI", "off flag");
+			FlagOff = flagOFF.BoolValue;
 		}
 
-		private void ProcessAOAValues()
+		private void ProcessStandbyADIValues()
 		{
-			_aoaTape.VerticalOffset = _tapeCalibration.Interpolate(AngleOfAttack);
-			_offFlagImage.IsHidden = !OffFlag;
-			
+			_ball.BallVerticalValue = -PitchAngle;
+			_ball.BallRotationAngle = -RollAngle;
+
+			_offFlag.IsHidden = !FlagOff;
 		}
 
 		private void ProcessBacklightValues()
 		{
 			if (Backlight == 1)
 			{
-				_faceplate.Image = _faceplateDimImage;
-				_aoaTape.Image = _tapeDimImage;
+				_backlightRing.Image = _ringDimImage;
+				_ball.BallImage = _ballDimImage;
 			}
 			else if (Backlight == 2)
 			{
-				_faceplate.Image = _faceplateBrtImage;
-				_aoaTape.Image = _tapeBrtImage;
+				_backlightRing.Image = _ringBrtImage;
+				_ball.BallImage = _ballBrtImage;
 			}
 			else
 			{
-				_faceplate.Image = _faceplateOffImage;
-				_aoaTape.Image = _tapeOffImage;
-			} 
+				_backlightRing.Image = _ringOffImage;
+				_ball.BallImage = _ballOffImage;
+			}
 
 			Refresh();
 		}
 
 		public override void Reset()
 		{
-			ResetAOA();
+			ResetStandbyADI();
 		}
 
-		private void ResetAOA()
+		private void ResetStandbyADI()
 		{
 			Backlight = 0d;
-			AngleOfAttack = 0d;
-			OffFlag = false;
 
-			ProcessAOAValues();
+			PitchAngle = 0d;
+			RollAngle = 0d;
+
+			FlagOff = false;
+
+			ProcessStandbyADIValues();
 			ProcessBacklightValues();
 		}
 
@@ -197,13 +217,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.AOA
 
 		#endregion Methods
 
-
-
 		#region Properties
 
-		private double AngleOfAttack { get; set; }
-		
-		private bool OffFlag { get; set; }
+		private double PitchAngle { get; set; }
+		private double RollAngle { get; set; }
+
+		private bool FlagOff { get; set; }
 
 		private double Backlight
 		{

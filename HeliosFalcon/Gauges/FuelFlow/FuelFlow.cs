@@ -1,5 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
-//    
+//  Copyright 2022 Helios Contributors
+//
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -15,56 +16,56 @@
 
 namespace GadrocsWorkshop.Helios.Gauges.Falcon.FuelFlow
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Interfaces.Falcon;
-    using System;
-    using System.Windows;
-    using System.Windows.Media;
+	using GadrocsWorkshop.Helios.ComponentModel;
+	using GadrocsWorkshop.Helios.Interfaces.Falcon;
+	using System;
+	using System.Windows;
+	using System.Windows.Media;
 
-    [HeliosControl("Helios.Falcon.FuelFLow", "Falcon BMS Fuel Flow", "Falcon Simulator", typeof(GaugeRenderer))]
-    public class FuelFlow : BaseGauge
-    {
-        private FalconInterface _falconInterface;
+	[HeliosControl("Helios.Falcon.FuelFLow", "Falcon BMS Fuel Flow", "Falcon Simulator", typeof(GaugeRenderer))]
+	public class FuelFlow : BaseGauge
+	{
+		private FalconInterface _falconInterface;
 
-        private GaugeDrumCounter _drum;
-        private GaugeImage _labels;
+		private GaugeDrumCounter _drum;
+		private GaugeImage _labels;
 
-        private const string _drumTapeOffImage = "{HeliosFalcon}/Gauges/Common/drum_tape_off.xaml";
-        private const string _drumTapeDimImage = "{HeliosFalcon}/Gauges/Common/drum_tape_dim.xaml";
-        private const string _drumTapeBrtImage = "{HeliosFalcon}/Gauges/Common/drum_tape_brt.xaml";
-        private const string _labelsOffImage = "{HeliosFalcon}/Gauges/FuelFlow/fuelflow_labels_off.xaml";
-        private const string _labelsDimImage = "{HeliosFalcon}/Gauges/FuelFlow/fuelflow_labels_dim.xaml";
-        private const string _labelsBrtImage = "{HeliosFalcon}/Gauges/FuelFlow/fuelflow_labels_brt.xaml";
-        private const string _faceplateImage = "{HeliosFalcon}/Gauges/FuelFlow/fuelflow_bezel.png";
+		private const string _drumTapeOffImage = "{HeliosFalcon}/Gauges/Common/drum_tape_off.xaml";
+		private const string _drumTapeDimImage = "{HeliosFalcon}/Gauges/Common/drum_tape_dim.xaml";
+		private const string _drumTapeBrtImage = "{HeliosFalcon}/Gauges/Common/drum_tape_brt.xaml";
+		private const string _labelsOffImage = "{HeliosFalcon}/Gauges/FuelFlow/fuelflow_labels_off.xaml";
+		private const string _labelsDimImage = "{HeliosFalcon}/Gauges/FuelFlow/fuelflow_labels_dim.xaml";
+		private const string _labelsBrtImage = "{HeliosFalcon}/Gauges/FuelFlow/fuelflow_labels_brt.xaml";
+		private const string _faceplateImage = "{HeliosFalcon}/Gauges/FuelFlow/fuelflow_bezel.png";
 
-        private double _backlight;
-        private bool _inFlightLastValue = true;
+		private double _backlight;
+		private bool _inFlightLastValue = true;
 
-        public FuelFlow()
-            : base("Fuel Flow", new Size(220, 204))
-        {
-            AddComponents();
-        }
+		public FuelFlow()
+			: base("Fuel Flow", new Size(220, 204))
+		{
+			AddComponents();
+		}
 
-        #region Components
+		#region Components
 
-        private void AddComponents()
-        {
-            Rect drumRect = new Rect(29d, 60d, 162d, 80d);
+		private void AddComponents()
+		{
+			Rect drumRect = new Rect(29d, 60d, 162d, 80d);
 
-            Components.Add(new GaugeRectangle(Colors.Black, drumRect));
+			Components.Add(new GaugeRectangle(Colors.Black, drumRect));
 
-            _drum = new GaugeDrumCounter(_drumTapeOffImage, new Point(30d, 79d), "##%00", new Size(10d, 15d), new Size(32d, 48d))
-            {
-                Clip = new RectangleGeometry(drumRect)
-            };
-            Components.Add(_drum);
+			_drum = new GaugeDrumCounter(_drumTapeOffImage, new Point(30d, 79d), "##%00", new Size(10d, 15d), new Size(32d, 48d))
+			{
+				Clip = new RectangleGeometry(drumRect)
+			};
+			Components.Add(_drum);
 
-            Components.Add(new GaugeImage(_faceplateImage, new Rect(0d, 0d, 220d, 204d)));
+			Components.Add(new GaugeImage(_faceplateImage, new Rect(0d, 0d, 220d, 204d)));
 
 			_labels = new GaugeImage(_labelsOffImage, new Rect(0d, 0d, 220d, 204d));
 			Components.Add(_labels);
-        }
+		}
 
 		#endregion Components
 
@@ -204,5 +205,5 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FuelFlow
 		}
 
 		#endregion Properties
-    }
+	}
 }

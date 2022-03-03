@@ -1,5 +1,6 @@
 ﻿//  Copyright 2014 Craig Courtney
-//    
+//  Copyright 2022 Helios Contributors
+//
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
@@ -15,61 +16,61 @@
 
 namespace GadrocsWorkshop.Helios.Gauges.Falcon.VVI
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Interfaces.Falcon;
-    using System;
-    using System.Windows;
-    using System.Windows.Media;
+	using GadrocsWorkshop.Helios.ComponentModel;
+	using GadrocsWorkshop.Helios.Interfaces.Falcon;
+	using System;
+	using System.Windows;
+	using System.Windows.Media;
 
-    [HeliosControl("Helios.Falcon.VVI", "Falcon BMS VVI", "Falcon Simulator", typeof(GaugeRenderer))]
-    public class VVI : BaseGauge
-    {
-        private FalconInterface _falconInterface;
-        private GaugeImage _offFlagImage;
-        private GaugeImage _faceplate;
-        private GaugeNeedle _vviTape;
-        private CalibrationPointCollectionDouble _tapeCalibration;
+	[HeliosControl("Helios.Falcon.VVI", "Falcon BMS VVI", "Falcon Simulator", typeof(GaugeRenderer))]
+	public class VVI : BaseGauge
+	{
+		private FalconInterface _falconInterface;
+		private GaugeImage _offFlagImage;
+		private GaugeImage _faceplate;
+		private GaugeNeedle _vviTape;
+		private CalibrationPointCollectionDouble _tapeCalibration;
 
-        private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/aoa_vvi_bezel.png";
-        private const string _flagImage = "{HeliosFalcon}/Gauges/VVI/vvi_off_flag.xaml";
-        private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/VVI/vvi_faceplate_off.xaml";
-        private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/VVI/vvi_faceplate_dim.xaml";
-        private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/VVI/vvi_faceplate_brt.xaml";
-        private const string _tapeOffImage = "{HeliosFalcon}/Gauges/VVI/vvi_tape_off.xaml";
-        private const string _tapeDimImage = "{HeliosFalcon}/Gauges/VVI/vvi_tape_dim.xaml";
-        private const string _tapeBrtImage = "{HeliosFalcon}/Gauges/VVI/vvi_tape_brt.xaml";
+		private const string _backplateImage = "{HeliosFalcon}/Gauges/Common/aoa_vvi_bezel.png";
+		private const string _flagImage = "{HeliosFalcon}/Gauges/VVI/vvi_off_flag.xaml";
+		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/VVI/vvi_faceplate_off.xaml";
+		private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/VVI/vvi_faceplate_dim.xaml";
+		private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/VVI/vvi_faceplate_brt.xaml";
+		private const string _tapeOffImage = "{HeliosFalcon}/Gauges/VVI/vvi_tape_off.xaml";
+		private const string _tapeDimImage = "{HeliosFalcon}/Gauges/VVI/vvi_tape_dim.xaml";
+		private const string _tapeBrtImage = "{HeliosFalcon}/Gauges/VVI/vvi_tape_brt.xaml";
 
-        private double _backlight;
-        private bool _inFlightLastValue = true;
+		private double _backlight;
+		private bool _inFlightLastValue = true;
 
-        public VVI()
-            : base("VVI", new Size(220, 452))
-        {
-            AddComponents();
-        }
+		public VVI()
+			: base("VVI", new Size(220, 452))
+		{
+			AddComponents();
+		}
 
-        #region Components
+		#region Components
 
-        private void AddComponents()
-        {
+		private void AddComponents()
+		{
 			_tapeCalibration = new CalibrationPointCollectionDouble(-100d, -600d, 100d, 600d);
 
 			_vviTape = new GaugeNeedle(_tapeOffImage, new Point(110, 226), new Size(130, 1960), new Point(65, 980))
-            {
-                Clip = new RectangleGeometry(new Rect(55d, 86d, 130d, 280d))
-            };
-            Components.Add(_vviTape);
+			{
+				Clip = new RectangleGeometry(new Rect(55d, 86d, 130d, 280d))
+			};
+			Components.Add(_vviTape);
 
-            _offFlagImage = new GaugeImage(_flagImage, new Rect(55d, 84d, 111d, 282d))
-            {
-                IsHidden = true
-            };
-            Components.Add(_offFlagImage);
+			_offFlagImage = new GaugeImage(_flagImage, new Rect(55d, 84d, 111d, 282d))
+			{
+				IsHidden = true
+			};
+			Components.Add(_offFlagImage);
 
-            _faceplate = new GaugeImage(_faceplateOffImage, new Rect(0, 0, 220, 452));
-            Components.Add(_faceplate);
+			_faceplate = new GaugeImage(_faceplateOffImage, new Rect(0, 0, 220, 452));
+			Components.Add(_faceplate);
 
-            Components.Add(new GaugeImage(_backplateImage, new Rect(0, 0, 220, 452)));
+			Components.Add(new GaugeImage(_backplateImage, new Rect(0, 0, 220, 452)));
 		}
 
 		#endregion Components
@@ -198,25 +199,25 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.VVI
 
 		private double VerticalVelocity { get; set; }
 
-        private bool OffFlag { get; set; }
+		private bool OffFlag { get; set; }
 
-        private double Backlight
-        {
-            get
-            {
-                return _backlight;
-            }
-            set
-            {
-                double oldValue = _backlight;
-                _backlight = value;
-                if (!_backlight.Equals(oldValue))
-                {
-                    ProcessBacklightValues();
-                }
-            }
-        }
+		private double Backlight
+		{
+			get
+			{
+				return _backlight;
+			}
+			set
+			{
+				double oldValue = _backlight;
+				_backlight = value;
+				if (!_backlight.Equals(oldValue))
+				{
+					ProcessBacklightValues();
+				}
+			}
+		}
 
-        #endregion Properties
-    }
+		#endregion Properties
+	}
 }
