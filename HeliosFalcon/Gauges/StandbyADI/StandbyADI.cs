@@ -14,65 +14,70 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIStandby
+namespace GadrocsWorkshop.Helios.Gauges.Falcon.StandbyADI
 {
 	using GadrocsWorkshop.Helios.ComponentModel;
 	using GadrocsWorkshop.Helios.Interfaces.Falcon;
-	using GadrocsWorkshop.Helios.Gauges.Falcon.ADIBallRenderer;
 	using System;
 	using System.Windows;
 	using System.Windows.Media;
 
-	[HeliosControl("Helios.Falcon.ADIStandby", "Falcon BMS Standby ADI", "Falcon Simulator", typeof(GaugeRenderer))]
-	public class ADIStandby : BaseGauge
+	[HeliosControl("Helios.Falcon.StandbyADI", "Falcon BMS Standby ADI", "Falcon Simulator", typeof(GaugeRenderer))]
+	public class StandbyADI : BaseGauge
 	{
 		private FalconInterface _falconInterface;
 
 		private GaugeImage _faceplate;
-		private GaugeImage _backlightRing;
 		private GaugeImage _offFlag;
 
-		private ADIBallRenderer _ball;
+		private GaugeNeedle _ball;
+		private GaugeNeedle _ballMask;
+		private GaugeNeedle _ring;
 
-		private const string _faceplateImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_faceplate.png";
-		private const string _offFlagImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_off_flag.png";
+		private const string _ballOffImage = "{HeliosFalcon}/Gauges/StandbyADI/adi_ball_off.xaml";
+		private const string _ballDimImage = "{HeliosFalcon}/Gauges/StandbyADI/adi_ball_dim.xaml";
+		private const string _ballBrtImage = "{HeliosFalcon}/Gauges/StandbyADI/adi_ball_brt.xaml";
 
-		private const string _ringOffImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_ring_off.xaml";
-		private const string _ringDimImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_ring_dim.xaml";
-		private const string _ringBrtImage = "{HeliosFalcon}/Gauges/ADIStandby/adi_standby_ring_brt.xaml";
+		private const string _ringOffImage = "{HeliosFalcon}/Gauges/StandbyADI/adi_ring_off.xaml";
+		private const string _ringDimImage = "{HeliosFalcon}/Gauges/StandbyADI/adi_ring_dim.xaml";
+		private const string _ringBrtImage = "{HeliosFalcon}/Gauges/StandbyADI/adi_ring_brt.xaml";
 
-		private const string _ballOffImage = "{HeliosFalcon}/Gauges/ADIBall/adi_ball_standby_off.xaml";
-		private const string _ballDimImage = "{HeliosFalcon}/Gauges/ADIBall/adi_ball_standby_dim.xaml";
-		private const string _ballBrtImage = "{HeliosFalcon}/Gauges/ADIBall/adi_ball_standby_brt.xaml";
+		private const string _faceplateImage = "{HeliosFalcon}/Gauges/StandbyADI/adi_faceplate.png";
+		private const string _ballMaskImage = "{HeliosFalcon}/Gauges/StandbyADI/adi_ball_mask.png";
+		private const string _offFlagImage = "{HeliosFalcon}/Gauges/StandbyADI/adi_off_flag.png";
+
+		private CalibrationPointCollectionDouble _pitchCalibration;
 
 		private double _backlight;
 		private bool _inFlightLastValue = true;
-		private const double _ballDiameter = 192;
-		private const double _ballVerticalCenter = 145;
-		private const double _ballHorizontalCenter = 155;
-		private const double _ballTapeScaleLength = 960;
 
-		public ADIStandby()
-			: base("ADIStandby", new Size(310, 300))
+		public StandbyADI()
+			: base("StandbyADI", new Size(310, 300))
 		{
 			AddComponents();
-			InitializeBallValues();
 		}
 
 		#region Components
 
 		private void AddComponents()
 		{
-			_ball = new ADIBallRenderer();
-			_ball.Clip = new EllipseGeometry(new Point(_ballHorizontalCenter, _ballVerticalCenter), _ballDiameter / 2, _ballDiameter / 2);
+			_pitchCalibration = new CalibrationPointCollectionDouble(-360d, -864d, 360d, 864d);
+
+			_ball = new GaugeNeedle(_ballOffImage, new Point(155d, 145d), new Size(192d, 1152d), new Point(96d, 576d));
+			_ball.Clip = new EllipseGeometry(new Point(155d, 145d), 96d, 96d);
 			Components.Add(_ball);
+
+			_ballMask = new GaugeNeedle(_ballMaskImage, new Point(155d, 145d), new Size(210d, 210d), new Point(105d, 105d));
+			_ballMask.Clip = new EllipseGeometry(new Point(155d, 145d), 105d, 105d);
+			Components.Add(_ballMask);
+
+			_ring = new GaugeNeedle(_ringOffImage, new Point(155d, 145d), new Size(310d, 300d), new Point(155d, 145d));
+			_ring.Clip = new EllipseGeometry(new Point(155d, 145d), 125d, 125d);
+			Components.Add(_ring);
 
 			_offFlag = new GaugeImage(_offFlagImage, new Rect(40d, 70d, 115d, 180d));
 			_offFlag.IsHidden = true;
 			Components.Add(_offFlag);
-
-			_backlightRing = new GaugeImage(_ringOffImage, new Rect(0d, 0d, 310d, 300d));
-			Components.Add(_backlightRing);
 
 			_faceplate = new GaugeImage(_faceplateImage, new Rect(0d, 0d, 310d, 300d));
 			Components.Add(_faceplate);
@@ -81,16 +86,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIStandby
 		#endregion Components
 
 		#region Methods
-
-		private void InitializeBallValues()
-		{
-			_ball.BallImage = _ballOffImage;
-			_ball.BallTapeScaleLength = _ballTapeScaleLength;
-
-			_ball.BallDiameter = _ballDiameter;
-			_ball.BallLeft = _ballHorizontalCenter - _ballDiameter / 2;
-			_ball.BallTop = _ballVerticalCenter - _ballDiameter / 2; ;
-		}
 
 		protected override void OnProfileChanged(HeliosProfile oldProfile)
 		{
@@ -165,8 +160,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIStandby
 
 		private void ProcessStandbyADIValues()
 		{
-			_ball.BallVerticalValue = -PitchAngle;
-			_ball.BallRotationAngle = -RollAngle;
+			_ball.VerticalOffset = _pitchCalibration.Interpolate(PitchAngle);
+			_ball.Rotation = -RollAngle;
+			_ballMask.Rotation = -RollAngle;
+			_ring.Rotation = -RollAngle;
 
 			_offFlag.IsHidden = !FlagOff;
 		}
@@ -175,18 +172,18 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIStandby
 		{
 			if (Backlight == 1)
 			{
-				_backlightRing.Image = _ringDimImage;
-				_ball.BallImage = _ballDimImage;
+				_ring.Image = _ringDimImage;
+				_ball.Image = _ballDimImage;
 			}
 			else if (Backlight == 2)
 			{
-				_backlightRing.Image = _ringBrtImage;
-				_ball.BallImage = _ballBrtImage;
+				_ring.Image = _ringBrtImage;
+				_ball.Image = _ballBrtImage;
 			}
 			else
 			{
-				_backlightRing.Image = _ringOffImage;
-				_ball.BallImage = _ballOffImage;
+				_ring.Image = _ringOffImage;
+				_ball.Image = _ballOffImage;
 			}
 
 			Refresh();

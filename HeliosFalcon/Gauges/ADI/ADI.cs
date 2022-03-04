@@ -14,21 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIMain
+namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADI
 {
 	using GadrocsWorkshop.Helios.ComponentModel;
 	using GadrocsWorkshop.Helios.Interfaces.Falcon;
-	using GadrocsWorkshop.Helios.Gauges.Falcon.ADIBallRenderer;
 	using System;
 	using System.Windows;
 	using System.Windows.Media;
 
-	[HeliosControl("Helios.Falcon.ADIMain", "Falcon BMS ADI", "Falcon Simulator", typeof(GaugeRenderer))]
-	public class ADIMain : BaseGauge
+	[HeliosControl("Helios.Falcon.ADI", "Falcon BMS ADI", "Falcon Simulator", typeof(GaugeRenderer))]
+	public class ADI : BaseGauge
 	{
 		private FalconInterface _falconInterface;
 
 		private GaugeImage _adiBezel;
+		private GaugeImage _ballMask;
 		private GaugeImage _adiGuides;
 		private GaugeImage _adiFaceplate;
 		private GaugeImage _auxFlag;
@@ -36,67 +36,68 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIMain
 		private GaugeImage _gsFlag;
 		private GaugeImage _locFlag;
 
+		private GaugeNeedle _ball;
 		private GaugeNeedle _rollMarkers;
 		private GaugeNeedle _slipBall;
 		private GaugeNeedle _ilsHorizontalNeedle;
 		private GaugeNeedle _ilsVerticalNeedle;
 		private GaugeNeedle _ilsPointer;
 
-		private ADIBallRenderer _adiBall;
+		private const string _ballOffImage = "{HeliosFalcon}/Gauges/ADI/adi_ball_off.xaml";
+		private const string _ballDimImage = "{HeliosFalcon}/Gauges/ADI/adi_ball_dim.xaml";
+		private const string _ballBrtImage = "{HeliosFalcon}/Gauges/ADI/adi_ball_brt.xaml";
 
-		private const string _bezelImage = "{HeliosFalcon}/Gauges/ADIMain/adi_bezel.png";
-		private const string _guidesImage = "{HeliosFalcon}/Gauges/ADIMain/adi_guides.xaml";
-		private const string _ilsNeedleImage = "{HeliosFalcon}/Gauges/ADIMain/adi_ils_needle.xaml";
+		private const string _bezelImage = "{HeliosFalcon}/Gauges/ADI/adi_bezel.png";
+		private const string _ballMaskImage = "{HeliosFalcon}/Gauges/ADI/adi_ball_mask.png";
+		private const string _guidesImage = "{HeliosFalcon}/Gauges/ADI/adi_guides.xaml";
+		private const string _ilsNeedleImage = "{HeliosFalcon}/Gauges/ADI/adi_ils_needle.xaml";
 
-		private const string _rollMarkersOffImage = "{HeliosFalcon}/Gauges/ADIMain/adi_roll_markers_off.xaml";
-		private const string _rollMarkersDimImage = "{HeliosFalcon}/Gauges/ADIMain/adi_roll_markers_dim.xaml";
-		private const string _rollMarkersBrtImage = "{HeliosFalcon}/Gauges/ADIMain/adi_roll_markers_brt.xaml";
+		private const string _rollMarkersOffImage = "{HeliosFalcon}/Gauges/ADI/adi_roll_markers_off.xaml";
+		private const string _rollMarkersDimImage = "{HeliosFalcon}/Gauges/ADI/adi_roll_markers_dim.xaml";
+		private const string _rollMarkersBrtImage = "{HeliosFalcon}/Gauges/ADI/adi_roll_markers_brt.xaml";
 
-		private const string _slipBallOffImage = "{HeliosFalcon}/Gauges/ADIMain/adi_slip_ball_off.xaml";
-		private const string _slipBallDimImage = "{HeliosFalcon}/Gauges/ADIMain/adi_slip_ball_dim.xaml";
-		private const string _slipBallBrtImage = "{HeliosFalcon}/Gauges/ADIMain/adi_slip_ball_brt.xaml";
+		private const string _slipBallOffImage = "{HeliosFalcon}/Gauges/ADI/adi_slip_ball_off.xaml";
+		private const string _slipBallDimImage = "{HeliosFalcon}/Gauges/ADI/adi_slip_ball_dim.xaml";
+		private const string _slipBallBrtImage = "{HeliosFalcon}/Gauges/ADI/adi_slip_ball_brt.xaml";
 
-		private const string _auxFlagImage = "{HeliosFalcon}/Gauges/ADIMain/adi_aux_flag.xaml";
-		private const string _offFlagImage = "{HeliosFalcon}/Gauges/ADIMain/adi_off_flag.xaml";
-		private const string _gsFlagImage = "{HeliosFalcon}/Gauges/ADIMain/adi_gs_flag.xaml";
-		private const string _locFlagImage = "{HeliosFalcon}/Gauges/ADIMain/adi_loc_flag.xaml";
+		private const string _auxFlagImage = "{HeliosFalcon}/Gauges/ADI/adi_aux_flag.xaml";
+		private const string _offFlagImage = "{HeliosFalcon}/Gauges/ADI/adi_off_flag.xaml";
+		private const string _gsFlagImage = "{HeliosFalcon}/Gauges/ADI/adi_gs_flag.xaml";
+		private const string _locFlagImage = "{HeliosFalcon}/Gauges/ADI/adi_loc_flag.xaml";
 
-		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/ADIMain/adi_faceplate_off.xaml";
-		private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/ADIMain/adi_faceplate_dim.xaml";
-		private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/ADIMain/adi_faceplate_brt.xaml";
+		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/ADI/adi_faceplate_off.xaml";
+		private const string _faceplateDimImage = "{HeliosFalcon}/Gauges/ADI/adi_faceplate_dim.xaml";
+		private const string _faceplateBrtImage = "{HeliosFalcon}/Gauges/ADI/adi_faceplate_brt.xaml";
 
-		private const string _ilsPointerOffImage = "{HeliosFalcon}/Gauges/ADIMain/adi_ils_pointer_off.xaml";
-		private const string _ilsPointerDimImage = "{HeliosFalcon}/Gauges/ADIMain/adi_ils_pointer_dim.xaml";
-		private const string _ilsPointerBrtImage = "{HeliosFalcon}/Gauges/ADIMain/adi_ils_pointer_brt.xaml";
+		private const string _ilsPointerOffImage = "{HeliosFalcon}/Gauges/ADI/adi_ils_pointer_off.xaml";
+		private const string _ilsPointerDimImage = "{HeliosFalcon}/Gauges/ADI/adi_ils_pointer_dim.xaml";
+		private const string _ilsPointerBrtImage = "{HeliosFalcon}/Gauges/ADI/adi_ils_pointer_brt.xaml";
 
-		private const string _ballOffImage = "{HeliosFalcon}/Gauges/ADIBall/adi_ball_main_off.xaml";
-		private const string _ballDimImage = "{HeliosFalcon}/Gauges/ADIBall/adi_ball_main_dim.xaml";
-		private const string _ballBrtImage = "{HeliosFalcon}/Gauges/ADIBall/adi_ball_main_brt.xaml";
-
+		private CalibrationPointCollectionDouble _pitchCalibration;
 		private CalibrationPointCollectionDouble _ilsCalibration;
 		private CalibrationPointCollectionDouble _slipBallCalibration;
 
 		private double _backlight;
 		private bool _inFlightLastValue = true;
-		private const double _ballDiameter = 220;
-		private const double _ballVerticalCenter = 165;
-		private const double _ballHorizontalCenter = 175;
-		private const double _ballTapeScaleLength = 960;
 
-		public ADIMain()
-			: base("ADIMain", new Size(350, 350))
+		public ADI()
+			: base("ADI", new Size(350, 350))
 		{
 			AddComponents();
-			InitializeBallValues();
 		}
 
 		#region Components
 
 		private void AddComponents()
 		{
-			_adiBall = new ADIBallRenderer();
-			_adiBall.Clip = new EllipseGeometry(new Point(_ballHorizontalCenter, _ballVerticalCenter), _ballDiameter / 2, _ballDiameter / 2);
-			Components.Add(_adiBall);
+			_pitchCalibration = new CalibrationPointCollectionDouble(-360d, -990d, 360d, 990d);
+
+			_ball = new GaugeNeedle(_ballOffImage, new Point(175d, 165d), new Size(220d, 1320d), new Point(110d, 660d));
+			_ball.Clip = new EllipseGeometry(new Point(175d, 165d), 110d, 110d);
+			Components.Add(_ball);
+
+			_ballMask = new GaugeImage(_ballMaskImage, new Rect(60d, 50d, 230d, 230d));
+			Components.Add(_ballMask);
 
 			_rollMarkers = new GaugeNeedle(_rollMarkersOffImage, new Point(175d, 165d), new Size(50d, 230d), new Point(25d, 115d));
 			Components.Add(_rollMarkers);
@@ -148,16 +149,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIMain
 		#endregion Components
 
 		#region Methods
-
-		private void InitializeBallValues()
-		{
-			_adiBall.BallImage = _ballOffImage;
-			_adiBall.BallTapeScaleLength = _ballTapeScaleLength;
-
-			_adiBall.BallDiameter = _ballDiameter;
-			_adiBall.BallLeft = _ballHorizontalCenter - _ballDiameter / 2;
-			_adiBall.BallTop = _ballVerticalCenter - _ballDiameter / 2; ;
-		}
 
 		protected override void OnProfileChanged(HeliosProfile oldProfile)
 		{
@@ -253,8 +244,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIMain
 
 		private void ProcessADIValues()
 		{
-			_adiBall.BallVerticalValue = -PitchAngle;
-			_adiBall.BallRotationAngle = -RollAngle;
+			_ball.VerticalOffset = _pitchCalibration.Interpolate(PitchAngle);
+			_ball.Rotation = -RollAngle;
 			_rollMarkers.Rotation = -RollAngle;
 			_slipBall.HorizontalOffset = _slipBallCalibration.Interpolate(SideSlipAngle);
 
@@ -287,8 +278,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIMain
 				}
 			}
 
-			double correctedILSDeviationVertical = ILSDeviationVertical + PitchAngle / 17;
-			_ilsVerticalNeedle.VerticalOffset = _ilsCalibration.Interpolate(correctedILSDeviationVertical);
+			_ilsVerticalNeedle.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationVertical + PitchAngle / 17);
 			_ilsHorizontalNeedle.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationHorizontal);
 
 			_offFlag.IsHidden = !FlagOff;
@@ -305,7 +295,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIMain
 				_rollMarkers.Image = _rollMarkersDimImage;
 				_slipBall.Image = _slipBallDimImage;
 				_ilsPointer.Image = _ilsPointerDimImage;
-				_adiBall.BallImage = _ballDimImage;
+				_ball.Image = _ballDimImage;
 			}
 			else if (Backlight == 2)
 			{
@@ -313,7 +303,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIMain
 				_rollMarkers.Image = _rollMarkersBrtImage;
 				_slipBall.Image = _slipBallBrtImage;
 				_ilsPointer.Image = _ilsPointerBrtImage;
-				_adiBall.BallImage = _ballBrtImage;
+				_ball.Image = _ballBrtImage;
 			}
 			else
 			{
@@ -321,7 +311,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADIMain
 				_rollMarkers.Image = _rollMarkersOffImage;
 				_slipBall.Image = _slipBallOffImage;
 				_ilsPointer.Image = _ilsPointerOffImage;
-				_adiBall.BallImage = _ballOffImage;
+				_ball.Image = _ballOffImage;
 			}
 
 			Refresh();
