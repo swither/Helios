@@ -39,8 +39,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADI
 		private GaugeNeedle _ball;
 		private GaugeNeedle _rollMarkers;
 		private GaugeNeedle _slipBall;
-		private GaugeNeedle _ilsHorizontalNeedle;
-		private GaugeNeedle _ilsVerticalNeedle;
+		private GaugeNeedle _ilsHorizontalNeedleSolid;
+		private GaugeNeedle _ilsHorizontalNeedleDashed;
+		private GaugeNeedle _ilsVerticalNeedleSolid;
+		private GaugeNeedle _ilsVerticalNeedleDashed;
 		private GaugeNeedle _ilsPointer;
 
 		private const string _ballOffImage = "{HeliosFalcon}/Gauges/ADI/adi_ball_off.xaml";
@@ -50,7 +52,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADI
 		private const string _bezelImage = "{HeliosFalcon}/Gauges/ADI/adi_bezel.png";
 		private const string _ballMaskImage = "{HeliosFalcon}/Gauges/ADI/adi_ball_mask.png";
 		private const string _guidesImage = "{HeliosFalcon}/Gauges/ADI/adi_guides.xaml";
-		private const string _ilsNeedleImage = "{HeliosFalcon}/Gauges/ADI/adi_ils_needle.xaml";
+		private const string _ilsNeedleSolidImage = "{HeliosFalcon}/Gauges/ADI/adi_ils_needle_solid.xaml";
+		private const string _ilsNeedleDashedImage = "{HeliosFalcon}/Gauges/ADI/adi_ils_needle_dashed.xaml";
 
 		private const string _rollMarkersOffImage = "{HeliosFalcon}/Gauges/ADI/adi_roll_markers_off.xaml";
 		private const string _rollMarkersDimImage = "{HeliosFalcon}/Gauges/ADI/adi_roll_markers_dim.xaml";
@@ -102,15 +105,23 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADI
 			_rollMarkers = new GaugeNeedle(_rollMarkersOffImage, new Point(175d, 165d), new Size(50d, 230d), new Point(25d, 115d));
 			Components.Add(_rollMarkers);
 
-			_ilsCalibration = new CalibrationPointCollectionDouble(-1d, -60d, 1d, 60d);
+			_ilsCalibration = new CalibrationPointCollectionDouble(-1d, -55d, 1d, 55d);
 
-			_ilsHorizontalNeedle = new GaugeNeedle(_ilsNeedleImage, new Point(175d, 165d), new Size(190d, 6d), new Point(95d, 4d), 90d);
-			_ilsHorizontalNeedle.IsHidden = true;
-			Components.Add(_ilsHorizontalNeedle);
+			_ilsHorizontalNeedleSolid = new GaugeNeedle(_ilsNeedleSolidImage, new Point(175d, 165d), new Size(190d, 6d), new Point(95d, 3d), 90d);
+			_ilsHorizontalNeedleSolid.IsHidden = true;
+			Components.Add(_ilsHorizontalNeedleSolid);
 
-			_ilsVerticalNeedle = new GaugeNeedle(_ilsNeedleImage, new Point(175d, 165d), new Size(190d, 6d), new Point(95d, 4d));
-			_ilsVerticalNeedle.IsHidden = true;
-			Components.Add(_ilsVerticalNeedle);
+			_ilsHorizontalNeedleDashed = new GaugeNeedle(_ilsNeedleDashedImage, new Point(175d, 165d), new Size(190d, 6d), new Point(95d, 3d), 90d);
+			_ilsHorizontalNeedleDashed.IsHidden = true;
+			Components.Add(_ilsHorizontalNeedleDashed);
+
+			_ilsVerticalNeedleSolid = new GaugeNeedle(_ilsNeedleSolidImage, new Point(175d, 165d), new Size(190d, 6d), new Point(95d, 3d));
+			_ilsVerticalNeedleSolid.IsHidden = true;
+			Components.Add(_ilsVerticalNeedleSolid);
+
+			_ilsVerticalNeedleDashed = new GaugeNeedle(_ilsNeedleDashedImage, new Point(175d, 165d), new Size(190d, 6d), new Point(95d, 3d));
+			_ilsVerticalNeedleDashed.IsHidden = true;
+			Components.Add(_ilsVerticalNeedleDashed);
 
 			_adiFaceplate = new GaugeImage(_faceplateOffImage, new Rect(0d, 0d, 350d, 350d));
 			Components.Add(_adiFaceplate);
@@ -244,42 +255,36 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADI
 
 		private void ProcessADIValues()
 		{
-			_ball.VerticalOffset = _pitchCalibration.Interpolate(PitchAngle);
-			_ball.Rotation = -RollAngle;
-			_rollMarkers.Rotation = -RollAngle;
-			_slipBall.HorizontalOffset = _slipBallCalibration.Interpolate(SideSlipAngle);
+			bool ilsActiveVertical = !(ILSDeviationVertical <= -1 || ILSDeviationVertical >= 1);
+			bool ilsActiveHorizontal = !(ILSDeviationHorizontal <= -1 || ILSDeviationHorizontal >= 1);
 
-			if (NavMode == 1 || NavMode == 2 || FlagOff || FlagGS || FlagLOC)
+			if (NavMode == 1 || NavMode == 2 || FlagOff || FlagGS || FlagLOC || !(ilsActiveVertical || ilsActiveHorizontal))
 			{
-				_ilsVerticalNeedle.IsHidden = true;
-				_ilsHorizontalNeedle.IsHidden = true;
+				_ilsVerticalNeedleSolid.IsHidden = true;
+				_ilsVerticalNeedleDashed.IsHidden = true;
+				_ilsHorizontalNeedleSolid.IsHidden = true;
+				_ilsHorizontalNeedleDashed.IsHidden = true;
+
 				_ilsPointer.VerticalOffset = 0d;
 			}
 			else
 			{
-				if (ILSDeviationVertical <= -1 || ILSDeviationVertical >= 1)
-				{
-					_ilsVerticalNeedle.IsHidden = true;
-					_ilsPointer.VerticalOffset = 0d;
-				}
-				else
-				{
-					_ilsVerticalNeedle.IsHidden = false;
-					_ilsPointer.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationVertical);
-				}
+				_ilsVerticalNeedleSolid.IsHidden = !ilsActiveVertical;
+				_ilsVerticalNeedleDashed.IsHidden = ilsActiveVertical;
+				_ilsHorizontalNeedleSolid.IsHidden = !ilsActiveHorizontal;
+				_ilsHorizontalNeedleDashed.IsHidden = ilsActiveHorizontal;
 
-				if (ILSDeviationHorizontal <= -1 || ILSDeviationHorizontal >= 1)
-				{
-					_ilsHorizontalNeedle.IsHidden = true;
-				}
-				else
-				{
-					_ilsHorizontalNeedle.IsHidden = false;
-				}
+				_ilsPointer.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationVertical);
+				_ilsVerticalNeedleSolid.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationVertical + PitchAngle / 17);
+				_ilsVerticalNeedleDashed.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationVertical + PitchAngle / 17);
+				_ilsHorizontalNeedleSolid.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationHorizontal);
+				_ilsHorizontalNeedleDashed.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationHorizontal);
 			}
 
-			_ilsVerticalNeedle.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationVertical + PitchAngle / 17);
-			_ilsHorizontalNeedle.VerticalOffset = _ilsCalibration.Interpolate(ILSDeviationHorizontal);
+			_ball.VerticalOffset = _pitchCalibration.Interpolate(PitchAngle);
+			_ball.Rotation = -RollAngle;
+			_rollMarkers.Rotation = -RollAngle;
+			_slipBall.HorizontalOffset = _slipBallCalibration.Interpolate(SideSlipAngle);
 
 			_offFlag.IsHidden = !FlagOff;
 			_auxFlag.IsHidden = !FlagAUX;
