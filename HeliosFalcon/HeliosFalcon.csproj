@@ -56,26 +56,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gauges\EPU\EPU.cs" />
-    <Compile Include="Gauges\Clock\Clock.cs" />
-    <Compile Include="Gauges\FuelFlow\FuelFlow.cs" />
-    <Compile Include="Gauges\VVI\VVI.cs" />
-    <Compile Include="Gauges\AOA\AOA.cs" />
-    <Compile Include="Gauges\StandbyADI\StandbyADI.cs" />
     <Compile Include="Gauges\HydraulicPressure\HydraulicPressureA.cs" />
     <Compile Include="Gauges\HydraulicPressure\HydraulicPressureB.cs" />
     <Compile Include="Gauges\OilPressure\OilPressure.cs" />
+    <Compile Include="Gauges\Clock\Clock.cs" />
     <Compile Include="Gauges\Nozzle\Nozzle.cs" />
     <Compile Include="Gauges\FTIT\FTIT.cs" />
-    <Compile Include="Gauges\Fuel\Fuel.cs" />
+    <Compile Include="Gauges\RPM\RPM.cs" />
     <Compile Include="Gauges\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\Airspeed\Airspeed.cs" />
-    <Compile Include="Gauges\RPM\RPM.cs" />
+    <Compile Include="Gauges\Fuel\Fuel.cs" />
+    <Compile Include="Gauges\VVI\VVI.cs" />
+    <Compile Include="Gauges\AOA\AOA.cs" />
+    <Compile Include="Gauges\FuelFlow\FuelFlow.cs" />
+    <Compile Include="Gauges\StandbyADI\StandbyADI.cs" />
     <Compile Include="Gauges\ADI\ADI.cs" />
     <Compile Include="Gauges\EHSI\EHSI.cs" />
     <Compile Include="Gauges\EHSI\EHSIRenderer.cs" />
     <Compile Include="Gauges\EHSI\EHSIBehaviorEditor.xaml.cs">
       <DependentUpon>EHSIBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Gauges\ICP\ICP.cs" />
     <Compile Include="Gauges\Textures\HUDBehaviorEditor.xaml.cs">
       <DependentUpon>HUDBehaviorEditor.xaml</DependentUpon>
     </Compile>
@@ -608,6 +609,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Resource Include="Gauges\ICP\icp_backplate_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\ICP\icp_backplate_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\ICP\icp_backplate_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Gauges\Textures\HUDBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -666,6 +679,60 @@
     <Resource Include="Gauges\StandbyADI\adi_off_flag.png" />
     <Resource Include="Gauges\ADI\adi_ball_mask.png" />
     <Resource Include="Gauges\StandbyADI\adi_ball_mask.png" />
+    <Resource Include="Gauges\ICP\icp_a_a_press.png" />
+    <Resource Include="Gauges\ICP\icp_a_a.png" />
+    <Resource Include="Gauges\ICP\icp_a_g_press.png" />
+    <Resource Include="Gauges\ICP\icp_a_g.png" />
+    <Resource Include="Gauges\ICP\icp_comm1_press.png" />
+    <Resource Include="Gauges\ICP\icp_comm1.png" />
+    <Resource Include="Gauges\ICP\icp_comm2_press.png" />
+    <Resource Include="Gauges\ICP\icp_comm2.png" />
+    <Resource Include="Gauges\ICP\icp_0_press.png" />
+    <Resource Include="Gauges\ICP\icp_0.png" />
+    <Resource Include="Gauges\ICP\icp_1_press.png" />
+    <Resource Include="Gauges\ICP\icp_1.png" />
+    <Resource Include="Gauges\ICP\icp_2_press.png" />
+    <Resource Include="Gauges\ICP\icp_2.png" />
+    <Resource Include="Gauges\ICP\icp_3_press.png" />
+    <Resource Include="Gauges\ICP\icp_3.png" />
+    <Resource Include="Gauges\ICP\icp_4_press.png" />
+    <Resource Include="Gauges\ICP\icp_4.png" />
+    <Resource Include="Gauges\ICP\icp_5_press.png" />
+    <Resource Include="Gauges\ICP\icp_5.png" />
+    <Resource Include="Gauges\ICP\icp_6_press.png" />
+    <Resource Include="Gauges\ICP\icp_6.png" />
+    <Resource Include="Gauges\ICP\icp_7_press.png" />
+    <Resource Include="Gauges\ICP\icp_7.png" />
+    <Resource Include="Gauges\ICP\icp_8_press.png" />
+    <Resource Include="Gauges\ICP\icp_8.png" />
+    <Resource Include="Gauges\ICP\icp_9_press.png" />
+    <Resource Include="Gauges\ICP\icp_9.png" />
+    <Resource Include="Gauges\ICP\icp_enter_press.png" />
+    <Resource Include="Gauges\ICP\icp_enter.png" />
+    <Resource Include="Gauges\ICP\icp_wx_press.png" />
+    <Resource Include="Gauges\ICP\icp_wx.png" />
+    <Resource Include="Gauges\ICP\icp_iff_press.png" />
+    <Resource Include="Gauges\ICP\icp_iff.png" />
+    <Resource Include="Gauges\ICP\icp_rcl_press.png" />
+    <Resource Include="Gauges\ICP\icp_rcl.png" />
+    <Resource Include="Gauges\ICP\icp_list_press.png" />
+    <Resource Include="Gauges\ICP\icp_list.png" />
+    <Resource Include="Gauges\ICP\icp_faceplate_lit.png" />
+    <Resource Include="Gauges\ICP\icp_faceplate_off.png" />
+    <Resource Include="Gauges\ICP\icp_rocker_down.png" />
+    <Resource Include="Gauges\ICP\icp_rocker_center.png" />
+    <Resource Include="Gauges\ICP\icp_rocker_up.png" />
+    <Resource Include="Gauges\ICP\icp_dcs_center.png" />
+    <Resource Include="Gauges\ICP\icp_dcs_down.png" />
+    <Resource Include="Gauges\ICP\icp_dcs_left.png" />
+    <Resource Include="Gauges\ICP\icp_dcs_right.png" />
+    <Resource Include="Gauges\ICP\icp_dcs_up.png" />
+    <Resource Include="Gauges\ICP\icp_wheel_center.png" />
+    <Resource Include="Gauges\ICP\icp_wheel_down.png" />
+    <Resource Include="Gauges\ICP\icp_wheel_up.png" />
+    <Resource Include="Gauges\ICP\icp_switch_center.png" />
+    <Resource Include="Gauges\ICP\icp_switch_down.png" />
+    <Resource Include="Gauges\ICP\icp_switch_up.png" />
     <Content Include="Templates\HeliosFalcon\Falcon RTT DED.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

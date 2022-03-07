@@ -30,19 +30,19 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 	{
 		private FalconInterface _falconInterface;
 
-		private Gauges.GaugeImage _BackgroundImage;
-		private Gauges.GaugeImage _HeadingMarkerImage;
-		private Gauges.GaugeImage _AircraftImage;
-		private Gauges.CustomGaugeNeedle _CurrentHeadingScale;
-		private Gauges.CustomGaugeNeedle _DesiredHeadingMarker;
-		private Gauges.CustomGaugeNeedle _ILSIndicator;
-		private Gauges.CustomGaugeNeedle _ILSToFlagIndicator;
-		private Gauges.CustomGaugeNeedle _ILSFromFlagIndicator;
-		private Gauges.CustomGaugeNeedle _BeaconBearingNeedle;
-		private Gauges.CustomGaugeNeedle _OuterMarkerNeedle;
-		private Gauges.CustomGaugeNeedle _MiddleMarkerNeedle;
-		private Gauges.CustomGaugeNeedle _DesiredCourseNeedle;
-		private Gauges.CustomGaugeNeedle _CourseDeviationNeedle;
+		private GaugeImage _BackgroundImage;
+		private GaugeImage _HeadingMarkerImage;
+		private GaugeImage _AircraftImage;
+		private CustomGaugeNeedle _CurrentHeadingScale;
+		private CustomGaugeNeedle _DesiredHeadingMarker;
+		private CustomGaugeNeedle _ILSIndicator;
+		private CustomGaugeNeedle _ILSToFlagIndicator;
+		private CustomGaugeNeedle _ILSFromFlagIndicator;
+		private CustomGaugeNeedle _BeaconBearingNeedle;
+		private CustomGaugeNeedle _OuterMarkerNeedle;
+		private CustomGaugeNeedle _MiddleMarkerNeedle;
+		private CustomGaugeNeedle _DesiredCourseNeedle;
+		private CustomGaugeNeedle _CourseDeviationNeedle;
 		private EHSIRenderer _TextData;
 
 		private Rect _imageSize = new Rect(0, 0, 400, 400);
