@@ -153,8 +153,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 		Rect _rectSwitchDRIFT = new Rect(368, 361, 55, 110);
 
 		private const string _backplateOffImage = "{HeliosFalcon}/Gauges/ICP/icp_backplate_off.xaml";
-		private const string _backplateBrtImage = "{HeliosFalcon}/Gauges/ICP/icp_backplate_dim.xaml";
-		private const string _backplateDimImage = "{HeliosFalcon}/Gauges/ICP/icp_backplate_brt.xaml";
+		private const string _backplateDimImage = "{HeliosFalcon}/Gauges/ICP/icp_backplate_dim.xaml";
+		private const string _backplateBrtImage = "{HeliosFalcon}/Gauges/ICP/icp_backplate_brt.xaml";
 		private const string _faceplateOffImage = "{HeliosFalcon}/Gauges/ICP/icp_faceplate_off.png";
 		private const string _faceplateLitImage = "{HeliosFalcon}/Gauges/ICP/icp_faceplate_lit.png";
 		private const string _buttonCOMM1Image = "{HeliosFalcon}/Gauges/ICP/icp_comm1.png";
@@ -203,9 +203,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 		private const string _rockerUpImage = "{HeliosFalcon}/Gauges/ICP/icp_rocker_up.png";
 		private const string _rockerCenterImage = "{HeliosFalcon}/Gauges/ICP/icp_rocker_center.png";
 		private const string _rockerDownImage = "{HeliosFalcon}/Gauges/ICP/icp_rocker_down.png";
-		private const string _wheelUpImage = "{HeliosFalcon}/Gauges/ICP/icp_wheel_up.png";
-		private const string _wheelCenterImage = "{HeliosFalcon}/Gauges/ICP/icp_wheel_center.png";
-		private const string _wheelDownImage = "{HeliosFalcon}/Gauges/ICP/icp_wheel_down.png";
+		private const string _wheelUpOffImage = "{HeliosFalcon}/Gauges/ICP/icp_wheel_up_off.png";
+		private const string _wheelCenterOffImage = "{HeliosFalcon}/Gauges/ICP/icp_wheel_center_off.png";
+		private const string _wheelDownOffImage = "{HeliosFalcon}/Gauges/ICP/icp_wheel_down_off.png";
+		private const string _wheelUpLitImage = "{HeliosFalcon}/Gauges/ICP/icp_wheel_up_lit.png";
+		private const string _wheelCenterLitImage = "{HeliosFalcon}/Gauges/ICP/icp_wheel_center_lit.png";
+		private const string _wheelDownLitImage = "{HeliosFalcon}/Gauges/ICP/icp_wheel_down_lit.png";
 		private const string _switchPositionOneImage = "{HeliosFalcon}/Gauges/ICP/icp_switch_up.png";
 		private const string _switchPositionTwoImage = "{HeliosFalcon}/Gauges/ICP/icp_switch_center.png";
 		private const string _switchPositionThreeImage = "{HeliosFalcon}/Gauges/ICP/icp_switch_down.png";
@@ -299,16 +302,16 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 			_rockerFLIR = new GaugeImage(_rockerCenterImage, _rectRockerFLIRCenter);
 			Components.Add(_rockerFLIR);
 
-			_wheelSYM = new GaugeImage(_wheelCenterImage, _rectWheelSYMCenter);
+			_wheelSYM = new GaugeImage(_wheelCenterOffImage, _rectWheelSYMCenter);
 			Components.Add(_wheelSYM);
 
-			_wheelBRT = new GaugeImage(_wheelCenterImage, _rectWheelBRTCenter);
+			_wheelBRT = new GaugeImage(_wheelCenterOffImage, _rectWheelBRTCenter);
 			Components.Add(_wheelBRT);
 
-			_wheelDEPR = new GaugeImage(_wheelCenterImage, _rectWheelDEPRCenter);
+			_wheelDEPR = new GaugeImage(_wheelCenterOffImage, _rectWheelDEPRCenter);
 			Components.Add(_wheelDEPR);
 
-			_wheelCONT = new GaugeImage(_wheelCenterImage, _rectWheelCONTCenter);
+			_wheelCONT = new GaugeImage(_wheelCenterOffImage, _rectWheelCONTCenter);
 			Components.Add(_wheelCONT);
 
 			_switchDRIFT = new GaugeImage(_switchPositionTwoImage, _rectSwitchDRIFT);
@@ -513,6 +516,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 				_faceplate.Image = _faceplateOffImage;
 			}
 
+			SetWheelBacklights();
+
 			Refresh();
 		}
 
@@ -682,42 +687,42 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 			}
 			else if (_rectWheelSYMUp.Contains(point))
 			{
-				_wheelSYM.Image = _wheelUpImage;
+				_wheelSYM.Image = Backlight == 0 ? _wheelUpOffImage : _wheelUpLitImage;
 				_wheelSYMUpTrigger.FireTrigger(new BindingValue(true));
 			}
 			else if (_rectWheelSYMDown.Contains(point))
 			{
-				_wheelSYM.Image = _wheelDownImage;
+				_wheelSYM.Image = Backlight == 0 ? _wheelDownOffImage : _wheelDownLitImage;
 				_wheelSYMDownTrigger.FireTrigger(new BindingValue(true));
 			}
 			else if (_rectWheelBRTUp.Contains(point))
 			{
-				_wheelBRT.Image = _wheelUpImage;
+				_wheelBRT.Image = Backlight == 0 ? _wheelUpOffImage : _wheelUpLitImage;
 				_wheelBRTUpTrigger.FireTrigger(new BindingValue(true));
 			}
 			else if (_rectWheelBRTDown.Contains(point))
 			{
-				_wheelBRT.Image = _wheelDownImage;
+				_wheelBRT.Image = Backlight == 0 ? _wheelDownOffImage : _wheelDownLitImage;
 				_wheelBRTDownTrigger.FireTrigger(new BindingValue(true));
 			}
 			else if (_rectWheelDEPRUp.Contains(point))
 			{
-				_wheelDEPR.Image = _wheelUpImage;
+				_wheelDEPR.Image = Backlight == 0 ? _wheelUpOffImage : _wheelUpLitImage;
 				_wheelDEPRUpTrigger.FireTrigger(new BindingValue(true));
 			}
 			else if (_rectWheelDEPRDown.Contains(point))
 			{
-				_wheelDEPR.Image = _wheelDownImage;
+				_wheelDEPR.Image = Backlight == 0 ? _wheelDownOffImage : _wheelDownLitImage;
 				_wheelDEPRDownTrigger.FireTrigger(new BindingValue(true));
 			}
 			else if (_rectWheelCONTUp.Contains(point))
 			{
-				_wheelCONT.Image = _wheelUpImage;
+				_wheelCONT.Image = Backlight == 0 ? _wheelUpOffImage : _wheelUpLitImage;
 				// not implemented.
 			}
 			else if (_rectWheelCONTDown.Contains(point))
 			{
-				_wheelCONT.Image = _wheelDownImage;
+				_wheelCONT.Image = Backlight == 0 ? _wheelDownOffImage : _wheelDownLitImage;
 				// not implemented.
 			}
 			else if (_rectSwitchDRIFT.Contains(point))
@@ -780,10 +785,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 			_buttonDCS.Image = _buttonDCSCenterImage;
 			_rockerICP.Image = _rockerCenterImage;
 			_rockerFLIR.Image = _rockerCenterImage;
-			_wheelSYM.Image = _wheelCenterImage;
-			_wheelBRT.Image = _wheelCenterImage;
-			_wheelDEPR.Image = _wheelCenterImage;
-			_wheelCONT.Image = _wheelCenterImage;
+
+			SetWheelBacklights();
 
 			if (_switchDRIFTPosition == SwitchPosition.Three)
 			{
@@ -793,6 +796,14 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 			}
 
 			Refresh();
+		}
+
+		private void SetWheelBacklights()
+		{
+			_wheelSYM.Image = Backlight == 0 ? _wheelCenterOffImage : _wheelCenterLitImage;
+			_wheelBRT.Image = Backlight == 0 ? _wheelCenterOffImage : _wheelCenterLitImage;
+			_wheelDEPR.Image = Backlight == 0 ? _wheelCenterOffImage : _wheelCenterLitImage;
+			_wheelCONT.Image = Backlight == 0 ? _wheelCenterOffImage : _wheelCenterLitImage;
 		}
 
 		private void ThrowSwitch(SwitchAction action)

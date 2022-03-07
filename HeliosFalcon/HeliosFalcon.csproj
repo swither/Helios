@@ -727,12 +727,15 @@
     <Resource Include="Gauges\ICP\icp_dcs_left.png" />
     <Resource Include="Gauges\ICP\icp_dcs_right.png" />
     <Resource Include="Gauges\ICP\icp_dcs_up.png" />
-    <Resource Include="Gauges\ICP\icp_wheel_center.png" />
-    <Resource Include="Gauges\ICP\icp_wheel_down.png" />
-    <Resource Include="Gauges\ICP\icp_wheel_up.png" />
+    <Resource Include="Gauges\ICP\icp_wheel_center_off.png" />
+    <Resource Include="Gauges\ICP\icp_wheel_down_off.png" />
+    <Resource Include="Gauges\ICP\icp_wheel_up_off.png" />
     <Resource Include="Gauges\ICP\icp_switch_center.png" />
     <Resource Include="Gauges\ICP\icp_switch_down.png" />
     <Resource Include="Gauges\ICP\icp_switch_up.png" />
+    <Resource Include="Gauges\ICP\icp_wheel_center_lit.png" />
+    <Resource Include="Gauges\ICP\icp_wheel_down_lit.png" />
+    <Resource Include="Gauges\ICP\icp_wheel_up_lit.png" />
     <Content Include="Templates\HeliosFalcon\Falcon RTT DED.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
