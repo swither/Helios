@@ -79,26 +79,26 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 		private HeliosTrigger _rockerBRTUpTrigger;
 		private HeliosTrigger _rockerBRTDownTrigger;
 
-		Rect _rectButtonOSB01 = new Rect(107, 15, 37, 37);
-		Rect _rectButtonOSB02 = new Rect(163, 15, 37, 37);
-		Rect _rectButtonOSB03 = new Rect(219, 15, 37, 37);
-		Rect _rectButtonOSB04 = new Rect(275, 15, 37, 37);
-		Rect _rectButtonOSB05 = new Rect(331, 15, 37, 37);
-		Rect _rectButtonOSB06 = new Rect(423, 107, 37, 37);
-		Rect _rectButtonOSB07 = new Rect(423, 163, 37, 37);
-		Rect _rectButtonOSB08 = new Rect(423, 219, 37, 37);
-		Rect _rectButtonOSB09 = new Rect(423, 275, 37, 37);
-		Rect _rectButtonOSB10 = new Rect(423, 331, 37, 37);
-		Rect _rectButtonOSB11 = new Rect(331, 423, 37, 37);
-		Rect _rectButtonOSB12 = new Rect(275, 423, 37, 37);
-		Rect _rectButtonOSB13 = new Rect(219, 423, 37, 37);
-		Rect _rectButtonOSB14 = new Rect(163, 423, 37, 37);
-		Rect _rectButtonOSB15 = new Rect(107, 423, 37, 37);
-		Rect _rectButtonOSB16 = new Rect(15, 107, 37, 37);
-		Rect _rectButtonOSB17 = new Rect(15, 163, 37, 37);
-		Rect _rectButtonOSB18 = new Rect(15, 219, 37, 37);
-		Rect _rectButtonOSB19 = new Rect(15, 275, 37, 37);
-		Rect _rectButtonOSB20 = new Rect(15, 331, 37, 37);
+		Rect _rectButtonOSB01 = new Rect(105, 13, 41, 41);
+		Rect _rectButtonOSB02 = new Rect(161, 13, 41, 41);
+		Rect _rectButtonOSB03 = new Rect(217, 13, 41, 41);
+		Rect _rectButtonOSB04 = new Rect(273, 13, 41, 41);
+		Rect _rectButtonOSB05 = new Rect(329, 13, 41, 41);
+		Rect _rectButtonOSB06 = new Rect(421, 105, 41, 41);
+		Rect _rectButtonOSB07 = new Rect(421, 161, 41, 41);
+		Rect _rectButtonOSB08 = new Rect(421, 217, 41, 41);
+		Rect _rectButtonOSB09 = new Rect(421, 273, 41, 41);
+		Rect _rectButtonOSB10 = new Rect(421, 329, 41, 41);
+		Rect _rectButtonOSB11 = new Rect(329, 421, 41, 41);
+		Rect _rectButtonOSB12 = new Rect(272, 421, 41, 41);
+		Rect _rectButtonOSB13 = new Rect(217, 421, 41, 41);
+		Rect _rectButtonOSB14 = new Rect(161, 421, 41, 41);
+		Rect _rectButtonOSB15 = new Rect(105, 421, 41, 41);
+		Rect _rectButtonOSB16 = new Rect(13, 105, 41, 41);
+		Rect _rectButtonOSB17 = new Rect(13, 161, 41, 41);
+		Rect _rectButtonOSB18 = new Rect(13, 217, 41, 41);
+		Rect _rectButtonOSB19 = new Rect(13, 273, 41, 41);
+		Rect _rectButtonOSB20 = new Rect(13, 329, 41, 41);
 		Rect _rectRockerGAINUp = new Rect(11, 23, 45, 35);
 		Rect _rectRockerGAINCenter = new Rect(11, 23, 45, 75);
 		Rect _rectRockerGAINDown = new Rect(11, 63, 45, 35);
@@ -151,15 +151,6 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 
 			_faceplate = new GaugeImage(_faceplateImage, _rectBase);
 			Components.Add(_faceplate);
-
-			_buttonOSB01 = new GaugeImage(_buttonImage, _rectButtonOSB01);
-			Components.Add(_buttonOSB01);
-
-			_buttonOSB01 = new GaugeImage(_buttonImage, _rectButtonOSB01);
-			Components.Add(_buttonOSB01);
-
-			_buttonOSB01 = new GaugeImage(_buttonImage, _rectButtonOSB01);
-			Components.Add(_buttonOSB01);
 
 			_buttonOSB01 = new GaugeImage(_buttonImage, _rectButtonOSB01);
 			Components.Add(_buttonOSB01);
