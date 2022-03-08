@@ -55,22 +55,23 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Gauges\EPU\EPU.cs" />
     <Compile Include="Gauges\HydraulicPressure\HydraulicPressureA.cs" />
     <Compile Include="Gauges\HydraulicPressure\HydraulicPressureB.cs" />
     <Compile Include="Gauges\OilPressure\OilPressure.cs" />
-    <Compile Include="Gauges\Clock\Clock.cs" />
+    <Compile Include="Gauges\EPU\EPU.cs" />
     <Compile Include="Gauges\Nozzle\Nozzle.cs" />
+    <Compile Include="Gauges\Clock\Clock.cs" />
     <Compile Include="Gauges\FTIT\FTIT.cs" />
+    <Compile Include="Gauges\Fuel\Fuel.cs" />
     <Compile Include="Gauges\RPM\RPM.cs" />
     <Compile Include="Gauges\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\Airspeed\Airspeed.cs" />
-    <Compile Include="Gauges\Fuel\Fuel.cs" />
     <Compile Include="Gauges\VVI\VVI.cs" />
     <Compile Include="Gauges\AOA\AOA.cs" />
     <Compile Include="Gauges\FuelFlow\FuelFlow.cs" />
     <Compile Include="Gauges\StandbyADI\StandbyADI.cs" />
     <Compile Include="Gauges\ADI\ADI.cs" />
+    <Compile Include="Gauges\MFD\MFD.cs" />
     <Compile Include="Gauges\EHSI\EHSI.cs" />
     <Compile Include="Gauges\EHSI\EHSIRenderer.cs" />
     <Compile Include="Gauges\EHSI\EHSIBehaviorEditor.xaml.cs">
@@ -621,6 +622,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Gauges\MFD\mfd_backplate_brt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\MFD\mfd_backplate_dim.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\MFD\mfd_backplate_off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Gauges\Textures\HUDBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -736,6 +749,9 @@
     <Resource Include="Gauges\ICP\icp_wheel_center_lit.png" />
     <Resource Include="Gauges\ICP\icp_wheel_down_lit.png" />
     <Resource Include="Gauges\ICP\icp_wheel_up_lit.png" />
+    <Resource Include="Gauges\MFD\mfd_faceplate.png" />
+    <Resource Include="Gauges\MFD\mfd_button.png" />
+    <Resource Include="Gauges\MFD\mfd_button_press.png" />
     <Content Include="Templates\HeliosFalcon\Falcon RTT DED.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
