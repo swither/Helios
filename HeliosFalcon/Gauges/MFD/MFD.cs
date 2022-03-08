@@ -47,6 +47,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 		private GaugeImage _buttonOSB18;
 		private GaugeImage _buttonOSB19;
 		private GaugeImage _buttonOSB20;
+		private GaugeImage _rockerGAIN;
+		private GaugeImage _rockerSYM;
+		private GaugeImage _rockerBRT;
+		private GaugeImage _rockerCON;
 
 		private HeliosTrigger _buttonOSB01Trigger;
 		private HeliosTrigger _buttonOSB02Trigger;
@@ -68,6 +72,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 		private HeliosTrigger _buttonOSB18Trigger;
 		private HeliosTrigger _buttonOSB19Trigger;
 		private HeliosTrigger _buttonOSB20Trigger;
+		private HeliosTrigger _rockerGAINUpTrigger;
+		private HeliosTrigger _rockerGAINDownTrigger;
+		private HeliosTrigger _rockerSYMUpTrigger;
+		private HeliosTrigger _rockerSYMDownTrigger;
+		private HeliosTrigger _rockerBRTUpTrigger;
+		private HeliosTrigger _rockerBRTDownTrigger;
 
 		Rect _rectButtonOSB01 = new Rect(107, 15, 37, 37);
 		Rect _rectButtonOSB02 = new Rect(163, 15, 37, 37);
@@ -89,6 +99,18 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 		Rect _rectButtonOSB18 = new Rect(15, 219, 37, 37);
 		Rect _rectButtonOSB19 = new Rect(15, 275, 37, 37);
 		Rect _rectButtonOSB20 = new Rect(15, 331, 37, 37);
+		Rect _rectRockerGAINUp = new Rect(11, 23, 45, 35);
+		Rect _rectRockerGAINCenter = new Rect(11, 23, 45, 75);
+		Rect _rectRockerGAINDown = new Rect(11, 63, 45, 35);
+		Rect _rectRockerSYMUp = new Rect(419, 23, 45, 35);
+		Rect _rectRockerSYMCenter = new Rect(419, 23, 45, 75);
+		Rect _rectRockerSYMDown = new Rect(419, 63, 45, 35);
+		Rect _rectRockerBRTUp = new Rect(11, 375, 45, 35);
+		Rect _rectRockerBRTCenter = new Rect(11, 375, 45, 75);
+		Rect _rectRockerBRTDown = new Rect(11, 415, 45, 35);
+		Rect _rectRockerCONUp = new Rect(419, 375, 45, 35);
+		Rect _rectRockerCONCenter = new Rect(419, 375, 45, 75);
+		Rect _rectRockerCONDown = new Rect(419, 415, 45, 35);
 
 		private const string _backplateOffImage = "{HeliosFalcon}/Gauges/MFD/mfd_backplate_off.xaml";
 		private const string _backplateDimImage = "{HeliosFalcon}/Gauges/MFD/mfd_backplate_dim.xaml";
@@ -96,6 +118,18 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 		private const string _faceplateImage = "{HeliosFalcon}/Gauges/MFD/mfd_faceplate.png";
 		private const string _buttonImage = "{HeliosFalcon}/Gauges/MFD/mfd_button.png";
 		private const string _buttonPressImage = "{HeliosFalcon}/Gauges/MFD/mfd_button_press.png";
+		private const string _rockerGAINUpImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_gain_up.png";
+		private const string _rockerGAINCenterImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_gain_center.png";
+		private const string _rockerGAINDownImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_gain_down.png";
+		private const string _rockerSYMUpImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_sym_up.png";
+		private const string _rockerSYMCenterImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_sym_center.png";
+		private const string _rockerSYMDownImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_sym_down.png";
+		private const string _rockerBRTUpImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_brt_up.png";
+		private const string _rockerBRTCenterImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_brt_center.png";
+		private const string _rockerBRTDownImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_brt_down.png";
+		private const string _rockerCONUpImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_con_up.png";
+		private const string _rockerCONCenterImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_con_center.png";
+		private const string _rockerCONDownImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_con_down.png";
 
 		private static Rect _rectBase = new Rect(0d, 0d, 475d, 475d);
 		private double _backlight;
@@ -186,6 +220,18 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 
 			_buttonOSB20 = new GaugeImage(_buttonImage, _rectButtonOSB20);
 			Components.Add(_buttonOSB20);
+
+			_rockerGAIN = new GaugeImage(_rockerGAINCenterImage, _rectRockerGAINCenter);
+			Components.Add(_rockerGAIN);
+
+			_rockerSYM = new GaugeImage(_rockerSYMCenterImage, _rectRockerSYMCenter);
+			Components.Add(_rockerSYM);
+
+			_rockerBRT = new GaugeImage(_rockerBRTCenterImage, _rectRockerBRTCenter);
+			Components.Add(_rockerBRT);
+
+			_rockerCON = new GaugeImage(_rockerCONCenterImage, _rectRockerCONCenter);
+			Components.Add(_rockerCON);
 		}
 
 		#endregion Components
@@ -194,65 +240,83 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 
 		private void AddActions()
 		{
-			_buttonOSB01Trigger = new HeliosTrigger(this, "", "", "Button OSB1 Pushed", "Fired when button OSB1 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB01Trigger = new HeliosTrigger(this, "", "", "Button OSB-1 Pushed", "Fired when button OSB-1 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB01Trigger);
 
-			_buttonOSB02Trigger = new HeliosTrigger(this, "", "", "Button OSB2 Pushed", "Fired when button OSB2 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB02Trigger = new HeliosTrigger(this, "", "", "Button OSB-2 Pushed", "Fired when button OSB-2 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB02Trigger);
 
-			_buttonOSB03Trigger = new HeliosTrigger(this, "", "", "Button OSB3 Pushed", "Fired when button OSB3 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB03Trigger = new HeliosTrigger(this, "", "", "Button OSB-3 Pushed", "Fired when button OSB-3 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB03Trigger);
 
-			_buttonOSB04Trigger = new HeliosTrigger(this, "", "", "Button OSB4 Pushed", "Fired when button OSB4 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB04Trigger = new HeliosTrigger(this, "", "", "Button OSB-4 Pushed", "Fired when button OSB-4 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB04Trigger);
 
-			_buttonOSB05Trigger = new HeliosTrigger(this, "", "", "Button OSB5 Pushed", "Fired when button OSB5 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB05Trigger = new HeliosTrigger(this, "", "", "Button OSB-5 Pushed", "Fired when button OSB-5 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB05Trigger);
 
-			_buttonOSB06Trigger = new HeliosTrigger(this, "", "", "Button OSB6 Pushed", "Fired when button OSB6 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB06Trigger = new HeliosTrigger(this, "", "", "Button OSB-6 Pushed", "Fired when button OSB-6 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB06Trigger);
 
-			_buttonOSB07Trigger = new HeliosTrigger(this, "", "", "Button OSB7 Pushed", "Fired when button OSB7 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB07Trigger = new HeliosTrigger(this, "", "", "Button OSB-7 Pushed", "Fired when button OSB-7 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB07Trigger);
 
-			_buttonOSB08Trigger = new HeliosTrigger(this, "", "", "Button OSB8 Pushed", "Fired when button OSB8 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB08Trigger = new HeliosTrigger(this, "", "", "Button OSB-8 Pushed", "Fired when button OSB-8 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB08Trigger);
 
-			_buttonOSB09Trigger = new HeliosTrigger(this, "", "", "Button OSB9 Pushed", "Fired when button OSB9 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB09Trigger = new HeliosTrigger(this, "", "", "Button OSB-9 Pushed", "Fired when button OSB-9 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB09Trigger);
 
-			_buttonOSB10Trigger = new HeliosTrigger(this, "", "", "Button OSB10 Pushed", "Fired when button OSB10 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB10Trigger = new HeliosTrigger(this, "", "", "Button OSB-10 Pushed", "Fired when button OSB-10 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB10Trigger);
 
-			_buttonOSB11Trigger = new HeliosTrigger(this, "", "", "Button OSB11 Pushed", "Fired when button OSB11 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB11Trigger = new HeliosTrigger(this, "", "", "Button OSB-11 Pushed", "Fired when button OSB-11 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB11Trigger);
 
-			_buttonOSB12Trigger = new HeliosTrigger(this, "", "", "Button OSB12 Pushed", "Fired when button OSB12 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB12Trigger = new HeliosTrigger(this, "", "", "Button OSB-12 Pushed", "Fired when button OSB-12 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB12Trigger);
 
-			_buttonOSB13Trigger = new HeliosTrigger(this, "", "", "Button OSB13 Pushed", "Fired when button OSB13 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB13Trigger = new HeliosTrigger(this, "", "", "Button OSB-13 Pushed", "Fired when button OSB-13 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB13Trigger);
 
-			_buttonOSB14Trigger = new HeliosTrigger(this, "", "", "Button OSB14 Pushed", "Fired when button OSB14 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB14Trigger = new HeliosTrigger(this, "", "", "Button OSB-14 Pushed", "Fired when button OSB-14 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB14Trigger);
 
-			_buttonOSB15Trigger = new HeliosTrigger(this, "", "", "Button OSB15 Pushed", "Fired when button OSB15 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB15Trigger = new HeliosTrigger(this, "", "", "Button OSB-15 Pushed", "Fired when button OSB-15 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB15Trigger);
 
-			_buttonOSB16Trigger = new HeliosTrigger(this, "", "", "Button OSB16 Pushed", "Fired when button OSB16 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB16Trigger = new HeliosTrigger(this, "", "", "Button OSB-16 Pushed", "Fired when button OSB-16 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB16Trigger);
 
-			_buttonOSB17Trigger = new HeliosTrigger(this, "", "", "Button OSB17 Pushed", "Fired when button OSB17 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB17Trigger = new HeliosTrigger(this, "", "", "Button OSB-17 Pushed", "Fired when button OSB-17 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB17Trigger);
 
-			_buttonOSB18Trigger = new HeliosTrigger(this, "", "", "Button OSB18 Pushed", "Fired when button OSB18 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB18Trigger = new HeliosTrigger(this, "", "", "Button OSB-18 Pushed", "Fired when button OSB-18 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB18Trigger);
 
-			_buttonOSB19Trigger = new HeliosTrigger(this, "", "", "Button OSB19 Pushed", "Fired when button OSB19 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB19Trigger = new HeliosTrigger(this, "", "", "Button OSB-19 Pushed", "Fired when button OSB-19 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB19Trigger);
 
-			_buttonOSB20Trigger = new HeliosTrigger(this, "", "", "Button OSB20 Pushed", "Fired when button OSB20 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonOSB20Trigger = new HeliosTrigger(this, "", "", "Button OSB-20 Pushed", "Fired when button OSB-20 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonOSB20Trigger);
+
+			_rockerGAINUpTrigger = new HeliosTrigger(this, "", "", "Rocker GAIN-UP Pushed", "Fired when rocker GAIN-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerGAINUpTrigger);
+
+			_rockerGAINDownTrigger = new HeliosTrigger(this, "", "", "Rocker GAIN-DOWN Pushed", "Fired when rocker GAIN-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerGAINDownTrigger);
+
+			_rockerSYMUpTrigger = new HeliosTrigger(this, "", "", "Rocker SYM-UP Pushed", "Fired when rocker SYM-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerSYMUpTrigger);
+
+			_rockerSYMDownTrigger = new HeliosTrigger(this, "", "", "Rocker SYM=DOWN Pushed", "Fired when rocker SYM=DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerSYMDownTrigger);
+
+			_rockerBRTUpTrigger = new HeliosTrigger(this, "", "", "Rocker BRT-UP Pushed", "Fired when rocker BRT-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerBRTUpTrigger);
+
+			_rockerBRTDownTrigger = new HeliosTrigger(this, "", "", "Rocker BRT-DOWN Pushed", "Fired when rocker BRT-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerBRTDownTrigger);
 		}
 
 		#endregion Actions
@@ -463,6 +527,46 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 				_buttonOSB20.Image = _buttonPressImage;
 				_buttonOSB20Trigger.FireTrigger(new BindingValue(true));
 			}
+			if (_rectRockerGAINUp.Contains(point))
+			{
+				_rockerGAIN.Image = _rockerGAINUpImage;
+				_rockerGAINUpTrigger.FireTrigger(new BindingValue(true));
+			}
+			if (_rectRockerGAINDown.Contains(point))
+			{
+				_rockerGAIN.Image = _rockerGAINDownImage;
+				_rockerGAINDownTrigger.FireTrigger(new BindingValue(true));
+			}
+			if (_rectRockerSYMUp.Contains(point))
+			{
+				_rockerSYM.Image = _rockerSYMUpImage;
+				_rockerSYMUpTrigger.FireTrigger(new BindingValue(true));
+			}
+			if (_rectRockerSYMDown.Contains(point))
+			{
+				_rockerSYM.Image = _rockerSYMDownImage;
+				_rockerSYMDownTrigger.FireTrigger(new BindingValue(true));
+			}
+			if (_rectRockerBRTUp.Contains(point))
+			{
+				_rockerBRT.Image = _rockerBRTUpImage;
+				_rockerBRTUpTrigger.FireTrigger(new BindingValue(true));
+			}
+			if (_rectRockerBRTDown.Contains(point))
+			{
+				_rockerBRT.Image = _rockerBRTDownImage;
+				_rockerBRTDownTrigger.FireTrigger(new BindingValue(true));
+			}
+			if (_rectRockerCONUp.Contains(point))
+			{
+				_rockerCON.Image = _rockerCONUpImage;
+				// not implemented.
+			}
+			if (_rectRockerCONDown.Contains(point))
+			{
+				_rockerCON.Image = _rockerCONDownImage;
+				// not implemented.
+			}
 
 			Refresh();
 		}
@@ -489,6 +593,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 			_buttonOSB18.Image = _buttonImage;
 			_buttonOSB19.Image = _buttonImage;
 			_buttonOSB20.Image = _buttonImage;
+			_rockerGAIN.Image = _rockerGAINCenterImage;
+			_rockerSYM.Image = _rockerSYMCenterImage;
+			_rockerBRT.Image = _rockerBRTCenterImage;
+			_rockerCON.Image = _rockerCONCenterImage;
 
 			Refresh();
 		}

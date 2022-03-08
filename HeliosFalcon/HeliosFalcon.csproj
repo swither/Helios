@@ -752,6 +752,18 @@
     <Resource Include="Gauges\MFD\mfd_faceplate.png" />
     <Resource Include="Gauges\MFD\mfd_button.png" />
     <Resource Include="Gauges\MFD\mfd_button_press.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_brt_center.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_brt_down.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_brt_up.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_con_center.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_con_down.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_con_up.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_gain_center.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_gain_down.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_gain_up.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_sym_center.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_sym_down.png" />
+    <Resource Include="Gauges\MFD\mfd_rocker_sym_up.png" />
     <Content Include="Templates\HeliosFalcon\Falcon RTT DED.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
