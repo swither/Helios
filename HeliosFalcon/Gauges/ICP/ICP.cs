@@ -104,6 +104,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 		private HeliosTrigger _wheelBRTDownTrigger;
 		private HeliosTrigger _wheelDEPRUpTrigger;
 		private HeliosTrigger _wheelDEPRDownTrigger;
+		private HeliosTrigger _wheelCONTUpTrigger;
+		private HeliosTrigger _wheelCONTDownTrigger;
 		private HeliosTrigger _switchDRIFTPositionOneTrigger;
 		private HeliosTrigger _switchDRIFTPositionTwoTrigger;
 		private HeliosTrigger _switchDRIFTPositionThreeTrigger;
@@ -381,55 +383,61 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 			_buttonWXTrigger = new HeliosTrigger(this, "", "", "Button WX Pushed", "Fired when button WX is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonWXTrigger);
 
-			_buttonDCSUpTrigger = new HeliosTrigger(this, "", "", "Button DCS UP Pushed", "Fired when button DCS UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonDCSUpTrigger = new HeliosTrigger(this, "", "", "Button DCS-UP Pushed", "Fired when button DCS-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonDCSUpTrigger);
 
-			_buttonDCSDownTrigger = new HeliosTrigger(this, "", "", "Button DCS DOWN Pushed", "Fired when button DCS DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonDCSDownTrigger = new HeliosTrigger(this, "", "", "Button DCS-DOWN Pushed", "Fired when button DCS-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonDCSDownTrigger);
 
-			_buttonDCSLeftTrigger = new HeliosTrigger(this, "", "", "Button DCS RTN Pushed", "Fired when button DCS RTN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonDCSLeftTrigger = new HeliosTrigger(this, "", "", "Button DCS-RTN Pushed", "Fired when button DCS-RTN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonDCSLeftTrigger);
 
-			_buttonDCSRightTrigger = new HeliosTrigger(this, "", "", "Button DCS SEQ Pushed", "Fired when button DCS SEQ is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_buttonDCSRightTrigger = new HeliosTrigger(this, "", "", "Button DCS-SEQ Pushed", "Fired when button DCS-SEQ is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_buttonDCSRightTrigger);
 
-			_rockerICPUpTrigger = new HeliosTrigger(this, "", "", "Rocker ICP UP Pushed", "Fired when rocker ICP UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_rockerICPUpTrigger = new HeliosTrigger(this, "", "", "Rocker ICP-UP Pushed", "Fired when rocker ICP-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_rockerICPUpTrigger);
 
-			_rockerICPDownTrigger = new HeliosTrigger(this, "", "", "Rocker ICP DOWN Pushed", "Fired when rocker ICP DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_rockerICPDownTrigger = new HeliosTrigger(this, "", "", "Rocker ICP-DOWN Pushed", "Fired when rocker ICP-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_rockerICPDownTrigger);
 
-			_rockerFLIRUpTrigger = new HeliosTrigger(this, "", "", "Rocker FLIR UP Pushed", "Fired when rocker FLIR UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_rockerFLIRUpTrigger = new HeliosTrigger(this, "", "", "Rocker FLIR-UP Pushed", "Fired when rocker FLIR-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_rockerFLIRUpTrigger);
 
-			_rockerFLIRDownTrigger = new HeliosTrigger(this, "", "", "Rocker FLIR DOWN Pushed", "Fired when rocker FLIR DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_rockerFLIRDownTrigger = new HeliosTrigger(this, "", "", "Rocker FLIR-DOWN Pushed", "Fired when rocker FLIR-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_rockerFLIRDownTrigger);
 
-			_wheelSYMUpTrigger = new HeliosTrigger(this, "", "", "Wheel SYM UP Pushed", "Fired when wheel SYM UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_wheelSYMUpTrigger = new HeliosTrigger(this, "", "", "Wheel SYM-UP Pushed", "Fired when wheel SYM-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_wheelSYMUpTrigger);
 
-			_wheelSYMDownTrigger = new HeliosTrigger(this, "", "", "Wheel SYM DOWN Pushed", "Fired when wheel SYM DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_wheelSYMDownTrigger = new HeliosTrigger(this, "", "", "Wheel SYM-DOWN Pushed", "Fired when wheel SYM-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_wheelSYMDownTrigger);
 
-			_wheelBRTUpTrigger = new HeliosTrigger(this, "", "", "Wheel BRT UP Pushed", "Fired when wheel BRT UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_wheelBRTUpTrigger = new HeliosTrigger(this, "", "", "Wheel BRT-UP Pushed", "Fired when wheel BRT-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_wheelBRTUpTrigger);
 
-			_wheelBRTDownTrigger = new HeliosTrigger(this, "", "", "Wheel BRT DOWN Pushed", "Fired when wheel BRT DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_wheelBRTDownTrigger = new HeliosTrigger(this, "", "", "Wheel BRT-DOWN Pushed", "Fired when wheel BRT-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_wheelBRTDownTrigger);
 
-			_wheelDEPRUpTrigger = new HeliosTrigger(this, "", "", "Wheel DEPR RET UP Pushed", "Fired when wheel DEPR RET UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_wheelDEPRUpTrigger = new HeliosTrigger(this, "", "", "Wheel DEPR-RET-UP Pushed", "Fired when wheel DEPR-RET-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_wheelDEPRUpTrigger);
 
-			_wheelDEPRDownTrigger = new HeliosTrigger(this, "", "", "Wheel DEPR RET DOWN Pushed", "Fired when wheel DEPR RET DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_wheelDEPRDownTrigger = new HeliosTrigger(this, "", "", "Wheel DEPR-RET-DOWN Pushed", "Fired when wheel DEPR-RET-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_wheelDEPRDownTrigger);
 
-			_switchDRIFTPositionOneTrigger = new HeliosTrigger(this, "", "", "Switch DRIFT C/O Pushed", "Fired when switch DRIFT C/O is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_wheelCONTUpTrigger = new HeliosTrigger(this, "", "", "Wheel CONT-UP Pushed", "Fired when wheel CONT-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_wheelCONTUpTrigger);
+
+			_wheelCONTDownTrigger = new HeliosTrigger(this, "", "", "Wheel CONT-DOWN Pushed", "Fired when wheel CONT-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_wheelCONTDownTrigger);
+
+			_switchDRIFTPositionOneTrigger = new HeliosTrigger(this, "", "", "Switch DRIFT-C/O Pushed", "Fired when switch DRIFT-C/O is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_switchDRIFTPositionOneTrigger);
 
-			_switchDRIFTPositionTwoTrigger = new HeliosTrigger(this, "", "", "Switch DRIFT NORM Pushed", "Fired when switch DRIFT NORM is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_switchDRIFTPositionTwoTrigger = new HeliosTrigger(this, "", "", "Switch DRIFT-NORM Pushed", "Fired when switch DRIFT-NORM is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_switchDRIFTPositionTwoTrigger);
 
-			_switchDRIFTPositionThreeTrigger = new HeliosTrigger(this, "", "", "Switch DRIFT WARN RESET Pushed", "Fired when switch DRIFT WARN RESET is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			_switchDRIFTPositionThreeTrigger = new HeliosTrigger(this, "", "", "Switch DRIFT-WARN-RESET Pushed", "Fired when switch DRIFT-WARN-RESET is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_switchDRIFTPositionThreeTrigger);
 		}
 
@@ -718,12 +726,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 			else if (_rectWheelCONTUp.Contains(point))
 			{
 				_wheelCONT.Image = Backlight == 0 ? _wheelUpOffImage : _wheelUpLitImage;
-				// not implemented.
+				_wheelCONTUpTrigger.FireTrigger(new BindingValue(true));
 			}
 			else if (_rectWheelCONTDown.Contains(point))
 			{
 				_wheelCONT.Image = Backlight == 0 ? _wheelDownOffImage : _wheelDownLitImage;
-				// not implemented.
+				_wheelCONTDownTrigger.FireTrigger(new BindingValue(true));
 			}
 			else if (_rectSwitchDRIFT.Contains(point))
 			{

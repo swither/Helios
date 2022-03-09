@@ -78,27 +78,29 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 		private HeliosTrigger _rockerSYMDownTrigger;
 		private HeliosTrigger _rockerBRTUpTrigger;
 		private HeliosTrigger _rockerBRTDownTrigger;
+		private HeliosTrigger _rockerCONUpTrigger;
+		private HeliosTrigger _rockerCONDownTrigger;
 
-		Rect _rectButtonOSB01 = new Rect(105, 13, 41, 41);
-		Rect _rectButtonOSB02 = new Rect(161, 13, 41, 41);
-		Rect _rectButtonOSB03 = new Rect(217, 13, 41, 41);
-		Rect _rectButtonOSB04 = new Rect(273, 13, 41, 41);
-		Rect _rectButtonOSB05 = new Rect(329, 13, 41, 41);
-		Rect _rectButtonOSB06 = new Rect(421, 105, 41, 41);
-		Rect _rectButtonOSB07 = new Rect(421, 161, 41, 41);
-		Rect _rectButtonOSB08 = new Rect(421, 217, 41, 41);
-		Rect _rectButtonOSB09 = new Rect(421, 273, 41, 41);
-		Rect _rectButtonOSB10 = new Rect(421, 329, 41, 41);
-		Rect _rectButtonOSB11 = new Rect(329, 421, 41, 41);
-		Rect _rectButtonOSB12 = new Rect(272, 421, 41, 41);
-		Rect _rectButtonOSB13 = new Rect(217, 421, 41, 41);
-		Rect _rectButtonOSB14 = new Rect(161, 421, 41, 41);
-		Rect _rectButtonOSB15 = new Rect(105, 421, 41, 41);
-		Rect _rectButtonOSB16 = new Rect(13, 105, 41, 41);
-		Rect _rectButtonOSB17 = new Rect(13, 161, 41, 41);
-		Rect _rectButtonOSB18 = new Rect(13, 217, 41, 41);
-		Rect _rectButtonOSB19 = new Rect(13, 273, 41, 41);
-		Rect _rectButtonOSB20 = new Rect(13, 329, 41, 41);
+		Rect _rectButtonOSB01 = new Rect(100, 8, 51, 51);
+		Rect _rectButtonOSB02 = new Rect(156, 8, 51, 51);
+		Rect _rectButtonOSB03 = new Rect(212, 8, 51, 51);
+		Rect _rectButtonOSB04 = new Rect(268, 8, 51, 51);
+		Rect _rectButtonOSB05 = new Rect(324, 8, 51, 51);
+		Rect _rectButtonOSB06 = new Rect(416, 100, 51, 51);
+		Rect _rectButtonOSB07 = new Rect(416, 156, 51, 51);
+		Rect _rectButtonOSB08 = new Rect(416, 212, 51, 51);
+		Rect _rectButtonOSB09 = new Rect(416, 268, 51, 51);
+		Rect _rectButtonOSB10 = new Rect(416, 324, 51, 51);
+		Rect _rectButtonOSB11 = new Rect(324, 416, 51, 51);
+		Rect _rectButtonOSB12 = new Rect(268, 416, 51, 51);
+		Rect _rectButtonOSB13 = new Rect(212, 416, 51, 51);
+		Rect _rectButtonOSB14 = new Rect(156, 416, 51, 51);
+		Rect _rectButtonOSB15 = new Rect(100, 416, 51, 51);
+		Rect _rectButtonOSB16 = new Rect(8, 324, 51, 51);
+		Rect _rectButtonOSB17 = new Rect(8, 268, 51, 51);
+		Rect _rectButtonOSB18 = new Rect(8, 212, 51, 51);
+		Rect _rectButtonOSB19 = new Rect(8, 156, 51, 51);
+		Rect _rectButtonOSB20 = new Rect(8, 100, 51, 51);
 		Rect _rectRockerGAINUp = new Rect(11, 23, 45, 35);
 		Rect _rectRockerGAINCenter = new Rect(11, 23, 45, 75);
 		Rect _rectRockerGAINDown = new Rect(11, 63, 45, 35);
@@ -297,17 +299,23 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 			_rockerGAINDownTrigger = new HeliosTrigger(this, "", "", "Rocker GAIN-DOWN Pushed", "Fired when rocker GAIN-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_rockerGAINDownTrigger);
 
+			_rockerBRTUpTrigger = new HeliosTrigger(this, "", "", "Rocker BRT-UP Pushed", "Fired when rocker BRT-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerBRTUpTrigger);
+
+			_rockerBRTDownTrigger = new HeliosTrigger(this, "", "", "Rocker BRT-DOWN Pushed", "Fired when rocker BRT-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerBRTDownTrigger);
+
 			_rockerSYMUpTrigger = new HeliosTrigger(this, "", "", "Rocker SYM-UP Pushed", "Fired when rocker SYM-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_rockerSYMUpTrigger);
 
 			_rockerSYMDownTrigger = new HeliosTrigger(this, "", "", "Rocker SYM=DOWN Pushed", "Fired when rocker SYM=DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_rockerSYMDownTrigger);
 
-			_rockerBRTUpTrigger = new HeliosTrigger(this, "", "", "Rocker BRT-UP Pushed", "Fired when rocker BRT-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_rockerBRTUpTrigger);
+			_rockerCONUpTrigger = new HeliosTrigger(this, "", "", "Rocker CON-UP Pushed", "Fired when rocker CON-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerCONUpTrigger);
 
-			_rockerBRTDownTrigger = new HeliosTrigger(this, "", "", "Rocker BRT-DOWN Pushed", "Fired when rocker BRT-DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_rockerBRTDownTrigger);
+			_rockerCONDownTrigger = new HeliosTrigger(this, "", "", "Rocker CON=DOWN Pushed", "Fired when rocker CON=DOWN is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_rockerCONDownTrigger);
 		}
 
 		#endregion Actions
@@ -551,12 +559,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 			if (_rectRockerCONUp.Contains(point))
 			{
 				_rockerCON.Image = _rockerCONUpImage;
-				// not implemented.
+				_rockerCONUpTrigger.FireTrigger(new BindingValue(true));
 			}
 			if (_rectRockerCONDown.Contains(point))
 			{
 				_rockerCON.Image = _rockerCONDownImage;
-				// not implemented.
+				_rockerCONDownTrigger.FireTrigger(new BindingValue(true));
 			}
 
 			Refresh();
