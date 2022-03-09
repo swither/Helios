@@ -750,7 +750,7 @@
     <Resource Include="Gauges\ICP\icp_wheel_down_lit.png" />
     <Resource Include="Gauges\ICP\icp_wheel_up_lit.png" />
     <Resource Include="Gauges\MFD\mfd_faceplate.png" />
-    <Resource Include="Gauges\MFD\mfd_button.png" />
+    <Resource Include="Gauges\MFD\mfd_button_off.png" />
     <Resource Include="Gauges\MFD\mfd_button_press.png" />
     <Resource Include="Gauges\MFD\mfd_rocker_brt_center.png" />
     <Resource Include="Gauges\MFD\mfd_rocker_brt_down.png" />
@@ -764,6 +764,7 @@
     <Resource Include="Gauges\MFD\mfd_rocker_sym_center.png" />
     <Resource Include="Gauges\MFD\mfd_rocker_sym_down.png" />
     <Resource Include="Gauges\MFD\mfd_rocker_sym_up.png" />
+    <Resource Include="Gauges\MFD\mfd_button_lit.png" />
     <Content Include="Templates\HeliosFalcon\Falcon RTT DED.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

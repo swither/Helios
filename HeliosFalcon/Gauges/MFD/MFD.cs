@@ -118,7 +118,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 		private const string _backplateDimImage = "{HeliosFalcon}/Gauges/MFD/mfd_backplate_dim.xaml";
 		private const string _backplateBrtImage = "{HeliosFalcon}/Gauges/MFD/mfd_backplate_brt.xaml";
 		private const string _faceplateImage = "{HeliosFalcon}/Gauges/MFD/mfd_faceplate.png";
-		private const string _buttonImage = "{HeliosFalcon}/Gauges/MFD/mfd_button.png";
+		private const string _buttonOffImage = "{HeliosFalcon}/Gauges/MFD/mfd_button_off.png";
+		private const string _buttonLitImage = "{HeliosFalcon}/Gauges/MFD/mfd_button_lit.png";
 		private const string _buttonPressImage = "{HeliosFalcon}/Gauges/MFD/mfd_button_press.png";
 		private const string _rockerGAINUpImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_gain_up.png";
 		private const string _rockerGAINCenterImage = "{HeliosFalcon}/Gauges/MFD/mfd_rocker_gain_center.png";
@@ -154,64 +155,64 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 			_faceplate = new GaugeImage(_faceplateImage, _rectBase);
 			Components.Add(_faceplate);
 
-			_buttonOSB01 = new GaugeImage(_buttonImage, _rectButtonOSB01);
+			_buttonOSB01 = new GaugeImage(_buttonOffImage, _rectButtonOSB01);
 			Components.Add(_buttonOSB01);
 
-			_buttonOSB02 = new GaugeImage(_buttonImage, _rectButtonOSB02);
+			_buttonOSB02 = new GaugeImage(_buttonOffImage, _rectButtonOSB02);
 			Components.Add(_buttonOSB02);
 
-			_buttonOSB03 = new GaugeImage(_buttonImage, _rectButtonOSB03);
+			_buttonOSB03 = new GaugeImage(_buttonOffImage, _rectButtonOSB03);
 			Components.Add(_buttonOSB03);
 
-			_buttonOSB04 = new GaugeImage(_buttonImage, _rectButtonOSB04);
+			_buttonOSB04 = new GaugeImage(_buttonOffImage, _rectButtonOSB04);
 			Components.Add(_buttonOSB04);
 
-			_buttonOSB05 = new GaugeImage(_buttonImage, _rectButtonOSB05);
+			_buttonOSB05 = new GaugeImage(_buttonOffImage, _rectButtonOSB05);
 			Components.Add(_buttonOSB05);
 
-			_buttonOSB06 = new GaugeImage(_buttonImage, _rectButtonOSB06);
+			_buttonOSB06 = new GaugeImage(_buttonOffImage, _rectButtonOSB06);
 			Components.Add(_buttonOSB06);
 
-			_buttonOSB07 = new GaugeImage(_buttonImage, _rectButtonOSB07);
+			_buttonOSB07 = new GaugeImage(_buttonOffImage, _rectButtonOSB07);
 			Components.Add(_buttonOSB07);
 
-			_buttonOSB08 = new GaugeImage(_buttonImage, _rectButtonOSB08);
+			_buttonOSB08 = new GaugeImage(_buttonOffImage, _rectButtonOSB08);
 			Components.Add(_buttonOSB08);
 
-			_buttonOSB09 = new GaugeImage(_buttonImage, _rectButtonOSB09);
+			_buttonOSB09 = new GaugeImage(_buttonOffImage, _rectButtonOSB09);
 			Components.Add(_buttonOSB09);
 
-			_buttonOSB10 = new GaugeImage(_buttonImage, _rectButtonOSB10);
+			_buttonOSB10 = new GaugeImage(_buttonOffImage, _rectButtonOSB10);
 			Components.Add(_buttonOSB10);
 
-			_buttonOSB11 = new GaugeImage(_buttonImage, _rectButtonOSB11);
+			_buttonOSB11 = new GaugeImage(_buttonOffImage, _rectButtonOSB11);
 			Components.Add(_buttonOSB11);
 
-			_buttonOSB12 = new GaugeImage(_buttonImage, _rectButtonOSB12);
+			_buttonOSB12 = new GaugeImage(_buttonOffImage, _rectButtonOSB12);
 			Components.Add(_buttonOSB12);
 
-			_buttonOSB13 = new GaugeImage(_buttonImage, _rectButtonOSB13);
+			_buttonOSB13 = new GaugeImage(_buttonOffImage, _rectButtonOSB13);
 			Components.Add(_buttonOSB13);
 
-			_buttonOSB14 = new GaugeImage(_buttonImage, _rectButtonOSB14);
+			_buttonOSB14 = new GaugeImage(_buttonOffImage, _rectButtonOSB14);
 			Components.Add(_buttonOSB14);
 
-			_buttonOSB15 = new GaugeImage(_buttonImage, _rectButtonOSB15);
+			_buttonOSB15 = new GaugeImage(_buttonOffImage, _rectButtonOSB15);
 			Components.Add(_buttonOSB15);
 
-			_buttonOSB16 = new GaugeImage(_buttonImage, _rectButtonOSB16);
+			_buttonOSB16 = new GaugeImage(_buttonOffImage, _rectButtonOSB16);
 			Components.Add(_buttonOSB16);
 
-			_buttonOSB17 = new GaugeImage(_buttonImage, _rectButtonOSB17);
+			_buttonOSB17 = new GaugeImage(_buttonOffImage, _rectButtonOSB17);
 			Components.Add(_buttonOSB17);
 
-			_buttonOSB18 = new GaugeImage(_buttonImage, _rectButtonOSB18);
+			_buttonOSB18 = new GaugeImage(_buttonOffImage, _rectButtonOSB18);
 			Components.Add(_buttonOSB18);
 
-			_buttonOSB19 = new GaugeImage(_buttonImage, _rectButtonOSB19);
+			_buttonOSB19 = new GaugeImage(_buttonOffImage, _rectButtonOSB19);
 			Components.Add(_buttonOSB19);
 
-			_buttonOSB20 = new GaugeImage(_buttonImage, _rectButtonOSB20);
+			_buttonOSB20 = new GaugeImage(_buttonOffImage, _rectButtonOSB20);
 			Components.Add(_buttonOSB20);
 
 			_rockerGAIN = new GaugeImage(_rockerGAINCenterImage, _rectRockerGAINCenter);
@@ -388,17 +389,44 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 			if (Backlight == 1)
 			{
 				_backplate.Image = _backplateDimImage;
+				SetButtonUpImage();
 			}
 			else if (Backlight == 2)
 			{
 				_backplate.Image = _backplateBrtImage;
+				SetButtonUpImage();
 			}
 			else
 			{
 				_backplate.Image = _backplateOffImage;
+				SetButtonUpImage();
 			}
 
 			Refresh();
+		}
+
+		private void SetButtonUpImage()
+		{
+			_buttonOSB01.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB02.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB03.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB04.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB05.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB06.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB07.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB08.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB09.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB10.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB11.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB12.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB13.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB14.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB15.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB16.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB17.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB18.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB19.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
+			_buttonOSB20.Image = Backlight == 0 ? _buttonOffImage : _buttonLitImage;
 		}
 
 		public override void Reset()
@@ -572,26 +600,8 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 
 		public override void MouseUp(Point location)
 		{
-			_buttonOSB01.Image = _buttonImage;
-			_buttonOSB02.Image = _buttonImage;
-			_buttonOSB03.Image = _buttonImage;
-			_buttonOSB04.Image = _buttonImage;
-			_buttonOSB05.Image = _buttonImage;
-			_buttonOSB06.Image = _buttonImage;
-			_buttonOSB07.Image = _buttonImage;
-			_buttonOSB08.Image = _buttonImage;
-			_buttonOSB09.Image = _buttonImage;
-			_buttonOSB10.Image = _buttonImage;
-			_buttonOSB11.Image = _buttonImage;
-			_buttonOSB12.Image = _buttonImage;
-			_buttonOSB13.Image = _buttonImage;
-			_buttonOSB14.Image = _buttonImage;
-			_buttonOSB15.Image = _buttonImage;
-			_buttonOSB16.Image = _buttonImage;
-			_buttonOSB17.Image = _buttonImage;
-			_buttonOSB18.Image = _buttonImage;
-			_buttonOSB19.Image = _buttonImage;
-			_buttonOSB20.Image = _buttonImage;
+			SetButtonUpImage();
+
 			_rockerGAIN.Image = _rockerGAINCenterImage;
 			_rockerSYM.Image = _rockerSYMCenterImage;
 			_rockerBRT.Image = _rockerBRTCenterImage;
