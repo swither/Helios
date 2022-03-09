@@ -73,7 +73,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Components
 
-		void AddComponents()
+		private void AddComponents()
 		{
 			_MapBackground = new Gauges.GaugeImage(_mapBackgroundImage, _imageSize);
 			_MapBackground.Clip = new RectangleGeometry(_needleClip);
@@ -148,7 +148,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void Profile_ProfileStarted(object sender, EventArgs e)
+		private void Profile_ProfileStarted(object sender, EventArgs e)
 		{
 			if (Parent.Profile.Interfaces.ContainsKey("Falcon"))
 			{
@@ -156,7 +156,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void Profile_ProfileTick(object sender, EventArgs e)
+		private void Profile_ProfileTick(object sender, EventArgs e)
 		{
 			if (_falconInterface != null)
 			{
@@ -195,7 +195,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void Profile_ProfileStopped(object sender, EventArgs e)
+		private void Profile_ProfileStopped(object sender, EventArgs e)
 		{
 			_falconInterface = null;
 		}
@@ -210,7 +210,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Map Selection
 
-		void TheaterMapSelect(string theater)
+		private void TheaterMapSelect(string theater)
 		{
 			double mapNumber = 0d;
 
@@ -227,7 +227,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		double GetTheaterMapNumber(string[,] mapImages, string theater)
+		private double GetTheaterMapNumber(string[,] mapImages, string theater)
 		{
 			double mapNumber = 0d;
 
@@ -243,7 +243,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			return mapNumber;
 		}
 
-		void MapImageSelect(double mapNumber)
+		private void MapImageSelect(double mapNumber)
 		{
 			if (mapNumber > 100d && mapNumber < 200d)
 			{
@@ -256,7 +256,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void MapImageAssign(string[,] mapImages, double mapNumber)
+		private void MapImageAssign(string[,] mapImages, double mapNumber)
 		{
 			for (int i = 0; i < mapImages.GetLength(0); i++)
 			{
@@ -299,12 +299,12 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Scaling
 
-		void OnMapControl_Resized(object sender, EventArgs e)
+		private void OnMapControl_Resized(object sender, EventArgs e)
 		{
 			BaseMapResize();
 		}
 
-		void BaseMapResize()
+		private void BaseMapResize()
 		{
 			double mapOffsetHorizontal;
 			double mapOffsetVertical;
@@ -370,7 +370,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			MapOverlayResize();
 		}
 
-		void MapOverlayResize()
+		private void MapOverlayResize()
 		{
 			_MapOverlay.MapSizeFeet = _mapSizeFeet;
 			_MapOverlay.MapScaleMultiplier = 1d;
@@ -385,7 +385,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			Refresh();
 		}
 
-		void MapZoomInResize(double xPos, double yPos)
+		private void MapZoomInResize(double xPos, double yPos)
 		{
 			double xMapPos;
 			double yMapPos;

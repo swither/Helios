@@ -16,13 +16,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
-using System.Windows.Data;
 using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
@@ -252,6 +247,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("ADI", "ils horizontal", "Position of horizontal ils bar.", "(-1 full left, 1 full right)", BindingValueUnits.Numeric);
             AddValue("ADI", "ils vertical", "Position of vertical ils bar.", "(-1 highest, 1 lowest)", BindingValueUnits.Numeric);
             AddValue("ADI", "ils vertical to flight path", "Position of vertical ils bar with AOA correction.", "(-1 highest, 1 lowest)", BindingValueUnits.Numeric);
+            AddValue("ADI", "sideslip angle", "Angle of sideslip of the aircraft.", "", BindingValueUnits.Degrees);
 
             // Backup ADI
             AddValue("Backup ADI", "off flag", "Backup ADI off flag", "True if displayed.", BindingValueUnits.Boolean);
@@ -464,6 +460,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("ADI", "roll", new BindingValue(_lastFlightData.roll));
                 SetValue("ADI", "ils horizontal", new BindingValue((_lastFlightData.AdiIlsHorPos / 2.5f) - 1f));
                 SetValue("ADI", "ils vertical", new BindingValue((_lastFlightData.AdiIlsVerPos * 2f) - 1f));
+                SetValue("ADI", "sideslip angle", new BindingValue(_lastFlightData.beta));
                 SetValue("HSI", "bearing to beacon", new BindingValue(_lastFlightData.bearingToBeacon));
                 SetValue("HSI", "current heading", new BindingValue(_lastFlightData.currentHeading));
                 SetValue("HSI", "desired course", new BindingValue(_lastFlightData.desiredCourse));

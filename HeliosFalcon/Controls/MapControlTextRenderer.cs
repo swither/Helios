@@ -55,7 +55,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			TargetList = targetList;
 		}
 
-		void SetPixelsPerDip()
+		private void SetPixelsPerDip()
 		{
 			DisplayManager displayManager = new DisplayManager();
 

@@ -59,7 +59,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 
 		#region Methods
 
-		void SetPixelsPerDip()
+		private void SetPixelsPerDip()
 		{
 			DisplayManager displayManager = new DisplayManager();
 
@@ -110,12 +110,12 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			DrawNormalText(drawingContext, textLabelNAV, _textLargeRightPosition, _textBottomMargin);
 		}
 
-		void DrawNormalText(DrawingContext drawingContext, FormattedText text, double pos_X, double pos_Y)
+		private void DrawNormalText(DrawingContext drawingContext, FormattedText text, double pos_X, double pos_Y)
 		{
 			drawingContext.DrawText(text, new Point(pos_X, pos_Y));
 		}
 
-		void DrawScaledText(DrawingContext drawingContext, FormattedText text, double pos_X, double pos_Y, double scale_X, double scale_Y)
+		private void DrawScaledText(DrawingContext drawingContext, FormattedText text, double pos_X, double pos_Y, double scale_X, double scale_Y)
 		{
 			Transform fontScale = new ScaleTransform(scale_X, scale_Y, pos_X, pos_Y);
 			drawingContext.PushTransform(fontScale);
@@ -128,7 +128,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 
 		#region Functions
 
-		string GetTacanBand(double band)
+		private string GetTacanBand(double band)
 		{
 			if (band == 1)
 			{
@@ -144,7 +144,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			}
 		}
 
-		string GetTacanMode(double mode)
+		private string GetTacanMode(double mode)
 		{
 			if (mode == 1)
 			{
@@ -160,7 +160,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			}
 		}
 
-		string GetILSMode(double navmode)
+		private string GetILSMode(double navmode)
 		{
 			if (navmode == 0 || navmode == 3)
 			{
@@ -172,7 +172,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			}
 		}
 
-		string GetNAVMode(double navmode)
+		private string GetNAVMode(double navmode)
 		{
 			if (navmode < 2)
 			{

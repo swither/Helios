@@ -135,7 +135,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Components
 
-		void AddComponents()
+		private void AddComponents()
 		{
 			_MapBackground = new Gauges.GaugeImage(_mapBackgroundImage, _imageSize);
 			_MapBackground.Clip = new RectangleGeometry(_needleClip);
@@ -214,7 +214,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Actions
 
-		void AddActions()
+		private void AddActions()
 		{
 			_mapRotationEnable = new HeliosValue(this, new BindingValue(false), "", "Map North Up vs Heading Up", "Sets North Up or Heading Up map orientation.", "Set true for Heading Up orientation.", BindingValueUnits.Boolean);
 			_mapRotationEnable.Execute += new HeliosActionHandler(MapRotationEnable_Execute);
@@ -262,7 +262,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			Values.Add(_selectionRangeRingsVisible);
 		}
 
-		void MapRotationEnable_Execute(object action, HeliosActionEventArgs e)
+		private void MapRotationEnable_Execute(object action, HeliosActionEventArgs e)
 		{
 			_mapRotationEnable.SetValue(e.Value, e.BypassCascadingTriggers);
 			_mapRotation_Enabled = _mapRotationEnable.Value.BoolValue;
@@ -270,7 +270,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			MapRotationAngle_Calculate(OwnshipRotationAngle);
 		}
 
-		void MapScaleChange_Execute(object action, HeliosActionEventArgs e)
+		private void MapScaleChange_Execute(object action, HeliosActionEventArgs e)
 		{
 			_mapScaleChange.SetValue(e.Value, e.BypassCascadingTriggers);
 			double mapScaleChange = _mapScaleChange.Value.DoubleValue;
@@ -278,13 +278,13 @@ namespace GadrocsWorkshop.Helios.Controls
 			MapScaleChange(mapScaleChange);
 		}
 
-		void BullseyeVisible_Execute(object action, HeliosActionEventArgs e)
+		private void BullseyeVisible_Execute(object action, HeliosActionEventArgs e)
 		{
 			_bullseyeVisible.SetValue(e.Value, e.BypassCascadingTriggers);
 			_MapBullseye.IsHidden = !_bullseyeVisible.Value.BoolValue;
 		}
 
-		void TargetsVisible_Execute(object action, HeliosActionEventArgs e)
+		private void TargetsVisible_Execute(object action, HeliosActionEventArgs e)
 		{
 			_targetsVisible.SetValue(e.Value, e.BypassCascadingTriggers);
 			bool targetsVisible = _targetsVisible.Value.BoolValue;
@@ -293,7 +293,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			_refreshPending = true;
 		}
 
-		void ThreatsVisible_Execute(object action, HeliosActionEventArgs e)
+		private void ThreatsVisible_Execute(object action, HeliosActionEventArgs e)
 		{
 			_threatsVisible.SetValue(e.Value, e.BypassCascadingTriggers);
 			bool threatsVisible = _threatsVisible.Value.BoolValue;
@@ -302,7 +302,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			_refreshPending = true;
 		}
 
-		void WaypointsVisible_Execute(object action, HeliosActionEventArgs e)
+		private void WaypointsVisible_Execute(object action, HeliosActionEventArgs e)
 		{
 			_waypointsVisible.SetValue(e.Value, e.BypassCascadingTriggers);
 			bool waypointsVisible = _waypointsVisible.Value.BoolValue;
@@ -311,7 +311,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			_refreshPending = true;
 		}
 
-		void SelectionPanelVisible_Execute(object action, HeliosActionEventArgs e)
+		private void SelectionPanelVisible_Execute(object action, HeliosActionEventArgs e)
 		{
 			_selectionPanelVisible.SetValue(e.Value, e.BypassCascadingTriggers);
 			_selectionPanelEnabled = _selectionPanelVisible.Value.BoolValue;
@@ -373,7 +373,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void SelectionTargetsClear_Execute(object action, HeliosActionEventArgs e)
+		private void SelectionTargetsClear_Execute(object action, HeliosActionEventArgs e)
 		{
 			_selectionTargetsClear.SetValue(e.Value, e.BypassCascadingTriggers);
 			bool selectionTargetsClear = _selectionTargetsClear.Value.BoolValue;
@@ -384,7 +384,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void SelectionRangeRingsVisible_Execute(object action, HeliosActionEventArgs e)
+		private void SelectionRangeRingsVisible_Execute(object action, HeliosActionEventArgs e)
 		{
 			_selectionRangeRingsVisible.SetValue(e.Value, e.BypassCascadingTriggers);
 			_selectionRangeRingsEnabled = _selectionRangeRingsVisible.Value.BoolValue;
@@ -414,7 +414,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void Profile_ProfileStarted(object sender, EventArgs e)
+		private void Profile_ProfileStarted(object sender, EventArgs e)
 		{
 			if (Parent.Profile.Interfaces.ContainsKey("Falcon"))
 			{
@@ -429,7 +429,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void Profile_ProfileTick(object sender, EventArgs e)
+		private void Profile_ProfileTick(object sender, EventArgs e)
 		{
 			if (_falconInterface != null)
 			{
@@ -481,12 +481,12 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void Profile_ProfileStopped(object sender, EventArgs e)
+		private void Profile_ProfileStopped(object sender, EventArgs e)
 		{
 			_falconInterface = null;
 		}
 
-		void ProcessOwnshipValues()
+		private void ProcessOwnshipValues()
 		{
 			BindingValue ownshipRotationAngle = GetValue("HSI", "current heading");
 			OwnshipRotationAngle = ownshipRotationAngle.DoubleValue;
@@ -716,7 +716,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			_inhibitMouseAction = false;
 		}
 
-		int GetTargetAtLocation(double location_X, double location_Y)
+		private int GetTargetAtLocation(double location_X, double location_Y)
 		{
 			double radius_Max = 8d * _controlScaleFactor;
 			double radius_Min = radius_Max;
@@ -743,7 +743,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			return target_Num;
 		}
 
-		void SelectionRemoveTarget(int index)
+		private void SelectionRemoveTarget(int index)
 		{
 			if (TargetDataList.Count > index)
 			{
@@ -768,7 +768,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			Refresh();
 		}
 
-		void SelectionTargetsClear()
+		private void SelectionTargetsClear()
 		{
 			while(TargetDataList.Count > 0)
 			{
@@ -805,7 +805,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			EndTriggerBypass(true);
 		}
 
-		void ResetTargetSelection()
+		private void ResetTargetSelection()
 		{
 			SelectionTargetsClear();
 
@@ -836,13 +836,13 @@ namespace GadrocsWorkshop.Helios.Controls
 			ProcessTargetValues();
 		}
 
-		void ShowNoDataPanel()
+		private void ShowNoDataPanel()
 		{
 			_MapNoDataForeground.IsHidden = false;
 			_MapNoDataBackground.IsHidden = false;
 		}
 
-		void HideNoDataPanel()
+		private void HideNoDataPanel()
 		{
 			_MapNoDataForeground.IsHidden = true;
 			_MapNoDataBackground.IsHidden = true;
@@ -880,7 +880,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Map Selection
 
-		void TheaterMapSelect(string theater)
+		private void TheaterMapSelect(string theater)
 		{
 			double mapNumber = 0d;
 
@@ -897,7 +897,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		double GetTheaterMapNumber(string[,] mapImages, string theater)
+		private double GetTheaterMapNumber(string[,] mapImages, string theater)
 		{
 			double mapNumber = 0d;
 
@@ -913,7 +913,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			return mapNumber;
 		}
 
-		void MapImageSelect(double mapNumber)
+		private void MapImageSelect(double mapNumber)
 		{
 			if (mapNumber > 100d && mapNumber < 200d)
 			{
@@ -931,7 +931,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void MapImageChanged()
+		private void MapImageChanged()
 		{
 			if (_mapSizeMultiplier == 1d)
 			{
@@ -953,7 +953,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			CalculateOffsets();
 		}
 
-		void MapImageAssign(string[,] mapImages, double mapNumber)
+		private void MapImageAssign(string[,] mapImages, double mapNumber)
 		{
 			for (int i = 0; i < mapImages.GetLength(0); i++)
 			{
@@ -974,13 +974,13 @@ namespace GadrocsWorkshop.Helios.Controls
 
 		#region Scaling
 
-		void OnMapControl_Resized(object sender, EventArgs e)
+		private void OnMapControl_Resized(object sender, EventArgs e)
 		{
 			MapControlStaticResize();
 			MapControlDynamicResize(true);
 		}
 
-		void MapControlStaticResize()
+		private void MapControlStaticResize()
 		{
 			double mapShortestSize = 0d;
 			double rangeWidth = 0d;
@@ -1076,7 +1076,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			_SelectionTextData.MapControlHeight = Height;
 		}
 
-		void MapControlDynamicResize(bool mapResized)
+		private void MapControlDynamicResize(bool mapResized)
 		{
 			double mapScale = 0d;
 			double mapWidth = 0d;
@@ -1140,7 +1140,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void MapRotationAngle_Calculate(double angle)
+		private void MapRotationAngle_Calculate(double angle)
 		{
 			if (_mapRotation_Enabled)
 			{
@@ -1160,7 +1160,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void MapHorizontalOffset_Calculate(double hValue)
+		private void MapHorizontalOffset_Calculate(double hValue)
 		{
 			double mapHorizontalValue = hValue - _mapSizeFeet / 2;
 
@@ -1176,7 +1176,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void MapVerticalOffset_Calculate(double vValue)
+		private void MapVerticalOffset_Calculate(double vValue)
 		{
 			double mapVerticalValue = vValue - _mapSizeFeet / 2;
 
@@ -1192,7 +1192,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void BullseyeHorizontalOffset_Calculate(double bullseyeHorizontalValue)
+		private void BullseyeHorizontalOffset_Calculate(double bullseyeHorizontalValue)
 		{
 			if (Height >= Width)
 			{
@@ -1204,7 +1204,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void BullseyeVerticalOffset_Calculate(double bullseyeVerticalValue)
+		private void BullseyeVerticalOffset_Calculate(double bullseyeVerticalValue)
 		{
 			if (Height >= Width)
 			{
@@ -1216,7 +1216,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			}
 		}
 
-		void MapScaleChange(double value)
+		private void MapScaleChange(double value)
 		{ 
 			if (value == 1d)
 			{
@@ -1239,7 +1239,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			CalculateOffsets();
 		}
 
-		void CalculateOffsets()
+		private void CalculateOffsets()
 		{
 			MapRotationAngle_Calculate(OwnshipRotationAngle);
 			MapHorizontalOffset_Calculate(OwnshipHorizontalValue);
