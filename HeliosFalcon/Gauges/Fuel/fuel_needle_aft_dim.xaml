@@ -2,7 +2,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 
   <!-- NEEDLE/NEEDLE -->
-  <Path StrokeThickness="3.0" Stroke="#FF000000" StrokeMiterLimit="1.0" Fill="#FF00CC00" Data="F1 M 120.117,20.068 L 139.000,47.923 L 139.000,300.068 L 101.140,300.068 L 101.140,47.923 L 120.137,20.098 L 120.117,20.068 Z"/>
+  <Path StrokeThickness="3.0" Stroke="#FF000000" StrokeMiterLimit="1.0" Fill="#FF62B386" Data="F1 M 120.117,20.068 L 139.000,47.923 L 139.000,300.068 L 101.140,300.068 L 101.140,47.923 L 120.137,20.098 L 120.117,20.068 Z"/>
 
   <!-- NEEDLE/RED RECT -->
   <Path StrokeThickness="3.0" Stroke="#FF000000" StrokeMiterLimit="1.0" Fill="#FFFF0000" Data="F1 M 139.000,300.000 L 87.000,300.000 L 87.000,168.000 L 139.000,168.000 L 139.000,300.000 Z"/>
