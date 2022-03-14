@@ -34,6 +34,7 @@ namespace GadrocsWorkshop.Helios.Controls
 		private Gauges.GaugeImage _MapBackground;
 		private Gauges.CustomGaugeNeedle _Map;
 		private Gauges.CustomGaugeNeedle _MapZoomIn;
+		private HeliosTrigger _mapViewerIsHidden;
 		private MapViewerRenderer _MapOverlay;
 
 		private Rect _imageSize = new Rect(0d, 0d, 400d, 400d);
@@ -66,6 +67,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			: base("MapViewer", new Size(400d, 400d))
 		{
 			AddComponents();
+			AddActions();
 			BaseMapResize();
 			Resized += new EventHandler(OnMapControl_Resized);
 		}
@@ -97,6 +99,17 @@ namespace GadrocsWorkshop.Helios.Controls
 		}
 
 		#endregion Components
+	
+
+		#region Actions
+
+		private void AddActions()
+		{
+			_mapViewerIsHidden = new HeliosTrigger(this, "", "", "MapViewer IsHidden", "Fired when MapViewer is hidden.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_mapViewerIsHidden);
+		}
+		
+		#endregion Actions
 
 
 		#region Methods
@@ -116,7 +129,8 @@ namespace GadrocsWorkshop.Helios.Controls
 				{
 					if (!ConfigManager.Application.ShowDesignTimeControls)
 					{
-						this.IsHidden = true;
+						IsHidden = true;
+						_mapViewerIsHidden.FireTrigger(new BindingValue(true));
 					}
 				}
 			}
