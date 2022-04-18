@@ -131,6 +131,12 @@
     <Compile Include="Gauges\A-10\HARS\HARS.cs" />
     <Compile Include="Gauges\A-10\HARS\HARSSync_1.cs" />
     <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
+    <Compile Include="Gauges\AH-64D\CMWS\CMWSDisplay.cs" />
+    <Compile Include="Gauges\AH-64D\CMWS\CMWSThreatDisplay.cs" />
+    <Compile Include="Gauges\AH-64D\SAI\SAI.cs" />
+    <Compile Include="Gauges\AH-64D\Altimeter\Altimeter.cs" />
+    <Compile Include="Gauges\AH-64D\FAT\FAT.cs" />
+    <Compile Include="Gauges\AH-64D\IAS\IAS.cs" />
     <Compile Include="Gauges\AV-8B\ADI\SAI.cs" />
     <Compile Include="Gauges\AV-8B\Clock\Clock Face.cs" />
     <Compile Include="Gauges\AV-8B\Clock\Clock.cs" />
@@ -148,12 +154,15 @@
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
     <Compile Include="Interfaces\Common\Ignored.cs" />
+    <Compile Include="Interfaces\DCS\AH64D\Functions\Altimeter.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInterfaceEditorBase.cs" />
     <Compile Include="Interfaces\DCS\Soft\SoftInterfaceEditor.xaml.cs">
       <DependentUpon>SoftInterfaceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\DCS\Soft\SoftInterface.cs" />
     <Compile Include="Interfaces\DCS\Soft\SoftInterfaceFactory.cs" />
+    <Compile Include="Interfaces\DCS\AH64D\Functions\AH-64DFunction.cs" />
+    <Compile Include="Interfaces\DCS\AH64D\AH-64DInterface.cs" />
     <Compile Include="Interfaces\DCS\Template\Functions\ExampleFunction.cs" />
     <Compile Include="Interfaces\DCS\Template\TemplateInterface.cs" />
     <Compile Include="Interfaces\Keyboard\Input\KeyboardInput.cs" />
@@ -341,6 +350,94 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Gauges\AV-8B\Clock\hours_needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\FAT\fat_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\IAS\ias_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\Altimeter\altimeter_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\SAI\adi_innermost_ring.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\SAI\adi_inner_ring.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\SAI\adi_outer_ring.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\SAI\adi_wings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\SAI\adi_turn_marker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\SAI\adi_guides.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\SAI\adi_arrow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_topleft.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_bottomleft.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_d.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_topright.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_threat_background.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_r.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_bottomright.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_left.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_front.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_right.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_rear.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AH-64D\CMWS\cmws_background.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -842,6 +939,7 @@
     <None Include="BindingValueUnits.cd" />
     <None Include="Images\A-10\readme.md" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
+    <Resource Include="Interfaces\DCS\AH64D\ExportFunctions.lua" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\hud.png" />
@@ -859,6 +957,7 @@
     <Resource Include="Images\General\calibration.png" />
     <Resource Include="Images\General\memory_wire.png" />
     <Resource Include="Images\Buttons\backlit.png" />
+    <Resource Include="Gauges\AH-64D\SAI\adi_bezel.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
