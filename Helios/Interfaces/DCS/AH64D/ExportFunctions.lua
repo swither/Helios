@@ -1,48 +1,5 @@
 -- Exports.Lua from Helios AH-64D interface
--- debug
-driver.lastCMWS = {}
-function driver.Heliosdump(var, depth)
-        depth = depth or 0
-        if type(var) == "string" then
-            return 'string: "' .. var .. '"\n'
-        elseif type(var) == "nil" then
-            return 'nil\n'
-        elseif type(var) == "number" then
-            return 'number: "' .. var .. '"\n'
-        elseif type(var) == "boolean" then
-            return 'boolean: "' .. tostring(var) .. '"\n'
-        elseif type(var) == "function" then
-            if debug and debug.getinfo then
-                fcnname = tostring(var)
-                local info = debug.getinfo(var, "S")
-                if info.what == "C" then
-                    return string.format('%q', fcnname .. ', C function') .. '\n'
-                else
-                    if (string.sub(info.source, 1, 2) == [[./]]) then
-                        return string.format('%q', fcnname .. ', defined in (' .. info.linedefined .. '-' .. info.lastlinedefined .. ')' .. info.source) ..'\n'
-                    else
-                        return string.format('%q', fcnname .. ', defined in (' .. info.linedefined .. '-' .. info.lastlinedefined .. ')') ..'\n'
-                    end
-                end
-            else
-                return 'a function\n'
-            end
-        elseif type(var) == "thread" then
-            return 'thread\n'
-        elseif type(var) == "userdata" then
-            return tostring(var)..'\n'
-        elseif type(var) == "table" then
-                depth = depth + 1
-                out = "{\n"
-                for k,v in pairs(var) do
-                        out = out .. (" "):rep(depth*4).. "["..k.."] = " .. driver.Heliosdump(v, depth)
-                end
-                return out .. (" "):rep((depth-1)*4) .. "}\n"
-        else
-                return tostring(var) .. "\n"
-        end
-end
--- end debug
+
 function driver.processHighImportance(mainPanelDevice)
 	-- Send Altimeter Values	
 	helios.send(2051, string.format("%0.4f;%0.4f;%0.4f", mainPanelDevice:get_argument_value(606), mainPanelDevice:get_argument_value(605), mainPanelDevice:get_argument_value(479)))
@@ -51,25 +8,6 @@ end
 
 function driver.processLowImportance(mainPanelDevice)
 
--- debug
-	--local index
-	--for index = 24,24 do
-		--if index ~= 6 and index ~= 8 and index ~= 10 and index ~= 12 and index ~= 21 and index ~= 18 and index ~= 17 then
-			--li = helios.parseIndication(index) 
-			--for ii = 80,96 do
-			--	if li["#"..ii.."#"] then 
-			--	log.write("HELIOS.EXPORT", log.INFO, string.format("Helios Dump %s %s", ii, li["#"..ii.."#"]))
-			--	end 
-			--end
-			--if li then
-			--	if driver.lastCMWS[index] == nil or driver.lastCMWS[index] ~= li then
-			--		log.write("HELIOS.EXPORT", log.INFO, string.format("Helios Dump %s %s", index, driver.Heliosdump(li)))
-			--		driver.lastCMWS[index] = li
-			--	end
-			--end
-		--end
-	--end
--- end debug
     -- structured data
     li = helios.parseIndication(15) -- 15 Pilot Keyboard Unit
     if li then

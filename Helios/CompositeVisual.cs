@@ -196,6 +196,10 @@ namespace GadrocsWorkshop.Helios
                 childName: childName,
                 interfaceTriggerName: interfaceTriggerName,
                 deviceActionName: deviceActionName
+                ));            DefaultInputBindings.Add(new DefaultInputBinding(
+                childName: childName,
+                interfaceTriggerName: interfaceTriggerName,
+                deviceActionName: deviceActionName
                 ));
         }
 
@@ -945,22 +949,18 @@ namespace GadrocsWorkshop.Helios
             string interfaceElementName
             )
         {
-            gauge.Name = name;
+            gauge.Name = GetComponentName(name);
             gauge.Top = posn.Y;
             gauge.Left = posn.X;
             gauge.Width = size.Width;
             gauge.Height = size.Height;
 
-            // XXX what is going on here?  we just set Name above
-            string componentName = GetComponentName(name);
-            gauge.Name = componentName;
-
             Children.Add(gauge);
 
-            AddAction(gauge.Actions["set.value"], componentName);
+            AddAction(gauge.Actions["set.value"], GetComponentName(name));
 
             AddDefaultInputBinding(
-                childName: componentName,
+                childName: GetComponentName(name),
                 interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
                 deviceActionName: "set.value");
             return gauge;
@@ -975,15 +975,11 @@ namespace GadrocsWorkshop.Helios
             string interfaceElementName
             )
         {
-            device.Name = name;
+            device.Name = GetComponentName(name);
             device.Top = posn.Y;
             device.Left = posn.X;
             device.Width = size.Width;
             device.Height = size.Height;
-
-            // XXX what is going on here?  we just set Name above
-            string componentName = GetComponentName(name);
-            device.Name = componentName;
 
             Children.Add(device);
             foreach (IBindingTrigger trigger in device.Triggers)
@@ -1016,15 +1012,11 @@ namespace GadrocsWorkshop.Helios
             string interfaceElementName
             )
         {
-            gauge.Name = name;
+            gauge.Name = GetComponentName(name);
             gauge.Top = posn.Y;
             gauge.Left = posn.X;
             gauge.Width = size.Width;
             gauge.Height = size.Height;
-
-            // XXX what is going on here?  we just set Name above
-            string componentName = GetComponentName(name);
-            gauge.Name = componentName;
 
             Children.Add(gauge);
             foreach (IBindingTrigger trigger in gauge.Triggers)
@@ -1040,7 +1032,7 @@ namespace GadrocsWorkshop.Helios
 
                 AddAction(action, action.Device);
                 AddDefaultInputBinding(
-                    childName: componentName,
+                    childName: GetComponentName(name),
                     interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
                     deviceActionName: action.Device + "." + action.ActionVerb + "." + action.Name
                 );

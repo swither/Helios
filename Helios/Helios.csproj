@@ -133,6 +133,11 @@
     <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
     <Compile Include="Gauges\AH-64D\CMWS\CMWSDisplay.cs" />
     <Compile Include="Gauges\AH-64D\CMWS\CMWSThreatDisplay.cs" />
+    <Compile Include="Gauges\AH-64D\MFD\MFD CPG Left.cs" />
+    <Compile Include="Gauges\AH-64D\MFD\MFD Pilot Left.cs" />
+    <Compile Include="Gauges\AH-64D\MFD\MFD CPG Right.cs" />
+    <Compile Include="Gauges\AH-64D\MFD\MFD Pilot Right.cs" />
+    <Compile Include="Gauges\AH-64D\MFD\MFD.cs" />
     <Compile Include="Gauges\AH-64D\SAI\SAI.cs" />
     <Compile Include="Gauges\AH-64D\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\AH-64D\FAT\FAT.cs" />
@@ -958,6 +963,12 @@
     <Resource Include="Images\General\memory_wire.png" />
     <Resource Include="Images\Buttons\backlit.png" />
     <Resource Include="Gauges\AH-64D\SAI\adi_bezel.png" />
+    <Resource Include="Gauges\AH-64D\MFD\MFD_Frame.png" />
+    <Resource Include="Gauges\AH-64D\MFD\MFD_glass.png" />
+    <Resource Include="Gauges\AH-64D\MFD\MFD Button 1 UpH.png" />
+    <Resource Include="Gauges\AH-64D\MFD\MFD Button 1 DnH.png" />
+    <Resource Include="Gauges\AH-64D\MFD\MFD Button 2 DnH.png" />
+    <Resource Include="Gauges\AH-64D\MFD\MFD Button 2 UpH.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
