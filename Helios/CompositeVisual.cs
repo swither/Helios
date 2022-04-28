@@ -196,10 +196,6 @@ namespace GadrocsWorkshop.Helios
                 childName: childName,
                 interfaceTriggerName: interfaceTriggerName,
                 deviceActionName: deviceActionName
-                ));            DefaultInputBindings.Add(new DefaultInputBinding(
-                childName: childName,
-                interfaceTriggerName: interfaceTriggerName,
-                deviceActionName: deviceActionName
                 ));
         }
 
