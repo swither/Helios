@@ -14,66 +14,53 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
+namespace GadrocsWorkshop.Helios.Gauges.AH64D.KU
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
     using System;
+    using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.AH64D.EUFD", "Enhanced Up Front Display", "AH-64D", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
-    public class EUFD : CompositeVisualWithBackgroundImage
+    [HeliosControl("Helios.AH64D.KU", "Keyboard Unit", "AH-64D", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
+    public class KU : CompositeVisualWithBackgroundImage
     {
-        private static readonly Rect SCREEN_RECT = new Rect(173, 25, 600, 300);
+        private Dictionary<HeliosVisual, Rect> _nativeSizes = new Dictionary<HeliosVisual, Rect>();
+        private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
         private Rect _scaledScreenRect = SCREEN_RECT;
         private string _interfaceDevice = "";
         private double _size_Multiplier = 1;
-        private HeliosPanel _frameGlassPanel;
         private HeliosPanel _frameBezelPanel;
 
-        public EUFD(string interfaceDevice)
-            : base(interfaceDevice, new Size(1004, 348))
+        public KU(string interfaceDevice)
+            : base(interfaceDevice, new Size(600, 465))
         {
             SupportedInterfaces = new[] { typeof(Interfaces.DCS.AH64D.AH64DInterface) };
             _interfaceDevice = interfaceDevice;
-            string vpName = "";
-            switch (_interfaceDevice)
-            {
-                case "Up Front Display (Pilot)":
-                    vpName = "AH_64D_EUFD_PLT";
-                    break;
-                case "Up Front Display (CP/G)":
-                    vpName = "AH_64D_EUFD_PLT";
-                    break;
-                default:
-                    break;
-            }
-            if (vpName != "") AddViewport(vpName);
-            _frameGlassPanel = AddPanel("EUFD Glass", new Point(Left + (173), Top + (25)), new Size(600d, 300d), "{Helios}/Images/AH-64D/MFD/MFD_glass.png", _interfaceDevice);
-            _frameGlassPanel.Opacity = 0.3d;
-            _frameGlassPanel.DrawBorder = false;
-            _frameGlassPanel.FillBackground=false;
- 
-            _frameBezelPanel = AddPanel("EUFD Frame", new Point(Left, Top), NativeSize, "{Helios}/Images/AH-64D/EUFD/EUFD.png", _interfaceDevice);
+            string[] labels = {"A","B","C","D","E","F","1","2","3","G","H","I","J","K","L","4","5","6","M","N","O","P","Q","R","7","8","9","S","T","U","V","W","X","Decimal","0","+/-","Y","Z","/","BKS","SPC","*","DIV","+","-","CLR","<",">","ENTER"};
+            _frameBezelPanel = AddPanel("KU Frame", new Point(Left, Top), NativeSize, "{Helios}/Images/AH-64D/KU/KU_Frame.png", _interfaceDevice);
             _frameBezelPanel.Opacity = 1d;
             _frameBezelPanel.FillBackground = false;
             _frameBezelPanel.DrawBorder = false;
 
+            int ii = 0;
+            for(double buttonY = 105;buttonY <= 335; buttonY += 230 / 4)
             {
-                double ypos = 196;
-                AddButton("Preset Button", new Point(804, ypos));
-                AddButton("Enter Button", new Point(891, ypos));
-                ypos = 279;
-                AddButton("Stopwatch Button", new Point(804, ypos));
-                AddButton("Swap Button", new Point(891, ypos));
+                for (double buttonX = 39; buttonX <= 520; buttonX += 481 / 8)
+                {
+                    AddButton($"Key {labels[ii]}", new Rect(buttonX, buttonY, 40d, 40d), $"{labels[ii++]}");
+                }
             }
+            AddButton($"Key {labels[ii]}", new Rect(160d, 391d, 40d, 40d), $"{labels[ii++]}");
+            AddButton($"Key {labels[ii]}", new Rect(220d, 391d, 40d, 40d), $"{labels[ii++]}");
+            AddButton($"Key {labels[ii]}", new Rect(280d, 391d, 40d, 40d), $"{labels[ii++]}");
+            AddButton($"Key {labels[ii]}", new Rect(400d, 391d, 96d, 40d), $"{labels[ii++]}");
 
-            AddRocker("IDM Switch", 12, 99, _interfaceDevice, "IDM Rocker Switch");
-            AddRocker("WCA Switch", 91, 24, _interfaceDevice, "WCA Rocker Switch");
-            AddRocker("RTS Switch", 91, 181, _interfaceDevice, "RTS Rocker Switch");
-
-            AddPot("Brightness Control", new Point(821, 88), new Size(60d, 60d), "Brightness Control Knob");
+            // Top Row 104 Bottom Row 334
+            // Left col 39 Right Col 520 
+            AddPot("Brightness Control", new Point(65d, 395d), new Size(50d, 50d), "Brightness Control Knob");
+            AddTextDisplay("Scratchpad", new Point(58d, 32d), new Size(484d, 52d), _interfaceDevice, "Scratchpad", 32, "KEYBOARD UNIT", TextHorizontalAlignment.Left, "#=█");
 
         }
         protected HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceDevice)
@@ -102,51 +89,71 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
             }
             return panel;
         }
-        private void AddViewport(string name)
-        {
-            Children.Add(new Helios.Controls.Special.ViewportExtent
-            {
-                FillBackground = true,
-                BackgroundColor = Color.FromArgb(128, 128, 0, 0),
-                FontColor = Color.FromArgb(255, 255, 255, 255),
-                ViewportName = name,
-                Left = 173,
-                Top = 24,
-                Width = 600,
-                Height = 300
-            });
-        }
-        private void AddButton(string name, Point pos) { AddButton(name, new Rect(pos.X, pos.Y, 50, 50), true, ""); }
-        private void AddButton(string name, Point pos, double buttonWidth, string label) { AddButton(name, new Rect(pos.X, pos.Y, buttonWidth, 50), true, label); }
-        private void AddButton(string name, Rect rect, bool horizontal, string label)
+        private void AddButton(string name, Point pos) { AddButton(name, new Rect(pos.X, pos.Y, 40, 40), ""); }
+        private void AddButton(string name, Point pos, double buttonWidth, string label) { AddButton(name, new Rect(pos.X, pos.Y, buttonWidth, 50), label); }
+        private void AddButton(string name, Rect rect, string label)
         {
             Helios.Controls.PushButton button = new Helios.Controls.PushButton();
             button.Top = rect.Y * _size_Multiplier;
             button.Left = rect.X * _size_Multiplier;
             button.Width = rect.Width * _size_Multiplier;
             button.Height = rect.Height * _size_Multiplier;
+            string shape = (button.Top < 280d && button.Left > 398d) ? "round" : "square";
 
+            string image = (label == "N" || label == "S" || label == "E" || label == "W") ? $"{{Helios}}/Images/AH-64D/KU/tactile-dark-{shape}-emphasised" : $"{{Helios}}/Images/Buttons/tactile-dark-{shape}";
+            switch (label)
+            {
+                case "+/-":
+                    label = "±";
+                    break;
+                case "Decimal":
+                    label = ".";
+                    break;
+                case "DIV":
+                    label = "÷";
+                    break;
+                case "<":
+                    label = "🠸";
+                    break;
+                case ">":
+                    label = "🠺";
+                    break;
+                default:
+                    break;
+            }
+            bool boostSize = (label == "*" || label == "." || label == "+" || label == "-" || label == "÷" || label == "±" || label == "🠸" || label == "🠺") ? true : false;
             if (label != "")
             {
-                button.Image = $"{{Helios}}/Images/AH-64D/EUFD/EUFD {name} UpH.png";
-                button.PushedImage = $"{{Helios}}/Images/AH-64D/EUFD/EUFD {name} DnH.png";
+                button.Image = $"{image}.png";
+                button.PushedImage = $"{image}-in.png";
                 button.TextFormat.FontFamily = ConfigManager.FontManager.GetFontFamilyByName("MS 33558");
                 button.TextFormat.FontStyle = FontStyles.Normal;
-                button.TextFormat.FontWeight = FontWeights.Normal;
-                if (label == "*") button.TextFormat.FontSize = 32; else button.TextFormat.FontSize = 16;
+                button.TextFormat.FontWeight = FontWeights.Bold;
+                if (boostSize) button.TextFormat.FontSize = 28; else button.TextFormat.FontSize = 15;
+                if (boostSize) {
+                    button.TextFormat.FontSize = 28;
+                    button.TextFormat.FontWeight = FontWeights.Normal;
+                    button.TextFormat.VerticalAlignment = TextVerticalAlignment.Top;
+                }
+                else {
+                    button.TextFormat.FontSize = 15;
+                    button.TextFormat.FontWeight = FontWeights.Normal;
+                    button.TextFormat.VerticalAlignment = TextVerticalAlignment.Center;
+                }
                 button.TextFormat.PaddingLeft = 0;
                 button.TextFormat.PaddingRight = 0;
                 button.TextFormat.PaddingTop = 0;
                 button.TextFormat.PaddingBottom = 0;
+
                 button.TextColor = Color.FromArgb(230, 240, 240, 240);
-                button.TextFormat.VerticalAlignment = TextVerticalAlignment.Center;
                 button.TextFormat.HorizontalAlignment = TextHorizontalAlignment.Center;
                 button.Text = label;
             } else
             {
-                button.Image = $"{{Helios}}/Images/AH-64D/EUFD/EUFD {name} UpH.png";
-                button.PushedImage = $"{{Helios}}/Images/AH-64D/EUFD/EUFD {name} DnH.png";
+                button.Image = $"{image}.png";
+                button.PushedImage = $"{image}-in.png";
             }
+            button.TextFormat.ConfiguredFontSize = button.TextFormat.FontSize;
             button.Name = name;
 
             Children.Add(button);
@@ -192,75 +199,29 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
                 );
             knob.Name = Name + "_" + name;
         }
-        private void AddRocker(string name, double x, double y) { AddRocker(name, x, y, _interfaceDevice, name); }
-        private void AddRocker(string name, double x, double y, string interfaceDeviceName, string interfaceElementName)
-        {
-            Helios.Controls.ThreeWayToggleSwitch rocker = new Helios.Controls.ThreeWayToggleSwitch();
-            rocker.Name = ComponentName(name);
-            rocker.SwitchType = Helios.Controls.ThreeWayToggleSwitchType.MomOnMom;
-            rocker.ClickType = Helios.Controls.LinearClickType.Touch;
-            rocker.Top = y;
-            rocker.Left = x;
-            rocker.PositionOneImage = "{Helios}/Images/Rockers/triangles-dark-up.png";
-            rocker.PositionTwoImage = "{Helios}/Images/Rockers/triangles-dark-norm.png";
-            rocker.PositionThreeImage = "{Helios}/Images/Rockers/triangles-dark-down.png";
-            rocker.Height = 140;
-            rocker.Width = 50;
-
-            Children.Add(rocker);
-            AddTextDisplay($"{interfaceElementName}", new Point(x, y+(rocker.Height/2)-10), new Size(rocker.Width, 20), Name, interfaceElementName, 15, interfaceElementName.Substring(0,3), TextHorizontalAlignment.Center, "");
-
-            AddTrigger(rocker.Triggers["position one.entered"], name);
-            AddTrigger(rocker.Triggers["position one.exited"], name);
-            AddTrigger(rocker.Triggers["position two.entered"], name);
-            AddTrigger(rocker.Triggers["position two.exited"], name);
-            AddTrigger(rocker.Triggers["position three.entered"], name);
-            AddTrigger(rocker.Triggers["position three.exited"], name);
-            AddTrigger(rocker.Triggers["position.changed"], name);
-            AddDefaultOutputBinding(
-                childName: ComponentName(name),
-                deviceTriggerName: "position.changed",
-                interfaceActionName: $"{interfaceDeviceName}.set.{interfaceElementName}");
-
-            AddAction(rocker.Actions["set.position"], name);
-            AddDefaultInputBinding(
-                childName: ComponentName(name),
-                interfaceTriggerName: $"{interfaceDeviceName}.{interfaceElementName}.changed",
-                deviceActionName: "set.position");
-        }
         private void AddTextDisplay(string name, Point posn, Size size,
                 string interfaceDeviceName, string interfaceElementName, double baseFontsize, string testDisp, TextHorizontalAlignment hTextAlign, string devDictionary)
         {
+            //string font = "MS 33558";
+            string font = "Helios Virtual Cockpit A-10C_ALQ_213";
+            
             TextDisplay display = AddTextDisplay(
                 name: name,
                 posn: posn,
                 size: size,
-                font: "MS 33558",
+                font: font,
                 baseFontsize: baseFontsize,
                 horizontalAlignment: hTextAlign,
                 verticalAligment: TextVerticalAlignment.Center,
                 testTextDisplay: testDisp,
-                textColor: Color.FromArgb(0xf0, 0xfa, 0xfa, 0xfa),
-                backgroundColor: Color.FromArgb(0x00, 0x04, 0x2a, 0x00),
-                useBackground: false,
+                textColor: Color.FromArgb(0xCC, 0x40, 0xB3, 0x29),
+                backgroundColor: Color.FromArgb(0x20, 0x04, 0x2a, 0x00),
+                useBackground: true,
                 interfaceDeviceName: interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
                 textDisplayDictionary: devDictionary
                 );
-            display.TextValue = name.Substring(0, 3);
-            ///TODO: just using the TextDisplay for a label so remove the actions ,triggers and default input binding.  Clearly having a label on the RockerSwitch
-            ///is the right answer.
-            display.Actions.Clear();
-            display.Triggers.Clear();
-            Actions.Remove(Actions[$"{Name}_{name}.set.TextDisplay"]);
-            foreach(DefaultInputBinding dib in DefaultInputBindings)
-            {
-                if(dib.DeviceActionName == "set.TextDisplay")
-                {
-                    DefaultInputBindings.Remove(dib);
-                    break;
-                }              
-            }
+            display.TextValue = "";
         }
         private string ComponentName(string name)
         {
@@ -302,5 +263,5 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
         {
             // No-Op
         }
-    }
+     }
 }

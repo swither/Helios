@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D
             : base("Standby IAS Gauge", new Size(300, 300))
         {
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/AH-64D/IAS/ias_faceplate.xaml", new Rect(0d, 0d, 300, 300)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/IAS/ias_faceplate.xaml", new Rect(0d, 0d, 300, 300)));
 
             _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 250d, 360d);
             _needle = new GaugeNeedle("{Helios}/Gauges/AV-8B/Common/needle_a.xaml", new Point(150d, 150d), new Size(30, 128), new Point(15, 113), 0d);

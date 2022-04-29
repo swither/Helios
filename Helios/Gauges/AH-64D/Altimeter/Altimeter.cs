@@ -50,7 +50,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.Altimeter
             _airPressureDrum.Clip = new RectangleGeometry(new Rect(182d, 256d, 60d, 20d));
             Components.Add(_airPressureDrum);
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/AH-64D/Altimeter/altimeter_faceplate.xaml", new Rect(32d, 38d, 300d, 300d)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/Altimeter/altimeter_faceplate.xaml", new Rect(32d, 38d, 300d, 300d)));
 
             _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 1000d, 360d);
             _needle = new GaugeNeedle("{Helios}/Gauges/A-10/Altimeter/altimeter_needle.xaml", new Point(182d, 188d), new Size(16d, 257d), new Point(8d, 138.5d));

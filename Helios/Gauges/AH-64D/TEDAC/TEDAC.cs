@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
+namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
@@ -22,91 +22,55 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.AH64D.MFD", "Multi Function Display", "AH-64D", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
-    public class MFD : CompositeVisualWithBackgroundImage
+    [HeliosControl("Helios.AH64D.TEDAC", "TADS Electronic Display and Control", "AH-64D", typeof(BackgroundImageRenderer))]
+    public class TEDAC : CompositeVisualWithBackgroundImage
     {
-        private static readonly Rect SCREEN_RECT = new Rect(109, 88, 500, 500);
+        private static readonly Rect SCREEN_RECT = new Rect(142, 150, 800, 800);
         private Rect _scaledScreenRect = SCREEN_RECT;
-        private string _interfaceDevice = "";
+        private string _interfaceDevice = "TEDAC";
         private double _size_Multiplier = 1;
         private HeliosPanel _frameGlassPanel;
         private HeliosPanel _frameBezelPanel;
 
-        public MFD(string interfaceDevice)
-            : base(interfaceDevice, new Size(1469 / 2, 1381 / 2))
+        public TEDAC()
+            : base("TEDAC", new Size(1089, 1080))
         {
             SupportedInterfaces = new[] { typeof(Interfaces.DCS.AH64D.AH64DInterface) };
-            _interfaceDevice = interfaceDevice;
-            string vpName = "";
-            switch (_interfaceDevice)
-            {
-                case "MFD Left (Pilot)":
-                    vpName = "AH_64D_LEFT_MFCD_PLT";
-                    break;
-                case "MFD Right (Pilot)":
-                    vpName = "AH_64D_RIGHT_MFCD_PLT";
-                    break;
-                case "MFD Left (CP/G)":
-                    vpName = "AH_64D_LEFT_MFCD_CPG";
-                    break;
-                case "MFD Right (CP/G)":
-                    vpName = "AH_64D_RIGHT_MFCD_CPG";
-                    break;
-                default:
-                    break;
-            }
+
+            string vpName = "AH_64D_TEDAC";
             if (vpName != "") AddViewport(vpName);
-            _frameGlassPanel = AddPanel("MFD Glass", new Point(Left + (109), Top + (88)), new Size(500d, 500d), "{Helios}/Images/AH-64D/MFD/MFD_glass.png", _interfaceDevice);
+            _frameGlassPanel = AddPanel("TEDAC Glass", new Point(142, 150), new Size(800d, 800d), "{Helios}/Images/AH-64D/MFD/MFD_glass.png", _interfaceDevice);
             _frameGlassPanel.Opacity = 0.3d;
             _frameGlassPanel.DrawBorder = false;
             _frameGlassPanel.FillBackground=false;
  
-            _frameBezelPanel = AddPanel("MFD Frame", new Point(Left, Top), NativeSize, "{Helios}/Images/AH-64D/MFD/MFD_Frame.png", _interfaceDevice);
+            _frameBezelPanel = AddPanel("TEDAC Frame", new Point(Left, Top), NativeSize, "{Helios}/Images/AH-64D/TEDAC/TEDAC_frame.png", _interfaceDevice);
             _frameBezelPanel.Opacity = 1d;
             _frameBezelPanel.FillBackground = false;
             _frameBezelPanel.DrawBorder = false;
 
+            double ypos = 1003;
+            AddButton("AZ/EL Boresight Enable Button", new Point(395, ypos));
+            AddButton("ACM Button", new Point(538, ypos));
+            AddButton("FREEZE Button", new Point(678, ypos));
+            AddButton("FILTER Button", new Point(824, ypos));
+            AddButton("Asterisk (*) Button", new Point(1011,819), 60d,"*");
+            ypos = 31;
+            AddButton("TAD Video Select Button", new Point(159, ypos), 90d, "TAD");
+            AddButton("FCR Video Select Button", new Point(337, ypos), 90d, "FCR");
+            AddButton("PNV Video Select Button", new Point(487, ypos), 90d, "PNV");
+            AddButton("G/S Video Select Button", new Point(641, ypos), 90d, "G/S");
 
-            double ypos = 20;
-            AddButton("Button T1", new Point(183, ypos));
-            AddButton("Button T2", new Point(245, ypos));
-            AddButton("Button T3", new Point(307, ypos));
-            AddButton("Button T4", new Point(369, ypos));
-            AddButton("Button T5", new Point(430, ypos));
-            AddButton("Button T6", new Point(493, ypos));
-            double xpos = 640;
-            AddButton("Button Asterisk", new Point(xpos, 102), 50d,"*");
-            AddButton("Button R1", new Point(xpos, 163));
-            AddButton("Button R2", new Point(xpos, 223));
-            AddButton("Button R3", new Point(xpos, 284));
-            AddButton("Button R4", new Point(xpos, 346));
-            AddButton("Button R5", new Point(xpos, 400));
-            AddButton("Button R6", new Point(xpos, 455));
-            AddButton("Button VID", new Point(xpos, 512), 50d,"VID");
-            AddButton("Button COM", new Point(xpos, 568), 50d,"COM");
-            xpos = 40;
-            AddButton("Button L1", new Point(xpos, 168));
-            AddButton("Button L2", new Point(xpos, 228));
-            AddButton("Button L3", new Point(xpos, 286));
-            AddButton("Button L4", new Point(xpos, 343));
-            AddButton("Button L5", new Point(xpos, 397));
-            AddButton("Button L6", new Point(xpos, 454));
-            xpos = 30;
-            AddButton("Button FCR", new Point(xpos, 513), 50d,"FCR");
-            AddButton("Button WPN", new Point(xpos, 573), 50d,"WPN");
-            ypos = 620;
-            AddButton("Button TSD", new Point(109, ypos), 50d,"TSD");
-            AddButton("Button B1/M(Menu)", new Point(183, ypos),40d,"M");
-            AddButton("Button B2", new Point(245, ypos));
-            AddButton("Button B3", new Point(307, ypos));
-            AddButton("Button B4", new Point(369, ypos));
-            AddButton("Button B5", new Point(430, ypos));
-            AddButton("Button B6", new Point(493, ypos));
-            AddButton("Button A/C", new Point(553, ypos), 50d,"A/C");
+            AddRocker("Symbol Rocker", 1009, 232, _interfaceDevice, "SYM Rocker Switch");
+            AddRocker("Brightness Rocker", 1009, 418, _interfaceDevice, "BRT Rocker Switch");
+            AddRocker("Contrast Rocker", 1009, 610, _interfaceDevice, "CON Rocker Switch");
+            AddRocker("R/F Rocker", 16, 610, _interfaceDevice, "R/F Rocker Switch");
+            AddRocker("Elevation Rocker", 16, 802, _interfaceDevice, "EL Adjust Rocker Switch");
+            AddRocker("Azimuth Rocker", 190, 1003, _interfaceDevice, "AZ Adjust Rocker Switch", true);
 
-            AddThreePositionRotarySwitch("Display Mode", new Point(557d,13d),new Size(50d,50d), _interfaceDevice, "Mode Knob");
-            AddPot("Brightness Control", new Point(30, 97), new Size(50d, 50d), "Brightness Control Knob");
-            AddPot("Video Control", new Point(114, 13), new Size(50d, 50d), "Video Control Knob");
+            AddThreePositionRotarySwitch("Display Mode", new Point(833d,18d),new Size(75d,75d), _interfaceDevice, "Display Mode");
+            AddPot("FLIR Gain", new Point(10, 427), new Size(75d, 75d), "FLIR GAIN Control");
+            AddPot("FLIR Level", new Point(10, 220), new Size(75d, 75d), "FLIR LEV Control");
 
         }
         protected HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceDevice)
@@ -145,14 +109,14 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
                 BackgroundColor = Color.FromArgb(128, 128, 0, 0),
                 FontColor = Color.FromArgb(255, 255, 255, 255),
                 ViewportName = name,
-                Left = 109,
-                Top = 93,
-                Width = 500,
-                Height = 500
+                Left = 142,
+                Top = 150,
+                Width = 800,
+                Height = 800
             });
         }
-        private void AddButton(string name, Point pos) { AddButton(name, new Rect(pos.X, pos.Y, 40, 40), true, ""); }
-        private void AddButton(string name, Point pos, double buttonWidth, string label) { AddButton(name, new Rect(pos.X, pos.Y, buttonWidth, 40), true, label); }
+        private void AddButton(string name, Point pos) { AddButton(name, new Rect(pos.X, pos.Y, 60, 60), true, ""); }
+        private void AddButton(string name, Point pos, double buttonWidth, string label) { AddButton(name, new Rect(pos.X, pos.Y, buttonWidth, 60), true, label); }
         private void AddButton(string name, Rect rect, bool horizontal, string label)
         {
             Helios.Controls.PushButton button = new Helios.Controls.PushButton();
@@ -168,20 +132,23 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
                 button.TextFormat.FontFamily = ConfigManager.FontManager.GetFontFamilyByName("MS 33558");
                 button.TextFormat.FontStyle = FontStyles.Normal;
                 button.TextFormat.FontWeight = FontWeights.Normal;
-                if (label == "*") button.TextFormat.FontSize = 32; else button.TextFormat.FontSize = 16;
+                if (label == "*") button.TextFormat.FontSize = 32; else button.TextFormat.FontSize = 20;
                 button.TextFormat.PaddingLeft = 0;
                 button.TextFormat.PaddingRight = 0;
                 button.TextFormat.PaddingTop = 0;
                 button.TextFormat.PaddingBottom = 0;
-                button.TextColor = Color.FromArgb(230, 240, 240, 240);
+                button.TextColor = Color.FromArgb(0xE0, 0xf0, 0xf0, 0xf0);
                 button.TextFormat.VerticalAlignment = TextVerticalAlignment.Center;
                 button.TextFormat.HorizontalAlignment = TextHorizontalAlignment.Center;
                 button.Text = label;
+                button.TextFormat.ConfiguredFontSize = button.TextFormat.FontSize;
             } else
             {
                 button.Image = "{Helios}/Images/AH-64D/MFD/MFD Button 1 UpH.png";
                 button.PushedImage = "{Helios}/Images/AH-64D/MFD/MFD Button 1 DnH.png";
             }
+            button.TextFormat.ConfiguredFontSize = button.TextFormat.FontSize;
+
             button.Name = name;
 
             Children.Add(button);
@@ -216,9 +183,9 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
             knob.DrawLabels = false;
             knob.DrawLines = false;
             knob.Positions.Clear();
-            knob.Positions.Add(new Helios.Controls.RotarySwitchPosition(knob, 0, "Day", 45d));
+            knob.Positions.Add(new Helios.Controls.RotarySwitchPosition(knob, 0, "Off", 135d));
             knob.Positions.Add(new Helios.Controls.RotarySwitchPosition(knob, 1, "Night", 90d));
-            knob.Positions.Add(new Helios.Controls.RotarySwitchPosition(knob, 2, "Mono", 135d));
+            knob.Positions.Add(new Helios.Controls.RotarySwitchPosition(knob, 2, "Day", 45d));
             knob.CurrentPosition = 1;
             knob.Top = posn.Y;
             knob.Left = posn.X;
@@ -246,6 +213,85 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
                 );
             knob.Name = Name + "_" + name;
         }
+        private void AddRocker(string name, double x, double y) { AddRocker(name, x, y, _interfaceDevice, name,false); }
+        private void AddRocker(string name, double x, double y, string interfaceDeviceName, string interfaceElementName) { AddRocker(name, x, y, interfaceDeviceName, interfaceElementName, false); }
+        private void AddRocker(string name, double x, double y, string interfaceDeviceName, string interfaceElementName, bool horizontal)
+        {
+            Helios.Controls.ThreeWayToggleSwitch rocker = new Helios.Controls.ThreeWayToggleSwitch();
+            rocker.Name = ComponentName(name);
+            rocker.SwitchType = Helios.Controls.ThreeWayToggleSwitchType.MomOnMom;
+            rocker.ClickType = Helios.Controls.LinearClickType.Touch;
+            rocker.Top = y;
+            rocker.Left = x;
+            rocker.PositionOneImage = "{Helios}/Images/Rockers/triangles-dark-up.png";
+            rocker.PositionTwoImage = "{Helios}/Images/Rockers/triangles-dark-norm.png";
+            rocker.PositionThreeImage = "{Helios}/Images/Rockers/triangles-dark-down.png";
+            rocker.Height = 120;
+            rocker.Width = 60;
+            Children.Add(rocker);
+
+            AddTrigger(rocker.Triggers["position one.entered"], name);
+            AddTrigger(rocker.Triggers["position one.exited"], name);
+            AddTrigger(rocker.Triggers["position two.entered"], name);
+            AddTrigger(rocker.Triggers["position two.exited"], name);
+            AddTrigger(rocker.Triggers["position three.entered"], name);
+            AddTrigger(rocker.Triggers["position three.exited"], name);
+            AddTrigger(rocker.Triggers["position.changed"], name);
+            AddDefaultOutputBinding(
+                childName: ComponentName(name),
+                deviceTriggerName: "position.changed",
+                interfaceActionName: $"{interfaceDeviceName}.set.{interfaceElementName}");
+            AddAction(rocker.Actions["set.position"], name);
+            AddDefaultInputBinding(
+                childName: ComponentName(name),
+                interfaceTriggerName: $"{interfaceDeviceName}.{interfaceElementName}.changed",
+                deviceActionName: "set.position");
+            string rockerLabelText = (interfaceElementName.Substring(0, 3) == "Ele" || interfaceElementName.Substring(0, 2) == "AZ") ? interfaceElementName.Substring(0, 2).ToUpper() : interfaceElementName.Substring(0, 3).ToUpper();
+            if (!horizontal)
+            {
+                AddTextDisplay($"{interfaceElementName} Label", new Point(x, y + (rocker.Height / 2) - 10), new Size(rocker.Width, 20), Name, interfaceElementName, 16, rockerLabelText, TextHorizontalAlignment.Center, "");
+            }
+            else
+            {
+                rocker.Rotation = HeliosVisualRotation.CCW;
+                AddTextDisplay($"{interfaceElementName} Label", new Point(x + (rocker.Height / 2) - 30, y + (rocker.Width / 2) - 10), new Size(rocker.Width, 20), Name, interfaceElementName, 16, rockerLabelText, TextHorizontalAlignment.Center, "");
+            }
+        }
+        private void AddTextDisplay(string name, Point posn, Size size,
+        string interfaceDeviceName, string interfaceElementName, double baseFontsize, string testDisp, TextHorizontalAlignment hTextAlign, string devDictionary)
+        {
+            TextDisplay display = AddTextDisplay(
+                name: name,
+                posn: posn,
+                size: size,
+                font: "MS 33558",
+                baseFontsize: baseFontsize,
+                horizontalAlignment: hTextAlign,
+                verticalAligment: TextVerticalAlignment.Center,
+                testTextDisplay: testDisp,
+                textColor: Color.FromArgb(0xE0, 0xf0, 0xf0, 0xf0),
+                backgroundColor: Color.FromArgb(0x00, 0x04, 0x2a, 0x00),
+                useBackground: false,
+                interfaceDeviceName: interfaceDeviceName,
+                interfaceElementName: interfaceElementName,
+                textDisplayDictionary: devDictionary
+                );
+            display.TextValue = testDisp;
+            ///TODO: just using the TextDisplay for a label so remove the actions ,triggers and default input binding.  Clearly having a label on the RockerSwitch
+            ///is the right answer.
+            display.Actions.Clear();
+            display.Triggers.Clear();
+            Actions.Remove(Actions[$"{Name}_{name}.set.TextDisplay"]);
+            foreach (DefaultInputBinding dib in DefaultInputBindings)
+            {
+                if (dib.DeviceActionName == "set.TextDisplay")
+                {
+                    DefaultInputBindings.Remove(dib);
+                    break;
+                }
+            }
+        }
+
         private string ComponentName(string name)
         {
             return $"{Name}_{name}";
@@ -261,22 +307,6 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
             action.Device = ComponentName(name);
             if (!Actions.ContainsKey(Actions.GetKeyForItem(action))) Actions.Add(action);
         }
-        //private new void AddTrigger(IBindingTrigger trigger, string name)
-        //{
-        //    trigger.Device = $"{Name}";
-        //    trigger.Name = name;
-        //    Triggers.Add(trigger);
-        //}
-        //private new void AddAction(IBindingAction action, string name)
-        //{
-        //    action.Device = $"{Name}";
-        //    action.Name = name;
-        //    if (!Actions.ContainsKey(Actions.GetKeyForItem(action)))
-        //    {
-        //        Actions.Add(action);
-        //        //string addedKey = Actions.GetKeyForItem(action);
-        //    }
-        //}
         public override string DefaultBackgroundImage
         {
             get { return null; }
@@ -288,7 +318,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
                 return false;
             }
 
-            return false;
+            return true;
         }
         public override void MouseDown(Point location)
         {

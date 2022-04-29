@@ -50,11 +50,11 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             : base("CMWS Threat Display", new Size(350, 350))
         {
             double arrowDisplayX = 0; double arrowDisplayY = 0;
-            _arrowBackgroundImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_threat_background.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _arrowBackgroundImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_threat_background.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _arrowBackgroundImage.IsHidden = false;
             Components.Add(_arrowBackgroundImage);
 
-            _readyFlagImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_r.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _readyFlagImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_r.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _readyFlagImage.IsHidden = true;
             Components.Add(_readyFlagImage);
 
@@ -62,7 +62,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _readyFlag.Execute += new HeliosActionHandler(Flag_Execute);
             Actions.Add(_readyFlag);
 
-            _dispensingFlagImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_d.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _dispensingFlagImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_d.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _dispensingFlagImage.IsHidden = true;
             Components.Add(_dispensingFlagImage);
 
@@ -70,7 +70,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _dispensingFlag.Execute += new HeliosActionHandler(Flag_Execute);
             Actions.Add(_dispensingFlag);
 
-            _threatDirectionFrontLeftImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_topleft.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _threatDirectionFrontLeftImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_topleft.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _threatDirectionFrontLeftImage.IsHidden = true;
             Components.Add(_threatDirectionFrontLeftImage);
 
@@ -78,7 +78,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _threatDirectionFrontLeft.Execute += new HeliosActionHandler(Flag_Execute);
             Actions.Add(_threatDirectionFrontLeft);
 
-            _threatDirectionFrontRightImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_topright.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _threatDirectionFrontRightImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_topright.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _threatDirectionFrontRightImage.IsHidden = true;
             Components.Add(_threatDirectionFrontRightImage);
 
@@ -86,7 +86,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _threatDirectionFrontRight.Execute += new HeliosActionHandler(Flag_Execute);
             Actions.Add(_threatDirectionFrontRight);
 
-            _threatDirectionAftLeftImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_bottomleft.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _threatDirectionAftLeftImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_bottomleft.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _threatDirectionAftLeftImage.IsHidden = true;
             Components.Add(_threatDirectionAftLeftImage);
 
@@ -94,7 +94,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _threatDirectionAftLeft.Execute += new HeliosActionHandler(Flag_Execute);
             Actions.Add(_threatDirectionAftLeft);
 
-            _threatDirectionAftRightImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_bottomright.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _threatDirectionAftRightImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_bottomright.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _threatDirectionAftRightImage.IsHidden = true;
             Components.Add(_threatDirectionAftRightImage);
 
@@ -102,7 +102,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _threatDirectionAftRight.Execute += new HeliosActionHandler(Flag_Execute);
             Actions.Add(_threatDirectionAftRight);
 
-            _threatArrowFrontImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_front.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _threatArrowFrontImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_front.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _threatArrowFrontImage.IsHidden = true;
             Components.Add(_threatArrowFrontImage);
 
@@ -110,7 +110,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _threatArrowFront.Execute += new HeliosActionHandler(Flag_Execute);
             Actions.Add(_threatArrowFront);
 
-            _threatArrowLeftImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_left.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _threatArrowLeftImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_left.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _threatArrowLeftImage.IsHidden = true;
             Components.Add(_threatArrowLeftImage);
 
@@ -118,7 +118,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _threatArrowLeft.Execute += new HeliosActionHandler(Flag_Execute);
             Actions.Add(_threatArrowLeft);
 
-            _threatArrowAftImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_rear.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _threatArrowAftImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_rear.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _threatArrowAftImage.IsHidden = true;
             Components.Add(_threatArrowAftImage);
 
@@ -126,7 +126,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _threatArrowAft.Execute += new HeliosActionHandler(Flag_Execute);
             Actions.Add(_threatArrowAft);
 
-            _threatArrowRightImage = new GaugeImage("{Helios}/Gauges/AH-64D/CMWS/cmws_right.xaml", new Rect(arrowDisplayX, arrowDisplayY, 350d, 350d));
+            _threatArrowRightImage = new GaugeImage("{Helios}/Images/AH-64D/CMWS/cmws_right.xaml", new Rect(arrowDisplayX, arrowDisplayY,NativeSize.Width, NativeSize.Height));
             _threatArrowRightImage.IsHidden = true;
             Components.Add(_threatArrowRightImage);
 

@@ -30,15 +30,43 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
         private Rect _scaledScreenRect = SCREEN_RECT;
         private CMWSThreatDisplay _display;
+        private HeliosPanel _frameGlassPanel;
+        private HeliosPanel _frameBezelPanel;
+        private HeliosPanel _displayBackgroundPanel;
 
         public CMWSDisplay()
-            : base("CMWS Display", new Size(1001, 350))
+            : base("CMWS Display", new Size(640, 409))
         {
             SupportedInterfaces = new[] { typeof(Interfaces.DCS.AH64D.AH64DInterface) };
 
-            AddCMWSPart("Threat Display", new Point(651, 0), new Size(350, 350), _interfaceDeviceName, "CMWS Threat Display");
-            AddTextDisplay("Line 1", new Point(20, 0), new Size(611, 175), _interfaceDeviceName, "Line 1", 96, "F  OUT", TextHorizontalAlignment.Left, "");
-            AddTextDisplay("Line 2", new Point(20, 175), new Size(611, 175), _interfaceDeviceName, "Line 2", 96, "C  OUT", TextHorizontalAlignment.Left, "");
+            _displayBackgroundPanel = AddPanel("CMWS Display Background", new Point(206, 29), new Size(230, 110), "{Helios}/Images/AH-64D/CMWS/cmws_background.xaml", _interfaceDeviceName);
+            _displayBackgroundPanel.Opacity = 1d;
+            _displayBackgroundPanel.FillBackground = false;
+            _displayBackgroundPanel.DrawBorder = false;
+
+            AddCMWSPart("Threat Display", new Point(326d, 29d), new Size(110d, 110d), _interfaceDeviceName, "CMWS Threat Display");
+            AddTextDisplay("Line 1", new Point(206d, 29d), new Size(120d, 55d), _interfaceDeviceName, "Line 1", 28, "F  OUT", TextHorizontalAlignment.Left, "");
+            AddTextDisplay("Line 2", new Point(206d, 84d), new Size(120d, 55d), _interfaceDeviceName, "Line 2", 28, "C  OUT", TextHorizontalAlignment.Left, "");
+
+            _frameGlassPanel = AddPanel("CMWS Glass", new Point(206, 29), new Size(230d, 110d), "{Helios}/Images/AH-64D/MFD/MFD_glass.png", _interfaceDeviceName);
+            _frameGlassPanel.Opacity = 0.3d;
+            _frameGlassPanel.DrawBorder = false;
+            _frameGlassPanel.FillBackground = false;
+
+            _frameBezelPanel = AddPanel("CMWS Frame", new Point(Left, Top), NativeSize, "{Helios}/Images/AH-64D/CMWS/cmws_frame.png", _interfaceDeviceName);
+            _frameBezelPanel.Opacity = 1d;
+            _frameBezelPanel.FillBackground = false;
+            _frameBezelPanel.DrawBorder = false;
+
+            AddThreePositionRotarySwitch("Power Switch", new Point(80d, 62d), new Size(70d, 70d), _interfaceDeviceName, "Power Switch");
+            AddPot("Audio Volume", new Point(456d, 21d), new Size(50d, 50d), "Audio Volume Knob");
+            AddPot("Display Brightness", new Point(456d, 110d), new Size(50d, 50d), "Brightness Knob");
+            AddTwoWayToggle("Arm", new Point(127d, 274d), new Size(60d, 120d), _interfaceDeviceName, "Arm Switch");
+            AddTwoWayToggle("Mode", new Point(244d, 274d), new Size(60d, 120d), _interfaceDeviceName, "Mode Switch");
+            AddTwoWayToggle("Operation", new Point(361d, 274d), new Size(60d, 120d), _interfaceDeviceName, "Operation Switch");
+            //AddTwoWayToggle("Flare Jettison", new Point(484d, 272d), new Size(60d, 120d), _interfaceDeviceName, "Flare Jettison Switch");
+            //AddTwoWayToggle("Flare Jettison Guard", new Point(472d, 189d), new Size(81d, 220d), _interfaceDeviceName, "Jettison Switch Cover", "{Helios}/Images/AH-64D/CMWS/CMWS_Jettison_Guard_");
+            AddTwoWayGuardToggle("Flare Jettison", new Point(472d, 191d), new Size(81d, 220d), _interfaceDeviceName, "Flare Jettison Switch", "Jettison Switch Cover", "{Helios}/Images/AH-64D/CMWS/CMWS_Jettison_");
         }
         private void AddTextDisplay(string name, Point posn, Size size,
     string interfaceDeviceName, string interfaceElementName, double baseFontsize, string testDisp, TextHorizontalAlignment hTextAlign, string devDictionary)
@@ -102,9 +130,160 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             }
             //_display.Actions.Clear();
         }
+        protected HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceDevice)
+        {
+            HeliosPanel panel = AddPanel
+                (
+                name: name,
+                posn: posn,
+                size: size,
+                background: background
+                );
+            // in this instance, we want to all the panels to be hide-able so the actions need to be added
+            IBindingAction panelAction = panel.Actions["toggle.hidden"];
+            panelAction.Device = $"{Name}_{name}";
+            panelAction.Name = "hidden";
+            if (!Actions.ContainsKey(panel.Actions.GetKeyForItem(panelAction)))
+            {
+                Actions.Add(panelAction);
+                //string addedKey = Actions.GetKeyForItem(panelAction);
+            }
+            panelAction = panel.Actions["set.hidden"];
+            panelAction.Device = $"{Name}_{name}";
+            panelAction.Name = "hidden";
+            if (!Actions.ContainsKey(panel.Actions.GetKeyForItem(panelAction)))
+            {
+                Actions.Add(panelAction);
+                //string addedKey = Actions.GetKeyForItem(panelAction);
+            }
+            return panel;
+        }
+        private void AddThreePositionRotarySwitch(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName)
+        {
+            Helios.Controls.RotarySwitch knob = new Helios.Controls.RotarySwitch();
+            knob.Name = Name + "_" + name;
+            knob.KnobImage = "{Helios}/Images/AH-64D/Common/Selector_Knob.png";
+            knob.DrawLabels = false;
+            knob.DrawLines = false;
+            knob.Positions.Clear();
+            knob.Positions.Add(new Helios.Controls.RotarySwitchPosition(knob, 0, "Off", 50));
+            knob.Positions.Add(new Helios.Controls.RotarySwitchPosition(knob, 1, "On", 90d));
+            knob.Positions.Add(new Helios.Controls.RotarySwitchPosition(knob, 2, "Test", 130d));
+            knob.CurrentPosition = 1;
+            knob.Top = posn.Y;
+            knob.Left = posn.X;
+            knob.Width = size.Width;
+            knob.Height = size.Height;
+            AddRotarySwitchBindings(name, posn, size, knob, interfaceDeviceName, interfaceElementName);
+        }
+        private void AddPot(string name, Point posn, Size size, string interfaceElementName)
+        {
+            Potentiometer knob = AddPot(
+                name: name,
+                posn: posn,
+                size: size,
+                knobImage: "{Helios}/Images/AH-64D/Common/Common Knob.png",
+                initialRotation: 225,
+                rotationTravel: 290,
+                minValue: 0,
+                maxValue: 1,
+                initialValue: 1,
+                stepValue: 0.1,
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElementName,
+                fromCenter: false
+                );
+            knob.Name = Name + "_" + name;
+        }
+        private void AddTwoWayToggle(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName) { AddTwoWayToggle(name, posn, size, interfaceDeviceName, interfaceElementName, "{Helios}/Images/Toggles/orange-round-"); }
+        private void AddTwoWayToggle(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName,string imageName)
+        {
+            ToggleSwitch toggle = AddToggleSwitch(
+                name: name,
+                posn: posn,
+                size: size,
+                defaultPosition: ToggleSwitchPosition.Two,
+                defaultType: ToggleSwitchType.OnOn,
+                positionOneImage: $"{imageName}up.png",
+                positionTwoImage: $"{imageName}down.png",
+                horizontal: false,
+                clickType: LinearClickType.Swipe,
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElementName,
+                fromCenter: false
+                );
+        }
+        private void AddTwoWayGuardToggle(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName, string interfaceElementGuardName, string imageName)
+        {
+            string componentName = ComponentName(name);
+            GuardedToggleSwitch newSwitch = new GuardedToggleSwitch
+            {
+                Name = componentName,
+                SwitchType = ToggleSwitchType.OnOn,
+                ClickType = LinearClickType.Swipe,
+                DefaultPosition = ToggleSwitchPosition.Two,
+                DefaultGuardPosition = GuardPosition.Down,
+                PositionOneGuardDownImage = $"{imageName}Guard_Down.png",
+                PositionOneGuardUpImage = $"{imageName}One_Up.png",
+                PositionTwoGuardDownImage = $"{imageName}Guard_Down.png",
+                PositionTwoGuardUpImage = $"{imageName}Two_Up.png",
+                Width = size.Width,
+                Height = size.Height,
+                Top = posn.Y,
+                Left = posn.X
+            };
+            Children.Add(newSwitch);
+
+            foreach (IBindingTrigger trigger in newSwitch.Triggers)
+            {
+                AddTrigger(trigger, name);
+            }
+            AddAction(newSwitch.Actions["set.position"], name);
+            AddAction(newSwitch.Actions["set.guard position"], name);
+
+            AddDefaultOutputBinding(
+                childName: componentName,
+                deviceTriggerName: "position.changed",
+                interfaceActionName: interfaceDeviceName + ".set." + interfaceElementName
+            );
+            AddDefaultOutputBinding(
+                childName: componentName,
+                deviceTriggerName: "guard position.changed",
+                interfaceActionName: interfaceDeviceName + ".set." + interfaceElementGuardName
+            );
+            AddDefaultInputBinding(
+                childName: componentName,
+                interfaceTriggerName: interfaceDeviceName + "." + interfaceElementName + ".changed",
+                deviceActionName: "set.position");
+            AddDefaultInputBinding(
+                childName: componentName,
+                interfaceTriggerName: interfaceDeviceName + "." + interfaceElementGuardName + ".changed",
+                deviceActionName: "set.guard position");
+
+            //interfaceDeviceName: _interfaceDeviceName,
+            //interfaceElementName: interfaceElementName,
+
+        }
+        private string ComponentName(string name)
+        {
+            return $"{Name}_{name}";
+        }
+        private new void AddTrigger(IBindingTrigger trigger, string name)
+        {
+            trigger.Device = ComponentName(name);
+            if (!Triggers.ContainsKey(Triggers.GetKeyForItem(trigger))) Triggers.Add(trigger);
+
+        }
+        private new void AddAction(IBindingAction action, string name)
+        {
+            action.Device = ComponentName(name);
+            if (!Actions.ContainsKey(Actions.GetKeyForItem(action))) Actions.Add(action);
+        }
+
         public override string DefaultBackgroundImage
         {
-            get { return "{Helios}/Gauges/AH-64D/CMWS/cmws_background.xaml"; }
+            //get { return "{Helios}/Images/AH-64D/CMWS/cmws_background.xaml"; }
+            get { return null; }
         }
         public override bool HitTest(Point location)
         {

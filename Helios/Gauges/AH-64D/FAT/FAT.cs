@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.FAT
             : base("FAT", new Size(364, 376))
         {
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/AH-64D/FAT/fat_faceplate.xaml", new Rect(32d, 38d, 300, 300)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/FAT/fat_faceplate.xaml", new Rect(32d, 38d, 300, 300)));
 
             _needleCalibration = new CalibrationPointCollectionDouble(-70d, -161d, 50d, 160d)
             {

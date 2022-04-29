@@ -55,31 +55,31 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.SAI
             Components.Add(_ball);
 
             _pitchAdjustCalibaration = new CalibrationPointCollectionDouble(0.11d, -36d, 0.89d, 36d);
-            _wingsNeedle = new GaugeNeedle("{Helios}/Gauges/AH-64D/SAI/adi_wings.xaml", new Point(99d, 158d), new Size(157d, 31d), new Point(0d, 0d));
+            _wingsNeedle = new GaugeNeedle("{Helios}/Images/AH-64D/SAI/adi_wings.xaml", new Point(99d, 158d), new Size(157d, 31d), new Point(0d, 0d));
             Components.Add(_wingsNeedle);
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/AH-64D/SAI/adi_innermost_ring.xaml", new Rect(65d, 52d, 224d, 224d)));
-            Components.Add(new GaugeImage("{Helios}/Gauges/AH-64D/SAI/adi_inner_ring.xaml", new Rect(30d, 23d, 287d, 305d)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_innermost_ring.xaml", new Rect(65d, 52d, 224d, 224d)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_inner_ring.xaml", new Rect(30d, 23d, 287d, 305d)));
 
-            _bankNeedle = new GaugeNeedle("{Helios}/Gauges/AH-64D/SAI/adi_arrow.xaml", center, new Size(17d, 110d), new Point(8.5d, 110d));
+            _bankNeedle = new GaugeNeedle("{Helios}/Images/AH-64D/SAI/adi_arrow.xaml", center, new Size(17d, 110d), new Point(8.5d, 110d));
             Components.Add(_bankNeedle);
 
             _slipBallCalibration = new CalibrationPointCollectionDouble(-1d, -26d, 1d, 26d);
             _slipBallNeedle = new GaugeNeedle("{Helios}/Gauges/AV-8B/ADI/adi_slip_ball.xaml", new Point(176d, 297d), new Size(14d, 14d), new Point(7d, 7d));
             Components.Add(_slipBallNeedle);
 
-            _TurnMarker = new GaugeNeedle("{Helios}/Gauges/AH-64D/SAI/adi_turn_marker.xaml", new Point(178d, 315d), new Size(12d, 9d), new Point(7d, 0d));
+            _TurnMarker = new GaugeNeedle("{Helios}/Images/AH-64D/SAI/adi_turn_marker.xaml", new Point(178d, 315d), new Size(12d, 9d), new Point(7d, 0d));
             Components.Add(_TurnMarker);
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/AH-64D/SAI/adi_guides.xaml", new Rect(66d, 54d, 222d, 250d)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_guides.xaml", new Rect(66d, 54d, 222d, 250d)));
 
             _offFlagImage = new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_off_flag.png", new Rect(270d, 40d, 44d, 166d));
             _offFlagImage.IsHidden = true;
             Components.Add(_offFlagImage);
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/AH-64D/SAI/adi_outer_ring.xaml", new Rect(10d, 9d, 336d, 336d)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_outer_ring.xaml", new Rect(10d, 9d, 336d, 336d)));
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/AH-64D/SAI/adi_bezel.png", new Rect(0d, 0d, 350d, 350d)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_bezel.png", new Rect(0d, 0d, 350d, 350d)));
 
             _slipBall = new HeliosValue(this, new BindingValue(0d), "Standby Attitude Indicator", "Slip Ball Offset", "Side slip indicator offset from the center of the tube.", "(-1 to 1) -1 full left and 1 is full right.", BindingValueUnits.Numeric);
             _slipBall.Execute += new HeliosActionHandler(SlipBall_Execute);

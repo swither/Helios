@@ -187,6 +187,20 @@ namespace GadrocsWorkshop.Helios
                     item.Key.Top = item.Value.Top + (locYDif * scaleY) - locYDif;
                 }
                 item.Key.Height = Math.Max(item.Value.Height * scaleY, 1d);
+                if(item.Key.TypeIdentifier == "Helios.Base.PushButton"){
+                    if (GlobalOptions.HasScaleAllText)
+                    {
+                        PushButton pb = item.Key as PushButton;
+                        if(pb.TextFormat != null)
+                        {
+                            // This relies on the ConfiguredFontSize of the button being the initial fontsize, 
+                            // and this is not usually the case if the button was not created within CompositeVisual
+                            // so for other buttons, make TextFormat.ConfiguredFontSize = TextFormat.FontSize
+                            // after they have been created.
+                            pb.TextFormat.FontSize = Clamp(pb.TextFormat.ConfiguredFontSize * scaleY, 1, 2000);
+                        }
+                    }
+                }
             }
         }
 
@@ -545,7 +559,7 @@ namespace GadrocsWorkshop.Helios
                 Text = buttonText,
                 Name = componentName
             };
-
+            button.TextFormat.ConfiguredFontSize = button.TextFormat.FontSize;
             Children.Add(button);
 
             AddTrigger(button.Triggers["pushed"], componentName);
@@ -1049,6 +1063,18 @@ namespace GadrocsWorkshop.Helios
             };
             Children.Add(panel);
             return panel;
+        }
+        private double Clamp(double value, double min, double max)
+        {
+            if (value < min)
+            {
+                return min;
+            }
+            if (value > max)
+            {
+                return max;
+            }
+            return value;
         }
     }
 }
