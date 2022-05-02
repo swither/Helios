@@ -62,10 +62,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             AddPot("Audio Volume", new Point(456d, 21d), new Size(50d, 50d), "Audio Volume Knob");
             AddPot("Display Brightness", new Point(456d, 110d), new Size(50d, 50d), "Brightness Knob");
             AddTwoWayToggle("Arm", new Point(127d, 274d), new Size(60d, 120d), _interfaceDeviceName, "Arm Switch");
-            AddTwoWayToggle("Mode", new Point(244d, 274d), new Size(60d, 120d), _interfaceDeviceName, "Mode Switch");
+            AddTwoWayToggle("Mode", new Point(244d, 274d), new Size(60d, 120d), _interfaceDeviceName, "Mode Switch",ToggleSwitchPosition.One);
             AddTwoWayToggle("Operation", new Point(361d, 274d), new Size(60d, 120d), _interfaceDeviceName, "Operation Switch");
-            //AddTwoWayToggle("Flare Jettison", new Point(484d, 272d), new Size(60d, 120d), _interfaceDeviceName, "Flare Jettison Switch");
-            //AddTwoWayToggle("Flare Jettison Guard", new Point(472d, 189d), new Size(81d, 220d), _interfaceDeviceName, "Jettison Switch Cover", "{Helios}/Images/AH-64D/CMWS/CMWS_Jettison_Guard_");
             AddTwoWayGuardToggle("Flare Jettison", new Point(472d, 191d), new Size(81d, 220d), _interfaceDeviceName, "Flare Jettison Switch", "Jettison Switch Cover", "{Helios}/Images/AH-64D/CMWS/CMWS_Jettison_");
         }
         private void AddTextDisplay(string name, Point posn, Size size,
@@ -195,14 +193,16 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
                 );
             knob.Name = Name + "_" + name;
         }
-        private void AddTwoWayToggle(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName) { AddTwoWayToggle(name, posn, size, interfaceDeviceName, interfaceElementName, "{Helios}/Images/Toggles/orange-round-"); }
-        private void AddTwoWayToggle(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName,string imageName)
+
+        private void AddTwoWayToggle(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName) { AddTwoWayToggle(name, posn, size, interfaceDeviceName, interfaceElementName, "{Helios}/Images/Toggles/orange-round-", ToggleSwitchPosition.Two); }
+        private void AddTwoWayToggle(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName, ToggleSwitchPosition ToggleDefaultPosition) { AddTwoWayToggle(name, posn, size, interfaceDeviceName, interfaceElementName, "{Helios}/Images/Toggles/orange-round-", ToggleDefaultPosition); }
+        private void AddTwoWayToggle(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName,string imageName, ToggleSwitchPosition ToggleDefaultPosition)
         {
             ToggleSwitch toggle = AddToggleSwitch(
                 name: name,
                 posn: posn,
                 size: size,
-                defaultPosition: ToggleSwitchPosition.Two,
+                defaultPosition: ToggleDefaultPosition,
                 defaultType: ToggleSwitchType.OnOn,
                 positionOneImage: $"{imageName}up.png",
                 positionTwoImage: $"{imageName}down.png",
