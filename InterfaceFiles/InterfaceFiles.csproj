@@ -57,5 +57,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Interfaces\Helios.AH64D.hif.json" />
+  </ItemGroup>
   <Import Project="..\Helios.targets" />
 </Project>

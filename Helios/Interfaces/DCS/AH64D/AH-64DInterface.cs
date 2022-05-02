@@ -922,10 +922,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             // Vehicles = new string[] { ModuleName, "other aircraft", "another aircraft" };
 
             // see if we can restore from JSON
-            //if (LoadFunctionsFromJson())
-            //{
-            //    return;
-            //}
+            if (LoadFunctionsFromJson())
+            {
+                return;
+            }
 
             #region MPDs
             #region Pilot Left
