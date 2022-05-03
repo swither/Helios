@@ -1308,7 +1308,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new Axis(this, TEDAC, tedac_commands.TDU_LEV_KNOB.ToString("d"), "149", 0.1d, 0d, 1d, "TEDAC", "FLIR LEV Control"));
             AddFunction(Switch.CreateThreeWaySwitch(this, TEDAC, tedac_commands.TDU_MODE_KNOB.ToString("d"), "154", "1.0", "Day", "0.5", "Night", "0.0", "Off", "TEDAC", "Display Mode", "%0.1f"));
             #endregion
-            #region Video Control Panel
+            #region Video Control Panel,
             AddFunction(new Axis(this, ELEC_INTERFACE, electric_commands.VCP_IHADSS_BRT_KNOB.ToString("d"), "278", 0.1d, 0d, 1d, "Video Control Panel", "IHADSS BRT Control Knob"));
             AddFunction(new Axis(this, ELEC_INTERFACE, electric_commands.VCP_IHADSS_CON_KNOB.ToString("d"), "279", 0.1d, 0d, 1d, "Video Control Panel", "IHADSS CON Control Knob"));
             AddFunction(new Axis(this, ELEC_INTERFACE, electric_commands.VCP_SYM_BRT_KNOB.ToString("d"), "280", 0.1d, 0d, 1d, "Video Control Panel", "SYM BRT Control Knob"));
@@ -1318,10 +1318,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             #endregion
             #region NVS MODE
             #region Pilot
-            //elements["pnt_309"] = default_3_position_tumb(CREW.PLT, _("NVS MODE Switch, FIXED/NORM/OFF"), devices.ELEC_INTERFACE, electric_commands.NVS_MODE_PLT_KNOB, 309, NOT_CYCLED, anim_speed_default * 0.5, NOT_INVERSED, 1.0, { -1,1})
+            AddFunction(Switch.CreateThreeWaySwitch(this, ELEC_INTERFACE, electric_commands.NVS_MODE_PLT_KNOB.ToString("d"), "309", "1.0", "Fixed", "0.0", "Norm", "-1.0", "Off", "NVS (Pilot)", "Mode Switch", "%0.1f"));
             #endregion
             #region CP/G
-            //elements["pnt_363"] = default_3_position_tumb(CREW.CPG, _("NVS MODE Switch, FIXED/NORM/OFF"), devices.ELEC_INTERFACE, electric_commands.NVS_MODE_CPG_KNOB, 363, NOT_CYCLED, anim_speed_default * 0.5, NOT_INVERSED, 1.0, { -1,1})
+            AddFunction(Switch.CreateThreeWaySwitch(this, ELEC_INTERFACE, electric_commands.NVS_MODE_CPG_KNOB.ToString("d"), "363", "1.0", "Fixed", "0.0", "Norm", "-1.0", "Off", "NVS (CP/G)", "Mode Switch", "%0.1f"));
             #endregion
             #endregion
             #region Left Console
