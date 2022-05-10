@@ -195,7 +195,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
         private void AddRocker(string name, double x, double y) { AddRocker(name, x, y, _interfaceDevice, name); }
         private void AddRocker(string name, double x, double y, string interfaceDeviceName, string interfaceElementName)
         {
-            Helios.Controls.ThreeWayToggleSwitch rocker = new Helios.Controls.ThreeWayToggleSwitch();
+            Helios.Controls.RockerSwitch rocker = new Helios.Controls.RockerSwitch();
             rocker.Name = ComponentName(name);
             rocker.SwitchType = Helios.Controls.ThreeWayToggleSwitchType.MomOnMom;
             rocker.ClickType = Helios.Controls.LinearClickType.Touch;
@@ -206,9 +206,15 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
             rocker.PositionThreeImage = "{Helios}/Images/Rockers/triangles-dark-down.png";
             rocker.Height = 140;
             rocker.Width = 50;
+            rocker.TextFormat.FontWeight = FontWeights.SemiBold;
+            rocker.TextFormat.FontSize = 15;
+            rocker.TextFormat.ConfiguredFontSize = 15;
+            rocker.TextFormat.FontFamily = ConfigManager.FontManager.GetFontFamilyByName("MS 33558");
+            rocker.Text = interfaceElementName.Substring(0, 3);
+            rocker.TextColor = Color.FromArgb(0xe0, 0xff, 0xff, 0xff);
+            rocker.TextPushOffset = new Point(0, 2);
 
             Children.Add(rocker);
-            AddTextDisplay($"{interfaceElementName}", new Point(x, y+(rocker.Height/2)-10), new Size(rocker.Width, 20), Name, interfaceElementName, 15, interfaceElementName.Substring(0,3), TextHorizontalAlignment.Center, "");
 
             AddTrigger(rocker.Triggers["position one.entered"], name);
             AddTrigger(rocker.Triggers["position one.exited"], name);
@@ -227,40 +233,6 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
                 childName: ComponentName(name),
                 interfaceTriggerName: $"{interfaceDeviceName}.{interfaceElementName}.changed",
                 deviceActionName: "set.position");
-        }
-        private void AddTextDisplay(string name, Point posn, Size size,
-                string interfaceDeviceName, string interfaceElementName, double baseFontsize, string testDisp, TextHorizontalAlignment hTextAlign, string devDictionary)
-        {
-            TextDisplay display = AddTextDisplay(
-                name: name,
-                posn: posn,
-                size: size,
-                font: "MS 33558",
-                baseFontsize: baseFontsize,
-                horizontalAlignment: hTextAlign,
-                verticalAligment: TextVerticalAlignment.Center,
-                testTextDisplay: testDisp,
-                textColor: Color.FromArgb(0xf0, 0xfa, 0xfa, 0xfa),
-                backgroundColor: Color.FromArgb(0x00, 0x04, 0x2a, 0x00),
-                useBackground: false,
-                interfaceDeviceName: interfaceDeviceName,
-                interfaceElementName: interfaceElementName,
-                textDisplayDictionary: devDictionary
-                );
-            display.TextValue = name.Substring(0, 3);
-            ///TODO: just using the TextDisplay for a label so remove the actions ,triggers and default input binding.  Clearly having a label on the RockerSwitch
-            ///is the right answer.
-            display.Actions.Clear();
-            display.Triggers.Clear();
-            Actions.Remove(Actions[$"{Name}_{name}.set.TextDisplay"]);
-            foreach(DefaultInputBinding dib in DefaultInputBindings)
-            {
-                if(dib.DeviceActionName == "set.TextDisplay")
-                {
-                    DefaultInputBindings.Remove(dib);
-                    break;
-                }              
-            }
         }
         private string ComponentName(string name)
         {

@@ -187,18 +187,37 @@ namespace GadrocsWorkshop.Helios
                     item.Key.Top = item.Value.Top + (locYDif * scaleY) - locYDif;
                 }
                 item.Key.Height = Math.Max(item.Value.Height * scaleY, 1d);
-                if(item.Key.TypeIdentifier == "Helios.Base.PushButton"){
-                    if (GlobalOptions.HasScaleAllText)
+                if (GlobalOptions.HasScaleAllText)
+                {
+                    switch (item.Key.TypeIdentifier)
                     {
-                        PushButton pb = item.Key as PushButton;
-                        if(pb.TextFormat != null)
-                        {
-                            // This relies on the ConfiguredFontSize of the button being the initial fontsize, 
-                            // and this is not usually the case if the button was not created within CompositeVisual
-                            // so for other buttons, make TextFormat.ConfiguredFontSize = TextFormat.FontSize
-                            // after they have been created.
-                            pb.TextFormat.FontSize = Clamp(pb.TextFormat.ConfiguredFontSize * scaleY, 1, 2000);
-                        }
+                        // These scaling operations on fonts rely on the ConfiguredFontSize of the button being the initial fontsize, 
+                        // so that multiple scalings, either up or down, are done with reference to the starting fontsize rather than
+                        // the current font being used.  It is therefore important that when the child is created, the 
+                        // TextFormat.ConfiguredFontSize should be set to the TextFormat.FontSize.
+                        case "Helios.Base.PushButton":
+                            PushButton pb = item.Key as PushButton;
+                            if (pb.TextFormat != null)
+                            {
+                                pb.TextFormat.FontSize = Clamp(pb.TextFormat.ConfiguredFontSize * scaleY, 1, 2000);
+                            }
+                            break;
+                        case "Helios.Base.RockerSwitch":
+                            RockerSwitch rs = item.Key as RockerSwitch;
+                            if (rs.TextFormat != null)
+                            {
+                                rs.TextFormat.FontSize = Clamp(rs.TextFormat.ConfiguredFontSize * scaleY, 1, 2000);
+                            }
+                            break;
+                        case "Helios.Base.Text":
+                            Controls.TextDecoration td = item.Key as Controls.TextDecoration;
+                            if (td.Format != null)
+                            {
+                                td.Format.FontSize = Clamp(td.Format.ConfiguredFontSize * scaleY, 1, 2000);
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
