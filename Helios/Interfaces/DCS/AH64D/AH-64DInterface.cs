@@ -1270,8 +1270,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new Axis(this, EUFD_PLT, eufd_commands.BRT.ToString("d"), "273", 0.1d, 0d, 1d, "Up Front Display (Pilot)", "Brightness Control Knob"));
             AddFunction(new PushButton(this, EUFD_PLT, eufd_commands.Enter.ToString("d"), "275", "Up Front Display (Pilot)", "Enter Button"));
             AddFunction(new PushButton(this, EUFD_PLT, eufd_commands.Swap.ToString("d"), "277", "Up Front Display (Pilot)", "Swap Button"));
-            AddFunction(new PushButton(this, EUFD_PLT, eufd_commands.Preset.ToString("d"), "274", "Up Front Display (Pilot)", "Preset Button", "Press to toggle preset window"));
-            AddFunction(new PushButton(this, EUFD_PLT, eufd_commands.Stopwatch.ToString("d"), "276", "Up Front Display (Pilot)", "Stopwatch Button", "Press to start/stop, Hold to reset"));
+            AddFunction(new PushButton(this, EUFD_PLT, eufd_commands.Preset.ToString("d"), "274", "Up Front Display (Pilot)", "Preset Button"));
+            AddFunction(new PushButton(this, EUFD_PLT, eufd_commands.Stopwatch.ToString("d"), "276", "Up Front Display (Pilot)", "Stopwatch Button"));
 
             #endregion
             #region CP/G
@@ -1281,8 +1281,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new Axis(this, EUFD_CPG, eufd_commands.BRT.ToString("d"), "265", 0.1d, 0d, 1d, "Up Front Display (CP/G)", "Brightness Control Knob"));
             AddFunction(new PushButton(this, EUFD_CPG, eufd_commands.Enter.ToString("d"), "267", "Up Front Display (CP/G)", "Enter Button"));
             AddFunction(new PushButton(this, EUFD_CPG, eufd_commands.Swap.ToString("d"), "269", "Up Front Display (CP/G)", "Swap Button"));
-            AddFunction(new PushButton(this, EUFD_CPG, eufd_commands.Preset.ToString("d"), "266", "Up Front Display (CP/G)", "Preset Button","Press to toggle preset window"));
-            AddFunction(new PushButton(this, EUFD_CPG, eufd_commands.Stopwatch.ToString("d"), "268", "Up Front Display (CP/G)", "Stopwatch Button","Press to start/stop, Hold to reset"));
+            AddFunction(new PushButton(this, EUFD_CPG, eufd_commands.Preset.ToString("d"), "266", "Up Front Display (CP/G)", "Preset Button"));
+            AddFunction(new PushButton(this, EUFD_CPG, eufd_commands.Stopwatch.ToString("d"), "268", "Up Front Display (CP/G)", "Stopwatch Button"));
 
             #endregion
             #endregion
