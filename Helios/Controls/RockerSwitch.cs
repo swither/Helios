@@ -172,7 +172,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 TextFormat.WriteXml(writer);
                 writer.WriteEndElement();
 
-                writer.WriteElementString("Text", Text);
+                writer.WriteElementString("TextValue", Text);
                 if (TextPushOffset != new Point(0, 0))
                 {
                     writer.WriteElementString("TextPushOffset", pointConverter.ConvertToString(null, CultureInfo.InvariantCulture, TextPushOffset));
@@ -191,13 +191,17 @@ namespace GadrocsWorkshop.Helios.Controls
             if (reader.Name.Equals("Text"))
             {
                 reader.ReadStartElement("Text");
-
-                TextColor = (Color)colorConverter.ConvertFromInvariantString(reader.ReadElementString("Color"));
-                reader.ReadStartElement("Font");
-                TextFormat.ReadXml(reader);
-                reader.ReadEndElement();
-
-                Text = reader.ReadElementString("Text");
+                if (reader.Name.Equals("Color"))
+                {
+                    TextColor = (Color)colorConverter.ConvertFromInvariantString(reader.ReadElementString("Color"));
+                }
+                if (reader.Name.Equals("Font"))
+                {
+                    reader.ReadStartElement("Font");
+                    TextFormat.ReadXml(reader);
+                    reader.ReadEndElement();
+                }
+                Text = reader.ReadElementString("TextValue");
                 if (reader.Name.Equals("TextPushOffset"))
                 {
                     TextPushOffset = (Point)pointConverter.ConvertFromInvariantString(reader.ReadElementString("TextPushOffset"));
