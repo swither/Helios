@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Windows.Media;
 
-    class IndicatorPushButtonRenderer : HeliosVisualRenderer
+    class DualIndicatorPushButtonRenderer : HeliosVisualRenderer
     {
         private ImageSource _image;
         private ImageSource _pushedImage;
@@ -32,6 +32,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
         private Brush _onTextBrush;
         private Brush _offTextBrush;
+        private Brush _additionalOnTextBrush;
+        private Brush _additionalOffTextBrush;
 
         private Brush _onGlyphBrush;
         private Pen _onGlyphPen;
@@ -42,7 +44,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            IndicatorPushButton pushButton = Visual as IndicatorPushButton;
+            DualIndicatorPushButton pushButton = Visual as DualIndicatorPushButton;
 
             if (pushButton.Pushed && pushButton.Indicator && _pushedImage != null)
             {
@@ -71,6 +73,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 drawingContext.DrawGeometry(pushButton.Indicator ? _onGlyphBrush : _offGlyphBrush, pushButton.Indicator ? _onGlyphPen : _offGlyphPen, _glyphPath);
             }
             pushButton.TextFormat.RenderText(drawingContext, pushButton.Indicator ? _onTextBrush : _offTextBrush, pushButton.Text, _imageRect);
+            pushButton.AdditionalTextFormat.RenderText(drawingContext, pushButton.AdditionalIndicator ? _additionalOnTextBrush : _additionalOffTextBrush, pushButton.AdditionalText, _imageRect);
 
             if (pushButton.Pushed)
             {
@@ -80,7 +83,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRefresh()
         {
-            IndicatorPushButton pushButton = Visual as IndicatorPushButton;
+            DualIndicatorPushButton pushButton = Visual as DualIndicatorPushButton;
 
             if (pushButton != null)
             {
@@ -92,6 +95,9 @@ namespace GadrocsWorkshop.Helios.Controls
                 _pushedIndicatorOnImage = ConfigManager.ImageManager.LoadImage(pushButton.PushedIndicatorOnImage);
                 _onTextBrush = new SolidColorBrush(pushButton.OnTextColor);
                 _offTextBrush = new SolidColorBrush(pushButton.TextColor);
+                _additionalOnTextBrush = new SolidColorBrush(pushButton.AdditionalOnTextColor);
+                _additionalOffTextBrush = new SolidColorBrush(pushButton.AdditionalOffTextColor);
+
 
                 _onGlyphBrush = new SolidColorBrush(pushButton.OnGlyphColor);
                 _onGlyphPen = new Pen(_onGlyphBrush, pushButton.GlyphThickness);
@@ -138,6 +144,8 @@ namespace GadrocsWorkshop.Helios.Controls
                 _pushedImage = null;
                 _onTextBrush = null;
                 _offTextBrush = null;
+                _additionalOnTextBrush = null;
+                _additionalOffTextBrush = null;
                 _onGlyphPen = null;
                 _offGlyphPen = null;
                 _glyphPath = null;
@@ -146,7 +154,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        private PathFigure GetArrowFigure(bool Right, IndicatorPushButton pushButton)
+        private PathFigure GetArrowFigure(bool Right, DualIndicatorPushButton pushButton)
         {
             double y = pushButton.Height / 2d;
             double arrowLength = pushButton.Width * pushButton.GlyphScale;
@@ -184,4 +192,5 @@ namespace GadrocsWorkshop.Helios.Controls
             return arrow;
         }
     }
+
 }

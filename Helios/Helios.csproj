@@ -98,6 +98,11 @@
     <Compile Include="Controls\ImageTranslucentBehaviorEditor.xaml.cs">
       <DependentUpon>ImageTranslucentBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DualIndicatorPushButton.cs" />
+    <Compile Include="Controls\DualIndicatorPushButtonRenderer.cs" />
+    <Compile Include="Controls\DualIndicatorPushButtonAppearanceEditor.xaml.cs">
+      <DependentUpon>DualIndicatorPushButtonAppearanceEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\NumericTextDisplay.cs" />
     <Compile Include="Controls\RendererCapabilities\IWindowsControl.cs" />
     <Compile Include="Controls\Special\CalibrationFilter.cs" />
@@ -334,6 +339,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ImageTranslucentBehaviorEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\DualIndicatorPushButtonAppearanceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
