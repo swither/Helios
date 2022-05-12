@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2022 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,6 +17,7 @@
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
+    using System;
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Media;
@@ -171,11 +173,16 @@ namespace GadrocsWorkshop.Helios.Controls
         #endregion
 
         #region Overrides
+
         public override void ScaleChildren(double scaleX, double scaleY)
         {
-            double scale = scaleX > scaleY ? scaleX : scaleY;
-            TextFormat.FontSize *= scale;
+            if (GlobalOptions.HasScaleAllText)
+            {
+                _additionalTextFormat.FontSize *= Math.Max(scaleX, scaleY);
+            }
+            base.ScaleChildren(scaleX, scaleY);
         }
+
 
         public override void Reset()
         {

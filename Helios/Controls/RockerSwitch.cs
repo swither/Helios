@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2022 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -133,6 +134,14 @@ namespace GadrocsWorkshop.Helios.Controls
             BeginTriggerBypass(true);
             SwitchPosition = DefaultPosition;
             EndTriggerBypass(true);
+        }
+        public override void ScaleChildren(double scaleX, double scaleY)
+        {
+            if (GlobalOptions.HasScaleAllText)
+            {
+                _labelFormat.FontSize *= Math.Max(scaleX, scaleY);
+            }
+            base.ScaleChildren(scaleX, scaleY);
         }
 
         public override void MouseUp(System.Windows.Point location)
