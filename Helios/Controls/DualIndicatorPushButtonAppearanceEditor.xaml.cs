@@ -142,42 +142,6 @@ namespace GadrocsWorkshop.Helios.Controls
                 }
                 else { }
             }
-
         }
-
-        //private void HeliosTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-
-        //}
-
-        //private void TextFormatButton_Loaded(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-
-        //}
-
-        //private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        //{
-
-        //}
-
-        //private void ComboBox_SelectionChanged_2(object sender, SelectionChangedEventArgs e)
-        //{
-
-        //}
-
-        //private void ColorWell_Loaded(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void ColorWell_Loaded_1(object sender, RoutedEventArgs e)
-        //{
-
-        //}
     }
 }

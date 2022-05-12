@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Controls
     public class DualIndicatorPushButton : IndicatorPushButton
     {
         private Color _additionalOnTextColor = Color.FromArgb(0xF0,0x34, 0xAE,0x00);
-        private Color _additionalOffTextColor = Color.FromArgb(0xF0, 0x1C, 0x1C, 0x1C);
+        private Color _additionalOffTextColor = Color.FromArgb(0x20, 0x34, 0xAE, 0x00);
         private bool _on = false;
         private string _additionalIndicatorText = "";
         private TextFormat _additionalTextFormat = new TextFormat();
@@ -47,7 +47,7 @@ namespace GadrocsWorkshop.Helios.Controls
             _on = false;
 
             OnTextColor = Color.FromArgb(0xF0,0xF6,0x7A,0x00);
-            TextColor = Color.FromArgb(0xF0, 0x1C, 0x1C, 0x1C);
+            TextColor = Color.FromArgb(0x20, 0xF6, 0x7A, 0x00);
             TextFormat.VerticalAlignment = TextVerticalAlignment.Top;
             TextFormat.HorizontalAlignment = TextHorizontalAlignment.Center;
             TextFormat.PaddingTop = 0.2;
@@ -117,7 +117,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 if (!_additionalOffTextColor.Equals(value))
                 {
                     Color oldValue = _additionalOffTextColor;
-                    _additionalOnTextColor = value;
+                    _additionalOffTextColor = value;
                     OnPropertyChanged("AdditionalOffTextColor", oldValue, value, true);
                     Refresh();
                 }
@@ -173,6 +173,11 @@ namespace GadrocsWorkshop.Helios.Controls
         #endregion
 
         #region Overrides
+        protected override void OnPropertyChanged(PropertyNotificationEventArgs args)
+        {
+            OnDisplayUpdate();
+            base.OnPropertyChanged(args);
+        }
 
         public override void ScaleChildren(double scaleX, double scaleY)
         {
