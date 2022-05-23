@@ -1242,24 +1242,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_EmergencyGuardPLT.ToString("d"), "Emergency Panel (Pilot)", "Emergency UHF Guard Indicator", ""));
             AddFunction(new PushButton(this, EMERGENCY_PANEL, intercom_commands.PLT_XPNDR_Btn.ToString("d"), "311", "Emergency Panel (Pilot)", "XPNDR Button"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_EmergencyXpndrPLT.ToString("d"), "Emergency Panel (Pilot)", "Emergency XPNDR Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.PLT_ZEROIZE_Sw.ToString("d"), "312", "1.0", "On", "0.0", "Off", "Emergency Panel (Pilot)", "Zeroize Switch", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.PLT_ZEROIZE_Sw.ToString("d"), "312", "1.0", "On", "0.0", "Off", "Emergency Panel (Pilot)", "Zeroize Switch", "%0.1f"));
             #endregion
             #region CP/G            
             AddFunction(new PushButton(this, EMERGENCY_PANEL, intercom_commands.CPG_UHF_GUARD_Btn.ToString("d"), "358", "Emergency Panel (CP/G)", "UHF Guard Button"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_EmergencyGuardCPG.ToString("d"), "Emergency Panel (CP/G)", "Emergency UHF Guard Indicator", ""));
             AddFunction(new PushButton(this, EMERGENCY_PANEL, intercom_commands.CPG_XPNDR_Btn.ToString("d"), "359", "Emergency Panel (CP/G)", "XPNDR Button"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_EmergencyXpndrCPG.ToString("d"), "Emergency Panel (CP/G)", "Emergency XPNDR Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.CPG_ZEROIZE_Sw.ToString("d"), "360", "1.0", "On", "0.0", "Off", "Emergency Panel (CP/G)", "Zeroize Switch", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.CPG_ZEROIZE_Sw.ToString("d"), "360", "1.0", "On", "0.0", "Off", "Emergency Panel (CP/G)", "Zeroize Switch", "%0.1f"));
             #endregion
             #endregion
             #region Instrument Panel
             #region Pilot
-            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.PLT_MasterZeroizeSw.ToString("d"), "804", "1.0", "On", "0.0", "Off", "Emergency Panel (Pilot)", "Master Zeroize Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.PLT_MasterZeroizeSwCover.ToString("d"), "803", "1.0", "Open", "0.0", "Closed", "Emergency Panel (Pilot)", "Master Zeroize Switch Cover", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.PLT_MasterZeroizeSw.ToString("d"), "804", "1.0", "On", "0.0", "Off", "Emergency Panel (Pilot)", "Master Zeroize Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.PLT_MasterZeroizeSwCover.ToString("d"), "803", "1.0", "Open", "0.0", "Closed", "Emergency Panel (Pilot)", "Master Zeroize Switch Cover", "%0.1f"));
             #endregion
             #region CP/G
-            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.CPG_MasterZeroizeSw.ToString("d"), "802", "1.0", "On", "0.0", "Off", "Emergency Panel (CP/G)", "Master Zeroize Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.CPG_MasterZeroizeSwCover.ToString("d"), "801", "1.0", "Open", "0.0", "Closed", "Emergency Panel (CP/G)", "Master Zeroize Switch Cover", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.CPG_MasterZeroizeSw.ToString("d"), "802", "1.0", "On", "0.0", "Off", "Emergency Panel (CP/G)", "Master Zeroize Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, EMERGENCY_PANEL, intercom_commands.CPG_MasterZeroizeSwCover.ToString("d"), "801", "1.0", "Open", "0.0", "Closed", "Emergency Panel (CP/G)", "Master Zeroize Switch Cover", "%0.1f"));
             #endregion
             #endregion
             #region Enhanced Up - Front Display
@@ -1314,7 +1314,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new Axis(this, ELEC_INTERFACE, electric_commands.VCP_SYM_BRT_KNOB.ToString("d"), "280", 0.1d, 0d, 1d, "Video Control Panel", "SYM BRT Control Knob"));
             AddFunction(new Axis(this, ELEC_INTERFACE, electric_commands.VCP_FLIR_LEV_KNOB.ToString("d"), "282", 0.1d, 0d, 1d, "Video Control Panel", "FLIR LVL Control Knob"));
             AddFunction(new Axis(this, ELEC_INTERFACE, electric_commands.VCP_FLIR_GAIN_KNOB.ToString("d"), "283", 0.1d, 0d, 1d, "Video Control Panel", "FLIR GAIN Control Knob"));
-            AddFunction(Switch.CreateToggleSwitch(this, ELEC_INTERFACE, electric_commands.VCP_ACM_SW.ToString("d"), "281", "1.0", "On", "0.0", "Off", "Video Control Panel", "Automatic Contrast Mode Switch", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, ELEC_INTERFACE, electric_commands.VCP_ACM_SW.ToString("d"), "281", "1.0", "On", "0.0", "Off", "Video Control Panel", "Automatic Contrast Mode Switch", "%0.1f"));
             #endregion
             #region NVS MODE
             #region Pilot
@@ -1346,7 +1346,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(Switch.CreateThreeWaySwitch(this, JETT_PANEL_PLT, hydraulic_commands.Rotor_Brake.ToString("d"), "314", "1.0", "BRK", "0.5", "Lock", "0.0", "Off", "Left Console (Pilot)", "Rotor Brake Switch", "%0.1f"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.APU_StartBtn.ToString("d"), "400", "Left Console (Pilot)", "APU Start Button"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_APUPLT.ToString("d"), "Left Console (Pilot)", "APU Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.APU_StartBtnCover.ToString("d"), "401", "1.0", "Closed", "0.0", "Open", "Left Console (Pilot)", "APU Start Button Cover", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.APU_StartBtnCover.ToString("d"), "401", "1.0", "Closed", "0.0", "Open", "Left Console (Pilot)", "APU Start Button Cover", "%0.1f"));
 
             //elements["pnt_633"] = default_lever(CREW.PLT, _("Power Lever Friction Adjustment Lever"), devices.CONTROL_INTERFACE, ctrl_commands.FrictionLever, 633)
             AddFunction(new Switch(this, ENGINE_INTERFACE, "317", new SwitchPosition[] { new SwitchPosition("1.0", "IGN ORIDE", engine_commands.Eng1IgnOrideSw.ToString("d"), engine_commands.Eng1IgnOrideSw.ToString("d"), "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "Start", engine_commands.Eng1StartSw.ToString("d"), engine_commands.Eng1StartSw.ToString("d"), "0.0", "0.0") }, "Left Console (Pilot)", "No.1 Engine Start Switch", "%0.1f"));
@@ -1375,23 +1375,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             #endregion
             #region Canopy
             #region Pilot
-            AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, cpt_mech_commands.PLT_Door_Lock.ToString("d"), "796", "1", "Open", "0", "Closed", "Canopy", "Pilot Handle", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, cpt_mech_commands.PLT_Door_Lock.ToString("d"), "796", "1.0", "Open", "0.0", "Closed", "Canopy", "Pilot Handle", "%0.1f"));
             #endregion
             #region CP/G
-            AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, cpt_mech_commands.CPG_Door_Lock.ToString("d"), "799", "1", "Open", "0", "Closed", "Canopy", "CP/G Handle", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, CPT_MECH, cpt_mech_commands.CPG_Door_Lock.ToString("d"), "799", "1", "Open", "0", "Closed", "Canopy", "CP/G Handle", "%0.1f"));
             #endregion
             #endregion
             #region FIRE DET / EXTG
             #region Pilot
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_Eng1FireBtnCover.ToString("d"), "296", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "ENG 1 Button Cover", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_Eng1FireBtnCover.ToString("d"), "296", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "ENG 1 Button Cover", "%0.1f"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_Eng1FireBtn.ToString("d"), "295", "Fire Panel (Pilot)", "ENG 1 Fire Pushbutton"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng1PLT.ToString("d"), "Fire Panel (Pilot)", "Eng1 Fire Indicator", ""));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng1PLT.ToString("d"), "Fire Panel (Pilot)", "Eng1 Ready Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_ApuFireBtnCover.ToString("d"), "298", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "APU Button Cover", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_ApuFireBtnCover.ToString("d"), "298", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "APU Button Cover", "%0.1f"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_ApuFireBtn.ToString("d"), "297", "Fire Panel (Pilot)", "APU Fire Pushbutton"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireApuPLT.ToString("d"), "Fire Panel (Pilot)", "APU Fire Indicator", ""));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyApuPLT.ToString("d"), "Fire Panel (Pilot)", "APU Ready Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_Eng2FireBtnCover.ToString("d"), "300", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "ENG 2 Button Cover", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_Eng2FireBtnCover.ToString("d"), "300", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "ENG 2 Button Cover", "%0.1f"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_Eng2FireBtn.ToString("d"), "299", "Fire Panel (Pilot)", "ENG 2 Fire Pushbutton"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng2PLT.ToString("d"), "Fire Panel (Pilot)", "Eng2 Fire Indicator", ""));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng2PLT.ToString("d"), "Fire Panel (Pilot)", "Eng2 Ready Indicator", ""));
@@ -1402,15 +1402,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new Switch(this, ENGINE_INTERFACE, "302", new SwitchPosition[] { new SwitchPosition("-1.0", "1", engine_commands.PLT_FireDetTestSw1.ToString("d")), new SwitchPosition("0.0", "OFF", engine_commands.PLT_FireDetTestSw1.ToString("d")), new SwitchPosition("1.0", "2", engine_commands.PLT_FireDetTestSw2.ToString("d")) }, "Fire Panel (Pilot)", "Fire Test Switch", "%0.1f"));
             #endregion
             #region CP/G
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_Eng1FireBtnCover.ToString("d"), "285", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "ENG 1 Button Cover", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_Eng1FireBtnCover.ToString("d"), "285", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "ENG 1 Button Cover", "%0.1f"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_Eng1FireBtn.ToString("d"), "284", "Fire Panel (CP/G)", "ENG 1 Fire Pushbutton"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng1CPG.ToString("d"), "Fire Panel (CP/G)", "Eng1 Fire Indicator", ""));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng1CPG.ToString("d"), "Fire Panel (CP/G)", "Eng1 Ready Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_ApuFireBtnCover.ToString("d"), "287", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "APU Button Cover", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_ApuFireBtnCover.ToString("d"), "287", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "APU Button Cover", "%0.1f"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_ApuFireBtn.ToString("d"), "286", "Fire Panel (CP/G)", "APU Fire Pushbutton"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireApuCPG.ToString("d"), "Fire Panel (CP/G)", "APU Fire Indicator", ""));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyApuCPG.ToString("d"), "Fire Panel (CP/G)", "APU Ready Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_Eng2FireBtnCover.ToString("d"), "289", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "ENG 2 Button Cover", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_Eng2FireBtnCover.ToString("d"), "289", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "ENG 2 Button Cover", "%0.1f"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_Eng2FireBtn.ToString("d"), "288", "Fire Panel (CP/G)", "ENG 2 Fire Pushbutton"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng2CPG.ToString("d"), "Fire Panel (CP/G)", "Eng2 Fire Indicator", ""));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng2CPG.ToString("d"), "Fire Panel (CP/G)", "Eng2 Ready Indicator", ""));
@@ -1452,7 +1452,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             #endregion
             #endregion
             #region Gear System
-            AddFunction(Switch.CreateToggleSwitch(this, GEAR_INTERFACE, gear_commands.AH64_ParkingBrake.ToString("d"), "634", "1", "Pull", "0", "Stow", "Gear", "Parking Brake Handle", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, GEAR_INTERFACE, gear_commands.AH64_ParkingBrake.ToString("d"), "634", "1", "Pull", "0", "Stow", "Gear", "Parking Brake Handle", "%0.1f"));
             #endregion
             #region Power Lever Quadrant
             #region Pilot
@@ -1602,11 +1602,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new PushButton(this, COMM_PANEL_PLT, comm_commands.ADF_disable.ToString("d"), "458", "Communications Panel (Pilot)", "ADF Volume Control Knob Pull"));  //  (LMB) Pull to disable / (MW) Rotate to adjust volume
             AddFunction(new Axis(this, COMM_PANEL_PLT, comm_commands.MASTER_volume.ToString("d"), "344", 0.1d, 0d, 1d, "Communications Panel (Pilot)", "MASTER Volume Control Knob"));
             AddFunction(new Axis(this, COMM_PANEL_PLT, comm_commands.SensControl.ToString("d"), "345", 0.1d, 0d, 1d, "Communications Panel (Pilot)", "SENS Control Knob"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.VHF_SQL.ToString("d"), "339", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "VHF Squelch Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.UHF_SQL.ToString("d"), "340", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "UHF Squelch Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.FM1_SQL.ToString("d"), "341", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "FM1 Squelch Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.FM2_SQL.ToString("d"), "342", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "FM2 Squelch Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.HF_SQL.ToString("d"), "343", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "HF Squelch Switch", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.VHF_SQL.ToString("d"), "339", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "VHF Squelch Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.UHF_SQL.ToString("d"), "340", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "UHF Squelch Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.FM1_SQL.ToString("d"), "341", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "FM1 Squelch Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.FM2_SQL.ToString("d"), "342", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "FM2 Squelch Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.HF_SQL.ToString("d"), "343", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "HF Squelch Switch", "%0.1f"));
             AddFunction(new Switch(this, COMM_PANEL_PLT, "346", new SwitchPosition[] { new SwitchPosition("1.0", "Hot Mic", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.5", "Vox", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.0", "PTT", comm_commands.ICS_MODE.ToString("d")) }, "Communications Panel (Pilot)", "ICS Mode Switch", "%0.1f"));
             AddFunction(new PushButton(this, COMM_PANEL_PLT, comm_commands.IDENT.ToString("d"), "347", "Communications Panel (Pilot)", "IDENT Button"));
 
@@ -1634,11 +1634,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new PushButton(this, COMM_PANEL_CPG, comm_commands.ADF_disable.ToString("d"), "468", "Communications Panel (CP/G)", "ADF Volume Control Knob Pull"));  //  (LMB) Pull to disable / (MW) Rotate to adjust volume
             AddFunction(new Axis(this, COMM_PANEL_CPG, comm_commands.MASTER_volume.ToString("d"), "385", 0.1d, 0d, 1d, "Communications Panel (CP/G)", "MASTER Volume Control Knob"));
             AddFunction(new Axis(this, COMM_PANEL_CPG, comm_commands.SensControl.ToString("d"), "386", 0.1d, 0d, 1d, "Communications Panel (CP/G)", "SENS Control Knob"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.VHF_SQL.ToString("d"), "380", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "VHF Squelch Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.UHF_SQL.ToString("d"), "381", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "UHF Squelch Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.FM1_SQL.ToString("d"), "382", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "FM1 Squelch Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.FM2_SQL.ToString("d"), "383", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "FM2 Squelch Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.HF_SQL.ToString("d"), "384", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "HF Squelch Switch", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.VHF_SQL.ToString("d"), "380", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "VHF Squelch Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.UHF_SQL.ToString("d"), "381", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "UHF Squelch Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.FM1_SQL.ToString("d"), "382", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "FM1 Squelch Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.FM2_SQL.ToString("d"), "383", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "FM2 Squelch Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.HF_SQL.ToString("d"), "384", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "HF Squelch Switch", "%0.1f"));
             AddFunction(new Switch(this, COMM_PANEL_CPG, "387", new SwitchPosition[] { new SwitchPosition("1.0", "Hot Mic", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.5", "Vox", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.0", "PTT", comm_commands.ICS_MODE.ToString("d")) }, "Communications Panel (CP/G)", "ICS Mode Switch", "%0.1f"));
             AddFunction(new PushButton(this, COMM_PANEL_CPG, comm_commands.IDENT.ToString("d"), "388", "Communications Panel (CP/G)", "IDENT Button"));
 
@@ -1649,11 +1649,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new Switch(this, CMWS, "610", new SwitchPosition[] { new SwitchPosition("-1.0", "Off", CMWS_commands.CMWS_PWR.ToString("d")), new SwitchPosition("0.0", "On", CMWS_commands.CMWS_PWR.ToString("d")), new SwitchPosition("1.0", "Test", CMWS_commands.CMWS_PWR_TEST.ToString("d")) }, "CMWS", "Power Switch", "%0.1f"));
             AddFunction(new Axis(this, CMWS, CMWS_commands.CMWS_AUDIO_KNOB.ToString("d"), "611", 0.1d, 0d, 1d, "CMWS", "Audio Volume Knob"));
             AddFunction(new Axis(this, CMWS, CMWS_commands.CMWS_LAMP_KNOB.ToString("d"), "612", 0.1d, 0d, 1d, "CMWS", "Brightness Knob"));
-            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_ARM_SAFE_SW.ToString("d"), "614", "1.0", "Arm", "0.0", "Safe", "CMWS", "Arm Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_CMWS_NAV_SW.ToString("d"), "615", "1.0", "CMWS", "0.0", "Nav", "CMWS", "Mode Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_BYPASS_AUTO_SW.ToString("d"), "616", "1.0", "Bypass", "0.0", "Auto", "CMWS", "Operation Switch", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_JETT_COVER.ToString("d"), "617", "1.0", "Open", "0.0", "Closed", "CMWS", "Jettison Switch Cover", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_JETT_SW.ToString("d"), "618", "1.0", "Arm", "0.0", "Safe", "CMWS", "Flare Jettison Switch", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_ARM_SAFE_SW.ToString("d"), "614", "1.0", "Arm", "0.0", "Safe", "CMWS", "Arm Switch", "%.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_CMWS_NAV_SW.ToString("d"), "615", "1.0", "CMWS", "0.0", "Nav", "CMWS", "Mode Switch", "%.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_BYPASS_AUTO_SW.ToString("d"), "616", "1.0", "Bypass", "0.0", "Auto", "CMWS", "Operation Switch", "%.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_JETT_COVER.ToString("d"), "617", "1.0", "Open", "0.0", "Closed", "CMWS", "Jettison Switch Cover", "%.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, CMWS, CMWS_commands.CMWS_JETT_SW.ToString("d"), "618", "1.0", "Arm", "0.0", "Safe", "CMWS", "Flare Jettison Switch", "%.1f"));
 
             AddFunction(new NetworkValue(this, "2084", "CMWS", "Ready Flag", "Displayed when CMWS is ready.", "Boolean True/False", BindingValueUnits.Boolean, null));
             AddFunction(new NetworkValue(this, "2085", "CMWS", "Dispensing Flag", "Displayed when CMWS is dispensing countermeasures.", "Boolean True/False", BindingValueUnits.Boolean, null));

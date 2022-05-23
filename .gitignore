@@ -53,3 +53,4 @@ Lua/DCS/Scripts/HeliosExport/Mods
 /Helios_with*.sln
 /Tools/*NonHelios*
 /InterfaceFiles/.vs/InterfaceFiles/project-colors.json
+/InterfaceFiles/.vs/InterfaceFiles/v15/Server/sqlite3
