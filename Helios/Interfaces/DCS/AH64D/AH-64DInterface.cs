@@ -1383,42 +1383,42 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             #endregion
             #region FIRE DET / EXTG
             #region Pilot
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_Eng1FireBtnCover.ToString("d"), "296", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "ENG 1 Button Cover", "%1d"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_Eng1FireBtn.ToString("d"), "295", "Fire Panel (Pilot)", "ENG 1 Fire Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng1PLT.ToString("d"), "Fire Panel (Pilot)", "Fire Eng1 Indicator", ""));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng1PLT.ToString("d"), "Fire Panel (Pilot)", "Extinguisher Ready Eng1 Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_Eng1FireBtnCover.ToString("d"), "296", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "ENG 1 Fire Pushbutton Cover", "%1d"));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng1PLT.ToString("d"), "Fire Panel (Pilot)", "Eng1 Fire Indicator", ""));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng1PLT.ToString("d"), "Fire Panel (Pilot)", "Eng1 Ready Indicator", ""));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_ApuFireBtnCover.ToString("d"), "298", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "APU Button Cover", "%1d"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_ApuFireBtn.ToString("d"), "297", "Fire Panel (Pilot)", "APU Fire Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireApuPLT.ToString("d"), "Fire Panel (Pilot)", "Fire APU Indicator", ""));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyApuPLT.ToString("d"), "Fire Panel (Pilot)", "Extinguisher Ready APU Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_ApuFireBtnCover.ToString("d"), "298", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "APU Fire Cover", "%1d"));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireApuPLT.ToString("d"), "Fire Panel (Pilot)", "APU Fire Indicator", ""));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyApuPLT.ToString("d"), "Fire Panel (Pilot)", "APU Ready Indicator", ""));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_Eng2FireBtnCover.ToString("d"), "300", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "ENG 2 Button Cover", "%1d"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_Eng2FireBtn.ToString("d"), "299", "Fire Panel (Pilot)", "ENG 2 Fire Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng2PLT.ToString("d"), "Fire Panel (Pilot)", "Fire Eng2 Indicator", ""));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng2PLT.ToString("d"), "Fire Panel (Pilot)", "Extinguisher Ready Eng2 Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.PLT_Eng2FireBtnCover.ToString("d"), "300", "1.0", "Closed", "0.0", "Open", "Fire Panel (Pilot)", "ENG 2 Fire Pushbutton Cover", "%1d"));
-            AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_PrimaryDischBtn.ToString("d"), "301", "Fire Panel (Pilot)", "Primary Fire Extinguisher Discharge Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_DischPriPLT.ToString("d"), "Fire Panel (Pilot)", "Discharge Pri Indicator", ""));
-            AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_ReserveDischBtn.ToString("d"), "303", "Fire Panel (Pilot)", "Reserve Fire Extinguisher Discharge Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_DischResPLT.ToString("d"), "Fire Panel (Pilot)", "Discharge Res Indicator", ""));
-            AddFunction(new Switch(this, ENGINE_INTERFACE, "302", new SwitchPosition[] { new SwitchPosition("1.0", "1", engine_commands.PLT_FireDetTestSw1.ToString("d")), new SwitchPosition("0.0", "OFF", engine_commands.PLT_FireDetTestSw1.ToString("d")), new SwitchPosition("-1.0", "2", engine_commands.PLT_FireDetTestSw2.ToString("d")) }, "Fire Panel (Pilot)", "Fire Detection Circuit Test Switch", "%0.1f"));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng2PLT.ToString("d"), "Fire Panel (Pilot)", "Eng2 Fire Indicator", ""));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng2PLT.ToString("d"), "Fire Panel (Pilot)", "Eng2 Ready Indicator", ""));
+            AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_PrimaryDischBtn.ToString("d"), "301", "Fire Panel (Pilot)", "Primary Extinguisher button"));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_DischPriPLT.ToString("d"), "Fire Panel (Pilot)", "Primary Discharge Indicator", ""));
+            AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.PLT_ReserveDischBtn.ToString("d"), "303", "Fire Panel (Pilot)", "Reserve Extinguisher button"));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_DischResPLT.ToString("d"), "Fire Panel (Pilot)", "Reserve Discharge Indicator", ""));
+            AddFunction(new Switch(this, ENGINE_INTERFACE, "302", new SwitchPosition[] { new SwitchPosition("-1.0", "1", engine_commands.PLT_FireDetTestSw1.ToString("d")), new SwitchPosition("0.0", "OFF", engine_commands.PLT_FireDetTestSw1.ToString("d")), new SwitchPosition("1.0", "2", engine_commands.PLT_FireDetTestSw2.ToString("d")) }, "Fire Panel (Pilot)", "Fire Test Switch", "%0.1f"));
             #endregion
             #region CP/G
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_Eng1FireBtnCover.ToString("d"), "285", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "ENG 1 Button Cover", "%1d"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_Eng1FireBtn.ToString("d"), "284", "Fire Panel (CP/G)", "ENG 1 Fire Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng1CPG.ToString("d"), "Fire Panel (CP/G)", "Fire Eng1 Indicator", ""));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng1CPG.ToString("d"), "Fire Panel (CP/G)", "Extinguisher Ready Eng1 Indicator", ""));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng1CPG.ToString("d"), "Fire Panel (CP/G)", "Eng1 Fire Indicator", ""));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng1CPG.ToString("d"), "Fire Panel (CP/G)", "Eng1 Ready Indicator", ""));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_ApuFireBtnCover.ToString("d"), "287", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "APU Button Cover", "%1d"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_ApuFireBtn.ToString("d"), "286", "Fire Panel (CP/G)", "APU Fire Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireApuCPG.ToString("d"), "Fire Panel (CP/G)", "Fire APU Indicator", ""));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyApuCPG.ToString("d"), "Fire Panel (CP/G)", "Extinguisher Ready APU Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_ApuFireBtnCover.ToString("d"), "287", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "APU Fire Cover", "%1d"));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireApuCPG.ToString("d"), "Fire Panel (CP/G)", "APU Fire Indicator", ""));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyApuCPG.ToString("d"), "Fire Panel (CP/G)", "APU Ready Indicator", ""));
+            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_Eng2FireBtnCover.ToString("d"), "289", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "ENG 2 Button Cover", "%1d"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_Eng2FireBtn.ToString("d"), "288", "Fire Panel (CP/G)", "ENG 2 Fire Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng2CPG.ToString("d"), "Fire Panel (CP/G)", "Fire Eng2 Indicator", ""));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng2CPG.ToString("d"), "Fire Panel (CP/G)", "Extinguisher Ready Eng2 Indicator", ""));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_Eng1FireBtnCover.ToString("d"), "285", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "ENG 1 Fire Pushbutton Cover", "%1d"));
-            AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.CPG_Eng2FireBtnCover.ToString("d"), "289", "1.0", "Closed", "0.0", "Open", "Fire Panel (CP/G)", "ENG 2 Fire Pushbutton Cover", "%1d"));
-            AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_PrimaryDischBtn.ToString("d"), "290", "Fire Panel (CP/G)", "Primary Fire Extinguisher Discharge Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_DischPriCPG.ToString("d"), "Fire Panel (CP/G)", "Discharge Pri Indicator", ""));
-            AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_ReserveDischBtn.ToString("d"), "292", "Fire Panel (CP/G)", "Reserve Fire Extinguisher Discharge Pushbutton"));
-            AddFunction(new FlagValue(this, Warning_Lights.FLAG_DischResCPG.ToString("d"), "Fire Panel (CP/G)", "Discharge Res Indicator", ""));
-            AddFunction(new Switch(this, ENGINE_INTERFACE, "291", new SwitchPosition[] { new SwitchPosition("1.0", "1", engine_commands.CPG_FireDetTestSw1.ToString("d")), new SwitchPosition("0.0", "OFF", engine_commands.CPG_FireDetTestSw1.ToString("d")), new SwitchPosition("-1.0", "2", engine_commands.CPG_FireDetTestSw2.ToString("d")) }, "Fire Panel (CP/G)", "Fire Detection Circuit Test Switch", "%0.1f"));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_FireEng2CPG.ToString("d"), "Fire Panel (CP/G)", "Eng2 Fire Indicator", ""));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_RdyEng2CPG.ToString("d"), "Fire Panel (CP/G)", "Eng2 Ready Indicator", ""));
+            AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_PrimaryDischBtn.ToString("d"), "290", "Fire Panel (CP/G)", "Primary Extinguisher button"));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_DischPriCPG.ToString("d"), "Fire Panel (CP/G)", "Primary Discharge Indicator", ""));
+            AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.CPG_ReserveDischBtn.ToString("d"), "292", "Fire Panel (CP/G)", "Reserve Extinguisher button"));
+            AddFunction(new FlagValue(this, Warning_Lights.FLAG_DischResCPG.ToString("d"), "Fire Panel (CP/G)", "Reserve Discharge Indicator", ""));
+            AddFunction(new Switch(this, ENGINE_INTERFACE, "291", new SwitchPosition[] { new SwitchPosition("-1.0", "1", engine_commands.CPG_FireDetTestSw1.ToString("d")), new SwitchPosition("0.0", "OFF", engine_commands.CPG_FireDetTestSw1.ToString("d")), new SwitchPosition("1.0", "2", engine_commands.CPG_FireDetTestSw2.ToString("d")) }, "Fire Panel (CP/G)", "Fire Test Switch", "%0.1f"));
             #endregion
             #endregion
             #region Power Levers
