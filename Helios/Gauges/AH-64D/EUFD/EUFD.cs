@@ -44,7 +44,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
                     vpName = "AH_64D_EUFD_PLT";
                     break;
                 case "Up Front Display (CP/G)":
-                    vpName = "AH_64D_EUFD_PLT";
+                    vpName = "AH_64D_EUFD_CPG";
                     break;
                 default:
                     break;
