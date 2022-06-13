@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
         "DCS AH-64D Apache",                    // human readable UI name for this interface
         typeof(DCSInterfaceEditor),             // uses basic DCS interface dialog
         typeof(UniqueHeliosInterfaceFactory),   // can't be instantiated when specific other interfaces are present
-        UniquenessKey="Helios.DCSInterface")]   // all other DCS interfaces exclude this interface
+        UniquenessKey = "Helios.DCSInterface")]   // all other DCS interfaces exclude this interface
 
     public class AH64DInterface : DCSInterface
     {
@@ -70,8 +70,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
         private const string KU_PLT = "29";       // Keyboard Unit
         private const string KU_CPG = "30";       // Keyboard Unit
         private const string KU_INPUT = "31";     // for input and routing
-        private const string ELC1 = "32";		
-        private const string ELC2 = "33";		
+        private const string ELC1 = "32";
+        private const string ELC2 = "33";
         private const string HIADC = "34";        // Highly Integrated Air Data Computer
         private const string FMC = "35";          // Flight Management Computer
         private const string WP1 = "36";          // Weapon Processor
@@ -922,10 +922,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             // Vehicles = new string[] { ModuleName, "other aircraft", "another aircraft" };
 
             // see if we can restore from JSON
-            if (LoadFunctionsFromJson())
-            {
-                return;
-            }
+            //if (LoadFunctionsFromJson())
+            //{
+            //    return;
+            //}
 
             #region MPDs
             #region Pilot Left
@@ -1343,14 +1343,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_EmergencyEmergHydPLT.ToString("d"), "Left Console (Pilot)", "Emergency Emerg Hyd Indicator", ""));
             AddFunction(new PushButton(this, HYDRO_INTERFACE, hydraulic_commands.TailWheelUnLock_PLT.ToString("d"), "308", "Left Console (Pilot)", "Tail Wheel Unlocked Pushbutton"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_TailWheelUnlockPLT.ToString("d"), "Left Console (Pilot)", "Tail Wheel Unlock Indicator", ""));
-            AddFunction(Switch.CreateThreeWaySwitch(this, JETT_PANEL_PLT, hydraulic_commands.Rotor_Brake.ToString("d"), "314", "1.0", "BRK", "0.5", "Lock", "0.0", "Off", "Left Console (Pilot)", "Rotor Brake Switch", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, HYDRO_INTERFACE, hydraulic_commands.Rotor_Brake.ToString("d"), "314", "1.0", "Off", "0.0", "Brake", "-1.0", "Lock", "Left Console (Pilot)", "Rotor Brake Switch", "%0.1f"));
             AddFunction(new PushButton(this, ENGINE_INTERFACE, engine_commands.APU_StartBtn.ToString("d"), "400", "Left Console (Pilot)", "APU Start Button"));
             AddFunction(new FlagValue(this, Warning_Lights.FLAG_APUPLT.ToString("d"), "Left Console (Pilot)", "APU Indicator", ""));
             AddFunction(Switch.CreateToggleSwitch(this, ENGINE_INTERFACE, engine_commands.APU_StartBtnCover.ToString("d"), "401", "1.0", "Closed", "0.0", "Open", "Left Console (Pilot)", "APU Start Button Cover", "%0.1f"));
 
-            //elements["pnt_633"] = default_lever(CREW.PLT, _("Power Lever Friction Adjustment Lever"), devices.CONTROL_INTERFACE, ctrl_commands.FrictionLever, 633)
-            AddFunction(new Switch(this, ENGINE_INTERFACE, "317", new SwitchPosition[] { new SwitchPosition("1.0", "IGN ORIDE", engine_commands.Eng1IgnOrideSw.ToString("d"), engine_commands.Eng1IgnOrideSw.ToString("d"), "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "Start", engine_commands.Eng1StartSw.ToString("d"), engine_commands.Eng1StartSw.ToString("d"), "0.0", "0.0") }, "Left Console (Pilot)", "No.1 Engine Start Switch", "%0.1f"));
-            AddFunction(new Switch(this, ENGINE_INTERFACE, "318", new SwitchPosition[] { new SwitchPosition("1.0", "IGN ORIDE", engine_commands.Eng2IgnOrideSw.ToString("d"), engine_commands.Eng2IgnOrideSw.ToString("d"), "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "Start", engine_commands.Eng2StartSw.ToString("d"), engine_commands.Eng2StartSw.ToString("d"), "0.0", "0.0") }, "Left Console (Pilot)", "No.2 Engine Start Switch", "%0.1f"));
+            AddFunction(new Switch(this, ENGINE_INTERFACE, "317", new SwitchPosition[] { new SwitchPosition("1.0", "Start", engine_commands.Eng1StartSw.ToString("d"), engine_commands.Eng1StartSw.ToString("d"), "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "IGN ORIDE", engine_commands.Eng1IgnOrideSw.ToString("d"), engine_commands.Eng1IgnOrideSw.ToString("d"), "0.0", "0.0") }, "Left Console (Pilot)", "No.1 Engine Start Switch", "%0.1f"));
+            AddFunction(new Switch(this, ENGINE_INTERFACE, "318", new SwitchPosition[] { new SwitchPosition("1.0", "Start", engine_commands.Eng2StartSw.ToString("d"), engine_commands.Eng2StartSw.ToString("d"), "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "IGN ORIDE", engine_commands.Eng2IgnOrideSw.ToString("d"), engine_commands.Eng2IgnOrideSw.ToString("d"), "0.0", "0.0") }, "Left Console (Pilot)", "No.2 Engine Start Switch", "%0.1f"));
             #endregion
             #region CP/G
             AddFunction(new PushButton(this, JETT_PANEL_CPG, JETT_commands.STORE_LO_JETTISON_ARMED.ToString("d"), "368", "Left Console (CP/G)", "L OUTBD Station Select Pushbutton"));
@@ -1421,16 +1420,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new Switch(this, ENGINE_INTERFACE, "291", new SwitchPosition[] { new SwitchPosition("-1.0", "1", engine_commands.CPG_FireDetTestSw1.ToString("d")), new SwitchPosition("0.0", "OFF", engine_commands.CPG_FireDetTestSw1.ToString("d")), new SwitchPosition("1.0", "2", engine_commands.CPG_FireDetTestSw2.ToString("d")) }, "Fire Panel (CP/G)", "Fire Test Switch", "%0.1f"));
             #endregion
             #endregion
-            #region Power Levers
-            #region Pilot
-            //elements["pnt_398"] = default_lever(CREW.PLT, _('Power Lever Smoothly (Left)'), devices.ENGINE_INTERFACE, engine_commands.PLT_L_PowerLever, 398)
-            //elements["pnt_399"] = default_lever(CREW.PLT, _('Power Lever Smoothly (Right)'), devices.ENGINE_INTERFACE, engine_commands.PLT_R_PowerLever, 399)
-            #endregion
-            #region CP/G
-            //elements["pnt_628"] = default_lever(CREW.CPG, _('Power Lever Smoothly (Left)'), devices.ENGINE_INTERFACE, engine_commands.CPG_L_PowerLever, 628)
-            //elements["pnt_629"] = default_lever(CREW.CPG, _('Power Lever Smoothly (Right)'), devices.ENGINE_INTERFACE, engine_commands.CPG_R_PowerLever, 629)
-            #endregion
-            #endregion
             #region Very essential cockpit elements
             #region Pilot
             //elements["pnt_827"] = default_button(CREW.PLT, _('PLT M4 Trigger'), devices.CPT_MECH, cpt_mech_commands.PLT_M4_Trigger, 827)
@@ -1456,14 +1445,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             #endregion
             #region Power Lever Quadrant
             #region Pilot
-            AddFunction(new Switch(this, ELEC_INTERFACE, "315", new SwitchPosition[] { new SwitchPosition("0.0", "Off", electric_commands.MIK.ToString("d")), new SwitchPosition("0.5", "Batt", electric_commands.MIK.ToString("d")), new SwitchPosition("1.0", "External Power", electric_commands.MIK.ToString("d")) }, "Electrical", "Master Ignition Switch", "%0.1f"));
-
-            //elements["pnt_398"] = default_lever(CREW.PLT, _('Power Lever Smoothly (Left)'), devices.ENGINE_INTERFACE, engine_commands.PLT_L_PowerLever, 398)
-            //elements["pnt_399"] = default_lever(CREW.PLT, _('Power Lever Smoothly (Right)'), devices.ENGINE_INTERFACE, engine_commands.PLT_R_PowerLever, 399)
+            AddFunction(new Switch(this, ELEC_INTERFACE, "315", new SwitchPosition[] { new SwitchPosition("0.0", "Off", electric_commands.MIK.ToString("d")), new SwitchPosition("0.5", "Batt", electric_commands.MIK.ToString("d")), new SwitchPosition("1.0", "External Power", electric_commands.MIK.ToString("d")) }, "Left Console (Pilot)", "Master Ignition Switch", "%0.1f"));
+            AddFunction(new Axis(this, CONTROL_INTERFACE, ctrl_commands.FrictionLever.ToString("d"), "633", 0.1d, 0d, 1d, "Left Console (Pilot)", "Lever Friction Adjustment", false, "%0.3f"));
+            AddFunction(new Axis(this, ENGINE_INTERFACE, engine_commands.PLT_L_PowerLever.ToString("d"), "398", 0.05d, 0d, 1d, "Left Console (Pilot)", "Left Power Lever", false, "%0.3f"));
+            AddFunction(new Axis(this, ENGINE_INTERFACE, engine_commands.PLT_R_PowerLever.ToString("d"), "399", 0.05d, 0d, 1d, "Left Console (Pilot)", "Right Power Lever", false, "%0.3f"));
             #endregion
             #region CP/G
-            //elements["pnt_628"] = default_lever(CREW.CPG, _('Power Lever Smoothly (Left)'), devices.ENGINE_INTERFACE, engine_commands.CPG_L_PowerLever, 628)
-            //elements["pnt_629"] = default_lever(CREW.CPG, _('Power Lever Smoothly (Right)'), devices.ENGINE_INTERFACE, engine_commands.CPG_R_PowerLever, 629)
+            AddFunction(new Axis(this, ENGINE_INTERFACE, engine_commands.CPG_L_PowerLever.ToString("d"), "628", 0.05d, 0d, 1d, "Left Console (CP/G)", "Left Power Lever", false, "%0.3f"));
+            AddFunction(new Axis(this, ENGINE_INTERFACE, engine_commands.CPG_R_PowerLever.ToString("d"), "629", 0.05d, 0d, 1d, "Left Console (CP/G)", "Right Power Lever", false, "%0.3f"));
             #endregion
             #endregion
             #region Processor Select Panel
