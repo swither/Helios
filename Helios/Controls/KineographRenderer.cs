@@ -64,30 +64,36 @@ namespace GadrocsWorkshop.Helios.Controls
                     if (animation.AnimationFrames.Count == 0)
                     {
                         bool imageLoaded = true;
-                        for (int i = 0; i < 20 && imageLoaded; i++)
+                        if (ConfigManager.ImageManager is IImageManager3 animationCapable)
                         {
-                            try
+                            for (int i = 0; i < 20 && imageLoaded; i++)
                             {
-                                animation.AnimationFrames.Add(ConfigManager.ImageManager.LoadImage(ImageFileName(animation.AnimationFrameImageNamePattern, i, substitutionChar)));
-                                if (animation.AnimationFrames[animation.AnimationFrames.Count - 1] == null)
+                                try
                                 {
-                                    imageLoaded = false;
-                                    animation.AnimationFrames.RemoveAt(animation.AnimationFrames.Count - 1);
+                                    animation.AnimationFrames.Add(animationCapable.LoadImage(ImageFileName(animation.AnimationFrameImageNamePattern, i, substitutionChar), LoadImageOptions.SuppressMissingImageMessages));
+                                    if (animation.AnimationFrames[animation.AnimationFrames.Count - 1] == null)
+                                    {
+                                        imageLoaded = false;
+                                        animation.AnimationFrames.RemoveAt(animation.AnimationFrames.Count - 1);
+                                    }
+                                }
+                                catch
+                                {
+                                    if (i > 0)
+                                    {
+                                        imageLoaded = false; // tolerate image sequences starting at 0 or 1
+                                        Logger.Debug($"Unable to load image name {ImageFileName(animation.AnimationFrameImageNamePattern, i, substitutionChar)}");
+                                    }
                                 }
                             }
-                            catch
-                            {
-                                if (i > 0)
-                                {
-                                    imageLoaded = false; // tolerate image sequences starting at 0 or 1
-                                    Logger.Debug($"Unable to load image name {ImageFileName(animation.AnimationFrameImageNamePattern, i, substitutionChar)}");
-                                }
-                            }
+                            animation.AnimationIsPng = animation.AnimationFrameImageNamePattern.IndexOf(".png", StringComparison.InvariantCultureIgnoreCase) >= 0;
+                            animation.AnimationFrameCount = animation.AnimationFrames.Count;
+                            animation.AnimationFrameNumber = 0;
+                            Logger.Debug($"Loaded animation frame set {animation.AnimationFrameImageNamePattern} with {animation.AnimationFrames.Count} frames");
+                        } else
+                        {
+                            animation.AnimationFrames.Clear();
                         }
-                        animation.AnimationIsPng = animation.AnimationFrameImageNamePattern.IndexOf(".png",StringComparison.InvariantCultureIgnoreCase)>=0;
-                        animation.AnimationFrameCount = animation.AnimationFrames.Count;
-                        animation.AnimationFrameNumber = 0;
-                        Logger.Debug($"Loaded animation frame set {animation.AnimationFrameImageNamePattern} with {animation.AnimationFrames.Count} frames");
                     }
                 }
                 else
