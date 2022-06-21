@@ -1,4 +1,4 @@
-﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2014 Craig Courtney
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,21 +15,25 @@
 
 namespace GadrocsWorkshop.Helios.Controls
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Windows.Controls;
-    using System.Windows;
-
-    /// <summary>
-    /// Interaction logic for AnimationAppearanceEditor.xaml
-    /// </summary>
-    [HeliosPropertyEditor("Helios.Base.LinearPotentiometerAnimated", "Appearance")]
-    [HeliosPropertyEditor("Helios.Base.LinearPotentiometerDetentsAnimated", "Appearance")]
-
-    public partial class AnimationAppearanceEditor : HeliosPropertyEditor
+    public class DetentAddPositionUndoEvent : IUndoItem
     {
-        public AnimationAppearanceEditor()
+        private LinearPotentiometerDetentsAnimated _linearPotentiometer;
+        private double _position;
+
+        public DetentAddPositionUndoEvent(LinearPotentiometerDetentsAnimated linearPotentiometer, double position)
         {
-            InitializeComponent();
+            _linearPotentiometer = linearPotentiometer;
+            _position = position;
+        }
+
+        public void Undo()
+        {
+            _linearPotentiometer.DetentPositions.Remove(_position);
+        }
+
+        public void Do()
+        {
+            _linearPotentiometer.DetentPositions.Add(_position);
         }
     }
 }

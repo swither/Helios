@@ -29,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using Size = System.Windows.Size;
     using Point = System.Windows.Point;
 
-    [HeliosControl("Helios.Base.LinearPotentiometerAnimated", "Linear Potentiometer (Animated)", "Potentiometers", typeof( KineographRenderer ) )]
+    [HeliosControl("Helios.Base.LinearPotentiometerAnimated", "Linear Potentiometer (Animated)", "Potentiometers", typeof(KineographRenderer))]
     public class LinearPotentiometerAnimated : HeliosVisual, IKineographControl
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -60,11 +60,12 @@ namespace GadrocsWorkshop.Helios.Controls
         private String _animationFrameImageNamePattern;
         private int _animationFrameNumber = 0;
         private int _animationFrameCount = 0;
-        private Bitmap _animationFrameBitmap =null;
+        private Bitmap _animationFrameBitmap = null;
         private bool _animationIsPng = false;
 
-        public LinearPotentiometerAnimated( )
-            : base( "Linear Potentiometer (Animated)", new Size( 73, 240 ) )
+        public LinearPotentiometerAnimated():this("Linear Potentiometer (Animated)", new Size(73, 240)){} 
+        public LinearPotentiometerAnimated(string name, Size size)
+            : base(name, size)
         {
             AnimationFrameImageNamePattern ="{Helios}/Images/AH-64D/Power/Lever_0.png";
             AnimationFrameNumber = AnimationFrameCount-1;
@@ -97,7 +98,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public double MinValue
+        public virtual double MinValue
         {
             get
             {
@@ -114,7 +115,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public double MaxValue
+        public virtual double MaxValue
         {
             get
             {
@@ -307,15 +308,13 @@ namespace GadrocsWorkshop.Helios.Controls
         void SetValuePotentionmeter_Execute(object action, HeliosActionEventArgs e)
         {
             double maxImage = AnimationFrameCount - 1;
-            //_linearPotentiometer.SetValue(new BindingValue(Clamp(Math.Round(e.Value.DoubleValue * maxImage), 0, maxImage)), true);
-            //AnimationFrameNumber = Convert.ToInt32(_linearPotentiometer.Value.DoubleValue);
             Value = e.Value.DoubleValue;
             AnimationFrameNumber = Convert.ToInt32(Clamp(Math.Round(e.Value.DoubleValue * maxImage), 0, maxImage));
         }
 
         #endregion
 
-        protected void CalculateMovement(double pulses)
+        protected virtual void CalculateMovement(double pulses)
         {
             double dragProportion = pulses / this.Height * MaxValue * -1;
             Value = Math.Round(Math.Max(Math.Min(Value + dragProportion, MaxValue), MinValue), 3);
