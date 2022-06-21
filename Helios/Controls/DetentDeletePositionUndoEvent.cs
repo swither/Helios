@@ -13,23 +13,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 namespace GadrocsWorkshop.Helios.Controls
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Windows.Controls;
-    using System.Windows;
-
-    /// <summary>
-    /// Interaction logic for AnimationAppearanceEditor.xaml
-    /// </summary>
-    [HeliosPropertyEditor("Helios.Base.LinearPotentiometerAnimated", "Appearance")]
-    [HeliosPropertyEditor("Helios.Base.LinearPotentiometerDetentsAnimated", "Appearance")]
-
-    public partial class AnimationAppearanceEditor : HeliosPropertyEditor
+    public class DetentDeletePositionUndoEvent : IUndoItem
     {
-        public AnimationAppearanceEditor()
+        private LinearPotentiometerDetentsAnimated _linearPotentiometer;
+        private double _position;
+
+        public DetentDeletePositionUndoEvent(LinearPotentiometerDetentsAnimated linearPotentiometer, double position)
         {
-            InitializeComponent();
+            _linearPotentiometer = linearPotentiometer;
+            _position = position;
+        }
+
+        public void Undo()
+        {
+           _linearPotentiometer.DetentPositions.Add(_position);
+        }
+
+        public void Do()
+        {
+            _linearPotentiometer.DetentPositions.Remove(_position);
         }
     }
 }

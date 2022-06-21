@@ -102,6 +102,7 @@
     </Compile>
     <Compile Include="Controls\Capabilities\IKineographControl.cs" />
     <Compile Include="Controls\KineographRenderer.cs" />
+    <Compile Include="Controls\LinearPotentiometerDetentsAnimated.cs" />
     <Compile Include="Controls\NumericTextDisplay.cs" />
     <Compile Include="Controls\LinearPotentiometerAnimated.cs" />
     <Compile Include="Controls\AnimationAppearanceEditor.xaml.cs">
@@ -111,6 +112,11 @@
       <DependentUpon>LinearPotentiometerBehaviorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RendererCapabilities\IWindowsControl.cs" />
+    <Compile Include="Controls\DetentAddPositionUndoEvent.cs" />
+    <Compile Include="Controls\RotarySwitchBehaviorEditor.xaml.cs">
+      <DependentUpon>RotarySwitchBehaviorEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DetentDeletePositionUndoEvent.cs" />
     <Compile Include="Controls\Special\CalibrationFilter.cs" />
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
@@ -351,6 +357,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\LinearPotentiometerBehaviorEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\RotarySwitchBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -835,8 +845,8 @@
     <Compile Include="Controls\RotarySwitchAppearanceEditor.xaml.cs">
       <DependentUpon>RotarySwitchAppearanceEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\RotarySwitchBehaviorEditor.xaml.cs">
-      <DependentUpon>RotarySwitchBehaviorEditor.xaml</DependentUpon>
+    <Compile Include="Controls\LinearPotentiometerDetentBehaviorEditor.xaml.cs">
+      <DependentUpon>LinearPotentiometerDetentBehaviorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RotarySwitchDeletePositionUndoEvent.cs" />
     <Compile Include="Controls\RotarySwitchPosition.cs" />
@@ -1549,7 +1559,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\RotarySwitchBehaviorEditor.xaml">
+    <Page Include="Controls\LinearPotentiometerDetentBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
