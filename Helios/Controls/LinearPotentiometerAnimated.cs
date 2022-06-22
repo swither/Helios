@@ -29,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using Size = System.Windows.Size;
     using Point = System.Windows.Point;
 
-    [HeliosControl("Helios.Base.LinearPotentiometerAnimated", "Linear Potentiometer (Animated)", "Potentiometers", typeof(KineographRenderer))]
+    [HeliosControl("Helios.Base.LinearPotentiometerAnimated", "Linear Potentiometer (Animated)", "Potentiometers", typeof(KineographRenderer),HeliosControlFlags.NotShownInUI)]
     public class LinearPotentiometerAnimated : HeliosVisual, IKineographControl
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();

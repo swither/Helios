@@ -67,24 +67,6 @@ namespace GadrocsWorkshop.Helios.Controls
                 _detents.Sort();
                 OnPropertyChanged("DetentPositions", value, _detents, true);
             }
-            //get
-            //{
-            //    _ld = new List<double>(_detents);
-            //    if (_ld.Contains(MinValue)) _ld.Remove(MinValue);
-            //    if (_ld.Contains(MaxValue)) _ld.Remove(MaxValue);
-            //    return _ld;
-            //}
-            //set
-            //{
-            //    if (!value.Equals(_ld))
-            //    {
-            //        _detents = new List<double>(value);
-            //        if (!_detents.Contains(MinValue)) _detents.Add(MinValue);
-            //        if (!_detents.Contains(MaxValue)) _detents.Add(MaxValue);
-            //        _detents.Sort();
-            //        OnPropertyChanged("DetentPositions", value, _ld, true);
-            //    }
-            //}   
         }
         public void AddDetent(double value)
         {
@@ -93,8 +75,8 @@ namespace GadrocsWorkshop.Helios.Controls
                 _detents.Add(value);
                 if (this.Triggers.Count < 1 + (_detents.Count - 2) * 2)
                 {
-                    this.Triggers.Add(new HeliosTrigger(this, "", $"detent { _detents.Count - 2 }", "holding", "Fires when potentiometer stopped at detent position"));
-                    this.Triggers.Add(new HeliosTrigger(this, "", $"detent { _detents.Count - 2 }", "released", "Fires when potentiometer released from detent position"));
+                    this.Triggers.Add(new HeliosTrigger(this, "", $"detent { _detents.Count - 2  }", "holding", "Fires when potentiometer stopped at detent position", "true when detent encoutered, false when leaving a detent", BindingValueUnits.Boolean));
+                    this.Triggers.Add(new HeliosTrigger(this, "", $"detent { _detents.Count - 2  }", "released", "Fires when potentiometer released from detent position", "+1 if increasing, -1 if decreasing", BindingValueUnits.Numeric));
                 }
             }
             _detents.Sort();
@@ -188,9 +170,8 @@ namespace GadrocsWorkshop.Helios.Controls
                 while (reader.NodeType != XmlNodeType.EndElement)
                 {
                     DetentPositions.Add(Double.Parse(reader.GetAttribute("Position"), CultureInfo.InvariantCulture));
-                    this.Triggers.Add(new HeliosTrigger(this, "", $"detent { i }", "holding", "Fires when potentiometer stopped at detent position"));
-                    this.Triggers.Add(new HeliosTrigger(this, "", $"detent { i++ }", "released", "Fires when potentiometer released from detent position"));
-
+                    this.Triggers.Add(new HeliosTrigger(this, "", $"detent { i }", "holding", "Fires when potentiometer stopped at detent position","true when detent encoutered, false when leaving a detent",BindingValueUnits.Boolean));
+                    this.Triggers.Add(new HeliosTrigger(this, "", $"detent { i++ }", "released", "Fires when potentiometer released from detent position","+1 if increasing, -1 if decreasing",BindingValueUnits.Numeric));
                     reader.Read();
                 }
                 reader.ReadEndElement();
@@ -254,14 +235,24 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     if (_detents[i] == currentValue)
                     {
+                        int j = 0;
                         foreach (IBindingTrigger ibt in this.Triggers)
                         {
-                            if (ibt.Name == $"detent {i}" && ibt.TriggerVerb == "released")
+                            if (ibt.Name == $"detent {i}")
                             {
-                                HeliosTrigger ht = ibt as HeliosTrigger;
-                                ht.FireTrigger(BindingValue.Empty);
-                                break;
+                                HeliosTrigger hTrigger = ibt as HeliosTrigger;
+                                if (hTrigger.TriggerVerb == "released")
+                                {
+                                    hTrigger.FireTrigger(new BindingValue(dragProportion > 0 ? -1 : 1));
+                                    j++;
+                                }
+                                if (hTrigger.TriggerVerb == "holding")
+                                {
+                                    hTrigger.FireTrigger(new BindingValue(false));
+                                    j++;
+                                }
                             }
+                            if (j == 2) break;
                         }
                         break;
                     }
@@ -313,8 +304,8 @@ namespace GadrocsWorkshop.Helios.Controls
                             {
                                 if (ibt.Name == $"detent {i}" && ibt.TriggerVerb == "holding")
                                 {
-                                    HeliosTrigger ht = ibt as HeliosTrigger;
-                                    ht.FireTrigger(BindingValue.Empty);
+                                    HeliosTrigger hTrigger = ibt as HeliosTrigger;
+                                    hTrigger.FireTrigger(new BindingValue(true));
                                     break;
                                 }
                             }
