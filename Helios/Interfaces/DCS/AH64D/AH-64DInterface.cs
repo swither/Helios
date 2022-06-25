@@ -1597,7 +1597,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.FM1_SQL.ToString("d"), "341", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "FM1 Squelch Switch", "%0.1f"));
             AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.FM2_SQL.ToString("d"), "342", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "FM2 Squelch Switch", "%0.1f"));
             AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.HF_SQL.ToString("d"), "343", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "HF Squelch Switch", "%0.1f"));
-            AddFunction(new Switch(this, COMM_PANEL_PLT, "346", new SwitchPosition[] { new SwitchPosition("1.0", "Hot Mic", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.5", "Vox", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.0", "PTT", comm_commands.ICS_MODE.ToString("d")) }, "Communications Panel (Pilot)", "ICS Mode Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_PLT, "346", new SwitchPosition[] { new SwitchPosition("1.0", "Hot Mic", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.0", "Vox", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("-1.0", "PTT", comm_commands.ICS_MODE.ToString("d")) }, "Communications Panel (Pilot)", "ICS Mode Switch", "%0.1f"));
             AddFunction(new PushButton(this, COMM_PANEL_PLT, comm_commands.IDENT.ToString("d"), "347", "Communications Panel (Pilot)", "IDENT Button"));
 
 #endregion
@@ -1629,7 +1629,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.FM1_SQL.ToString("d"), "382", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "FM1 Squelch Switch", "%0.1f"));
             AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.FM2_SQL.ToString("d"), "383", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "FM2 Squelch Switch", "%0.1f"));
             AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.HF_SQL.ToString("d"), "384", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "HF Squelch Switch", "%0.1f"));
-            AddFunction(new Switch(this, COMM_PANEL_CPG, "387", new SwitchPosition[] { new SwitchPosition("1.0", "Hot Mic", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.5", "Vox", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.0", "PTT", comm_commands.ICS_MODE.ToString("d")) }, "Communications Panel (CP/G)", "ICS Mode Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_CPG, "387", new SwitchPosition[] { new SwitchPosition("1.0", "Hot Mic", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.0", "Vox", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("-1.0", "PTT", comm_commands.ICS_MODE.ToString("d")) }, "Communications Panel (CP/G)", "ICS Mode Switch", "%0.1f"));
             AddFunction(new PushButton(this, COMM_PANEL_CPG, comm_commands.IDENT.ToString("d"), "388", "Communications Panel (CP/G)", "IDENT Button"));
 
 #endregion
