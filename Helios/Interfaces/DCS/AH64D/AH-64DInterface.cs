@@ -797,7 +797,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             RLWR_disable_ITER = 3066,
             ATA_disable_ITER = 3067,
             VCR_disable_ITER = 3068,
-            ADF_disable_ITER = 3069
+            ADF_disable_ITER = 3069,
+            VHF_SQL_OFF,
+            UHF_SQL_OFF,
+            FM1_SQL_OFF,
+            FM2_SQL_OFF,
+            HF_SQL_OFF,
+            VHF_SQL_ON_EXT,
+            UHF_SQL_ON_EXT,
+            FM1_SQL_ON_EXT,
+            FM2_SQL_ON_EXT,
+            HF_SQL_ON_EXT,
+            VHF_SQL_OFF_EXT,
+            UHF_SQL_OFF_EXT,
+            FM1_SQL_OFF_EXT,
+            FM2_SQL_OFF_EXT,
+            HF_SQL_OFF_EXT
         };
 
         private enum intercom_commands
@@ -1595,11 +1610,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new PushButton(this, COMM_PANEL_PLT, comm_commands.ADF_disable.ToString("d"), "458", "Communications Panel (Pilot)", "ADF Volume Control Knob Pull"));  //  (LMB) Pull to disable / (MW) Rotate to adjust volume
             AddFunction(new Axis(this, COMM_PANEL_PLT, comm_commands.MASTER_volume.ToString("d"), "344", 0.1d, 0d, 1d, "Communications Panel (Pilot)", "MASTER Volume Control Knob"));
             AddFunction(new Axis(this, COMM_PANEL_PLT, comm_commands.SensControl.ToString("d"), "345", 0.1d, 0d, 1d, "Communications Panel (Pilot)", "SENS Control Knob"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.VHF_SQL.ToString("d"), "339", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "VHF Squelch Switch", "%0.1f"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.UHF_SQL.ToString("d"), "340", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "UHF Squelch Switch", "%0.1f"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.FM1_SQL.ToString("d"), "341", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "FM1 Squelch Switch", "%0.1f"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.FM2_SQL.ToString("d"), "342", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "FM2 Squelch Switch", "%0.1f"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_PLT, comm_commands.HF_SQL.ToString("d"), "343", "1.0", "On", "0.0", "Off", "Communications Panel (Pilot)", "HF Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_PLT, "339", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.VHF_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.VHF_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.VHF_SQL_OFF.ToString("d")) }, "Communications Panel (Pilot)", "VHF Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_PLT, "340", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.UHF_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.UHF_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.UHF_SQL_OFF.ToString("d")) }, "Communications Panel (Pilot)", "UHF Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_PLT, "341", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.FM1_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.FM1_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.FM1_SQL_OFF.ToString("d")) }, "Communications Panel (Pilot)", "FM1 Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_PLT, "342", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.FM2_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.FM2_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.FM2_SQL_OFF.ToString("d")) }, "Communications Panel (Pilot)", "FM2 Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_PLT, "343", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.HF_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.HF_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.HF_SQL_OFF.ToString("d")) }, "Communications Panel (Pilot)", "HF Squelch Switch", "%0.1f"));
             AddFunction(new Switch(this, COMM_PANEL_PLT, "346", new SwitchPosition[] { new SwitchPosition("1.0", "Hot Mic", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.0", "Vox", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("-1.0", "PTT", comm_commands.ICS_MODE.ToString("d")) }, "Communications Panel (Pilot)", "ICS Mode Switch", "%0.1f"));
             AddFunction(new PushButton(this, COMM_PANEL_PLT, comm_commands.IDENT.ToString("d"), "347", "Communications Panel (Pilot)", "IDENT Button"));
 
@@ -1627,11 +1642,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new PushButton(this, COMM_PANEL_CPG, comm_commands.ADF_disable.ToString("d"), "468", "Communications Panel (CP/G)", "ADF Volume Control Knob Pull"));  //  (LMB) Pull to disable / (MW) Rotate to adjust volume
             AddFunction(new Axis(this, COMM_PANEL_CPG, comm_commands.MASTER_volume.ToString("d"), "385", 0.1d, 0d, 1d, "Communications Panel (CP/G)", "MASTER Volume Control Knob"));
             AddFunction(new Axis(this, COMM_PANEL_CPG, comm_commands.SensControl.ToString("d"), "386", 0.1d, 0d, 1d, "Communications Panel (CP/G)", "SENS Control Knob"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.VHF_SQL.ToString("d"), "380", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "VHF Squelch Switch", "%0.1f"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.UHF_SQL.ToString("d"), "381", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "UHF Squelch Switch", "%0.1f"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.FM1_SQL.ToString("d"), "382", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "FM1 Squelch Switch", "%0.1f"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.FM2_SQL.ToString("d"), "383", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "FM2 Squelch Switch", "%0.1f"));
-            AddFunction(Switch.CreateToggleSwitch(this, COMM_PANEL_CPG, comm_commands.HF_SQL.ToString("d"), "384", "1.0", "On", "0.0", "Off", "Communications Panel (CP/G)", "HF Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_CPG, "380", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.VHF_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.VHF_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.VHF_SQL_OFF.ToString("d")) }, "Communications Panel (CP/G)", "VHF Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_CPG, "381", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.UHF_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.UHF_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.UHF_SQL_OFF.ToString("d")) }, "Communications Panel (CP/G)", "UHF Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_CPG, "382", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.FM1_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.FM1_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.FM1_SQL_OFF.ToString("d")) }, "Communications Panel (CP/G)", "FM1 Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_CPG, "383", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.FM2_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.FM2_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.FM2_SQL_OFF.ToString("d")) }, "Communications Panel (CP/G)", "FM2 Squelch Switch", "%0.1f"));
+            AddFunction(new Switch(this, COMM_PANEL_CPG, "384", new SwitchPosition[] { new SwitchPosition("1.0", "Up", comm_commands.HF_SQL.ToString("d")), new SwitchPosition("0.0", "Middle", comm_commands.HF_SQL.ToString("d")), new SwitchPosition("-1.0", "Down", comm_commands.HF_SQL_OFF.ToString("d")) }, "Communications Panel (CP/G)", "HF Squelch Switch", "%0.1f"));
             AddFunction(new Switch(this, COMM_PANEL_CPG, "387", new SwitchPosition[] { new SwitchPosition("1.0", "Hot Mic", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("0.0", "Vox", comm_commands.ICS_MODE.ToString("d")), new SwitchPosition("-1.0", "PTT", comm_commands.ICS_MODE.ToString("d")) }, "Communications Panel (CP/G)", "ICS Mode Switch", "%0.1f"));
             AddFunction(new PushButton(this, COMM_PANEL_CPG, comm_commands.IDENT.ToString("d"), "388", "Communications Panel (CP/G)", "IDENT Button"));
 
@@ -1694,8 +1709,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
 #endregion
 
 #endregion
-
-
         }
     }
 }
