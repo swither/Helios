@@ -36,7 +36,6 @@ namespace GadrocsWorkshop.Helios.Util.Shadow
             _scale = scale;
             Update(data.Monitor);
             Update(data.Visual);
-
             Data.ViewportChanged += Data_ViewportChanged;
             Data.MonitorChanged += Data_MonitorChanged;
         }
@@ -77,10 +76,7 @@ namespace GadrocsWorkshop.Helios.Util.Shadow
 
         public void Update(HeliosVisual viewport)
         {
-            _viewport.X = viewport.Left;
-            _viewport.Y = viewport.Top;
-            _viewport.Width = viewport.Width;
-            _viewport.Height = viewport.Height;
+            _viewport = viewport.CalculateWindowsDesktopRect();
             Update();
         }
 
