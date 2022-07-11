@@ -41,7 +41,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.FAT
             _needle = new GaugeNeedle("{Helios}/Gauges/A-10/Common/needle_a.xaml", new Point(182d, 188d), new Size(22, 165), new Point(11, 130), 0d);
             Components.Add(_needle);
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/A-10/Common/gauge_bezel.png", new Rect(0d, 0d, 364d, 376d)));
+            //Components.Add(new GaugeImage("{Helios}/Gauges/A-10/Common/gauge_bezel.png", new Rect(0d, 0d, 364d, 376d)));
 
             _FreeAirTemp = new HeliosValue(this, new BindingValue(0d), "", "Temperature Gauge", "Current Free Air Temperature.", "(-70 - +50)", BindingValueUnits.Celsius);
             _FreeAirTemp.Execute += new HeliosActionHandler(FreeAirTemp_Execute);
