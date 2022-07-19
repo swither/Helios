@@ -131,8 +131,15 @@ namespace GadrocsWorkshop.Helios.Controls
                 return;
             }
 
-            // lazy create
-            _timer = _timer ?? new DispatcherTimer(IntervalTimespan, DispatcherPriority.Input, TimerTick, Dispatcher.CurrentDispatcher);
+            // fixes auto close not working after a stop and start of the profile
+            if(_timer != null)
+            {
+                _timer.Tick += TimerTick;
+            }
+            else
+            {
+                _timer = new DispatcherTimer(IntervalTimespan, DispatcherPriority.Input, TimerTick, Dispatcher.CurrentDispatcher);
+            }
         }
 
         private TimeSpan IntervalTimespan => TimeSpan.FromSeconds(Math.Max(_timerInterval, MINIMUM_TIME_OUT));
