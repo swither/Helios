@@ -60,7 +60,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.KU
             // Top Row 104 Bottom Row 334
             // Left col 39 Right Col 520 
             AddPot("Brightness Control", new Point(65d, 395d), new Size(50d, 50d), "Brightness Control Knob");
-            AddTextDisplay("Scratchpad", new Point(58d, 32d), new Size(484d, 52d), _interfaceDevice, "Scratchpad", 22, "KEYBOARD UNIT", TextHorizontalAlignment.Left, "#=$");
+            AddTextDisplay("Scratchpad", new Point(58d, 32d), new Size(484d, 52d), _interfaceDevice, "Scratchpad", 22, "KEYBOARD UNIT", TextHorizontalAlignment.Left, "#=$;!=:");
 
         }
         protected HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceDevice)

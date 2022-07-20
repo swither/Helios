@@ -11,11 +11,11 @@ function driver.processLowImportance(mainPanelDevice)
     -- structured data
     li = helios.parseIndication(15) -- 15 Pilot Keyboard Unit
     if li then
-        helios.send(2080, string.format("%s", helios.ensureString(li.Standby_text)))
+        helios.send(2080, string.format("%s", helios.ensureString(li.Standby_text):gsub(":", "!")))
     end
     li = helios.parseIndication(14) -- 14 CP/G Keyboard Unit
     if li then
-        helios.send(2081, string.format("%s", helios.ensureString(li.Standby_text)))
+        helios.send(2081, string.format("%s", helios.ensureString(li.Standby_text):gsub(":", "!")))
     end
 	if mainPanelDevice:get_argument_value(610) == -1.0 then
 		-- clear the Chaff, Flare, and threat display if the CMWS is off
