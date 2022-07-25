@@ -1,7 +1,7 @@
-﻿@@ -58,74 +58,8 @@
- ua%22)
--%0Adofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)
- %0A%0Aop
-@@ -930,112 +930,4 @@
- lse%0A
----%0A--ViewportHandling%0Aupdate_screenspace_displacement(1, true, 0)%0Atry_find_assigned_viewport(%22AH_64D_TEDAC%22)
+﻿@@ -59,75 +59,8 @@
+ a%22)%0D
+-%0Adofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D
+ %0A%0D%0Ao
+@@ -972,70 +972,4 @@
+ se%0D%0A
+---%0D%0A--ViewportHandling%0D%0Atry_find_assigned_viewport(%22AH_64D_TEDAC%22)

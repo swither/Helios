@@ -1,7 +1,7 @@
-﻿@@ -54,16 +54,82 @@
- fs.lua%22)
-+%0Adofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)
- %0A%0Aopacit
-@@ -984,16 +984,124 @@
- eometry%09= false%0A
-+--%0A--ViewportHandling%0Aupdate_screenspace_displacement(1, true, 0)%0Atry_find_assigned_viewport(%22AH_64D_TEDAC%22)
+﻿@@ -55,16 +55,83 @@
+ s.lua%22)%0D
++%0Adofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D
+ %0A%0D%0Aopaci
+@@ -1027,16 +1027,82 @@
+ ometry%09%3D false%0D%0A
++--%0D%0A--ViewportHandling%0D%0Atry_find_assigned_viewport(%22AH_64D_TEDAC%22)
