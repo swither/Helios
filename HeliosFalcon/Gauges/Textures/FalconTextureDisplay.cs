@@ -51,6 +51,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
         /// backing field for background transparency
         /// </summary>
         private bool _transparency;
+        private bool _flying;
 
         protected FalconTextureDisplay(string name, Size defaultSize)
             : base(name, defaultSize)
@@ -120,6 +121,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             }
         }
 
+        public bool Flying
+        {
+            get => _flying;
+            set
+            {
+                if (_flying == value)
+                {
+                    return;
+                }
+                bool oldValue = _flying;
+                _flying = value;
+                OnPropertyChanged(nameof(Flying), oldValue, value, true);
+            }
+        }
+
         #endregion
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
@@ -180,9 +196,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             if (_textureMemory != null && _textureMemory.IsDataAvailable)
             {
                 FalconInterface falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
+                Flying = falconInterface.GetValue("Runtime", "Flying").BoolValue;
 
-                //If the profile was started prior to BMS running then get the texture area from shared memory
-                if (_textureRectangles.Count == 0 && falconInterface.FalconType == FalconTypes.BMS)
+                //If BMS is commited to 3D then get the texture area from shared memory
+                if (Flying && falconInterface.FalconType == FalconTypes.BMS)
                 {
                     GetTextureArea(Texture);
                 }
@@ -196,7 +213,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             if (Parent != null && Parent.Profile != null && Parent.Profile.Interfaces.ContainsKey("Falcon"))
             {
                 FalconInterface falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
-                if(falconInterface.FalconType == FalconTypes.BMS)
+                Flying = falconInterface.GetValue("Runtime", "Flying").BoolValue;
+
+                if (falconInterface.FalconType == FalconTypes.BMS)
                 {
                     GetTextureArea(Texture);
                 }
