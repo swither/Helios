@@ -241,7 +241,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     if (!shadowVisual.IsViewportDirectlyOnMonitor)
                     {
-                        viewportWarning = " changes to this viewport are not tracked automatically.  If changes have been made to this viewport\'s size or location, ensure a \"Reload Status\" is performed before monitor configuration is attempted.";
+                        viewportWarning = "-- changes to this viewport are not tracked automatically.  If changes have been made to this viewport\'s size or location, ensure a \"Reload Status\" is performed before monitor configuration is attempted.";
                     }
                     break;
                 }
