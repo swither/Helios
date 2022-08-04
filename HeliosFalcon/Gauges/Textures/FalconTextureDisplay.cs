@@ -51,6 +51,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
         /// backing field for background transparency
         /// </summary>
         private bool _transparency;
+        private string _aircraftName;
+        private bool _flying;
 
         protected FalconTextureDisplay(string name, Size defaultSize)
             : base(name, defaultSize)
@@ -120,6 +122,36 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             }
         }
 
+        public bool Flying
+        {
+            get => _flying;
+            set
+            {
+                if (_flying == value)
+                {
+                    return;
+                }
+                bool oldValue = _flying;
+                _flying = value;
+                OnPropertyChanged(nameof(Flying), oldValue, value, true);
+            }
+        }
+
+        public string AircraftName
+        {
+            get => _aircraftName;
+            set
+            {
+                if (_aircraftName == value)
+                {
+                    return;
+                }
+                string oldValue = _aircraftName;
+                _aircraftName = value;
+                OnPropertyChanged(nameof(AircraftName), oldValue, value, true);
+            }
+        }
+
         #endregion
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
@@ -142,6 +174,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
 
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
+            PropertyChanged -= FalconTextureDisplay_PropertyChanged;
+
             if (_dispatcherTimer != null)
             {
                 _dispatcherTimer.Stop();
@@ -181,6 +215,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             {
                 FalconInterface falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
 
+                Flying = falconInterface.GetValue("Runtime", "Flying").BoolValue;
+                AircraftName = falconInterface.GetValue("Runtime", "Aircraft Name").StringValue;
+
                 //If the profile was started prior to BMS running then get the texture area from shared memory
                 if (_textureRectangles.Count == 0 && falconInterface.FalconType == FalconTypes.BMS)
                 {
@@ -196,6 +233,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             if (Parent != null && Parent.Profile != null && Parent.Profile.Interfaces.ContainsKey("Falcon"))
             {
                 FalconInterface falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
+                
+                Flying = falconInterface.GetValue("Runtime", "Flying").BoolValue;
+                AircraftName = falconInterface.GetValue("Runtime", "Aircraft Name").StringValue;
+
                 if(falconInterface.FalconType == FalconTypes.BMS)
                 {
                     GetTextureArea(Texture);
@@ -208,6 +249,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
                 _textureRefreshRate_30 = falconInterface.TextureRefreshRate_30;
                 _textureRefreshRate_60 = falconInterface.TextureRefreshRate_60;
                 _textureRefreshRate_90 = falconInterface.TextureRefreshRate_90;
+
+                PropertyChanged += FalconTextureDisplay_PropertyChanged;
             }
             
             _textureMemory = new SharedMemory("FalconTexturesSharedMemoryArea");
@@ -228,6 +271,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             }
             
             IsRunning = true;
+        }
+
+        private void FalconTextureDisplay_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(AircraftName) && _textureRectangles.ContainsKey(Texture))
+            {
+                _textureRectangles.Remove(Texture);
+            }
         }
 
         private void GetTextureArea(FalconTextures texture)
