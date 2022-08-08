@@ -45,7 +45,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             {
                 if (_display.TextureMemory != null && _display.TextureMemory.IsDataAvailable)
                 {
-                    if(_display.Flying)
+                    if (_display.Flying)
                     {
                         drawingContext.DrawRectangle(CreateImageBrush(), null, _displayRect);
                     }
