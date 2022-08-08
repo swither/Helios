@@ -2908,6 +2908,66 @@
     <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\SA342\Cockpit\TV\Indicator\init.lua.grevert" />
     <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\SA342\Cockpit\WP1\init.lua.gpatch" />
     <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\SA342\Cockpit\WP1\init.lua.grevert" />
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\PCN\PCN_BR_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\PCN\PCN_BR_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\PCN\PCN_UR_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\PCN\PCN_UR_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\RWR\RWR_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\RWR\RWR_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\VTB\VTB_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\VTB\VTB_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\VTH\HUD_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00015_26783_00000\Viewports\mods\aircraft\M-2000C\Cockpit\VTH\HUD_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCN\PCN_BR_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCN\PCN_BR_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCN\PCN_UR_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCN\PCN_UR_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\RWR\RWR_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\RWR\RWR_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VTB\VTB_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VTB\VTB_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VTH\HUD_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00016_28111_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VTH\HUD_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Templates\Patching\readme.md" />
   </ItemGroup>
   <ItemGroup />
