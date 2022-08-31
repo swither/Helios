@@ -107,7 +107,7 @@ namespace GadrocsWorkshop.Helios
         protected new RotaryEncoder AddEncoder(string name, Point posn, Size size,
             string knobImage, double stepValue, double rotationStep,
             string interfaceDeviceName, string interfaceElementName, bool fromCenter,
-            RotaryClickType clickType = RotaryClickType.Swipe)
+            RotaryClickType clickType = RotaryClickType.Swipe, bool BindSet = false)
         {
             if (fromCenter)
             {
@@ -142,16 +142,31 @@ namespace GadrocsWorkshop.Helios
                 }
             }
 
-            AddDefaultOutputBinding(
-                componentName,
-                "encoder.incremented",
-                interfaceDeviceName + ".increment." + interfaceElementName
-            );
-            AddDefaultOutputBinding(
-                componentName,
-                "encoder.decremented",
-                interfaceDeviceName + ".decrement." + interfaceElementName
-            );
+            if (!BindSet)
+            {
+                AddDefaultOutputBinding(
+                    componentName,
+                    "encoder.incremented",
+                    interfaceDeviceName + ".increment." + interfaceElementName
+                );
+                AddDefaultOutputBinding(
+                    componentName,
+                    "encoder.decremented",
+                    interfaceDeviceName + ".decrement." + interfaceElementName
+                );
+            } else
+            {
+                AddDefaultOutputBinding(
+                    componentName,
+                    "encoder.incremented",
+                    interfaceDeviceName + ".set." + interfaceElementName
+                );
+                AddDefaultOutputBinding(
+                    componentName,
+                    "encoder.decremented",
+                    interfaceDeviceName + ".set." + interfaceElementName
+                );
+            }
 
             return knob;
         }
