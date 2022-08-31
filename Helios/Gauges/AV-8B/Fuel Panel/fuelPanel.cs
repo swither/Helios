@@ -84,12 +84,13 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B.FuelPanel
                 size: size,
                 posn: posn,
                 knobImage: "{AV-8B}/Images/Fuel Bingo Knob.png",
-                stepValue: 0.1,
+                stepValue: 0.03,
                 rotationStep: 5,
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
-                fromCenter: false
-                );
+                fromCenter: false,
+                BindSet: true
+                ) ;
             _enc.Name = "Fuel Panel_" + name;
         }
         private void AddIndicator(string name, double x, double y, Size size, string interfaceElementName) { AddIndicator(name, x, y, size, false, interfaceElementName); }
