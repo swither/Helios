@@ -265,7 +265,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
 
             #region Fuel Quantity Indicator System
             AddFunction(new Axis(this, FQIS, "3380", "380", 0.001d, 0d, 1d, "Fuel Quantity", "Bingo Fuel Set Knob", true, "%.3f"));  //looping axis
-            AddFunction(new Switch(this, FQIS, "3379", new SwitchPosition[] { new SwitchPosition("-0.99", "BIT", "3379"), new SwitchPosition("-0.66", "FEED", "3379"), new SwitchPosition("-0.33", "TOTAL", "3379"), new SwitchPosition("0.0", "INT", "3379"), new SwitchPosition("0.33", "WING", "3379"), new SwitchPosition("0.66", "INBD", "3379"), new SwitchPosition("0.99", "OUTBD", "3379") }, "Fuel Quantity", "Fuel Totaliser Selector", "%0.2f"));
+            AddFunction(new Switch(this, FQIS, "379", new SwitchPosition[] { new SwitchPosition("-0.99", "BIT", "3379"), new SwitchPosition("-0.66", "FEED", "3379"), new SwitchPosition("-0.33", "TOTAL", "3379"), new SwitchPosition("0.0", "INT", "3379"), new SwitchPosition("0.33", "WING", "3379"), new SwitchPosition("0.66", "INBD", "3379"), new SwitchPosition("0.99", "OUTBD", "3379") }, "Fuel Quantity", "Fuel Totaliser Selector", "%0.2f"));
             AddFunction(new Digits4Display(this, FQIS, "2011", "Fuel Quantity", "Left Tank display", "Fuel left tank quantity"));
             AddFunction(new Digits4Display(this, FQIS, "2012", "Fuel Quantity", "Right Tank display", "Fuel right tank quantity"));
             AddFunction(new Digits4Display(this, FQIS, "2013", "Fuel Quantity", "Bingo value display", "Fuel Bingo amount"));
@@ -274,9 +274,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             #endregion
 
             #region ECM
-            AddFunction(new Switch(this, RWRCONTROL, "3273", new SwitchPosition[] { new SwitchPosition("0.0", "Off", "3273"), new SwitchPosition("0.3", "posn 1", "3273"), new SwitchPosition("0.4", "posn 2", "3273"), new SwitchPosition("0.5", "posn 3", "3273"), new SwitchPosition("0.6", "posn 4", "3273"), new SwitchPosition("0.7", "posn 5", "3273"), new SwitchPosition("0.8", "posn 6", "3273"), new SwitchPosition("0.9", "posn 7", "3273"), new SwitchPosition("1.0", "posn 8", "3273") }, "RWR / ECM", "Off/Volume", "%0.2f"));
-            AddFunction(new Switch(this, EWS, "3274", new SwitchPosition[] { new SwitchPosition("0.0", "OFF", "3274"),new SwitchPosition("0.25", "AUTO", "3274"), new SwitchPosition("0.50", "UP", "3274"), new SwitchPosition("0.75", "Down", "3274"), new SwitchPosition("1.00", "RWR", "3274") }, "RWR / ECM", "Decoy Dispenser Control", "%0.2f"));
-            AddFunction(new Switch(this, EWS, "3275", new SwitchPosition[] { new SwitchPosition("0.0", "OFF", "3275"),new SwitchPosition("0.25", "STBY", "3275"), new SwitchPosition("0.50", "BIT", "3275"), new SwitchPosition("0.75", "RCV", "3275"), new SwitchPosition("1.00", "RPT", "3275")}, "RWR / ECM", "Jammer Control", "%0.2f"));
+            AddFunction(new Axis(this, RWRCONTROL, "3273", "273", 0.1d, 0d, 1d, "RWR / ECM", "Off/Volume"));
+            AddFunction(new Switch(this, EWS, "274", new SwitchPosition[] { new SwitchPosition("0.0", "OFF", "3274"),new SwitchPosition("0.25", "AUTO", "3274"), new SwitchPosition("0.50", "UP", "3274"), new SwitchPosition("0.75", "Down", "3274"), new SwitchPosition("1.00", "RWR", "3274") }, "RWR / ECM", "Decoy Dispenser Control", "%0.2f"));
+            AddFunction(new Switch(this, EWS, "275", new SwitchPosition[] { new SwitchPosition("0.0", "OFF", "3275"),new SwitchPosition("0.25", "STBY", "3275"), new SwitchPosition("0.50", "BIT", "3275"), new SwitchPosition("0.75", "RCV", "3275"), new SwitchPosition("1.00", "RPT", "3275")}, "RWR / ECM", "Jammer Control", "%0.2f"));
             #endregion
 
             #region Advisory indicators
@@ -337,10 +337,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(new FlagValue(this, "465", "Landing Gear", "Left", "Left Wheel Ready"));
             AddFunction(new FlagValue(this, "466", "Landing Gear", "Right Wrn", "Right Wheel Warning"));
             AddFunction(new FlagValue(this, "467", "Landing Gear", "Right", "Right Wheel Ready"));
-            //AddFunction(new FlagValue(this, "468", "Landing Gear", "Main Wrn", "Main Gear Warning"));
-            //AddFunction(new FlagValue(this, "469", "Landing Gear", "Main", "Main Gear Ready"));
-            AddFunction(new FlagValue(this, "469", "Landing Gear", "Main Wrn", "Main Gear Warning"));   // I think the codes are switched for this and might get corrected in future by Bazbam
-            AddFunction(new FlagValue(this, "468", "Landing Gear", "Main", "Main Gear Ready"));         // I think the codes are switched for this and might get corrected in future by Bazbam
+            AddFunction(new FlagValue(this, "469", "Landing Gear", "Main Wrn", "Main Gear Warning"));   // I think the codes are switched for this and might get corrected in future by Razbam
+            AddFunction(new FlagValue(this, "468", "Landing Gear", "Main", "Main Gear Ready"));         // I think the codes are switched for this and might get corrected in future by Razbam
             AddFunction(Switch.CreateToggleSwitch(this, FLIGHTCONTROLS, "3461", "461", "1", "Gear up", "0", "Gear down", "Landing Gear", "lever", "%1d"));
             AddFunction(new PushButton(this, SMC, "3458", "458", "Landing Gear", "Emergency Jettison Button"));
             AddFunction(new PushButton(this, FLIGHTCONTROLS, "3448", "448", "Landing Gear", "Gear Down Lock Override Button"));
@@ -371,7 +369,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(Switch.CreateToggleSwitch(this, FLIGHTINSTRUMENTS, "3426", "426", "1", "Probe Heat", "0", "Auto", "Centre Console", "Probe Heat Mode Switch", "%1d"));
             AddFunction(Switch.CreateThreeWaySwitch(this, MSC, "3427", "427", "1", "Mission Computer OVerride", "0.5", "Auto", "0", "Off", "Centre Console", "Mission Computer Mode Switch", "%.1f"));
             AddFunction(Switch.CreateToggleSwitch(this, NAVFLIR, "3429", "429", "1", "FLIR", "0", "Off", "Centre Console", "FLIR Power Switch", "%1d"));
-            AddFunction(new Switch(this, NAV_INS, "3421", new SwitchPosition[] { new SwitchPosition("0.0", "Off", "3421"), new SwitchPosition("0.1", "Sea", "3421"), new SwitchPosition("0.2", "INS GND", "3421"), new SwitchPosition("0.3", "Nav", "3421"), new SwitchPosition("0.4", "IFA", "3421"), new SwitchPosition("0.5", "Gyro", "3421"), new SwitchPosition("0.6", "GB", "3421"), new SwitchPosition("0.7", "Test", "3421") }, "Centre Console", "INS Mode Switch", "%.1f"));
+            AddFunction(new Switch(this, NAV_INS, "421", new SwitchPosition[] { new SwitchPosition("0.0", "Off", "3421"), new SwitchPosition("0.1", "Sea", "3421"), new SwitchPosition("0.2", "INS GND", "3421"), new SwitchPosition("0.3", "Nav", "3421"), new SwitchPosition("0.4", "IFA", "3421"), new SwitchPosition("0.5", "Gyro", "3421"), new SwitchPosition("0.6", "GB", "3421"), new SwitchPosition("0.7", "Test", "3421") }, "Centre Console", "INS Mode Switch", "%.1f"));
 
             #endregion
 
@@ -454,9 +452,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(new PushButton(this, SMC, "3419", "419", "Stores Management", "Station 7 Button"));
             AddFunction(new FlagValue(this, "418", "Stores Management", "Station 7 Selected Indicator", "Station 7 Selected Indicator"));
             AddFunction(new PushButton(this, SMC, "3286", "286", "Stores Management", "Launch Flare Salvo"));
-            AddFunction(new Switch(this, SMC, "3404", new SwitchPosition[] { new SwitchPosition("-1.0", "STA", "3404"), new SwitchPosition("-0.5", "STOR", "3404"), new SwitchPosition("0.0", "SAFE", "3404"), new SwitchPosition("0.5", "CMBT", "3404"), new SwitchPosition("1.0", "FUEL", "3404") },  "Stores Management", "Jettison Mode Selector", "%0.1f"));
-            AddFunction(new PushButton(this, SMC, "3405", "405", "Stores Management", "Jettison Stores"));
-            AddFunction(new Switch(this, SMC, "3395", new SwitchPosition[] { new SwitchPosition("0.0", "Norm", "3395"), new SwitchPosition("0.33", "N/T", "3395"), new SwitchPosition("0.66", "N", "3395"), new SwitchPosition("1.0", "T", "3395")  }, "Stores Management", "Manual Fuzing Release Control", "%0.2f"));
+            AddFunction(new Switch(this, SMC, "404", new SwitchPosition[] { new SwitchPosition("-1.0", "STA", "3404"), new SwitchPosition("-0.5", "STOR", "3404"), new SwitchPosition("0.0", "SAFE", "3404"), new SwitchPosition("0.5", "CMBT", "3404"), new SwitchPosition("1.0", "FUEL", "3404") },  "Stores Management", "Jettison Mode Selector", "%0.1f"));
+            AddFunction(new PushButton(this, SMC, "405", "405", "Stores Management", "Jettison Stores"));
+            AddFunction(new Switch(this, SMC, "395", new SwitchPosition[] { new SwitchPosition("0.0", "Norm", "3395"), new SwitchPosition("0.33", "N/T", "3395"), new SwitchPosition("0.66", "N", "3395"), new SwitchPosition("1.0", "T", "3395")  }, "Stores Management", "Manual Fuzing Release Control", "%0.2f"));
             AddFunction(new Digits3Display(this, SMC, "2020", "Stores Management", "Stores interval display", "Interval value in metres"));
             AddFunction(new Digits2Display(this, SMC, "2022", "Stores Management", "Stores quantity display", "Quantity of stores"));
             AddFunction(new SMCMultipleDisplay(this));
@@ -477,11 +475,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             #region V/UHF Radio
             // switch positions still need to be labeled
             AddFunction(new Axis(this, RSC, "3614", "614", 0.03d, 0d, 1d, "V/UHF Radio", "Volume Knob"));
-            AddFunction(new Axis(this, RSC, "3615", "615", 0.03d, 0d, 1d, "V/UHF Radio", "Chan/Freq Knob"));
-            AddFunction(new Switch(this, RSC, "3616", new SwitchPosition[] {new SwitchPosition("-0.20", "Zero", "3616"), new SwitchPosition("0.0", "Off", "3616"), new SwitchPosition("0.20", "Test", "3616"), new SwitchPosition("0.40", "TR+G", "3616"), new SwitchPosition("0.60", "TR", "3616"), new SwitchPosition("0.80", "ADF", "3616"), new SwitchPosition("1.00", "Chng PRST", "3616")}, "V/UHF Radio", "Operational Mode Switch", "%0.1f"));
+            AddFunction(new Axis(this, RSC, "3615", "615", 0.03d, 0d, 1d, "V/UHF Radio", "jet"));
+            AddFunction(new Switch(this, RSC, "616", new SwitchPosition[] {new SwitchPosition("-0.20", "Zero", "3616"), new SwitchPosition("0.0", "Off", "3616"), new SwitchPosition("0.20", "Test", "3616"), new SwitchPosition("0.40", "TR+G", "3616"), new SwitchPosition("0.60", "TR", "3616"), new SwitchPosition("0.80", "ADF", "3616"), new SwitchPosition("1.00", "Chng PRST", "3616")}, "V/UHF Radio", "Operational Mode Switch", "%0.1f"));
             AddFunction(new PushButton(this, RSC, "3617", "617", "V/UHF Radio", "Ancillary Mode Pointer A mode"));
             AddFunction(new PushButton(this, RSC, "3618", "618", "V/UHF Radio", "Ancillary Mode Switch P mode"));
-            AddFunction(new Switch(this, RSC, "3619", new SwitchPosition[] {new SwitchPosition("0.0", "AJ/M", "3619"), new SwitchPosition("0.15", "AJ", "3619"), new SwitchPosition("0.30", "MAR", "3619"), new SwitchPosition("0.45", "PRST", "3619"), new SwitchPosition("0.60", "MAN", "3619"), new SwitchPosition("0.75", "243", "3619"), new SwitchPosition("0.90", "121", "3619")}, "V/UHF Radio", "Frequency Mode Switch", "%0.2f"));
+            AddFunction(new Switch(this, RSC, "619", new SwitchPosition[] {new SwitchPosition("0.0", "AJ/M", "3619"), new SwitchPosition("0.15", "AJ", "3619"), new SwitchPosition("0.30", "MAR", "3619"), new SwitchPosition("0.45", "PRST", "3619"), new SwitchPosition("0.60", "MAN", "3619"), new SwitchPosition("0.75", "243", "3619"), new SwitchPosition("0.90", "121", "3619")}, "V/UHF Radio", "Frequency Mode Switch", "%0.2f"));
             AddFunction(new PushButton(this, RSC, "3620", "620", "V/UHF Radio", "LOAD/OFST Switch"));
             AddFunction(new Text(this, "2100", "V/UHF Radio", "Channel Number", "Radio Channel Number text display"));
             AddFunction(new Text(this, "2101", "V/UHF Radio", "Frequency", "Radio Frequency text display"));
@@ -517,8 +515,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             // switch positions still need to be labeled
             AddFunction(new Axis(this, INTERCOM, "3629", "629", 0.03d, 0d, 1d, "Intercomm", "Aux Volume Knob"));
             AddFunction(new Axis(this, INTERCOM, "3630", "630", 0.03d, 0d, 1d, "Intercomm", "Ground Volume Knob"));
-            AddFunction(new Switch(this, INTERCOM, "3631", new SwitchPosition[] { new SwitchPosition("1.0", "Norm", "3631"), new SwitchPosition("0.5", "Norm", "3631"), new SwitchPosition("0.0", "Norm", "3631") }, "Intercomm", "Mic Operational Mode Switch", "%0.1f"));
-            //AddFunction(new Switch(this, RSC, "3631", new SwitchPosition[] { new SwitchPosition("0.0", "Norm", "3631"), new SwitchPosition("0.5", "Norm", "3631"), new SwitchPosition("1.0", "Norm", "3631") }, "Intercomm", "Mic Operational Mode Switch", "%0.1f"));
+            AddFunction(new Switch(this, INTERCOM, "631", new SwitchPosition[] { new SwitchPosition("1.0", "Norm", "3631"), new SwitchPosition("0.5", "Norm", "3631"), new SwitchPosition("0.0", "Norm", "3631") }, "Intercomm", "Mic Operational Mode Switch", "%0.1f"));
 
             #endregion
 
