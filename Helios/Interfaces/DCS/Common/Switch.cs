@@ -254,7 +254,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             for (int i = 0; i < _positions.Length; i++)
             {
-                if (_positions[i].ArgValue.Equals(value))
+                bool numericallyEqual = false;
+                if(double.TryParse(_positions[i].ArgValue, out double argValue) && double.TryParse(value, out double netValue))
+                {
+                    numericallyEqual = argValue == netValue ? true : false; 
+                }
+                if (numericallyEqual || _positions[i].ArgValue.Equals(value))
                 {
                     _currentPosition = i;
                     _value.SetValue(new BindingValue((double)(i + 1)), false);

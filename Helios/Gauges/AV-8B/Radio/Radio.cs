@@ -50,8 +50,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             // 00000000*2100=99:2101=123.457:
             AddTextDisplay("Channel Number", 200, 20, new Size(81, 80), "Channel Number", 72, "99", TextHorizontalAlignment.Left);
             AddTextDisplay("Frequency Display", 281, 27, new Size(216, 51), "Frequency", 48, "888.888", TextHorizontalAlignment.Left);
-            AddEncoder("Radio volume", new Point(95,39), new Size(50, 50), "Volume Knob", "WQHD/Knob/Radio Squlech Knob.png");
-            AddEncoder("Channel Knob", new Point(547,37), new Size(70, 70), "Chan/Freq Knob", "WQHD/Knob/Radio Channel Select.png");
+            AddPot("Radio volume", new Point(95,39), new Size(50, 50), "Volume Knob", "WQHD/Knob/Radio Squlech Knob.png");
+            AddEncoder("Channel Knob", new Point(547,37), new Size(70, 70), "Chan/Freq Knob", "WQHD/Knob/Radio Channel Select.png",RotaryClickType.Swipe,AutoBindActionType.Set);
             AddButton("A Mode Button", 260, 186, new Size(68, 68), "Ancillary Mode Pointer A mode", "WQHD/Button/Radio A Up.png");
             AddButton("P Mode Button", 358, 186, new Size(68, 68), "Ancillary Mode Switch P mode", "WQHD/Button/Radio P Up.png");
             AddButton("Load Switch", 628, 105, new Size(68, 68), "LOAD/OFST Switch", "WQHD/Button/Radio Load Up.png");
@@ -144,7 +144,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
         }
 
         private void AddEncoder(string name, Point posn, Size size, string interfaceElementName) => AddEncoder(name, posn, size, interfaceElementName, "AV8BNA_Rotary5.png");
-        private void AddEncoder(string name, Point posn, Size size, string interfaceElementName, string imageName)
+        private void AddEncoder(string name, Point posn, Size size, string interfaceElementName, string imageName,RotaryClickType clickType = RotaryClickType.Swipe,AutoBindActionType autoBindType = AutoBindActionType.Increment )
         {
             AddEncoder(
                 name: name,
@@ -155,7 +155,9 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 rotationStep: 10,
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
-                fromCenter: false
+                fromCenter: false,
+                clickType: clickType,
+                bindType: autoBindType
                 );
         }
 
