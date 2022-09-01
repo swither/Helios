@@ -89,7 +89,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B.FuelPanel
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
                 fromCenter: false,
-                BindSet: true
+                bindType: AutoBindActionType.Set
                 ) ;
             _enc.Name = "Fuel Panel_" + name;
         }

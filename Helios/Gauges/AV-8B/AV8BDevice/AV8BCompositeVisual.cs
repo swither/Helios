@@ -21,6 +21,7 @@ using GadrocsWorkshop.Helios.Gauges;
 // ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios
 {
+    public enum AutoBindActionType { Set,Increment,Decrement};
     public abstract class AV8BCompositeVisual : CompositeVisualWithBackgroundImage
     {
         protected new HeliosInterface _defaultInterface;
@@ -104,10 +105,10 @@ namespace GadrocsWorkshop.Helios
         private Point FromCenter(Point posn, Size size) =>
             new Point(posn.X - size.Width / 2.0, posn.Y - size.Height / 2.0);
 
-        protected new RotaryEncoder AddEncoder(string name, Point posn, Size size,
+        protected RotaryEncoder AddEncoder(string name, Point posn, Size size,
             string knobImage, double stepValue, double rotationStep,
             string interfaceDeviceName, string interfaceElementName, bool fromCenter,
-            RotaryClickType clickType = RotaryClickType.Swipe, bool BindSet = false)
+            RotaryClickType clickType = RotaryClickType.Swipe, AutoBindActionType bindType = AutoBindActionType.Increment)
         {
             if (fromCenter)
             {
@@ -142,7 +143,7 @@ namespace GadrocsWorkshop.Helios
                 }
             }
 
-            if (!BindSet)
+            if (bindType == AutoBindActionType.Increment || bindType == AutoBindActionType.Decrement)
             {
                 AddDefaultOutputBinding(
                     componentName,
@@ -154,7 +155,7 @@ namespace GadrocsWorkshop.Helios
                     "encoder.decremented",
                     interfaceDeviceName + ".decrement." + interfaceElementName
                 );
-            } else
+            } else if(bindType == AutoBindActionType.Set)
             {
                 AddDefaultOutputBinding(
                     componentName,
@@ -166,6 +167,9 @@ namespace GadrocsWorkshop.Helios
                     "encoder.decremented",
                     interfaceDeviceName + ".set." + interfaceElementName
                 );
+            } else
+            {
+
             }
 
             return knob;
