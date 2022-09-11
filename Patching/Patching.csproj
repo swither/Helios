@@ -3376,12 +3376,6 @@
     <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCN\PCN_UR_init.lua.grevert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VTB\VTB_init.lua.gpatch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VTB\VTB_init.lua.grevert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VTH\HUD_init.lua.gpatch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3428,6 +3422,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\Ka-50\Cockpit\Scripts\device_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VTB\VTB_viewport_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VTB\VTB_viewport_init.lua.grevert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VCM\VCM_screen_init.lua.gpatch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\VCM\VCM_screen_init.lua.grevert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Templates\Patching\readme.md" />
