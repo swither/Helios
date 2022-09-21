@@ -22,7 +22,9 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Margin="4,10,2,2" Style="{StaticResource Heading2}"><Run Text="Textual Displays"/><Run Language="en-gb" Text=""/></TextBlock>
         <Label Grid.Row="2" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Enable" Height="23" Width="40">
-            <Label.ToolTip>This control has the ability to enable text displays.  This is usually used instead of a viewport.  Enabling textual displays will reduce network traffic and |CPU needed to render viewports</Label.ToolTip>
+            <Label.ToolTip>
+                <TextBlock Width="200" TextWrapping="Wrap" Text="This control has the ability to enable text displays.  This is usually used instead of a viewport.  Enabling textual displays will reduce network traffic and / or CPU needed to render viewports" />
+            </Label.ToolTip>
         </Label>
         <CheckBox Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Control.UseTextualDisplays}" Height="15" Width="16" />
 
