@@ -112,7 +112,7 @@
     "isHeliosTemplate": true,
     "viewports": [
       {
-        "viewportName": "AJS37_DATA",
+        "viewportName": "DATA",
         "relativeInitFilePath": "Mods/aircraft/AJS37/Cockpit/scripts/Data/Indicator/init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -122,7 +122,7 @@
         "height": 37
       },
       {
-        "viewportName": "AJS37_DESTINATION",
+        "viewportName": "DESTINATION",
         "relativeInitFilePath": "Mods/aircraft/AJS37/Cockpit/scripts/Destination/Indicator/init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -132,7 +132,7 @@
         "height": 40
       },
       {
-        "viewportName": "AJS37_RADAR",
+        "viewportName": "RADAR",
         "relativeInitFilePath": "Mods/aircraft/AJS37/Cockpit/scripts/radar/Indicator/init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,

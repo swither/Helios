@@ -3673,6 +3673,15 @@
     <Content Include="Patches\DCS\002_007_00017_29140_00000\Viewports\Mods\aircraft\AJS37\Cockpit\scripts\radar\Indicator\init.lua.grevert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\Patching\Additional Simulator Viewports\AJS37_DATA.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Patching\Additional Simulator Viewports\AJS37_DESTINATION.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Patching\Additional Simulator Viewports\AJS37_RADAR.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Templates\Patching\readme.md" />
   </ItemGroup>
   <ItemGroup />
