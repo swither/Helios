@@ -1,0 +1,31 @@
+<ControlTemplate>
+    <Name>F/A18C IFEI</Name>
+    <Category>Simulator Viewports</Category>
+    <TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <FillBackground>True</FillBackground>
+            <BackgroundColor>#809545D8</BackgroundColor>
+            <FontColor>#FFFFFFFF</FontColor>
+            <Font>
+                <FontFamily>Franklin Gothic</FontFamily>
+                <FontStyle>Normal</FontStyle>
+                <FontWeight>Normal</FontWeight>
+                <FontSize>12</FontSize>
+                <HorizontalAlignment>Center</HorizontalAlignment>
+                <VerticalAlignment>Center</VerticalAlignment>
+                <Padding>
+                    <Left>0</Left>
+                    <Top>0</Top>
+                    <Right>0</Right>
+                    <Bottom>0</Bottom>
+                </Padding>
+            </Font>
+            <Text>IFEI</Text>
+            <Location>52,630</Location>
+            <Size>430,167</Size>
+            <Hidden>False</Hidden>
+            <ViewportName>IFEI</ViewportName>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

@@ -1,0 +1,32 @@
+<ControlTemplate>
+    <Name>A10C II CMSP_SCREEN</Name>
+    <Category>A-10C II Simulator Viewports</Category>
+    <TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <FillBackground>True</FillBackground>
+            <BackgroundColor>#8020BAA3</BackgroundColor>
+            <FontColor>#FFFFFFFF</FontColor>
+            <Font>
+                <FontFamily>Franklin Gothic</FontFamily>
+                <FontStyle>Normal</FontStyle>
+                <FontWeight>Normal</FontWeight>
+                <FontSize>12</FontSize>
+                <HorizontalAlignment>Center</HorizontalAlignment>
+                <VerticalAlignment>Center</VerticalAlignment>
+                <Padding>
+                    <Left>0</Left>
+                    <Top>0</Top>
+                    <Right>0</Right>
+                    <Bottom>0</Bottom>
+                </Padding>
+            </Font>
+            <Text>A_10C_2_CMSP_SCREEN</Text>
+            <Location>-1610,25</Location>
+            <Size>207,41</Size>
+            <Hidden>False</Hidden>
+            <ViewportName>A_10C_2_CMSP_SCREEN</ViewportName>
+            <RequiresPatches>true</RequiresPatches>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

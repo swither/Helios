@@ -1,0 +1,32 @@
+<ControlTemplate>
+    <Name>SA342 TV</Name>
+    <Category>SA342 Simulator Viewports</Category>
+    <TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <FillBackground>True</FillBackground>
+            <BackgroundColor>#804C4CE0</BackgroundColor>
+            <FontColor>#FFFFFFFF</FontColor>
+            <Font>
+                <FontFamily>Franklin Gothic</FontFamily>
+                <FontStyle>Normal</FontStyle>
+                <FontWeight>Normal</FontWeight>
+                <FontSize>12</FontSize>
+                <HorizontalAlignment>Center</HorizontalAlignment>
+                <VerticalAlignment>Center</VerticalAlignment>
+                <Padding>
+                    <Left>0</Left>
+                    <Top>0</Top>
+                    <Right>0</Right>
+                    <Bottom>0</Bottom>
+                </Padding>
+            </Font>
+            <Text>SA342_TV</Text>
+            <Location>20,6</Location>
+            <Size>382,308</Size>
+            <Hidden>False</Hidden>
+            <ViewportName>SA342_TV</ViewportName>
+            <RequiresPatches>true</RequiresPatches>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

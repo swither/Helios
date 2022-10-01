@@ -1,0 +1,31 @@
+<ControlTemplate>
+    <Name>A10C DIGIT_CLOCK</Name>
+    <Category>Simulator Viewports</Category>
+    <TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <FillBackground>True</FillBackground>
+            <BackgroundColor>#80596387</BackgroundColor>
+            <FontColor>#FFFFFFFF</FontColor>
+            <Font>
+                <FontFamily>Franklin Gothic</FontFamily>
+                <FontStyle>Normal</FontStyle>
+                <FontWeight>Normal</FontWeight>
+                <FontSize>12</FontSize>
+                <HorizontalAlignment>Center</HorizontalAlignment>
+                <VerticalAlignment>Center</VerticalAlignment>
+                <Padding>
+                    <Left>0</Left>
+                    <Top>0</Top>
+                    <Right>0</Right>
+                    <Bottom>0</Bottom>
+                </Padding>
+            </Font>
+            <Text>DIGIT_CLOCK</Text>
+            <Location>478,825</Location>
+            <Size>123,123</Size>
+            <Hidden>False</Hidden>
+            <ViewportName>DIGIT_CLOCK</ViewportName>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

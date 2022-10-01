@@ -1,0 +1,32 @@
+<ControlTemplate>
+    <Name>MIG21bis RP22</Name>
+    <Category>MiG-21 Simulator Viewports</Category>
+    <TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <FillBackground>True</FillBackground>
+            <BackgroundColor>#801FC06F</BackgroundColor>
+            <FontColor>#FFFFFFFF</FontColor>
+            <Font>
+                <FontFamily>Franklin Gothic</FontFamily>
+                <FontStyle>Normal</FontStyle>
+                <FontWeight>Normal</FontWeight>
+                <FontSize>12</FontSize>
+                <HorizontalAlignment>Center</HorizontalAlignment>
+                <VerticalAlignment>Center</VerticalAlignment>
+                <Padding>
+                    <Left>0</Left>
+                    <Top>0</Top>
+                    <Right>0</Right>
+                    <Bottom>0</Bottom>
+                </Padding>
+            </Font>
+            <Text>MiG_21_RP22</Text>
+            <Location>0,0</Location>
+            <Size>200,200</Size>
+            <Hidden>False</Hidden>
+            <ViewportName>MiG_21_RP22</ViewportName>
+            <RequiresPatches>true</RequiresPatches>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

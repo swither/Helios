@@ -1,0 +1,32 @@
+<ControlTemplate>
+    <Name>F/A18C HUD</Name>
+    <Category>F/A-18C Simulator Viewports</Category>
+    <TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <FillBackground>True</FillBackground>
+            <BackgroundColor>#809545D8</BackgroundColor>
+            <FontColor>#FFFFFFFF</FontColor>
+            <Font>
+                <FontFamily>Franklin Gothic</FontFamily>
+                <FontStyle>Normal</FontStyle>
+                <FontWeight>Normal</FontWeight>
+                <FontSize>12</FontSize>
+                <HorizontalAlignment>Center</HorizontalAlignment>
+                <VerticalAlignment>Center</VerticalAlignment>
+                <Padding>
+                    <Left>0</Left>
+                    <Top>0</Top>
+                    <Right>0</Right>
+                    <Bottom>0</Bottom>
+                </Padding>
+            </Font>
+            <Text>FA_18C_HUD</Text>
+            <Location>660,0</Location>
+            <Size>600,700</Size>
+            <Hidden>False</Hidden>
+            <ViewportName>FA_18C_HUD</ViewportName>
+            <RequiresPatches>true</RequiresPatches>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

@@ -1,0 +1,31 @@
+<ControlTemplate>
+    <Name>A10C CMSC_SCREEN</Name>
+    <Category>Simulator Viewports</Category>
+    <TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <FillBackground>True</FillBackground>
+            <BackgroundColor>#80596387</BackgroundColor>
+            <FontColor>#FFFFFFFF</FontColor>
+            <Font>
+                <FontFamily>Franklin Gothic</FontFamily>
+                <FontStyle>Normal</FontStyle>
+                <FontWeight>Normal</FontWeight>
+                <FontSize>12</FontSize>
+                <HorizontalAlignment>Center</HorizontalAlignment>
+                <VerticalAlignment>Center</VerticalAlignment>
+                <Padding>
+                    <Left>0</Left>
+                    <Top>0</Top>
+                    <Right>0</Right>
+                    <Bottom>0</Bottom>
+                </Padding>
+            </Font>
+            <Text>CMSC_SCREEN</Text>
+            <Location>860,122</Location>
+            <Size>250,58</Size>
+            <Hidden>False</Hidden>
+            <ViewportName>CMSC_SCREEN</ViewportName>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

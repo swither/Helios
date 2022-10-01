@@ -1,0 +1,31 @@
+<ControlTemplate>
+    <Name>F/A18C UFC</Name>
+    <Category>Simulator Viewports</Category>
+    <TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <FillBackground>True</FillBackground>
+            <BackgroundColor>#809545D8</BackgroundColor>
+            <FontColor>#FFFFFFFF</FontColor>
+            <Font>
+                <FontFamily>Franklin Gothic</FontFamily>
+                <FontStyle>Normal</FontStyle>
+                <FontWeight>Normal</FontWeight>
+                <FontSize>12</FontSize>
+                <HorizontalAlignment>Center</HorizontalAlignment>
+                <VerticalAlignment>Center</VerticalAlignment>
+                <Padding>
+                    <Left>0</Left>
+                    <Top>0</Top>
+                    <Right>0</Right>
+                    <Bottom>0</Bottom>
+                </Padding>
+            </Font>
+            <Text>UFC</Text>
+            <Location>538,25</Location>
+            <Size>380,216</Size>
+            <Hidden>False</Hidden>
+            <ViewportName>UFC</ViewportName>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

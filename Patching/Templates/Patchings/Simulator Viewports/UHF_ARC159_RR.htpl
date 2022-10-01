@@ -1,0 +1,31 @@
+<ControlTemplate>
+    <Name>F14B RIO UHF_ARC159_RR</Name>
+    <Category>Simulator Viewports</Category>
+    <TypeIdentifier>Helios.Base.ViewportExtent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <FillBackground>True</FillBackground>
+            <BackgroundColor>#8081D42F</BackgroundColor>
+            <FontColor>#FFFFFFFF</FontColor>
+            <Font>
+                <FontFamily>Franklin Gothic</FontFamily>
+                <FontStyle>Normal</FontStyle>
+                <FontWeight>Normal</FontWeight>
+                <FontSize>12</FontSize>
+                <HorizontalAlignment>Center</HorizontalAlignment>
+                <VerticalAlignment>Center</VerticalAlignment>
+                <Padding>
+                    <Left>0</Left>
+                    <Top>0</Top>
+                    <Right>0</Right>
+                    <Bottom>0</Bottom>
+                </Padding>
+            </Font>
+            <Text>UHF_ARC159_RR</Text>
+            <Location>514,352</Location>
+            <Size>108,24</Size>
+            <Hidden>False</Hidden>
+            <ViewportName>UHF_ARC159_RR</ViewportName>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>
