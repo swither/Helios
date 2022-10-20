@@ -79,11 +79,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
         {
 
             // see if we can restore from JSON
+#if (!DEBUG)
             if (LoadFunctionsFromJson())
             {
                 return;
             }
-
+#endif
             #region Left MCFD
             AddFunction(new PushButton(this, MPCD_LEFT, "3200", "200", "Left MFCD", "OSB01", "1", "0", "%1d"));
             AddFunction(new PushButton(this, MPCD_LEFT, "3201", "201", "Left MFCD", "OSB02", "1", "0", "%1d"));
@@ -106,10 +107,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(new PushButton(this, MPCD_LEFT, "3218", "218", "Left MFCD", "OSB19", "1", "0", "%1d"));
             AddFunction(new PushButton(this, MPCD_LEFT, "3219", "219", "Left MFCD", "OSB20", "1", "0", "%1d"));
             AddFunction(new Axis(this, MPCD_LEFT, "3194", "194", 0.1d, 0d, 1d, "Left MFCD", "Off/Brightness Control"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, MPCD_LEFT, "3220", "220", "-1", "Day", "0", "Off", "1", "Night", "Left MFCD", "DAY/NIGHT Mode", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, MPCD_LEFT, "3221", "221", "-1", "More", "0", "Off", "1", "Less", "Left MFCD", "Symbology", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, MPCD_LEFT, "3222", "222", "-1", "Up", "0", "Off", "1", "Down", "Left MFCD", "Gain", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, MPCD_LEFT, "3223", "223", "-1", "Up", "0", "Off", "1", "Down", "Left MFCD", "Contrast", "%1d"));
+            AddFunction(new Switch(this, MPCD_LEFT, "220", new SwitchPosition[] { new SwitchPosition("-1.0", "Day", "3007", "3007", "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("1.0", "Night", "3008", "3008", "0.0", "0.0") }, "Left MFCD", "DAY/NIGHT Mode", "%0.1f"));
+            AddFunction(new Switch(this, MPCD_LEFT, "221", new SwitchPosition[] { new SwitchPosition("1.0", "Up", "3001", "3001", "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "Down", "3002", "3002", "0.0", "0.0") }, "Left MFCD", "Symbology", "%0.1f"));
+            AddFunction(new Switch(this, MPCD_LEFT, "222", new SwitchPosition[] { new SwitchPosition("1.0", "Up", "3003", "3003", "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "Down", "3004", "3004", "0.0", "0.0") }, "Left MFCD", "Gain", "%0.1f"));
+            AddFunction(new Switch(this, MPCD_LEFT, "223", new SwitchPosition[] { new SwitchPosition("1.0", "Up", "3005", "3005", "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "Down", "3006", "3006", "0.0", "0.0") }, "Left MFCD", "Contrast", "%0.1f"));
 
             #endregion
 
@@ -135,12 +136,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
             AddFunction(new PushButton(this, MPCD_RIGHT, "3242", "242", "Right MFCD", "OSB19"));
             AddFunction(new PushButton(this, MPCD_RIGHT, "3243", "243", "Right MFCD", "OSB20"));
             AddFunction(new Axis(this, MPCD_RIGHT, "3195", "195", 0.1d, 0d, 1d, "Right MFCD", "Off/Brightness Control"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, MPCD_RIGHT, "3244", "244", "-1", "Day", "0", "Off", "1", "Night", "Right MFCD", "DAY/NIGHT Mode", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, MPCD_RIGHT, "3245", "245", "-1", "More", "0", "Off", "1", "Less", "Right MFCD", "Symbology", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, MPCD_RIGHT, "3246", "246", "-1", "Up", "0", "Off", "1", "Down", "Right MFCD", "Gain", "%1d"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, MPCD_RIGHT, "3247", "247", "-1", "Up", "0", "Off", "1", "Down", "Right MFCD", "Contrast", "%1d"));
-
-
+            AddFunction(new Switch(this, MPCD_RIGHT, "244", new SwitchPosition[] { new SwitchPosition("-1.0", "Day", "3017", "3017", "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("1.0", "Night", "3018", "3018", "0.0", "0.0") }, "Right MFCD", "DAY/NIGHT Mode", "%0.1f"));
+            AddFunction(new Switch(this, MPCD_RIGHT, "245", new SwitchPosition[] { new SwitchPosition("1.0", "Up", "3011", "3011", "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "Down", "3012", "3012", "0.0", "0.0") }, "Right MFCD", "Symbology", "%0.1f"));
+            AddFunction(new Switch(this, MPCD_RIGHT, "246", new SwitchPosition[] { new SwitchPosition("1.0", "Up", "3013", "3013", "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "Down", "3014", "3014", "0.0", "0.0") }, "Right MFCD", "Gain", "%0.1f"));
+            AddFunction(new Switch(this, MPCD_RIGHT, "247", new SwitchPosition[] { new SwitchPosition("1.0", "Up", "3015", "3015", "0.0", "0.0"), new SwitchPosition("0.0", "Off", null), new SwitchPosition("-1.0", "Down", "3016", "3016", "0.0", "0.0") }, "Right MFCD", "Contrast", "%0.1f"));
             #endregion
 
             #region UFC
