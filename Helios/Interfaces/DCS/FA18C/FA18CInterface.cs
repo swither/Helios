@@ -114,12 +114,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
         public FA18CInterface(string name)
             : base(name, "FA-18C_hornet", "pack://application:,,,/Helios;component/Interfaces/DCS/FA18C/ExportFunctions.lua")
         {
-            if (LoadFunctionsFromJson())
-            {
-                // restored all functions from JSON, no need to use code below
-                return;
-            }
-
+#if (!DEBUG)
+                if (LoadFunctionsFromJson())
+                {
+                    return;
+                }
+#endif
             #region Caution Indicators
             // Caution Light Indicator Panel
             AddFunction(new FlagValue(this, "298", "Caution Indicators", "CK_SEAT", ""));       // create_caution_lamp(298,CautionLights.CPT_LTS_CK_SEAT)
@@ -302,8 +302,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             AddFunction(new Switch(this, FUEL_INTERFACE, "342", new SwitchPosition[] { new SwitchPosition("1.0", "STOP", "3005"), new SwitchPosition("0.5", "NORM", "3005"), new SwitchPosition("0.0", "ORIDE", "3005") }, "Fuel system", "External Wing Tanks Fuel Control Switch", "%0.1f"));    // elements["pnt_342"]     = default_3_position_tumb(_("External Wing Tanks Fuel Control Switch, STOP/NORM/ORIDE"),        devices.FUEL_INTERFACE, fuel_commands.ExtTanksWingSw,       342)
             #endregion
             #region  Cockpit Mechanics
-            AddFunction(new Switch(this, CPT_MECHANICS, "453", new SwitchPosition[] { new SwitchPosition("1", "Open", "3002", "3002", "0"), new SwitchPosition("0", "Hold", "3003"), new SwitchPosition("-1", "Close", "3003", "3003", "0") }, "Cockpit Mechanics", "Canopy Control Switch", "%1d")); // elements["pnt_453"]     = springloaded_3_pos_tumb(_("Canopy Control Switch, OPEN/HOLD/CLOSE"),          devices.CPT_MECHANICS,  cpt_commands.CanopySwitchClose, cpt_commands.CanopySwitchOpen, 453)
-            //AddFunction(Switch.CreateThreeWaySwitch(this, CPT_MECHANICS, "3002", "453", "1.0", "OPEN", "0.5", "HOLD", "0.0", "CLOSE", "Cockpit Mechanics", "Canopy Control Switch", "%0.1f"));    
+            AddFunction(new Switch(this, CPT_MECHANICS, "453", new SwitchPosition[] { new SwitchPosition("1", "Open", "3001", "3001", "0"), new SwitchPosition("0", "Hold", "3002"), new SwitchPosition("-1", "Close", "3002", "3002", "0") }, "Cockpit Mechanics", "Canopy Control Switch", "%1d"));
             AddFunction(new PushButton(this, CPT_MECHANICS, "3004", "43", "Cockpit Mechanics", "Canopy Jettison Handle Unlock Button - Press to unlock", "1", "0", "%1d"));    // elements["pnt_43"]      = default_button(_("Canopy Jettison Handle Unlock Button - Press to unlock"),   devices.CPT_MECHANICS,  cpt_commands.CanopyJettLeverButton, 43)
             AddFunction(new PushButton(this, CPT_MECHANICS, "3003", "42", "Cockpit Mechanics", "Canopy Jettison Handle - Pull to jettison", "1", "0", "%1d"));    // elements["pnt_42"]      = default_2_position_tumb(_("Canopy Jettison Handle - Pull to jettison"),       devices.CPT_MECHANICS,  cpt_commands.CanopyJettLever,       42)
             AddFunction(new PushButton(this, CPT_MECHANICS, "3008", "510", "Cockpit Mechanics", "Ejection Control Handle (3 times)", "1", "0", "%1d"));    // elements["pnt_510"]     = default_button(_("Ejection Control Handle (3 times)"),                        devices.CPT_MECHANICS,  cpt_commands.SeatEjectionControlHandle,         510)
