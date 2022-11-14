@@ -903,8 +903,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
 			for (int i = 0; i < mapImages.GetLength(0); i++)
 			{
-				List<string> theaters = mapImages[i, 3].Split(',').Select(p => p.Trim()).ToList<string>();
-				if (theaters.Contains(theater, StringComparer.OrdinalIgnoreCase))
+				List<string> theaters = mapImages[i, 3].Split(',').Select(p => p.Trim().PadRight(3).Substring(0, 3)).ToList<string>();
+				if (theaters.Contains(theater.Trim().PadRight(3).Substring(0, 3), StringComparer.OrdinalIgnoreCase))
 				{
 					mapNumber = Convert.ToDouble(mapImages[i, 0]);
 				}
