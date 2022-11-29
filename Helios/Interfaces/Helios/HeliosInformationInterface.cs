@@ -20,16 +20,16 @@ using System.Xml;
 
 namespace GadrocsWorkshop.Helios.Interfaces.HeliosInformation
 {
-    [HeliosInterface("Helios.Base.HeliosInformation", "Helios", typeof(HeliosInformationInterfaceEditor),
-        typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
+    [HeliosInterface("Helios.Base.HeliosInformation", "Helios Information", typeof(HeliosInformationInterfaceEditor),
+        typeof(UniqueHeliosInterfaceFactory))]
     public class HeliosInformationInterface : HeliosInterface, IExtendedDescription
     {
         private HeliosValue _heliosVersion;
         
         public HeliosInformationInterface()
-            : base("Helios")
+            : base("Helios Information")
         {
-            _heliosVersion = new HeliosValue(this, BindingValue.Empty, "Version", "Helios Version", "The Helios Version number.", "Example: 1.6.1000.0000", BindingValueUnits.Text);
+            _heliosVersion = new HeliosValue(this, BindingValue.Empty, "Helios Version", "Helios Version", "The Helios Version number.", "Example: 1.6.1000.0000", BindingValueUnits.Text);
             Values.Add(_heliosVersion);
             Triggers.Add(_heliosVersion);
         }
