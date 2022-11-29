@@ -19,7 +19,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <TextBlock 
-                        Text="This interface provides a binding for the Helios Version number." Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
+                        Text="Helios Information Interface provides details about the version you are running." Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
                     </TextBlock>
                     <TextBlock 
                         Text="{Binding Path=HeliosVersion}" Grid.Row="1" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
