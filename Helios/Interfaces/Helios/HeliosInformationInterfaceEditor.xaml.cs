@@ -31,8 +31,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.HeliosInformation
 
         public string HeliosVersion
 		{
-            get => "Version: " + ConfigManager.HeliosVersion;
+            get => "Helios Version: " + ConfigManager.HeliosVersion;
 		}
+
+        public string HeliosPath
+        {
+            get => "Helios Path: " + ConfigManager.DocumentPath;
+        }
+
+        public string BMSFalconPath
+        {
+            get => "BMS Falcon Path: " + ConfigManager.BMSFalconPath;
+        }
+
+        public string BMSFalconPathVisibility
+        {
+            get => ConfigManager.BMSFalconPath.Length > 0 ? "Visible" : "Collapsed";
+        }
 
         #endregion
     }
