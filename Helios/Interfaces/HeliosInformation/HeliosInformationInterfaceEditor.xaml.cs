@@ -16,6 +16,7 @@
 namespace GadrocsWorkshop.Helios.Interfaces.HeliosInformation
 {
     using GadrocsWorkshop.Helios.Windows.Controls;
+    using System.Windows;
 
     /// <summary>
     /// Interaction logic for HeliosInformationInterfaceEditor.xaml
@@ -25,30 +26,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.HeliosInformation
         public HeliosInformationInterfaceEditor()
         {
             InitializeComponent();
+
+            SetTextBlockText();
         }
 
-        #region Properties
-
-        public string HeliosVersion
-		{
-            get => "Helios Version: " + ConfigManager.HeliosVersion;
-		}
-
-        public string HeliosPath
+        private void SetTextBlockText()
         {
-            get => "Helios Path: " + ConfigManager.DocumentPath;
-        }
+            HeliosVersion.Text = "Helios Version: " + ConfigManager.HeliosVersion;
+            HeliosPath.Text = "Helios Path: " + ConfigManager.DocumentPath;
+            BMSFalconPath.Text = "BMS Falcon Path: " + ConfigManager.BMSFalconPath;
 
-        public string BMSFalconPath
-        {
-            get => "BMS Falcon Path: " + ConfigManager.BMSFalconPath;
+            BMSFalconPath.Visibility = ConfigManager.BMSFalconPath.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
-
-        public string BMSFalconPathVisibility
-        {
-            get => ConfigManager.BMSFalconPath.Length > 0 ? "Visible" : "Collapsed";
-        }
-
-        #endregion
     }
 }
