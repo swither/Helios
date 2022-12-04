@@ -6,7 +6,7 @@
     Background="{StaticResource ToolBackground}" Padding="5"
     Height="Auto" Width="Auto">
     <WrapPanel Orientation="Vertical">
-        <GroupBox Style="{StaticResource BasicGroup}" Header="Helios Information">
+        <GroupBox Style="{StaticResource BasicGroup}" Header="Helios">
             <Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -16,13 +16,9 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <TextBlock 
-                        Text="This interface provides a binding for the Helios Version number." Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
-                    </TextBlock>
-                    <TextBlock 
-                        Text="{Binding Path=HeliosVersion}" Grid.Row="1" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
+                        Text="{Binding Path=HeliosVersion}" Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
                     </TextBlock>
                 </Grid>
             </Grid>
