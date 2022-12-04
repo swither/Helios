@@ -20,18 +20,10 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock 
-                        Text="Helios Information Interface provides details about the version you are running." Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
-                    </TextBlock>
-                    <TextBlock 
-                        Text="{Binding Path=HeliosVersion}" Grid.Row="1" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
-                    </TextBlock>
-                    <TextBlock
-                        Text="{Binding Path=HeliosPath}" Grid.Row="2" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
-                    </TextBlock>
-                    <TextBlock Visibility="{Binding Path=BMSFalconPathVisibility}"
-                        Text="{Binding Path=BMSFalconPath}" Grid.Row="3" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
-                    </TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="Helios Information Interface provides details about the version you are running."/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="HeliosVersion"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="HeliosPath"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="BMSFalconPath"/>
                 </Grid>
             </Grid>
         </GroupBox>
@@ -46,9 +38,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}">
-                        No configuration is needed for this interface.
-                    </TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="No configuration is needed for this interface."/>
                 </Grid>
             </Grid>
         </GroupBox>
