@@ -13,13 +13,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using System;
+using System.Xml;
+
 namespace GadrocsWorkshop.Helios.Interfaces.HeliosInformation
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Interfaces.Capabilities;
-    using System;
-    using System.Xml;
-
     [HeliosInterface("Helios.Base.HeliosInformation", "Helios Information", typeof(HeliosInformationInterfaceEditor),
         typeof(UniqueHeliosInterfaceFactory))]
     public class HeliosInformationInterface : HeliosInterface, IExtendedDescription
@@ -80,10 +80,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.HeliosInformation
 
 		#region IExtendedDescription
 
-		public string Description => "Interface to provide details about the Helios Version you are running.";
+		public string Description => "Interface to send key strokes or react to key presses";
 
         public string RemovalNarrative =>
-            "Delete this interface and remove all of its bindings from the Profile.";
+            "Delete this interface and remove all of its bindings from the Profile, making it impossible to simulate or receive keyboard input.";
 
         #endregion
     }
