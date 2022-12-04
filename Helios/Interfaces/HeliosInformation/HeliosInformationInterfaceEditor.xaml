@@ -1,0 +1,46 @@
+<HeliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Interfaces.HeliosInformation.HeliosInformationInterfaceEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"                      
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"             
+    Background="{StaticResource ToolBackground}" Padding="5"
+    Height="Auto" Width="Auto">
+    <WrapPanel Orientation="Vertical">
+        <GroupBox Style="{StaticResource BasicGroup}" Header="Helios Information">
+            <Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="120"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" MinWidth="120"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="Helios Information Interface provides details about the version you are running."/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="HeliosVersion"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="HeliosPath"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="BMSFalconPath"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
+        <GroupBox Style="{StaticResource BasicGroup}" Header="Configuration">
+            <Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="120"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" MinWidth="120"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="No configuration is needed for this interface."/>
+                </Grid>
+            </Grid>
+        </GroupBox>
+    </WrapPanel>
+</HeliosSdk:HeliosInterfaceEditor>
