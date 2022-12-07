@@ -177,6 +177,7 @@ namespace GadrocsWorkshop.Helios.Controls
                         value -= MaxValue - MinValue;
                     }
                 }
+                value = Math.Round(value, 5);
                 _heliosValue.SetValue(new BindingValue(value), BypassTriggers);
                 OnPropertyChanged("Value", oldValue, value, false);
                 SetRotation();
