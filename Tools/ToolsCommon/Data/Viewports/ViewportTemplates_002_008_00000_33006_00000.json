@@ -140,6 +140,16 @@
         "y": 444,
         "width": 275,
         "height": 269
+      },
+      {
+        "viewportName": "Viggen_TV",
+        "relativeInitFilePath": "Mods/aircraft/AJS37/Cockpit/scripts/TV-Indicator/Indicator/init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "x": 804,
+        "y": 444,
+        "width": 480,
+        "height": 480
       }
     ]
   }
