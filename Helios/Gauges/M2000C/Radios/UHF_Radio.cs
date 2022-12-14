@@ -135,7 +135,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
             try
             {
                 /// This is an internal binding within the gauge as opposed to a binding to the default interface
-                InputBindings.Add(CreateNewBinding(_potentiometer.Triggers["value.changed"], customDrum.Actions["set.Drum tape offset"]));
+                customDrum.InputBindings.Add(CreateNewBinding(_potentiometer.Triggers["value.changed"], customDrum.Actions["set.Drum tape offset"]));
             }
             catch
             {
