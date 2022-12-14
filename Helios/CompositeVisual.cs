@@ -277,7 +277,7 @@ namespace GadrocsWorkshop.Helios
         protected override void OnProfileChanged(HeliosProfile oldProfile)
         {
             base.OnProfileChanged(oldProfile);
-            if (!DesignMode)
+            if (!DesignMode || (oldProfile != null && !oldProfile.DesignMode))
                 return;
 
             // grab the default interface, if it exists
@@ -337,10 +337,6 @@ namespace GadrocsWorkshop.Helios
                         child.Actions[defaultBinding.DeviceActionName],defaultBinding.DeviceTriggerBindingValue));
 
                 }
-
-                //child.OutputBindings.Add(
-                //    new HeliosBinding(_defaultInterface.Triggers[defaultBinding.InterfaceTriggerName],
-                //        child.Actions[defaultBinding.DeviceActionName]));
             }
 
             // now looping for all default output bindings to assign the value
@@ -366,9 +362,6 @@ namespace GadrocsWorkshop.Helios
                 child.OutputBindings.Add(CreateNewBinding(child.Triggers[defaultBinding.DeviceTriggerName],
                                       _defaultInterface.Actions[defaultBinding.InterfaceActionName]));
 
-                //            child.OutputBindings.Add(
-                //new HeliosBinding(child.Triggers[defaultBinding.DeviceTriggerName],
-                //                  _defaultInterface.Actions[defaultBinding.InterfaceActionName]));
             }
         }
 
