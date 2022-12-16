@@ -1303,7 +1303,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                             binding.Trigger.Source.OutputBindings.Add(binding);
                             binding.Action.Target.InputBindings.Add(binding);
                         }
-                    }
+                        else
+                        {
+                            Logger.Debug($"Duplicate Binding for {binding.Description} detected and suppressed");
+
+    }
+}
                 }
 
                 ConfigManager.UndoManager.CloseBatch();
