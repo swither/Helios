@@ -28,35 +28,42 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.Altimeter
         private HeliosValue _airPressure;
         private GaugeNeedle _needle;
         private CalibrationPointCollectionDouble _needleCalibration;
-        private GaugeDrumCounter _tensDrum;
-        private GaugeDrumCounter _drum;
+        private GaugeDrumCounter _tenThousandsDrum;
+        private GaugeDrumCounter _hundredsDrum;
+        private GaugeDrumCounter _thousandDrum;
         private GaugeDrumCounter _airPressureDrum;
 
         public Altimeter()
             : base("Altimeter", new Size(364, 376))
         {
-            Components.Add(new GaugeImage("{Helios}/Gauges/A-10/Altimeter/altimeter_backplate.xaml", new Rect(32d, 38d, 300d, 300d)));
+            Components.Add(new GaugeImage("{Helios}/Gauges/M2000C/Altimeter/altimeter_backplate.xaml", new Rect(32d, 38d, 300d, 300d)));
 
-            _tensDrum = new GaugeDrumCounter("{Helios}/Gauges/A-10/Altimeter/alt_drum_tape.xaml", new Point(79d, 168d), "#", new Size(13d, 15d), new Size(39d, 45d));
-            _tensDrum.Clip = new RectangleGeometry(new Rect(71d, 144d, 150d, 81d));
-            Components.Add(_tensDrum);
+            _tenThousandsDrum = new GaugeDrumCounter("{Helios}/Gauges/M2000C/Altimeter/alt_drum_tape.xaml", new Point(98d, 126d), "#", new Size(13d, 15d), new Size(30d, 44d));
+            _tenThousandsDrum.Clip = new RectangleGeometry(new Rect(98d, 126d, 30d, 44d));
+            Components.Add(_tenThousandsDrum);
 
-            _drum = new GaugeDrumCounter("{Helios}/Gauges/A-10/Common/drum_tape.xaml", new Point(110d, 168d), "#%00", new Size(13d, 15d), new Size(39d, 45d));
-            _drum.Clip = new RectangleGeometry(new Rect(101d, 144d, 150d, 81d));
-            Components.Add(_drum);
+            _hundredsDrum = new GaugeDrumCounter("{Helios}/Gauges/A-10/Common/drum_tape.xaml", new Point(182d, 126d), "#", new Size(10d, 15d), new Size(28d, 44d));
+            _hundredsDrum.Clip = new RectangleGeometry(new Rect(182d, 126d, 28d, 60d));
+            Components.Add(_hundredsDrum);
 
-            _airPressureDrum = new GaugeDrumCounter("{Helios}/Gauges/A-10/Common/drum_tape.xaml", new Point(182d, 256d), "###%", new Size(10d, 15d), new Size(15d, 20d));
+            _thousandDrum = new GaugeDrumCounter("{Helios}/Gauges/A-10/Common/drum_tape.xaml", new Point(134d, 126d), "#", new Size(10d, 15d), new Size(42d, 60d));
+            _thousandDrum.Clip = new RectangleGeometry(new Rect(134d, 126d, 42d, 84d));
+            Components.Add(_thousandDrum);
+
+            _airPressureDrum = new GaugeDrumCounter("{Helios}/Gauges/A-10/Common/drum_tape.xaml", new Point(150d, 268d), "###%", new Size(10d, 15d), new Size(16d, 20d));
             _airPressureDrum.Value = 1013d;
-            _airPressureDrum.Clip = new RectangleGeometry(new Rect(182d, 256d, 60d, 20d));
+            _airPressureDrum.Clip = new RectangleGeometry(new Rect(150d, 268d, 70d, 24d));
             Components.Add(_airPressureDrum);
 
-            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/Altimeter/altimeter_faceplate.xaml", new Rect(32d, 38d, 300d, 300d)));
+            Components.Add(new GaugeImage("{Helios}/Gauges/M2000C/Altimeter/altimeter_faceplate.xaml", new Rect(32d, 38d, 300d, 300d)));
 
             _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 1000d, 360d);
-            _needle = new GaugeNeedle("{Helios}/Gauges/A-10/Altimeter/altimeter_needle.xaml", new Point(182d, 188d), new Size(16d, 257d), new Point(8d, 138.5d));
+            _needleCalibration.Add(new CalibrationPointDouble(-1000d, -360d));
+
+            _needle = new GaugeNeedle("{Helios}/Gauges/M2000C/Altimeter/altimeter_needle.xaml", new Point(182d, 188d), new Size(14d, 178d), new Point(7d, 115d));
             Components.Add(_needle);
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/A-10/Common/gauge_bezel.png", new Rect(0d, 0d, 364d, 376d)));
+            //Components.Add(new GaugeImage("{Helios}/Gauges/A-10/Common/gauge_bezel.png", new Rect(0d, 0d, 364d, 376d)));
 
             _airPressure = new HeliosValue(this, new BindingValue(0d), "", "air pressure", "Current air pressure calibaration setting for the altimeter.", "", BindingValueUnits.Millibar);
             _airPressure.SetValue(new BindingValue(1013), true);
@@ -71,21 +78,22 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.Altimeter
         void Altitude_Execute(object action, HeliosActionEventArgs e)
         {
             _needle.Rotation = _needleCalibration.Interpolate(e.Value.DoubleValue % 1000d);
-            _tensDrum.Value = e.Value.DoubleValue / 10000d;
+            double clampedAltitude = e.Value.DoubleValue < 0 ? 0d : e.Value.DoubleValue;
+            _tenThousandsDrum.Value = clampedAltitude / 10000d;
 
             // Setup then thousands drum to roll with the rest
-            double thousands = (e.Value.DoubleValue / 100d) % 100d;
+            double thousands = (clampedAltitude / 100d) % 100d;
             if (thousands >= 99)
             {
-                _tensDrum.StartRoll = thousands % 1d;
+                _tenThousandsDrum.StartRoll = thousands % 1d;
             }
             else
             {
-                _tensDrum.StartRoll = -1d;
+                _tenThousandsDrum.StartRoll = -1d;
             }
-            double lowestTwo = Math.Floor(e.Value.DoubleValue);
-            _drum.Value = lowestTwo - lowestTwo % 200;
-            //_drum.Value = e.Value.DoubleValue;
+            double lowestTwo = (clampedAltitude / 100d) % 100d;
+            _hundredsDrum.Value = lowestTwo - lowestTwo % 2;
+            _thousandDrum.Value = (clampedAltitude / 1000d) % 1000d;
         }
 
         void AirPressure_Execute(object action, HeliosActionEventArgs e)
