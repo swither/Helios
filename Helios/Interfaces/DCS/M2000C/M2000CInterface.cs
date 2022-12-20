@@ -1157,7 +1157,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
             AddFunction(Switch.CreateToggleSwitch(this,VTH, "3208", "208","0.0","CCLT","1.0","PRED", "HUD/VTB", "A/G Gun Reticle Switch","%0.1f"));
             AddFunction(new Axis(this,VTH, "3209", "209", 0.15d, 0d, 1d, "HUD/VTB", "Target Wingspan Knob"));
             AddFunction(new PushButton(this,VTH, "3210", "210", "HUD/VTB", "HUD Clear Button"));
-            AddFunction(new Axis(this, RS, "3192", "192", 0.15d, 0d, 1d, "HUD/VTB", "Minimum Altitude Selector"));
+            AddFunction(new RotaryEncoder(this, RS, "3192", "192", 0.13d, "HUD/VTB", "Minimum Altitude Selector"));
             AddFunction(Switch.CreateToggleSwitch(this,VTB, "3470", "470","1.0","On","0.0","Off", "HUD/VTB", "RADAR WOW Emitter Authorize Switch","%0.1f"));
             AddFunction(Switch.CreateThreeWaySwitch(this,VTB, "3213", "213", "1.0", "Deb", "0.0", "Neutral", "-1.0", "Fin", "HUD/VTB", "Target Data Manual Entry Begin/End", "%0.1f"));
             AddFunction(Switch.CreateThreeWaySwitch(this,VTB, "3214", "214", "1.0", "+", "0.0", "Neutral", "-1.0", "-", "HUD/VTB", "Bullseye Waypoint Selector N", "%0.1f"));
