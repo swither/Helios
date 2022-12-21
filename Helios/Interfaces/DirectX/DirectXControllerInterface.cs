@@ -248,6 +248,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
                     if (!_functions.Contains(function))
                     {
                         _functions.Add(function);
+                        Logger.Info($"Adding {function.Name}. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
                     }
                     else
                     {
