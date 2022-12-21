@@ -74,4 +74,77 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             return ArgValue + "=" + Name;
         }
     }
+
+    /// <summary>
+    /// Creates an array of SwitchPosition, mainly for use in rotary switches
+    /// </summary>
+    public static class SwitchPositions
+    {
+        /// <summary>
+        /// Creates an array of SwitchPosition, mainly for use in rotary switches
+        /// </summary>
+        /// <param name="numberOfPositions">Number of positions to be placed into the array</param>
+        /// <param name="startValue"> The first value for a switch position</param>
+        /// <param name="incrementalValue">The value to be added for each switch position</param>
+        /// <param name="arg">The arg used to report the switch position</param>
+        /// <param name="positionLabels">String array of the labels to be given to each switch position</param>
+        /// <param name="valueFormat">This is used as the parameter of ToString to truncate the numerical value which identifies the switch position</param>
+        /// <returns></returns>
+
+        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string valueFormat = "N1")
+        {
+            return Create(numberOfPositions, startValue, incrementalValue, arg, positionLabels, null, valueFormat);
+        }
+        /// <summary>
+        /// Creates an array of SwitchPosition, mainly for use in rotary switches with incrementing labels
+        /// </summary>
+        /// <param name="numberOfPositions">Number of positions to be placed into the array</param>
+        /// <param name="startValue"> The first value for a switch position</param>
+        /// <param name="incrementalValue">The value to be added for each switch position</param>        /// <param name="arg">The arg used to report the switch position</param>
+        /// <param name="arg">The arg used to report the switch position</param>
+        /// <param name="positionName">Prefix of the label for each switch position</param>
+        /// <param name="valueFormat">This is used as the parameter of ToString to truncate the numerical value which identifies the switch position</param>
+        /// <returns></returns>
+
+        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string positionName = "position", string valueFormat = "N1")
+        {
+            return Create(numberOfPositions, startValue, incrementalValue, arg, new string[] { }, positionName, valueFormat);
+        }
+        /// <summary>
+        /// Creates an array of SwitchPosition, mainly for use in rotary switches
+        /// </summary>
+        /// <param name="numberOfPositions">Number of positions to be placed into the array</param>
+        /// <param name="startValue"> The first value for a switch position</param>
+        /// <param name="incrementalValue">The value to be added for each switch position</param>
+        /// <param name="arg">The arg used to report the switch position</param>
+        /// <param name="positionLabels">String array of the labels to be given to each switch position</param>
+        /// <param name="positionName">Prefix of the label for each switch position</param>
+        /// <param name="valueFormat">This is used as the parameter of ToString to truncate the numerical value which identifies the switch position</param>
+        /// <returns></returns>
+
+        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string positionName, string valueFormat = "N1")
+        {
+            SwitchPosition[] positions = new SwitchPosition[numberOfPositions];
+            for (int i = 1; i <= numberOfPositions; i++)
+            {
+                if (positionLabels.Length == numberOfPositions)
+                {
+                    positions[i - 1] = new SwitchPosition(PositionValue(i, startValue, incrementalValue, valueFormat).ToString(valueFormat), positionLabels[i - 1], arg);
+
+                }
+                else
+                {
+                    positions[i - 1] = new SwitchPosition(PositionValue(i, startValue, incrementalValue, valueFormat).ToString(valueFormat), $"{positionName} {i}", arg);
+                }
+            }
+            return positions;
+        }
+
+        private static double PositionValue(int i, double startValue, double incrementValue, string valueFormat)
+        {
+            int roundDigits = System.Int32.Parse(valueFormat.Substring(valueFormat.Length - 1, 1));
+            return System.Math.Round(startValue + ((i - 1) * incrementValue), roundDigits);
+        }
+    }
+
 }
