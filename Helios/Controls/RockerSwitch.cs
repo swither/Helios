@@ -289,6 +289,9 @@ namespace GadrocsWorkshop.Helios.Controls
                 // now the auto scaling has messed up our font size, so we restore it
                 TextFormat.FontSize = TextFormat.ConfiguredFontSize;
                 _referenceHeight = Height;
+            } else
+            {
+                Text = "";
             }
 
         }
