@@ -16,6 +16,7 @@
 #pragma warning disable IDE0051 // Remove unused private member: interfaces contain definitions we don't implement
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
 {
+    using CommandLine.Text;
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.Interfaces.DCS.M2000C.Functions;
@@ -1210,7 +1211,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
             AddFunction(new PushButton(this, PCR, "3483", "483", "RADAR", "Rearm Button"));
             AddFunction(Switch.CreateThreeWaySwitch(this, PCR, "3484", "484", "1.0", "Ave", "0.0", "Aut", "-1.0", "Sans", "RADAR", "Doppler Reject Switch", "%0.1f"));
             AddFunction(new Axis(this, PCR, "3488", "488", 0.15d, 0d, 1d, "RADAR", "Gain Dial"));
-            AddFunction(new Switch(this, PCR, "486", CreateSwitchPositions(4, 0.0, 0.33, "3486",new string[] {"A", "P Ch","Sil","Em" },"N2"), "RADAR", "Power Selector", "%0.2f"));
+            AddFunction(new Switch(this, PCR, "486", CreateSwitchPositions(4, 0.0, 1d/3d, "3486",new string[] {"A", "P Ch","Sil","Em" },"N2"), "RADAR", "Power Selector", "%0.2f"));
             AddFunction(new PushButton(this, PCR, "3482", "482", "RADAR", "Test Button"));
             AddFunction(new PushButton(this, PCR, "3493", "493", "RADAR", "A/G DEC Mode Button"));
             AddFunction(new FlagValue(this, "494", "RADAR", "DEC Mode Indicator", "Left consule DEC"));
@@ -1438,19 +1439,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
             {
                 if (positionLabels.Length == numberOfPositions)
                 {
-                    positions[i - 1] = new SwitchPosition(PositionValue(i,startValue,incrementalValue).ToString(valueFormat), positionLabels[i-1], arg);
+                    positions[i - 1] = new SwitchPosition(PositionValue(i,startValue,incrementalValue,valueFormat).ToString(valueFormat), positionLabels[i-1], arg);
 
                 } else
                 {
-                    positions[i - 1] = new SwitchPosition(PositionValue(i, startValue, incrementalValue).ToString(valueFormat), $"{positionName} {i}", arg);
+                    positions[i - 1] = new SwitchPosition(PositionValue(i, startValue, incrementalValue,valueFormat).ToString(valueFormat), $"{positionName} {i}", arg);
                 }
             }
             return positions;
         }
-        private double PositionValue(int i, double startValue, double incrementValue)
+        private double PositionValue(int i, double startValue, double incrementValue,string valueFormat)
         {
-            return startValue + ((i - 1) * incrementValue); 
+            int roundDigits = System.Int32.Parse(valueFormat.Substring(valueFormat.Length - 1, 1)); 
+            return System.Math.Round(startValue + ((i - 1) * incrementValue), roundDigits); 
         }
     }
 }
- 
