@@ -89,6 +89,7 @@ local helios_module_names = {
     ["AV8BNA"] = "Helios_Harrier",
     ["UH-1H"] = "Helios_Huey",
     ["Ka-50"] = "Helios_KA50",
+    ["Ka-50_3"] = "Helios_KA50",
     ["AH-64D_BLK_II"] = "Helios_AH64D",
 	["AJS37"] = "Helios_AJS37",
     -- legacy entry
