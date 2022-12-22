@@ -20,7 +20,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
 
-    [HeliosInterface("Helios.KA50", "DCS Black Shark", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class BlackSharkInterface : DCSInterface
     {
         #region Devices
@@ -140,8 +139,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
         private const string BUTTON_69 = "3069";
         #endregion
 
-        public BlackSharkInterface()
-            : base("DCS Black Shark", "Ka-50", "pack://application:,,,/Helios;component/Interfaces/DCS/BlackShark/ExportFunctions.lua")
+        protected BlackSharkInterface(string heliosName, string dcsVehicleName, string exportFunctionsUri)
+            : base(heliosName, dcsVehicleName, exportFunctionsUri)
         {
             #region Left Front Panel
             // Master Caution
