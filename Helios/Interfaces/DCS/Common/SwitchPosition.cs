@@ -15,6 +15,8 @@
 // 
 
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 {
@@ -80,6 +82,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     /// </summary>
     public static class SwitchPositions
     {
+
         /// <summary>
         /// Creates an array of SwitchPosition, mainly for use in rotary switches
         /// </summary>
@@ -88,13 +91,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <param name="incrementalValue">The value to be added for each switch position</param>
         /// <param name="arg">The arg used to report the switch position</param>
         /// <param name="positionLabels">String array of the labels to be given to each switch position</param>
-        /// <param name="valueFormat">This is used as the parameter of ToString to truncate the numerical value which identifies the switch position</param>
+        /// <param name="exportFormat">This is used to truncate the numerical value which identifies the switch position</param>
         /// <returns></returns>
-
-        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string valueFormat = "N1")
+        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string exportFormat = "%0.1f")
         {
-            return Create(numberOfPositions, startValue, incrementalValue, arg, positionLabels, null, valueFormat);
+            return Create(numberOfPositions, startValue, incrementalValue, arg, positionLabels, null, exportFormat);
         }
+
         /// <summary>
         /// Creates an array of SwitchPosition, mainly for use in rotary switches with incrementing labels
         /// </summary>
@@ -103,12 +106,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <param name="incrementalValue">The value to be added for each switch position</param>        /// <param name="arg">The arg used to report the switch position</param>
         /// <param name="arg">The arg used to report the switch position</param>
         /// <param name="positionName">Prefix of the label for each switch position</param>
-        /// <param name="valueFormat">This is used as the parameter of ToString to truncate the numerical value which identifies the switch position</param>
+        /// <param name="exportFormat">This is used to truncate the numerical value which identifies the switch position</param>
         /// <returns></returns>
-
-        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string positionName = "position", string valueFormat = "N1")
+        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string positionName = "position", string exportFormat = "%0.1f")
         {
-            return Create(numberOfPositions, startValue, incrementalValue, arg, new string[] { }, positionName, valueFormat);
+            return Create(numberOfPositions, startValue, incrementalValue, arg, new string[] { }, positionName, exportFormat);
         }
         /// <summary>
         /// Creates an array of SwitchPosition, mainly for use in rotary switches
@@ -119,31 +121,45 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <param name="arg">The arg used to report the switch position</param>
         /// <param name="positionLabels">String array of the labels to be given to each switch position</param>
         /// <param name="positionName">Prefix of the label for each switch position</param>
-        /// <param name="valueFormat">This is used as the parameter of ToString to truncate the numerical value which identifies the switch position</param>
+        /// <param name="exportFormat">This is used to truncate the numerical value which identifies the switch position</param>
         /// <returns></returns>
 
-        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string positionName, string valueFormat = "N1")
+        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string positionName, string exportFormat = "%0.1f")
         {
             SwitchPosition[] positions = new SwitchPosition[numberOfPositions];
             for (int i = 1; i <= numberOfPositions; i++)
             {
                 if (positionLabels.Length == numberOfPositions)
                 {
-                    positions[i - 1] = new SwitchPosition(PositionValue(i, startValue, incrementalValue, valueFormat).ToString(valueFormat), positionLabels[i - 1], arg);
+                    positions[i - 1] = new SwitchPosition(PositionValue(i, startValue, incrementalValue, FormatDigits(exportFormat)).ToString($"N{FormatDigits(exportFormat)}"), positionLabels[i - 1], arg);
 
                 }
                 else
                 {
-                    positions[i - 1] = new SwitchPosition(PositionValue(i, startValue, incrementalValue, valueFormat).ToString(valueFormat), $"{positionName} {i}", arg);
+                    positions[i - 1] = new SwitchPosition(PositionValue(i, startValue, incrementalValue, FormatDigits(exportFormat)).ToString($"N{FormatDigits(exportFormat)}"), $"{positionName} {i}", arg);
                 }
             }
             return positions;
         }
 
-        private static double PositionValue(int i, double startValue, double incrementValue, string valueFormat)
+        private static int FormatDigits(string exportFormat)
         {
-            int roundDigits = System.Int32.Parse(valueFormat.Substring(valueFormat.Length - 1, 1));
-            return System.Math.Round(startValue + ((i - 1) * incrementValue), roundDigits);
+            // expedite the most common values
+            //if (exportFormat == "%0.1f" || exportFormat == "%.1f") return 1;
+            //if (exportFormat == "%0.2f" || exportFormat == "%.2f") return 2;
+            // expecting %0.1f or %2d type input group 1 will have the number before the f or d
+            Regex rx = new Regex(@"\%(?:[0-9|#]?\.?)([0-9])[f|d]\z",  RegexOptions.Compiled);
+            Match match = rx.Match(exportFormat);
+            if (match.Success && match.Groups[1].Captures.Count == 1 && match.Groups[1].Captures[0] != null && int.TryParse(match.Groups[1].Captures[0].Value,out int result))
+            {
+                return result;
+            }
+            return 0;
+        }
+
+        private static double PositionValue(int i, double startValue, double incrementValue, int valueFormat)
+        {
+            return System.Math.Round(startValue + ((i - 1) * incrementValue), valueFormat);
         }
     }
 
