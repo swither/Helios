@@ -20,6 +20,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Interop;
     using System.Xml;
@@ -236,15 +237,29 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
         {
             if (function != null)
             {
-                Values.Add(function.Value);
-                foreach (IBindingTrigger trigger in function.Triggers)
+                if (!Values.Contains(function.Value))
                 {
-                    Triggers.Add(trigger);
+                    Values.Add(function.Value);
+                    foreach (IBindingTrigger trigger in function.Triggers)
+                    {
+                        Triggers.Add(trigger);
+                    }
+
+                    if (!_functions.Contains(function))
+                    {
+                        _functions.Add(function);
+                        Logger.Info($"Adding {function.Name}. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                    }
+                    else
+                    {
+                        Logger.Error($"Attempt to add {function.Name} which already exists. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                    }
                 }
-
-                _functions.Add(function);
+                else
+                {
+                    Logger.Error($"Attempt to add Value {function.Value.Name} which already exists. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                }
             }
-
         }
 
         public override void ReadXml(XmlReader reader)

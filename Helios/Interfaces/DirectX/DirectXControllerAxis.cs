@@ -15,12 +15,15 @@
 
 namespace GadrocsWorkshop.Helios.Interfaces.DirectX
 {
+    using NLog;
     using SharpDX.DirectInput;
     using System;
     using System.Collections.Generic;
 
     class DirectXControllerAxis : DirectXControllerFunction
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public enum AxisType
         {
             X,
@@ -43,8 +46,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
             _axisType = type;
             _axisNumber = axisNumber;
 
-            _value = new HeliosValue(controllerInterface, new BindingValue(GetValue(initialState)), "", Name, "Current value for " + Name + ".", "(0 - 65536)", BindingValueUnits.Numeric);
-            _triggers.Add(_value);
+            Logger.Debug($"Name {Name}, Controller Interface {controllerInterface}, Type {_axisType}, Number {_axisNumber} - {initialState}");
+            int joyStickStateNumber = GetValue(initialState);
+            if(joyStickStateNumber>= 0)
+            {
+                _value = new HeliosValue(controllerInterface, new BindingValue(joyStickStateNumber), "", Name, "Current value for " + Name + ".", "(0 - 65536)", BindingValueUnits.Numeric);
+                _triggers.Add(_value);
+            } else
+            {
+                Logger.Error($"Name {Name}, Type {_axisType}, Number {_axisNumber}, JoystickState {initialState}. Trigger not added due to invalid axis/slider number.");
+            }
         }
 
         public override string FunctionType
@@ -142,7 +153,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
                 case AxisType.Rz:
                     return state.RotationZ;
                 case AxisType.Slider:
-                    return state.Sliders[_axisNumber];
+                    if(_axisNumber <= state.Sliders.Length - 1)
+                    {
+                        return state.Sliders[_axisNumber];
+                    }
+                    Logger.Error($"Name: {Name}, Number of Sliders: {state.Sliders.Length} Joystick State {state} - Axis Number Index out of bounds.");
+                    return -1;
                 default:
                     return 0;
             }
