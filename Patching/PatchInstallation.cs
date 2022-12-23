@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Util;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace GadrocsWorkshop.Helios.Patching
 
         private readonly Dictionary<string, PatchApplication> _destinations;
         private readonly string _patchSetDescription;
+        private bool _isAdvancedWarningSuppressed = false;
 
         public PatchInstallation(
             Dictionary<string, PatchApplication> destinations, 
@@ -255,6 +257,11 @@ namespace GadrocsWorkshop.Helios.Patching
         {
             if (e.PropertyName == nameof(PatchedPath.Allowed))
             {
+                if(sender is PatchedPath patchedPath && e is PropertyNotificationEventArgs args)
+                {
+                    patchedPath.IsWarningSuppressed = _isAdvancedWarningSuppressed;
+                    _isAdvancedWarningSuppressed = (bool) args.NewValue;
+                }
                 // need to check patch status
                 PatchesChanged?.Invoke(this, EventArgs.Empty);
             }

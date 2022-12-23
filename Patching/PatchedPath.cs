@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GadrocsWorkshop.Helios.Gauges.FA18C;
 using GadrocsWorkshop.Helios.Windows;
 using GadrocsWorkshop.Helios.Windows.ViewModel;
 
@@ -46,6 +47,12 @@ namespace GadrocsWorkshop.Helios.Patching
         /// handler for interaction with the visual representation (such as checkbox) of the Allowed property
         /// </summary>
         private ICommand _allowedCommand;
+
+        /// <summary>
+        /// backing field for property IsWarningSuppressed which is used to limit the times that the 
+        /// Advanced Operation Requested warning message is displayed 
+        /// </summary>
+        private bool _isWarningSuppressed = false;
 
         private const string SETTINGS_GROUP = "PatchExclusions";
 
@@ -80,26 +87,29 @@ namespace GadrocsWorkshop.Helios.Patching
                         return;
                     }
 
-                    // display a warning
-                    InstallationDangerPromptModel warningModel = new InstallationDangerPromptModel
+                    if (_isWarningSuppressed)
                     {
-                        Title = "Advanced Operation Requested",
-                        Message = "You are about to take ownership of a file that is normally patched for you by Helios.  This means Helios will no "
-                        + "longer patch this file.  Helios will no longer be able to ensure that your viewports are correctly named and you will be on your own."
-                        + Environment.NewLine
-                        + Environment.NewLine
-                        + $"You will need to ensure that you also integrate any changes required by Helios into the file {Path} in each of your patched locations. "
-                        + "Note that this file may not exist in all patched locations depending on the installed versions."
-                    };
-                    Dialog.ShowModalCommand.Execute(new ShowModalParameter
-                    {
-                        Content = warningModel
-                    }, source);
+                        // display a warning
+                        InstallationDangerPromptModel warningModel = new InstallationDangerPromptModel
+                        {
+                            Title = "Advanced Operation Requested",
+                            Message = "You are about to take ownership of a file that is normally patched for you by Helios.  This means Helios will no "
+                            + "longer patch this file.  Helios will no longer be able to ensure that your viewports are correctly named and you will be on your own."
+                            + Environment.NewLine
+                            + Environment.NewLine
+                            + $"You will need to ensure that you also integrate any changes required by Helios into the file {Path} in each of your patched locations. "
+                            + "Note that this file may not exist in all patched locations depending on the installed versions."
+                        };
+                        Dialog.ShowModalCommand.Execute(new ShowModalParameter
+                        {
+                            Content = warningModel
+                        }, source);
 
-                    if (warningModel.Result == InstallationPromptResult.Cancel)
-                    {
-                        // undo it
-                        Allowed = true;
+                        if (warningModel.Result == InstallationPromptResult.Cancel)
+                        {
+                            // undo it
+                            Allowed = true;
+                        }
                     }
                 });
                 return _allowedCommand;
@@ -168,6 +178,12 @@ namespace GadrocsWorkshop.Helios.Patching
         internal static bool IsExcluded(string path)
         {
             return Exclusion.Excluded == ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, path, Exclusion.Included);
+        }
+
+        internal bool IsWarningSuppressed
+        {
+            get => _isWarningSuppressed;
+            set => _isWarningSuppressed = value;
         }
     }
 }
