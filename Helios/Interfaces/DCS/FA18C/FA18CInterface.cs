@@ -664,27 +664,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             #endregion
             #region  ASPJ
             AddFunction(new Switch(this, ASPJ, "248", new SwitchPosition[] { new SwitchPosition("0.0", "OFF", "3001"), new SwitchPosition("0.1", "STBY", "3001"), new SwitchPosition("0.2", "BIT", "3001"), new SwitchPosition("0.3", "REC", "3001"), new SwitchPosition("0.4", "XMIT", "3001") }, "ASPJ", "ECM Mode Switch", "%0.1f"));    // elements["pnt_107"]     = default_3_position_tumb(_("UFC ADF Function Select Switch, 1/OFF/2"), devices.UFC, UFC_commands.SwADF,        107,    false, anim_speed_default, false)
-            //AddFunction(new PushButton(this,, "", "507","1.0","ENABLE","0.0","DISABLE (no function)", "ICMCP","NUC WPN Switch"));    // elements["pnt_507"]     = default_2_position_tumb(_("NUC WPN Switch, ENABLE/DISABLE (no function)"),        0, 3100, 507)
+                                                                                                                                                                                                                                                                                                                                            //AddFunction(new PushButton(this,, "", "507","1.0","ENABLE","0.0","DISABLE (no function)", "ICMCP","NUC WPN Switch"));    // elements["pnt_507"]     = default_2_position_tumb(_("NUC WPN Switch, ENABLE/DISABLE (no function)"),        0, 3100, 507)
             #endregion
             #region  TODO list
-            AddFunction(new Switch(this, "0", "175", new SwitchPosition[] { new SwitchPosition("1.0", "HMD", "3104"), new SwitchPosition("0.5", "LDDI", "3104"), new SwitchPosition("0.0", "RDDI", "3104") }, "IFEI", "Video Record Selector Switch HMD/LDDI/RDDI", "%0.1f"));
-            AddFunction(new Switch(this, "0", "176", new SwitchPosition[] { new SwitchPosition("1.0", "HUD", "3105"), new SwitchPosition("0.5", "LDIR", "3105"), new SwitchPosition("0.0", "RDDI", "3105") }, "IFEI", "Video Record Selector Switch, HUD/LDIR/RDDI", "%0.1f"));
-            AddFunction(new Switch(this, "0", "314", new SwitchPosition[] { new SwitchPosition("1.0", "MAN", "3106"), new SwitchPosition("0.5", "OFF", "3106"), new SwitchPosition("0.0", "AUTO", "3106") }, "IFEI", "Video Record Mode Selector Switch, MAN/OFF/AUTO", "%0.1f"));
-            //AddFunction(new Switch(this, "TODO list", "175", new SwitchPosition[] { new SwitchPosition("1.0", "HMD", "3104"), new SwitchPosition("0.5", "LDDI", "3104"), new SwitchPosition("0.0", "RDDI", "3104") }, "Video Record Switch DDI", "Video Record Selector Switch HMD/LDDI/RDDI", "%0.1f"));
-            //AddFunction(new Switch(this, "TODO list", "176", new SwitchPosition[] { new SwitchPosition("1.0", "HUD", "3105"), new SwitchPosition("0.5", "LDIR", "3105"), new SwitchPosition("0.0", "RDDI", "3105") }, "Video Record Switch HUD", "Video Record Selector Switch, HUD/LDIR/RDDI", "%0.1f"));
-            //AddFunction(new Switch(this, "TODO list", "314", new SwitchPosition[] { new SwitchPosition("1.0", "MAN", "3106"), new SwitchPosition("0.5", "OFF", "3106"), new SwitchPosition("0.0", "AUTO", "3106") }, "Video Record Mode Switch", "Video Record Mode Selector Switch, MAN/OFF/AUTO", "%0.1f"));
-
-            //AddFunction(new Switch(this, , "175", new SwitchPosition[]{new SwitchPosition("1.0","HMD", ""), new SwitchPosition("0.5","LDDI", ""), new SwitchPosition("0.0","RDDI", "")}, "TODO list","Selector Switch", "%0.1f"));    // elements["pnt_175"]     = default_3_position_tumb(_("Selector Switch, HMD/LDDI/RDDI"),                  0, 3104, 175)
-            //AddFunction(new Switch(this, , "176", new SwitchPosition[]{new SwitchPosition("1.0","HUD", ""), new SwitchPosition("0.5","LDIR", ""), new SwitchPosition("0.0","RDDI", "")}, "TODO list","Selector Switch", "%0.1f"));    // elements["pnt_176"]     = default_3_position_tumb(_("Selector Switch, HUD/LDIR/RDDI"),                  0, 3105, 176)
-            //AddFunction(new Switch(this, , "314", new SwitchPosition[]{new SwitchPosition("1.0","MAN", ""), new SwitchPosition("0.5","OFF", ""), new SwitchPosition("0.0","AUTO", "")}, "TODO list","Mode Selector Switch", "%0.1f"));    // elements["pnt_314"]     = default_3_position_tumb(_("Mode Selector Switch, MAN/OFF/AUTO"),              0, 3106, 314)
-            //AddFunction(new PushButton(this,, "", "7", "TODO list","HUD Video BIT Initiate Pushbutton - Push to initiate BIT"));    // elements["pnt_07"]      = default_button(_("HUD Video BIT Initiate Pushbutton - Push to initiate BIT"), 0, 3107, 7)
-            //AddFunction(new Axis(this,, "", "136",0.15d,0d,1d, "TODO list","HMD OFF/BRT Knob"));    // elements["pnt_136"]     = default_axis_limited(_("HMD OFF/BRT Knob"),                                   0, 3108, 136, 0.0, 0.1, false, false, {0,1})
-            //AddFunction(new Switch(this, , "439", new SwitchPosition[]{new SwitchPosition("1.0","ON", ""), new SwitchPosition("0.5","STBY", ""), new SwitchPosition("0.0","OFF", "")}, "TODO list","FLIR Switch", "%0.1f"));    // elements["pnt_439"]     = default_3_position_tumb(_("FLIR Switch, ON/STBY/OFF"),                        0, 3110, 439, false, anim_speed_default * 0.5, false, 0.5, {0,1})
-            //AddFunction(new Switch(this, , "441", new SwitchPosition[]{new SwitchPosition("1.0","ARM", ""), new SwitchPosition("0.5","SAFE", ""), new SwitchPosition("0.0","AFT", "")}, "TODO list","LTD/R Switch", "%0.1f"));    // elements["pnt_441"]     = default_3_position_tumb(_("LTD/R Switch, ARM/SAFE/AFT"),                      0, 3111, 441, false, anim_speed_default * 0.5, false, 0.5, {0,1})
-            //AddFunction(new PushButton(this,, "", "442","1.0","ON","0.0","OFF", "TODO list","LST/NFLR Switch"));    // elements["pnt_442"]     = default_2_position_tumb(_("LST/NFLR Switch, ON/OFF"),                         0, 3112, 442)
+            //AddFunction(new Switch(this, "0", "175", new SwitchPosition[] { new SwitchPosition("1.0", "HMD", "3104"), new SwitchPosition("0.5", "LDDI", "3104"), new SwitchPosition("0.0", "RDDI", "3104") }, "IFEI", "Video Record Selector Switch HMD/LDDI/RDDI", "%0.1f"));
+            //AddFunction(new Switch(this, "0", "176", new SwitchPosition[] { new SwitchPosition("1.0", "HUD", "3105"), new SwitchPosition("0.5", "LDIR", "3105"), new SwitchPosition("0.0", "RDDI", "3105") }, "IFEI", "Video Record Selector Switch, HUD/LDIR/RDDI", "%0.1f"));
+            //AddFunction(new Switch(this, "0", "314", new SwitchPosition[] { new SwitchPosition("1.0", "MAN", "3106"), new SwitchPosition("0.5", "OFF", "3106"), new SwitchPosition("0.0", "AUTO", "3106") }, "IFEI", "Video Record Mode Selector Switch, MAN/OFF/AUTO", "%0.1f"));
             //AddFunction(new PushButton(this,, "", "315", "TODO list","Left Video Sensor BIT Initiate Pushbutton - Push to initiate BIT"));    // elements["pnt_315"]     = default_button(_("Left Video Sensor BIT Initiate Pushbutton - Push to initiate BIT"),     0, 3127, 315)
             //AddFunction(new PushButton(this,, "", "318", "TODO list","Right Video Sensor BIT Initiate Pushbutton - Push to initiate BIT"));    // elements["pnt_318"]     = default_button(_("Right Video Sensor BIT Initiate Pushbutton - Push to initiate BIT"),    0, 3128, 318)
+            //AddFunction(new PushButton(this,, "", "7", "TODO list","HUD Video BIT Initiate Pushbutton - Push to initiate BIT"));    // elements["pnt_07"]      = default_button(_("HUD Video BIT Initiate Pushbutton - Push to initiate BIT"), 0, 3107, 7)
             #endregion
+            #region HMD
+            AddFunction(new Axis(this, HMD_INTERFACE, "3001", "136", 0.15d, 0d, 1d, "HMD", "HMD OFF/BRT Knob", false, "%0.2f"));
+            #endregion
+            #region Targetting Pod FLIR
+            AddFunction(new Switch(this, TGP_INTERFACE, "439", new SwitchPosition[] { new SwitchPosition("1.0", "ON", "3001"), new SwitchPosition("0.5", "STBY", "3001"), new SwitchPosition("0.0", "OFF", "3001") }, "TGP/FLIR", "FLIR Switch", "%0.1f"));
+            AddFunction(new Switch(this, TGP_INTERFACE, "441", new SwitchPosition[] { new SwitchPosition("1.0", "ARM", "3002"), new SwitchPosition("0.5", "SAFE", "3002"), new SwitchPosition("0.0", "AFT", "3002") }, "TGP/FLIR", "LTD/R Switch", "%0.1f"));
+            AddFunction(new PushButton(this, TGP_INTERFACE, "3003", "442", "TGP/FLIR", "LST/NFLR Switch", "1.0", "0.0", "%0.1f"));
+
+            #endregion
+
 
             #region  Instruments
             #region  Standby Baro Altimeter AAU-52/A
