@@ -678,10 +678,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             AddFunction(new Axis(this, HMD_INTERFACE, "3001", "136", 0.15d, 0d, 1d, "HMD", "HMD OFF/BRT Knob", false, "%0.2f"));
             #endregion
             #region Targetting Pod FLIR
-            AddFunction(new Switch(this, TGP_INTERFACE, "439", new SwitchPosition[] { new SwitchPosition("1.0", "ON", "3001"), new SwitchPosition("0.5", "STBY", "3001"), new SwitchPosition("0.0", "OFF", "3001") }, "TGP/FLIR", "FLIR Switch", "%0.1f"));
-            AddFunction(new Switch(this, TGP_INTERFACE, "441", new SwitchPosition[] { new SwitchPosition("1.0", "ARM", "3002"), new SwitchPosition("0.5", "SAFE", "3002"), new SwitchPosition("0.0", "AFT", "3002") }, "TGP/FLIR", "LTD/R Switch", "%0.1f"));
-            AddFunction(new PushButton(this, TGP_INTERFACE, "3003", "442", "TGP/FLIR", "LST/NFLR Switch", "1.0", "0.0", "%0.1f"));
-
+            AddFunction(new Switch(this, TGP_INTERFACE, "439", new SwitchPosition[] { new SwitchPosition("1.0", "ON", "3001"), new SwitchPosition("0.0", "STBY", "3001"), new SwitchPosition("-1.0", "OFF", "3001") }, "TGP/FLIR", "FLIR Switch", "%0.1f"));
+            AddFunction(new Switch(this, TGP_INTERFACE, "441", new SwitchPosition[] { new SwitchPosition("1.0", "ARM", "3002"), new SwitchPosition("0.0", "SAFE", "3002") }, "TGP/FLIR", "LTD/R Switch", "%0.1f"));
+            AddFunction(Switch.CreateToggleSwitch(this, TGP_INTERFACE, "3003", "442", "1.0", "ON", "0.0", "OFF", "TGP/FLIR", "LST/NFLR Switch", "%0.1f"));
             #endregion
 
 
