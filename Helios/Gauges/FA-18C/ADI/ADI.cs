@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2022 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,111 +21,101 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C.ADI
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.FA18C.ADI", "ADI", "F/A-18C Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.FA18C.ADI", "ADI", "F/A-18C Gauges", typeof(GaugeRenderer),HeliosControlFlags.None)]
     public class ADI : BaseGauge
     {
         private HeliosValue _pitch;
         private HeliosValue _roll;
+        private HeliosValue _pitchAdjustment;
         private HeliosValue _slipBall;
+        private HeliosValue _turnIndicator;
         private HeliosValue _bankSteering;
         private HeliosValue _pitchSteering;
-        private HeliosValue _gsIndicator;
 
         private HeliosValue _offFlag;
-        private HeliosValue _gsFlag;
-        private HeliosValue _courseFlag;
 
         private GaugeImage _offFlagImage;
-        private GaugeImage _gsFlagImage;
-        private GaugeImage _courseFlagImage;
 
         private GaugeNeedle _ball;
         private GaugeNeedle _bankNeedle;
         private GaugeNeedle _wingsNeedle;
         private GaugeNeedle _slipBallNeedle;
+        private GaugeNeedle _TurnMarker;
         private GaugeNeedle _pitchSteeringNeedle;
         private GaugeNeedle _bankSteeringNeedle;
-        private GaugeNeedle _gsIndicatorNeedle;
 
         private CalibrationPointCollectionDouble _pitchCalibration;
+        private CalibrationPointCollectionDouble _pitchAdjustCalibaration;
+        private CalibrationPointCollectionDouble _slipBallCalibration;
         private CalibrationPointCollectionDouble _pitchBarCalibration;
         private CalibrationPointCollectionDouble _bankBarCalibration;
-        private CalibrationPointCollectionDouble _slipBallCalibration;
-        private CalibrationPointCollectionDouble _gsCalibration;
 
         public ADI()
             : base("ADI", new Size(350, 350))
         {
-            Point center = new Point(174d, 163d);
+            Point center = new Point(177d, 163d);
 
             _pitchCalibration = new CalibrationPointCollectionDouble(-360d, -1066d, 360d, 1066d);
-            _ball = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_ball.png", center, new Size(225d, 1350d), new Point(112.5d, 677d));
-            _ball.Clip = new EllipseGeometry(center, 113d, 113d);
+            _ball = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_ball.png", center, new Size(198d, 1160d), new Point(99d, 580d));
+            _ball.Clip = new EllipseGeometry(center, 99d, 99d);
             Components.Add(_ball);
 
-            _wingsNeedle = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_wings.png", new Point(75d, 155d), new Size(200d, 40d), new Point(0d, 0d));
+            _pitchAdjustCalibaration = new CalibrationPointCollectionDouble(-1.0d, -45d, 1.0d, 45d);
+            _wingsNeedle = new GaugeNeedle("{Helios}/Images/AH-64D/SAI/adi_wings.xaml", new Point(99d, 158d), new Size(157d, 31d), new Point(0d, 0d));
             Components.Add(_wingsNeedle);
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_inner_ring.xaml", new Rect(0d, 0d, 350d, 350d)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_innermost_ring.xaml", new Rect(65d, 52d, 224d, 224d)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_inner_ring.xaml", new Rect(30d, 23d, 287d, 305d)));
+
+            _bankNeedle = new GaugeNeedle("{Helios}/Images/AH-64D/SAI/adi_arrow.xaml", center, new Size(17d, 110d), new Point(8.5d, 110d));
+            Components.Add(_bankNeedle);
 
             _slipBallCalibration = new CalibrationPointCollectionDouble(-1d, -26d, 1d, 26d);
-            _slipBallNeedle = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_slip_ball.xaml", new Point(174d, 297d), new Size(10d, 10d), new Point(5d, 5d));
+            _slipBallNeedle = new GaugeNeedle("{Helios}/Gauges/AV-8B/ADI/adi_slip_ball.xaml", new Point(176d, 297d), new Size(14d, 14d), new Point(7d, 7d));
             Components.Add(_slipBallNeedle);
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_guides.xaml", new Rect(0d, 0d, 350d, 350d)));
+            _TurnMarker = new GaugeNeedle("{Helios}/Images/AH-64D/SAI/adi_turn_marker.xaml", new Point(178d, 315d), new Size(12d, 9d), new Point(7d, 0d));
+            Components.Add(_TurnMarker);
 
-            _gsFlagImage = new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_gs_flag.xaml", new Rect(42d, 140d, 21d, 43d));
-            _gsFlagImage.IsHidden = true;
-            Components.Add(_gsFlagImage);
-
-            _offFlagImage = new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_off_flag.png", new Rect(58d, 210d, 44d, 166d));
-            _offFlagImage.IsHidden = true;
-            Components.Add(_offFlagImage);
-
-            _bankNeedle = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_bank_pointer.xaml", center, new Size(11d, 221d), new Point(5.5d, 110.5d));
-            Components.Add(_bankNeedle);
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_guides.xaml", new Rect(66d, 54d, 222d, 250d)));
 
             _pitchBarCalibration = new CalibrationPointCollectionDouble(-1d, -150d, 1d, 150d);
             _pitchSteeringNeedle = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_pitch_steering_bar.xaml", new Point(0d, 163d), new Size(252d, 6d), new Point(0d, 3d));
             _pitchSteeringNeedle.VerticalOffset = _pitchBarCalibration.Interpolate(-1d);
             Components.Add(_pitchSteeringNeedle);
 
-            _bankBarCalibration = new CalibrationPointCollectionDouble(-1d, -128d, 1d, 134d);
-            _bankSteeringNeedle = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_bank_steering_bar.xaml", new Point(175d, 0d), new Size(24d, 239d), new Point(23d, 0d));
+            _bankBarCalibration = new CalibrationPointCollectionDouble(-1d, -134d, 1d, 134d);
+            _bankSteeringNeedle = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_bank_steering_bar.xaml", new Point(175d, 0d), new Size(24d, 252d), new Point(23d, 0d));
             _bankSteeringNeedle.HorizontalOffset = _bankBarCalibration.Interpolate(-1d);
             Components.Add(_bankSteeringNeedle);
 
-            _courseFlagImage = new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_course_flag.xaml", new Rect(151d, 35d, 44d, 26d));
-            _courseFlagImage.IsHidden = true;
-            Components.Add(_courseFlagImage);
+            _offFlagImage = new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_off_flag.png", new Rect(270d, 40d, 44d, 166d));
+            _offFlagImage.IsHidden = true;
+            Components.Add(_offFlagImage);
 
-            _gsCalibration = new CalibrationPointCollectionDouble(-1d, -66d, 1d, 66d);
-            _gsIndicatorNeedle = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_gs_indicator.xaml", new Point(44d, 163d), new Size(14d, 12d), new Point(1d, 6d));
-            Components.Add(_gsIndicatorNeedle);
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_outer_ring.xaml", new Rect(10d, 9d, 336d, 336d)));
 
-            Components.Add(new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_outer_ring.xaml", new Rect(0d, 0d, 350d, 350d)));
-
-            Components.Add(new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_bezel.png", new Rect(0d, 0d, 350d, 350d)));
+            Components.Add(new GaugeImage("{Helios}/Images/AH-64D/SAI/adi_bezel.png", new Rect(0d, 0d, 350d, 350d)));
 
             _slipBall = new HeliosValue(this, new BindingValue(0d), "", "Slip Ball Offset", "Side slip indicator offset from the center of the tube.", "(-1 to 1) -1 full left and 1 is full right.", BindingValueUnits.Numeric);
             _slipBall.Execute += new HeliosActionHandler(SlipBall_Execute);
             Actions.Add(_slipBall);
 
+            _turnIndicator = new HeliosValue(this, new BindingValue(0d), "", "Turn Indicator Offset", "Turn indicator offset from the center of the gauge.", "(-1 to 1) -1 full left and 1 is full right.", BindingValueUnits.Numeric);
+            _turnIndicator.Execute += new HeliosActionHandler(turnIndicator_Execute);
+            Actions.Add(_turnIndicator);
+
             _offFlag = new HeliosValue(this, new BindingValue(false), "", "Off Flag", "Indicates whether the off flag is displayed.", "True if displayed.", BindingValueUnits.Boolean);
             _offFlag.Execute += new HeliosActionHandler(OffFlag_Execute);
             Actions.Add(_offFlag);
 
-            _gsFlag = new HeliosValue(this, new BindingValue(false), "", "Glide Slope Flag", "Indicates whether the glide scope flag is displayed.", "True if displayed.", BindingValueUnits.Boolean);
-            _gsFlag.Execute += new HeliosActionHandler(GsFlag_Execute);
-            Actions.Add(_gsFlag);
-
-            _courseFlag = new HeliosValue(this, new BindingValue(false), "", "Course Flag", "Indicates whether the course flag is displayed.", "True if displayed.", BindingValueUnits.Boolean);
-            _courseFlag.Execute += new HeliosActionHandler(CourseFlag_Execute);
-            Actions.Add(_courseFlag);
-
-            _pitch = new HeliosValue(this, new BindingValue(0d), "", "Pitch", "Current ptich of the aircraft.", "(0 - 360)", BindingValueUnits.Degrees);
+            _pitch = new HeliosValue(this, new BindingValue(0d), "", "Pitch", "Current pitch of the aircraft.", "(0 - 360)", BindingValueUnits.Degrees);
             _pitch.Execute += new HeliosActionHandler(Pitch_Execute);
             Actions.Add(_pitch);
+
+            _pitchAdjustment = new HeliosValue(this, new BindingValue(0d), "", "Pitch adjustment offset", "Location of pitch reference wings.", "(-1 to 1) 1 full up and -1 is full down.", BindingValueUnits.Numeric);
+            _pitchAdjustment.Execute += new HeliosActionHandler(PitchAdjust_Execute);
+            Actions.Add(_pitchAdjustment);
 
             _roll = new HeliosValue(this, new BindingValue(0d), "", "Bank", "Current bank of the aircraft.", "(0 - 360)", BindingValueUnits.Degrees);
             _roll.Execute += new HeliosActionHandler(Bank_Execute);
@@ -138,16 +129,8 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C.ADI
             _pitchSteering.Execute += new HeliosActionHandler(PitchSteering_Execute);
             Actions.Add(_pitchSteering);
 
-            _gsIndicator = new HeliosValue(this, new BindingValue(0d), "", "Glide Scope Indicator Offset", "Location of glide scope indicator from middle of the scale.", "(-1 to 1) 1 full up and -1 is full down.", BindingValueUnits.Numeric);
-            _gsIndicator.Execute += new HeliosActionHandler(GsIndicator_Execute);
-            Actions.Add(_gsIndicator);
         }
 
-        void GsIndicator_Execute(object action, HeliosActionEventArgs e)
-        {
-            _gsIndicator.SetValue(e.Value, e.BypassCascadingTriggers);
-            _gsIndicatorNeedle.VerticalOffset = -_gsCalibration.Interpolate(e.Value.DoubleValue);
-        }
 
         void SlipBall_Execute(object action, HeliosActionEventArgs e)
         {
@@ -155,22 +138,32 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C.ADI
             _slipBallNeedle.HorizontalOffset = _slipBallCalibration.Interpolate(e.Value.DoubleValue);
         }
 
-        void GsFlag_Execute(object action, HeliosActionEventArgs e)
-        {
-            _gsFlag.SetValue(e.Value, e.BypassCascadingTriggers);
-            _gsFlagImage.IsHidden = !e.Value.BoolValue;
-        }
-
-        void CourseFlag_Execute(object action, HeliosActionEventArgs e)
-        {
-            _courseFlag.SetValue(e.Value, e.BypassCascadingTriggers);
-            _courseFlagImage.IsHidden = !e.Value.BoolValue;
-        }
-
         void OffFlag_Execute(object action, HeliosActionEventArgs e)
         {
             _offFlag.SetValue(e.Value, e.BypassCascadingTriggers);
             _offFlagImage.IsHidden = !e.Value.BoolValue;
+        }
+
+        void Pitch_Execute(object action, HeliosActionEventArgs e)
+        {
+            _pitch.SetValue(e.Value, e.BypassCascadingTriggers);
+            _ball.VerticalOffset = _pitchCalibration.Interpolate(e.Value.DoubleValue);
+        }
+        void PitchAdjust_Execute(object action, HeliosActionEventArgs e)
+        {
+            _pitchAdjustment.SetValue(e.Value, e.BypassCascadingTriggers);
+            _wingsNeedle.VerticalOffset = -_pitchAdjustCalibaration.Interpolate(e.Value.DoubleValue);
+        }
+        void Bank_Execute(object action, HeliosActionEventArgs e)
+        {
+            _roll.SetValue(e.Value, e.BypassCascadingTriggers);
+            _ball.Rotation = -e.Value.DoubleValue;
+            _bankNeedle.Rotation = -e.Value.DoubleValue;
+        }
+        void turnIndicator_Execute(object action, HeliosActionEventArgs e)
+        {
+            _turnIndicator.SetValue(e.Value, e.BypassCascadingTriggers);
+            _TurnMarker.HorizontalOffset = _slipBallCalibration.Interpolate(e.Value.DoubleValue);
         }
 
         void PitchSteering_Execute(object action, HeliosActionEventArgs e)
@@ -183,19 +176,6 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C.ADI
         {
             _bankSteering.SetValue(e.Value, e.BypassCascadingTriggers);
             _bankSteeringNeedle.HorizontalOffset = _bankBarCalibration.Interpolate(e.Value.DoubleValue);
-        }
-
-        void Pitch_Execute(object action, HeliosActionEventArgs e)
-        {
-            _pitch.SetValue(e.Value, e.BypassCascadingTriggers);
-            _ball.VerticalOffset = _pitchCalibration.Interpolate(e.Value.DoubleValue);
-        }
-
-        void Bank_Execute(object action, HeliosActionEventArgs e)
-        {
-            _roll.SetValue(e.Value, e.BypassCascadingTriggers);
-            _ball.Rotation = -e.Value.DoubleValue;
-            _bankNeedle.Rotation = -e.Value.DoubleValue;
         }
     }
 }

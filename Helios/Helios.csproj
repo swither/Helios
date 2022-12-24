@@ -196,6 +196,7 @@
     <Compile Include="Gauges\AV-8B\Stopwatch\Stopwatch.cs" />
     <Compile Include="Gauges\AV-8B\Stopwatch\StopwatchDial.cs" />
     <Compile Include="Gauges\CompositeVisualWithBackgroundImage.cs" />
+    <Compile Include="Gauges\FA-18C\ADI\ADI.cs" />
     <Compile Include="Gauges\FA-18C\UFC\UFCScratchPadDisplay.cs" />
     <Compile Include="Gauges\FA-18C\UFC\UFCTextDisplay.cs" />
     <Compile Include="Gauges\M2000C\Altimeter\Altimeter.cs" />
@@ -811,6 +812,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Gauges\FA-18C\ADI\adi_turn_marker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1115,7 +1120,6 @@
     <Compile Include="Gauges\AV-8B\SMC\3 Digit Display\3DigitDisplay.cs" />
     <Compile Include="Gauges\AV-8B\UFC\UFC_AV8B.cs" />
     <Compile Include="Gauges\F-14B\F14BDevice\F14BDevice.cs" />
-    <Compile Include="Gauges\FA-18C\ADI\ADI.cs" />
     <Compile Include="Gauges\FA-18C\Altimeter\BarometricAltimeter.cs" />
     <Compile Include="Gauges\FA-18C\Altimeter\RADARAltimeter.cs" />
     <Compile Include="Gauges\FA-18C\Battery\Battery.cs" />

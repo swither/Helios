@@ -704,14 +704,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             AddFunction(new ScaledNetworkValue(this, "205", 90d, "SAI", "Pitch", "Current pitch displayed on the SAI.", "", BindingValueUnits.Degrees));
             AddFunction(new ScaledNetworkValue(this, "206", -180d, "SAI", "Bank", "Current bank displayed on the SAI.", "", BindingValueUnits.Degrees));
             AddFunction(new FlagValue(this, "209", "SAI", "Warning Flag", "Displayed when SAI is caged or non-functional."));
-            //AddFunction(new RotaryEncoder(this, SAI, "3210", "3210", 0.1d, "SAI", "Pitch Trim / Cage"));
             AddFunction(new NetworkValue(this, "207", "SAI", "Slip Ball", "Current position of the slip ball relative to the center of the tube.", "(-1 to 1) -1 is full left and 1 is full right.", BindingValueUnits.Numeric));
             AddFunction(new NetworkValue(this, "208", "SAI", "Rate of Turn", "Turn indicator position", "(-1 to 1) -1 is full left and 1 is full right.", BindingValueUnits.Numeric));
-            AddFunction(new Axis(this, SAI, "3003", "214", 0.05d, 0.00d, 1.00d, "SAI", "Pitch Adjust Knob", true, "%0.2f"));
+            AddFunction(new RotaryEncoder(this, SAI, "3003", "214", 0.1d, "SAI", "Pitch Adjust Knob"));
+            AddFunction(new NetworkValue(this, "210", "SAI", "Pitch Adjustment", "Position of the pitch adjust.", "(-1 to 1)", BindingValueUnits.Numeric));
             AddFunction(new PushButton(this, SAI, "3002", "213", "SAI", "Cage Pull Switch", "1.0", "0.0", "%0.1f"));
+            AddFunction(new NetworkValue(this, "212", "SAI", "Pitch Steering Bar", "Current position of the steering bar.", "(-1 to 1)", BindingValueUnits.Numeric));
+            AddFunction(new NetworkValue(this, "211", "SAI", "Bank Steering Bar", "Current position of the steering bar.", "(-1 to 1)", BindingValueUnits.Numeric));
             #endregion
-            #endregion
-            #region Flight Instruments
             //  VVI
             CalibrationPointCollectionDouble vviScale = new CalibrationPointCollectionDouble(-1.0d, -6000d, 1.0d, 6000d);
             vviScale.Add(new CalibrationPointDouble(0d, 0d));
@@ -720,9 +720,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             //  IAS
             CalibrationPointCollectionDouble airspeedScale = new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 360d);
             AddFunction(new ScaledNetworkValue(this, "217", airspeedScale, "Flight Instruments", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots));
-            #endregion
 
-            #region System Gauges
             //Cabin Altitude Pressure 
             //CalibrationPointCollectionDouble cabinScale = new CalibrationPointCollectionDouble(-0.003d, -300d, 0.5000d, 50000d);
             CalibrationPointCollectionDouble cabinScale = new CalibrationPointCollectionDouble(-0.003d, -300d, 1.0d, 50000d);
@@ -739,9 +737,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             CalibrationPointCollectionDouble voltageScale = new CalibrationPointCollectionDouble(0.0d, 15.0d, 1.0d, 30d);
             AddFunction(new ScaledNetworkValue(this, "400", voltageScale, "System Gauges", "Voltage U", "Battery Voltage U", "", BindingValueUnits.Volts));
             AddFunction(new ScaledNetworkValue(this, "401", voltageScale, "System Gauges", "Voltage E", "Battery Voltage E", "", BindingValueUnits.Volts));
-
-            #endregion
-            #region Instrument parsed values
 
             #endregion
         }
