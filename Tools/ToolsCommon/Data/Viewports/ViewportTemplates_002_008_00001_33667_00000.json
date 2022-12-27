@@ -1,7 +1,7 @@
 ﻿[
   {
-    "templateName": "KA-50-3 (Helios 16/9)",
-    "moduleId": "KA-50-3",
+    "templateName": "KA-50 III (Helios 16/9)",
+    "moduleId": "KA-50_3",
     "isHeliosTemplate": true,
     "viewports": [
       {
