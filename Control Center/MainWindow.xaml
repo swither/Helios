@@ -91,7 +91,7 @@
                 </StackPanel>
             </Grid>
 
-            <TextBlock Canvas.Left="76" Canvas.Top="36" Height="29" Text="{Binding SelectedProfileName}" Width="223" Style="{StaticResource BaseDisplayText}" FontSize="20" />
+            <TextBlock Canvas.Left="76" Canvas.Top="36" Height="29" Text="{Binding SelectedProfileName}" Width="223" Style="{StaticResource BaseDisplayText}" FontSize="16" />
             <TextBlock Canvas.Left="76" Canvas.Top="71" Height="53" Text="{Binding Message}" Width="223" Style="{StaticResource BaseDisplayText}" FontSize="10" TextWrapping="Wrap" />
             <Grid Canvas.Left="3" Canvas.Top="150">
                 <Grid.RowDefinitions>
