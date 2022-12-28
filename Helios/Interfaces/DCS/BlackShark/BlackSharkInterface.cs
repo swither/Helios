@@ -65,6 +65,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
         private const string ZMS_3 = "58";
         private const string K041 = "59";
         private const string ACCELEROMETER = "61";
+        private const string AVIONICS_PROXY = "62";
+        private const string CVM_MEMORY = "63";
+
         #endregion
 
         #region Buttons
@@ -440,7 +443,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
             #endregion
 
             #region Laser Warning Receiver
-            AddFunction(new PushButton(this, LASER_WARNING_SYSTEM, BUTTON_1, "35", "Laser Warning Receiver", "Reset Button"));
             AddFunction(new FlagValue(this, "25", "Laser Warning Receiver", "Bearing Forward", "On when laser energy is detect from forwad of the aircaft"));
             AddFunction(new FlagValue(this, "28", "Laser Warning Receiver", "Bearing Right", "On when laser energy is detect from right of the aircaft"));
             AddFunction(new FlagValue(this, "26", "Laser Warning Receiver", "Bearing Aft", "On when laser energy is detect from aft of the aircaft"));
