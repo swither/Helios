@@ -74,7 +74,7 @@
   },
   {
     "templateName": "KA-50 (Helios 16/9)",
-    "moduleId": "Ka-50 II and III",
+    "moduleId": "KA-50",
     "isHeliosTemplate": true,
     "viewports": [
       {
