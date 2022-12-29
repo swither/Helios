@@ -19,11 +19,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
+    using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
     [HeliosInterface("Helios.KA50", "DCS Black Shark", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class KA50_2Interface : BlackSharkInterface
     {
+        private const string LASER_WARNING_SYSTEM = "36";
+        private const string INS_EMBEDDED_KA50 = "65";
 
+        #region Buttons
+        private const string BUTTON_1 = "3001";
+        private const string BUTTON_2 = "3002";
+        private const string BUTTON_3 = "3003";
+        private const string BUTTON_4 = "3004";
+        private const string BUTTON_5 = "3005";
+        private const string BUTTON_6 = "3006";
+        private const string BUTTON_7 = "3007";
+        private const string BUTTON_8 = "3008";
+        private const string BUTTON_9 = "3009";
+        #endregion
         public KA50_2Interface()
             : base("DCS Black Shark", "Ka-50", "pack://application:,,,/Helios;component/Interfaces/DCS/BlackShark/ExportFunctionsKa-50_2.lua")
         {
@@ -34,6 +48,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
                 return;
             }
 #endif
+            #region Laser Warning System(Л-140)	
+            AddFunction(new PushButton(this, LASER_WARNING_SYSTEM, BUTTON_1, "35", "Laser Warning Receiver", "Reset Button"));
+            #endregion
 
         }
     }

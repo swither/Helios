@@ -19,11 +19,26 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
+    using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
     [HeliosInterface("Helios.KA50-3", "DCS Ka-50 3", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class KA50_3Interface : BlackSharkInterface
     {
+        private const string L_370E50 = "64";
+        private const string IGLA_INTERFACE = "65";
+        private const string INS_EMBEDDED_KA50 = "66";
 
+        #region Buttons
+        private const string BUTTON_1 = "3001";
+        private const string BUTTON_2 = "3002";
+        private const string BUTTON_3 = "3003";
+        private const string BUTTON_4 = "3004";
+        private const string BUTTON_5 = "3005";
+        private const string BUTTON_6 = "3006";
+        private const string BUTTON_7 = "3007";
+        private const string BUTTON_8 = "3008";
+        private const string BUTTON_9 = "3009";
+        #endregion
 
         public KA50_3Interface()
             : base("DCS Black Shark 3", "Ka-50_3", "pack://application:,,,/Helios;component/Interfaces/DCS/BlackShark/ExportFunctionsKa-50_3.lua")
@@ -35,6 +50,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
                 return;
             }
 #endif
+            AddFunction(Switch.CreateToggleSwitch(this, L_370E50, BUTTON_1, "49", "1", "On", "0", "Off", "L_370E50", "ODS operation mode", "%1d"));
         }
     }
 }
