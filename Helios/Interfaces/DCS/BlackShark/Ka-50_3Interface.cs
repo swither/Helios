@@ -50,7 +50,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
                 return;
             }
 #endif
-            AddFunction(Switch.CreateToggleSwitch(this, L_370E50, BUTTON_1, "49", "1", "On", "0", "Off", "L_370E50", "ODS operation mode", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, L_370E50, BUTTON_1, "49", "1", "On", "0", "Off", "Missile Warning System", "ODS operation mode", "%1d"));
         }
     }
 }
