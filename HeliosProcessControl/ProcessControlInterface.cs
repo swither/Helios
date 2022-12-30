@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace GadrocsWorkshop.Helios.HeliosProcessControl
 {
@@ -38,9 +39,13 @@ namespace GadrocsWorkshop.Helios.HeliosProcessControl
 
         public ProcessControlInterface() : base("Process Control")
         {
-            HeliosAction launchApplication = new HeliosAction(this, "", "", "launch application", "Launches an external application", "Full path to appliation or document you want to launch or URL to a web page.", BindingValueUnits.Text);
+            HeliosAction launchApplication = new HeliosAction(this, "", "", "launch application", "Launches an external application", "Full path to application or document you want to launch or URL to a web page.", BindingValueUnits.Text);
             launchApplication.Execute += LaunchApplication_Execute;
             Actions.Add(launchApplication);
+
+            HeliosAction launchApplicationHiddenWindow = new HeliosAction(this, "", "", "launch application (Hidden Window)", "Launches an external application with a hidden window", "Full path to application or document you want to launch or URL to a web page.", BindingValueUnits.Text);
+            launchApplicationHiddenWindow.Execute += LaunchApplicationWindowHidden_Execute;
+            Actions.Add(launchApplicationHiddenWindow);
 
             HeliosAction killApplication = new HeliosAction(this, "", "", "kill application", "Kills an external process", "Process Image name of the process to be killed.", BindingValueUnits.Text);
             killApplication.Execute += KillApplication_Execute;
@@ -67,8 +72,15 @@ namespace GadrocsWorkshop.Helios.HeliosProcessControl
         {
             InvalidateStatusReport();
         }
-
+        void LaunchApplicationWindowHidden_Execute(object action, HeliosActionEventArgs e)
+        {
+            LaunchApplication_Execute(action, e, true);
+        }
         void LaunchApplication_Execute(object action, HeliosActionEventArgs e)
+        {
+            LaunchApplication_Execute(action, e, false);
+        }
+        void LaunchApplication_Execute(object action, HeliosActionEventArgs e, bool windowHidden = false)
         {
             if (!Model.AllowLaunch)
             {
@@ -170,6 +182,7 @@ namespace GadrocsWorkshop.Helios.HeliosProcessControl
                     psi.WorkingDirectory = Path.GetDirectoryName(expandedPath);
                     psi.Arguments = expandedArgs.Trim();
                     psi.UseShellExecute = true;
+                    psi.WindowStyle = windowHidden ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal;
                     psi.RedirectStandardOutput = false;
                     Process.Start(psi);
                 }
@@ -220,6 +233,7 @@ namespace GadrocsWorkshop.Helios.HeliosProcessControl
             {
                 switch (binding.Action.ActionID)
                 {
+                    case "launch application (Hidden Window)":
                     case "launch application":
                         if (binding.ValueSource == BindingValueSources.StaticValue && ValidateExecPath(binding.Value))
                         {
