@@ -116,6 +116,9 @@
       <DependentUpon>DualIndicatorPushButtonAppearanceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Capabilities\IKineographControl.cs" />
+    <Compile Include="Controls\Special\ExternalIndicatorAppearanceEditor.xaml.cs">
+      <DependentUpon>ExternalIndicatorAppearanceEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\KineographRenderer.cs" />
     <Compile Include="Controls\LinearPotentiometerDetentsAnimated.cs" />
     <Compile Include="Controls\NumericTextDisplay.cs" />
@@ -136,6 +139,7 @@
     <Compile Include="Controls\Special\CalibrationFilterBehaviorEditor.xaml.cs">
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Special\ExternalIndicatorControl.cs" />
     <Compile Include="Controls\Special\TestControl.cs" />
     <Compile Include="Controls\NumericTextDisplayBehaviorPropertyEditor.xaml.cs">
       <DependentUpon>NumericTextDisplayBehaviorPropertyEditor.xaml</DependentUpon>
@@ -500,6 +504,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\Special\ExternalIndicatorAppearanceEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\LinearPotentiometerBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -809,6 +817,10 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Gauges\M2000C\Altimeter\altimeter_needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Images\General\Green_LED.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
