@@ -189,7 +189,15 @@ namespace GadrocsWorkshop.Helios.Controls
                     // just shown, start time out
                     if (TimerEnabled)
                     {
-                        if (_timer == null) _timer = new DispatcherTimer(IntervalTimespan, DispatcherPriority.Input, TimerTick, Dispatcher.CurrentDispatcher);
+                        if (_timer == null)
+                        {
+                            _timer = new DispatcherTimer(IntervalTimespan, DispatcherPriority.Input, TimerTick, Dispatcher.CurrentDispatcher);
+                        }
+                        else
+                        {
+                            _timer.Tick += TimerTick;
+                        }
+                        _timer.IsEnabled = true;
                         _timer.Interval = IntervalTimespan;
                         _timer.Start();
                     }
