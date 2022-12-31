@@ -591,8 +591,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             AddFunction(new Switch(this, UFC, "107", new SwitchPosition[] { new SwitchPosition("1.0", "1", "3016"), new SwitchPosition("0.5", "OFF", "3016"), new SwitchPosition("0.0", "2", "3016") }, "UFC", "UFC ADF Function Select Switch", "%0.1f"));
             AddFunction(new Axis(this, UFC, "3030", "108", 0.1d, 0d, 1d, "UFC", "UFC COMM 1 Volume Control Knob"));
             AddFunction(new Axis(this, UFC, "3031", "123", 0.1d, 0d, 1d, "UFC", "UFC COMM 2 Volume Control Knob"));
-            //AddFunction(new Axis(this, UFC, "3033", "124", 0.1d, 0d, 1d, "UFC", "UFC COMM 1 Channel Selector Knob"));    // elements["pnt_124"]     = default_button_axis_extended(_("UFC COMM 1 Channel Selector Knob"),   devices.UFC, UFC_commands.Comm1Fcn, UFC_commands.Comm1Ch,   125, 124,   0.2, true, anim_speed_default)
-            //AddFunction(new Axis(this, UFC, "3034", "126", 0.1d, 0d, 1d, "UFC", "UFC COMM 2 Channel Selector Knob"));    // elements["pnt_126"]     = default_button_axis_extended(_("UFC COMM 2 Channel Selector Knob"),   devices.UFC, UFC_commands.Comm2Fcn, UFC_commands.Comm2Ch,   127, 126,   0.2, true, anim_speed_default)
+            AddFunction(new Axis(this, UFC, "3032", "109", 0.1d, 0d, 1d, "UFC", "UFC Brightness Control Knob"));
             AddFunction(new RotaryEncoder(this, UFC, "3033", "124", 0.1d, "UFC", "UFC COMM 1 Channel Selector Knob"));
             AddFunction(new RotaryEncoder(this, UFC, "3034", "126", 0.1d, "UFC", "UFC COMM 2 Channel Selector Knob"));
             AddFunction(new PushButton(this, UFC, "3008", "125", "UFC", "UFC COMM 1 Channel Selector Pull", "1", "0", "%1d"));
