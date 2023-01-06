@@ -122,7 +122,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             get
             {
-                if(_falconVersion == null && FalconVersions != null)
+                if(_falconVersion == null && FalconVersions != null && FalconVersions.Length > 0)
                 {
                     _falconVersion = FalconVersions[0];
                 }
