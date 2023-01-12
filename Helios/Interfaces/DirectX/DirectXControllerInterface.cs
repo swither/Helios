@@ -16,14 +16,19 @@
 namespace GadrocsWorkshop.Helios.Interfaces.DirectX
 {
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.Interfaces.Vendor.Functions;
+    using HidSharp;
+    using System.Linq;
     using SharpDX.DirectInput;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Interop;
     using System.Xml;
+    using System.Security.Cryptography;
 
     [HeliosInterface("Helios.Base.DirectXController", "DirectX Controller", typeof(DirectXControllerInterfaceEditor), typeof(DirectXControllerInterfaceFactory))]
     public class DirectXControllerInterface : HeliosInterface
@@ -35,6 +40,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
 
         private IntPtr _hWnd;
         private delegate IntPtr GetMainHandleDelegate();
+
+        private HidStream _hotasStream;
+        private HidDevice _hotasDevice;
+        private IHotasFunctions _hotasFunctions;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -194,6 +203,80 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
                 if (controlNum > -1)
                 {
                     AddFunction(DirectXControllerFunction.Create(this, obj.ObjectType, controlNum, state));
+                }
+            }
+            AddVendorSpecificCapabilities();
+        }
+
+        private void AddVendorSpecificCapabilities()
+        {
+            switch (_device.Properties.VendorId)
+            {
+                case 0x044f:  // Thrustmaster
+                    switch (_device.Properties.ProductId)
+                    {
+                        case 0x0404: // Warthog Throttle
+                            _hotasFunctions = new ThrustmasterWarthogThrottleIndicators(this, "Indicators", "Warthog Throttle Indicators");
+                            _hotasFunctions.CreateActionsAndValues();
+                            if (!DesignMode)
+                            {
+                                _hotasDevice = DeviceList.Local.GetHidDevices().Where(d => d.VendorID == _device.Properties.VendorId && d.ProductID == _device.Properties.ProductId).FirstOrDefault();
+                                if (_hotasDevice == null)
+                                {
+                                    Logger.Info($"Unable to find USB device with VendorID: {_device.Properties.VendorId} and ProductID: {_device.Properties.ProductId}.");
+                                }
+                            }
+                            break;
+                        case 0xb351: // Cougar MFD
+                        case 0x0402: // Warthog Joystick
+                        case 0xb68f: // T-Pendular-Rudder
+                        default:
+                            break;
+
+                    }
+                    break;
+                case 0x3344:  // Virpil
+                    _hotasFunctions = new VirpilHotasIndicators(this, "Indicators", "Virpil HOTAS Indicators");
+                    _hotasFunctions.CreateActionsAndValues();
+                    if (!DesignMode)
+                    {
+                        _hotasDevice = DeviceList.Local.GetHidDevices().Where(d => d.VendorID == _device.Properties.VendorId && d.ProductID == _device.Properties.ProductId).FirstOrDefault();
+                        if (_hotasDevice == null)
+                        {
+                            Logger.Info($"Unable to find USB device with VendorID: {_device.Properties.VendorId} and ProductID: {_device.Properties.ProductId}.");
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        internal void SendUsbData(byte[] buffer)
+        {
+            if(_hotasDevice != null)
+            {
+                if (_hotasDevice.TryOpen(out _hotasStream))
+                {
+                    //Console.WriteLine("CanWrite: {0}", _hotasStream.CanWrite);
+                    //byte[] indicators = new byte[] { 0x01, 0x06, 0x50, 0x01 };
+                    try
+                    {
+                        if (_hotasStream.CanWrite)
+                        {
+                            _hotasStream.Write(buffer, 0, buffer.Length);
+                            _hotasStream.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"Error while writing to {_hotasDevice.VendorID} {_hotasDevice.GetProductName()} {ex.Message}.");
+                        if (_hotasStream != null)
+                        {
+                            _hotasStream.Close();     
+                        }
+                        _hotasDevice = null;
+                    }
                 }
             }
         }
