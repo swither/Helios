@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Windows.Media;
     using System.Xml;
-    
+
     [HeliosControl("Helios.Base.Indicator", "Caution Indicator", "Indicators", typeof(IndicatorRenderer))]
     public class Indicator : HeliosVisual, IConfigurableImageLocation
     {
@@ -46,8 +46,8 @@ namespace GadrocsWorkshop.Helios.Controls
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-         public Indicator()
-            : base("Indicator", new System.Windows.Size(100, 50))
+        public Indicator()
+           : base("Indicator", new System.Windows.Size(100, 50))
         {
             _referenceHeight = Height;
 
@@ -360,10 +360,12 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 writer.WriteElementString("ScalingMode", ScalingMode.ToString());
             }
-
-            writer.WriteStartElement("Interaction");
-            writer.WriteElementString("AllowInteraction", AllowInteraction.ToString(CultureInfo.InvariantCulture));
-            writer.WriteEndElement();
+            if (AllowInteraction == false)
+            {
+                writer.WriteStartElement("Interaction");
+                writer.WriteElementString("AllowInteraction", AllowInteraction.ToString(CultureInfo.InvariantCulture));
+                writer.WriteEndElement();
+            }
 
             base.WriteXml(writer);
         }
@@ -394,6 +396,10 @@ namespace GadrocsWorkshop.Helios.Controls
                 reader.ReadStartElement("Interaction");
                 AllowInteraction = bool.Parse(reader.ReadElementString("AllowInteraction"));
                 reader.ReadEndElement();
+            }
+            else
+            {
+                AllowInteraction = true;
             }
             base.ReadXml(reader);
 
