@@ -236,14 +236,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
                     }
                     break;
                 case 0x3344:  // Virpil
-                    _hotasFunctions = new VirpilHotasIndicators(this, "Indicators", "Virpil HOTAS Indicators");
-                    _hotasFunctions.CreateActionsAndValues();
-                    if (!DesignMode)
+                    if(_device.Properties.ProductId == 0x0194)
                     {
-                        _hotasDevice = DeviceList.Local.GetHidDevices().Where(d => d.VendorID == _device.Properties.VendorId && d.ProductID == _device.Properties.ProductId).FirstOrDefault();
-                        if (_hotasDevice == null)
+                        _hotasFunctions = new VirpilHotasIndicators(this, "Indicators", "Virpil HOTAS Indicators");
+                        _hotasFunctions.CreateActionsAndValues();
+                        if (!DesignMode)
                         {
-                            Logger.Info($"Unable to find USB device with VendorID: {_device.Properties.VendorId} and ProductID: {_device.Properties.ProductId}.");
+                            _hotasDevice = DeviceList.Local.GetHidDevices().Where(d => d.VendorID == _device.Properties.VendorId && d.ProductID == _device.Properties.ProductId).FirstOrDefault();
+                            if (_hotasDevice == null)
+                            {
+                                Logger.Info($"Unable to find USB device with VendorID: {_device.Properties.VendorId} and ProductID: {_device.Properties.ProductId}.");
+                            }
                         }
                     }
                     break;
