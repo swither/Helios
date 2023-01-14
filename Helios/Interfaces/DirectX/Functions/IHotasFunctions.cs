@@ -10,6 +10,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using SharpDX.DirectInput;
+
 namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
 {
     /// <summary>
@@ -20,6 +22,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
     {
         void Reset();
         void CreateActionsAndValues();
+        void SendHidData(byte[] buffer);
+        void OpenHidDevice(Joystick device);
+        void OpenHidDevice();
     }
 }
-
