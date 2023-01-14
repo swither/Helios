@@ -39,14 +39,14 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         {
             "BeamRider",
             "CaptZeen",         // for making Helios more than a toolbox
-            "Cylution",
-            "damien022",
+            "Cylution",         // MiG-21 Interface
+            "damien022",        // Composite Visual
             "Jabbers",          // for expert counsel and a little bit of code
-            "KiwiLostInMelb",
+            "KiwiLostInMelb",   // Key Sender
             "Phar71",
             "Rachmaninoff",
-            "wheelchock",       // for reviving BMS support
-            "Will Hartsell",
+            "wheelchock",       // for reviving BMS support and General Development work
+            "Will Hartsell",    // for IRIS
             "WillianG83",
             "yzfanimal",
             "ZoeESummers",      // for UX work
@@ -55,7 +55,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             "Sliceback",        // for testing
             "norsetto",         // for M-2000C work
             "Biluf",            // for M-2000C viewports
-            "linknet",          // for BMS controls,
+            "linknet",          // for BMS & General Development work,
             "talbotmcinnis"     // for code contribution
         };
 
