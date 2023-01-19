@@ -12,6 +12,9 @@
 
 using CommandLine.Text;
 using GadrocsWorkshop.Helios.Interfaces.DirectX;
+using HidSharp;
+using NLog;
+using SharpDX.DirectInput;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +26,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
     public class VirpilHotasIndicators : IHotasFunctions
     {
 
-        private string _device;
+        private string _deviceName;
+        private Joystick _device;
+        private HidDevice _hotasDevice;
+        private HidStream _hotasStream;
 
         private HeliosValue _indicatorValue;
         private DirectXControllerInterface _sourceInterface;
-        private byte[][] _writeBuffers = new byte[][] {new byte[38], new byte[38], new byte[38], new byte[38] };
+        private byte[][] _writeBuffers = new byte[][] { new byte[38], new byte[38], new byte[38], new byte[38] };
+
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private enum VirpilSubDeviceFlagEnum
         {
@@ -37,13 +45,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
             SLAVELEDS = 0x0067
         }
 
-        public VirpilHotasIndicators(DirectXControllerInterface sourceInterface, string device, string name)
+        public VirpilHotasIndicators(DirectXControllerInterface sourceInterface, Joystick joystickDevice, string deviceName, string name)
         {
-            _device = device;
+            _deviceName = deviceName;
+            _device = joystickDevice;
             _sourceInterface = sourceInterface;
         }
 
-        public void CreateActionsAndValues() {
+        public void CreateActionsAndValues()
+        {
             DoBuild();
         }
 
@@ -61,7 +71,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
                 for (int i = 0; i < 32; i++)
                 {
                     _writeBuffers[(int)subDevice - 0x64][i + j] = (byte)0x00; // start without changing any of the indicators.
-                    _indicatorValue = new HeliosValue(_sourceInterface, new BindingValue(null), $"{subDevice} {_device}", $"indicator {i + 1}", $"the color value of indicator {i + 1} on {subDevice}.", "Number representing the binary representation the indicator's color 0b??GGRRBB", BindingValueUnits.Numeric);
+                    _indicatorValue = new HeliosValue(_sourceInterface, new BindingValue(null), $"{subDevice} {_deviceName}", $"indicator {i + 1}", $"the color value of indicator {i + 1} on {subDevice}.", "Number representing the binary representation the indicator's color 0b??GGRRBB", BindingValueUnits.Numeric);
                     _indicatorValue.Execute += new HeliosActionHandler(Action_Execute);
                     _sourceInterface.Values.Add(_indicatorValue);
                     _sourceInterface.Actions.Add(_indicatorValue);
@@ -72,14 +82,52 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
 
         void Action_Execute(object action, HeliosActionEventArgs e)
         {
-            if (action is HeliosValue hAction){
+            if (action is HeliosValue hAction)
+            {
                 if (Int32.TryParse(hAction.Name.Split(' ')[1], out Int32 indicatorIndex))
                 {
                     if (Enum.TryParse(hAction.Device.Split(' ')[0], out VirpilSubDeviceFlagEnum subDevice))
                     {
                         _writeBuffers[(int)subDevice - 0x64][indicatorIndex - 1 + 5] = (byte)(0x80 | (e.Value.DoubleValue > 255 ? (byte)0xff : e.Value.DoubleValue < 0 ? (byte)0x00 : (byte)Convert.ToInt16(e.Value.DoubleValue))); // set the changed flag
-                        _sourceInterface.SendUsbData(_writeBuffers[(int)subDevice - 0x64]);
+                        SendHidData(_writeBuffers[(int)subDevice - 0x64]);
                         _writeBuffers[(int)subDevice - 0x64][indicatorIndex - 1 + 5] &= (byte)0x7F;  //Reset the changed flag
+                    }
+                }
+            }
+        }
+
+        public void OpenHidDevice() { OpenHidDevice(_device); }
+        public void OpenHidDevice(Joystick device)
+        {
+            _hotasDevice = DeviceList.Local.GetHidDevices().Where(d => d.VendorID == device.Properties.VendorId && d.ProductID == device.Properties.ProductId && d.ProductName == device.Properties.ProductName).FirstOrDefault(d => d.GetMaxFeatureReportLength() > 0);
+            if (_hotasDevice == null)
+            {
+                Logger.Info($"Unable to find USB device with VendorID: {device.Properties.VendorId} and ProductID: {device.Properties.ProductId}.");
+            }
+        }
+
+        public void SendHidData(byte[] buffer)
+        {
+            if (_hotasDevice != null)
+            {
+                if (_hotasDevice.TryOpen(out _hotasStream))
+                {
+                    try
+                    {
+                        if (_hotasStream.CanWrite)
+                        {
+                            _hotasStream.SetFeature(buffer, 0, buffer.Length);
+                            _hotasStream.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"Error while writing to {_hotasDevice.VendorID} {_hotasDevice.GetProductName()} {ex.Message}.");
+                        if (_hotasStream != null)
+                        {
+                            _hotasStream.Close();
+                        }
+                        _hotasDevice = null;
                     }
                 }
             }
