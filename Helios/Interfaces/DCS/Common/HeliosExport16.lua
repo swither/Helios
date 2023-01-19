@@ -71,7 +71,10 @@ helios_impl.alertInterval = 5.0
 
 -- Module names are different from internal self names, so this table translates them
 -- without instantiating every module.  Planes must be entered into this table to be
--- able to use modules from the Scripts\Mods directory.
+-- able to use modules from the Scripts\Helios\Mods directory.
+-- Typically these modules are embedded in the profile with an interface
+-- with the element <ExportModuleFormat>CaptZeenModule1</ExportModuleFormat>
+-- 
 -- REVISIT: replace this mechanism with test loading and vehicle arrays
 local helios_module_names = {
     ["A-10C"] = "Helios_A10C",
@@ -80,6 +83,9 @@ local helios_module_names = {
     ["F-14A-135-GR"] = "Helios_F14",
     ["F-16C_50"] = "Helios_F16C",
     ["FA-18C_hornet"] = "Helios_F18C",
+    ["FA-18E"] = "Helios_F18C",
+    ["FA-18F"] = "Helios_F18C",
+    ["EA-18G"] = "Helios_F18C",
     ["A-10A"] = "Helios_FC",
     ["F-15C"] = "Helios_FC",
     ["MiG-29"] = "Helios_FC",
