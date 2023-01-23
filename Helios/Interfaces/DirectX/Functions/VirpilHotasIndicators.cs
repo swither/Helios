@@ -148,14 +148,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         /// Convert a Color value to a value to be used by Viril and adjust for the alpha channel
         /// </summary>
         /// <param name="color">color object with alpha channel</param>
-        /// <returns>byte in the form 0b00GGRRBB whick is used by Virpil</returns>
+        /// <returns>byte in the form 0b11BBGGRR which is used by Virpil</returns>
         private byte VirpilColorConverter(Color color)
         {
             byte colorValue = 0x00;
-            int alphaAdjustment = color.A > 0xbf ? 4 : color.A >  0x7f ? 3 : color.A > 0x3f ? 2 :color.A > 0x00? 1: 0;
-            colorValue |= (byte)((byte)((Convert.ToInt16(color.G) / 4 * alphaAdjustment) >> 2) & (byte) 0b00110000);
-            colorValue |= (byte)((byte)((Convert.ToInt16(color.R) / 4 * alphaAdjustment) >> 4) & (byte) 0b00001100);
-            colorValue |= (byte)((byte)((Convert.ToInt16(color.B) / 4 * alphaAdjustment) >> 6) & (byte) 0b00000011);
+            int alphaAdjustment = color.A >> 6;
+            colorValue |= (byte)((byte)((Convert.ToInt16(color.B) / 3 * alphaAdjustment) >> 2) & (byte) 0b00110000);
+            colorValue |= (byte)((byte)((Convert.ToInt16(color.G) / 3 * alphaAdjustment) >> 4) & (byte) 0b00001100);
+            colorValue |= (byte)((byte)((Convert.ToInt16(color.R) / 3 * alphaAdjustment) >> 6) & (byte) 0b00000011);
             return colorValue;
         }
 
@@ -204,11 +204,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         /// <summary>
         /// Iterates through all of the subdevices and resets each one
         /// </summary>
+        /// <remarks>Resetting DEFAULT sets all the LEDS to yellow instead of Off so we don't do it.
+        ///          DEFAULT also appears to not be interested in the contents of the indicator
+        ///          buffer.</remarks>
         public void Reset()
         {
             foreach (VirpilSubDeviceFlagEnum subDevice in Enum.GetValues(typeof(VirpilSubDeviceFlagEnum)))
             {
-                Reset(subDevice);
+                if(subDevice != VirpilSubDeviceFlagEnum.DEFAULT) Reset(subDevice);  // Restting DEFAULT sets all the LEDS to yellow instead of Off.
             }
         }
 
@@ -235,7 +238,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
             {
                 _writeBuffers[(int)subDevice - 0x64][i + j] &= (byte)0x7f; // turn off the changed bit
             }
-
         }
     }
 }

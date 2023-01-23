@@ -28,6 +28,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         private string _deviceName;
 
         private HeliosValue _indicatorValue;
+        private HeliosAction _resetIndicatorAction;
         private DirectXControllerInterface _sourceInterface;
 
         private HidStream _hotasStream;
@@ -47,12 +48,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
             _intensity = 2;
         }
 
-        //// deserialization constructor
-        //public ThrustmasterWarthogThrottleIndicators(DirectXControllerInterface sourceInterface, System.Runtime.Serialization.StreamingContext context)
-        //{
-        //    DoBuild();
-        //}
-
         public void CreateActionsAndValues()
         {
             DoBuild();
@@ -68,14 +63,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
                 _sourceInterface.Actions.Add(_indicatorValue);
             }
 
-            _indicatorValue = new HeliosValue(_sourceInterface, new BindingValue(null), _deviceName, $"backlight", $"the backlight state on {_deviceName}.", "true = on, false = off", BindingValueUnits.Boolean);
+            _indicatorValue = new HeliosValue(_sourceInterface, new BindingValue(null), _deviceName, "backlight", $"the backlight state on {_deviceName}.", "true = on, false = off", BindingValueUnits.Boolean);
             _indicatorValue.Execute += new HeliosActionHandler(Action_Execute);
             _sourceInterface.Actions.Add(_indicatorValue);
             _sourceInterface.Values.Add(_indicatorValue);
-            _indicatorValue = new HeliosValue(_sourceInterface, new BindingValue(null), _deviceName, $"brightness", $"the light intesity level on {_deviceName}.", "0 = off, 1 to 5 is the light level", BindingValueUnits.Numeric);
+            _indicatorValue = new HeliosValue(_sourceInterface, new BindingValue(null), _deviceName, "brightness", $"the light intesity level on {_deviceName}.", "0 = off, 1 to 5 is the light level", BindingValueUnits.Numeric);
             _indicatorValue.Execute += new HeliosActionHandler(Action_Execute);
             _sourceInterface.Actions.Add(_indicatorValue);
             _sourceInterface.Values.Add(_indicatorValue);
+            _resetIndicatorAction = new HeliosAction(_sourceInterface, _deviceName, "All Indicators", "reset", $"Sets all of the indicators and backlight on this interface to off.");
+            _resetIndicatorAction.Execute += new HeliosActionHandler(Reset_Execute);
+            _sourceInterface.Actions.Add(_resetIndicatorAction);
 
         }
 
@@ -121,6 +119,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
             }
         }
 
+        void Reset_Execute(object action, HeliosActionEventArgs e)
+        {
+        }
+
         public void OpenHidDevice() { OpenHidDevice(_device); }
         public void OpenHidDevice(Joystick device)
         {
@@ -159,9 +161,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         }
         public void Reset()
         {
-            _indicators = 0x00;
-            _intensity = 0;
             _indicatorValue.SetValue(BindingValue.Empty, true);
+            byte[] writeBuffer = new byte[4];
+            writeBuffer[0] = 0x01;
+            writeBuffer[1] = 0x06;
+            writeBuffer[2] = 0x00;
+            writeBuffer[3] = 0x00;
+            SendHidData(writeBuffer);
         }
 
     }

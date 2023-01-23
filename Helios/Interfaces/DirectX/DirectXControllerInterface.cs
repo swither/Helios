@@ -226,27 +226,32 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
                     }
                     break;
                 case 0x3344:  // Virpil
+                    string testStatus;
                     switch (_device.Properties.ProductId)
                     {
+                        case 0x00d3: // L-VPC Stick WarBRD
+                        case 0x40d3: // L-VPC Stick WarBRD
+                        case 0x00d4: // R-VPC Stick WarBRD
+                        case 0x40d4: // R-VPC Stick WarBRD
                         case 0x8194: // MT-50 CM3
                         case 0x0194: // MT-50 CM3
-                            _hotasFunctions = new VirpilHotasIndicators(this, _device, "Indicators", $"{_device.Properties.ProductName} Indicators");
-                            _hotasFunctions.CreateActionsAndValues();
-                            _hotasFunctions.OpenHidDevice(_device);
-                        break;
+                            testStatus = "";
+                            break;
                         case 0x0000: // VPC Panel #1
                         case 0x025b: // VPC Panel #2
                         case 0x025d: // VPC SharKa-50 Panel
                         case 0x00cc: // VPC Stick WarBRD
                         case 0x40cc: // VPC Stick WarBRD
                         case 0x40d0: // VPC Stick WarBRD
-                            _hotasFunctions = new VirpilHotasIndicators(this, _device, "Indicators", $"(Untested) {_device.Properties.ProductName} Indicators");
-                            _hotasFunctions.CreateActionsAndValues();
-                            _hotasFunctions.OpenHidDevice(_device);
+                            testStatus = "(Untested) "; 
                             break;
                         default:
+                            testStatus = "(Unknown) ";
                             break;
                     }
+                    _hotasFunctions = new VirpilHotasIndicators(this, _device, "Indicators", $"{testStatus}{_device.Properties.ProductName} Indicators");
+                    _hotasFunctions.CreateActionsAndValues();
+                    _hotasFunctions.OpenHidDevice(_device);
                     break;
                 default:
                     break;
