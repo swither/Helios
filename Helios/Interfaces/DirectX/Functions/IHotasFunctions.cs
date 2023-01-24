@@ -21,6 +21,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
     public interface IHotasFunctions
     {
         void Reset();
+        void Refresh();
         void CreateActionsAndValues();
         void SendHidData(byte[] buffer);
         void OpenHidDevice(Joystick device);

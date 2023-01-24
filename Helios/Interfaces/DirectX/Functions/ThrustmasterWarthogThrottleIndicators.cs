@@ -170,6 +170,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
             SendHidData(writeBuffer);
         }
 
+        public void Refresh()
+        {
+            // no code
+        }
     }
 }
 

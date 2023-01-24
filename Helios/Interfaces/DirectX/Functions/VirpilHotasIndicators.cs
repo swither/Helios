@@ -78,19 +78,32 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
                 for (int i = 0; i < 32; i++)
                 {
                     _writeBuffers[(int)subDevice - 0x64][i + j] = (byte)0x00; // start without changing any of the indicators.
-                    _indicatorValue = new HeliosValue(_sourceInterface, new BindingValue(null), $"{subDevice} {_deviceName}", $"indicator color {i + 1}", $"the #AARRGGBB color value of indicator {i + 1} on {subDevice}.", "Color in the hex format #AARRGGBB.", BindingValueUnits.Text);
-                    _indicatorValue.Execute += new HeliosActionHandler(IndicatorAction_Execute);
-                    _sourceInterface.Values.Add(_indicatorValue);
-                    _sourceInterface.Actions.Add(_indicatorValue);
+                    if (subDevice != VirpilSubDeviceFlagEnum.DEFAULT)
+                    {
+                        _indicatorValue = new HeliosValue(_sourceInterface, new BindingValue(null), $"{subDevice} {_deviceName}", $"indicator color {i + 1}", $"the #AARRGGBB color value of indicator {i + 1} on {subDevice}.", "Color in the hex format #AARRGGBB.", BindingValueUnits.Text);
+                        _indicatorValue.Execute += new HeliosActionHandler(IndicatorAction_Execute);
+                        _sourceInterface.Values.Add(_indicatorValue);
+                        _sourceInterface.Actions.Add(_indicatorValue);
+                    }
                 }
                 _writeBuffers[(int)subDevice - 0x64][_maxBufferSize-1] = (byte)0xf0;   // marker for the  end of the buffer
-
-                _resetIndicatorAction = new HeliosAction(_sourceInterface, $"{subDevice} {_deviceName}", $"{subDevice} Indicators", "reset", $"Sets all of the indicators on {subDevice} to off.");
-                _resetIndicatorAction.Execute += new HeliosActionHandler(Reset_Execute);
-                _sourceInterface.Actions.Add(_resetIndicatorAction);
+                if (subDevice != VirpilSubDeviceFlagEnum.DEFAULT)
+                {
+                    _resetIndicatorAction = new HeliosAction(_sourceInterface, $"{subDevice} {_deviceName}", $"{subDevice} Indicators", "reset", $"Sets all of the indicators on {subDevice} to off.");
+                    _resetIndicatorAction.Execute += new HeliosActionHandler(Reset_Execute);
+                    _sourceInterface.Actions.Add(_resetIndicatorAction);
+                } else
+                {
+                    _resetIndicatorAction = new HeliosAction(_sourceInterface, "", $"{subDevice}", "set", $"Sends the DEFAULT command to the devices on the interface.");
+                    _resetIndicatorAction.Execute += new HeliosActionHandler(SetDefault_Execute);
+                    _sourceInterface.Actions.Add(_resetIndicatorAction);
+                }
             }
 
-            _resetIndicatorAction = new HeliosAction(_sourceInterface, "", "All Indicators", "reset", $"Sets all of the indicators on this interface to off.");
+            _resetIndicatorAction = new HeliosAction(_sourceInterface, "", "All Indicators", "reset", $"sets all of the indicators on this interface to off.");
+            _resetIndicatorAction.Execute += new HeliosActionHandler(Reset_Execute);
+            _sourceInterface.Actions.Add(_resetIndicatorAction);
+            _resetIndicatorAction = new HeliosAction(_sourceInterface, "", "All Indicators", "refresh", $"refreshes all of the indicators to the last values set on this interface.");
             _resetIndicatorAction.Execute += new HeliosActionHandler(Reset_Execute);
             _sourceInterface.Actions.Add(_resetIndicatorAction);
 
@@ -144,6 +157,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
             }
         }
 
+        void SetDefault_Execute(object action, HeliosActionEventArgs e)
+        {
+            if (action is HeliosAction hAction)
+            {
+                if (hAction.ActionVerb == "set" && hAction.Name == "default")
+                {
+                    int j = 0;
+                    _writeBuffers[(int)VirpilSubDeviceFlagEnum.DEFAULT - 0x64][j++] = (byte)0x02;
+                    _writeBuffers[(int)VirpilSubDeviceFlagEnum.DEFAULT - 0x64][j++] = (byte)VirpilSubDeviceFlagEnum.DEFAULT;
+                    _writeBuffers[(int)VirpilSubDeviceFlagEnum.DEFAULT - 0x64][j++] = (byte)0x25;                   // length?
+                    _writeBuffers[(int)VirpilSubDeviceFlagEnum.DEFAULT - 0x64][j++] = (byte)0x00;                   // address?
+                    _writeBuffers[(int)VirpilSubDeviceFlagEnum.DEFAULT - 0x64][j++] = (byte)0x00;                   // address?
+
+                    _writeBuffers[(int)VirpilSubDeviceFlagEnum.DEFAULT - 0x64][_maxBufferSize - 1] = (byte)0xf0;    // marker for the  end of the buffer
+                    SendHidData(_writeBuffers[(int)VirpilSubDeviceFlagEnum.DEFAULT - 0x64]);
+                }
+            }
+        }
+
         /// <summary>
         /// Convert a Color value to a value to be used by Viril and adjust for the alpha channel
         /// </summary>
@@ -162,7 +194,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         public void OpenHidDevice() { OpenHidDevice(_device); }
         public void OpenHidDevice(Joystick device)
         {
-            _hotasDevice = DeviceList.Local.GetHidDevices().Where(d => d.VendorID == device.Properties.VendorId && d.ProductID == device.Properties.ProductId && d.ProductName == device.Properties.ProductName).FirstOrDefault(d => d.GetMaxFeatureReportLength() > 0);
+            _hotasDevice = DeviceList.Local.GetHidDevices().Where(d => d.VendorID == device.Properties.VendorId && d.ProductID == device.Properties.ProductId && d.GetProductName() == device.Properties.ProductName).FirstOrDefault(d => d.GetMaxFeatureReportLength() > 0);
             if (_hotasDevice == null)
             {
                 Logger.Info($"Unable to find USB device with VendorID: {device.Properties.VendorId} and ProductID: {device.Properties.ProductId}.");
@@ -211,7 +243,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         {
             foreach (VirpilSubDeviceFlagEnum subDevice in Enum.GetValues(typeof(VirpilSubDeviceFlagEnum)))
             {
-                if(subDevice != VirpilSubDeviceFlagEnum.DEFAULT) Reset(subDevice);  // Restting DEFAULT sets all the LEDS to yellow instead of Off.
+                if(subDevice != VirpilSubDeviceFlagEnum.DEFAULT) Reset(subDevice);
+            }
+        }
+
+        /// <summary>
+        /// Iterates through all of the subdevices and refreshes each one
+        /// </summary>
+        /// <remarks></remarks>
+        public void Refresh()
+        {
+            foreach (VirpilSubDeviceFlagEnum subDevice in Enum.GetValues(typeof(VirpilSubDeviceFlagEnum)))
+            {
+                if (subDevice != VirpilSubDeviceFlagEnum.DEFAULT) Reset(subDevice,true);
             }
         }
 
@@ -219,7 +263,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         /// Resets a single Virpil subdevice
         /// </summary>
         /// <param name="subDevice">The Virpil sub device to be set to zero</param>
-        private void Reset(VirpilSubDeviceFlagEnum subDevice)
+        private void Reset(VirpilSubDeviceFlagEnum subDevice, bool refresh = false)
         {
             int j = 0;
             _writeBuffers[(int)subDevice - 0x64][j++] = (byte)0x02;
@@ -230,10 +274,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
 
             for (int i = 0; i < 32; i++)
             {
-                _writeBuffers[(int)subDevice - 0x64][i + j] |= (byte)0x80; // set the changed bit
+                if (refresh)
+                {
+                    _writeBuffers[(int)subDevice - 0x64][i + j] |= (byte)0x80; // set the changed bit
+                }
+                else
+                {
+                    _writeBuffers[(int)subDevice - 0x64][i + j] = (byte)0x80; // clear and set the changed bit
+                }
             }
+
             _writeBuffers[(int)subDevice - 0x64][_maxBufferSize - 1] = (byte)0xf0;   // marker for the  end of the buffer
             SendHidData(_writeBuffers[(int)subDevice - 0x64]);
+
             for (int i = 0; i < 32; i++)
             {
                 _writeBuffers[(int)subDevice - 0x64][i + j] &= (byte)0x7f; // turn off the changed bit
