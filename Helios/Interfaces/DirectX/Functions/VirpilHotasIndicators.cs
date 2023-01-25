@@ -153,6 +153,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
                             Reset(subDevice);
                         }
                     }
+                } else if (hAction.ActionVerb == "refresh")
+                {
+                    Refresh();
+                } else
+                {
+                    // no code
                 }
             }
         }
@@ -161,7 +167,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         {
             if (action is HeliosAction hAction)
             {
-                if (hAction.ActionVerb == "set" && hAction.Name == "default")
+                if (hAction.ActionVerb == "set" && hAction.Name == $"{VirpilSubDeviceFlagEnum.DEFAULT}")
                 {
                     int j = 0;
                     _writeBuffers[(int)VirpilSubDeviceFlagEnum.DEFAULT - 0x64][j++] = (byte)0x02;
@@ -234,6 +240,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         }
 
         /// <summary>
+        /// Iterates through all of the subdevices and refreshes each one
+        /// </summary>
+        /// <remarks></remarks>
+        public void Refresh()
+        {
+            Reset(true);
+        }
+
+        /// <summary>
         /// Iterates through all of the subdevices and resets each one
         /// </summary>
         /// <remarks>Resetting DEFAULT sets all the LEDS to yellow instead of Off so we don't do it.
@@ -241,21 +256,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         ///          buffer.</remarks>
         public void Reset()
         {
-            foreach (VirpilSubDeviceFlagEnum subDevice in Enum.GetValues(typeof(VirpilSubDeviceFlagEnum)))
-            {
-                if(subDevice != VirpilSubDeviceFlagEnum.DEFAULT) Reset(subDevice);
-            }
+            Reset(false);
         }
 
-        /// <summary>
-        /// Iterates through all of the subdevices and refreshes each one
-        /// </summary>
-        /// <remarks></remarks>
-        public void Refresh()
+        public void Reset(bool refresh)
         {
             foreach (VirpilSubDeviceFlagEnum subDevice in Enum.GetValues(typeof(VirpilSubDeviceFlagEnum)))
             {
-                if (subDevice != VirpilSubDeviceFlagEnum.DEFAULT) Reset(subDevice,true);
+                if (subDevice != VirpilSubDeviceFlagEnum.DEFAULT) Reset(subDevice, refresh);
             }
         }
 
