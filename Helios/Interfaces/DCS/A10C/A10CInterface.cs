@@ -735,7 +735,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             #endregion
 
             #region ILS Control Panel
-            AddFunction(Switch.CreateToggleSwitch(this, ILS, BUTTON_1, "247", "1", "On", "0", "Off", "ILS", "Power", "%1d"));
+            AddFunction(Switch.CreateToggleSwitch(this, ILS, BUTTON_1, "247", "0", "Off", "1", "On", "ILS", "Power", "%1d"));
             AddFunction(new AbsoluteEncoder(this, ILS, BUTTON_2, BUTTON_2, "248", 0.05d, 0.0d, 0.3d, "ILS", "ILS Frequencey Mhz", false, "%0.1f"));
             AddFunction(new AbsoluteEncoder(this, ILS, BUTTON_3, BUTTON_3, "249", 0.05d, 0.0d, 0.9d, "ILS", "ILS Frequencey Khz", false, "%0.1f"));
             AddFunction(new Axis(this, ILS, BUTTON_5, "250", 0.1d, 0d, 1d, "ILS", "Volume"));
