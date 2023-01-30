@@ -825,11 +825,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
             try
             {
-                foreach (string line in ReadBMSConfig(file))
+                string[] contents = ReadBMSConfig(file);
+                if (contents != null)
                 {
-                    if (!line.StartsWith("//") && RemoveMultipleSpaces(line).Contains(bmsRttExportParam))
+                    foreach (string line in contents)
                     {
-                        result = true; break;
+                        if (!line.StartsWith("//") && RemoveMultipleSpaces(line).Contains(bmsRttExportParam))
+                        {
+                            result = true; break;
+                        }
                     }
                 }
             }
@@ -848,6 +852,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             try
             {
                 lines = File.ReadAllLines(path);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                lines = null;
             }
             catch (FileNotFoundException)
             {
