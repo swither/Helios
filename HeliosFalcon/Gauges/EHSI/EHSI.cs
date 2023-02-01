@@ -1,5 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
-//  Copyright 2022 Helios Contributors
+//  Copyright 2023 Helios Contributors
 //
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		private FalconInterface _falconInterface;
 
 		private GaugeImage _BackgroundImage;
-		private GaugeImage _HeadingMarkerImage;
+		private GaugeImage _BackgroundMarkersImage;
 		private GaugeImage _AircraftImage;
 		private CustomGaugeNeedle _CurrentHeadingScale;
 		private CustomGaugeNeedle _DesiredHeadingMarker;
@@ -52,7 +52,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 		private Point _needleCenter = new Point(200, 200);
 
 		private const string _imageBackgroundImage = "{HeliosFalcon}/Images/EHSI/Background Image.png";
-		private const string _imageCurrentHeadingMarker = "{HeliosFalcon}/Images/EHSI/Current Heading Marker.png";
+        private const string _imageBackgroundMarkers = "{HeliosFalcon}/Images/EHSI/Background Markers.xaml";
 		private const string _imageAircraftImage = "{HeliosFalcon}/Images/EHSI/Aircraft Image.png";
 		private const string _imageCurrentHeadingScale = "{HeliosFalcon}/Images/EHSI/Current Heading Scale.xaml";
 		private const string _imageDesiredHeadingMarker = "{HeliosFalcon}/Images/EHSI/Desired Heading Marker.png";
@@ -87,10 +87,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 			_BackgroundImage.IsHidden = false;
 			Components.Add(_BackgroundImage);
 
-			_HeadingMarkerImage = new Gauges.GaugeImage(_imageCurrentHeadingMarker, _imageSize);
-			_HeadingMarkerImage.Clip = new RectangleGeometry(_needleClip);
-			_HeadingMarkerImage.IsHidden = false;
-			Components.Add(_HeadingMarkerImage);
+            _BackgroundMarkersImage = new Gauges.GaugeImage(_imageBackgroundMarkers, _imageSize);
+            _BackgroundMarkersImage.Clip = new RectangleGeometry(_needleClip);
+            _BackgroundMarkersImage.IsHidden = false;
+            Components.Add(_BackgroundMarkersImage);
 
 			_CurrentHeadingScale = new Gauges.CustomGaugeNeedle(_imageCurrentHeadingScale, _needleLocation, _needleSize, _needleCenter);
 			_CurrentHeadingScale.Clip = new RectangleGeometry(_needleClip);
@@ -416,10 +416,10 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EHSI
 				_squarePosY = 0;
 			}
 
-			_HeadingMarkerImage.Width = _squareWidth;
-			_HeadingMarkerImage.Height = _squareHeight;
-			_HeadingMarkerImage.PosX = _squarePosX;
-			_HeadingMarkerImage.PosY = _squarePosY;
+            _BackgroundMarkersImage.Width = _squareWidth;
+            _BackgroundMarkersImage.Height = _squareHeight;
+            _BackgroundMarkersImage.PosX = _squarePosX;
+            _BackgroundMarkersImage.PosY = _squarePosY;
 
 			_CurrentHeadingScale.Tape_Width = _squareWidth;
 			_CurrentHeadingScale.Tape_Height = _squareHeight;
