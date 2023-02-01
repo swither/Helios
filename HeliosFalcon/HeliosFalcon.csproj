@@ -701,6 +701,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Images\EHSI\Background Markers.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Interfaces\FalconCallbackValueEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -836,7 +840,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\EHSI\Aircraft Image.png" />
-    <Resource Include="Images\EHSI\Current Heading Marker.png" />
     <Resource Include="Images\EHSI\Background Image.png" />
     <Resource Include="Images\EHSI\Beacon Bearing Optional.png" />
     <Resource Include="Images\EHSI\Course Deviation Needle.png" />
