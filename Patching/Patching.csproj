@@ -2514,12 +2514,6 @@
     <Content Include="Patches\DCS\002_008_00000_33006_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\FUEL\FUEL_init.lua.gpatch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Patches\DCS\002_008_00000_33006_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\HUD_init.lua.gpatch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Patches\DCS\002_008_00000_33006_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\init.lua.gpatch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Patches\DCS\002_008_00000_33006_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\PCA_BR_init.lua.gpatch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2779,12 +2773,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Patches\DCS\002_008_00001_34667_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\FUEL\FUEL_init.lua.gpatch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Patches\DCS\002_008_00001_34667_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\HUD_init.lua.gpatch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Patches\DCS\002_008_00001_34667_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\init.lua.gpatch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Patches\DCS\002_008_00001_34667_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\PCA_BR_init.lua.gpatch">
@@ -5253,12 +5241,6 @@
     <Content Include="Patches\DCS\002_008_00000_33006_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\FUEL\FUEL_init.lua.grevert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Patches\DCS\002_008_00000_33006_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\HUD_init.lua.grevert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Patches\DCS\002_008_00000_33006_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\init.lua.grevert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Patches\DCS\002_008_00000_33006_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\PCA_BR_init.lua.grevert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -5518,12 +5500,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Patches\DCS\002_008_00001_34667_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\FUEL\FUEL_init.lua.grevert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Patches\DCS\002_008_00001_34667_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\HUD_init.lua.grevert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Patches\DCS\002_008_00001_34667_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\init.lua.grevert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Patches\DCS\002_008_00001_34667_00000\Viewports\Mods\aircraft\M-2000C\Cockpit\PCA_PPA\PCA_BR_init.lua.grevert">
