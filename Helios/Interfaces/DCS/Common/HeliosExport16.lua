@@ -74,6 +74,11 @@ helios_impl.alertInterval = 5.0
 -- able to use modules from the Scripts\Helios\Mods directory.
 -- Typically these modules are embedded in the profile with an interface
 -- with the element <ExportModuleFormat>CaptZeenModule1</ExportModuleFormat>
+--
+-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+-- *  An entry in this table is **not** necessary if the interface is loaded from a  *
+-- *  JSON file in the ...\\Helios\\Interfaces\\HeliosInterfaces\\ folder.           *
+-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 -- 
 -- REVISIT: replace this mechanism with test loading and vehicle arrays
 local helios_module_names = {
@@ -83,9 +88,6 @@ local helios_module_names = {
     ["F-14A-135-GR"] = "Helios_F14",
     ["F-16C_50"] = "Helios_F16C",
     ["FA-18C_hornet"] = "Helios_F18C",
-    ["FA-18E"] = "Helios_F18C",
-    ["FA-18F"] = "Helios_F18C",
-    ["EA-18G"] = "Helios_F18C",
     ["A-10A"] = "Helios_FC",
     ["F-15C"] = "Helios_FC",
     ["MiG-29"] = "Helios_FC",
