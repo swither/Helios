@@ -1,0 +1,60 @@
+﻿[
+  {
+    "templateName": "Mirage F1CE",
+    "moduleId": "Mirage-F1CE",
+    "isHeliosTemplate": true,
+    "viewports": [
+      {
+        "viewportName": "F1_RWR",
+        "relativeInitFilePath": "Mods/aircraft/Mirage-F1/Cockpit/Scripts/SHKVAL/BAKE/ALR_300_bake_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 0,
+        "y": 0,
+        "width": 540,
+        "height": 540
+      },
+      {
+        "viewportName": "F1_Radar",
+        "relativeInitFilePath": "Mods/aircraft/Mirage-F1/Mirage-F1_Common/Radar_Cyrano_IV_legacy/Indicator/Main/CyranoLegacy_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 0,
+        "y": 0,
+        "width": 540,
+        "height": 540
+      }
+    ]
+  },
+  {
+    "templateName": "Mirage F1EE",
+    "moduleId": "Mirage-F1EE",
+    "isHeliosTemplate": true,
+    "viewports": [
+      {
+        "viewportName": "F1_RWR",
+        "relativeInitFilePath": "Mods/aircraft/Mirage-F1/Cockpit/Scripts/SHKVAL/BAKE/ALR_300_bake_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 0,
+        "y": 0,
+        "width": 540,
+        "height": 540
+      },
+      {
+        "viewportName": "F1_Radar",
+        "relativeInitFilePath": "Mods/aircraft/Mirage-F1/Mirage-F1_Common/Radar_Cyrano_IV_legacy/Indicator/Main/CyranoLegacy_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 0,
+        "y": 0,
+        "width": 540,
+        "height": 540
+      }
+    ]
+  }
+]
