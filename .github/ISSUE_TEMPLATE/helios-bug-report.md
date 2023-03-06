@@ -11,7 +11,7 @@ assignees: ''
 If you are having problems installing / configuring / using a profile then you should use the support process for the provider of that profile.
 
 - [ ] I have read [Getting Help](https://github.com/HeliosVirtualCockpit/Helios/wiki/Get-Help)
-
+---
 ### Describe the Helios Issue
 *A clear and concise description of what the bug is, when it started to happen and any recent changes.*
 
@@ -31,6 +31,7 @@ Steps to reproduce the behaviour:
 ### Please complete the following information:
  - Helios Version [eg *1.6.5100.1*]
  - DCS Version [e.g. *Open Beta 2.7.16.28111*]
+ - BMS Version
 
 ### The problem happened while using 
 (place an 'x' between the square brackets for all that apply)
