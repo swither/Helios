@@ -106,6 +106,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             if(!_booleanValueInitialized) 
                 _booleanValue = new BindingValue(false);
             _booleanSignal.SetValue(new BindingValue(_booleanValue.BoolValue | e.Value.BoolValue), false);
+            _booleanValue = new BindingValue(_booleanValue.BoolValue | e.Value.BoolValue);
             _booleanValueInitialized = true;
         }
 
@@ -114,6 +115,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             if (!_booleanValueInitialized) 
                 _booleanValue = new BindingValue(true);
             _booleanSignal.SetValue(new BindingValue(_booleanValue.BoolValue & e.Value.BoolValue), false);
+            _booleanValue = new BindingValue(_booleanValue.BoolValue & e.Value.BoolValue);
             _booleanValueInitialized = true;
         }
 
