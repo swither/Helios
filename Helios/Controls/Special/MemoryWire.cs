@@ -26,6 +26,9 @@ namespace GadrocsWorkshop.Helios.Controls.Special
     {
         private HeliosValue _numericSignal;
         private HeliosValue _booleanSignal;
+        private HeliosValue _booleanOrSignal;
+        private HeliosValue _booleanAndSignal;
+        private HeliosValue _booleanXorSignal;
         private HeliosValue _textSignal;
         private HeliosValue _resendValues;
 
@@ -57,6 +60,21 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             Triggers.Add(_booleanSignal);
             Values.Add(_booleanSignal);
 
+            _booleanOrSignal = new HeliosValue(this, BindingValue.Empty, "", "Boolean OR Signal with Current Memory", "Current boolean signal on this wire.", "Value copied from input to output.", BindingValueUnits.Boolean);
+            _booleanOrSignal.Execute += new HeliosActionHandler(BooleanOrSignal_Execute);
+            Actions.Add(_booleanOrSignal);
+            Values.Add(_booleanOrSignal);
+
+            _booleanAndSignal = new HeliosValue(this, BindingValue.Empty, "", "Boolean AND Signal with Current Memory", "Current boolean signal on this wire.", "Value copied from input to output.", BindingValueUnits.Boolean);
+            _booleanAndSignal.Execute += new HeliosActionHandler(BooleanAndSignal_Execute);
+            Actions.Add(_booleanAndSignal);
+            Values.Add(_booleanAndSignal);
+
+            _booleanXorSignal = new HeliosValue(this, BindingValue.Empty, "", "Boolean Exclusive OR Signal with Current Memory", "Current boolean signal on this wire.", "Value copied from input to output.", BindingValueUnits.Boolean);
+            _booleanXorSignal.Execute += new HeliosActionHandler(BooleanXorSignal_Execute);
+            Actions.Add(_booleanXorSignal);
+            Values.Add(_booleanXorSignal);
+
             _textSignal = new HeliosValue(this, BindingValue.Empty, "", "Text Signal", "Current text signal on this wire.", "Value copied from input to output.", BindingValueUnits.Text);
             _textSignal.Execute += new HeliosActionHandler(TextSignal_Execute);
             Actions.Add(_textSignal);
@@ -80,6 +98,31 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             _booleanValue = e.Value;
             _booleanSignal.SetValue(e.Value, false);
+            _booleanValueInitialized = true;
+        }
+
+        private void BooleanOrSignal_Execute(object action, HeliosActionEventArgs e)
+        {
+            if(!_booleanValueInitialized) 
+                _booleanValue = new BindingValue(false);
+            _booleanSignal.SetValue(new BindingValue(_booleanValue.BoolValue | e.Value.BoolValue), false);
+            _booleanValueInitialized = true;
+        }
+
+        private void BooleanAndSignal_Execute(object action, HeliosActionEventArgs e)
+        {
+            if (!_booleanValueInitialized) 
+                _booleanValue = new BindingValue(true);
+            _booleanSignal.SetValue(new BindingValue(_booleanValue.BoolValue & e.Value.BoolValue), false);
+            _booleanValueInitialized = true;
+        }
+
+        private void BooleanXorSignal_Execute(object action, HeliosActionEventArgs e)
+        {
+            if (!_booleanValueInitialized)
+                _booleanValue = new BindingValue(false);    
+            _booleanSignal.SetValue(new BindingValue(_booleanValue.BoolValue ^ e.Value.BoolValue), false);
+            _booleanValue = new BindingValue(_booleanValue.BoolValue ^ e.Value.BoolValue);
             _booleanValueInitialized = true;
         }
 
