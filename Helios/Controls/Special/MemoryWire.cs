@@ -21,14 +21,11 @@ namespace GadrocsWorkshop.Helios.Controls.Special
     /// a piece of wire with memory, simply sends any value on its input side to its output side
     /// and on a resend request sends any last values entered on its input side to its output side
     /// </summary>
-    [HeliosControl("Helios.Base.MemoryWire", "Memory Wire", "Miscellaneous", typeof(ImageDecorationRenderer))]
+    [HeliosControl("Helios.Base.MemoryWire", "Memory Wire", "Special Controls", typeof(ImageDecorationRenderer))]
     public class MemoryWire : ImageDecorationBase
     {
         private HeliosValue _numericSignal;
         private HeliosValue _booleanSignal;
-        private HeliosValue _booleanOrSignal;
-        private HeliosValue _booleanAndSignal;
-        private HeliosValue _booleanXorSignal;
         private HeliosValue _textSignal;
         private HeliosValue _resendValues;
 
@@ -40,8 +37,9 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         private bool _booleanValueInitialized = false;
         private bool _textValueInitialized = false;
 
-        public MemoryWire(): base("MemoryWire")
-        {
+
+        public MemoryWire() : this("MemoryWire") { } 
+        public MemoryWire (string ControlName) : base(ControlName){
             DesignTimeOnly = true;
             Image = "{Helios}/Images/General/memory_wire.png";
             Alignment = ImageAlignment.Stretched;
@@ -59,21 +57,6 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             Actions.Add(_booleanSignal);
             Triggers.Add(_booleanSignal);
             Values.Add(_booleanSignal);
-
-            _booleanOrSignal = new HeliosValue(this, BindingValue.Empty, "", "Boolean OR Signal with Current Memory", "Current boolean signal on this wire.", "Value copied from input to output.", BindingValueUnits.Boolean);
-            _booleanOrSignal.Execute += new HeliosActionHandler(BooleanOrSignal_Execute);
-            Actions.Add(_booleanOrSignal);
-            Values.Add(_booleanOrSignal);
-
-            _booleanAndSignal = new HeliosValue(this, BindingValue.Empty, "", "Boolean AND Signal with Current Memory", "Current boolean signal on this wire.", "Value copied from input to output.", BindingValueUnits.Boolean);
-            _booleanAndSignal.Execute += new HeliosActionHandler(BooleanAndSignal_Execute);
-            Actions.Add(_booleanAndSignal);
-            Values.Add(_booleanAndSignal);
-
-            _booleanXorSignal = new HeliosValue(this, BindingValue.Empty, "", "Boolean Exclusive OR Signal with Current Memory", "Current boolean signal on this wire.", "Value copied from input to output.", BindingValueUnits.Boolean);
-            _booleanXorSignal.Execute += new HeliosActionHandler(BooleanXorSignal_Execute);
-            Actions.Add(_booleanXorSignal);
-            Values.Add(_booleanXorSignal);
 
             _textSignal = new HeliosValue(this, BindingValue.Empty, "", "Text Signal", "Current text signal on this wire.", "Value copied from input to output.", BindingValueUnits.Text);
             _textSignal.Execute += new HeliosActionHandler(TextSignal_Execute);
@@ -101,33 +84,6 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             _booleanValueInitialized = true;
         }
 
-        private void BooleanOrSignal_Execute(object action, HeliosActionEventArgs e)
-        {
-            if(!_booleanValueInitialized) 
-                _booleanValue = new BindingValue(false);
-            _booleanSignal.SetValue(new BindingValue(_booleanValue.BoolValue | e.Value.BoolValue), false);
-            _booleanValue = new BindingValue(_booleanValue.BoolValue | e.Value.BoolValue);
-            _booleanValueInitialized = true;
-        }
-
-        private void BooleanAndSignal_Execute(object action, HeliosActionEventArgs e)
-        {
-            if (!_booleanValueInitialized) 
-                _booleanValue = new BindingValue(true);
-            _booleanSignal.SetValue(new BindingValue(_booleanValue.BoolValue & e.Value.BoolValue), false);
-            _booleanValue = new BindingValue(_booleanValue.BoolValue & e.Value.BoolValue);
-            _booleanValueInitialized = true;
-        }
-
-        private void BooleanXorSignal_Execute(object action, HeliosActionEventArgs e)
-        {
-            if (!_booleanValueInitialized)
-                _booleanValue = new BindingValue(false);    
-            _booleanSignal.SetValue(new BindingValue(_booleanValue.BoolValue ^ e.Value.BoolValue), false);
-            _booleanValue = new BindingValue(_booleanValue.BoolValue ^ e.Value.BoolValue);
-            _booleanValueInitialized = true;
-        }
-
         private void TextSignal_Execute(object action, HeliosActionEventArgs e)
         {
             _textValue = e.Value;
@@ -145,7 +101,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             }
         }
 
-        private void ResendValues()
+        virtual protected void ResendValues()
         {
             if (_numericValueInitialized)
             {
@@ -165,5 +121,37 @@ namespace GadrocsWorkshop.Helios.Controls.Special
                 _textSignal.SetValue(_textValue, false);
             }
         }
+        #region properties
+        virtual protected HeliosValue BooleanSignal
+        {
+            get => _booleanSignal;
+            set => _booleanSignal = value;
+        }
+        virtual protected BindingValue BooleanValue
+        {
+            get => _booleanValue;
+            set => _booleanValue = value;
+        }
+        virtual protected bool BooleanValueInitialized
+        {
+            get => _booleanValueInitialized;
+            set => _booleanValueInitialized = value;
+        }
+        virtual protected HeliosValue NumericSignal
+        {
+            get => _numericSignal;
+            set => _numericSignal = value;
+        }
+        virtual protected BindingValue NumericValue
+        {
+            get => _numericValue;
+            set => _numericValue = value;
+        }
+        virtual protected bool NumericValueInitialized
+        {
+            get => _numericValueInitialized;
+            set => _numericValueInitialized = value;
+        }
+        #endregion properties
     }
 }
