@@ -184,6 +184,7 @@
     <Compile Include="EnumDisplayEntry.cs" />
     <Compile Include="Gauges\A-10\Common\Blanking Panel Left.cs" />
     <Compile Include="Gauges\A-10\Radios\UHFRadio.cs" />
+    <Compile Include="Gauges\A-10\Radios\ARC-210.cs" />
     <Compile Include="Gauges\A-10\Radios\UHFFreqDisplay.cs" />
     <Compile Include="Gauges\A-10\Radios\UHFChanDisplay.cs" />
     <Compile Include="Gauges\A-10\Radios\UHFFreqRepeater.cs" />
