@@ -21,13 +21,14 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
     using GadrocsWorkshop.Helios.Controls;
     using System;
     using System.Windows;
+    using System.Windows.Media;
     using System.Globalization;
     using System.Xml;
 
     /// <summary>
     /// This is an A-10C UHF Radio that uses text displays instead of an exported viewport.
     /// </summary>
-    [HeliosControl("Helios.A10C.ARC210Radio", "ARC-210 Radio", "A-10C Gauges", typeof(BackgroundImageRenderer))]
+    [HeliosControl("Helios.A10C.ARC210Radio", "ARC-210 Radio", "A-10C Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class ARC210Radio : A10CDevice
     {
         //private const double SCREENRES = 1.0;
@@ -35,11 +36,13 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
         private readonly string _imageLocation = "{A-10C}/Images/A-10CII/";
         private bool _useTextualDisplays = true;
         private ImageDecoration _displayBackground;
-
+        private bool _includeViewport = true;
+        private string _vpName = "";
 
         public ARC210Radio()
             : base("ARC-210 Radio", new Size(640, 523))
         {
+
             _displayBackground = AddImage($"{_imageLocation}ARC-210_Display.png", new Point(148d, 91d), new Size(297d,193d), $"{_imageLocation}ARC-210_Display.png");
             //AddTextDisplay("PCA Upper Display", new Point(110d, 35d), new Size(554d, 52d), _interfaceDeviceName, "PCA Upper Display", 30, "MMMMMMMMMMMMMMM", TextHorizontalAlignment.Left, "");
 
@@ -155,6 +158,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
                 {
                     _useTextualDisplays = value;
                     _displayBackground.IsHidden = !_useTextualDisplays;
+                    ViewportName = _useTextualDisplays ? "" : "A_10C_2_ARC210_SCREEN";
                     Refresh();
                 }
             }
@@ -213,27 +217,86 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
             Children.Add(image);
             return image;
         }
-        //private CompositeVisual AddPart(string name, CompositeVisual part, Point posn, Size size, string interfaceDevice, string interfaceElement)
-        //{
-        //    size.Width *= SCREENRES;
-        //    size.Height *= SCREENRES;
-        //    posn.X *= SCREENRES;
-        //    posn.Y *= SCREENRES;
 
-        //    CompositeVisual newPart = AddDevice(
-        //        name: name,
-        //        device: part,
-        //        size: size,
-        //        posn: posn,
-        //        interfaceDeviceName: interfaceDevice,
-        //        interfaceElementName: interfaceElement
-        //    );
+        public string ViewportName
+        {
+            get => _vpName;
+            set
+            {
+                if (_vpName != value)
+                {
+                    if (_vpName == "")
+                    {
+                        AddViewport(value);
+                        OnDisplayUpdate();
+                    }
+                    else if (value != "")
+                    {
+                        foreach (HeliosVisual visual in this.Children)
+                        {
+                            if (visual.TypeIdentifier == "Helios.Base.ViewportExtent")
+                            {
+                                Controls.Special.ViewportExtent viewportExtent = visual as Controls.Special.ViewportExtent;
+                                viewportExtent.ViewportName = value;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        RemoveViewport(value);
+                    }
+                    OnPropertyChanged("ViewportName", _vpName, value, false);
+                    _vpName = value;
+                }
+            }
+        }
+        public bool RequiresPatches
+        {
+            get => _vpName != "" ? true : false;
+            set => _ = value;
+        }
 
-        //    // NOTE: this shortens the name of the generated part
-        //    newPart.Name = name;
-        //    return newPart;
-        //}
- 
+        private void AddViewport(string name)
+        {
+            Rect vpRect = new Rect(147, 90, 299, 195);
+            vpRect.Scale(Width / NativeSize.Width, Height / NativeSize.Height);
+            TextFormat tf = new TextFormat()
+            {
+                FontStyle = FontStyles.Normal,
+                FontWeight = FontWeights.Normal,
+                FontSize = 2,
+                FontFamily = ConfigManager.FontManager.GetFontFamilyByName("Franklin Gothic"),
+                ConfiguredFontSize = 2,
+                HorizontalAlignment = TextHorizontalAlignment.Center,
+                VerticalAlignment = TextVerticalAlignment.Center
+            };
+
+            Children.Add(new Helios.Controls.Special.ViewportExtent
+            {
+                FillBackground = true,
+                BackgroundColor = Color.FromArgb(0x80,0x20,0xBA, 0xA3),
+                FontColor = Color.FromArgb(255, 255, 255, 255),
+                TextFormat = tf, 
+                ViewportName = name,
+                Left = vpRect.Left,
+                Top = vpRect.Top,
+                Width = vpRect.Width,
+                Height = vpRect.Height
+            });
+        }
+        private void RemoveViewport(string name)
+        {
+            _includeViewport = false;
+            foreach (HeliosVisual visual in this.Children)
+            {
+                if (visual.TypeIdentifier == "Helios.Base.ViewportExtent")
+                {
+                    Children.Remove(visual);
+                    break;
+                }
+            }
+        }
         public override void ReadXml(XmlReader reader)
         {
             base.ReadXml(reader);

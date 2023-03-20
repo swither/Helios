@@ -115,7 +115,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
                             return;
                         }
 #endif
-
+            base.AddFunctions();
             #region Scorpion HMCS
             AddFunction(Switch.CreateThreeWaySwitch(this, SCORPION_HMCS, BUTTON_1, "550", "1.0", "On", "0.0", "Off", "-1.0", "Bat", "Scorpion HMCS", "Power", "%0.1f"));
             #endregion
@@ -142,7 +142,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             #endregion
 
             #region VHF AM Radio (ARC-210)
-            AddFunction(new PushButton(this, UFC, BUTTON_33, "534", "UFC", "Toggle ARC-210 RT2 Status (long press)", null));
+            AddFunction(new PushButton(this, UFC, BUTTON_33, "534", "UFC", "Toggle ARC-210 RT2 Status (long press)", "%0.1f"));
 
             AddFunction(new Switch(this, VHF_AM_RADIO, "551", SwitchPositions.Create(7, 0d, 0.1d, BUTTON_43, new string[] { "OFF", "TR G", "TR", "ADF", "CHG PRST", "TEST", "ZERO (PULL)"}, "%0.1f"), "ARC-210", "Master switch", "%0.1f"));
             AddFunction(new Axis(this, VHF_AM_RADIO, BUTTON_27, "552", 0.1d, 0.0d, 1d, "ARC-210", "Channel select knob", false, "%0.1f"));
@@ -154,23 +154,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new Switch(this, VHF_AM_RADIO, "557", SwitchPositions.Create(10, 0d, 0.1d, BUTTON_19, "Posn", "%0.1f"), "ARC-210", "100 KHz Selector", "%0.1f"));
             AddFunction(new Switch(this, VHF_AM_RADIO, "558", SwitchPositions.Create(4, 0d, 0.1d, BUTTON_17, "Posn", "%0.1f"), "ARC-210", "25 KHz Selector", "%0.1f"));
 
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_14, "573", "ARC-210", "Enter", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_13, "572", "ARC-210", "Offset frequency", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_12, "571", "ARC-210", "Transmit / receive function toggle", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_11, "570", "ARC-210", "Amplitude modulation / frequency modulation select", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_10, "569", "ARC-210", "Menu pages", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_15, "568", "ARC-210", "Squelch on/off", null));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_14, "573", "ARC-210", "Enter", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_13, "572", "ARC-210", "Offset frequency", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_12, "571", "ARC-210", "Transmit / receive function toggle", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_11, "570", "ARC-210", "Amplitude modulation / frequency modulation select", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_10, "569", "ARC-210", "Menu pages", "%0.1f"));
+            AddFunction(new Switch(this, VHF_AM_RADIO, "568", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_15), new SwitchPosition("1.0", "On", BUTTON_15) }, "ARC-210", "Squelch on/off", "%0.1f"));
 
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_4, "567", "ARC-210", "Select receiver - transmitter", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_3, "566", "ARC-210", "Global positioning system", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_2, "565", "ARC-210", "Time of day receive", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_1, "564", "ARC-210", "Time of day send", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_5, "563", "ARC-210", "Upper FSK", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_6, "562", "ARC-210", "Middle FSK", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_7, "561", "ARC-210", "Lower FSK", null));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_4, "567", "ARC-210", "Select receiver - transmitter", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_3, "566", "ARC-210", "Global positioning system", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_2, "565", "ARC-210", "Time of day receive", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_1, "564", "ARC-210", "Time of day send", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_5, "563", "ARC-210", "Upper FSK", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_6, "562", "ARC-210", "Middle FSK", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_7, "561", "ARC-210", "Lower FSK", "%0.1f"));
 
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_8, "560", "ARC-210", "Brightness increase", null));
-            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_9, "559", "ARC-210", "Brightness decrease", null));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_8, "560", "ARC-210", "Brightness increase", "%0.1f"));
+            AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_9, "559", "ARC-210", "Brightness decrease", "%0.1f"));
             #endregion
         }
     }
