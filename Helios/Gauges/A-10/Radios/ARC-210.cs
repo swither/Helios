@@ -242,15 +242,18 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
 
         private ImageDecoration AddImage(string name, Point posn, Size size, string imageName)
         {
-            ImageDecoration image = new ImageDecoration();
-            image.Name = name;
-            image.Image = imageName;
-            image.Alignment = ImageAlignment.Stretched;
-            image.Top = posn.Y;
-            image.Left = posn.X;
-            image.Width = size.Width;
-            image.Height = size.Height;
-            image.IsHidden = !_useTextualDisplays;
+            ImageDecoration image = new ImageDecoration()
+            {
+                Name = name,
+                Left = posn.X,
+                Top = posn.Y,
+                Width = size.Width,
+                Height = size.Height,
+                Alignment = ImageAlignment.Stretched,
+                Image = imageName,
+                IsHidden = !_useTextualDisplays
+
+            };
             Children.Add(image);
             return image;
         }
@@ -288,11 +291,6 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
                 }
             }
         }
-        public bool RequiresPatches
-        {
-            get => _vpName != "" ? true : false;
-            set => _ = value;
-        }
 
         private void AddViewport(string name)
         {
@@ -319,9 +317,11 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
                 Left = vpRect.Left,
                 Top = vpRect.Top,
                 Width = vpRect.Width,
-                Height = vpRect.Height
+                Height = vpRect.Height,
+                RequiresPatches = true,
             });
         }
+
         private void RemoveViewport(string name)
         {
             foreach (HeliosVisual visual in this.Children)
