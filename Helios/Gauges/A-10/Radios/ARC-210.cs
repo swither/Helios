@@ -24,6 +24,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
     using System.Windows.Media;
     using System.Globalization;
     using System.Xml;
+    using System.Collections.Generic;
 
     /// <summary>
     /// This is an A-10C UHF Radio that uses text displays instead of an exported viewport.
@@ -34,17 +35,24 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
         //private const double SCREENRES = 1.0;
         private readonly string _interfaceDeviceName = "ARC-210";
         private readonly string _imageLocation = "{A-10C}/Images/A-10CII/";
-        private bool _useTextualDisplays = true;
+        private bool _useTextualDisplays = false;
         private ImageDecoration _displayBackground;
-        private bool _includeViewport = true;
         private string _vpName = "";
+        private string _font = "LED Counter 7";
+        private List<TextDisplay> _textDisplayList = new List<TextDisplay>();
 
         public ARC210Radio()
             : base("ARC-210 Radio", new Size(640, 523))
         {
 
             _displayBackground = AddImage($"{_imageLocation}ARC-210_Display.png", new Point(148d, 91d), new Size(297d,193d), $"{_imageLocation}ARC-210_Display.png");
-            //AddTextDisplay("PCA Upper Display", new Point(110d, 35d), new Size(554d, 52d), _interfaceDeviceName, "PCA Upper Display", 30, "MMMMMMMMMMMMMMM", TextHorizontalAlignment.Left, "");
+            _textDisplayList.Add(AddTextDisplay("Frequency Display", new Point(185, 223), new Size(259, 60), _interfaceDeviceName, "Frequency Display", 42, "133.100", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Modulation Mode", new Point(351, 194), new Size(72, 42), _interfaceDeviceName, "Modulation Mode", 32, "AM", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Communications Security Mode", new Point(150, 150), new Size(291, 42), _interfaceDeviceName, "Communications Security Mode", 32, "Comm Sec", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Communications Security Submode", new Point(150, 175), new Size(291, 48), _interfaceDeviceName, "Communications Security Submode", 32, "PT", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Prev Label Display", new Point(149, 83), new Size(106, 42), _interfaceDeviceName, "Prev Label Display", 32, "PREV", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Display of Previous Manual Frequency", new Point(220, 83), new Size(180, 42), _interfaceDeviceName, "Display of Previous Manual Frequency", 32, "133.100", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("RT Label", new Point(368, 83), new Size(80, 42), _interfaceDeviceName, "RT Label", 32, "RT1", TextHorizontalAlignment.Left, ""));
 
             RotarySwitchPositionCollection positions = new RotarySwitchPositionCollection();
             positions.Clear();
@@ -145,6 +153,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
             positions.Add(new RotarySwitchPosition(this, 1, "OFF", 330d));
             positions.Add(new RotarySwitchPosition(this, 2, "ON", 30d));
             AddRotarySwitch("Squelch on/off", new Point(506, 74), new Size(70, 70), $"{_imageLocation}ARC-210_Squelch_Knob.png", 1, positions, "Squelch on/off");
+            UseTextualDisplays = false;
         }
 
         public override string DefaultBackgroundImage => _imageLocation + "ARC-210_Faceplate.png";
@@ -158,6 +167,10 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
                 {
                     _useTextualDisplays = value;
                     _displayBackground.IsHidden = !_useTextualDisplays;
+                    foreach(TextDisplay td in _textDisplayList)
+                    {
+                        td.IsHidden = !_useTextualDisplays;
+                    }
                     ViewportName = _useTextualDisplays ? "" : "A_10C_2_ARC210_SCREEN";
                     Refresh();
                 }
@@ -203,6 +216,30 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
             AddRotarySwitchBindings(name, posn, size, newSwitch, _interfaceDeviceName, interfaceElementName);
             return newSwitch;
         }
+        private TextDisplay AddTextDisplay(string name, Point posn, Size size,
+                string interfaceDeviceName, string interfaceElementName, double baseFontsize, string testDisp, 
+                TextHorizontalAlignment hTextAlign, string devDictionary)
+        {
+            TextDisplay display = AddTextDisplay(
+                name: name,
+                posn: posn,
+            size: size,
+                font: _font,
+                baseFontsize: baseFontsize,
+                horizontalAlignment: hTextAlign,
+                verticalAligment: TextVerticalAlignment.Center,
+                testTextDisplay: testDisp,
+                textColor: Color.FromArgb(0xcc, 0x50, 0xc3, 0x39),
+                backgroundColor: Color.FromArgb(0xff, 0x04, 0x2a, 0x00),
+                useBackground: false,
+                interfaceDeviceName: interfaceDeviceName,
+                interfaceElementName: interfaceElementName,
+                textDisplayDictionary: devDictionary
+                );
+            display.IsHidden = !_useTextualDisplays;
+            return display; 
+        }
+
         private ImageDecoration AddImage(string name, Point posn, Size size, string imageName)
         {
             ImageDecoration image = new ImageDecoration();
@@ -287,7 +324,6 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
         }
         private void RemoveViewport(string name)
         {
-            _includeViewport = false;
             foreach (HeliosVisual visual in this.Children)
             {
                 if (visual.TypeIdentifier == "Helios.Base.ViewportExtent")

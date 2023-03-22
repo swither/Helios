@@ -18,6 +18,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 {
     using ComponentModel;
     using Common;
+    using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
     /// <summary>
     /// Interface for DCS A-10C II including any changes made that are not in DCS A-10C
@@ -171,7 +172,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 
             AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_8, "560", "ARC-210", "Brightness increase", "%0.1f"));
             AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_9, "559", "ARC-210", "Brightness decrease", "%0.1f"));
+
+            // Variables used on the ARC-210 display
+            AddFunction(new NetworkValue(this, "2414", "ARC-210", "Frequency Display", "Currently tuned frequency of the ARC-210 radio.", "", BindingValueUnits.Text, null));
+            AddFunction(new NetworkValue(this, "2415", "ARC-210", "Prev Label Display", "Value of the PREV label on top left hand corner of display", "", BindingValueUnits.Text, null));
+            AddFunction(new NetworkValue(this, "2416", "ARC-210", "Display of Previous Manual Frequency", "Previous frequency value", "", BindingValueUnits.Text, null));
+            AddFunction(new NetworkValue(this, "2417", "ARC-210", "Modulation Mode", "Modulation value which appears above the main frequency value on the display", "", BindingValueUnits.Text, null));
+            AddFunction(new NetworkValue(this, "2418", "ARC-210", "KY Submode", "Value of the label which displays the sub mode on the display.  This also shows initializing message on the display", "", BindingValueUnits.Text, null));
+            AddFunction(new NetworkValue(this, "2419", "ARC-210", "Communications Security Mode", "KY status in the middle of the display", "", BindingValueUnits.Text, null));
+            AddFunction(new NetworkValue(this, "2420", "ARC-210", "Communications Security Submode", "KY sub-status in the middle of the display", "", BindingValueUnits.Text, null));
+            AddFunction(new NetworkValue(this, "2421", "ARC-210", "RT Label", "Receive / Transmit status from the top right of the display", "", BindingValueUnits.Text, null));
             #endregion
+
         }
     }
 }
