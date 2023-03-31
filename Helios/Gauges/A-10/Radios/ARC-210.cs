@@ -38,7 +38,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
         private bool _useTextualDisplays = false;
         private ImageDecoration _displayBackground;
         private string _vpName = "";
-        private string _font = "LED Counter 7";
+        private string _font = "Helios Virtual Cockpit A-10C_ARC-210_Large";
+        private string _font2 = "Helios Virtual Cockpit A-10C_ARC-210_Small";
         private List<TextDisplay> _textDisplayList = new List<TextDisplay>();
 
         public ARC210Radio()
@@ -46,13 +47,13 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
         {
 
             _displayBackground = AddImage($"{_imageLocation}ARC-210_Display.png", new Point(148d, 91d), new Size(297d,193d), $"{_imageLocation}ARC-210_Display.png");
-            _textDisplayList.Add(AddTextDisplay("Frequency Display", new Point(185, 223), new Size(259, 60), _interfaceDeviceName, "Frequency Display", 42, "133.100", TextHorizontalAlignment.Left, ""));
-            _textDisplayList.Add(AddTextDisplay("Modulation Mode", new Point(351, 194), new Size(72, 42), _interfaceDeviceName, "Modulation Mode", 32, "AM", TextHorizontalAlignment.Left, ""));
-            _textDisplayList.Add(AddTextDisplay("Communications Security Mode", new Point(150, 150), new Size(291, 42), _interfaceDeviceName, "Communications Security Mode", 32, "Comm Sec", TextHorizontalAlignment.Left, ""));
-            _textDisplayList.Add(AddTextDisplay("Communications Security Submode", new Point(150, 175), new Size(291, 48), _interfaceDeviceName, "Communications Security Submode", 32, "PT", TextHorizontalAlignment.Left, ""));
-            _textDisplayList.Add(AddTextDisplay("Prev Label Display", new Point(149, 83), new Size(106, 42), _interfaceDeviceName, "Prev Label Display", 32, "PREV", TextHorizontalAlignment.Left, ""));
-            _textDisplayList.Add(AddTextDisplay("Display of Previous Manual Frequency", new Point(220, 83), new Size(180, 42), _interfaceDeviceName, "Display of Previous Manual Frequency", 32, "133.100", TextHorizontalAlignment.Left, ""));
-            _textDisplayList.Add(AddTextDisplay("RT Label", new Point(368, 83), new Size(80, 42), _interfaceDeviceName, "RT Label", 32, "RT1", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Frequency Display", new Point(180, 223), new Size(259, 72), _interfaceDeviceName, "Frequency Display", _font, 40, "133.888", TextHorizontalAlignment.Right, ""));
+            _textDisplayList.Add(AddTextDisplay("Modulation Mode", new Point(351, 194), new Size(72, 42), _interfaceDeviceName, "Modulation Mode", 20, "AM", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Communications Security Mode", new Point(150, 150), new Size(291, 42), _interfaceDeviceName, "Communications Security Mode", 20, "COMM SEC", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Communications Security Submode", new Point(150, 175), new Size(291, 48), _interfaceDeviceName, "Communications Security Submode", 20, "PT", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Prev Label Display", new Point(149, 83), new Size(106, 42), _interfaceDeviceName, "Prev Label Display", 20, "PREV", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("Display of Previous Manual Frequency", new Point(220, 83), new Size(180, 42), _interfaceDeviceName, "Display of Previous Manual Frequency", 20, "133.100", TextHorizontalAlignment.Left, ""));
+            _textDisplayList.Add(AddTextDisplay("RT Label", new Point(368, 83), new Size(80, 42), _interfaceDeviceName, "RT Label", 20, "RT1", TextHorizontalAlignment.Left, ""));
 
             RotarySwitchPositionCollection positions = new RotarySwitchPositionCollection();
             positions.Clear();
@@ -217,14 +218,20 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C.ARC210
             return newSwitch;
         }
         private TextDisplay AddTextDisplay(string name, Point posn, Size size,
-                string interfaceDeviceName, string interfaceElementName, double baseFontsize, string testDisp, 
+            string interfaceDeviceName, string interfaceElementName, double baseFontsize, string testDisp,
+            TextHorizontalAlignment hTextAlign, string devDictionary)
+        {
+            return AddTextDisplay(name, posn, size, interfaceDeviceName, interfaceElementName, _font2, baseFontsize, testDisp, hTextAlign, devDictionary);
+        }
+        private TextDisplay AddTextDisplay(string name, Point posn, Size size,
+                string interfaceDeviceName, string interfaceElementName, string fontFamily, double baseFontsize, string testDisp, 
                 TextHorizontalAlignment hTextAlign, string devDictionary)
         {
             TextDisplay display = AddTextDisplay(
                 name: name,
                 posn: posn,
             size: size,
-                font: _font,
+                font: fontFamily,
                 baseFontsize: baseFontsize,
                 horizontalAlignment: hTextAlign,
                 verticalAligment: TextVerticalAlignment.Center,

@@ -1366,6 +1366,12 @@
     <Content Include="Fonts\DSEG7Classic-Regular.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Fonts\Helios-A-10C_ARC-210_Small.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\Helios-A-10C_ARC-210_Large.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Fonts\MonospacedLEDCounter7.ttf" />
     <None Include="Images\A-10\readme.md" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
