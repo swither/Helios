@@ -293,8 +293,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C.Functions
                     }
                     if (match.Groups["variable"].Value.Contains("{") && match.Groups["variable"].Value.Contains("}"))
                     {
-                        changedValueList.Remove("mid_line_label");
-                        hv = _displayValues["ARC-210.Middle FSK Label"] as HeliosValue;
+                        if (match.Groups["value"].Value == "UNAVAILABLE")
+                        {
+                            changedValueList.Remove("ky_label");
+                            hv = _displayValues["ARC-210.KY label"] as HeliosValue;
+                        } else
+                        {
+                            changedValueList.Remove("mid_line_label");
+                            hv = _displayValues["ARC-210.Middle FSK Label"] as HeliosValue;
+                        }
+
                         if (hv != null && hv.Value.StringValue != match.Groups["value"].Value)
                         {
                             hv.SetValue(new BindingValue(match.Groups["value"].Value), false);
