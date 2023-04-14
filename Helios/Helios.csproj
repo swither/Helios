@@ -265,6 +265,19 @@
     <Compile Include="IModuleManagerWritable.cs" />
     <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\Functions\ARC210Display.cs" />
+    <Compile Include="Interfaces\DCS\Common\BaseDCSCommnadsCreator.cs" />
+    <Compile Include="Interfaces\DCS\Common\BaseDCSDevicesCreator.cs" />
+    <Compile Include="Interfaces\DCS\Common\BaseDCSMainPanelCreator.cs" />
+    <Compile Include="Interfaces\DCS\OV10Bronco\Functions\Altimeter.cs" />
+    <Compile Include="Interfaces\DCS\OV10Bronco\Functions\TACANChannel.cs" />
+    <Compile Include="Interfaces\DCS\OV10Bronco\OV10ACommands.cs" />
+    <Compile Include="Interfaces\DCS\OV10Bronco\OV10ADevices.cs" />
+    <Compile Include="Interfaces\DCS\OV10Bronco\OV10BroncoInterface.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSCommandsCreator.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSDevicesCreator.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSInterfaceCreator.cs" />
+    <Compile Include="Interfaces\DCS\Common\DCSMainPanelCreator.cs" />
+    <Compile Include="Interfaces\DCS\Common\IDCSInterfaceCreator.cs" />
     <Compile Include="Interfaces\DCS\MirageF1\MirageF1CEInterface.cs" />
     <Compile Include="Interfaces\DCS\MirageF1\MirageF1EEInterface.cs" />
     <Compile Include="Interfaces\DCS\MirageF1\Devices.cs" />
@@ -278,6 +291,10 @@
     <Compile Include="Interfaces\DCS\Common\DCSInterfaceEditorBase.cs" />
     <Compile Include="Interfaces\DCS\M2000C\Functions\Altimeter.cs" />
     <Compile Include="Interfaces\DCS\MirageF1\Tools\InterfaceCreation.cs" />
+    <Compile Include="Interfaces\DCS\OV10Bronco\Tools\OV10ACommandsCreator.cs" />
+    <Compile Include="Interfaces\DCS\OV10Bronco\Tools\OV10ADevicesCreator.cs" />
+    <Compile Include="Interfaces\DCS\OV10Bronco\Tools\OV10AInterfaceCreator.cs" />
+    <Compile Include="Interfaces\DCS\OV10Bronco\Tools\OV10AMainPanelCreator.cs" />
     <Compile Include="Interfaces\DCS\Soft\SoftInterfaceEditor.xaml.cs">
       <DependentUpon>SoftInterfaceEditor.xaml</DependentUpon>
     </Compile>
@@ -308,6 +325,8 @@
     <Compile Include="Json\InterfaceFile.cs" />
     <Compile Include="Json\NetworkFunction\SchemaGenerationProviderForJsonNet.cs" />
     <Compile Include="UnitConverters\RawConverters.cs" />
+    <Compile Include="Units\AccelerationUnit.cs" />
+    <Compile Include="Units\EarthGravityUnit.cs" />
     <Compile Include="Units\MillbarUnit.cs" />
     <Compile Include="Util\FileUtility.cs" />
     <Compile Include="Util\ModuleUtility.cs" />
@@ -1382,6 +1401,7 @@
     <Resource Include="Interfaces\DCS\BlackShark\ExportFunctionsKa-50_2.lua" />
     <Resource Include="Interfaces\DCS\MirageF1\ExportFunctionsMirageF1EE.lua" />
     <Resource Include="Interfaces\DCS\MirageF1\ExportFunctionsMirageF1CE.lua" />
+    <Resource Include="Interfaces\DCS\OV10Bronco\ExportFunctionsBroncoOV10.lua" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\hud.png" />
