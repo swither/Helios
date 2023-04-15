@@ -59,9 +59,6 @@ namespace GadrocsWorkshop.Helios
         public static readonly PoundsUnit Pounds = new PoundsUnit();
         public static readonly KilogramsUnit Kilograms = new KilogramsUnit();
 
-        // Acceleration Units
-        public static readonly EarthGravityUnit G = new EarthGravityUnit();
-
         // Area Units
         public static readonly SquareInchUnit SquareInch = new SquareInchUnit();
         public static readonly SquareFootUnit SquareFoot = new SquareFootUnit();
