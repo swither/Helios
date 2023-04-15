@@ -22,21 +22,21 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Reflection;
 
-namespace GadrocsWorkshop.Helios.Interfaces.DCS.OV10Bronco.Tools
+namespace GadrocsWorkshop.Helios.Interfaces.DCS.BroncoOV10A.Tools
 {
 
-    internal class OV10AInterfaceCreator : DCSInterfaceCreator, IDCSInterfaceCreator
+    internal class BroncoOV10AInterfaceCreator : DCSInterfaceCreator, IDCSInterfaceCreator
     {
 
         private readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private string _previousSectionName = "";
         private string _vehicle = "";
-        internal OV10AInterfaceCreator(string vehicle) : this()
+        internal BroncoOV10AInterfaceCreator(string vehicle) : this()
         {
             _vehicle = vehicle;
         }
 
-        internal OV10AInterfaceCreator()
+        internal BroncoOV10AInterfaceCreator()
         {
             NetworkFunctions.Clear();
         }
@@ -89,7 +89,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.OV10Bronco.Tools
                             MatchCollection rockerMatches = GetElements(firstPart);
                             if (rockerMatches.Count > 0)
                             {
-                                Type enumType = typeof(OV10ACommands).GetNestedType($"{eM.Groups["commandName"].Value}Commands", BindingFlags.NonPublic);
+                                Type enumType = typeof(BroncoOV10ACommands).GetNestedType($"{eM.Groups["commandName"].Value}Commands", BindingFlags.NonPublic);
                                 Match rockerMatch = rockerMatches[0];
                                 CommandItems[0][0] = ((int)Enum.Parse(enumType, rockerMatch.Groups["command"].Value)).ToString("d");
                                 CommandItems[0][1] = $"H60Commands.{rockerMatch.Groups["commandName"].Value}Commands.{rockerMatch.Groups["command"].Value}.ToString(\"d\")";
@@ -344,7 +344,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.OV10Bronco.Tools
         public override string[] ParseDeviceGroup(Group deviceGroup)
         {
             string[] device = new string[2];
-            if (Enum.TryParse(deviceGroup.Value, out OV10Bronco.devices dev))
+            if (Enum.TryParse(deviceGroup.Value, out BroncoOV10A.devices dev))
             {
                 device[0] = dev.ToString("d");
                 device[1] = $"devices.{deviceGroup.Value}.ToString(\"d\")";

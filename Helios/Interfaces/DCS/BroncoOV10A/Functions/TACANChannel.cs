@@ -13,7 +13,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using GadrocsWorkshop.Helios.Gauges.MiG21.O2Pressure;
 using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 using GadrocsWorkshop.Helios.UDPInterface;
 using GadrocsWorkshop.Helios.Util;
@@ -25,7 +24,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace GadrocsWorkshop.Helios.Interfaces.DCS.OV10Bronco.Functions
+namespace GadrocsWorkshop.Helios.Interfaces.DCS.BroncoOV10A.Functions
 {
     public class TACANChannel : DCSFunctionPair
     {

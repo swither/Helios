@@ -25,15 +25,18 @@ using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 using System.Text.RegularExpressions;
 
 
-namespace GadrocsWorkshop.Helios.Interfaces.DCS.OV10Bronco.Tools
+namespace GadrocsWorkshop.Helios.Interfaces.DCS.BroncoOV10A.Tools
 {
-    internal class OV10AMainPanelCreator : DCSMainPanelCreator
+    internal class BroncoOV10ACommandsCreator : DCSCommandsCreator
     {
         private readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        internal OV10AMainPanelCreator(string path, string documentPath): base(path, documentPath)
-        {
-        }
 
+        internal BroncoOV10ACommandsCreator(string path, string documentPath) : base(path, documentPath)
+        {
+            CommandsPattern = @"(?'startcomment'--\[\[)(?:[.\n\r\t\s\S]*)(?'-startcomment'\]\])|count\s*\=\s*(?<startcount>\d{1,5})|(?:(?<functionname>[a-zA-Z0-9_]+).*\=.*[\t\n\r\s]*\{)|(?:(?<command>[a-zA-Z0-9_]*)\s*\=\s*(?<commandval>.*)[\,\}]{1}.*[\n\r]+)|(?:\s*--\s*)(?<comment>[a-zA-Z0-9_\/\-\s&]*)[\n\r]+|\s--(?:(?<commented_command>[a-zA-Z0-9_]*)\s*\=\s*(?<commandval>.*)[\,\}]{1}.*[\n\r]+)";
+            ClassName = "OV10ACommands";
+            WriteCommandsEnum();
+        }
         #region properties
         #endregion properties
     }

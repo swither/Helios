@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GadrocsWorkshop.Helios.Interfaces.DCS.OV10Bronco
+namespace GadrocsWorkshop.Helios.Interfaces.DCS.BroncoOV10A
 {
     internal enum devices
     {

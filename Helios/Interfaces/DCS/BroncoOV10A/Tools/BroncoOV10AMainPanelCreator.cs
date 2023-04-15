@@ -25,18 +25,15 @@ using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 using System.Text.RegularExpressions;
 
 
-namespace GadrocsWorkshop.Helios.Interfaces.DCS.OV10Bronco.Tools
+namespace GadrocsWorkshop.Helios.Interfaces.DCS.BroncoOV10A.Tools
 {
-    internal class OV10ADevicesCreator : DCSDevicesCreator
+    internal class BroncoOV10AMainPanelCreator : DCSMainPanelCreator
     {
         private readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-        internal OV10ADevicesCreator(string path, string documentPath) : base(path, documentPath)
+        internal BroncoOV10AMainPanelCreator(string path, string documentPath): base(path, documentPath)
         {
-            DevicesPattern = @".*devices\[""(?<dev>.*)""\].*\=.*(?<counter>counter\(\)).*";
-            NameSpace = "GadrocsWorkshop.Helios.Interfaces.DCS.OV10Bronco";
-            WriteDevicesEnum(path, documentPath);
         }
+
         #region properties
         #endregion properties
     }
