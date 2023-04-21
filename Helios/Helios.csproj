@@ -265,6 +265,12 @@
     <Compile Include="IModuleManagerWritable.cs" />
     <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\Functions\ARC210Display.cs" />
+    <Compile Include="Interfaces\DCS\H-60\Functions\Altimeter.cs" />
+    <Compile Include="Interfaces\DCS\H-60\Functions\Chronometer.cs" />
+    <Compile Include="Interfaces\DCS\H-60\Functions\H60Function.cs" />
+    <Compile Include="Interfaces\DCS\H-60\Functions\RADARAltimeter.cs" />
+    <Compile Include="Interfaces\DCS\H-60\Functions\RADARAltimeterDeprecated.cs" />
+    <Compile Include="Interfaces\DCS\H-60\Functions\SegmentedMeter.cs" />
     <Compile Include="Interfaces\DCS\MirageF1\MirageF1CEInterface.cs" />
     <Compile Include="Interfaces\DCS\MirageF1\MirageF1EEInterface.cs" />
     <Compile Include="Interfaces\DCS\MirageF1\Devices.cs" />
