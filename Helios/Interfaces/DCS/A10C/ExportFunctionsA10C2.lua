@@ -24,10 +24,6 @@ function driver.processHighImportance(mainPanelDevice)
         helios.send(2406, string.format("%-8s", helios.ensureString(li.txt_CHAFF_FLARE)))
         helios.send(2407, string.format("%-8s", helios.ensureString(li.txt_JMR)))
     end
-    li = helios.encodeIndication(18) -- ARC-210
-    if li then
-            helios.send(2422, string.format("%s", li))                                          -- Encode and send everything
-    end
 end
 
 function driver.processLowImportance(mainPanelDevice)
@@ -57,5 +53,9 @@ function driver.processLowImportance(mainPanelDevice)
     li = helios.parseIndication(12) -- UHF Repeater
     if li then
         helios.send(2413, string.format("%-7s", helios.ensureString(li.txtFreqStatus) .. helios.ensureString(li.txtPresetChannel)))
-    end	
+    end
+    li = helios.encodeIndication(18) -- ARC-210
+    if li then
+            helios.send(2422, string.format("%s", li))                                          -- Encode and send everything
+    end
 end
