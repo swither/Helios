@@ -19,6 +19,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.Interfaces.DCS.AH64D.Functions;
+    using System.Windows;
 
 
     [HeliosInterface(
@@ -1491,98 +1492,41 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             #region Handgrip
             #region CP/G
             #region Left
-            //            elements["pnt_491"] = springloaded_3_pos_tumb(CREW.CPG, _("Image AutoTrack/Offset Switch, OFS(LMB)/IAT(RMB)"), devices.TEDAC, tedac_commands.LHG_IAT_OFS_SW_OFS, tedac_commands.LHG_IAT_OFS_SW_IAT, 491)
-            //elements["pnt_491"].side = { }
-            //            elements["pnt_492-1"] = knuppel_button(CREW.CPG, _("TADS FOV Select Switch, Z (Zoom)"), devices.TEDAC, tedac_commands.LHG_TADS_FOV_SW_Z, 492, 1.0)
-            //elements["pnt_492-1"].side = { }
-            //            elements["pnt_492-2"] = knuppel_button(CREW.CPG, _("TADS FOV Select Switch, M (Medium)"), devices.TEDAC, tedac_commands.LHG_TADS_FOV_SW_M, 492, -1.0)
-            //elements["pnt_492-2"].side = { }
-            //            elements["pnt_493-1"] = knuppel_button(CREW.CPG, _("TADS FOV Select Switch, N (Narrow)"), devices.TEDAC, tedac_commands.LHG_TADS_FOV_SW_N, 493, -1.0)
-            //elements["pnt_493-1"].side = { }
-            //            elements["pnt_493-2"] = knuppel_button(CREW.CPG, _("TADS FOV Select Switch, W (Wide)"), devices.TEDAC, tedac_commands.LHG_TADS_FOV_SW_W, 493, 1.0)
-            //elements["pnt_493-2"].side = { }
-            //            elements["pnt_494"] = default_3_position_tumb(CREW.CPG, _("TADS Sensor Select Switch, FLIR/TV/DVO"), devices.TEDAC, tedac_commands.LHG_TADS_SENSOR_SELECT_SW, 494, NOT_CYCLED, anim_speed_default, NOT_INVERSED)
-            //elements["pnt_494"].side = { }
-            //            elements["pnt_495"] = springloaded_3_pos_tumb(CREW.CPG, _("STORE/Update Switch, UPDT(LMB)/STORE(RMB)"), devices.TEDAC, tedac_commands.LHG_STORE_UPDT_SW_UPDT, tedac_commands.LHG_STORE_UPDT_SW_STORE, 495)
-            //elements["pnt_495"].side = { }
-            //            elements["pnt_500"] = springloaded_3_pos_tumb(CREW.CPG, _("FCR Scan Switch, C (Continuous)(LMB)/S (Single)(RMB)"), devices.TEDAC, tedac_commands.LHG_FCR_SCAN_SW_C, tedac_commands.LHG_FCR_SCAN_SW_S, 500)
-            //elements["pnt_500"].side = { }
-            //            elements["pnt_501"] = default_button(CREW.CPG, _("CUED Search Button - Press to orient the FCR centerline"), devices.TEDAC, tedac_commands.LHG_CUED_SEARCH_BTN, 501)
-            //elements["pnt_501"].side = { }
-            //            elements["pnt_496"] = default_button(CREW.CPG, _("Linear Motion Compensation (LMC) Button - Press to toggle LMC mode"), devices.TEDAC, tedac_commands.LHG_LMC_BTN, 496)
-            //elements["pnt_496"].side = { }
-            //            elements["pnt_498-1"] = knuppel_button(CREW.CPG, _("FCR Mode Switch, GTM (Ground Targeting Mode)"), devices.TEDAC, tedac_commands.LHG_FCR_MODE_SW_UP, 498, 1.0)
-            //elements["pnt_498-1"].side = { }
-            //            elements["pnt_498-2"] = knuppel_button(CREW.CPG, _("FCR Mode Switch, ATM (Air Targeting Mode)"), devices.TEDAC, tedac_commands.LHG_FCR_MODE_SW_DOWN, 498, -1.0)
-            //elements["pnt_498-2"].side = { }
-            //            elements["pnt_499-1"] = knuppel_button(CREW.CPG, _("FCR Mode Switch, TPM (Terrain Profile Mode)"), devices.TEDAC, tedac_commands.LHG_FCR_MODE_SW_LEFT, 499, -1.0)
-            //elements["pnt_499-1"].side = { }
-            //            elements["pnt_499-2"] = knuppel_button(CREW.CPG, _("FCR Mode Switch, RMAP (Radar MAP)"), devices.TEDAC, tedac_commands.LHG_FCR_MODE_SW_RIGHT, 499, 1.0)
-            //elements["pnt_499-2"].side = { }
-            //            elements["pnt_502-1"] = knuppel_button(CREW.CPG, _("Weapons Action (WAS) Switch, GUN"), devices.TEDAC, tedac_commands.LHG_WEAPONS_ACTION_SW_UP, 502, 1.0)
-            //elements["pnt_502-1"].side = { }
-            //            elements["pnt_502-2"] = knuppel_button(CREW.CPG, _("Weapons Action (WAS) Switch, ATA"), devices.TEDAC, tedac_commands.LHG_WEAPONS_ACTION_SW_DOWN, 502, -1.0)
-            //elements["pnt_502-2"].side = { }
-            //            elements["pnt_503-1"] = knuppel_button(CREW.CPG, _("Weapons Action (WAS) Switch, RKT"), devices.TEDAC, tedac_commands.LHG_WEAPONS_ACTION_SW_LEFT, 503, -1.0)
-            //elements["pnt_503-1"].side = { }
-            //            elements["pnt_503-2"] = knuppel_button(CREW.CPG, _("Weapons Action (WAS) Switch, MSL"), devices.TEDAC, tedac_commands.LHG_WEAPONS_ACTION_SW_RIGHT, 503, 1.0)
-            //elements["pnt_503-2"].side = { }
-            //            elements["pnt_487-1"] = knuppel_button(CREW.CPG, _("Cursor Controller, Up"), devices.TEDAC, tedac_commands.LHG_CURSOR_UP, 487, 1.0)
-            //elements["pnt_487-1"].side = { }
-            //            elements["pnt_487-2"] = knuppel_button(CREW.CPG, _("Cursor Controller, Down"), devices.TEDAC, tedac_commands.LHG_CURSOR_DOWN, 487, -1.0)
-            //elements["pnt_487-2"].side = { }
-            //            elements["pnt_488-1"] = knuppel_button(CREW.CPG, _("Cursor Controller, Left"), devices.TEDAC, tedac_commands.LHG_CURSOR_LEFT, 488, -1.0)
-            //elements["pnt_488-1"].side = { }
-            //            elements["pnt_488-2"] = knuppel_button(CREW.CPG, _("Cursor Controller, Right"), devices.TEDAC, tedac_commands.LHG_CURSOR_RIGHT, 488, 1.0)
-            //elements["pnt_488-2"].side = { }
-            //            elements["pnt_489"] = knuppel_button(CREW.CPG, _("Cursor Controller, Enter"), devices.TEDAC, tedac_commands.LHG_CURSOR_ENTER, 489, 1.0)
-            //elements["pnt_489"].side = { }
-            //            elements["pnt_490"] = default_button(CREW.CPG, _("Cursor Display Select (L/R) Button - Press to move the cursor to the center of the opposite MPD"), devices.TEDAC, tedac_commands.LHG_LR_BTN, 490)
-            //elements["pnt_490"].side = { }
+            AddFunction(new Switch(this, TEDAC, "491", new SwitchPosition[] { new SwitchPosition("1.0", "OFS", tedac_commands.LHG_IAT_OFS_SW_OFS.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_IAT_OFS_SW_OFS.ToString("d")), new SwitchPosition("-1.0", "IAT", tedac_commands.LHG_IAT_OFS_SW_IAT.ToString("d")) }, "Handgrip Left (CP/G)", "Image AutoTrack/Offset Switch", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "492", new SwitchPosition[] { new SwitchPosition("1.0", "Zoom", tedac_commands.LHG_TADS_FOV_SW_Z.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_TADS_FOV_SW_Z.ToString("d")), new SwitchPosition("-1.0", "Medium", tedac_commands.LHG_TADS_FOV_SW_M.ToString("d")) }, "Handgrip Left (CP/G)", "TADS FOV Select Switch Zoom/Medium", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "493", new SwitchPosition[] { new SwitchPosition(" -1.0", "Narrow", tedac_commands.LHG_TADS_FOV_SW_N.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_TADS_FOV_SW_N.ToString("d")), new SwitchPosition("1.0", "Wide", tedac_commands.LHG_TADS_FOV_SW_W.ToString("d")) }, "Handgrip Left (CP/G)", "TADS FOV Select Switch Narrow/Wide", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, TEDAC, tedac_commands.LHG_TADS_SENSOR_SELECT_SW.ToString("d"), "494", "1.0", "FLIR", "0.0", "TV", "-1.0", "DVO", "Handgrip Left (CP/G)", "TADS Sensor Select Switch, FLIR/TV/DVO", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "495", new SwitchPosition[] { new SwitchPosition("1.0", "UPDATE", tedac_commands.LHG_STORE_UPDT_SW_UPDT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_STORE_UPDT_SW_UPDT.ToString("d")), new SwitchPosition("-1.0", "STORE", tedac_commands.LHG_STORE_UPDT_SW_STORE.ToString("d")) }, "Handgrip Left (CP/G)", "STORE/Update Switch", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "500", new SwitchPosition[] { new SwitchPosition("1.0", "CONTINUOUS", tedac_commands.LHG_FCR_SCAN_SW_C.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_FCR_SCAN_SW_C.ToString("d")), new SwitchPosition("-1.0", "SINGLE", tedac_commands.LHG_FCR_SCAN_SW_S.ToString("d")) }, "Handgrip Left (CP/G)", "FCR Scan Switch", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.LHG_CUED_SEARCH_BTN.ToString("d"), "501", "Handgrip Left (CP/G)", "CUED Search Button", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.LHG_LMC_BTN.ToString("d"), "502", "Handgrip Left (CP/G)", "Linear Motion Compensation (LMC) Button", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "498", new SwitchPosition[] { new SwitchPosition("1.0", "Ground Targeting Mode", tedac_commands.LHG_FCR_MODE_SW_UP.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_FCR_MODE_SW_UP.ToString("d")), new SwitchPosition("-1.0", "Air Targeting Mode", tedac_commands.LHG_FCR_MODE_SW_DOWN.ToString("d")) }, "Handgrip Left (CP/G)", "FCR Mode Switch Up/Down", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "499", new SwitchPosition[] { new SwitchPosition(" -1.0", "Terrain Profile Mode", tedac_commands.LHG_FCR_MODE_SW_LEFT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_FCR_MODE_SW_LEFT.ToString("d")), new SwitchPosition("1.0", "RADAR Map", tedac_commands.LHG_FCR_MODE_SW_RIGHT.ToString("d")) }, "Handgrip Left (CP/G)", "FCR Mode Switch Left/Right", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "502", new SwitchPosition[] { new SwitchPosition("1.0", "Gun", tedac_commands.LHG_WEAPONS_ACTION_SW_UP.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_WEAPONS_ACTION_SW_UP.ToString("d")), new SwitchPosition("-1.0", "ATA", tedac_commands.LHG_WEAPONS_ACTION_SW_DOWN.ToString("d")) }, "Handgrip Left (CP/G)", "Weapons Action (WAS) Switch Up/Down", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "503", new SwitchPosition[] { new SwitchPosition(" -1.0", "RKT", tedac_commands.LHG_WEAPONS_ACTION_SW_LEFT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_WEAPONS_ACTION_SW_LEFT.ToString("d")), new SwitchPosition("1.0", "MSL", tedac_commands.LHG_WEAPONS_ACTION_SW_RIGHT.ToString("d")) }, "Handgrip Left (CP/G)", "Weapons Action (WAS) Switch Left/Right", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "487", new SwitchPosition[] { new SwitchPosition("1.0", "Up", tedac_commands.LHG_CURSOR_UP.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_CURSOR_UP.ToString("d")), new SwitchPosition("-1.0", "Down", tedac_commands.LHG_CURSOR_DOWN.ToString("d")) }, "Handgrip Left (CP/G)", "Cursor Controller, Up/Down", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "488", new SwitchPosition[] { new SwitchPosition(" -1.0", "Left", tedac_commands.LHG_CURSOR_LEFT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_CURSOR_LEFT.ToString("d")), new SwitchPosition("1.0", "Right", tedac_commands.LHG_CURSOR_RIGHT.ToString("d")) }, "Handgrip Left (CP/G)", "Cursor Controller, Left/Right", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.LHG_CURSOR_ENTER.ToString("d"), "489", "Handgrip Left (CP/G)", "Cursor Controller, Enter", " %0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.LHG_LR_BTN.ToString("d"), "490", "Handgrip Left (CP/G)", "Cursor Display Select (L/R) Button", "%0.1f"));
+
             #endregion
             #region Right
-            //elements["pnt_508-1"] = knuppel_button(CREW.CPG, _("Sight Select Switch, HMD"), devices.TEDAC, tedac_commands.RHG_SIGHT_SELECT_SW_UP, 508, 1.0)
-            //elements["pnt_508-1"].side = { }
-            //            elements["pnt_508-2"] = knuppel_button(CREW.CPG, _("Sight Select Switch, LINK"), devices.TEDAC, tedac_commands.RHG_SIGHT_SELECT_SW_DOWN, 508, -1.0)
-            //elements["pnt_508-2"].side = { }
-            //            elements["pnt_509-1"] = knuppel_button(CREW.CPG, _("Sight Select Switch, FCR"), devices.TEDAC, tedac_commands.RHG_SIGHT_SELECT_SW_LEFT, 509, -1.0)
-            //elements["pnt_509-1"].side = { }
-            //            elements["pnt_509-2"] = knuppel_button(CREW.CPG, _("Sight Select Switch, TADS"), devices.TEDAC, tedac_commands.RHG_SIGHT_SELECT_SW_RIGHT, 509, 1.0)
-            //elements["pnt_509-2"].side = { }
-            //            elements["pnt_510"] = default_3_position_tumb(CREW.CPG, _("Laser Tracker Mode (LT) Switch, A (Automatic)/O (Off)/M (Manual)"), devices.TEDAC, tedac_commands.RHG_LT_SW, 510, NOT_CYCLED, anim_speed_default, NOT_INVERSED)
-            //elements["pnt_510"].side = { }
-            //            elements["pnt_511-1"] = knuppel_button(CREW.CPG, _("FCR Scan Size Switch, Z (Zoom)"), devices.TEDAC, tedac_commands.RHG_FCR_SCAN_SIZE_SW_UP, 511, 1.0)
-            //elements["pnt_511-1"].side = { }
-            //            elements["pnt_511-2"] = knuppel_button(CREW.CPG, _("FCR Scan Size Switch, M (Medium)"), devices.TEDAC, tedac_commands.RHG_FCR_SCAN_SIZE_SW_DOWN, 511, -1.0)
-            //elements["pnt_511-2"].side = { }
-            //            elements["pnt_512-1"] = knuppel_button(CREW.CPG, _("FCR Scan Size Switch, N (Narrow)"), devices.TEDAC, tedac_commands.RHG_FCR_SCAN_SIZE_SW_LEFT, 512, -1.0)
-            //elements["pnt_512-1"].side = { }
-            //            elements["pnt_512-2"] = knuppel_button(CREW.CPG, _("FCR Scan Size Switch, W (Wide)"), devices.TEDAC, tedac_commands.RHG_FCR_SCAN_SIZE_SW_RIGHT, 512, 1.0)
-            //elements["pnt_512-2"].side = { }
-            //            elements["pnt_513"] = default_button(CREW.CPG, _("C-Scope Button"), devices.TEDAC, tedac_commands.RHG_C_SCOPE_SW, 513)
-            //elements["pnt_513"].side = { }
-            //            elements["pnt_504"] = default_button(CREW.CPG, _("FLIR Polarity Button - Press to change polarity"), devices.TEDAC, tedac_commands.RHG_FLIR_PLRT_BTN, 504)
-            //elements["pnt_504"].side = { }
-            //            elements["pnt_514"] = default_button(CREW.CPG, _("Sight Slave Button - Press to slave TADS or FCR to the selected acquisition source"), devices.TEDAC, tedac_commands.RHG_SIGHT_SLAVE_BTN, 514)
-            //elements["pnt_514"].side = { }
-            //            elements["pnt_517"] = default_button(CREW.CPG, _("Display Zoom Button - Press to view FCR targeting information on the NTS target"), devices.TEDAC, tedac_commands.RHG_DISPLAY_ZOOM_BTN, 517)
-            //elements["pnt_517"].side = { }
-            //            elements["pnt_519"] = springloaded_3_pos_tumb(CREW.CPG, _("Spare Switch, PREVIOUS(LMB)/NEXT(RMB)"), devices.TEDAC, tedac_commands.RHG_SPARE_SW_AFT, tedac_commands.RHG_SPARE_SW_FWD, 519)
-            //elements["pnt_519"].side = { }
-            //            elements["pnt_505"] = default_button(CREW.CPG, _("HDD/HOD Select Button - currently not used"), devices.TEDAC, tedac_commands.RHG_HDD_SW, 505)
-            //elements["pnt_505"].side = { }
-            //            elements["pnt_518"] = default_button(CREW.CPG, _("Cursor Enter Button - Press to enter"), devices.TEDAC, tedac_commands.RHG_ENTER_BTN, 518)
-            //elements["pnt_518"].side = { }
-            //            elements["pnt_515-1"] = knuppel_button(CREW.CPG, _("Sight Manual Tracker (MAN TRK) Controller, Up"), devices.TEDAC, tedac_commands.RHG_MAN_TRK_UP, 515, 1.0)
-            //elements["pnt_515-1"].side = { }
-            //            elements["pnt_515-2"] = knuppel_button(CREW.CPG, _("Sight Manual Tracker (MAN TRK) Controller, Down"), devices.TEDAC, tedac_commands.RHG_MAN_TRK_DOWN, 515, -1.0)
-            //elements["pnt_515-2"].side = { }
-            //            elements["pnt_516-1"] = knuppel_button(CREW.CPG, _("Sight Manual Tracker (MAN TRK) Controller, Left"), devices.TEDAC, tedac_commands.RHG_MAN_TRK_LEFT, 516, -1.0)
-            //elements["pnt_516-1"].side = { }
-            //            elements["pnt_516-2"] = knuppel_button(CREW.CPG, _("Sight Manual Tracker (MAN TRK) Controller, Right"), devices.TEDAC, tedac_commands.RHG_MAN_TRK_RIGHT, 516, 1.0)
-            //elements["pnt_516-2"].side = { }
-            //            elements["pnt_507"] = default_3_position_tumb(CREW.CPG, _("Image Auto Tracker (IAT) Polarity Switch, W (White)/A (Auto)/B (Black)"), devices.TEDAC, tedac_commands.RHG_IAT_POLARITY_SW, 507, NOT_CYCLED, anim_speed_default, NOT_INVERSED)
-            //elements["pnt_507"].side = { }
+            AddFunction(new Switch(this, TEDAC, "508", new SwitchPosition[] { new SwitchPosition("1.0", "HMD", tedac_commands.RHG_SIGHT_SELECT_SW_UP.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.RHG_SIGHT_SELECT_SW_UP.ToString("d")), new SwitchPosition("-1.0", "Link", tedac_commands.RHG_SIGHT_SELECT_SW_DOWN.ToString("d")) }, "Handgrip Right (CP/G)", "Sight Select Switch Up/Down", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "509", new SwitchPosition[] { new SwitchPosition(" -1.0", "FCR", tedac_commands.RHG_SIGHT_SELECT_SW_LEFT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.RHG_SIGHT_SELECT_SW_LEFT.ToString("d")), new SwitchPosition("1.0", "TADS", tedac_commands.RHG_SIGHT_SELECT_SW_RIGHT.ToString("d")) }, "Handgrip Right (CP/G)", "Sight Select Switch Left/Right", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, TEDAC, tedac_commands.RHG_LT_SW.ToString("d"), "510", "1.0", "Automatic", "0.0", "Off", "-1.0", "Manual", "Handgrip Right (CP/G)", "Laser Tracker Mode (LT) Switch, A (Automatic)/O (Off)/M (Manual)", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "511", new SwitchPosition[] { new SwitchPosition("1.0", "Zoom", tedac_commands.RHG_FCR_SCAN_SIZE_SW_UP.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.RHG_FCR_SCAN_SIZE_SW_UP.ToString("d")), new SwitchPosition("-1.0", "Medium", tedac_commands.RHG_FCR_SCAN_SIZE_SW_DOWN.ToString("d")) }, "Handgrip Right (CP/G)", "FCR Scan Size Switch Up/Down", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "512", new SwitchPosition[] { new SwitchPosition(" -1.0", "Narrow", tedac_commands.RHG_FCR_SCAN_SIZE_SW_LEFT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.RHG_FCR_SCAN_SIZE_SW_LEFT.ToString("d")), new SwitchPosition("1.0", "Wide", tedac_commands.RHG_FCR_SCAN_SIZE_SW_RIGHT.ToString("d")) }, "Handgrip Right (CP/G)", "FCR Scan Size Switch Left/Right", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.RHG_C_SCOPE_SW.ToString("d"), "513", "Handgrip Right (CP/G)", "C-Scope Button", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.RHG_FLIR_PLRT_BTN.ToString("d"), "504", "Handgrip Right (CP/G)", "FLIR Polarity Button", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.RHG_SIGHT_SLAVE_BTN.ToString("d"), "514", "Handgrip Right (CP/G)", "Sight Slave Button", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.RHG_DISPLAY_ZOOM_BTN.ToString("d"), "517", "Handgrip Right (CP/G)", "Display Zoom Button", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "519", new SwitchPosition[] { new SwitchPosition("1.0", "Previous", tedac_commands.RHG_SPARE_SW_AFT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.RHG_SPARE_SW_AFT.ToString("d")), new SwitchPosition("-1.0", "Next", tedac_commands.RHG_SPARE_SW_FWD.ToString("d")) }, "Handgrip Right (CP/G)", "Spare Switch, PREVIOUS/NEXT", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.RHG_HDD_SW.ToString("d"), "505", "Handgrip Right (CP/G)", "HDD/HOD Select Button", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.RHG_ENTER_BTN.ToString("d"), "518", "Handgrip Right (CP/G)", "Cursor Enter Button", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "515", new SwitchPosition[] { new SwitchPosition("1.0", "Up", tedac_commands.RHG_MAN_TRK_UP.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.RHG_MAN_TRK_UP.ToString("d")), new SwitchPosition("-1.0", "Down", tedac_commands.RHG_MAN_TRK_DOWN.ToString("d")) }, "Handgrip Right (CP/G)", "Sight Manual Tracker (MAN TRK) Controller Up/Down", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "516", new SwitchPosition[] { new SwitchPosition(" -1.0", "Left", tedac_commands.RHG_MAN_TRK_LEFT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.RHG_MAN_TRK_LEFT.ToString("d")), new SwitchPosition("1.0", "Right", tedac_commands.RHG_MAN_TRK_RIGHT.ToString("d")) }, "Handgrip Right (CP/G)", "Sight Manual Tracker (MAN TRK) Controller Left/Right", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, TEDAC, tedac_commands.RHG_IAT_POLARITY_SW.ToString("d"), "507", "1.0", "White", "0.0", "Auto", "-1.0", "Black", "Handgrip Right (CP/G)", "Image Auto Tracker (IAT) Polarity Switch, W (White)/A (Auto)/B (Black)", "%0.1f"));
+
             #endregion
             #endregion
             #endregion
