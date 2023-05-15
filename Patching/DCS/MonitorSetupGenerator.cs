@@ -310,7 +310,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         Status =
                             $"The viewport '{name}' is not tracked automatically because it is contained within a gauge, control or panel.",
                         Recommendation = $"If changes have been made to viewport {name}\'s size or location, ensure a \"Reload Status\" is performed before monitor configuration is attempted.",
-                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Severity = StatusReportItem.SeverityCode.Info,
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     };
                     continue;
