@@ -120,6 +120,9 @@
     <Compile Include="Controls\BarGaugeAppearanceEditor.xaml.cs">
       <DependentUpon>BarGaugeAppearanceEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GlassOpacityAppearanceEditor.xaml.cs">
+      <DependentUpon>GlassOpacityAppearanceEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ImageAssetLocationAppearanceEditor.xaml.cs">
       <DependentUpon>ImageAssetLocationAppearanceEditor.xaml</DependentUpon>
     </Compile>
@@ -221,6 +224,59 @@
     <Compile Include="Gauges\AV-8B\Stopwatch\Stopwatch.cs" />
     <Compile Include="Gauges\AV-8B\Stopwatch\StopwatchDial.cs" />
     <Compile Include="Gauges\CompositeVisualWithBackgroundImage.cs" />
+    <Compile Include="Gauges\F-15E\Caution Panel\Caution Panel WSO.cs" />
+    <Compile Include="Gauges\F-15E\Caution Panel\Caution Panel Pilot.cs" />
+    <Compile Include="Gauges\F-15E\Fuel Panel\FuelGaugeWSO.cs" />
+    <Compile Include="Gauges\F-15E\Fuel Panel\FuelPanelWSO.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\ADI.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\ADI Pilot.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\ADI WSO.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\AOAGauge.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\AOA Pilot.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\AOA WSO.cs" />
+    <Compile Include="Gauges\F-15E\Clock\ClockGauge.cs" />
+    <Compile Include="Gauges\F-15E\Clock\Clock Pilot.cs" />
+    <Compile Include="Gauges\F-15E\Clock\Clock WSO.cs" />
+    <Compile Include="Gauges\F-15E\EngineMonitor\EngineMonitorPanel.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\BarometricAltimeter Pilot.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\BarometricAltimeter WSO.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\BarometricAltimeterGauge.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\PitchRatio.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\PitchRatioGauge.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\OxygenPressurePilot.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\OxygenPressureWSO.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\OxygenPressureGauge.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\HydraulicPressureUtility.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\HydraulicPressurePC2.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\HydraulicPressurePC1.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\HydraulicPressureGauge.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\CabinPressureWSO.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\CabinPressurePilot.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\CabinPressureGauge.cs" />
+    <Compile Include="Gauges\F-15E\Fuel Panel\Digit Displays\4DigitDisplay.cs" />
+    <Compile Include="Gauges\F-15E\Fuel Panel\Digit Displays\5DigitDisplay.cs" />
+    <Compile Include="Gauges\F-15E\Fuel Panel\Digit Displays\GaugeDrumCounter.cs" />
+    <Compile Include="Gauges\F-15E\Fuel Panel\FuelPanel.cs" />
+    <Compile Include="Gauges\F-15E\Fuel Panel\FuelGauge.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\IASGauge.cs" />
+    <Compile Include="Gauges\F-15E\EngineMonitor\NozzleGauges.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\IAS Pilot.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\IAS WSO.cs" />
+    <Compile Include="Gauges\F-15E\MFD\MPCD Pilot Center.cs" />
+    <Compile Include="Gauges\F-15E\MFD\MPCD WSO Left.cs" />
+    <Compile Include="Gauges\F-15E\MFD\MPD WSO Left.cs" />
+    <Compile Include="Gauges\F-15E\MFD\MPCD WSO Right.cs" />
+    <Compile Include="Gauges\F-15E\MFD\MPD WSO Right.cs" />
+    <Compile Include="Gauges\F-15E\MFD\MPD Pilot Left.cs" />
+    <Compile Include="Gauges\F-15E\MFD\MPD Pilot Right.cs" />
+    <Compile Include="Gauges\F-15E\MFD\MPD.cs" />
+    <Compile Include="Gauges\F-15E\UFC\UFC WSO.cs" />
+    <Compile Include="Gauges\F-15E\UFC\UFC Pilot.cs" />
+    <Compile Include="Gauges\F-15E\UFC\UFC.cs" />
+    <Compile Include="Gauges\F-15E\UFC\UFCTextDisplay.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\VVI WSO.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\VVI Pilot.cs" />
+    <Compile Include="Gauges\F-15E\Instruments\VVIGauge.cs" />
     <Compile Include="Gauges\FA-18C\ADI\ADI.cs" />
     <Compile Include="Gauges\FA-18C\UFC\UFCScratchPadDisplay.cs" />
     <Compile Include="Gauges\FA-18C\UFC\UFCTextDisplay.cs" />
@@ -265,6 +321,11 @@
     <Compile Include="IModuleManagerWritable.cs" />
     <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\Functions\ARC210Display.cs" />
+    <Compile Include="Interfaces\DCS\F-15E\Commands.cs" />
+    <Compile Include="Interfaces\DCS\F-15E\Devices.cs" />
+    <Compile Include="Interfaces\DCS\F-15E\F15EInterface.cs" />
+    <Compile Include="Interfaces\DCS\F-15E\Functions\Altimeter.cs" />
+    <Compile Include="Interfaces\DCS\F-15E\Functions\DigitsDispaly.cs" />
     <Compile Include="Interfaces\DCS\H-60\Functions\Altimeter.cs" />
     <Compile Include="Interfaces\DCS\H-60\Functions\Chronometer.cs" />
     <Compile Include="Interfaces\DCS\H-60\Functions\H60Function.cs" />
@@ -450,6 +511,7 @@
     </Content>
     <EmbeddedResource Include="Resources\helios-bug-report.txt" />
     <Resource Include="Images\General\simple_computation_wire.png" />
+    <Resource Include="Images\TransparentImage.png" />
     <Content Include="Templates\Base\Simulator Viewports\A29B_BFI.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -517,6 +579,10 @@
     <Page Include="Controls\BacklitPushButtonAppearanceEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GlassOpacityAppearanceEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\HeliosPanelBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -866,6 +932,158 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Gauges\F-15E\Fuel Panel\Digit Displays\digit_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Fuel Panel\BingoNeedle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Fuel Panel\Needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\EngineMonitor\Nozzle Gauge Numbers.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\EngineMonitor\Needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\EngineMonitor\Nozzle Gauge Ticks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\EngineMonitor\Nozzle Gauge Marks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\EngineMonitor\Engine Panel Legends.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Common\hundreds_drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Common\units_drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Common\hundreds_drum_tape_reversed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Common\units_drum_tape_reversed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Common\alt_units_drum_tape_reversed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Fuel Panel\InternalDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Clock\Clock_Dial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Clock\hours_needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\BarometricAltimeterDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\HydraulicPressureDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\OxygenPressureDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\IASDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\AoADial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\CabinPressureDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\PitchRatioDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\ADI_Pointer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\ADI_Tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\ADI_Wings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\ADI_Gradiant.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\ADI_Bezel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\ADI_Off_Flag.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\HydraulicPressureNeedle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\NeedleA.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\NeedleB.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\NeedleC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\NeedleHours.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\NeedleMinutes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\NeedleSeconds.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Instruments\NeedleD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\F-15E\Fuel Panel\InternalDialWSO.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1048,14 +1266,8 @@
     <Compile Include="Gauges\AV-8B\MFD\MPCD.cs" />
     <Compile Include="Gauges\AV-8B\ODU\ODU_1.cs" />
     <Compile Include="Gauges\AV-8B\Small Panels\Flight Instrument Panel.cs" />
-    <Compile Include="Gauges\AV-8B\Small Panels\CockpitAppearanceEditor.xaml.cs">
-      <DependentUpon>CockpitAppearanceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Gauges\AV-8B\Small Panels\Gear and Flaps Panel.cs" />
     <Compile Include="Gauges\AV-8B\Small Panels\H2O Panel.cs" />
-    <Compile Include="Gauges\AV-8B\Small Panels\FlightInstrumentAppearanceEditor.xaml.cs">
-      <DependentUpon>FlightInstrumentAppearanceEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Gauges\AV-8B\Small Panels\Landing Gear Indicator Panel.cs" />
     <Compile Include="Gauges\AV-8B\Small Panels\Threat Indicator Panel.cs" />
     <Compile Include="Gauges\AV-8B\Small Panels\Master Arm Panel.cs" />
@@ -1363,7 +1575,46 @@
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
     <None Include="Assets\Helios_ADI.odg" />
     <None Include="Assets\render.cmd" />
-    <Content Include="Fonts\*.ttf">
+    <Content Include="Fonts\A-10C_ALQ_213.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\A-10C_ARC_164.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\A-10C_Digital_Clock.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\DSEG14Classic-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\DSEG7Classic-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\F-15E_Up_Front_Controller.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\F-16C_Viper_DED.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\FA-18C_Hornet_IFEI.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\FA-18C_Hornet_Up_Front_Controller.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\Helios-A-10C_ARC-210_Large.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\Helios-A-10C_ARC-210_Small.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\M-2000C PCA 16 Segment.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\MonospacedLEDCounter7.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\MS33558.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="BindingValueUnits.cd" />
@@ -1379,6 +1630,9 @@
     <Content Include="Fonts\Helios-A-10C_ARC-210_Large.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Fonts\F-15E_Up_Front_Controller.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Fonts\MonospacedLEDCounter7.ttf" />
     <None Include="Images\A-10\readme.md" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
@@ -1388,6 +1642,7 @@
     <Resource Include="Interfaces\DCS\BlackShark\ExportFunctionsKa-50_2.lua" />
     <Resource Include="Interfaces\DCS\MirageF1\ExportFunctionsMirageF1EE.lua" />
     <Resource Include="Interfaces\DCS\MirageF1\ExportFunctionsMirageF1CE.lua" />
+    <Resource Include="Interfaces\DCS\F-15E\ExportFunctionsF15E.lua" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\hud.png" />
@@ -3792,14 +4047,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="Gauges\AV-8B\Small Panels\CockpitAppearanceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Gauges\AV-8B\Small Panels\FlightInstrumentAppearanceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Resource Include="Gauges\F-16\HydraulicPressure\hydraulic_faceplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

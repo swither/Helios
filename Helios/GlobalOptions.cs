@@ -98,6 +98,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         private bool _logDCSFunctionDictionary;
 
+
         public GlobalOptions()
         {
             _scaleAllText = HasScaleAllText;
@@ -208,7 +209,6 @@ namespace GadrocsWorkshop.Helios
                 ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, SETTING_DCS_FUNCTION_DICTIONARY_TO_LOG, value);
                 _logDCSFunctionDictionary = value;
                 OnPropertyChanged(nameof(LogDCSFunctionDictionary), oldValue, value, true);
-
             }
         }
 
@@ -273,7 +273,6 @@ namespace GadrocsWorkshop.Helios
         /// </returns>
         public static bool HasLogDCSFunctionDictionary =>
             ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_DCS_FUNCTION_DICTIONARY_TO_LOG, false);
-
         #endregion
     }
 }

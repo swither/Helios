@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
         private GaugeNeedle _needle;
         private CalibrationPointCollectionDouble _calibrationPoints;
 
-        public VVI(): base("VVI", new Size(364, 376))
+        public VVI() : base("VVI", new Size(364, 376))
         {
             Components.Add(new GaugeImage("{Helios}/Gauges/FA-18C/VVI/VVI_Faceplate.png", new Rect(32d, 38d, 300d, 300d)));
             _needle = new GaugeNeedle("{Helios}/Gauges/A-10/Common/needle_a.xaml", new Point(182d, 188d), new Size(22, 165), new Point(11, 130), -90d);
@@ -38,8 +38,18 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
             _verticalVelocity.Execute += new HeliosActionHandler(VerticalVelocity_Execute);
             Actions.Add(_verticalVelocity);
 
-            _calibrationPoints = new CalibrationPointCollectionDouble(-6000d, -169d, 6000d, 169d);
-            _calibrationPoints.Add(new CalibrationPointDouble(0d, 0d));
+            _calibrationPoints = new CalibrationPointCollectionDouble(-6000d, -169d, 6000d, 169d)
+            {
+                new CalibrationPointDouble(-4000d, -140d),
+                new CalibrationPointDouble(-2000d, -102d),
+                new CalibrationPointDouble(-1000d, -67d),
+                new CalibrationPointDouble(-500d, -37d),
+                new CalibrationPointDouble(0d, 0d),
+                new CalibrationPointDouble(500d, 37d),
+                new CalibrationPointDouble(1000d, 67d),
+                new CalibrationPointDouble(2000d, 102d),
+                new CalibrationPointDouble(4000d, 140d)
+            };
         }
         void VerticalVelocity_Execute(object action, HeliosActionEventArgs e)
         {

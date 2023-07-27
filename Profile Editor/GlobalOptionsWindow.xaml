@@ -82,7 +82,7 @@
 
                 <TextBlock Grid.Row="16" Grid.Column="0" Style="{StaticResource PropertyNameSpaced}">Save DCS Interface Functions to Log</TextBlock>
                 <CheckBox Grid.Row="16" Grid.Column="1" IsChecked="{Binding LogFunctionDictionary}"/>
-                <TextBlock Grid.Row="17" Grid.Column="1" Style="{StaticResource Documentation}">The DCS Interface Devices and Elements will be written to the Profile Editor log file.</TextBlock>
+               <TextBlock Grid.Row="17" Grid.Column="1" Style="{StaticResource Documentation}">The DCS Interface Devices and Elements will be written to the Profile Editor log file.</TextBlock>
                 
             </Grid>
         </GroupBox>

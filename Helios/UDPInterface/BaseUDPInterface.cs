@@ -1025,7 +1025,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         protected void AddFunction(NetworkFunction function)
         {
             Functions.Add(function);
-
             if (GlobalOptions.HasLogDCSFunctionDictionary)
             {
                 DCSFunction dcsFunction = function as DCSFunction;
