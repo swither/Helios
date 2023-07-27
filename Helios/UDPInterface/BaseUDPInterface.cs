@@ -16,15 +16,18 @@
 
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 using GadrocsWorkshop.Helios.Json;
 using GadrocsWorkshop.Helios.Windows;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Timers;
 using System.Windows.Threading;
 
@@ -41,7 +44,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         /// This is the locale of the lua exports program
         /// </summary>
         private static readonly System.Text.Encoding Iso88591 =
-                System.Text.Encoding.GetEncoding("iso-8859-1"); 
+                System.Text.Encoding.GetEncoding("iso-8859-1");
 
         // events don't need access control
         // event to notify potentially other threads that the client connection has changed
@@ -568,7 +571,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
         private void WaitForData(Socket serverSocket)
         {
-            ReceiveContext context = _shared.FetchReceiveContext() ?? new ReceiveContext {socket = serverSocket};
+            ReceiveContext context = _shared.FetchReceiveContext() ?? new ReceiveContext { socket = serverSocket };
             do
             {
                 Logger.Debug("UDP interface waiting for socket data on {Interface}.", Name);
@@ -848,7 +851,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         // WARNING: called on both Main and Socket threads, depending on where the failure occurred
         private bool HandleSocketException(SocketException se, out Socket newSocket)
         {
-            if ((SocketError) se.ErrorCode == SocketError.ConnectionReset)
+            if ((SocketError)se.ErrorCode == SocketError.ConnectionReset)
             {
                 Logger.Debug("UDP receiver socket reset");
                 try
@@ -957,7 +960,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             OnProfileStarted();
 
             // 10 seconds for Delayed Startup (fire only once)
-            Timer timer = new Timer(10000) {AutoReset = false};
+            Timer timer = new Timer(10000) { AutoReset = false };
             timer.Elapsed += OnStartupTimer;
             _main.StartupTimer = timer;
 
@@ -1022,6 +1025,18 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         protected void AddFunction(NetworkFunction function)
         {
             Functions.Add(function);
+
+            if (GlobalOptions.HasLogDCSFunctionDictionary)
+            {
+                DCSFunction dcsFunction = function as DCSFunction;
+                if (dcsFunction != null)
+                {
+                    foreach (ExportDataElement de in dcsFunction.DataElements)
+                    {
+                        Logger.Info($"{dcsFunction.SourceInterface.Name} | {dcsFunction.DeviceName} | {dcsFunction.Name} | Arg = ({de.ID})");
+                    }
+                }
+            }
         }
 
         public override void Reset()
@@ -1050,7 +1065,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         protected virtual void OnClientChanged(string fromValue, string toValue)
         {
             _main.ConnectedTrigger.FireTrigger(BindingValue.Empty);
-            ClientChanged?.Invoke(this, new ClientChange {FromOpaqueHandle = fromValue, ToOpaqueHandle = toValue});
+            ClientChanged?.Invoke(this, new ClientChange { FromOpaqueHandle = fromValue, ToOpaqueHandle = toValue });
         }
 
         /// <summary>

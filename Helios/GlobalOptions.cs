@@ -55,6 +55,11 @@ namespace GadrocsWorkshop.Helios
         private const string SETTING_PERSIST_CHILDREN_AS_COMMENT = "PersistChildrenAsComment";
 
         /// <summary>
+        /// Name used in the settings
+        /// </summary>
+        private const string SETTING_DCS_FUNCTION_DICTIONARY_TO_LOG = "LogDCSFunctionDictionary";
+
+        /// <summary>
         /// global options group name used in the settings, must never change
         /// </summary>
         private const string SETTINGS_GROUP = "Helios";
@@ -85,6 +90,13 @@ namespace GadrocsWorkshop.Helios
         /// so that the data appears in the profile.
         /// </summary>
         private bool _persistChildrenAsComment;
+
+        /// <summary>
+        /// backing field for property LogDCSFunctionDictionary / "Save DCS Interface Functions to Log"
+        /// if True, the Log file will contain a list of the DCS Interface Devices and Elements
+        /// in the interfaces being added - primarily for profile creators to locate specific controls.
+        /// </summary>
+        private bool _logDCSFunctionDictionary;
 
         public GlobalOptions()
         {
@@ -181,6 +193,26 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
+        /// true if the Functions added by an interface are added to the log.
+        /// </summary>
+        public bool LogDCSFunctionDictionary
+        {
+            get => _logDCSFunctionDictionary;
+            set
+            {
+                if (value == _logDCSFunctionDictionary)
+                {
+                    return;
+                }
+                bool oldValue = _logDCSFunctionDictionary;
+                ConfigManager.SettingsManager.SaveSetting(SETTINGS_GROUP, SETTING_DCS_FUNCTION_DICTIONARY_TO_LOG, value);
+                _logDCSFunctionDictionary = value;
+                OnPropertyChanged(nameof(LogDCSFunctionDictionary), oldValue, value, true);
+
+            }
+        }
+
+        /// <summary>
         /// accessible as utility for client code that can't get access to the GlobalOptions instance readily
         /// </summary>
         /// <returns>
@@ -232,6 +264,15 @@ namespace GadrocsWorkshop.Helios
         /// </returns>
         public static bool HasPersistChildrenAsComment =>
             ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_PERSIST_CHILDREN_AS_COMMENT, false);
+
+        /// <summary>
+        /// accessible as utility for client code that can't get access to the GlobalOptions instance readily
+        /// </summary>
+        /// <returns>
+        /// true if the Functions added by an interface are added to the log.
+        /// </returns>
+        public static bool HasLogDCSFunctionDictionary =>
+            ConfigManager.SettingsManager.LoadSetting(SETTINGS_GROUP, SETTING_DCS_FUNCTION_DICTIONARY_TO_LOG, false);
 
         #endregion
     }
