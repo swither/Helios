@@ -4,7 +4,7 @@
   <TypeIdentifier>HELIOS.M2000C.LANDING_GEAR_PANEL_V2</TypeIdentifier>
   <Template>
     <TemplateValues>
-	    <ImageAssetLocation>Helios Assets\M-2000C/</ImageAssetLocation>
+	    <ImageAssetLocation>{M2000C}/Images/</ImageAssetLocation>
     </TemplateValues>
   </Template>
 </ControlTemplate>
