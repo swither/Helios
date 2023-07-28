@@ -142,7 +142,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.CautionPanel
 
 
 
-        public override string DefaultBackgroundImage => $"{_imageLocation}Bezels_and_Faces/Caution_Indicator_Panel.png";
+        public override string DefaultBackgroundImage => $"{_imageLocation}CautionPanels/Caution_Indicator_Panel.png";
 
         private string ComponentName(string name)
         {
