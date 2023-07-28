@@ -1,0 +1,15 @@
+<ControlTemplate>
+    <Name>RadioVol Knob Back Image</Name>
+    <Category>F-15E Image Assets</Category>
+    <TypeIdentifier>Helios.Base.Image</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-15E}/Images/UFC/RadioVol_Knob_Back.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <Location>0,0</Location>
+            <Size>250,250</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

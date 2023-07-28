@@ -1,0 +1,15 @@
+<ControlTemplate>
+    <Name>Master Caution Button Surround Image</Name>
+    <Category>F-15E Image Assets</Category>
+    <TypeIdentifier>Helios.Base.Image</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-15E}/Images/Buttons/Master_Caution_Button_Surround.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <Location>0,0</Location>
+            <Size>137,104</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

@@ -1,0 +1,15 @@
+<ControlTemplate>
+    <Name>UFC Data Button Image</Name>
+    <Category>F-15E Image Assets</Category>
+    <TypeIdentifier>Helios.Base.Image</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-15E}/Images/UFC/UFC_Data_Button.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <Location>0,0</Location>
+            <Size>95,95</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

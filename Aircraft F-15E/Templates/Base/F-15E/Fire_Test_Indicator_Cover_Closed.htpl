@@ -1,0 +1,15 @@
+<ControlTemplate>
+    <Name>Fire Test Indicator Cover Closed Image</Name>
+    <Category>F-15E Image Assets</Category>
+    <TypeIdentifier>Helios.Base.Image</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-15E}/Images/AMAD/Fire_Test_Indicator_Cover_Closed.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <Location>0,0</Location>
+            <Size>114,143</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

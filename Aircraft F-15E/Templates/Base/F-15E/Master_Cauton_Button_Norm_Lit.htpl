@@ -1,0 +1,15 @@
+<ControlTemplate>
+    <Name>Master Cauton Button Norm Lit Image</Name>
+    <Category>F-15E Image Assets</Category>
+    <TypeIdentifier>Helios.Base.Image</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-15E}/Images/Buttons/Master_Cauton_Button_Norm_Lit.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <Location>0,0</Location>
+            <Size>113,84</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>
