@@ -1,0 +1,10 @@
+﻿<ControlTemplate>
+  <Name>RADAR IFF Panel</Name>
+  <Category>M-2000C Gauges</Category>
+  <TypeIdentifier>HELIOS.M2000C.RADAR_IFF_MODE_PANEL</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+	    <ImageAssetLocation>Helios Assets\M-2000C/</ImageAssetLocation>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

@@ -763,10 +763,245 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Images\IFF Mode Setting Display\IFF_Code_Settings.png" />
+    <Resource Include="Images\IFF Mode Setting Display\IFF_Thumbwheel.png" />
+    <Resource Include="Images\IFF Mode Setting Display\IFF_Thumbwheel_1.png" />
+    <Resource Include="Images\Landing Gear Panel\a-off.png" />
+    <Resource Include="Images\Landing Gear Panel\a-on.png" />
+    <Resource Include="Images\Landing Gear Panel\BIP-Button-Down.png" />
+    <Resource Include="Images\Landing Gear Panel\BIP-Button-Up.png" />
+    <Resource Include="Images\Landing Gear Panel\bip-off.png" />
+    <Resource Include="Images\Landing Gear Panel\bip-on.png" />
+    <Resource Include="Images\Landing Gear Panel\cross-off.png" />
+    <Resource Include="Images\Landing Gear Panel\cross-on.png" />
+    <Resource Include="Images\Landing Gear Panel\dirav-off.png" />
+    <Resource Include="Images\Landing Gear Panel\dirav-on.png" />
+    <Resource Include="Images\Landing Gear Panel\emergency-jettison-not-pushed.png" />
+    <Resource Include="Images\Landing Gear Panel\emergency-jettison-pushed.png" />
+    <Resource Include="Images\Landing Gear Panel\emergency-landing-gear-lever-vertical.png" />
+    <Resource Include="Images\Landing Gear Panel\emergency-landing-gear-lever.png" />
+    <Resource Include="Images\Landing Gear Panel\f-off.png" />
+    <Resource Include="Images\Landing Gear Panel\f-on.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-G-Limit-Switch-Down.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-G-Limit-Switch-Up.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-Gain-Switch-Down.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-Gain-Switch-Up.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-Reset-Button-Down.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-Reset-Button-Up.png" />
+    <Resource Include="Images\Landing Gear Panel\fbwg-guard-down.png" />
+    <Resource Include="Images\Landing Gear Panel\fbwg-guard-up.png" />
+    <Resource Include="Images\Landing Gear Panel\frein-off.png" />
+    <Resource Include="Images\Landing Gear Panel\frein-on.png" />
+    <Resource Include="Images\Landing Gear Panel\gun-arming-guard-down.png" />
+    <Resource Include="Images\Landing Gear Panel\gun-arming-guard-up.png" />
+    <Resource Include="Images\Landing Gear Panel\landing-gear-down.png" />
+    <Resource Include="Images\Landing Gear Panel\landing-gear-lit-down.png" />
+    <Resource Include="Images\Landing Gear Panel\landing-gear-lit-up.png" />
+    <Resource Include="Images\Landing Gear Panel\landing-gear-up.png" />
+    <Resource Include="Images\Landing Gear Panel\left-gear-off.png" />
+    <Resource Include="Images\Landing Gear Panel\left-gear-on.png" />
+    <Resource Include="Images\Landing Gear Panel\lg-panel.png" />
+    <Resource Include="Images\Landing Gear Panel\nose-gear-off.png" />
+    <Resource Include="Images\Landing Gear Panel\nose-gear-on.png" />
+    <Resource Include="Images\Landing Gear Panel\right-gear-off.png" />
+    <Resource Include="Images\Landing Gear Panel\right-gear-on.png" />
+    <Resource Include="Images\Landing Gear Panel\spad-off.png" />
+    <Resource Include="Images\Landing Gear Panel\spad-on.png" />
+    <Resource Include="Images\Low Altitude Setting Display\Altitude_ThumbWheel_1.png" />
+    <Resource Include="Images\Low Altitude Setting Display\Altitude_ThumbWheel_2.png" />
+    <Resource Include="Images\Low Altitude Setting Display\Low_Altitude_Setting.png" />
+    <Resource Include="Images\Misc\Aircraft.png" />
+    <Resource Include="Images\Misc\aoa-panel.png" />
+    <Resource Include="Images\Misc\demar-off.png" />
+    <Resource Include="Images\Misc\demar-on.png" />
+    <Resource Include="Images\Misc\demar-panel.png" />
+    <Resource Include="Images\Misc\fire-warning-afterburner-chamber-off.png" />
+    <Resource Include="Images\Misc\fire-warning-afterburner-chamber-on.png" />
+    <Resource Include="Images\Misc\fire-warning-engine-chamber-off.png" />
+    <Resource Include="Images\Misc\fire-warning-engine-chamber-on.png" />
+    <Resource Include="Images\Misc\fire-warning-panel.png" />
+    <Resource Include="Images\Misc\Fuel_Burn_Bingo.png" />
+    <Resource Include="Images\Misc\Fuel_Burn_Bingo_Display_Background.png" />
+    <Resource Include="Images\Misc\IAS_and_Altimeter_Bezel.png" />
+    <Resource Include="Images\Misc\IAS_Bezel.png" />
+    <Resource Include="Images\Misc\pc-off.png" />
+    <Resource Include="Images\Misc\pc-on.png" />
+    <Resource Include="Images\Misc\pc-panel.png" />
+    <Resource Include="Images\Misc\PPA_Display_Background.png" />
+    <Resource Include="Images\Misc\RadAlt_Knob.png" />
+    <Resource Include="Images\Misc\rwr-light-off.png" />
+    <Resource Include="Images\Misc\rwr-light-on.png" />
+    <Resource Include="Images\Misc\UHF_Repeater.png" />
+    <Resource Include="Images\Misc\UHF_Repeater_Display_Background.png" />
+    <Resource Include="Images\Misc\void.png" />
+    <Resource Include="Images\RADAR IFF Mode Panel\black-circle-down.png" />
+    <Resource Include="Images\RADAR IFF Mode Panel\black-circle-up.png" />
+    <Resource Include="Images\RADAR IFF Mode Panel\RADAR_IFF_Knob.png" />
+    <Resource Include="Images\RADAR IFF Mode Panel\RADAR_IFF_Panel.png" />
+    <Resource Include="Images\UHF Radio\Green_UHF_Button_Down.png" />
+    <Resource Include="Images\UHF Radio\Green_UHF_Button_Lit_Down.png" />
+    <Resource Include="Images\UHF Radio\Green_UHF_Button_Lit_Up.png" />
+    <Resource Include="Images\UHF Radio\Green_UHF_Button_Up.png" />
+    <Resource Include="Images\UHF Radio\Orange_UHF_Button_Down.png" />
+    <Resource Include="Images\UHF Radio\Orange_UHF_Button_Lit_Down.png" />
+    <Resource Include="Images\UHF Radio\Orange_UHF_Button_Lit_Up.png" />
+    <Resource Include="Images\UHF Radio\Orange_UHF_Button_Up.png" />
+    <Resource Include="Images\UHF Radio\UHF_Channel_Knob.png" />
+    <Resource Include="Images\UHF Radio\UHF_Mode_Knob.png" />
+    <Resource Include="Images\UHF Radio\UHF_Radio_Panel.png" />
+    <Resource Include="Images\VHF Radio\Encoder_Knob.png" />
+    <Resource Include="Images\VHF Radio\Key_0.png" />
+    <Resource Include="Images\VHF Radio\Key_0_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_1.png" />
+    <Resource Include="Images\VHF Radio\Key_1_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_2.png" />
+    <Resource Include="Images\VHF Radio\Key_20.png" />
+    <Resource Include="Images\VHF Radio\Key_2_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_2_Light.png" />
+    <Resource Include="Images\VHF Radio\Key_3.png" />
+    <Resource Include="Images\VHF Radio\Key_3_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_3_Light.png" />
+    <Resource Include="Images\VHF Radio\Key_3_Lit.png" />
+    <Resource Include="Images\VHF Radio\Key_4.png" />
+    <Resource Include="Images\VHF Radio\Key_4_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_5.png" />
+    <Resource Include="Images\VHF Radio\Key_5_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_6.png" />
+    <Resource Include="Images\VHF Radio\Key_6_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_7.png" />
+    <Resource Include="Images\VHF Radio\Key_7_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_8.png" />
+    <Resource Include="Images\VHF Radio\Key_8_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_9.png" />
+    <Resource Include="Images\VHF Radio\Key_9_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_CLR.png" />
+    <Resource Include="Images\VHF Radio\Key_CLR_MEM_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_CONF.png" />
+    <Resource Include="Images\VHF Radio\Key_CONF_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_GR.png" />
+    <Resource Include="Images\VHF Radio\Key_Lit.png" />
+    <Resource Include="Images\VHF Radio\Key_LOW.png" />
+    <Resource Include="Images\VHF Radio\Key_Mem.png" />
+    <Resource Include="Images\VHF Radio\Key_READ.png" />
+    <Resource Include="Images\VHF Radio\Key_SQL.png" />
+    <Resource Include="Images\VHF Radio\Key_TOD.png" />
+    <Resource Include="Images\VHF Radio\Key_TONE.png" />
+    <Resource Include="Images\VHF Radio\Key_VLD.png" />
+    <Resource Include="Images\VHF Radio\Key_VLD_XFR_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_XFR.png" />
+    <Resource Include="Images\VHF Radio\Key_Zero.png" />
+    <Resource Include="Images\VHF Radio\M-2000C_VHF_Radio_Background.png" />
+    <Resource Include="Images\VHF Radio\Mode_Knob.png" />
+    <Content Include="Templates\Base\M-2000C\Panels\After_Burner_Indicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Altimeter.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\AoA_Indicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Caution_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\DEMAR_Indicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Engine_Sensor_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Engine_Start_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Fire_Indicators.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Fuel_Burn_Bingo_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Fuel_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\HSI_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\IFFModeSetting.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\INS_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Landing_Gear_Panel_V2.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\LowAltitudeSettings.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Master_Caution_Lights.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\PCA_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\PCN_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\PPA_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\RADARIFFSetting%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Radio_Repeater_Display.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\RWR_Indicators.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\TACAN_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\Test_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\UHF Radio.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\VHF Radio.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\VOR_ILS_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Panels\VTB_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\CautionPanelRedIndicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\CautionPanelYellowIndicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Cockpit Front 16x10.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Cockpit Front 16x9.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\long-black-switch-toggle.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Rad-Alt-Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\Red-switch-toggle.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M-2000C\short-black-switch-toggle.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Templates\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\Miscellaneous\PPA_Display_Background.png" />
   </ItemGroup>
