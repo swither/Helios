@@ -281,7 +281,7 @@
     <Resource Include="Images\Knobs\QFE_Knob.png" />
     <Resource Include="Images\Knobs\ADI_Knob_Center_Norm.png" />
     <Resource Include="Images\Knobs\ADI_Knob_Center_Pulled.png" />
-    <Content Include="Images\Buttons\LG_Warn_Sil_Pressed.png" />
+    <Resource Include="Images\Buttons\LG_Warn_Sil_Pressed.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Templates\Base\F-15E\ADI_Bezel.htpl" />
