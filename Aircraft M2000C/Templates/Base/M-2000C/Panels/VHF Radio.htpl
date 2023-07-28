@@ -4,7 +4,7 @@
   <TypeIdentifier>HELIOS.M2000C.VHF_RADIO</TypeIdentifier>
   <Template>
     <TemplateValues>
-	    <ImageAssetLocation>Helios Assets/M-2000C/</ImageAssetLocation>
+	    <ImageAssetLocation>{M2000C}/Images/</ImageAssetLocation>
     </TemplateValues>
   </Template>
 </ControlTemplate>

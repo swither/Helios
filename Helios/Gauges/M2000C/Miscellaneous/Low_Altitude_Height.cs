@@ -30,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
     {
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 400, 205);
         private string _interfaceDeviceName = "AFCS";
-        private string _imageAssetLocation = "Helios Assets/M-2000C/";
+        private string _imageAssetLocation = "{M2000C}/Images/";
         private Rect _scaledScreenRect = SCREEN_RECT;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 

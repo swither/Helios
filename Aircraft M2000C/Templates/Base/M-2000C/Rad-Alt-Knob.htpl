@@ -7,7 +7,7 @@
           <Location>0,0</Location>
           <Size>100,100</Size>
           <Hidden>False</Hidden>
-          <KnobImage>Helios Assets\M-2000C\Misc\RadAlt_Knob.png</KnobImage>
+          <KnobImage>{M2000C}/Images/Misc/RadAlt_Knob.png</KnobImage>
           <InitialValue>0</InitialValue>
           <StepValue>0.1</StepValue>
           <MaxValue>1</MaxValue>
