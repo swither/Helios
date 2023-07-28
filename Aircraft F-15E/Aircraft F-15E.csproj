@@ -25,49 +25,34 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Bezels_And_Faces\Airspeed_Bezel.png" />
-    <Resource Include="Images\Bezels_And_Faces\Clock_Bezel.png" />
-    <Resource Include="Images\Bezels_And_Faces\Fuel_Qty_Bezel.png" />
-    <Resource Include="Images\Bezels_And_Faces\Generic_Bezel.png" />
-    <Resource Include="Images\Bezels_And_Faces\IFEI_Bezel.png" />
-    <Resource Include="Images\Buttons_And_Switches\DTM_Button_Norm_Non_Function.png" />
-    <Resource Include="Images\Buttons_And_Switches\Fire_Test_Button_Surround.png" />
-    <Resource Include="Images\Buttons_And_Switches\Fire_Test_During_Press_Lit.png" />
-    <Resource Include="Images\Buttons_And_Switches\Fire_Test_During_Press_Off.png" />
-    <Resource Include="Images\Buttons_And_Switches\Fire_Test_Indincator_Cover_Closed.png" />
-    <Resource Include="Images\Buttons_And_Switches\Fire_Test_Indincator_Cover_Open.png" />
-    <Resource Include="Images\Buttons_And_Switches\Fire_Test_Norm.png" />
-    <Resource Include="Images\Buttons_And_Switches\Fire_Test_On_Lit.png" />
-    <Resource Include="Images\Buttons_And_Switches\Jett_All_Norm.png" />
-    <Resource Include="Images\Buttons_And_Switches\Jett_All_Pressed.png" />
-    <Resource Include="Images\Buttons_And_Switches\Master_Caution_Button_Surround.png" />
-    <Resource Include="Images\Buttons_And_Switches\Master_Cauton_Button_Norm_Lit.png" />
-    <Resource Include="Images\Buttons_And_Switches\Master_Cauton_Button_Norm_Off.png" />
-    <Resource Include="Images\Buttons_And_Switches\Master_Cauton_Button_Pressed_Lit.png" />
-    <Resource Include="Images\Buttons_And_Switches\Master_Cauton_Button_Pressed_Off.png" />
-    <Resource Include="Images\Buttons_And_Switches\Select_Jett_Button_Norm.png" />
-    <Resource Include="Images\Buttons_And_Switches\Select_Jett_Button_Pressed.png" />
-    <Resource Include="Images\Buttons_And_Switches\Select_Jett_Knob.png" />
-    <Resource Include="Images\Buttons_And_Switches\ADI_Knob.png" />
-    <Resource Include="Images\Buttons_And_Switches\T1_Down.png" />
-    <Resource Include="Images\Buttons_And_Switches\T1_Mid.png" />
-    <Resource Include="Images\Buttons_And_Switches\T1_Up.png" />
-    <Resource Include="Images\Buttons_And_Switches\T2_Down.png" />
-    <Resource Include="Images\Buttons_And_Switches\T2_Mid.png" />
-    <Resource Include="Images\Buttons_And_Switches\T2_Up.png" />
-    <Resource Include="Images\Buttons_And_Switches\T3_Down.png" />
-    <Resource Include="Images\Buttons_And_Switches\T3_Mid.png" />
-    <Resource Include="Images\Buttons_And_Switches\T3_Up.png" />
-    <Resource Include="Images\Buttons_And_Switches\UFC_Toggle_1_Down.png" />
-    <Resource Include="Images\Buttons_And_Switches\UFC_Toggle_1_Mid.png" />
-    <Resource Include="Images\Buttons_And_Switches\UFC_Toggle_1_Up.png" />
-    <Resource Include="Images\Lamps_And_Indicators\Burn_Thru_Indiator_Housing.png" />
-    <Resource Include="Images\Lamps_And_Indicators\EMIS_Limit_Housing.png" />
-    <Resource Include="Images\Lamps_And_Indicators\EMIS_Limit_Ind.png" />
-    <Resource Include="Images\Lamps_And_Indicators\Engine_Burn_Thru_L.png" />
-    <Resource Include="Images\Lamps_And_Indicators\Engine_Burn_Thru_R.png" />
-    <Resource Include="Images\Lamps_And_Indicators\Fire_Test_Indincator_On.png" />
-    <Resource Include="Images\Lamps_And_Indicators\Master_Caution_Ind.png" />
+    <Resource Include="Images\Bezels_and_Faces\Airspeed_Bezel.png" />
+    <Resource Include="Images\Bezels_and_Faces\Clock_Bezel.png" />
+    <Resource Include="Images\Bezels_and_Faces\Generic_Bezel.png" />
+    <Resource Include="Images\Buttons\DTM_Button_Norm_Non_Function.png" />
+    <Resource Include="Images\Buttons\Master_Caution_Button_Surround.png" />
+    <Resource Include="Images\Buttons\Master_Cauton_Button_Norm_Lit.png" />
+    <Resource Include="Images\Buttons\Master_Cauton_Button_Norm_Off.png" />
+    <Resource Include="Images\Buttons\Master_Cauton_Button_Pressed_Lit.png" />
+    <Resource Include="Images\Buttons\Master_Cauton_Button_Pressed_Off.png" />
+    <Resource Include="Images\Buttons\Select_Jett_Button_Norm.png" />
+    <Resource Include="Images\Buttons\Select_Jett_Button_Pressed.png" />
+    <Resource Include="Images\Knobs\Select_Jett_Knob.png" />
+    <Resource Include="Images\Knobs\ADI_Knob.png" />
+    <Resource Include="Images\Switches\T1_Down.png" />
+    <Resource Include="Images\Switches\T1_Mid.png" />
+    <Resource Include="Images\Switches\T1_Up.png" />
+    <Resource Include="Images\Switches\T2_Down.png" />
+    <Resource Include="Images\Switches\T2_Mid.png" />
+    <Resource Include="Images\Switches\T2_Up.png" />
+    <Resource Include="Images\Switches\T3_Down.png" />
+    <Resource Include="Images\Switches\T3_Mid.png" />
+    <Resource Include="Images\Switches\T3_Up.png" />
+    <Resource Include="Images\Indicators\EMIS_Limit_Housing.png" />
+    <Resource Include="Images\Indicators\EMIS_Limit_Ind.png" />
+    <Resource Include="Images\AMAD\Engine_Burn_Thru_L.png" />
+    <Resource Include="Images\AMAD\Engine_Burn_Thru_R.png" />
+    <Resource Include="Images\Indicators\Fire_Test_Indincator_On.png" />
+    <Resource Include="Images\Indicators\Master_Caution_Ind.png" />
     <Resource Include="Images\MFD\MFD_Bezel.png" />
     <Resource Include="Images\MFD\MPC_C_Button_Norm.png" />
     <Resource Include="Images\MFD\MPC_C_Button_Pressed.png" />
@@ -158,10 +143,10 @@
     <Resource Include="Images\UFC\UFC_Knob_2_Inner_Pressed.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Fuel_Quantity_Panel\Fuel_Quantity_Bingo_Knob.png" />
-    <Resource Include="Images\Fuel_Quantity_Panel\Fuel_Quantity_Off_Flag.png" />
-    <Resource Include="Images\Fuel_Quantity_Panel\Fuel_Quantity_Panel.png" />
-    <Resource Include="Images\Fuel_Quantity_Panel\Fuel_Quantity_Selector_Knob.png" />
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantity_Bingo_Knob.png" />
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantity_Off_Flag.png" />
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantityPanel.png" />
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantity_Selector_Knob.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\MFD\MPC_Button_Norm.png" />
@@ -170,16 +155,16 @@
     <Resource Include="Images\MFD\MPC_Button_Pressed.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Fuel_Quantity_Panel\Fuel_Quantity_Off_Flag_Off.png" />
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantity_Off_Flag_Off.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Bezels_And_Faces\ADI_Bezel.png" />
+    <Resource Include="Images\Bezels_and_Faces\ADI_Bezel.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Bezels_And_Faces\Caution_Indicator_Panel.png" />
+    <Resource Include="Images\CautionPanels\Caution_Indicator_Panel.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Fuel_Quantity_Panel\Fuel_Quantity_Panel_Mask.png" />
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantityPanel_Mask.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\EngineMonitorPanel\EngineMonitorBackground.png" />
@@ -244,61 +229,61 @@
     <Resource Include="Images\CautionPanels\CautionLightsPilot_Spare.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\ARMT_Panel\Master_Arm_ Mid.png" />
-    <Resource Include="Images\ARMT_Panel\Master_Arm_Down.png" />
-    <Resource Include="Images\ARMT_Panel\Master_Arm_Up.png" />
-    <Resource Include="Images\ARMT_Panel\Select_Jett_Button_Norm.png" />
-    <Resource Include="Images\ARMT_Panel\Select_Jett_Button_Pressed.png" />
-    <Resource Include="Images\ARMT_Panel\Select_Jett_Knob.png" />
+    <Resource Include="Images\ARMTPanel\Master_Arm_ Mid.png" />
+    <Resource Include="Images\ARMTPanel\Master_Arm_Down.png" />
+    <Resource Include="Images\ARMTPanel\Master_Arm_Up.png" />
+    <Resource Include="Images\ARMTPanel\Select_Jett_Button_Norm.png" />
+    <Resource Include="Images\ARMTPanel\Select_Jett_Button_Pressed.png" />
+    <Resource Include="Images\ARMTPanel\Select_Jett_Knob.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\AMAD\Fire_Test_Button_Surround.png" />
-    <Resource Include="Images\AMAD\Fire_Test_Down.png" />
-    <Resource Include="Images\AMAD\Fire_Test_During_Press_Lit.png" />
-    <Resource Include="Images\AMAD\Fire_Test_During_Press_Off.png" />
-    <Resource Include="Images\AMAD\Fire_Test_Indincator_Cover_Closed.png" />
-    <Resource Include="Images\AMAD\Fire_Test_Indincator_Cover_Open.png" />
-    <Resource Include="Images\AMAD\Fire_Test_Indincator_On.png" />
-    <Resource Include="Images\AMAD\Fire_Test_Mid.png" />
-    <Resource Include="Images\AMAD\Fire_Test_Norm.png" />
-    <Resource Include="Images\AMAD\Fire_Test_On_Lit.png" />
-    <Resource Include="Images\AMAD\Fire_Test_Up.png" />
+    <Resource Include="Images\AMAD\AMADExtinguisherButton_Surround.png" />
+    <Resource Include="Images\AMAD\AMADDischargeSwitch_Down.png" />
+    <Resource Include="Images\AMAD\AMADExtinguisher_During_Press_Lit.png" />
+    <Resource Include="Images\AMAD\AMADExtinguisher_During_Press_Off.png" />
+    <Resource Include="Images\AMAD\Fire_Test_Indicator_Cover_Closed.png" />
+    <Resource Include="Images\AMAD\Fire_Test_Indicator_Cover_Open.png" />
+    <Resource Include="Images\AMAD\Fire_Test_Indicator_On.png" />
+    <Resource Include="Images\AMAD\AMADDischargeSwitch_Mid.png" />
+    <Resource Include="Images\AMAD\AMADExtinguisher_Norm.png" />
+    <Resource Include="Images\AMAD\AMADExtinguisher_On_Lit.png" />
+    <Resource Include="Images\AMAD\AMADDischargeSwitch_Up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Jettison_All_Panel\Jett_All_Norm.png" />
-    <Resource Include="Images\Jettison_All_Panel\JETT_All_Pressed.png" />
+    <Resource Include="Images\JettisonAllPanel\Jett_All_Norm.png" />
+    <Resource Include="Images\JettisonAllPanel\JETT_All_Pressed.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Lamps_And_Indicators\AI.png" />
-    <Resource Include="Images\Lamps_And_Indicators\AP.png" />
-    <Resource Include="Images\Lamps_And_Indicators\CAN_UNLKD.png" />
-    <Resource Include="Images\Lamps_And_Indicators\Laser_Armed.png" />
-    <Resource Include="Images\Lamps_And_Indicators\LOW_ALT.png" />
-    <Resource Include="Images\Lamps_And_Indicators\OBST.png" />
-    <Resource Include="Images\Lamps_And_Indicators\SAM.png" />
-    <Resource Include="Images\Lamps_And_Indicators\TF_FAIL.png" />
+    <Resource Include="Images\Indicators\AI.png" />
+    <Resource Include="Images\Indicators\AP.png" />
+    <Resource Include="Images\Indicators\CAN_UNLKD.png" />
+    <Resource Include="Images\Indicators\Laser_Armed.png" />
+    <Resource Include="Images\Indicators\LOW_ALT.png" />
+    <Resource Include="Images\Indicators\OBST.png" />
+    <Resource Include="Images\Indicators\SAM.png" />
+    <Resource Include="Images\Indicators\TF_FAIL.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Bezels_And_Faces\Burn_Thru_Indicator_Housing.png" />
+    <Resource Include="Images\AMAD\Burn_Thru_Indicator_Housing.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Bezels_And_Faces\EMIS_Limit_Housing.png" />
+    <Resource Include="Images\Bezels_and_Faces\EMIS_Limit_Housing.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Bezels_And_Faces\Hyd_Bezel.png" />
+    <Resource Include="Images\Bezels_and_Faces\Hyd_Bezel.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Bezels_And_Faces\Hydraulic_Pressure_Trim_Ring.png" />
+    <Resource Include="Images\Bezels_and_Faces\Hydraulic_Pressure_Trim_Ring.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Bezels_And_Faces\Altimeter_Bezel.png" />
-    <Resource Include="Images\Bezels_And_Faces\Pitch_Ratio_Bezel.png" />
+    <Resource Include="Images\Bezels_and_Faces\Altimeter_Bezel.png" />
+    <Resource Include="Images\Bezels_and_Faces\Pitch_Ratio_Bezel.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Buttons_And_Switches\QFE_Knob.png" />
-    <Resource Include="Images\Buttons_And_Switches\ADI_Knob_Center_Norm.png" />
-    <Resource Include="Images\Buttons_And_Switches\ADI_Knob_Center_Pulled.png" />
-    <Content Include="Images\Buttons_And_Switches\LG_Warn_Sil_Pressed.png" />
+    <Resource Include="Images\Knobs\QFE_Knob.png" />
+    <Resource Include="Images\Knobs\ADI_Knob_Center_Norm.png" />
+    <Resource Include="Images\Knobs\ADI_Knob_Center_Pulled.png" />
+    <Content Include="Images\Buttons\LG_Warn_Sil_Pressed.png" />
   </ItemGroup>
   <Import Project="..\Helios.targets" />
 </Project>

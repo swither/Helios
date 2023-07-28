@@ -55,7 +55,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.FuelPanel
                 Width = 218d,
                 Height = 272d,
                 Alignment = ImageAlignment.Stretched,
-                Image = "{F-15E}/Images/Fuel_Quantity_Panel/Fuel_Quantity_Panel_Mask.png",
+                Image = "{F-15E}/Images/FuelQuantityPanel/FuelQuantityPanel_Mask.png",
                 IsHidden = false
             };
             iD.Width = 218d;
@@ -85,7 +85,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.FuelPanel
 
             RotarySwitch _knob = new RotarySwitch();
             _knob.Name = $"{Name}_{name}";
-            _knob.KnobImage = "{F-15E}/Images/Fuel_Quantity_Panel/Fuel_Quantity_Selector_Knob.png";
+            _knob.KnobImage = "{F-15E}/Images/FuelQuantityPanel/FuelQuantity_Selector_Knob.png";
             _knob.DrawLabels = false;
             _knob.DrawLines = false;
             _knob.Positions.Clear();
@@ -112,7 +112,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.FuelPanel
                 name: name,
                 size: size,
                 posn: posn,
-                knobImage: "{F-15E}/Images/Fuel_Quantity_Panel/Fuel_Quantity_Bingo_Knob.png",
+                knobImage: "{F-15E}/Images/FuelQuantityPanel/FuelQuantity_Bingo_Knob.png",
                 stepValue: 0.1,
                 rotationStep: 5,
                 interfaceDeviceName: _interfaceDeviceName,
@@ -127,8 +127,8 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.FuelPanel
                 name: name,
                 posn: new Point(x, y),
                 size: size,
-                offImage: "{F-15E}/Images/Fuel_Quantity_Panel/Fuel_Quantity_Off_Flag.png",
-                onImage: "{F-15E}/Images/Fuel_Quantity_Panel/Fuel_Quantity_Off_Flag_Off.png",
+                offImage: "{F-15E}/Images/FuelQuantityPanel/FuelQuantity_Off_Flag.png",
+                onImage: "{F-15E}/Images/FuelQuantityPanel/FuelQuantity_Off_Flag_Off.png",
                 onTextColor: System.Windows.Media.Color.FromArgb(0x00, 0xff, 0xff, 0xff),
                 offTextColor: System.Windows.Media.Color.FromArgb(0x00, 0x00, 0x00, 0x00),
                 font: _font,
@@ -251,7 +251,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.FuelPanel
         }
         public override string DefaultBackgroundImage
         {
-            get { return "{F-15E}/Images/Fuel_Quantity_Panel/Fuel_Quantity_Panel.png";
+            get { return "{F-15E}/Images/FuelQuantityPanel/FuelQuantityPanel.png";
                   }
             }
         protected override void OnBackgroundImageChange()

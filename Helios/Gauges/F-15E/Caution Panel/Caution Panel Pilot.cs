@@ -142,7 +142,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.CautionPanel
 
 
 
-        public override string DefaultBackgroundImage => $"{_imageLocation}Bezels_And_Faces/Caution_Indicator_Panel.png";
+        public override string DefaultBackgroundImage => $"{_imageLocation}Bezels_and_Faces/Caution_Indicator_Panel.png";
 
         private string ComponentName(string name)
         {
@@ -151,7 +151,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.CautionPanel
 
         protected override void OnBackgroundImageChange()
         {
-            BackgroundImage = BackgroundImageIsCustomized ? null : $"{_imageLocation}/Bezels_And_Faces/Caution_Indicator_Panel.png";
+            BackgroundImage = BackgroundImageIsCustomized ? null : $"{_imageLocation}/CautionPanels/Caution_Indicator_Panel.png";
         }
         public override bool HitTest(Point location)
         {
