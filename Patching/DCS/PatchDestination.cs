@@ -35,7 +35,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public PatchDestination(InstallationLocation location)
         {
             _dcsRoot = location.Path;
-            Version = PatchVersion.SortableString(location.Version);
+            try
+            {
+                Version = PatchVersion.SortableString(location.Version);
+            } catch (Exception ex)
+            {
+                ConfigManager.LogManager.LogError($"The version number \"{location.Version}\" read from \"autoupdate.cfg\" in DCS installation \"{_dcsRoot}\" was either corrupt, or in a format unknown to Helios.  Run DCS repair (slow mode) or reinstall the DCS installation.", ex);
+                Version = "000_000_00000_00000_00000";
+                DisplayVersion = "INVALID_AUTOUPDATE.CFG_VERSION";
+                return;
+            }
             DisplayVersion = location.Version;
         }
 
