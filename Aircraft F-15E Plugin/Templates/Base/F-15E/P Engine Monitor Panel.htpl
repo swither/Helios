@@ -1,0 +1,1 @@
+<ControlTemplate><Name>Engine Monitor Panel</Name><Category>F-15E Strike Eagle</Category><TypeIdentifier>Helios.F15E.EngineMonitorPanel</TypeIdentifier><Template><TemplateValues><Location>0,0</Location><Size>470,437</Size><Hidden>False</Hidden><GlassReflectionOpacity>0.3</GlassReflectionOpacity></TemplateValues></Template></ControlTemplate>

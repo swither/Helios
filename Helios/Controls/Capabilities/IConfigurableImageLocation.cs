@@ -16,7 +16,7 @@
 
 namespace GadrocsWorkshop.Helios.Controls.Capabilities
 {
-    internal interface IConfigurableImageLocation
+    public interface IConfigurableImageLocation
     {
         #region Properties
 

@@ -1,0 +1,905 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F6533AAA-D2B1-43A7-9B5A-A789FD6835FC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GadrocsWorkshop.Helios.F-15E</RootNamespace>
+    <AssemblyName>F-15E</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Gauges\Caution Panel\Caution Panel Pilot.cs" />
+    <Compile Include="Gauges\Caution Panel\Caution Panel WSO.cs" />
+    <Compile Include="Gauges\Clock\Clock Pilot.cs" />
+    <Compile Include="Gauges\Clock\Clock WSO.cs" />
+    <Compile Include="Gauges\Clock\ClockGauge.cs" />
+    <Compile Include="Gauges\EngineMonitor\EngineMonitorPanel.cs" />
+    <Compile Include="Gauges\EngineMonitor\NozzleGauges.cs" />
+    <Compile Include="Gauges\Fuel Panel\Digit Displays\4DigitDisplay.cs" />
+    <Compile Include="Gauges\Fuel Panel\Digit Displays\5DigitDisplay.cs" />
+    <Compile Include="Gauges\Fuel Panel\Digit Displays\GaugeDrumCounter.cs" />
+    <Compile Include="Gauges\Fuel Panel\FuelGauge.cs" />
+    <Compile Include="Gauges\Fuel Panel\FuelGaugeWSO.cs" />
+    <Compile Include="Gauges\Fuel Panel\FuelPanel.cs" />
+    <Compile Include="Gauges\Fuel Panel\FuelPanelWSO.cs" />
+    <Compile Include="Gauges\Instruments\ADI Pilot.cs" />
+    <Compile Include="Gauges\Instruments\ADI WSO.cs" />
+    <Compile Include="Gauges\Instruments\ADI.cs" />
+    <Compile Include="Gauges\Instruments\AOA Pilot.cs" />
+    <Compile Include="Gauges\Instruments\AOA WSO.cs" />
+    <Compile Include="Gauges\Instruments\AOAGauge.cs" />
+    <Compile Include="Gauges\Instruments\BarometricAltimeter Pilot.cs" />
+    <Compile Include="Gauges\Instruments\BarometricAltimeter WSO.cs" />
+    <Compile Include="Gauges\Instruments\BarometricAltimeterGauge.cs" />
+    <Compile Include="Gauges\Instruments\CabinPressureGauge.cs" />
+    <Compile Include="Gauges\Instruments\CabinPressurePilot.cs" />
+    <Compile Include="Gauges\Instruments\CabinPressureWSO.cs" />
+    <Compile Include="Gauges\Instruments\HydraulicPressureGauge.cs" />
+    <Compile Include="Gauges\Instruments\HydraulicPressurePC1.cs" />
+    <Compile Include="Gauges\Instruments\HydraulicPressurePC2.cs" />
+    <Compile Include="Gauges\Instruments\HydraulicPressureUtility.cs" />
+    <Compile Include="Gauges\Instruments\IAS Pilot.cs" />
+    <Compile Include="Gauges\Instruments\IAS WSO.cs" />
+    <Compile Include="Gauges\Instruments\IASGauge.cs" />
+    <Compile Include="Gauges\Instruments\OxygenPressureGauge.cs" />
+    <Compile Include="Gauges\Instruments\OxygenPressurePilot.cs" />
+    <Compile Include="Gauges\Instruments\OxygenPressureWSO.cs" />
+    <Compile Include="Gauges\Instruments\PitchRatio.cs" />
+    <Compile Include="Gauges\Instruments\PitchRatioGauge.cs" />
+    <Compile Include="Gauges\Instruments\VVI Pilot.cs" />
+    <Compile Include="Gauges\Instruments\VVI WSO.cs" />
+    <Compile Include="Gauges\Instruments\VVIGauge.cs" />
+    <Compile Include="Gauges\MFD\MPCD Pilot Center.cs" />
+    <Compile Include="Gauges\MFD\MPCD WSO Left.cs" />
+    <Compile Include="Gauges\MFD\MPCD WSO Right.cs" />
+    <Compile Include="Gauges\MFD\MPD Pilot Left.cs" />
+    <Compile Include="Gauges\MFD\MPD Pilot Right.cs" />
+    <Compile Include="Gauges\MFD\MPD WSO Left.cs" />
+    <Compile Include="Gauges\MFD\MPD WSO Right.cs" />
+    <Compile Include="Gauges\MFD\MPD.cs" />
+    <Compile Include="Gauges\UFC\UFC Pilot.cs" />
+    <Compile Include="Gauges\UFC\UFC WSO.cs" />
+    <Compile Include="Gauges\UFC\UFC.cs" />
+    <Compile Include="Gauges\UFC\UFCTextDisplay.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Bezels_and_Faces\Airspeed_Bezel.png" />
+    <Resource Include="Images\Bezels_and_Faces\Clock_Bezel.png" />
+    <Resource Include="Images\Bezels_and_Faces\Generic_Bezel.png" />
+    <Resource Include="Images\Buttons\DTM_Button_Norm_Non_Function.png" />
+    <Resource Include="Images\Buttons\Master_Caution_Button_Surround.png" />
+    <Resource Include="Images\Buttons\Master_Cauton_Button_Norm_Lit.png" />
+    <Resource Include="Images\Buttons\Master_Cauton_Button_Norm_Off.png" />
+    <Resource Include="Images\Buttons\Master_Cauton_Button_Pressed_Lit.png" />
+    <Resource Include="Images\Buttons\Master_Cauton_Button_Pressed_Off.png" />
+    <Resource Include="Images\Buttons\Select_Jett_Button_Norm.png" />
+    <Resource Include="Images\Buttons\Select_Jett_Button_Pressed.png" />
+    <Resource Include="Images\Knobs\Select_Jett_Knob.png" />
+    <Resource Include="Images\Knobs\ADI_Knob.png" />
+    <Resource Include="Images\Switches\T1_Down.png" />
+    <Resource Include="Images\Switches\T1_Mid.png" />
+    <Resource Include="Images\Switches\T1_Up.png" />
+    <Resource Include="Images\Switches\T2_Down.png" />
+    <Resource Include="Images\Switches\T2_Mid.png" />
+    <Resource Include="Images\Switches\T2_Up.png" />
+    <Resource Include="Images\Switches\T3_Down.png" />
+    <Resource Include="Images\Switches\T3_Mid.png" />
+    <Resource Include="Images\Switches\T3_Up.png" />
+    <Resource Include="Images\Indicators\EMIS_Limit_Housing.png" />
+    <Resource Include="Images\Indicators\EMIS_Limit_Ind.png" />
+    <Resource Include="Images\AMAD\Engine_Burn_Thru_L.png" />
+    <Resource Include="Images\AMAD\Engine_Burn_Thru_R.png" />
+    <Resource Include="Images\Indicators\Fire_Test_Indincator_On.png" />
+    <Resource Include="Images\Indicators\Master_Caution_Ind.png" />
+    <Resource Include="Images\MFD\MFD_Bezel.png" />
+    <Resource Include="Images\MFD\MPC_C_Button_Norm.png" />
+    <Resource Include="Images\MFD\MPC_C_Button_Pressed.png" />
+    <Resource Include="Images\MFD\MPC_LC_Button_Norm.png" />
+    <Resource Include="Images\MFD\MPC_LC_Button_Pressed.png" />
+    <Resource Include="Images\MFD\MPC_L_Button_Norm.png" />
+    <Resource Include="Images\MFD\MPC_L_Button_Pressed.png" />
+    <Resource Include="Images\MFD\MPC_RC_Button_Norm.png" />
+    <Resource Include="Images\MFD\MPC_RC_Button_Pressed.png" />
+    <Resource Include="Images\MFD\MPC_R_Button_Norm.png" />
+    <Resource Include="Images\MFD\MPC_R_Button_Pressed.png" />
+    <Resource Include="Images\MFD\Rocker_Down.png" />
+    <Resource Include="Images\MFD\Rocker_Norm.png" />
+    <Resource Include="Images\MFD\Rocker_Up.png" />
+    <Resource Include="Images\UFC\OSB_UFC_Button_Normal.png" />
+    <Resource Include="Images\UFC\OSB_UFC_Button_Pressed.png" />
+    <Resource Include="Images\UFC\RadioVol_Knob_Back.png" />
+    <Resource Include="Images\UFC\UFC_0_Button.png" />
+    <Resource Include="Images\UFC\UFC_0_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_7_Button.png" />
+    <Resource Include="Images\UFC\UFC_7_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_A1_Button.png" />
+    <Resource Include="Images\UFC\UFC_A1_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_AP_Button.png" />
+    <Resource Include="Images\UFC\UFC_AP_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_B3_Button.png" />
+    <Resource Include="Images\UFC\UFC_B3_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_C9_Button.png" />
+    <Resource Include="Images\UFC\UFC_C9_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Clr_Button.png" />
+    <Resource Include="Images\UFC\UFC_Clr_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Data_Button.png" />
+    <Resource Include="Images\UFC\UFC_Data_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Decimal_Button.png" />
+    <Resource Include="Images\UFC\UFC_Decimal_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_E6_Button.png" />
+    <Resource Include="Images\UFC\UFC_E6_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_EMIS_LMT_Button.png" />
+    <Resource Include="Images\UFC\UFC_EMIS_LMT_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_IP_Button.png" />
+    <Resource Include="Images\UFC\UFC_IP_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Knob_1.png" />
+    <Resource Include="Images\UFC\UFC_Knob_2.png" />
+    <Resource Include="Images\UFC\UFC_M5_Button.png" />
+    <Resource Include="Images\UFC\UFC_M5_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Mark_Button.png" />
+    <Resource Include="Images\UFC\UFC_Mark_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Menu_Button.png" />
+    <Resource Include="Images\UFC\UFC_Menu_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_N2_Button.png" />
+    <Resource Include="Images\UFC\UFC_N2_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Orange_Tint_Translucent.png" />
+    <Resource Include="Images\UFC\UFC_Red_Tint_Translucent.png" />
+    <Resource Include="Images\UFC\UFC_S8_Button.png" />
+    <Resource Include="Images\UFC\UFC_S8_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Shift_Button.png" />
+    <Resource Include="Images\UFC\UFC_Shift_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Toggle_1_Down.png" />
+    <Resource Include="Images\UFC\UFC_Toggle_1_Mid.png" />
+    <Resource Include="Images\UFC\UFC_Toggle_1_Up.png" />
+    <Resource Include="Images\UFC\UFC_W4_Button.png" />
+    <Resource Include="Images\UFC\UFC_W4_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Panel_Base.png" />
+    <Resource Include="Images\UFC\UFC_Panel_Lower.png" />
+    <Resource Include="Images\UFC\UFC_GREC_L_Button.png" />
+    <Resource Include="Images\UFC\UFC_GREC_L_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_GREC_R_Button.png" />
+    <Resource Include="Images\UFC\UFC_GREC_R_Button_Pressed.png" />
+    <Resource Include="Images\UFC\UFC_Knob_2_Inner.png" />
+    <Resource Include="Images\UFC\UFC_Knob_1a.png" />
+    <Resource Include="Images\UFC\Master_Mode_Buttons_Norm.png" />
+    <Resource Include="Images\UFC\Master_Mode_Buttons_Pressed.png" />
+    <Resource Include="Images\UFC\Master_Mode_Button_AA_Lit.png" />
+    <Resource Include="Images\UFC\Master_Mode_Button_AG_Lit.png" />
+    <Resource Include="Images\UFC\Master_Mode_Button_Inst_Lit.png" />
+    <Resource Include="Images\UFC\Master_Mode_Button_Nav_Lit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Clock\Clock_Dial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\UFC\Master_Mode_Button_AA_Lit_Pressed.png" />
+    <Resource Include="Images\UFC\Master_Mode_Button_AG_Lit_Pressed.png" />
+    <Resource Include="Images\UFC\Master_Mode_Button_Inst_Lit_Pressed.png" />
+    <Resource Include="Images\UFC\Master_Mode_Button_Nav_Lit_Pressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\UFC\UFC_Knob_2_Inner_Pressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantity_Bingo_Knob.png" />
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantity_Off_Flag.png" />
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantityPanel.png" />
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantity_Selector_Knob.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MFD\MPC_Button_Norm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MFD\MPC_Button_Pressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantity_Off_Flag_Off.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Bezels_and_Faces\ADI_Bezel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CautionPanels\Caution_Indicator_Panel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\FuelQuantityPanel\FuelQuantityPanel_Mask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EngineMonitorPanel\EngineMonitorBackground.png" />
+    <Resource Include="Images\EngineMonitorPanel\EngineMonitorBackgroundMask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_AI.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_AutoPilot.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_AVBIT.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_CanopyUnlocked.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_Chaff.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_DSPFLOLO.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_EmisLmt.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_Engine.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_EngineFireLeft.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_EngineFireRight.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_Flare.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_FltContr.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_FuelLow.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_Hyd.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_LGen.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_LowAlt.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_MasterArm.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_Minimum.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_Nuclear.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_OBST.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_Oxygen.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_Program.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_RGen.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_SAM.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_TFFail.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsWSO_Unarmed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CautionPanels\CautionPanelWSO.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AMAD\AMADFire_CoverClosed.png" />
+    <Resource Include="Images\AMAD\AMADFire_CoverOpen.png" />
+    <Resource Include="Images\AMAD\AMADFire_LitPushed.png" />
+    <Resource Include="Images\AMAD\AMADFire_LitUnpushed.png" />
+    <Resource Include="Images\AMAD\AMADFire_UnlitPushed.png" />
+    <Resource Include="Images\AMAD\AMADFire_UnlitUnpushed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_AVBIT.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_BstSysMal.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_Chaff.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_DSPFLOLO.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_EmerBstOn.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_Engine.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_Flare.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_FltContr.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_FuelLow.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_Hyd.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_LGen.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_Minimum.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_Nuclear.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_Oxygen.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_Program.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_RGen.png" />
+    <Resource Include="Images\CautionPanels\CautionLightsPilot_Spare.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ARMTPanel\Master_Arm_ Mid.png" />
+    <Resource Include="Images\ARMTPanel\Master_Arm_Down.png" />
+    <Resource Include="Images\ARMTPanel\Master_Arm_Up.png" />
+    <Resource Include="Images\ARMTPanel\Select_Jett_Button_Norm.png" />
+    <Resource Include="Images\ARMTPanel\Select_Jett_Button_Pressed.png" />
+    <Resource Include="Images\ARMTPanel\Select_Jett_Knob.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AMAD\AMADExtinguisherButton_Surround.png" />
+    <Resource Include="Images\AMAD\AMADDischargeSwitch_Down.png" />
+    <Resource Include="Images\AMAD\AMADExtinguisher_During_Press_Lit.png" />
+    <Resource Include="Images\AMAD\AMADExtinguisher_During_Press_Off.png" />
+    <Resource Include="Images\AMAD\Fire_Test_Indicator_On.png" />
+    <Resource Include="Images\AMAD\AMADDischargeSwitch_Mid.png" />
+    <Resource Include="Images\AMAD\AMADExtinguisher_Norm.png" />
+    <Resource Include="Images\AMAD\AMADExtinguisher_On_Lit.png" />
+    <Resource Include="Images\AMAD\AMADDischargeSwitch_Up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\JettisonAllPanel\Jett_All_Norm.png" />
+    <Resource Include="Images\JettisonAllPanel\JETT_All_Pressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Indicators\AI.png" />
+    <Resource Include="Images\Indicators\AP.png" />
+    <Resource Include="Images\Indicators\CAN_UNLKD.png" />
+    <Resource Include="Images\Indicators\Laser_Armed.png" />
+    <Resource Include="Images\Indicators\LOW_ALT.png" />
+    <Resource Include="Images\Indicators\OBST.png" />
+    <Resource Include="Images\Indicators\SAM.png" />
+    <Resource Include="Images\Indicators\TF_FAIL.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AMAD\Burn_Thru_Indicator_Housing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Bezels_and_Faces\EMIS_Limit_Housing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Bezels_and_Faces\Hyd_Bezel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Bezels_and_Faces\Hydraulic_Pressure_Trim_Ring.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Bezels_and_Faces\Altimeter_Bezel.png" />
+    <Resource Include="Images\Bezels_and_Faces\Pitch_Ratio_Bezel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Knobs\QFE_Knob.png" />
+    <Resource Include="Images\Knobs\ADI_Knob_Center_Norm.png" />
+    <Resource Include="Images\Knobs\ADI_Knob_Center_Pulled.png" />
+    <Resource Include="Images\Buttons\LG_Warn_Sil_Pressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
+    <None Include="Templates\Base\F-15E\Images\ADI_Bezel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\ADI_Knob.htpl" />
+    <None Include="Templates\Base\F-15E\Images\ADI_Knob_Center_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\ADI_Knob_Center_Pulled.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AI.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Airspeed_Bezel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Altimeter_Bezel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADDischargeSwitch_Down.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADDischargeSwitch_Mid.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADDischargeSwitch_Up.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADExtinguisherButton_Surround.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADExtinguisher_During_Press_Lit.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADExtinguisher_During_Press_Off.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADExtinguisher_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADExtinguisher_On_Lit.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADFire_CoverClosed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADFire_CoverOpen.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADFire_LitPushed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADFire_LitUnpushed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADFire_UnlitPushed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AMADFire_UnlitUnpushed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\AP.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Burn_Thru_Indicator_Housing.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CAN_UNLKD.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_AVBIT.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_BstSysMal.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_Chaff.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_DSPFLOLO.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_EmerBstOn.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_Engine.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_Flare.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_FltContr.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_FuelLow.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_Hyd.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_LGen.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_Minimum.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_Nuclear.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_Oxygen.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_Program.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_RGen.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsPilot_Spare.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_AI.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_AutoPilot.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_AVBIT.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_CanopyUnlocked.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_Chaff.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_DSPFLOLO.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_EmisLmt.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_Engine.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_EngineFireLeft.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_EngineFireRight.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_Flare.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_FltContr.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_FuelLow.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_Hyd.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_LGen.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_LowAlt.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_MasterArm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_Minimum.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_Nuclear.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_OBST.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_Oxygen.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_Program.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_RGen.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_SAM.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_TFFail.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionLightsWSO_Unarmed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\CautionPanelWSO.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Caution_Indicator_Panel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Clock_Bezel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\DTM_Button_Norm_Non_Function.htpl" />
+    <None Include="Templates\Base\F-15E\Images\EMIS_Limit_Housing.htpl" />
+    <None Include="Templates\Base\F-15E\Images\EMIS_Limit_Ind.htpl" />
+    <None Include="Templates\Base\F-15E\Images\EngineMonitorBackground.htpl" />
+    <None Include="Templates\Base\F-15E\Images\EngineMonitorBackgroundMask.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Engine_Burn_Thru_L.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Engine_Burn_Thru_R.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Fire_Test_Indicator_Cover_Closed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Fire_Test_Indicator_Cover_Open.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Fire_Test_Indicator_On.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Fire_Test_Indincator_On.htpl" />
+    <None Include="Templates\Base\F-15E\Images\FuelQuantityPanel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\FuelQuantityPanel_Mask.htpl" />
+    <None Include="Templates\Base\F-15E\Images\FuelQuantity_Bingo_Knob.htpl" />
+    <None Include="Templates\Base\F-15E\Images\FuelQuantity_Off_Flag.htpl" />
+    <None Include="Templates\Base\F-15E\Images\FuelQuantity_Off_Flag_Off.htpl" />
+    <None Include="Templates\Base\F-15E\Images\FuelQuantity_Selector_Knob.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Generic_Bezel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Hydraulic_Pressure_Trim_Ring.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Hyd_Bezel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Jett_All_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\JETT_All_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Laser_Armed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\LG_Warn_Sil_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\LOW_ALT.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Arm_ Mid.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Arm_Down.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Arm_Up.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Caution_Button_Surround.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Caution_Ind.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Cauton_Button_Norm_Lit.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Cauton_Button_Norm_Off.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Cauton_Button_Pressed_Lit.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Cauton_Button_Pressed_Off.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Buttons_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Buttons_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Button_AA_Lit.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Button_AA_Lit_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Button_AG_Lit.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Button_AG_Lit_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Button_Inst_Lit.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Button_Inst_Lit_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Button_Nav_Lit.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Master_Mode_Button_Nav_Lit_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MFD_Bezel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_Button_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_C_Button_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_C_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_Lc_Button_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_Lc_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_L_Button_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_L_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_Rc_Button_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_Rc_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_R_Button_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\MPC_R_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\OBST.htpl" />
+    <None Include="Templates\Base\F-15E\Images\OSB_UFC_Button_Normal.htpl" />
+    <None Include="Templates\Base\F-15E\Images\OSB_UFC_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Pitch_Ratio_Bezel.htpl" />
+    <None Include="Templates\Base\F-15E\Images\QFE_Knob.htpl" />
+    <None Include="Templates\Base\F-15E\Images\RadioVol_Knob_Back.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Rocker_Down.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Rocker_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Rocker_Up.htpl" />
+    <None Include="Templates\Base\F-15E\Images\SAM.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Select_Jett_Button_Norm.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Select_Jett_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\Select_Jett_Knob.htpl" />
+    <None Include="Templates\Base\F-15E\Images\T1_Down.htpl" />
+    <None Include="Templates\Base\F-15E\Images\T1_Mid.htpl" />
+    <None Include="Templates\Base\F-15E\Images\T1_Up.htpl" />
+    <None Include="Templates\Base\F-15E\Images\T2_Down.htpl" />
+    <None Include="Templates\Base\F-15E\Images\T2_Mid.htpl" />
+    <None Include="Templates\Base\F-15E\Images\T2_Up.htpl" />
+    <None Include="Templates\Base\F-15E\Images\T3_Down.htpl" />
+    <None Include="Templates\Base\F-15E\Images\T3_Mid.htpl" />
+    <None Include="Templates\Base\F-15E\Images\T3_Up.htpl" />
+    <None Include="Templates\Base\F-15E\Images\TF_FAIL.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_0_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_0_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_7_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_7_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_A1_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_A1_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_AP_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_AP_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_B3_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_B3_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_C9_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_C9_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Clr_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Clr_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Data_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Data_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Decimal_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Decimal_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_E6_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_E6_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_EMIS_LMT_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_EMIS_LMT_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_GREC_L_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_GREC_L_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_GREC_R_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_GREC_R_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_IP_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_IP_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Knob_1.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Knob_1a.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Knob_2.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Knob_2_Inner.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Knob_2_Inner_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_M5_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_M5_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Mark_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Mark_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Menu_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Menu_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_N2_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_N2_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Orange_Tint_Translucent.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Panel_Base.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Panel_Lower.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Red_Tint_Translucent.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_S8_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_S8_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Shift_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Shift_Button_Pressed.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Toggle_1_Down.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Toggle_1_Mid.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_Toggle_1_Up.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_W4_Button.htpl" />
+    <None Include="Templates\Base\F-15E\Images\UFC_W4_Button_Pressed.htpl" />
+    <Content Include="Templates\Base\F-15E\P ADI Gauge %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P AoA Gauge %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Barometric Alimeter Gauge %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Cabin Pressure Gauge %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Caution Panel %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Clock %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Engine Monitor Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Fuel Monitor Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Hydraulic Pressure Gauge %28PC1%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Hydraulic Pressure Gauge %28PC2%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Hydraulic Pressure Gauge %28Utility%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P IAS Gauge %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P M1 Left MPD %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P M2 Center MPCD %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P M3 Right MPD %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Oxygen Pressure Gauge %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Pitch Ratio Gauge.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P UFC Panel %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P VVI Gauge %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W ADI Gauge %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W Barometric Alimeter Gauge %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W Cabin Pressure Gauge %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W Caution and Warning Panel %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W Clock %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W Fuel Gauge %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W IAS Gauge %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W M1 Left MPCD %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W M1 Left MPD %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W M3 Right MPD %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W M4 Right MPCD %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W Oxygen Pressure Gauge %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W UFC Panel %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W VVI Gauge %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Clock\hours_needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Common\alt_units_drum_tape_reversed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Common\hundreds_drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Common\hundreds_drum_tape_reversed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Common\units_drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Common\units_drum_tape_reversed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\EngineMonitor\Engine Panel Legends.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\EngineMonitor\Needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\EngineMonitor\Nozzle Gauge Marks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\EngineMonitor\Nozzle Gauge Numbers.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\EngineMonitor\Nozzle Gauge Ticks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Fuel Panel\BingoNeedle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Fuel Panel\Digit Displays\digit_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Fuel Panel\InternalDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Fuel Panel\InternalDialWSO.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Fuel Panel\Needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\ADI_Bezel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\ADI_Gradiant.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\ADI_Off_Flag.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\ADI_Pointer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\ADI_Tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\ADI_Wings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\AoADial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\BarometricAltimeterDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\CabinPressureDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\HydraulicPressureDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\HydraulicPressureNeedle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\IASDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\NeedleA.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\NeedleB.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\NeedleC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\NeedleD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\NeedleHours.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\NeedleMinutes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\NeedleSeconds.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\OxygenPressureDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\PitchRatioDial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="..\HeliosPlugin.targets" />
+</Project>

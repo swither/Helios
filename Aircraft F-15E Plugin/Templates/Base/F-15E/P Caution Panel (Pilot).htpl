@@ -1,0 +1,1 @@
+<ControlTemplate><Name>Caution Panel (Pilot)</Name><Category>F-15E Strike Eagle</Category><TypeIdentifier>Helios.F15E.CAUTIONS.PILOT</TypeIdentifier><Template><TemplateValues><Location>0,0</Location><Size>248,535</Size><Hidden>False</Hidden></TemplateValues></Template></ControlTemplate>

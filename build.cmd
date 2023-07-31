@@ -1,9 +1,9 @@
+@echo Run Start: %date% %time%
 @echo off
 if "%1" == "test" (
 	set HELIOS_BUILT_VERSION=1.6.1000.0
 ) else (
 	set HELIOS_BUILT_VERSION=%1
-
 	REM make sure clean working directory
 
 	REM step 1: untracked files
@@ -46,6 +46,7 @@ if "%1" == "test" (
 REM check for error exit from if scope
 if ERRORLEVEL 2 (
 	echo error %errorlevel%
+	echo Run End: %date% %time%
 	exit /b 1
 )
 
@@ -66,16 +67,19 @@ REM build with version stamps
 MSBuild.exe -binaryLogger:LogFile=prebuild.binlog -clp:WarningsOnly -warnAsMessage:MSB4078 -p:version=%HELIOS_BUILT_VERSION% -p:Configuration=Release;Platform=x64 BuildMeFirst.sln
 if %errorlevel% neq 0 (
 	echo build of "BuildMeFirst.sln" "Release|x64" failed.  Installers will not be built.
+	echo Run End: %date% %time%
 	exit /b 1
 )
 MSBuild.exe -binaryLogger:LogFile=build.binlog  -clp:WarningsOnly -warnAsMessage:MSB4078 -p:version=%HELIOS_BUILT_VERSION% -p:Configuration=NoInstallers;Platform=x64 Helios.sln
 if %errorlevel% neq 0 (
 	echo build of "NoInstallers|x64" failed.  Installers will not be built.
+	echo Run End: %date% %time%
 	exit /b 1
 )
 MSBuild.exe -binaryLogger:LogFile=build32.binlog  -clp:WarningsOnly -warnAsMessage:MSB4078 -p:version=%HELIOS_BUILT_VERSION% -p:Configuration=NoInstallers;Platform=AnyCPU32 Helios.sln
 if %errorlevel% neq 0 (
 	echo build of "NoInstallers|AnyCPU32" failed.  Installers will not be built.
+	echo Run End: %date% %time%
 	exit /b 1
 )
 
@@ -166,7 +170,7 @@ if %errorlevel% neq 0 (
 	goto Failed
 )
 popd
-
+echo Run End: %date% %time%
 exit /b 0
 
 :Failed
@@ -183,4 +187,5 @@ popd
 pushd "Tools Installer\Release"
 ren *.msi *.msi.failed
 popd
+echo Run End: %date% %time%
 exit /b 3

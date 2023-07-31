@@ -201,12 +201,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BC4BFB891CC947E7946A168A49FAA93F"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_C0E51412CD14E8D7A9197F8C537F7C6A"
         "OwnerKey" = "8:_0C23ED5842AB4CD4BE1266E39F55D6D2"
         "MsmSig" = "8:_UNDEFINED"
@@ -245,12 +239,6 @@
         {
         "MsmKey" = "8:_E3DD9AAA173B1F735239DC3564976BE7"
         "OwnerKey" = "8:_16C4EFC9C2D448338FCD5B44F54F3071"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E3DD9AAA173B1F735239DC3564976BE7"
-        "OwnerKey" = "8:_BC4BFB891CC947E7946A168A49FAA93F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -317,12 +305,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_16C4EFC9C2D448338FCD5B44F54F3071"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BC4BFB891CC947E7946A168A49FAA93F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2204,34 +2186,6 @@
                 "ExcludeFilter" = "8:Helios.ico"
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_55AA9A6D726D4EE3BB36C72E44DF8735"
-            {
-            "SourcePath" = "8:"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:Release|AnyCPU32"
-            "OutputGroupCanonicalName" = "8:ContentFiles"
-            "OutputProjectGuid" = "8:{E6886A7C-866A-499C-9933-3E87281B6CB1}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_60AF79F40A8140E9B89B3252BF8A567C"
             {
             "SourcePath" = "8:..\\Control Center\\obj\\AnyCPU32\\Release\\Control Center.exe"
@@ -2451,34 +2405,6 @@
             "OutputConfiguration" = "8:Release|AnyCPU32"
             "OutputGroupCanonicalName" = "8:ContentFiles"
             "OutputProjectGuid" = "8:{6297B32B-F34F-4610-9711-E7326907BA39}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_BC4BFB891CC947E7946A168A49FAA93F"
-            {
-            "SourcePath" = "8:..\\Aircraft F-15E\\obj\\AnyCPU32\\Release\\F-15E.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:Release|AnyCPU32"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{E6886A7C-866A-499C-9933-3E87281B6CB1}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
