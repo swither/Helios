@@ -56,17 +56,8 @@ else
    Execute database, "UPDATE CustomAction SET `Type` = 1025 WHERE `Type` = 3073"
 
    if session.Property("ProductName") = "Helios" then
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ''' REVISIT:  The following is only needed because of an unexplained change which resulted in the installers laying down an undesirable extra Patching.dll in 
-    '''           TARGETDIR.  It is unclear whether this is an Installer bug, or problem with the solution, but either way, the cause of the Patching.dll (due to it 
-    '''           being a dependency of the PatchingElevatedExecutable project) could not be determined after a lot of investigation.
-    '''           If these stop having the desired effect, then the File table need to be interrogated for the two rows with 
-    '''           FileName = "PATCHING.DLL|Patching.dll", then using the File field to look in Components table for the one in Directory_ = "TARGETDIR" 
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' This is to remove a problematic copy of Patching.dll which can end up in TARGETDIR and cause problems.  The two KeyPaths are for the 64bit and 32Bit Helios msi
-    Execute database, "DELETE FROM Component WHERE `Directory_` = 'TARGETDIR' AND (`KeyPath` = '_9A2BF8347DAE82ABBBA6AEC25620A58D' OR" & _ 
-																				  "`KeyPath` = '_D32347F2D21567CC508820C38EB0BFA6')" 
-   end if
+		RemoveProblemComponent database, "PATCHING.DLL|patching.dll"
+   End if
 
 
    ' special handling for development builds
@@ -74,7 +65,7 @@ else
    Set devBuild = New RegExp
    devBuild.Pattern = "[0-9]+\.[0-9]+\.1...\.[0-9]+"
    if devBuild.Test(version) then
-     Execute database, "DELETE FROM Shortcut WHERE `Directory_` = 'DesktopFolder'"
+     Execute database, "DELETE FROM Shortcut WHERE `Directory_` = 'DesktopFolder' " 
      Execute database, "UPDATE Shortcut SET `Name` = 'CONTRO~1|Dev Control Center Debug' WHERE `Name` = 'CONTRO~1|Control Center Debug'"
      Execute database, "UPDATE Shortcut SET `Name` = 'PROFIL~1|Dev Profile Editor Debug' WHERE `Name` = 'PROFIL~1|Profile Editor Debug'"
      Execute database, "UPDATE Shortcut SET `Name` = 'HELIOS~2|Dev Helios Profile Editor' WHERE `Name` = 'HELIOS~2|Helios Profile Editor'"
@@ -132,6 +123,27 @@ Sub Execute(database, sql)
    ' Dim record: Set record = view.Fetch
    ' view.Close
    ' view = nothing
+
+end Sub
+
+Sub RemoveProblemComponent(database, fileName)
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ''' REVISIT:  If the Windows Installer starts processing dependencies more reliably, then the following code to '''
+    '''           delete a unnecessary and problematic dependencies can probably be removed.                        '''
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' This is to remove a problematic copy of a dll which can end up in TARGETDIR and cause problems.
+	Dim sql: sql = "SELECT Component.KeyPath, Component.ComponentId, File.FileName FROM Component, File " & _
+										   "WHERE File.Component_ = Component.Component AND File.FileName = 'PATCHING.DLL|Patching.dll' AND " & _ 
+										   "Component.Directory_ = 'TARGETDIR'"
+	Dim componentView: Set componentView = database.OpenView(sql)
+	componentView.Execute  : CheckError sql
+	Dim Record: Set Record = componentView.Fetch() : CheckError sql
+    If Not Record Is Nothing then
+        Execute database, "DELETE FROM Component WHERE `KeyPath` = '" & Record.StringData(1) & "' " 
+    	Wscript.Echo "Delete Component: " & Record.StringData(2) & " for File " & Record.StringData(3)
+    Else
+    	Fail "Deletion of " & fileName & " Component Failed: No Component Found"
+    End If
 end Sub
 
 Sub CheckError(context)
