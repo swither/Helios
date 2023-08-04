@@ -290,7 +290,7 @@ end
 function helios.encodeIndication(indicator_id)
     -- for complex variables we perform simple encoding before sending
     local li = list_indication(indicator_id)
-    if li == "" then
+    if type(li) ~= "string" or li == "" then
         return nil
     end
     return li:gsub(('%-'):rep(41).."\n","%%0A%%0D"):gsub("\n","%%0A"):gsub(":","%%3A")
