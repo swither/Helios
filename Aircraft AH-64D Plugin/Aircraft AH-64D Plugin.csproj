@@ -119,6 +119,7 @@
     <Compile Include="Gauges\Power\PowerLever.cs" />
     <Compile Include="Gauges\SAI\SAI.cs" />
     <Compile Include="Gauges\TEDAC\TEDAC.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Altimeter\altimeter_faceplate.xaml">

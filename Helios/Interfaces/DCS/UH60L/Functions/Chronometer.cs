@@ -19,9 +19,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.UH60L.Functions
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
     using GadrocsWorkshop.Helios.Util;
-    using GadrocsWorkshop.Helios.Gauges.UH60L;
     using System;
     using System.Globalization;
+    public enum FLYER { Pilot, Copilot };
 
     public class Chronometer : DCSFunction
     {

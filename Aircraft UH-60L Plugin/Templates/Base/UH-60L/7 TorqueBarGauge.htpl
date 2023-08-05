@@ -1,0 +1,16 @@
+﻿<ControlTemplate>
+  <Name>Torque Bar Gauge</Name>
+  <Category>UH-60L Blackhawk</Category>
+  <TypeIdentifier>Helios.Gauges.BarGauge</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <Image>{UH-60L}/Images/SegmentBarDisplay30Torque.xaml</Image>
+      <Alignment>Centered</Alignment>
+      <CornerRadius>0</CornerRadius>
+      <SegmentCount>22</SegmentCount>
+      <Location>0,0</Location>
+      <Size>20,540</Size>
+      <Hidden>False</Hidden>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>
