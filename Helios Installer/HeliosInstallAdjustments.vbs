@@ -142,7 +142,7 @@ Sub RemoveProblemComponent(database, fileName)
         Execute database, "DELETE FROM Component WHERE `KeyPath` = '" & Record.StringData(1) & "' " 
     	Wscript.Echo "Delete Component: " & Record.StringData(2) & " for File " & Record.StringData(3)
     Else
-    	Fail "Deletion of " & fileName & " Component Failed: No Component Found"
+    	Wscript.Echo "Info: Deletion of installation component for " & fileName & " did not complete because the component was not found in the msi"
     End If
 end Sub
 
