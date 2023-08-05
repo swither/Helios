@@ -1,0 +1,14 @@
+<ControlTemplate>
+	<Name>TEDAC</Name>
+	<Category>AH-64D Apache</Category>
+	<TypeIdentifier>Helios.AH64D.TEDAC</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>544,540</Size>
+			<Hidden>False</Hidden>
+			<EmbeddedViewportName>AH_64D_TEDAC</EmbeddedViewportName>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

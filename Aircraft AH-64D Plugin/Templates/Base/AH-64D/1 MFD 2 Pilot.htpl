@@ -1,0 +1,14 @@
+<ControlTemplate>
+	<Name>MFD Right (Pilot)</Name>
+	<Category>AH-64D Apache</Category>
+	<TypeIdentifier>Helios.AH64D.MFD.PLTRIGHT</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>367,345</Size>
+			<Hidden>False</Hidden>
+			<EmbeddedViewportName>AH_64D_RIGHT_MFCD_PLT</EmbeddedViewportName>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

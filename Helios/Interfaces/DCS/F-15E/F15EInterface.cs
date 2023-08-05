@@ -23,7 +23,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
     using GadrocsWorkshop.Helios.UDPInterface;
     using GadrocsWorkshop.Helios.Interfaces.DCS.F15E.Functions;
     using static GadrocsWorkshop.Helios.Interfaces.DCS.F15E.Commands;
-    using GadrocsWorkshop.Helios.Gauges.AH64D.KU.PILOT;
     using System.Windows.Forms;
 
     public enum Cockpit { Pilot, WSO }

@@ -1,0 +1,13 @@
+<ControlTemplate>
+	<Name>Altimeter</Name>
+	<Category>AH-64D Apache</Category>
+	<TypeIdentifier>Helios.AH64D.Altimeter</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>364,376</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

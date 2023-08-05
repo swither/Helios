@@ -199,25 +199,6 @@
     <Compile Include="Gauges\A-10\HARS\HARS.cs" />
     <Compile Include="Gauges\A-10\HARS\HARSSync_1.cs" />
     <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
-    <Compile Include="Gauges\AH-64D\CMWS\CMWSDisplay.cs" />
-    <Compile Include="Gauges\AH-64D\CMWS\CMWSThreatDisplay.cs" />
-    <Compile Include="Gauges\AH-64D\EUFD\EUFD CPG.cs" />
-    <Compile Include="Gauges\AH-64D\EUFD\EUFD Pilot.cs" />
-    <Compile Include="Gauges\AH-64D\EUFD\EUFD.cs" />
-    <Compile Include="Gauges\AH-64D\KU\KU CPG.cs" />
-    <Compile Include="Gauges\AH-64D\KU\KU Pilot.cs" />
-    <Compile Include="Gauges\AH-64D\KU\KU.cs" />
-    <Compile Include="Gauges\AH-64D\MFD\MFD CPG Left.cs" />
-    <Compile Include="Gauges\AH-64D\MFD\MFD Pilot Left.cs" />
-    <Compile Include="Gauges\AH-64D\MFD\MFD CPG Right.cs" />
-    <Compile Include="Gauges\AH-64D\MFD\MFD Pilot Right.cs" />
-    <Compile Include="Gauges\AH-64D\MFD\MFD.cs" />
-    <Compile Include="Gauges\AH-64D\Power\PowerLever.cs" />
-    <Compile Include="Gauges\AH-64D\SAI\SAI.cs" />
-    <Compile Include="Gauges\AH-64D\Altimeter\Altimeter.cs" />
-    <Compile Include="Gauges\AH-64D\FAT\FAT.cs" />
-    <Compile Include="Gauges\AH-64D\IAS\IAS.cs" />
-    <Compile Include="Gauges\AH-64D\TEDAC\TEDAC.cs" />
     <Compile Include="Gauges\AV-8B\ADI\SAI.cs" />
     <Compile Include="Gauges\AV-8B\Clock\Clock Face.cs" />
     <Compile Include="Gauges\AV-8B\Clock\Clock.cs" />
@@ -612,94 +593,6 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Gauges\AV-8B\Clock\hours_needle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\Altimeter\altimeter_faceplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_background.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_bottomleft.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_bottomright.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_d.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_front.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_left.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_r.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_rear.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_right.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_threat_background.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_topleft.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\CMWS\cmws_topright.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\FAT\fat_faceplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\IAS\ias_faceplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\SAI\adi_arrow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\SAI\adi_guides.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\SAI\adi_inner_ring.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\SAI\adi_innermost_ring.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\SAI\adi_outer_ring.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\SAI\adi_turn_marker.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Images\AH-64D\SAI\adi_wings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -1455,38 +1348,6 @@
     <Resource Include="Images\General\calibration.png" />
     <Resource Include="Images\General\memory_wire.png" />
     <Resource Include="Images\Buttons\backlit.png" />
-    <Resource Include="Images\AH-64D\CMWS\cmws_frame.png" />
-    <Resource Include="Images\AH-64D\CMWS\CMWS_Jettison_Guard_Down.png" />
-    <Resource Include="Images\AH-64D\CMWS\CMWS_Jettison_One_Up.png" />
-    <Resource Include="Images\AH-64D\CMWS\CMWS_Jettison_Two_Up.png" />
-    <Resource Include="Images\AH-64D\Common\Common Knob.png" />
-    <Resource Include="Images\AH-64D\Common\Selector_Knob.png" />
-    <Resource Include="Images\AH-64D\EUFD\EUFD Enter Button DnH.png" />
-    <Resource Include="Images\AH-64D\EUFD\EUFD Enter Button UpH.png" />
-    <Resource Include="Images\AH-64D\EUFD\EUFD Preset Button DnH.png" />
-    <Resource Include="Images\AH-64D\EUFD\EUFD Preset Button UpH.png" />
-    <Resource Include="Images\AH-64D\EUFD\EUFD Stopwatch Button DnH.png" />
-    <Resource Include="Images\AH-64D\EUFD\EUFD Stopwatch Button UpH.png" />
-    <Resource Include="Images\AH-64D\EUFD\EUFD Swap Button DnH.png" />
-    <Resource Include="Images\AH-64D\EUFD\EUFD Swap Button UpH.png" />
-    <Resource Include="Images\AH-64D\EUFD\EUFD.png" />
-    <Resource Include="Images\AH-64D\KU\KU_Frame.png" />
-    <Resource Include="Images\AH-64D\KU\tactile-dark-square-emphasised-in.png" />
-    <Resource Include="Images\AH-64D\KU\tactile-dark-square-emphasised.png" />
-    <Resource Include="Images\AH-64D\MFD\MFD Button 1 DnH.png" />
-    <Resource Include="Images\AH-64D\MFD\MFD Button 1 UpH.png" />
-    <Resource Include="Images\AH-64D\MFD\MFD Button 2 DnH.png" />
-    <Resource Include="Images\AH-64D\MFD\MFD Button 2 UpH.png" />
-    <Resource Include="Images\AH-64D\MFD\MFD_Frame.png" />
-    <Resource Include="Images\AH-64D\MFD\MFD_glass.png" />
-    <Resource Include="Images\AH-64D\SAI\adi_bezel.png" />
-    <Resource Include="Images\AH-64D\TEDAC\TEDAC_frame.png" />
-    <Resource Include="Images\AH-64D\Power\Lever_0.png" />
-    <Resource Include="Images\AH-64D\Power\Lever_1.png" />
-    <Resource Include="Images\AH-64D\Power\Lever_2.png" />
-    <Resource Include="Images\AH-64D\Power\Lever_3.png" />
-    <Resource Include="Images\AH-64D\Power\Lever_4.png" />
-    <Resource Include="Images\AH-64D\Power\Lever_5.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3980,6 +3841,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Gauges\FA-18C\Controls\" />
+    <Folder Include="Images\AH-64D\" />
     <Folder Include="Interfaces\DCS\F14B\Functions\" />
     <Folder Include="Interfaces\DCS\Mi8Simple\Functions\" />
     <Folder Include="Interfaces\DCS\MiG21\Functions\" />
