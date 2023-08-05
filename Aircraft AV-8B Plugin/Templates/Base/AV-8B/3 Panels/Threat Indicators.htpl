@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Threat Indicator Panel</Name>
+	<Category>AV-8B Harrier</Category>
+	<TypeIdentifier>Helios.AV8B.ThreatIndicatorPanel</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>251,361</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

@@ -75,6 +75,7 @@
     <Compile Include="Gauges\RadAltPilot.cs" />
     <Compile Include="Gauges\StabilatorInstrument.cs" />
     <Compile Include="Gauges\StabilatorPositionIndicator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\CenterDisplayUnitBackground.xaml">

@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>SMC</Name>
+	<Category>AV-8B Harrier</Category>
+	<TypeIdentifier>Helios.AV8B.SMC1</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,6</Location>
+			<Size>785,300</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

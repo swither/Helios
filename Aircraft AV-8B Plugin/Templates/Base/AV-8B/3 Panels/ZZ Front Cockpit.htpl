@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Front Cockpit</Name>
+	<Category>AV-8B Harrier</Category>
+	<TypeIdentifier>Helios.AV8B.Cockpit</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>1920,1080</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>
