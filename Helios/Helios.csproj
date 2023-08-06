@@ -200,21 +200,6 @@
     <Compile Include="Gauges\A-10\HARS\HARSSync_1.cs" />
     <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
     <Compile Include="Gauges\CompositeVisualWithBackgroundImage.cs" />
-    <Compile Include="Gauges\M2000C\Altimeter\Altimeter.cs" />
-    <Compile Include="Gauges\M2000C\LGPanel\LandingGear_Panel_V2.cs" />
-    <Compile Include="Gauges\M2000C\Miscellaneous\RADAR_IFF_Mode_Panel.cs" />
-    <Compile Include="Gauges\M2000C\Miscellaneous\Low_Altitude_Height.cs" />
-    <Compile Include="Gauges\M2000C\Miscellaneous\IFF_Mode_Settings.cs" />
-    <Compile Include="Gauges\M2000C\Miscellaneous\Fuel_Burn_Bingo.cs" />
-    <Compile Include="Gauges\M2000C\Radios\UHF_Radio.cs" />
-    <Compile Include="Gauges\M2000C\Radios\VHF_Radio.cs" />
-    <Compile Include="Gauges\M2000C\Radios\Radio_Repeater.cs" />
-    <Compile Include="Gauges\M2000C\PCNPanel\PCNPanelGauge.cs" />
-    <Compile Include="Gauges\M2000C\TACANPanel\TACANDrumGauge.cs" />
-    <Compile Include="Gauges\M2000C\Common\Mk2CDrumGauge.cs" />
-    <Compile Include="Gauges\M2000C\TACANPanel\TACANChannelDrum.cs" />
-    <Compile Include="Gauges\M2000C\TACANPanel\TACANDrumGaugeCounter.cs" />
-    <Compile Include="Gauges\M2000C\VTBPanel\VTB_Panel.cs" />
     <Compile Include="Gauges\BarGauge.cs" />
     <Compile Include="GlobalOptions.cs" />
     <Compile Include="HeliosCapabilityEditorDescriptor.cs" />
@@ -513,14 +498,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Resource>
-    <Resource Include="Gauges\M2000C\TACANPanel\drum_tape_twelve.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\TACANPanel\drum_tape.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
     <Resource Include="Images\Custom\SegmentBarDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -554,22 +531,6 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Images\M-2000C\UHF Radio\Channel_Drum_Tape.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\Altimeter\alt_drum_tape.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\Altimeter\altimeter_backplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\Altimeter\altimeter_faceplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\Altimeter\altimeter_needle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -708,22 +669,6 @@
     <Compile Include="Controls\ImageTranslucentRenderer.cs" />
     <Compile Include="Controls\Special\ViewportExtent.cs" />
     <Compile Include="Gauges\F-16\HydraulicPressure\HydraulicPressure.cs" />
-    <Compile Include="Gauges\M2000C\Common\Mk2CNeedle.cs" />
-    <Compile Include="Gauges\M2000C\ECMBox\ECM_Box.cs" />
-    <Compile Include="Gauges\M2000C\TestPanel\Test_Panel.cs" />
-    <Compile Include="Gauges\M2000C\Miscellaneous\AOA_Panel.cs" />
-    <Compile Include="Gauges\M2000C\HSIPanel\HSI_Panel.cs" />
-    <Compile Include="Gauges\M2000C\EngineSensorsPanel\EngineSensors_Panel.cs" />
-    <Compile Include="Gauges\M2000C\INSPanel\INS_Panel.cs" />
-    <Compile Include="Gauges\M2000C\PCNPanel\PCN_Panel.cs" />
-    <Compile Include="Gauges\M2000C\PCAPanel\PCA_Panel.cs" />
-    <Compile Include="Gauges\M2000C\PPAPanel\PPA_Panel.cs" />
-    <Compile Include="Gauges\M2000C\FuelPanel\Fuel_Panel.cs" />
-    <Compile Include="Gauges\M2000C\Miscellaneous\Demar_Panel.cs" />
-    <Compile Include="Gauges\M2000C\Miscellaneous\RWR_Panel.cs" />
-    <Compile Include="Gauges\M2000C\Miscellaneous\FireWarning_Panel.cs" />
-    <Compile Include="Gauges\M2000C\Miscellaneous\PCI_Panel.cs" />
-    <Compile Include="Gauges\M2000C\VorIlsChannel\VorIls_Panel.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSExportConfiguration.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSExportProtocol.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInterfaceEditor.xaml.cs">
@@ -744,7 +689,6 @@
     <Compile Include="ComponentModel\IPropertyNotification.cs" />
     <Compile Include="ComponentModel\PropertyNotificationEventArgs.cs" />
     <Compile Include="CompositeVisual.cs" />
-    <Compile Include="Gauges\M2000C\M2000CDevice\M2000CCompositeVisual.cs" />
     <Compile Include="ConfigManager.cs" />
     <Compile Include="Controls\ClickType.cs" />
     <Compile Include="Controls\CustomGauge.cs" />
@@ -756,9 +700,6 @@
     </Compile>
     <Compile Include="Controls\CustomGaugeRenderer.cs" />
     <Compile Include="Controls\CustomNeedle.cs" />
-    <Compile Include="Gauges\M2000C\LGPanel\LG_Panel.cs" />
-    <Compile Include="Gauges\M2000C\EnginePanel\Engine_Start_Panel.cs" />
-    <Compile Include="Gauges\M2000C\CautionPanel\Caution_Panel.cs" />
     <Compile Include="Controls\GuardedThreeWayAppearancePropertyEditor.xaml.cs">
       <DependentUpon>GuardedThreeWayAppearancePropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -1140,9 +1081,6 @@
     <Compile Include="Gauges\KA-50\RotorRPM\RotorRPM.cs" />
     <Compile Include="Gauges\KA-50\Tachometer\Tachometer.cs" />
     <Compile Include="Gauges\KA-50\VVI\VVI.cs" />
-    <Compile Include="Gauges\M2000C\M2000CDevice\M2000CDevice.cs" />
-    <Compile Include="Gauges\M2000C\MCLPanel\MCL_Panel.cs" />
-    <Compile Include="Gauges\M2000C\TACANPanel\Tacan_Panel.cs" />
     <Compile Include="Gauges\Mi-8\ADI\ADI.cs" />
     <Compile Include="Gauges\MiG-21\BatteryCapacity\BatteryCapacity.cs" />
     <Compile Include="Gauges\MiG-21\RadioChannelDisplay\RadioChannelDisplay.cs" />
@@ -1794,14 +1732,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Docs\Licenses\VCRedist\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf" />
-    <Resource Include="Gauges\M2000C\Common\needleA.xaml">
-      <SubType>Designer</SubType>
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
-    </Resource>
-    <Resource Include="Gauges\M2000C\TACANPanel\tacan_channel_x_mode.xaml">
-      <SubType>Designer</SubType>
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
-    </Resource>
     <Resource Include="Images\Toggles\guard-up-empty.png" />
     <Resource Include="Images\Buttons\green-push-in.png">
     </Resource>
@@ -3137,26 +3067,6 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Gauges\F-16\HydraulicPressure\hydraulic_needle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\Common\drum_tape.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\TACANPanel\tacan_channel_y_mode.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\Common\needleB.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\HSIPanel\compass.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\M2000C\Common\drum_tape_with_point.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>

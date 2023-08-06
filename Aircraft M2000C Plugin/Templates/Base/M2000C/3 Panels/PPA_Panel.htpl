@@ -1,0 +1,10 @@
+﻿<ControlTemplate>
+  <Name>PPA Panel</Name>
+  <Category>M-2000C</Category>
+  <TypeIdentifier>HELIOS.M2000C.PPA_PANEL</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <UseTextualDisplays>True</UseTextualDisplays>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

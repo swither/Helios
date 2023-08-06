@@ -1,0 +1,10 @@
+﻿<ControlTemplate>
+  <Name>Landing Gear Panel V2</Name>
+  <Category>M-2000C</Category>
+  <TypeIdentifier>HELIOS.M2000C.LANDING_GEAR_PANEL_V2</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+	    <ImageAssetLocation>{M2000C}/Images/</ImageAssetLocation>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

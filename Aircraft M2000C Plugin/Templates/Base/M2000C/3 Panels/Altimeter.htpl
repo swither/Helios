@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+  <Name>Altimeter</Name>
+  <Category>M-2000C</Category>
+  <TypeIdentifier>Helios.M-2000C.Altimeter</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+	      <Location>0,0</Location>
+          <Size>364,376</Size>
+          <Hidden>False</Hidden>
+          <Children />
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

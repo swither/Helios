@@ -1,0 +1,10 @@
+﻿<ControlTemplate>
+  <Name>PCN Panel</Name>
+  <Category>M-2000C</Category>
+  <TypeIdentifier>HELIOS.M2000C.PCN_PANEL</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <UseTextualDisplays>True</UseTextualDisplays>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>
