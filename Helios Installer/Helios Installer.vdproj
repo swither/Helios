@@ -22,6 +22,12 @@
         "Entry"
         {
         "MsmKey" = "8:_03E214787EC8939876EB2233653D5FE3"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_03E214787EC8939876EB2233653D5FE3"
         "OwnerKey" = "8:_E0FF4167BA4D49E5B15CA4188CEBFF79"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -148,6 +154,12 @@
         "Entry"
         {
         "MsmKey" = "8:_2CDD1DAE045F6800A5095687F674CA3E"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2CDD1DAE045F6800A5095687F674CA3E"
         "OwnerKey" = "8:_E0FF4167BA4D49E5B15CA4188CEBFF79"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -237,8 +249,20 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4C588C0A2BEED1CDB50C33A25AB72F7A"
         "OwnerKey" = "8:_F651FB8FB02FB9FF724F4061788B76D9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4C588C0A2BEED1CDB50C33A25AB72F7A"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -334,6 +358,12 @@
         "Entry"
         {
         "MsmKey" = "8:_6FEDD718B53B41EAD6624FCB3F2BB6A7"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6FEDD718B53B41EAD6624FCB3F2BB6A7"
         "OwnerKey" = "8:_E0FF4167BA4D49E5B15CA4188CEBFF79"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -418,6 +448,12 @@
         "Entry"
         {
         "MsmKey" = "8:_7BEEA8C4EC0A79D2A5A56399716A85E8"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7BEEA8C4EC0A79D2A5A56399716A85E8"
         "OwnerKey" = "8:_E0FF4167BA4D49E5B15CA4188CEBFF79"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -490,6 +526,12 @@
         "Entry"
         {
         "MsmKey" = "8:_7F88093067132B3722CC3E062298040D"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7F88093067132B3722CC3E062298040D"
         "OwnerKey" = "8:_E0FF4167BA4D49E5B15CA4188CEBFF79"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -557,6 +599,12 @@
         {
         "MsmKey" = "8:_828A7665164ECC1C465FCAE6B5B833F1"
         "OwnerKey" = "8:_F651FB8FB02FB9FF724F4061788B76D9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_828A7665164ECC1C465FCAE6B5B833F1"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -629,6 +677,12 @@
         {
         "MsmKey" = "8:_839A26CBF56C05C637A3AE2A70171111"
         "OwnerKey" = "8:_F651FB8FB02FB9FF724F4061788B76D9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_839A26CBF56C05C637A3AE2A70171111"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -754,6 +808,12 @@
         "Entry"
         {
         "MsmKey" = "8:_BA0F7B63DE950467F8BDB11F4CD918DB"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BA0F7B63DE950467F8BDB11F4CD918DB"
         "OwnerKey" = "8:_E0FF4167BA4D49E5B15CA4188CEBFF79"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -833,6 +893,12 @@
         {
         "MsmKey" = "8:_C0E51412CD14E8D7A9197F8C537F7C6A"
         "OwnerKey" = "8:_0B9949BD1FBD42C2B99DE69AFF3555FA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C0E51412CD14E8D7A9197F8C537F7C6A"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -922,6 +988,12 @@
         "Entry"
         {
         "MsmKey" = "8:_C72458F877DED71CEC6C288133A3D1D6"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C72458F877DED71CEC6C288133A3D1D6"
         "OwnerKey" = "8:_E0FF4167BA4D49E5B15CA4188CEBFF79"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -989,6 +1061,12 @@
         {
         "MsmKey" = "8:_CA211AD9F116272D3F375F5B7CDF1FBA"
         "OwnerKey" = "8:_F651FB8FB02FB9FF724F4061788B76D9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CA211AD9F116272D3F375F5B7CDF1FBA"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1072,6 +1150,12 @@
         "Entry"
         {
         "MsmKey" = "8:_E3DD9AAA173B1F735239DC3564976BE7"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E3DD9AAA173B1F735239DC3564976BE7"
         "OwnerKey" = "8:_C330DAE31FCF49E7A6C5A86A7DEB6D1C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1109,6 +1193,12 @@
         {
         "MsmKey" = "8:_F651FB8FB02FB9FF724F4061788B76D9"
         "OwnerKey" = "8:_0B9949BD1FBD42C2B99DE69AFF3555FA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F651FB8FB02FB9FF724F4061788B76D9"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1181,6 +1271,12 @@
         {
         "MsmKey" = "8:_F9DBFA422798C758824BC32F159B2DA7"
         "OwnerKey" = "8:_CA211AD9F116272D3F375F5B7CDF1FBA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F9DBFA422798C758824BC32F159B2DA7"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1259,6 +1355,18 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_E0FF4167BA4D49E5B15CA4188CEBFF79"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_457AEA5F641B41E69F19035F8BF197C7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_BC61BB86462143B9A1B09C9FCB2E25DE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -3406,7 +3514,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0B9949BD1FBD42C2B99DE69AFF3555FA"
             {
-            "SourcePath" = "8:..\\Phidgets\\obj\\x64\\Release\\Phidgets.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -3434,7 +3542,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0C23ED5842AB4CD4BE1266E39F55D6D2"
             {
-            "SourcePath" = "8:..\\Profile Editor\\obj\\x64\\Release\\Profile Editor.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -3462,7 +3570,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1B06DA75DF9B4E33AB08D04DD91B3EE7"
             {
-            "SourcePath" = "8:..\\Aircraft A-10C\\obj\\x64\\Release\\A-10C.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -3490,7 +3598,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2B89253BC1AF447DAA01E1ABD199A71D"
             {
-            "SourcePath" = "8:..\\HeliosProcessControl\\obj\\x64\\Release\\HeliosProcessControl.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3518,7 +3626,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_34CE56C47EAA4658BA9161C3BA04446E"
             {
-            "SourcePath" = "8:..\\Aircraft UH-60L Plugin\\obj\\x64\\Debug\\UH-60L.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3573,6 +3681,34 @@
                 "ExcludeFilter" = "8:Helios.ico"
                 }
             }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_457AEA5F641B41E69F19035F8BF197C7"
+            {
+            "SourcePath" = "8:..\\Aircraft M2000C Plugin\\obj\\x64\\Release\\M2000C.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|x64"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{68108832-33B8-11EE-BE56-0242AC120002}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4EA7E2E3C8AD4437BE0AD0297EFAC16B"
             {
             "SourcePath" = "8:"
@@ -3603,7 +3739,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_513E82B451144ADFA83D6878B03BAB4E"
             {
-            "SourcePath" = "8:..\\Aircraft AV-8B Plugin\\obj\\x64\\Release\\AV-8B.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3659,7 +3795,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_73AF37C5FAA940A48538C8255308A884"
             {
-            "SourcePath" = "8:..\\Patching\\obj\\x64\\Debug\\Patching.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3685,9 +3821,65 @@
                 {
                 }
             }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_80523352DE4F40EBBD60808C5CF6E5E0"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|x64"
+            "OutputGroupCanonicalName" = "8:ContentFiles"
+            "OutputProjectGuid" = "8:{68108832-33B8-11EE-BE56-0242AC120002}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8DB76FC302554A43BF8E340810600061"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|x64"
+            "OutputGroupCanonicalName" = "8:ContentFiles"
+            "OutputProjectGuid" = "8:{EE4A369C-33B7-11EE-BE56-0242AC120002}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_92196EE322CB4DFF8C9674818AA7960F"
             {
-            "SourcePath" = "8:..\\HeliosFalcon\\obj\\x64\\Release\\HeliosFalcon.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3827,7 +4019,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AFE2354298AE43018A5B698A7B85F86E"
             {
-            "SourcePath" = "8:..\\HeliosInstallerSupport\\obj\\x64\\Release\\HeliosInstallerSupport.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -3881,9 +4073,37 @@
                 {
                 }
             }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_BC61BB86462143B9A1B09C9FCB2E25DE"
+            {
+            "SourcePath" = "8:..\\Aircraft FA-18C Plugin\\obj\\x64\\Debug\\FA-18C.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|x64"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{EE4A369C-33B7-11EE-BE56-0242AC120002}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C330DAE31FCF49E7A6C5A86A7DEB6D1C"
             {
-            "SourcePath" = "8:..\\PatchingElevatedExecutable\\obj\\x64\\Debug\\HeliosPatching.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -3939,7 +4159,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DDB7FFB3D32A47C3AF3AA9607118430D"
             {
-            "SourcePath" = "8:..\\Aircraft F-15E Plugin\\obj\\x64\\Release\\F-15E.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3967,7 +4187,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E0FF4167BA4D49E5B15CA4188CEBFF79"
             {
-            "SourcePath" = "8:..\\Aircraft AH-64D Plugin\\obj\\x64\\Debug\\AH-64D.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
