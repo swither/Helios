@@ -495,6 +495,10 @@
     <Resource Include="Images\A-10CII\ARC-210_WideButton_Down.png" />
     <Resource Include="Images\A-10CII\ARC-210_WideButton_Up.png" />
     <Resource Include="Images\A-10C\Pilot_Reflection_25a.png" />
+    <Resource Include="Images\A-10CII\crystal_small.png" />
+    <Resource Include="Images\A-10CII\Panel_Blank_TISL.png" />
+    <Resource Include="Images\A-10CII\panel_Compass.png" />
+    <Resource Include="Images\A-10CII\Panel_HMCS.png" />
     <Content Include="Templates\Base\A-10C\8 Components\Keys\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

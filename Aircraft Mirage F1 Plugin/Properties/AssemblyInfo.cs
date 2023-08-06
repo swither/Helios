@@ -3,13 +3,13 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: HeliosModule("Helios F-15E Strike Eagle Support for DCS", "F-15E")]
+[assembly: HeliosModule("Helios H-60 Blackhawk Community Support for DCS", "H-60")]
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Helios F-15E Plugin")]
-[assembly: AssemblyDescription("Resources for Helios relating to Razbam F-15E Module for DCS World")]
+[assembly: AssemblyTitle("Helios H-60 Plugin")]
+[assembly: AssemblyDescription("Resources for Helios relating to the Community Mod H-60 Modules for DCS World")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("github.com/HeliosVirtualCockpit")]
 [assembly: AssemblyProduct("Helios")]
@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1158A156-4632-4988-879E-5AEBA4C7460B")]
+[assembly: Guid("1FDD9347-61D8-4C40-9457-E9AE63EFDCAA")]
 
 // Version information for an assembly consists of the following four values:
 //

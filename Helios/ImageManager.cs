@@ -43,6 +43,15 @@ namespace GadrocsWorkshop.Helios
 
         private readonly XamlFirewall _xamlFirewall;
 
+        private static readonly Dictionary<string, string> _movedToPlugin = new Dictionary<string, string>
+        {
+            // adjust image locations for images changed to be a plugin - typically referenced in CZ profiles
+            {"{Helios}/Gauges/KA-50/", "{Ka-50}/Gauges/"},
+            {"{Helios}/Images/KA-50/", "{Ka-50}/Images/"},
+            {"{Helios}/Gauges/MI-8/", "{Mi-8}/Gauges/"},
+            {"{Helios}/Images/MI-8/", "{Mi-8}/Images/"},
+        };
+
         /// <summary>
         /// backing field for property CacheObjects, contains
         /// true if object caching is enabled
@@ -395,6 +404,7 @@ namespace GadrocsWorkshop.Helios
             {
                 if (fileName.StartsWith("{"))
                 {
+                    fileName = RedirectMovementToPlugin(fileName);
                     int closingIndex = fileName.IndexOf('}');
                     if (closingIndex > -1)
                     {
@@ -426,6 +436,20 @@ namespace GadrocsWorkshop.Helios
             }
 
             return "";
+        }
+
+        private string RedirectMovementToPlugin(string fileName)
+        {
+            foreach(string src in _movedToPlugin.Keys)
+            {
+                if (fileName.StartsWith(src))
+                {
+                    string redirectedFileName = fileName.Replace(src, _movedToPlugin[src]);
+                    Logger.Info($"Load for Image {fileName} is being redirected to {redirectedFileName}");
+                    return redirectedFileName;
+                }
+            }
+            return fileName;
         }
 
         public static bool CanOpenPackUri(Uri uri)

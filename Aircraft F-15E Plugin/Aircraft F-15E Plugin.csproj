@@ -108,6 +108,11 @@
     <Compile Include="Gauges\UFC\UFC WSO.cs" />
     <Compile Include="Gauges\UFC\UFC.cs" />
     <Compile Include="Gauges\UFC\UFCTextDisplay.cs" />
+    <Compile Include="Interfaces\Commands.cs" />
+    <Compile Include="Interfaces\Devices.cs" />
+    <Compile Include="Interfaces\F15EInterface.cs" />
+    <Compile Include="Interfaces\Functions\Altimeter.cs" />
+    <Compile Include="Interfaces\Functions\DigitsDispaly.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -374,6 +379,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
+    <Resource Include="Interfaces\ExportFunctionsF15E.lua" />
     <None Include="Templates\Base\F-15E\Images\ADI_Bezel.htpl" />
     <None Include="Templates\Base\F-15E\Images\ADI_Knob.htpl" />
     <None Include="Templates\Base\F-15E\Images\ADI_Knob_Center_Norm.htpl" />

@@ -209,43 +209,15 @@
     <Compile Include="IModuleManagerWritable.cs" />
     <Compile Include="Interfaces\Common\ViewportCompilerInterface.cs" />
     <Compile Include="Interfaces\DCS\A10C\Functions\ARC210Display.cs" />
-    <Compile Include="Interfaces\DCS\F-15E\Commands.cs" />
-    <Compile Include="Interfaces\DCS\F-15E\Devices.cs" />
-    <Compile Include="Interfaces\DCS\F-15E\F15EInterface.cs" />
-    <Compile Include="Interfaces\DCS\F-15E\Functions\Altimeter.cs" />
-    <Compile Include="Interfaces\DCS\F-15E\Functions\DigitsDispaly.cs" />
-    <Compile Include="Interfaces\DCS\H-60\Functions\Altimeter.cs" />
-    <Compile Include="Interfaces\DCS\H-60\Functions\Chronometer.cs" />
-    <Compile Include="Interfaces\DCS\H-60\Functions\H60Function.cs" />
-    <Compile Include="Interfaces\DCS\H-60\Functions\RADARAltimeter.cs" />
-    <Compile Include="Interfaces\DCS\H-60\Functions\RADARAltimeterDeprecated.cs" />
-    <Compile Include="Interfaces\DCS\H-60\Functions\SegmentedMeter.cs" />
-    <Compile Include="Interfaces\DCS\MirageF1\MirageF1CEInterface.cs" />
-    <Compile Include="Interfaces\DCS\MirageF1\MirageF1EEInterface.cs" />
-    <Compile Include="Interfaces\DCS\MirageF1\Devices.cs" />
-    <Compile Include="Interfaces\DCS\MirageF1\MirageF1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C1Interface.cs" />
     <Compile Include="Interfaces\DCS\A10C\A10C2Interface.cs" />
     <Compile Include="Interfaces\Common\Ignored.cs" />
-    <Compile Include="Interfaces\DCS\AH64D\Functions\Altimeter.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\Ka-50_2Interface.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\Ka-50_3Interface.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInterfaceEditorBase.cs" />
-    <Compile Include="Interfaces\DCS\M2000C\Functions\Altimeter.cs" />
-    <Compile Include="Interfaces\DCS\MirageF1\Tools\InterfaceCreation.cs" />
     <Compile Include="Interfaces\DCS\Soft\SoftInterfaceEditor.xaml.cs">
       <DependentUpon>SoftInterfaceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\DCS\Soft\SoftInterface.cs" />
     <Compile Include="Interfaces\DCS\Soft\SoftInterfaceFactory.cs" />
-    <Compile Include="Interfaces\DCS\AH64D\Functions\AH-64DFunction.cs" />
-    <Compile Include="Interfaces\DCS\AH64D\AH-64DInterface.cs" />
-    <Compile Include="Interfaces\DCS\UH60L\Functions\RADARAltimeter.cs" />
-    <Compile Include="Interfaces\DCS\UH60L\Functions\Chronometer.cs" />
-    <Compile Include="Interfaces\DCS\UH60L\Functions\SegmentedMeter.cs" />
-    <Compile Include="Interfaces\DCS\UH60L\Functions\Altimeter.cs" />
-    <Compile Include="Interfaces\DCS\UH60L\Functions\UH60LFunction.cs" />
-    <Compile Include="Interfaces\DCS\UH60L\UH60LInterface.cs" />
     <Compile Include="Interfaces\DCS\Template\Functions\ExampleFunction.cs" />
     <Compile Include="Interfaces\DCS\Template\TemplateInterface.cs" />
     <Compile Include="Interfaces\DirectX\Functions\IHotasFunctions.cs" />
@@ -998,13 +970,6 @@
     <None Include="Fonts\MonospacedLEDCounter7.ttf" />
     <None Include="Images\A-10\readme.md" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
-    <Resource Include="Interfaces\DCS\AH64D\ExportFunctions.lua" />
-    <Resource Include="Interfaces\DCS\UH60L\ExportFunctions.lua" />
-    <Resource Include="Interfaces\DCS\BlackShark\ExportFunctionsKa-50_3.lua" />
-    <Resource Include="Interfaces\DCS\BlackShark\ExportFunctionsKa-50_2.lua" />
-    <Resource Include="Interfaces\DCS\MirageF1\ExportFunctionsMirageF1EE.lua" />
-    <Resource Include="Interfaces\DCS\MirageF1\ExportFunctionsMirageF1CE.lua" />
-    <Resource Include="Interfaces\DCS\F-15E\ExportFunctionsF15E.lua" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\hud.png" />
@@ -1110,27 +1075,11 @@
     <Compile Include="Interfaces\DCS\A10C\Functions\VHFRadioEncoder1.cs" />
     <Compile Include="Interfaces\DCS\A10C\Functions\VHFRadioEncoder3.cs" />
     <Compile Include="Interfaces\DCS\A10C\Functions\VHFRadioEncoder4.cs" />
-    <Compile Include="Interfaces\DCS\AV8B\Functions\SMCFuzeDisplay.cs" />
     <Compile Include="Interfaces\DCS\Common\DualNetworkValue.cs" />
     <Compile Include="Interfaces\DCS\Common\DualRocker.cs" />
     <Compile Include="StatusReportItem.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSInterface.cs" />
     <Compile Include="Interfaces\DCS\F14B\F14BInterface.cs" />
-    <Compile Include="Interfaces\DCS\FA18C\FA18CInterface.cs" />
-    <Compile Include="Interfaces\DCS\AV8B\AV8BInterface.cs" />
-    <Compile Include="Interfaces\DCS\AV8B\Functions\Altimeter.cs" />
-    <Compile Include="Interfaces\DCS\AV8B\Functions\Digits3Display.cs" />
-    <Compile Include="Interfaces\DCS\AV8B\Functions\Digits4Dispaly.cs" />
-    <Compile Include="Interfaces\DCS\AV8B\Functions\SMCMultipleDisplay.cs" />
-    <Compile Include="Interfaces\DCS\AV8B\Functions\Digits2Display.cs" />
-    <Compile Include="Interfaces\DCS\AV8B\Functions\FuelTotalDisplay.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\BlackSharkInterface.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\Functions\HSIRange.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\Functions\LatitudeEntry.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\Functions\MagVariation.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\Functions\VHF2Rotary1.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\Functions\VHF2Rotary23.cs" />
-    <Compile Include="Interfaces\DCS\BlackShark\Functions\VHF2Rotary4.cs" />
     <Compile Include="Interfaces\DCS\Common\AbsoluteEncoder.cs" />
     <Compile Include="Interfaces\DCS\Common\Axis.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSDataElement.cs" />
@@ -1147,12 +1096,8 @@
     <Compile Include="Interfaces\DCS\Common\Switch.cs" />
     <Compile Include="Interfaces\DCS\Common\SwitchPosition.cs" />
     <Compile Include="Interfaces\DCS\Common\Text.cs" />
-    <Compile Include="Interfaces\DCS\FA18C\Functions\Altimeter.cs" />
     <Compile Include="Interfaces\DCS\FC3\FC3Interface.cs" />
     <Compile Include="Interfaces\DCS\Generic\GenericInterface.cs" />
-    <Compile Include="Interfaces\DCS\M2000C\M2000CInterface.cs" />
-    <Compile Include="Interfaces\DCS\Mi8Simple\Mi8SimpleInterface.cs" />
-    <Compile Include="Interfaces\DCS\MiG21\MiG21Interface.cs" />
     <Compile Include="Interfaces\DirectX\DirectXControllerAxis.cs" />
     <Compile Include="Interfaces\DirectX\DirectXControllerButton.cs" />
     <Compile Include="Interfaces\DirectX\DirectXControllerFunction.cs" />
@@ -1698,17 +1643,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Interfaces\DCS\FC3\ExportFunctions.lua" />
-    <Resource Include="Interfaces\DCS\MiG21\ExportFunctions.lua" />
-    <Resource Include="Interfaces\DCS\AV8B\ExportFunctions.lua" />
-    <Resource Include="Interfaces\DCS\FA18C\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\Generic\ExportFunctions.lua" />
-    <Resource Include="Interfaces\DCS\M2000C\ExportFunctions.lua" />
-    <Resource Include="Interfaces\DCS\Mi8Simple\ExportFunctions.lua" />
     <Resource Include="Images\General\HeliosIcon.png" />
     <Resource Include="Interfaces\DCS\F14B\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C1.lua" />
     <Resource Include="Interfaces\DCS\Common\Export.lua" />
-    <Resource Include="Interfaces\DCS\BlackShark\ExportFunctions.lua" />
     <None Include="Interfaces\FunctionsClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -2455,9 +2394,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\DCS\F14B\Functions\" />
-    <Folder Include="Interfaces\DCS\Mi8Simple\Functions\" />
-    <Folder Include="Interfaces\DCS\MiG21\Functions\" />
-    <Folder Include="Interfaces\DCS\MirageF1\Functions\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Buttons\mfd-in.png" />

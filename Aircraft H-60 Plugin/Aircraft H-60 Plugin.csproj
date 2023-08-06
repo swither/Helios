@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{95EC3981-1B6E-4AB2-B40A-78C695CB69EA}</ProjectGuid>
+    <ProjectGuid>{F75CF4CA-FA26-4F68-B523-C698D84AFD83}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GadrocsWorkshop.Helios</RootNamespace>
-    <AssemblyName>Mi-8</AssemblyName>
+    <AssemblyName>H-60</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -58,83 +58,20 @@
     <Content Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Gauges\ADI\ADI.cs" />
-    <Compile Include="Interfaces\Mi8SimpleInterface.cs" />
+    <Compile Include="Interfaces\Functions\Altimeter.cs" />
+    <Compile Include="Interfaces\Functions\Chronometer.cs" />
+    <Compile Include="Interfaces\Functions\H60Function.cs" />
+    <Compile Include="Interfaces\Functions\RADARAltimeter.cs" />
+    <Compile Include="Interfaces\Functions\RADARAltimeterDeprecated.cs" />
+    <Compile Include="Interfaces\Functions\SegmentedMeter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Interfaces\ExportFunctions.lua" />
-    <None Include="Templates\Base\Mi-8\0 Sample.htpl" />
+    <None Include="Templates\Base\H-60\0 Sample.htpl" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_aircraft_symbol.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_airspeed_deviation_needle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_alt_deviation_needle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_bank_steering_bar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_bubble_bezel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_dir_flag.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_inner_bezel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_lateral_deviation_needle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_outer_bezel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_pitch_ball.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\ADI\adi_slip_ball.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
+    <Folder Include="Gauges\" />
     <Folder Include="Images\" />
-    <Folder Include="Interfaces\Functions\" />
   </ItemGroup>
   <Import Project="..\HeliosPlugin.targets" />
 </Project>

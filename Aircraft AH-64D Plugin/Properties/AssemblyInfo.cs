@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using GadrocsWorkshop.Helios.ComponentModel;
+
+[assembly: HeliosModule("Helios AH-64D Apache Support for DCS", "AH-64D")]
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information

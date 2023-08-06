@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
+    <Resource Include="Interfaces\ExportFunctions.lua" />
     <Resource Include="Images\SAI\adi_off_flag.png" />
     <Resource Include="Images\SAI\adi_ball.png" />
     <Content Include="Templates\Base\AH-64D\0 Altimeter.htpl">
@@ -121,6 +122,9 @@
     <Compile Include="Gauges\Power\PowerLever.cs" />
     <Compile Include="Gauges\SAI\SAI.cs" />
     <Compile Include="Gauges\TEDAC\TEDAC.cs" />
+    <Compile Include="Interfaces\AH-64DInterface.cs" />
+    <Compile Include="Interfaces\Functions\AH-64DFunction.cs" />
+    <Compile Include="Interfaces\Functions\Altimeter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -363,5 +367,6 @@
       <Name>Helios</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\HeliosPlugin.targets" />
 </Project>

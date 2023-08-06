@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using GadrocsWorkshop.Helios.ComponentModel;
+
+[assembly: HeliosModule("Helios MiG-21 Fishbed Support for DCS", "MiG-21")]
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information

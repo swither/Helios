@@ -38,6 +38,12 @@
       <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Schema, Version=3.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.Schema.3.0.13\lib\net45\Newtonsoft.Json.Schema.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -146,6 +152,7 @@
     <Content Include="Templates\Base\AV-8B\3 Panels\Threat Indicators.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Interfaces\ExportFunctions.lua" />
     <Resource Include="Gauges\ADI\adi_slip_bezel.png" />
     <Resource Include="Gauges\ADI\adi_bezel.png" />
     <Content Include="Icons\AV-8B.ico" />
@@ -282,6 +289,14 @@
     <Compile Include="Gauges\UFC\UFC_AV8B.cs" />
     <Compile Include="Gauges\VVI\VVI Old.cs" />
     <Compile Include="Gauges\VVI\VVI.cs" />
+    <Compile Include="Interfaces\AV8BInterface.cs" />
+    <Compile Include="Interfaces\Functions\Altimeter.cs" />
+    <Compile Include="Interfaces\Functions\Digits2Display.cs" />
+    <Compile Include="Interfaces\Functions\Digits3Display.cs" />
+    <Compile Include="Interfaces\Functions\Digits4Dispaly.cs" />
+    <Compile Include="Interfaces\Functions\FuelTotalDisplay.cs" />
+    <Compile Include="Interfaces\Functions\SMCFuzeDisplay.cs" />
+    <Compile Include="Interfaces\Functions\SMCMultipleDisplay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1211,7 +1226,6 @@
   <ItemGroup>
     <Resource Include="Images\WQHD\Switch\Orange Up.png" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="Gauges\1 Digit Display\digit_faceplate.xaml">
       <Generator>MSBuild:Compile</Generator>

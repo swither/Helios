@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using GadrocsWorkshop.Helios.ComponentModel;
+
+[assembly: HeliosModule("Helios M-2000C Support for DCS", "M2000C")]
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information

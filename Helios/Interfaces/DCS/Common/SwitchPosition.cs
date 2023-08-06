@@ -93,7 +93,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <param name="positionLabels">String array of the labels to be given to each switch position</param>
         /// <param name="exportFormat">This is used to truncate the numerical value which identifies the switch position</param>
         /// <returns></returns>
-        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string exportFormat = "%0.1f")
+        public static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string exportFormat = "%0.1f")
         {
             return Create(numberOfPositions, startValue, incrementalValue, arg, positionLabels, null, exportFormat);
         }
@@ -108,7 +108,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <param name="positionName">Prefix of the label for each switch position</param>
         /// <param name="exportFormat">This is used to truncate the numerical value which identifies the switch position</param>
         /// <returns></returns>
-        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string positionName = "position", string exportFormat = "%0.1f")
+        public static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string positionName = "position", string exportFormat = "%0.1f")
         {
             return Create(numberOfPositions, startValue, incrementalValue, arg, new string[] { }, positionName, exportFormat);
         }
@@ -124,7 +124,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// <param name="exportFormat">This is used to truncate the numerical value which identifies the switch position</param>
         /// <returns></returns>
 
-        internal static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string positionName, string exportFormat = "%0.1f")
+        public static SwitchPosition[] Create(int numberOfPositions, double startValue, double incrementalValue, string arg, string[] positionLabels, string positionName, string exportFormat = "%0.1f")
         {
             SwitchPosition[] positions = new SwitchPosition[numberOfPositions];
             for (int i = 1; i <= numberOfPositions; i++)

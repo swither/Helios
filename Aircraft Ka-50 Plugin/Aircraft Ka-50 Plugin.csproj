@@ -58,6 +58,9 @@
     <Content Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Interfaces\ExportFunctions.lua" />
+    <Resource Include="Interfaces\ExportFunctionsKa-50_2.lua" />
+    <Resource Include="Interfaces\ExportFunctionsKa-50_3.lua" />
     <None Include="Templates\Base\Ka-50\0 Sample.htpl" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +77,15 @@
     <Compile Include="Gauges\RotorRPM\RotorRPM.cs" />
     <Compile Include="Gauges\Tachometer\Tachometer.cs" />
     <Compile Include="Gauges\VVI\VVI.cs" />
+    <Compile Include="Interfaces\BlackSharkInterface.cs" />
+    <Compile Include="Interfaces\Functions\HSIRange.cs" />
+    <Compile Include="Interfaces\Functions\LatitudeEntry.cs" />
+    <Compile Include="Interfaces\Functions\MagVariation.cs" />
+    <Compile Include="Interfaces\Functions\VHF2Rotary1.cs" />
+    <Compile Include="Interfaces\Functions\VHF2Rotary23.cs" />
+    <Compile Include="Interfaces\Functions\VHF2Rotary4.cs" />
+    <Compile Include="Interfaces\Ka-50_2Interface.cs" />
+    <Compile Include="Interfaces\Ka-50_3Interface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
