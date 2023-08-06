@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>ADI</Name>
+	<Category>F/A-18C Hornet</Category>
+	<TypeIdentifier>Helios.FA18C.ADI</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>350,350</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

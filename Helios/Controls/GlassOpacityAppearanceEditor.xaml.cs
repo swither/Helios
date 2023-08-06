@@ -40,7 +40,9 @@
     [HeliosPropertyEditor("Helios.F15E.EngineMonitorPanel", "Appearance")]
     [HeliosPropertyEditor("Helios.AV8B.Cockpit", "Appearance")]
     [HeliosPropertyEditor("Helios.AV8B.FlightInstruments", "Appearance")]
+    [HeliosPropertyEditor("Helios.FA18C.IFEI", "Appearance")]
     
+
     public partial class GlassOpacityAppearanceEditor : HeliosPropertyEditor
     {
         public GlassOpacityAppearanceEditor()

@@ -50,7 +50,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.SAI
             Point center = new Point(177d, 163d);
 
             _pitchCalibration = new CalibrationPointCollectionDouble(-360d, -1066d, 360d, 1066d);
-            _ball = new GaugeNeedle("{Helios}/Gauges/FA-18C/ADI/adi_ball.png", center, new Size(198d, 1160d), new Point(99d, 580d));
+            _ball = new GaugeNeedle("{AH-64D}/Images/SAI/adi_ball.png", center, new Size(198d, 1160d), new Point(99d, 580d));
             _ball.Clip = new EllipseGeometry(center, 99d, 99d);
             Components.Add(_ball);
 
@@ -65,7 +65,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.SAI
             Components.Add(_bankNeedle);
 
             _slipBallCalibration = new CalibrationPointCollectionDouble(-1d, -26d, 1d, 26d);
-            _slipBallNeedle = new GaugeNeedle("{Helios}/Gauges/AV-8B/ADI/adi_slip_ball.xaml", new Point(176d, 297d), new Size(14d, 14d), new Point(7d, 7d));
+            _slipBallNeedle = new GaugeNeedle("{AH-64D}/Images/SAI/adi_slip_ball.xaml", new Point(176d, 297d), new Size(14d, 14d), new Point(7d, 7d));
             Components.Add(_slipBallNeedle);
 
             _TurnMarker = new GaugeNeedle("{AH-64D}/Images/SAI/adi_turn_marker.xaml", new Point(178d, 315d), new Size(12d, 9d), new Point(7d, 0d));
@@ -73,7 +73,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.SAI
 
             Components.Add(new GaugeImage("{AH-64D}/Images/SAI/adi_guides.xaml", new Rect(66d, 54d, 222d, 250d)));
 
-            _offFlagImage = new GaugeImage("{Helios}/Gauges/FA-18C/ADI/adi_off_flag.png", new Rect(270d, 40d, 44d, 166d));
+            _offFlagImage = new GaugeImage("{AH-64D}/Images/SAI/adi_off_flag.png", new Rect(270d, 40d, 44d, 166d));
             _offFlagImage.IsHidden = true;
             Components.Add(_offFlagImage);
 

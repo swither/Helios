@@ -56,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
+    <Resource Include="Images\SAI\adi_off_flag.png" />
+    <Resource Include="Images\SAI\adi_ball.png" />
     <Content Include="Templates\Base\AH-64D\0 Altimeter.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -349,7 +351,12 @@
   <ItemGroup>
     <Resource Include="Images\TEDAC\TEDAC_frame.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_slip_ball.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Helios\Helios.csproj">
       <Project>{e5abe3f5-46ec-46d1-9330-d42311471a93}</Project>

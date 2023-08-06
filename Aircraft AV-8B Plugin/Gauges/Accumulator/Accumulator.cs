@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B.Accumulator
             _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 3600d, 90d);
             //_needleCalibration.Add(new CalibrationPointDouble(100d, 18d));
             //_needleCalibration.Add(new CalibrationPointDouble(500d, 180d));
-            _needle = new GaugeNeedle("{AV-8B}/Gauges/Common/needle_a.xaml", new Point(150d, 225d), new Size(27, 115), new Point(13, 102), -45d);
+            _needle = new GaugeNeedle("{Helios}/Gauges/Common/needle_a.xaml", new Point(150d, 225d), new Size(27, 115), new Point(13, 102), -45d);
             Components.Add(_needle);
 
             Components.Add(new GaugeImage("{AV-8B}/Gauges/Accumulator/accumulator_bezel.xaml", new Rect(0d, 0d, 304d, 304d)));

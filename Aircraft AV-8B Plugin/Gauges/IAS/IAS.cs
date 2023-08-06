@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             _needleCalibration = new CalibrationPointCollectionDouble(0d, 0d, 950d, 350d);
             _needleCalibration.Add(new CalibrationPointDouble(100d, 18d));
             _needleCalibration.Add(new CalibrationPointDouble(500d, 180d));
-            _needle = new GaugeNeedle("{AV-8B}/Gauges/Common/needle_a.xaml", new Point(150d, 150d), new Size(30, 128), new Point(15, 113), 0d);
+            _needle = new GaugeNeedle("{Helios}/Gauges/Common/needle_a.xaml", new Point(150d, 150d), new Size(30, 128), new Point(15, 113), 0d);
             Components.Add(_needle);
 
             //Components.Add(new GaugeImage("{Helios}/Gauges/A-10/Common/gauge_bezel.png", new Rect(0d, 0d, 364d, 376d)));

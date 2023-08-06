@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>MPCD</Name>
+	<Category>F/A-18C Hornet</Category>
+	<TypeIdentifier>FA18C.MPCD</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>656,706</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

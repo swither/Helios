@@ -55,7 +55,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
 
             // Add needle to drawing components
             // Source image file (xaml will be vector rendered to appropriate size)
-            _needle = new GaugeNeedle("{AV-8B}/Gauges/Common/needle_a.xaml",
+            _needle = new GaugeNeedle("{Helios}/Gauges/Common/needle_a.xaml",
                 // Location on gauge which the needle will be rotated
                                       new Point(150d, 150d),
                 // Size of needle image (will scale image to this size automatically)

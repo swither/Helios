@@ -200,9 +200,6 @@
     <Compile Include="Gauges\A-10\HARS\HARSSync_1.cs" />
     <Compile Include="Gauges\A-10\HMCS\HMCS.cs" />
     <Compile Include="Gauges\CompositeVisualWithBackgroundImage.cs" />
-    <Compile Include="Gauges\FA-18C\ADI\ADI.cs" />
-    <Compile Include="Gauges\FA-18C\UFC\UFCScratchPadDisplay.cs" />
-    <Compile Include="Gauges\FA-18C\UFC\UFCTextDisplay.cs" />
     <Compile Include="Gauges\M2000C\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\M2000C\LGPanel\LandingGear_Panel_V2.cs" />
     <Compile Include="Gauges\M2000C\Miscellaneous\RADAR_IFF_Mode_Panel.cs" />
@@ -580,6 +577,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Gauges\Common\needle_a.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Common\needle_b.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -849,20 +854,6 @@
     </Compile>
     <Compile Include="Controls\RectangleFillRenderer.cs" />
     <Compile Include="Gauges\F-14B\F14BDevice\F14BDevice.cs" />
-    <Compile Include="Gauges\FA-18C\Altimeter\BarometricAltimeter.cs" />
-    <Compile Include="Gauges\FA-18C\Altimeter\RADARAltimeter.cs" />
-    <Compile Include="Gauges\FA-18C\Battery\Battery.cs" />
-    <Compile Include="Gauges\FA-18C\BrakePressure\Brake_Pressure.cs" />
-    <Compile Include="Gauges\FA-18C\CabinPressure\CabinPressure.cs" />
-    <Compile Include="Gauges\FA-18C\HydraulicPressure\Hydraulic.cs" />
-    <Compile Include="Gauges\FA-18C\IAS\IAS.cs" />
-    <Compile Include="Gauges\FA-18C\IFEI\IFEI Gauges.cs" />
-    <Compile Include="Gauges\FA-18C\IFEI\IFEI_AppearanceEditor.xaml.cs">
-      <DependentUpon>IFEI_AppearanceEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Gauges\FA-18C\LOx\LOx.cs" />
-    <Compile Include="Gauges\FA-18C\MFD\MFD-FA18C-Type-2.cs" />
-    <Compile Include="Gauges\FA-18C\MFD\MFD-FA18C-Type-1.cs" />
     <Compile Include="Gauges\A-10\MFD\MFD_A10.cs" />
     <Compile Include="Gauges\F-16\MFD\MFD_F16.cs" />
     <Compile Include="Gauges\MFD.cs" />
@@ -974,10 +965,6 @@
     <Compile Include="Gauges\A-10\VVI\VVI.cs" />
     <Compile Include="Controls\BackgroundImageRenderer.cs" />
     <Compile Include="Gauges\BaseGauge.cs" />
-    <Compile Include="Gauges\FA-18C\FA18CDevice\FA18CDevice.cs" />
-    <Compile Include="Gauges\FA-18C\UFC\UFC.cs" />
-    <Compile Include="Gauges\FA-18C\IFEI\IFEI.cs" />
-    <Compile Include="Gauges\FA-18C\VVI\VVI.cs" />
     <Compile Include="Util\CommonCommandLineOptions.cs" />
     <Compile Include="Util\DCS\MockInstallationLocations.cs" />
     <Compile Include="Util\EnumBooleanConverter.cs" />
@@ -1825,10 +1812,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Gauges\FA-18C\Altimeter\altimeter_needle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
-    </Resource>
     <Resource Include="Interfaces\DCS\FC3\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\MiG21\ExportFunctions.lua" />
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions.lua" />
@@ -3105,50 +3088,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Resource Include="Gauges\FA-18C\Altimeter\alt_drum_tape.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\Common\drum_tape.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\Common\drum_tape_reverse.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\Common\eng_small_needle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\Common\needle_a.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\Altimeter\RADAR_Altimeter_Min_Needle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_bank_pointer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_guides.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_inner_ring.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_outer_ring.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_slip_ball.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
     <Resource Include="Gauges\Mi-8\ADI\adi_aircraft_symbol.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -3193,90 +3132,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Left Needle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Legends Bingo.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Legends FF.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Legends L.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Legends Noz.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Legends Oil.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Legends R.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Legends RPM.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Legends Temp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Legends Z.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Right Needle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Left Nozzle Gauge Marks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Left 0 Nozzle Gauge Marks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Left 100 Nozzle Gauge Marks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Left 50 Nozzle Gauge Marks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Clock Separator.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_gs_flag.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_pitch_steering_bar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_bank_steering_bar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_course_flag.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\ADI\adi_gs_indicator.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
     <Resource Include="Gauges\F-16\HydraulicPressure\hydraulic_faceplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -3285,30 +3140,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="Gauges\FA-18C\IFEI\IFEI Nozzle Gauge Marks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Right 0 Nozzle Gauge Marks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Right 100 Nozzle Gauge Marks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Right 50 Nozzle Gauge Marks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Right Nozzle Gauge Marks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Page Include="Gauges\FA-18C\IFEI\IFEI_AppearanceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Resource Include="Gauges\M2000C\Common\drum_tape.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -3414,27 +3245,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Gauges\AV-8B\" />
-    <Folder Include="Gauges\FA-18C\Controls\" />
     <Folder Include="Interfaces\DCS\F14B\Functions\" />
     <Folder Include="Interfaces\DCS\Mi8Simple\Functions\" />
     <Folder Include="Interfaces\DCS\MiG21\Functions\" />
     <Folder Include="Interfaces\DCS\MirageF1\Functions\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\FA-18C\Altimeter\Altimeter_Faceplate.png" />
-    <Resource Include="Gauges\FA-18C\Altimeter\RADAR_Altimeter_Faceplate.png" />
-    <Resource Include="Gauges\FA-18C\Battery\Battery_Faceplate.png" />
-    <Resource Include="Gauges\FA-18C\CabinPressure\Cabin_Pressure_Faceplate.png" />
-    <Resource Include="Gauges\FA-18C\Common\gauge_bezel.png" />
-    <Resource Include="Gauges\FA-18C\Common\engine_bezel.png" />
-    <Resource Include="Gauges\FA-18C\Battery\Battery_Needle_Cover.png" />
-    <Resource Include="Gauges\FA-18C\BrakePressure\Brake_Pressure_Cover.png" />
-    <Resource Include="Gauges\FA-18C\BrakePressure\Brake_Pressure_Faceplate.png" />
-    <Resource Include="Gauges\FA-18C\HydraulicPressure\Hyd_Pressure_Faceplate.png" />
-    <Resource Include="Gauges\FA-18C\IAS\IAS.png" />
-    <Resource Include="Gauges\FA-18C\LOx\LOx_Faceplate.png" />
-    <Resource Include="Gauges\FA-18C\VVI\VVI_Faceplate.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Buttons\mfd-in.png" />
@@ -3950,40 +3764,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Gauges\FA-18C\Altimeter\RADAR_Altimeter_Cover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\FA-18C\HydraulicPressure\PRESS_1.png" />
-    <Resource Include="Gauges\FA-18C\HydraulicPressure\PRESS_2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\FA-18C\ADI\adi_bezel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\FA-18C\ADI\adi_glass.png" />
-    <Resource Include="Gauges\FA-18C\ADI\adi_inner_ring.png" />
-    <Resource Include="Gauges\FA-18C\ADI\adi_slip_bezel.png" />
-    <Resource Include="Gauges\FA-18C\ADI\adi_off_flag.png" />
-    <Resource Include="Gauges\FA-18C\ADI\adi_wings.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\FA-18C\ADI\adi_ball.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_DOWN.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_DOWN_DN.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_ET.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_ET_DN.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_MODE.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_MODE_DN.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_QTY.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_QTY_DN.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_UP.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_UP_DN.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_ZONE.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI_ZONE_DN.png" />
-    <Resource Include="Gauges\FA-18C\IFEI\IFEI Reflections.png" />
     <Resource Include="Images\KneeBoards\default_kneeboard_image.png" />
     <Content Include="Helios.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

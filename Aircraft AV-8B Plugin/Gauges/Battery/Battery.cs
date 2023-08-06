@@ -30,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             : base("voltage", new Size(300, 300))
         {
             Components.Add(new GaugeImage("{AV-8B}/Gauges/Battery/battery_faceplate.xaml", new Rect(0d, 0d, 300d, 300d)));
-            _needle = new GaugeNeedle("{AV-8B}/Gauges/Common/needle_a.xaml", new Point(150d, 150d), new Size(36, 154), new Point(18, 136), -90d);
+            _needle = new GaugeNeedle("{Helios}/Gauges/Common/needle_a.xaml", new Point(150d, 150d), new Size(36, 154), new Point(18, 136), -90d);
             Components.Add(_needle);
 
             //Components.Add(new GaugeImage("{Helios}/Gauges/A-10/Common/gauge_bezel.png", new Rect(0d, 0d, 364d, 376d)));
