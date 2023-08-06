@@ -1360,6 +1360,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_AADEB365ACBA4300A7297553BC1F809D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_36571A673B1F4DED82B1200012410D0D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3447,7 +3453,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0B9949BD1FBD42C2B99DE69AFF3555FA"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Phidgets\\obj\\AnyCPU32\\Release\\Phidgets.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -3475,7 +3481,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0C23ED5842AB4CD4BE1266E39F55D6D2"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Profile Editor\\obj\\AnyCPU32\\Release\\Profile Editor.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -3503,7 +3509,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_11E664D5CC9B4F2D96E36795008CAF66"
             {
-            "SourcePath" = "8:..\\Aircraft FA-18C Plugin\\obj\\x64\\Debug\\FA-18C.dll"
+            "SourcePath" = "8:..\\Aircraft FA-18C Plugin\\obj\\AnyCPU32\\Release\\FA-18C.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3531,7 +3537,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_179D736B1D0B4EDA990D10A7F0BF9053"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\PatchingElevatedExecutable\\obj\\x64\\Debug\\HeliosPatching.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -3559,7 +3565,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1B06DA75DF9B4E33AB08D04DD91B3EE7"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Aircraft A-10C\\obj\\AnyCPU32\\Release\\A-10C.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -3615,7 +3621,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_363E609DF5B641F6A4312F705954781B"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\HeliosProcessControl\\obj\\AnyCPU32\\Release\\HeliosProcessControl.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3756,7 +3762,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_73AF37C5FAA940A48538C8255308A884"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Patching\\obj\\x64\\Debug\\Patching.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3782,9 +3788,37 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8D5E1B893BD04E689A92377E44D11B54"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8BC49CF3C2AF4ED78E9EB0ED6079FF04"
             {
             "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|AnyCPU32"
+            "OutputGroupCanonicalName" = "8:ContentFiles"
+            "OutputProjectGuid" = "8:{43A15AF5-AF6F-4CA1-B9D1-BD6E77727B33}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8D5E1B893BD04E689A92377E44D11B54"
+            {
+            "SourcePath" = "8:..\\Aircraft UH-60L Plugin\\obj\\x64\\Debug\\UH-60L.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3812,7 +3846,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_92196EE322CB4DFF8C9674818AA7960F"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\HeliosFalcon\\obj\\AnyCPU32\\Release\\HeliosFalcon.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -3861,6 +3895,34 @@
             "OutputConfiguration" = "8:Release|AnyCPU32"
             "OutputGroupCanonicalName" = "8:ContentFiles"
             "OutputProjectGuid" = "8:{A7237E1E-B363-491D-9B78-BD46CCE689AA}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AADEB365ACBA4300A7297553BC1F809D"
+            {
+            "SourcePath" = "8:..\\Aircraft MiG-21 Plugin\\obj\\x64\\Debug\\MiG-21.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|AnyCPU32"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{43A15AF5-AF6F-4CA1-B9D1-BD6E77727B33}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
@@ -3980,7 +4042,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_BD87AE5D8D7249758FA2E11203EE991E"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Aircraft F-15E Plugin\\obj\\AnyCPU32\\Release\\F-15E.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -4064,7 +4126,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E5EE8154A0174E3DA447BFB300DC24E9"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Aircraft AH-64D Plugin\\obj\\x64\\Debug\\AH-64D.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
@@ -4092,7 +4154,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E6B1A0D59BA04BAFA87C80FAFFB80B11"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Aircraft AV-8B Plugin\\obj\\AnyCPU32\\Release\\AV-8B.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_AB6A2C365A4B4D169060D0A173C66AF1"
