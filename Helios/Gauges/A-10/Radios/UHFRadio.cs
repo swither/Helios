@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// <summary>
     /// This is an A-10C UHF Radio that uses text displays instead of an exported viewport.
     /// </summary>
-    [HeliosControl("Helios.A10C.UHFRadio", "UFH Radio", "A-10C Gauges", typeof(BackgroundImageRenderer))]
+    [HeliosControl("Helios.A10C.UHFRadio", "UFH Radio", "A-10C Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class UHFRadio : A10CDevice
     {
         private const double SCREENRES = 1.0;

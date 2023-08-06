@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
         private string _interfaceDeviceName = "Landing Gear Panel";
         private Rect _scaledScreenRect = SCREEN_RECT;
         private string _imageAssetLocation = "{M2000C}/Images/";
-        private string _xamlLocation = "{helios}/Images/M-2000C/";
+        private string _xamlLocation = "{M-2000C}/Images/";
 
         public LandingGearPanelV2()
             : base("Landing Gear Panel", new Size(587, 800))

@@ -1,0 +1,16 @@
+﻿<ControlTemplate>
+	<Name>RWR Bezel</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.Base.Image</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Image>{Helios}/Interfaces/Falcon/RWR/rwr_bezel.png</Image>
+			<Alignment>Stretched</Alignment>
+			<CornerRadius>0</CornerRadius>
+			<Location>0,0</Location>
+			<Size>400,387</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

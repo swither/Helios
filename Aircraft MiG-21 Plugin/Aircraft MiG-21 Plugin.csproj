@@ -59,9 +59,7 @@
     <Resource Include="Gauges\RSBNDistance\RSBNDistance.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\MiG-21\0 Sample.htpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="Templates\Base\MiG-21\0 Sample.htpl" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gauges\Accelerometer\Accelerometer.cs" />

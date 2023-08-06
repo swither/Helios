@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.TACANChannel
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.A10.TACANChannel", "TACAN Channel", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.TACANChannel", "TACAN Channel", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class TACANChannel : BaseGauge
     {
         private HeliosValue _channel;

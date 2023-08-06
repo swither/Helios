@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.ApuEGT
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.A10.ApuTemp", "APU EGT", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.ApuTemp", "APU EGT", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class ApuEGT : BaseGauge
     {
         private HeliosValue _temperature;

@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>UHF Freq Repeater</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10.UHFFreqRepeater</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>-5,-9</Location>
+			<Size>169,163</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

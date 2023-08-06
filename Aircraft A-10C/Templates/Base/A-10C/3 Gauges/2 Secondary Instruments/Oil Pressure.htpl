@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Oil Pressure</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10.OilPressure</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>4,0</Location>
+			<Size>360,360</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

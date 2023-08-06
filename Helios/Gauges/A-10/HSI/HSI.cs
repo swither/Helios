@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.HSI
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.A10.HSI", "HSI", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.HSI", "HSI", "A-10 Gauges", typeof(GaugeRenderer),HeliosControlFlags.NotShownInUI)]
     public class HSI : BaseGauge
     {
         private HeliosValue _bearing1;

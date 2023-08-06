@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.ApuRPM
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.A10.ApuRpm", "APU RPM", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.ApuRpm", "APU RPM", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class ApuRPM : BaseGauge
     {
         private HeliosValue _rpm;

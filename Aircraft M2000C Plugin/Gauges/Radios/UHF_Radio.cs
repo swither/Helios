@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
         private string _interfaceDeviceName = "UHF Radio Panel";
         private Rect _scaledScreenRect = SCREEN_RECT;
         private string _imageAssetLocation = "{M2000C}/Images/";
-        private string _xamlLocation = "{helios}/Images/M-2000C/";
+        private string _xamlLocation = "{M2000C}/Images/";
         private Potentiometer _potentiometer;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 

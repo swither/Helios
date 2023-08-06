@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.ILSFrequencey
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.A10.ILSFrequency", "ILS Frequency", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.ILSFrequency", "ILS Frequency", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class ILSFrequency : BaseGauge
     {
         private HeliosValue _frequency;

@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// This is a version of the Counter Measure System Controller which uses a bespoke font to provide data in a text display instead of cutouts for the exported viewport.
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10C.CMSC", "Counter Measures System Control", "A-10C Gauges", typeof(BackgroundImageRenderer))]
+    [HeliosControl("Helios.A10C.CMSC", "Counter Measures System Control", "A-10C Gauges", typeof(BackgroundImageRenderer),HeliosControlFlags.NotShownInUI)]
     class CMSC : A10CDevice
     {
         // these two sections are the dead space in the CMSC image.

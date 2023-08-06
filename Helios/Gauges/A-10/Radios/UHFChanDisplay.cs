@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// </summary>
     /// 
 
-    [HeliosControl("Helios.A10.UHFChannelDisplay", "UHF Channel Display", "A-10C Gauges", typeof(BackgroundImageRenderer))]
+    [HeliosControl("Helios.A10.UHFChannelDisplay", "UHF Channel Display", "A-10C Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class UHFChanDisplay : A10CDevice
     {
 

@@ -495,212 +495,202 @@
     <Resource Include="Images\A-10CII\ARC-210_WideButton_Down.png" />
     <Resource Include="Images\A-10CII\ARC-210_WideButton_Up.png" />
     <Resource Include="Images\A-10C\Pilot_Reflection_25a.png" />
-    <Content Include="Templates\Base\A-10C\0.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\1.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\1.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\2.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\2.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\3.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\3.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\4.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\4.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\5.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\5.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\6.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\6.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\7.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\7.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\8.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\8.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\9.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\9.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\AFT.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\AFT.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Altitude Alert.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Altitude Alert.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\ANCHR.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Indicators\ANCHR.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Blank.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Blank.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Clear.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Clear.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Data.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Data.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\EGI.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Indicators\EGI.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Enter.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Enter.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Fire Pull APU.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Fire Pull APU.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Fire Pull Left.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Fire Pull Left.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Fire Pull Right.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Fire Pull Right.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\FM Indicator.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\FM Indicator.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Func.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Func.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\FWD.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\FWD.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Gear Handle.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Gear Handle.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Hack.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Hack.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\HARS.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Indicators\HARS.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Horizontal Rocker.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Horizontal Rocker.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\ILS.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Indicators\ILS.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\LTR.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\LTR.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Mark.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Mark.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Master Caution.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Master Caution.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\MID.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\MID.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\RWR Bezel.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Sel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Sel.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\Space.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Space.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Indicators\STR PT.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\STR PT.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Indicators\TCN.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\TCN.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Indicators\TISL.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\TISL.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\UHF Indicator.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Base\A-10C\UHF Indicator.htpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Templates\Base\A-10C\Vertical Rocker.htpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Templates\Base\A-10C\ARC-210.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Vertical Rocker.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -709,6 +699,191 @@
       <Project>{e5abe3f5-46ec-46d1-9330-d42311471a93}</Project>
       <Name>Helios</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\z Blanking Panel Left.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\Radio UHF Freq Display.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\CMSP.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\CMSC.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\Radio ARC-210.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\HMCS Scorpion.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\z Blanking Panel Right.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\Digital Clock.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\Radio UHF Freq Repeater.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\Radio UHF Channel Display.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\Radio UHF.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\Flaps.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\EGT APU.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\Cabin Pressure.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\1 Primary Instruments\ADI.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\ADI %28Backup%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\1 Primary Instruments\Altimeter.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\1 Primary Instruments\AoA.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\1 Primary Instruments\VVI.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\O2 Pressure.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\Oil Pressure.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\LOx.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\1 Primary Instruments\IAS.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\Hydraulic Pressure.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\1 Primary Instruments\HSI.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\HARS Sync.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\Fuel Gauge.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\Fuel Flow.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\RPM Fan.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\RPM Engine.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\Engine Temp.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\3 Gauges\2 Secondary Instruments\RPM APU.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\RWR.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\8 Components\Digits ILS.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\8 Components\Digits TISL.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\8 Components\Digits TACAN.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\A-10C\6 Panels\MFD.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="..\Helios.targets" />
   <PropertyGroup>

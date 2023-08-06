@@ -20,7 +20,7 @@ using GadrocsWorkshop.Helios.Controls;
 // ReSharper disable once CheckNamespace
 namespace GadrocsWorkshop.Helios.Gauges.A_10.MFD
 {
-    [HeliosControl("A10.MFD", "MFD", "A-10", typeof(BackgroundImageRenderer))]
+    [HeliosControl("A10.MFD", "MFD", "A-10", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class MFD_A10 : Gauges.MFD
     {
         private static readonly Rect SCREEN_RECT = new Rect(67, 67, 341, 343);

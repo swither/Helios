@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Engine RPM</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10.EngineRPM</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>360,360</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

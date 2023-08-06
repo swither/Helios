@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.FuelGauge
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.A10.FuelGauge", "Fuel Gauge", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.FuelGauge", "Fuel Gauge", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class FuelGauge : BaseGauge
     {
         private HeliosValue _totalQuantity;

@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.EngineRPM
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.A10.EngineRPM", "Engine RPM", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.EngineRPM", "Engine RPM", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class EngineRPM : BaseGauge
     {
         private HeliosValue _rpm;

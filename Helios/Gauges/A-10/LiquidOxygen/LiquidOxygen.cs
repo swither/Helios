@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.LiquidOxygen
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.A10.LiquidOxygen", "Liquid Oxygen", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.LiquidOxygen", "Liquid Oxygen", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class LiquidOxygen : BaseGauge
     {
         private HeliosValue _liquidOxygen;

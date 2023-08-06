@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>UHF Radio</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10C.UHFRadio</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>625,580</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>
