@@ -35,7 +35,7 @@
       <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
-	<Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json.Schema, Version=3.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -207,7 +207,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
+    <None Include="Docs\Helios.FA-18C.Plugin.Install.Read.Me.rtf" />
     <None Include="Gauges\IFEI\IFEI.psd" />
     <None Include="Gauges\UFC\UFC Faceplate.psd" />
     <Content Include="Templates\Base\FA-18C\3 Panels\UFC.htpl">

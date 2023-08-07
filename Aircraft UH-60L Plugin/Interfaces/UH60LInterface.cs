@@ -887,7 +887,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.UH60L
         }
 
         public UH60LInterface(string name)
-            : base(name, "UH-60L", "pack://application:,,,/Helios;component/Interfaces/ExportFunctions.lua")
+            : base(name, "UH-60L", "pack://application:,,,/UH-60L;component/Interfaces/ExportFunctions.lua")
         {
             // optionally support more than just the base aircraft, or even use a module
             // name that is not a vehicle, by removing it from this list

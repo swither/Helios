@@ -129,7 +129,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
         #endregion
 
         public FA18CInterface(string name)
-            : base(name, "FA-18C_hornet", "pack://application:,,,/Helios;component/Interfaces/ExportFunctions.lua")
+            : base(name, "FA-18C_hornet", "pack://application:,,,/FA-18C;component/Interfaces/ExportFunctions.lua")
         {
 #if (!DEBUG)
                 if (LoadFunctionsFromJson())

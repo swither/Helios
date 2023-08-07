@@ -935,7 +935,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
 #pragma warning restore IDE1006 // Naming Standard issues
 
         public AH64DInterface(string name)
-            : base(name, "AH-64D_BLK_II", "pack://application:,,,/Helios;component/Interfaces/ExportFunctions.lua")
+            : base(name, "AH-64D_BLK_II", "pack://application:,,,/AH-64D;component/Interfaces/ExportFunctions.lua")
         {
 
             // not setting Vehicles at all results in the module name identifying the only 

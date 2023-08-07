@@ -378,7 +378,7 @@
     <Resource Include="Images\Buttons\LG_Warn_Sil_Pressed.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
+    <None Include="Docs\Helios.F-15E.Plugin.Install.Read.Me.rtf" />
     <Resource Include="Interfaces\ExportFunctionsF15E.lua" />
     <None Include="Templates\Base\F-15E\Images\ADI_Bezel.htpl" />
     <None Include="Templates\Base\F-15E\Images\ADI_Knob.htpl" />

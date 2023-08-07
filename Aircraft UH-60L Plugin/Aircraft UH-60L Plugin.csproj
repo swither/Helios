@@ -55,7 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
+    <Content Include="Docs\Helios.UH-60L.Plugin.Install.Read.Me.rtf" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gauges\AHRUDisplay.cs" />

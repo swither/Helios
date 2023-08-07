@@ -55,7 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Docs\Helios.Plugin.Install.Read.Me.rtf" />
+    <Content Include="Docs\Helios.Mi-8.Plugin.Install.Read.Me.rtf" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gauges\ADI\ADI.cs" />

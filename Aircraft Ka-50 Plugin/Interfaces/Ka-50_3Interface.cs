@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
         #endregion
 
         public KA50_3Interface()
-            : base("DCS Black Shark 3", "Ka-50_3", "pack://application:,,,/Helios;component/Interfaces/ExportFunctionsKa-50_3.lua")
+            : base("DCS Black Shark 3", "Ka-50_3", "pack://application:,,,/Ka-50;component/Interfaces/ExportFunctionsKa-50_3.lua")
         {
             // see if we can restore from JSON
 #if (!DEBUG)

@@ -75,7 +75,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AV8B
         #endregion
 
         public AV8BInterface()
-            : base("DCS AV-8B", "AV8BNA", "pack://application:,,,/Helios;component/Interfaces/ExportFunctions.lua")
+            : base("DCS AV-8B", "AV8BNA", "pack://application:,,,/AV-8B;component/Interfaces/ExportFunctions.lua")
         {
 
             // see if we can restore from JSON

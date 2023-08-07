@@ -84,7 +84,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Mi8Simple
         private const string EXTERNAL_CARGO_VIEW = "58";
         #endregion
         public Mi8SimpleInterface()
-            : base("DCS Mil Mi-8 (Simple)", "Mi-8MT", "pack://application:,,,/Helios;component/Interfaces/ExportFunctions.lua")
+            : base("DCS Mil Mi-8 (Simple)", "Mi-8MT", "pack://application:,,,/Mi-8;component/Interfaces/ExportFunctions.lua")
         {
             #region Indicators
             // !!!! Any duplicate "name" values in a function will cause Helios to go bang.  Make sure that when you change the name, that it is unique

@@ -688,7 +688,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
         #endregion
 
         public M2000CInterface()
-            : base("DCS M2000C", "M-2000C", "pack://application:,,,/Helios;component/Interfaces/ExportFunctions.lua")
+            : base("DCS M2000C", "M-2000C", "pack://application:,,,/M2000C;component/Interfaces/ExportFunctions.lua")
         {
 
             // see if we can restore from JSON

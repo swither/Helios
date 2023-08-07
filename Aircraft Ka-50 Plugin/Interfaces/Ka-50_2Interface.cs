@@ -38,7 +38,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.BlackShark
         private const string BUTTON_9 = "3009";
         #endregion
         public KA50_2Interface()
-            : base("DCS Black Shark", "Ka-50", "pack://application:,,,/Helios;component/Interfaces/ExportFunctionsKa-50_2.lua")
+            : base("DCS Black Shark", "Ka-50", "pack://application:,,,/Ka-50;component/Interfaces/ExportFunctionsKa-50_2.lua")
         {
             // see if we can restore from JSON
 #if (!DEBUG)

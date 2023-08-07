@@ -380,7 +380,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.MiG21
         #endregion
 
         public MiG21Interface()
-            : base("DCS MiG-21Bis", "MiG-21Bis", "pack://application:,,,/Helios;component/Interfaces/ExportFunctions.lua")
+            : base("DCS MiG-21Bis", "MiG-21Bis", "pack://application:,,,/MiG-21;component/Interfaces/ExportFunctions.lua")
         {
             #region DragChute
             AddFunction(new PushButton(this, CHUTE, DRAGCHUTE, "298", "Chute", "Release Drop Chute"));

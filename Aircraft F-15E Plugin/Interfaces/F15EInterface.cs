@@ -40,7 +40,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
         public F15EInterface(string heliosName) : base(
                 heliosName,
                 "F-15ESE",
-                "pack://application:,,,/Helios;component/Interfaces/ExportFunctionsF15E.lua")
+                "pack://application:,,,/F-15E;component/Interfaces/ExportFunctionsF15E.lua")
         {
 
             // see if we can restore from JSON
