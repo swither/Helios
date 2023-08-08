@@ -944,12 +944,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             // Vehicles = new string[] { ModuleName, "other aircraft", "another aircraft" };
 
             // see if we can restore from JSON
-//#if (!DEBUG)
+#if (!DEBUG)
                         if (LoadFunctionsFromJson())
                         {
                             return;
                         }
-//#endif
+#endif
             #region MPDs
             #region Pilot Left
             AddFunction(new PushButton(this, MFD_PLT_LEFT, mpd_commands.T1.ToString("d"), "20", "MFD Left (Pilot)", "Button T1"));
@@ -1630,7 +1630,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
 #endregion
 #region Standby Instruments
 #region Altimeter
-            AddFunction(new Functions.Altimeter(this));
+            AddFunction(new Altimeter(this, "Altimeter", "2051", "Altitude", "Barometric altitude above sea level of the aircraft.", "Value is adjusted per altimeter pressure setting.", "2059", "Pressure", "Manually set barometric altitude.", ""));
             AddFunction(new Axis(this, BARO_ALTIMETER, baro_alt_commands.PressureSet.ToString("d"), "477", 0.002d, 0d, 1d, "Standby Altimeter", "Pressure Setting Knob", true, "%.4f"));
 #endregion
 #region Standby Airspeed Indicator

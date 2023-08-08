@@ -25,11 +25,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D.Functions
 
     public class Altimeter : DCSFunctionPair
     {
-        private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("2051", null, true), new DCSDataElement("2059", null, true) };
+        //private static readonly ExportDataElement[] DataElementsTemplate = { new DCSDataElement("2051", null, true), new DCSDataElement("2059", null, true) };
 
         private HeliosValue _altitude;
         private HeliosValue _pressure;
 
+        private string _altitudeID;
+        private string _pressureID;
 
         // NOTE: currently unused, but shortly will be factored to same class that uses these, so put them in the Json
         [JsonProperty("altitudeComments")]
@@ -39,14 +41,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D.Functions
         [JsonProperty("pressureComments")]
         private string _pressureComments;
 
-        public Altimeter(BaseUDPInterface sourceInterface)
+        public Altimeter(BaseUDPInterface sourceInterface, string instrumentClass, string altitudeDeviceId, string altitudeName, string altitudeDescription, string altitudeComments, string pressureDeviceId, string pressureName, string pressureDescription, string pressureComments)
             : base(sourceInterface,
-                  "Standby Altimeter", "Altitude", "Barometric altitude above sea level of the aircraft.",
-                  "Standby Altimeter", "Pressure", "Manually set barometric altitude.")
+                  instrumentClass, altitudeName, altitudeDescription,
+                  instrumentClass, pressureName, pressureDescription)
         {
+            DefaultDataElements = new ExportDataElement[] { new DCSDataElement(altitudeDeviceId, null, true), new DCSDataElement(pressureDeviceId, null, true) };
+            _altitudeID = altitudeDeviceId;
+            _pressureID = pressureDeviceId;
             _altitudeComments = altitudeComments;
             _pressureComments = pressureComments;
-
             DoBuild();
         }
 
@@ -75,7 +79,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D.Functions
             Triggers.Add(_pressure);
         }
 
-        protected override ExportDataElement[] DefaultDataElements => DataElementsTemplate;
+        protected override ExportDataElement[] DefaultDataElements { get; }
 
         public override void ProcessNetworkData(string id, string value)
         {
