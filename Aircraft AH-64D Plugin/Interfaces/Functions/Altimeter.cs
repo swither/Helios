@@ -19,6 +19,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D.Functions
     using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
     using GadrocsWorkshop.Helios.UDPInterface;
     using GadrocsWorkshop.Helios.Util;
+    using Newtonsoft.Json;
     using System;
     using System.Globalization;
 
@@ -29,11 +30,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D.Functions
         private HeliosValue _altitude;
         private HeliosValue _pressure;
 
+
+        // NOTE: currently unused, but shortly will be factored to same class that uses these, so put them in the Json
+        [JsonProperty("altitudeComments")]
+        private string _altitudeComments;
+
+        // NOTE: currently unused, but shortly will be factored to same class that uses these, so put them in the Json
+        [JsonProperty("pressureComments")]
+        private string _pressureComments;
+
         public Altimeter(BaseUDPInterface sourceInterface)
             : base(sourceInterface,
                   "Standby Altimeter", "Altitude", "Barometric altitude above sea level of the aircraft.",
                   "Standby Altimeter", "Pressure", "Manually set barometric altitude.")
         {
+            _altitudeComments = altitudeComments;
+            _pressureComments = pressureComments;
+
             DoBuild();
         }
 

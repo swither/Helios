@@ -58,6 +58,9 @@ rmdir /s /q "Helios Installer\Release"
 rmdir /s /q "Helios Installer\Release32"
 rmdir /s /q "Keypress Receiver Installer\Release"
 rmdir /s /q "Tools Installer\Release"
+rmdir /s /q "Aircraft F-15E Plugin Installers\Release"
+rmdir /s /q "Aircraft F-15E Plugin Installers\Release32"
+
 MSBuild.exe -binaryLogger:LogFile=clean.binlog -clp:WarningsOnly -warnAsMessage:MSB4078 -p:Configuration=Release;Platform=x64 -t:Clean Helios.sln
 MSBuild.exe -binaryLogger:LogFile=clean32.binlog -clp:WarningsOnly -warnAsMessage:MSB4078 -p:Configuration=Release;Platform=AnyCPU32 -t:Clean Helios.sln
 rmdir /s /q bin
@@ -100,6 +103,14 @@ echo backing up "Tools Installer\Tools Installer.vdproj" to "Tools Installer\Too
 move "Tools Installer\Tools Installer.vdproj" "Tools Installer\Tools Installer.vdproj.bak"
 echo generating modified "Tools Installer\Tools Installer.vdproj" 
 powershell -Command "(gc 'Tools Installer\Tools Installer.vdproj.bak') -replace '1\.6\.1000\.0\.msi', '%HELIOS_BUILT_VERSION%.msi' | Set-Content 'Tools Installer\Tools Installer.vdproj'"
+echo backing up "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj" to "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj.bak" 
+move "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj" "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj.bak"
+echo generating modified "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj" 
+powershell -Command "(gc 'Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj.bak') -replace '1\.6\.1000\.0\.msi', '%HELIOS_BUILT_VERSION%.msi' | Set-Content 'Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj'"
+echo backing up "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj" to "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj.bak" 
+move "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj" "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj.bak"
+echo generating modified "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj" 
+powershell -Command "(gc 'Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj.bak') -replace '1\.6\.1000\.0\.msi', '%HELIOS_BUILT_VERSION%.msi' | Set-Content 'Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj'"
 
 REM build installers; this requires https://stackoverflow.com/questions/8648428/an-error-occurred-while-validating-hresult-8000000a/45580775#45580775
 echo building 64-bit installers
@@ -126,6 +137,10 @@ echo restoring "Keypress Receiver Installer\Keypress Receiver Installer.vdproj" 
 move "Keypress Receiver Installer\Keypress Receiver Installer.vdproj.bak" "Keypress Receiver Installer\Keypress Receiver Installer.vdproj"
 echo restoring "Tools Installer\Tools Installer.vdproj" from "Tools Installer\Tools Installer.vdproj.bak" 
 move "Tools Installer\Tools Installer.vdproj.bak" "Tools Installer\Tools Installer.vdproj"
+echo restoring "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj" from "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj.bak" 
+move "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj.bak" "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj"
+echo restoring "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj" from "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj.bak" 
+move "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj.bak" "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj"
 
 if "%HELIOS_BUILD_FAILED%" == "true" (
 	goto Failed
@@ -136,6 +151,8 @@ echo renaming setup executables
 move "Helios Installer\Release\setup.exe" "Helios Installer\Release\Helios.%HELIOS_BUILT_VERSION%.Setup.exe"
 move "Helios Installer\Release32\setup.exe" "Helios Installer\Release32\Helios32bit.%HELIOS_BUILT_VERSION%.Setup.exe"
 move "Keypress Receiver Installer\Release\setup.exe" "Keypress Receiver Installer\Release\Helios Keypress Receiver.%HELIOS_BUILT_VERSION%.Setup.exe"
+move "Aircraft F-15E Plugin Installers\Release\setup.exe" "Aircraft F-15E Plugin Installers\Release\Helios F-15E Plugin.%HELIOS_BUILT_VERSION%.Setup.exe"
+move "Aircraft F-15E Plugin Installers\Release32\setup.exe" "Aircraft F-15E Plugin Installers\Release32\Helios F-15E Plugin.%HELIOS_BUILT_VERSION%.Setup.exe"
 
 REM fix up installers
 pushd "Helios Installer\Release"
@@ -170,6 +187,23 @@ if %errorlevel% neq 0 (
 	goto Failed
 )
 popd
+pushd "Aircraft F-15E Plugin Installers\Release"
+cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios F-15E Plugin.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
+if %errorlevel% neq 0 (
+	echo Installer fixup script failed to fix up 64-bit Helios F-15E Plugin installer.  Already built installers will be deleted.
+	popd
+	goto Failed
+)
+popd
+pushd "Aircraft F-15E Plugin Installers\Release32"
+cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios F-15E 32bit Plugin.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
+if %errorlevel% neq 0 (
+	echo Installer fixup script failed to fix up 32-bit Helios F-15E Plugin installer.  Already built installers will be deleted.
+	popd
+	goto Failed
+)
+popd
+
 echo Run End: %date% %time%
 exit /b 0
 
@@ -187,5 +221,12 @@ popd
 pushd "Tools Installer\Release"
 ren *.msi *.msi.failed
 popd
+pushd "Aircraft F-15E Plugin Installers\Release"
+ren *.msi *.msi.failed
+popd
+pushd "Aircraft F-15E Plugin Installers\Release32"
+ren *.msi *.msi.failed
+popd
+
 echo Run End: %date% %time%
 exit /b 3

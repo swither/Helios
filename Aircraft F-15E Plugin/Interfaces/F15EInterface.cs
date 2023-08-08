@@ -75,11 +75,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             AddFunction(new RotaryEncoder(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_PRESET_RIGHT.ToString("d"), "281", 0.1d, "UFC Panel (Pilot)", "Right UHF Preset Channel Selector"));
             AddFunction(new PushButton(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_PRESET_SW_RIGHT.ToString("d"), "681", "UFC Panel (Pilot)", "Right UHF Preset Channel Pull Switch", "%.1f"));
 
-            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_VOL_R1.ToString("d"), "282", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UHF Radio 1 Volume", false, "%0.1f"));
-            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_VOL_R2.ToString("d"), "283", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UHF Radio 2 Volume", false, "%0.1f"));
-            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_VOL_R3.ToString("d"), "284", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UHF Radio 3 Volume", false, "%0.1f"));
-            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_VOL_R4.ToString("d"), "285", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UHF Radio 4 Volume", false, "%0.1f"));
-            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_BRT_CTRL.ToString("d"), "286", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UFC LCD Brightness", false, "%0.1f"));
+            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_VOL_R1.ToString("d"), "282", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UHF Radio 1 Volume", false, "%.2f"));
+            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_VOL_R2.ToString("d"), "283", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UHF Radio 2 Volume", false, "%.2f"));
+            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_VOL_R3.ToString("d"), "284", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UHF Radio 3 Volume", false, "%.2f"));
+            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_VOL_R4.ToString("d"), "285", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UHF Radio 4 Volume", false, "%.2f"));
+            AddFunction(new Axis(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_BRT_CTRL.ToString("d"), "286", 0.1d, 0.0d, 1.0d, "UFC Panel (Pilot)", "UFC LCD Brightness", false, "%.2f"));
             AddFunction(new PushButton(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_EMIS_LMT.ToString("d"), "287", "UFC Panel (Pilot)", "Emission Limit Key", "%.1f"));
             AddFunction(new PushButton(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_GREC_CM_LEFT.ToString("d"), "288", "UFC Panel (Pilot)", "Left Guard Receiver Key", "%.1f"));
             AddFunction(new PushButton(this, devices.UFCCTRL_FRONT.ToString("d"), Commands.ufc_commands.UFC_KEY_A1.ToString("d"), "289", "UFC Panel (Pilot)", "A1 Key", "%.1f"));
@@ -105,12 +105,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             #endregion UFC Panel (Pilot)
 
             #region HUD Control Panel
-            AddFunction(new Axis(this, devices.HUDCTRL.ToString("d"), Commands.hudctrl_commands.HUD_BRT_Knob.ToString("d"), "120", 0.1d, 0.0d, 1.0d, "HUD Control Panel", "HUD Brightness Control", false, "%0.1f"));
+            AddFunction(new Axis(this, devices.HUDCTRL.ToString("d"), Commands.hudctrl_commands.HUD_BRT_Knob.ToString("d"), "120", 0.1d, 0.0d, 1.0d, "HUD Control Panel", "HUD Brightness Control", false, "%.2f"));
             AddFunction(new Switch(this, devices.HUDCTRL.ToString("d"), "121", SwitchPositions.Create(3, 1d, -0.5d, Commands.hudctrl_commands.HUD_REJ_Switch.ToString("d"), "Posn", "%0.1f"), "HUD Control Panel", "HUD Symbology Reject Mode", "%0.1f"));
             AddFunction(new Switch(this, devices.HUDCTRL.ToString("d"), "122", new SwitchPosition[] { new SwitchPosition("-1.0", "Posn 1", Commands.hudctrl_commands.HUD_MODE_Switch.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.hudctrl_commands.HUD_MODE_Switch.ToString("d")), new SwitchPosition("1.0", "Posn 3", Commands.hudctrl_commands.HUD_MODE_Switch.ToString("d")) }, "HUD Control Panel", "HUD DAY/AUTO/NIGHT Mode Selector", "%0.1f"));
             AddFunction(new PushButton(this, devices.HUDCTRL.ToString("d"), Commands.hudctrl_commands.HUD_BIT_Button.ToString("d"), "123", "HUD Control Panel", "HUD BIT", "%.1f"));
-            AddFunction(new Axis(this, devices.HUDCTRL.ToString("d"), Commands.hudctrl_commands.HUD_VIDEO_BRT_Knob.ToString("d"), "124", 0.1d, 0.0d, 1.0d, "HUD Control Panel", "HUD Video Brightness Control", false, "%0.1f"));
-            AddFunction(new Axis(this, devices.HUDCTRL.ToString("d"), Commands.hudctrl_commands.HUD_VIDEO_CONT_Knob.ToString("d"), "125", 0.1d, 0.0d, 1.0d, "HUD Control Panel", "HUD Contrast Control", false, "%0.1f"));
+            AddFunction(new Axis(this, devices.HUDCTRL.ToString("d"), Commands.hudctrl_commands.HUD_VIDEO_BRT_Knob.ToString("d"), "124", 0.1d, 0.0d, 1.0d, "HUD Control Panel", "HUD Video Brightness Control", false, "%.2f"));
+            AddFunction(new Axis(this, devices.HUDCTRL.ToString("d"), Commands.hudctrl_commands.HUD_VIDEO_CONT_Knob.ToString("d"), "125", 0.1d, 0.0d, 1.0d, "HUD Control Panel", "HUD Contrast Control", false, "%.2f"));
             AddFunction(new PushButton(this, devices.ACC.ToString("d"), Commands.hudctrl_commands.MM_AA_Switch.ToString("d"), "126", "HUD Control Panel", "AA Master Mode Selector", "%.1f"));
             AddFunction(new FlagValue(this, "326", "HUD Control Panel", "AA Master Mode Indicator", "True when indicator is lit", "%1d"));
             AddFunction(new PushButton(this, devices.ACC.ToString("d"), Commands.hudctrl_commands.MM_AG_Switch.ToString("d"), "127", "HUD Control Panel", "AG Master Mode Selector", "%.1f"));
@@ -383,8 +383,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             #endregion CAS
             #region MISC
             AddFunction(new Switch(this, devices.FLCTRL.ToString("d"), "534", new SwitchPosition[] { new SwitchPosition("1.0", "AUTO", Commands.misc_commands.roll_ratio_sw.ToString("d")), new SwitchPosition("0.0", "EMERG", Commands.misc_commands.roll_ratio_sw.ToString("d")) }, "Miscellaneous Panel", "Roll Ratio Switch", "%0.1f"));
-            AddFunction(new Switch(this, devices.DEEC.ToString("d"), "535", new SwitchPosition[] { new SwitchPosition("1.0", "AUTO", Commands.misc_commands.left_inlet_sw.ToString("d")), new SwitchPosition("0.0", "EMERG", Commands.misc_commands.left_inlet_sw.ToString("d")) }, "Miscellaneous Panel", "Left Inlet Ramp Switch", "%0.1f"));
-            AddFunction(new Switch(this, devices.DEEC.ToString("d"), "536", new SwitchPosition[] { new SwitchPosition("1.0", "AUTO", Commands.misc_commands.right_inlet_sw.ToString("d")), new SwitchPosition("0.0", "EMERG", Commands.misc_commands.right_inlet_sw.ToString("d")) }, "Miscellaneous Panel", "Right Inlet Ramp Switch", "%0.1f"));
+            AddFunction(new Switch(this, devices.DEEC.ToString("d"), "535", new SwitchPosition[] { new SwitchPosition("0.0", "AUTO", Commands.misc_commands.left_inlet_sw.ToString("d")), new SwitchPosition("1.0", "EMERG", Commands.misc_commands.left_inlet_sw.ToString("d")) }, "Miscellaneous Panel", "Left Inlet Ramp Switch", "%0.1f"));
+            AddFunction(new Switch(this, devices.DEEC.ToString("d"), "536", new SwitchPosition[] { new SwitchPosition("0.0", "AUTO", Commands.misc_commands.right_inlet_sw.ToString("d")), new SwitchPosition("1.0", "EMERG", Commands.misc_commands.right_inlet_sw.ToString("d")) }, "Miscellaneous Panel", "Right Inlet Ramp Switch", "%0.1f"));
             AddFunction(new Switch(this, devices.LGS.ToString("d"), "537", SwitchPositions.Create(3, 1d, -0.5d, Commands.misc_commands.anti_skid_sw.ToString("d"), new string[] { "Norm","Pulser","Off"}, "%0.1f"), "Miscellaneous Panel", "Anti Skid Switch", "%0.1f"));
             #endregion MISC
             #region FUEL

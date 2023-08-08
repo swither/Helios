@@ -944,13 +944,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             // Vehicles = new string[] { ModuleName, "other aircraft", "another aircraft" };
 
             // see if we can restore from JSON
-            #if (!DEBUG)
+//#if (!DEBUG)
                         if (LoadFunctionsFromJson())
                         {
                             return;
                         }
-            #endif
-#region MPDs
+//#endif
+            #region MPDs
             #region Pilot Left
             AddFunction(new PushButton(this, MFD_PLT_LEFT, mpd_commands.T1.ToString("d"), "20", "MFD Left (Pilot)", "Button T1"));
             AddFunction(new PushButton(this, MFD_PLT_LEFT, mpd_commands.T2.ToString("d"), "21", "MFD Left (Pilot)", "Button T2"));

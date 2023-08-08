@@ -56,7 +56,12 @@ else
    Execute database, "UPDATE CustomAction SET `Type` = 1025 WHERE `Type` = 3073"
 
    if session.Property("ProductName") = "Helios" then
-		RemoveProblemComponent database, "PATCHING.DLL|patching.dll"
+		if not RemoveProblemComponent( database, "PATCHING.DLL|patching.dll") then 
+            ' if lowercase was not found then try mixed case
+            if not RemoveProblemComponent( database, "PATCHING.DLL|Patching.dll") then
+                	Wscript.Echo  "* * * Info: Component Patching.dll was not found and not deleted."
+            end if
+        end if
    End if
 
 
@@ -126,14 +131,15 @@ Sub Execute(database, sql)
 
 end Sub
 
-Sub RemoveProblemComponent(database, fileName)
+Function RemoveProblemComponent(database, fileName)
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ''' REVISIT:  If the Windows Installer starts processing dependencies more reliably, then the following code to '''
     '''           delete a unnecessary and problematic dependencies can probably be removed.                        '''
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' This is to remove a problematic copy of a dll which can end up in TARGETDIR and cause problems.
+	RemoveProblemComponent = false
 	Dim sql: sql = "SELECT Component.KeyPath, Component.ComponentId, File.FileName FROM Component, File " & _
-										   "WHERE File.Component_ = Component.Component AND File.FileName = 'PATCHING.DLL|Patching.dll' AND " & _ 
+										   "WHERE File.Component_ = Component.Component AND File.FileName = '" & fileName & "' AND " & _ 
 										   "Component.Directory_ = 'TARGETDIR'"
 	Dim componentView: Set componentView = database.OpenView(sql)
 	componentView.Execute  : CheckError sql
@@ -141,10 +147,11 @@ Sub RemoveProblemComponent(database, fileName)
     If Not Record Is Nothing then
         Execute database, "DELETE FROM Component WHERE `KeyPath` = '" & Record.StringData(1) & "' " 
     	Wscript.Echo "Delete Component: " & Record.StringData(2) & " for File " & Record.StringData(3)
+        RemoveProblemComponent = true
     Else
-    	Fail "Deletion of " & fileName & " Component Failed: No Component Found"
+        RemoveProblemComponent = false
     End If
-end Sub
+end Function
 
 Sub CheckError(context)
     Dim message, errRec

@@ -207,7 +207,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Docs\Helios.FA-18C.Plugin.Install.Read.Me.rtf" />
+    <Content Include="Docs\Helios.FA-18C.Plugin.Install.Read.Me.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Gauges\IFEI\IFEI.psd" />
     <None Include="Gauges\UFC\UFC Faceplate.psd" />
     <Content Include="Templates\Base\FA-18C\3 Panels\UFC.htpl">

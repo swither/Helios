@@ -55,7 +55,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Docs\Helios.Ka-50.Plugin.Install.Read.Me.rtf" />
+    <Content Include="Docs\Helios.Ka-50.Plugin.Install.Read.Me.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Interfaces\ExportFunctions.lua" />
