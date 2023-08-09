@@ -196,7 +196,7 @@ if %errorlevel% neq 0 (
 )
 popd
 pushd "Aircraft F-15E Plugin Installers\Release32"
-cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios F-15E Plugin.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
+cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios F-15E 32bit Plugin.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
 if %errorlevel% neq 0 (
 	echo Installer fixup script failed to fix up 32-bit Helios F-15E Plugin installer.  Already built installers will be deleted.
 	popd
