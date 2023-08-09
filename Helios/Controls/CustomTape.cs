@@ -803,7 +803,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			base.WriteXml(writer);
 
 			writer.WriteElementString("TapeImage", TapeImage);
-			writer.WriteElementString("OffFlagImage", BackgroundImage);
+			writer.WriteElementString("OffFlagImage", OffFlagImage);
 			writer.WriteElementString("ForegroundImage", ForegroundImage);
 			writer.WriteElementString("BackgroundImage", BackgroundImage);
 			writer.WriteElementString("Tape_PosX", Tape_PosX.ToString(CultureInfo.InvariantCulture));
@@ -841,7 +841,7 @@ namespace GadrocsWorkshop.Helios.Controls
 			base.ReadXml(reader);
 
 			TapeImage = reader.ReadElementString("TapeImage");
-			BackgroundImage = reader.ReadElementString("OffFlagImage");
+            OffFlagImage = reader.ReadElementString("OffFlagImage");
 			ForegroundImage = reader.ReadElementString("ForegroundImage");
 			BackgroundImage = reader.ReadElementString("BackgroundImage");
 			Tape_PosX = double.Parse(reader.ReadElementString("Tape_PosX"), CultureInfo.InvariantCulture);
