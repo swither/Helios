@@ -56,6 +56,8 @@ namespace GadrocsWorkshop.Helios
             {"{Helios}/Images/AH-64D/", "{AH-64D}/Images/"},
             {"{Helios}/Gauges/FA-18C/", "{FA-18C}/Gauges/"},
             {"{Helios}/Images/FA-18C/", "{FA-18C}/Images/"},
+            {"{Helios}/Gauges/UH-60L/", "{UH-60L}/Gauges/"},
+            {"{Helios}/Images/UH-60L/", "{UH-60L}/Images/"},
 
         };
 
