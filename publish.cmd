@@ -56,7 +56,7 @@ if exist "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets" (
 )
 mkdir ..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets
 tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip" -C "Helios Installer\Release" *.msi -C "..\..\Keypress Receiver Installer\Release" *.msi -C "..\..\Tools Installer\Release" *.msi
-tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip" -C "Helios Installer\Release32" *.msi -C "Aircraft F-15E Plugin Installers\Release32" *.msi
+tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip" -C "Helios Installer\Release32" *.msi -C "..\..\Aircraft F-15E Plugin Installers\Release32" *.msi
 tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_StreamDeck_Alpha.zip" -C "bin\x64\Release" Plugins\OpenMacroBoard.SDK.dll Plugins\OpenMacroBoard.VirtualBoard.dll Plugins\StreamDeckSharp.dll Plugins\HeliosMacroBoard.dll
 tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_F-15E_Plugin.zip" -C "Aircraft F-15E Plugin Installers\Release" *.msi
 echo # Release %HELIOS_BUILT_VERSION% >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
