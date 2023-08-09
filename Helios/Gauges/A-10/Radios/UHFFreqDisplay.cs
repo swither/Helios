@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// This is a version of the UHF Frequency Display which uses a bespoke font to provide data in a text display instead of cutouts for the exported viewport.
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10.UHFFrequencyDisplay", "UHF Frequency Display", "A-10C Gauges", typeof(BackgroundImageRenderer))]
+    [HeliosControl("Helios.A10.UHFFrequencyDisplay", "UHF Frequency Display", "A-10C Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class UHFFreqDisplay : A10CDevice
     {
         public const double GLASS_REFLECTION_OPACITY_DEFAULT = 0.50;

@@ -17,7 +17,6 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.Instruments.BarometricAltimeter
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
-    using GadrocsWorkshop.Helios.Gauges.FA18C.Instruments;
     using System.Globalization;
     using System.Windows;
     using System.Xml;

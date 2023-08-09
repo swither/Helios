@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Stabilator Position Indicator</Name>
+	<Category>UH-60L Blackhawk</Category>
+	<TypeIdentifier>Helios.UH60L.Stabilator</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>276,233</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

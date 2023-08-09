@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.FanRPM
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.A10.FanRPM", "Fan RPM", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.FanRPM", "Fan RPM", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class FanRPM : BaseGauge
     {
         private HeliosValue _rpm;

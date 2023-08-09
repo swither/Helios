@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.TISLCodeWheel
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.A10.TISLCodeWheel", "TISL Code Wheel Window", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.TISLCodeWheel", "TISL Code Wheel Window", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class TISLCodeWheel : BaseGauge
     {
         private GaugeDrumCounter _drum;

@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.CabinPressure
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.A10.CabinPressure", "Cabin Pressure", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.CabinPressure", "Cabin Pressure", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class CabinPressure : BaseGauge
     {
         private HeliosValue _pressure;

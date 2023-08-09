@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.EngineRPM
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.A10.EngineTemp", "Engine Temp", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.EngineTemp", "Engine Temp", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class EngineTemp : BaseGauge
     {
         private HeliosValue _temperature;

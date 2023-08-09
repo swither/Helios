@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Vertical Velocity Indicator</Name>
+	<Category>AV-8B Harrier</Category>
+	<TypeIdentifier>Helios.AV8B.VVI (AutoBinding)</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>300,309</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

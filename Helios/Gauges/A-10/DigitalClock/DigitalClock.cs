@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// This is the A-10C Digital Clock panel which uses text displays instead of cutouts for the exported viewport.
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10.DigitalClock", "Digital Clock", "A-10C Gauges", typeof(BackgroundImageRenderer))]
+    [HeliosControl("Helios.A10.DigitalClock", "Digital Clock", "A-10C Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class DigitalClock : A10CDevice
     {
 

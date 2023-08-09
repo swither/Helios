@@ -20,7 +20,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
 
     [HeliosControl("Helios.Base.GuardedToggleSwitch", "Guarded Toggle Switch", "Toggle Switches", typeof(GuardedToggleSwitchRenderer))]
-    class GuardedToggleSwitch : HeliosVisual
+    public class GuardedToggleSwitch : HeliosVisual
     {
         private static readonly Rect GuardUpRegion = new Rect(0, 0, 65, 123);
         private static readonly Rect SwitchRegion = new Rect(0, 123, 65, 80);

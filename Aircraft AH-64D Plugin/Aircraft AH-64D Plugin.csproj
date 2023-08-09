@@ -1,0 +1,377 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F996DF6B-2462-4DA4-9E2D-3FB800B5842D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GadrocsWorkshop.Helios</RootNamespace>
+    <AssemblyName>AH-64D</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Docs\Helios.AH-64D.Plugin.Install.Read.Me.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Interfaces\ExportFunctions.lua" />
+    <Resource Include="Images\SAI\adi_off_flag.png" />
+    <Resource Include="Images\SAI\adi_ball.png" />
+    <Content Include="Templates\Base\AH-64D\0 Altimeter.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\1 CMWS.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\1 EUFD Pilot.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\2 EUFD CPG.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\0 Free Air Temp.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\2 Keyboard CPG.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\1 Keyboard Pilot.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\2 1 MFD  CPG.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\0 Standby Attitude Indicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\2 2 TEDAC.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\0 Air Speed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\2 3 MFD CPG.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\1 MFD 1 Pilot.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\AH-64D\1 MFD 2 Pilot.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Gauges\Altimeter\Altimeter.cs" />
+    <Compile Include="Gauges\CMWS\CMWSDisplay.cs" />
+    <Compile Include="Gauges\CMWS\CMWSThreatDisplay.cs" />
+    <Compile Include="Gauges\EUFD\EUFD CPG.cs" />
+    <Compile Include="Gauges\EUFD\EUFD Pilot.cs" />
+    <Compile Include="Gauges\EUFD\EUFD.cs" />
+    <Compile Include="Gauges\FAT\FAT.cs" />
+    <Compile Include="Gauges\IAS\IAS.cs" />
+    <Compile Include="Gauges\KU\KU CPG.cs" />
+    <Compile Include="Gauges\KU\KU Pilot.cs" />
+    <Compile Include="Gauges\KU\KU.cs" />
+    <Compile Include="Gauges\MFD\MFD CPG Left.cs" />
+    <Compile Include="Gauges\MFD\MFD CPG Right.cs" />
+    <Compile Include="Gauges\MFD\MFD Pilot Left.cs" />
+    <Compile Include="Gauges\MFD\MFD Pilot Right.cs" />
+    <Compile Include="Gauges\MFD\MFD.cs" />
+    <Compile Include="Gauges\Power\PowerLever.cs" />
+    <Compile Include="Gauges\SAI\SAI.cs" />
+    <Compile Include="Gauges\TEDAC\TEDAC.cs" />
+    <Compile Include="Interfaces\AH-64DInterface.cs" />
+    <Compile Include="Interfaces\Functions\AH-64DFunction.cs" />
+    <Compile Include="Interfaces\Functions\Altimeter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Altimeter\altimeter_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_background.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_bottomleft.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_bottomright.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_d.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_frame.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_front.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\CMWS_Jettison_Guard_Down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\CMWS_Jettison_One_Up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\CMWS_Jettison_Two_Up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_left.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_r.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_rear.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_right.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_threat_background.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_topleft.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CMWS\cmws_topright.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Common\Common Knob.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Common\Selector_Knob.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EUFD\EUFD Enter Button DnH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EUFD\EUFD Enter Button UpH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EUFD\EUFD Preset Button DnH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EUFD\EUFD Preset Button UpH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EUFD\EUFD Stopwatch Button DnH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EUFD\EUFD Stopwatch Button UpH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EUFD\EUFD Swap Button DnH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EUFD\EUFD Swap Button UpH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EUFD\EUFD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\FAT\fat_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\IAS\ias_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\KU\KU_Frame.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\KU\tactile-dark-square-emphasised-in.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\KU\tactile-dark-square-emphasised.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MFD\MFD Button 1 DnH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MFD\MFD Button 1 UpH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MFD\MFD Button 2 DnH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MFD\MFD Button 2 UpH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MFD\MFD_Frame.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MFD\MFD_glass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Power\Lever_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Power\Lever_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Power\Lever_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Power\Lever_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Power\Lever_4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Power\Lever_5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_arrow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_bezel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_guides.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_inner_ring.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_innermost_ring.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_outer_ring.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_turn_marker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_wings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\TEDAC\TEDAC_frame.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SAI\adi_slip_ball.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Helios\Helios.csproj">
+      <Project>{e5abe3f5-46ec-46d1-9330-d42311471a93}</Project>
+      <Name>Helios</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="..\HeliosPlugin.targets" />
+</Project>

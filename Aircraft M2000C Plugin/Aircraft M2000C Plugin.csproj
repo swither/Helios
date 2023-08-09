@@ -1,0 +1,778 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{68108832-33B8-11EE-BE56-0242AC120002}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GadrocsWorkshop.Helios</RootNamespace>
+    <AssemblyName>M2000C</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Interfaces\ExportFunctions.lua" />
+    <Resource Include="Images\yellow-indicator-off.png" />
+    <Resource Include="Images\red-indicator-on.png" />
+    <Resource Include="Images\red-indicator-off.png" />
+    <Resource Include="Images\M2000C_16x9.png" />
+    <Resource Include="Images\M2000C_16x10.png" />
+    <Resource Include="Images\VTBPanel\VTB-panel.png" />
+    <Resource Include="Images\VorIlsPanel\vor-ils-panel.png" />
+    <Resource Include="Images\VorIlsPanel\up-switch-vor-ils.png" />
+    <Resource Include="Images\VorIlsPanel\low-switch-vor-ils.png" />
+    <Resource Include="Images\VHF Radio\Mode_Knob.png" />
+    <Resource Include="Images\VHF Radio\M-2000C_VHF_Radio_Background.png" />
+    <Resource Include="Images\VHF Radio\Key_Zero.png" />
+    <Resource Include="Images\VHF Radio\Key_XFR.png" />
+    <Resource Include="Images\VHF Radio\Key_VLD_XFR_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_VLD.png" />
+    <Resource Include="Images\VHF Radio\Key_TONE.png" />
+    <Resource Include="Images\VHF Radio\Key_TOD.png" />
+    <Resource Include="Images\VHF Radio\Key_SQL.png" />
+    <Resource Include="Images\VHF Radio\Key_READ.png" />
+    <Resource Include="Images\VHF Radio\Key_Mem.png" />
+    <Resource Include="Images\VHF Radio\Key_LOW.png" />
+    <Resource Include="Images\VHF Radio\Key_Lit.png" />
+    <Resource Include="Images\VHF Radio\Key_GR.png" />
+    <Resource Include="Images\VHF Radio\Key_CONF_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_CONF.png" />
+    <Resource Include="Images\VHF Radio\Key_CLR_MEM_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_CLR.png" />
+    <Resource Include="Images\VHF Radio\Key_9_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_9.png" />
+    <Resource Include="Images\VHF Radio\Key_8_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_8.png" />
+    <Resource Include="Images\VHF Radio\Key_7_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_7.png" />
+    <Resource Include="Images\VHF Radio\Key_6_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_6.png" />
+    <Resource Include="Images\VHF Radio\Key_5_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_5.png" />
+    <Resource Include="Images\VHF Radio\Key_4_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_4.png" />
+    <Resource Include="Images\VHF Radio\Key_3_Lit.png" />
+    <Resource Include="Images\VHF Radio\Key_3_Light.png" />
+    <Resource Include="Images\VHF Radio\Key_3_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_3.png" />
+    <Resource Include="Images\VHF Radio\Key_20.png" />
+    <Resource Include="Images\VHF Radio\Key_2_Light.png" />
+    <Resource Include="Images\VHF Radio\Key_2_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_2.png" />
+    <Resource Include="Images\VHF Radio\Key_1_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_1.png" />
+    <Resource Include="Images\VHF Radio\Key_0_Blank.png" />
+    <Resource Include="Images\VHF Radio\Key_0.png" />
+    <Resource Include="Images\VHF Radio\Encoder_Knob.png" />
+    <Resource Include="Images\UHF Radio\UHF_Radio_Panel.png" />
+    <Resource Include="Images\UHF Radio\UHF_Mode_Knob.png" />
+    <Resource Include="Images\UHF Radio\UHF_Channel_Knob.png" />
+    <Resource Include="Images\UHF Radio\Orange_UHF_Button_Up.png" />
+    <Resource Include="Images\UHF Radio\Orange_UHF_Button_Lit_Up.png" />
+    <Resource Include="Images\UHF Radio\Orange_UHF_Button_Lit_Down.png" />
+    <Resource Include="Images\UHF Radio\Orange_UHF_Button_Down.png" />
+    <Resource Include="Images\UHF Radio\Green_UHF_Button_Up.png" />
+    <Resource Include="Images\UHF Radio\Green_UHF_Button_Lit_Up.png" />
+    <Resource Include="Images\UHF Radio\Green_UHF_Button_Lit_Down.png" />
+    <Resource Include="Images\UHF Radio\Green_UHF_Button_Down.png" />
+    <Resource Include="Images\TestPanel\test-panel.png" />
+    <Resource Include="Images\TestPanel\test-ok-on.png" />
+    <Resource Include="Images\TestPanel\test-ok-off.png" />
+    <Resource Include="Images\TestPanel\test-fail-on.png" />
+    <Resource Include="Images\TestPanel\test-fail-off.png" />
+    <Resource Include="Images\TestPanel\hyd-on.png" />
+    <Resource Include="Images\TestPanel\hyd-off.png" />
+    <Resource Include="Images\TestPanel\fbw-test-up.png" />
+    <Resource Include="Images\TestPanel\fbw-test-down.png" />
+    <Resource Include="Images\TestPanel\elec-on.png" />
+    <Resource Include="Images\TestPanel\elec-off.png" />
+    <Resource Include="Images\TestPanel\cdve5-up.png" />
+    <Resource Include="Images\TestPanel\cdve5-down.png" />
+    <Resource Include="Images\TestPanel\autopilot-test-up.png" />
+    <Resource Include="Images\TestPanel\autopilot-test-down.png" />
+    <Resource Include="Images\TacanPanel\up-switch-tacan.png" />
+    <Resource Include="Images\TacanPanel\tacan-panel.png" />
+    <Resource Include="Images\TacanPanel\low-switch-tacan.png" />
+    <Resource Include="Images\Switches\short-black-up.png" />
+    <Resource Include="Images\Switches\short-black-down.png" />
+    <Resource Include="Images\Switches\red-up.png" />
+    <Resource Include="Images\Switches\red-mid.png" />
+    <Resource Include="Images\Switches\red-down.png" />
+    <Resource Include="Images\Switches\long-black-up.png" />
+    <Resource Include="Images\Switches\long-black-mid.png" />
+    <Resource Include="Images\Switches\long-black-down.png" />
+    <Resource Include="Images\Switches\black-circle-up.png" />
+    <Resource Include="Images\Switches\black-circle-mid.png" />
+    <Resource Include="Images\Switches\black-circle-down.png" />
+    <Resource Include="Images\RADAR IFF Mode Panel\RADAR_IFF_Panel.png" />
+    <Resource Include="Images\RADAR IFF Mode Panel\RADAR_IFF_Knob.png" />
+    <Resource Include="Images\RADAR IFF Mode Panel\black-circle-up.png" />
+    <Resource Include="Images\RADAR IFF Mode Panel\black-circle-down.png" />
+    <Resource Include="Images\PPAPanel\void.png" />
+    <Resource Include="Images\PPAPanel\tot-on.png" />
+    <Resource Include="Images\PPAPanel\small-black-up.png" />
+    <Resource Include="Images\PPAPanel\small-black-mid.png" />
+    <Resource Include="Images\PPAPanel\small-black-down.png" />
+    <Resource Include="Images\PPAPanel\ppa-panel.png" />
+    <Resource Include="Images\PPAPanel\ppa-p-mis.png" />
+    <Resource Include="Images\PPAPanel\ppa-p-mag.png" />
+    <Resource Include="Images\PPAPanel\ppa-button.png" />
+    <Resource Include="Images\PPAPanel\par-on.png" />
+    <Resource Include="Images\PPAPanel\p-on.png" />
+    <Resource Include="Images\PPAPanel\mis-on.png" />
+    <Resource Include="Images\PPAPanel\man-on.png" />
+    <Resource Include="Images\PPAPanel\mag-on.png" />
+    <Resource Include="Images\PPAPanel\aut-on.png" />
+    <Resource Include="Images\PCNPanel\val.png" />
+    <Resource Include="Images\PCNPanel\val-on.png" />
+    <Resource Include="Images\PCNPanel\uni-on.png" />
+    <Resource Include="Images\PCNPanel\sec-on.png" />
+    <Resource Include="Images\PCNPanel\rec.png" />
+    <Resource Include="Images\PCNPanel\rec-on.png" />
+    <Resource Include="Images\PCNPanel\pret-on.png" />
+    <Resource Include="Images\PCNPanel\prep.png" />
+    <Resource Include="Images\PCNPanel\prep-on.png" />
+    <Resource Include="Images\PCNPanel\PCNScreenBackground.png" />
+    <Resource Include="Images\PCNPanel\pcn-panel.png" />
+    <Resource Include="Images\PCNPanel\ndeg-on.png" />
+    <Resource Include="Images\PCNPanel\mrq.png" />
+    <Resource Include="Images\PCNPanel\mrq-on.png" />
+    <Resource Include="Images\PCNPanel\mip-on.png" />
+    <Resource Include="Images\PCNPanel\m93-on.png" />
+    <Resource Include="Images\PCNPanel\m92-on.png" />
+    <Resource Include="Images\PCNPanel\m91-on.png" />
+    <Resource Include="Images\PCNPanel\ins.png" />
+    <Resource Include="Images\PCNPanel\ins-parameter-selector.png" />
+    <Resource Include="Images\PCNPanel\ins-on.png" />
+    <Resource Include="Images\PCNPanel\ins-9.png" />
+    <Resource Include="Images\PCNPanel\ins-8.png" />
+    <Resource Include="Images\PCNPanel\ins-7.png" />
+    <Resource Include="Images\PCNPanel\ins-6.png" />
+    <Resource Include="Images\PCNPanel\ins-5.png" />
+    <Resource Include="Images\PCNPanel\ins-4.png" />
+    <Resource Include="Images\PCNPanel\ins-3.png" />
+    <Resource Include="Images\PCNPanel\ins-2.png" />
+    <Resource Include="Images\PCNPanel\ins-1.png" />
+    <Resource Include="Images\PCNPanel\ins-0.png" />
+    <Resource Include="Images\PCNPanel\enc.png" />
+    <Resource Include="Images\PCNPanel\enc-on.png" />
+    <Resource Include="Images\PCNPanel\eff.png" />
+    <Resource Include="Images\PCNPanel\eff-on.png" />
+    <Resource Include="Images\PCNPanel\dest.png" />
+    <Resource Include="Images\PCNPanel\dest-on.png" />
+    <Resource Include="Images\PCNPanel\Button_Up.png" />
+    <Resource Include="Images\PCNPanel\Button_Down.png" />
+    <Resource Include="Images\PCNPanel\bad.png" />
+    <Resource Include="Images\PCNPanel\bad-on.png" />
+    <Resource Include="Images\PCNPanel\aln-on.png" />
+    <Resource Include="Images\PCAPanel\void.png" />
+    <Resource Include="Images\PCAPanel\s-on.png" />
+    <Resource Include="Images\PCAPanel\PCA_Upper_Display.png" />
+    <Resource Include="Images\PCAPanel\PCA_Panel_New.png" />
+    <Resource Include="Images\PCAPanel\PCA_Lower_Display.png" />
+    <Resource Include="Images\PCAPanel\pca-panel.png" />
+    <Resource Include="Images\PCAPanel\pca-button.png" />
+    <Resource Include="Images\PCAPanel\p-on.png" />
+    <Resource Include="Images\PCAPanel\kl2-on.png" />
+    <Resource Include="Images\PCAPanel\kl1-on.png" />
+    <Resource Include="Images\PCAPanel\guard-up.png" />
+    <Resource Include="Images\PCAPanel\guard-down.png" />
+    <Resource Include="Images\Miscellaneous\void.png" />
+    <Resource Include="Images\Miscellaneous\UHF_Repeater_Display_Background.png" />
+    <Resource Include="Images\Miscellaneous\UHF_Repeater.png" />
+    <Resource Include="Images\Miscellaneous\rwr-light-on.png" />
+    <Resource Include="Images\Miscellaneous\rwr-light-off.png" />
+    <Resource Include="Images\Miscellaneous\RadAlt_Knob.png" />
+    <Resource Include="Images\Miscellaneous\PPA_Display_Background.png" />
+    <Resource Include="Images\Miscellaneous\pc-panel.png" />
+    <Resource Include="Images\Miscellaneous\pc-on.png" />
+    <Resource Include="Images\Miscellaneous\pc-off.png" />
+    <Resource Include="Images\Miscellaneous\Fuel_Burn_Bingo_Display_Background.png" />
+    <Resource Include="Images\Miscellaneous\Fuel_Burn_Bingo.png" />
+    <Resource Include="Images\Miscellaneous\fire-warning-panel.png" />
+    <Resource Include="Images\Miscellaneous\fire-warning-engine-chamber-on.png" />
+    <Resource Include="Images\Miscellaneous\fire-warning-engine-chamber-off.png" />
+    <Resource Include="Images\Miscellaneous\fire-warning-afterburner-chamber-on.png" />
+    <Resource Include="Images\Miscellaneous\fire-warning-afterburner-chamber-off.png" />
+    <Resource Include="Images\Miscellaneous\demar-panel.png" />
+    <Resource Include="Images\Miscellaneous\demar-on.png" />
+    <Resource Include="Images\Miscellaneous\demar-off.png" />
+    <Resource Include="Images\Miscellaneous\aoa-panel.png" />
+    <Resource Include="Images\Misc\void.png" />
+    <Resource Include="Images\Misc\UHF_Repeater_Display_Background.png" />
+    <Resource Include="Images\Misc\UHF_Repeater.png" />
+    <Resource Include="Images\Misc\rwr-light-on.png" />
+    <Resource Include="Images\Misc\rwr-light-off.png" />
+    <Resource Include="Images\Misc\RadAlt_Knob.png" />
+    <Resource Include="Images\Misc\PPA_Display_Background.png" />
+    <Resource Include="Images\Misc\pc-panel.png" />
+    <Resource Include="Images\Misc\pc-on.png" />
+    <Resource Include="Images\Misc\pc-off.png" />
+    <Resource Include="Images\Misc\IAS_Bezel.png" />
+    <Resource Include="Images\Misc\IAS_and_Altimeter_Bezel.png" />
+    <Resource Include="Images\Misc\Fuel_Burn_Bingo_Display_Background.png" />
+    <Resource Include="Images\Misc\Fuel_Burn_Bingo.png" />
+    <Resource Include="Images\Misc\fire-warning-panel.png" />
+    <Resource Include="Images\Misc\fire-warning-engine-chamber-on.png" />
+    <Resource Include="Images\Misc\fire-warning-engine-chamber-off.png" />
+    <Resource Include="Images\Misc\fire-warning-afterburner-chamber-on.png" />
+    <Resource Include="Images\Misc\fire-warning-afterburner-chamber-off.png" />
+    <Resource Include="Images\Misc\demar-panel.png" />
+    <Resource Include="Images\Misc\demar-on.png" />
+    <Resource Include="Images\Misc\demar-off.png" />
+    <Resource Include="Images\Misc\aoa-panel.png" />
+    <Resource Include="Images\Misc\Aircraft.png" />
+    <Resource Include="Images\MCLPanel\void.png" />
+    <Resource Include="Images\MCLPanel\panne-yellow.png" />
+    <Resource Include="Images\MCLPanel\panne-yellow-on.png" />
+    <Resource Include="Images\MCLPanel\panne-red.png" />
+    <Resource Include="Images\MCLPanel\panne-red-on.png" />
+    <Resource Include="Images\MCLPanel\mcl-panel.png" />
+    <Resource Include="Images\Low Altitude Setting Display\Low_Altitude_Setting.png" />
+    <Resource Include="Images\Low Altitude Setting Display\Altitude_ThumbWheel_2.png" />
+    <Resource Include="Images\Low Altitude Setting Display\Altitude_ThumbWheel_1.png" />
+    <Resource Include="Images\LGPanel\spad-on.png" />
+    <Resource Include="Images\LGPanel\spad-off.png" />
+    <Resource Include="Images\LGPanel\right-gear-on.png" />
+    <Resource Include="Images\LGPanel\right-gear-off.png" />
+    <Resource Include="Images\LGPanel\nose-gear-on.png" />
+    <Resource Include="Images\LGPanel\nose-gear-off.png" />
+    <Resource Include="Images\LGPanel\lg-panel.png" />
+    <Resource Include="Images\LGPanel\left-gear-on.png" />
+    <Resource Include="Images\LGPanel\left-gear-off.png" />
+    <Resource Include="Images\LGPanel\landing-gear-up.png" />
+    <Resource Include="Images\LGPanel\landing-gear-down.png" />
+    <Resource Include="Images\LGPanel\gun-arming-guard-up.png" />
+    <Resource Include="Images\LGPanel\gun-arming-guard-down.png" />
+    <Resource Include="Images\LGPanel\frein-on.png" />
+    <Resource Include="Images\LGPanel\frein-off.png" />
+    <Resource Include="Images\LGPanel\fbwg-guard-up.png" />
+    <Resource Include="Images\LGPanel\fbwg-guard-down.png" />
+    <Resource Include="Images\LGPanel\f-on.png" />
+    <Resource Include="Images\LGPanel\f-off.png" />
+    <Resource Include="Images\LGPanel\emergency-landing-gear-lever.png" />
+    <Resource Include="Images\LGPanel\emergency-jettison-pushed.png" />
+    <Resource Include="Images\LGPanel\emergency-jettison-not-pushed.png" />
+    <Resource Include="Images\LGPanel\dirav-on.png" />
+    <Resource Include="Images\LGPanel\dirav-off.png" />
+    <Resource Include="Images\LGPanel\cross-on.png" />
+    <Resource Include="Images\LGPanel\cross-off.png" />
+    <Resource Include="Images\LGPanel\bip-on.png" />
+    <Resource Include="Images\LGPanel\bip-off.png" />
+    <Resource Include="Images\LGPanel\a-on.png" />
+    <Resource Include="Images\LGPanel\a-off.png" />
+    <Resource Include="Images\Landing Gear Panel\spad-on.png" />
+    <Resource Include="Images\Landing Gear Panel\spad-off.png" />
+    <Resource Include="Images\Landing Gear Panel\right-gear-on.png" />
+    <Resource Include="Images\Landing Gear Panel\right-gear-off.png" />
+    <Resource Include="Images\Landing Gear Panel\nose-gear-on.png" />
+    <Resource Include="Images\Landing Gear Panel\nose-gear-off.png" />
+    <Resource Include="Images\Landing Gear Panel\lg-panel.png" />
+    <Resource Include="Images\Landing Gear Panel\left-gear-on.png" />
+    <Resource Include="Images\Landing Gear Panel\left-gear-off.png" />
+    <Resource Include="Images\Landing Gear Panel\landing-gear-up.png" />
+    <Resource Include="Images\Landing Gear Panel\landing-gear-lit-up.png" />
+    <Resource Include="Images\Landing Gear Panel\landing-gear-lit-down.png" />
+    <Resource Include="Images\Landing Gear Panel\landing-gear-down.png" />
+    <Resource Include="Images\Landing Gear Panel\gun-arming-guard-up.png" />
+    <Resource Include="Images\Landing Gear Panel\gun-arming-guard-down.png" />
+    <Resource Include="Images\Landing Gear Panel\frein-on.png" />
+    <Resource Include="Images\Landing Gear Panel\frein-off.png" />
+    <Resource Include="Images\Landing Gear Panel\fbwg-guard-up.png" />
+    <Resource Include="Images\Landing Gear Panel\fbwg-guard-down.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-Reset-Button-Up.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-Reset-Button-Down.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-Gain-Switch-Up.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-Gain-Switch-Down.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-G-Limit-Switch-Up.png" />
+    <Resource Include="Images\Landing Gear Panel\FBW-G-Limit-Switch-Down.png" />
+    <Resource Include="Images\Landing Gear Panel\f-on.png" />
+    <Resource Include="Images\Landing Gear Panel\f-off.png" />
+    <Resource Include="Images\Landing Gear Panel\emergency-landing-gear-lever.png" />
+    <Resource Include="Images\Landing Gear Panel\emergency-landing-gear-lever-vertical.png" />
+    <Resource Include="Images\Landing Gear Panel\emergency-jettison-pushed.png" />
+    <Resource Include="Images\Landing Gear Panel\emergency-jettison-not-pushed.png" />
+    <Resource Include="Images\Landing Gear Panel\dirav-on.png" />
+    <Resource Include="Images\Landing Gear Panel\dirav-off.png" />
+    <Resource Include="Images\Landing Gear Panel\cross-on.png" />
+    <Resource Include="Images\Landing Gear Panel\cross-off.png" />
+    <Resource Include="Images\Landing Gear Panel\bip-on.png" />
+    <Resource Include="Images\Landing Gear Panel\bip-off.png" />
+    <Resource Include="Images\Landing Gear Panel\BIP-Button-Up.png" />
+    <Resource Include="Images\Landing Gear Panel\BIP-Button-Down.png" />
+    <Resource Include="Images\Landing Gear Panel\a-on.png" />
+    <Resource Include="Images\Landing Gear Panel\a-off.png" />
+    <Resource Include="Images\INSPanel\operation-selector.png" />
+    <Resource Include="Images\INSPanel\mode-selector.png" />
+    <Resource Include="Images\INSPanel\ins-panel.png" />
+    <Resource Include="Images\IFF Mode Setting Display\IFF_Thumbwheel_1.png" />
+    <Resource Include="Images\IFF Mode Setting Display\IFF_Thumbwheel.png" />
+    <Resource Include="Images\IFF Mode Setting Display\IFF_Code_Settings.png" />
+    <Resource Include="Images\HSIPanel\vad-selector.png" />
+    <Resource Include="Images\HSIPanel\small-needle.png" />
+    <Resource Include="Images\HSIPanel\right-flag.png" />
+    <Resource Include="Images\HSIPanel\mode-selector.png" />
+    <Resource Include="Images\HSIPanel\mode-selector-needle.png" />
+    <Resource Include="Images\HSIPanel\left-flag.png" />
+    <Resource Include="Images\HSIPanel\hsi-panel.png" />
+    <Resource Include="Images\HSIPanel\distance-flag.png" />
+    <Resource Include="Images\HSIPanel\direction-needle.png" />
+    <Resource Include="Images\HSIPanel\big-needle.png" />
+    <Resource Include="Images\FuelPanel\v-on.png" />
+    <Resource Include="Images\FuelPanel\v-off.png" />
+    <Resource Include="Images\FuelPanel\rl-on.png" />
+    <Resource Include="Images\FuelPanel\rl-off.png" />
+    <Resource Include="Images\FuelPanel\fuel-transfer-knob-on.png" />
+    <Resource Include="Images\FuelPanel\fuel-transfer-knob-off.png" />
+    <Resource Include="Images\FuelPanel\fuel-panel.png" />
+    <Resource Include="Images\FuelPanel\av-on.png" />
+    <Resource Include="Images\FuelPanel\av-off.png" />
+    <Resource Include="Images\FuelPanel\air-refueling-on.png" />
+    <Resource Include="Images\FuelPanel\air-refueling-off.png" />
+    <Resource Include="Images\EngineSensorsPanel\engine-sensors-panel.png" />
+    <Resource Include="Images\EnginePanel\start-engine-pushed.png" />
+    <Resource Include="Images\EnginePanel\start-engine-not-pushed.png" />
+    <Resource Include="Images\EnginePanel\engine-start-up.png" />
+    <Resource Include="Images\EnginePanel\engine-start-panel.png" />
+    <Resource Include="Images\EnginePanel\engine-start-down.png" />
+    <Resource Include="Images\EnginePanel\coupe-feu-up.png" />
+    <Resource Include="Images\EnginePanel\coupe-feu-down.png" />
+    <Resource Include="Images\ECMBox\ecm-box.png" />
+    <Resource Include="Images\ECMBox\brightness-selector.png" />
+    <Resource Include="Images\CautionPanel\zeichen-on.png" />
+    <Resource Include="Images\CautionPanel\zeichen-off.png" />
+    <Resource Include="Images\CautionPanel\usel-on.png" />
+    <Resource Include="Images\CautionPanel\usel-off.png" />
+    <Resource Include="Images\CautionPanel\transf-on.png" />
+    <Resource Include="Images\CautionPanel\transf-off.png" />
+    <Resource Include="Images\CautionPanel\tr-on.png" />
+    <Resource Include="Images\CautionPanel\tr-off.png" />
+    <Resource Include="Images\CautionPanel\temp-on.png" />
+    <Resource Include="Images\CautionPanel\temp-off.png" />
+    <Resource Include="Images\CautionPanel\t7-on.png" />
+    <Resource Include="Images\CautionPanel\t7-off.png" />
+    <Resource Include="Images\CautionPanel\souris-on.png" />
+    <Resource Include="Images\CautionPanel\souris-off.png" />
+    <Resource Include="Images\CautionPanel\rpm-on.png" />
+    <Resource Include="Images\CautionPanel\rpm-off.png" />
+    <Resource Include="Images\CautionPanel\rego2-on.png" />
+    <Resource Include="Images\CautionPanel\rego2-off.png" />
+    <Resource Include="Images\CautionPanel\pelle-on.png" />
+    <Resource Include="Images\CautionPanel\pelle-off.png" />
+    <Resource Include="Images\CautionPanel\pcab-on.png" />
+    <Resource Include="Images\CautionPanel\pcab-off.png" />
+    <Resource Include="Images\CautionPanel\park-on.png" />
+    <Resource Include="Images\CautionPanel\park-off.png" />
+    <Resource Include="Images\CautionPanel\pa-on.png" />
+    <Resource Include="Images\CautionPanel\pa-off.png" />
+    <Resource Include="Images\CautionPanel\o2ha-on.png" />
+    <Resource Include="Images\CautionPanel\o2ha-off.png" />
+    <Resource Include="Images\CautionPanel\niveau-on.png" />
+    <Resource Include="Images\CautionPanel\niveau-off.png" />
+    <Resource Include="Images\CautionPanel\man-on.png" />
+    <Resource Include="Images\CautionPanel\man-off.png" />
+    <Resource Include="Images\CautionPanel\hyds-on.png" />
+    <Resource Include="Images\CautionPanel\hyds-off.png" />
+    <Resource Include="Images\CautionPanel\hyd2-on.png" />
+    <Resource Include="Images\CautionPanel\hyd2-off.png" />
+    <Resource Include="Images\CautionPanel\hyd1-on.png" />
+    <Resource Include="Images\CautionPanel\hyd1-off.png" />
+    <Resource Include="Images\CautionPanel\huile-on.png" />
+    <Resource Include="Images\CautionPanel\huile-off.png" />
+    <Resource Include="Images\CautionPanel\gain-on.png" />
+    <Resource Include="Images\CautionPanel\gain-off.png" />
+    <Resource Include="Images\CautionPanel\ep-on.png" />
+    <Resource Include="Images\CautionPanel\ep-off.png" />
+    <Resource Include="Images\CautionPanel\dsv-on.png" />
+    <Resource Include="Images\CautionPanel\dsv-off.png" />
+    <Resource Include="Images\CautionPanel\dom-on.png" />
+    <Resource Include="Images\CautionPanel\dom-off.png" />
+    <Resource Include="Images\CautionPanel\decol-on.png" />
+    <Resource Include="Images\CautionPanel\decol-off.png" />
+    <Resource Include="Images\CautionPanel\conf-on.png" />
+    <Resource Include="Images\CautionPanel\conf-off.png" />
+    <Resource Include="Images\CautionPanel\condit-on.png" />
+    <Resource Include="Images\CautionPanel\condit-off.png" />
+    <Resource Include="Images\CautionPanel\cc-on.png" />
+    <Resource Include="Images\CautionPanel\cc-off.png" />
+    <Resource Include="Images\CautionPanel\caution-panel.png" />
+    <Resource Include="Images\CautionPanel\calc-on.png" />
+    <Resource Include="Images\CautionPanel\calc-off.png" />
+    <Resource Include="Images\CautionPanel\bpg-on.png" />
+    <Resource Include="Images\CautionPanel\bpg-off.png" />
+    <Resource Include="Images\CautionPanel\bpd-on.png" />
+    <Resource Include="Images\CautionPanel\bpd-off.png" />
+    <Resource Include="Images\CautionPanel\bp-on.png" />
+    <Resource Include="Images\CautionPanel\bp-off.png" />
+    <Resource Include="Images\CautionPanel\bingo-on.png" />
+    <Resource Include="Images\CautionPanel\bingo-off.png" />
+    <Resource Include="Images\CautionPanel\becs-on.png" />
+    <Resource Include="Images\CautionPanel\becs-off.png" />
+    <Resource Include="Images\CautionPanel\batt-on.png" />
+    <Resource Include="Images\CautionPanel\batt-off.png" />
+    <Resource Include="Images\CautionPanel\anemo-on.png" />
+    <Resource Include="Images\CautionPanel\anemo-off.png" />
+    <Resource Include="Images\CautionPanel\alt2-on.png" />
+    <Resource Include="Images\CautionPanel\alt2-off.png" />
+    <Resource Include="Images\CautionPanel\alt1-on.png" />
+    <Resource Include="Images\CautionPanel\alt1-off.png" />
+    <Resource Include="Images\CautionPanel\5mno2-on.png" />
+    <Resource Include="Images\CautionPanel\5mno2-off.png" />
+    <Resource Include="Images\AutopilotPanel\p-on.png" />
+    <Resource Include="Images\AutopilotPanel\p-off.png" />
+    <Resource Include="Images\AutopilotPanel\l-on.png" />
+    <Resource Include="Images\AutopilotPanel\l-off.png" />
+    <Resource Include="Images\AutopilotPanel\g-on.png" />
+    <Resource Include="Images\AutopilotPanel\g-off.png" />
+    <Resource Include="Images\AutopilotPanel\alt-on.png" />
+    <Resource Include="Images\AutopilotPanel\alt-off.png" />
+    <Resource Include="Images\AutopilotPanel\aff-on.png" />
+    <Resource Include="Images\AutopilotPanel\aff-off.png" />
+    <Resource Include="Images\AutopilotPanel\a-on.png" />
+    <Resource Include="Images\AutopilotPanel\a-off.png" />
+    <Resource Include="Images\AutopilotPanel\2y-on.png" />
+    <Resource Include="Images\AutopilotPanel\2y-off.png" />
+    <Resource Include="Images\AutopilotPanel\2g-on.png" />
+    <Resource Include="Images\AutopilotPanel\2g-off.png" />
+    <Resource Include="Images\AutopilotPanel\1y-on.png" />
+    <Resource Include="Images\AutopilotPanel\1y-off.png" />
+    <Resource Include="Images\yellow-indicator-on.png" />
+    <Content Include="Docs\Helios.M-2000C.Plugin.Install.Read.Me.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\8 Components\After_Burner_Indicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Altimeter.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\AoA_Indicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Caution_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\8 Components\DEMAR_Indicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Engine_Sensor_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Engine_Start_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Fire_Indicators.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Fuel_Burn_Bingo_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Fuel_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\HSI_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\IFFModeSetting.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\INS_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Landing_Gear_Panel_V2.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\LowAltitudeSettings.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Master_Caution_Lights.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\PCA_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\PCN_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\PPA_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\RADARIFFSetting%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Radio_Repeater_Display.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\8 Components\RWR_Indicators.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\TACAN_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\Test_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\UHF Radio.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\VHF Radio.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\VOR_ILS_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\3 Panels\VTB_Panel.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\8 Components\CautionPanelRedIndicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\8 Components\CautionPanelYellowIndicator.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\9 Images\Cockpit Front 16x10.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\9 Images\Cockpit Front 16x9.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\8 Components\long-black-switch-toggle.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\8 Components\Rad-Alt-Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\8 Components\Red-switch-toggle.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\M2000C\8 Components\short-black-switch-toggle.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Gauges\Altimeter\Altimeter.cs" />
+    <Compile Include="Gauges\CautionPanel\Caution_Panel.cs" />
+    <Compile Include="Gauges\Common\Mk2CDrumGauge.cs" />
+    <Compile Include="Gauges\Common\Mk2CNeedle.cs" />
+    <Compile Include="Gauges\ECMBox\ECM_Box.cs" />
+    <Compile Include="Gauges\EnginePanel\Engine_Start_Panel.cs" />
+    <Compile Include="Gauges\EngineSensorsPanel\EngineSensors_Panel.cs" />
+    <Compile Include="Gauges\FuelPanel\Fuel_Panel.cs" />
+    <Compile Include="Gauges\HSIPanel\HSI_Panel.cs" />
+    <Compile Include="Gauges\INSPanel\INS_Panel.cs" />
+    <Compile Include="Gauges\LGPanel\LandingGear_Panel_V2.cs" />
+    <Compile Include="Gauges\LGPanel\LG_Panel.cs" />
+    <Compile Include="Gauges\M2000CDevice\M2000CCompositeVisual.cs" />
+    <Compile Include="Gauges\M2000CDevice\M2000CDevice.cs" />
+    <Compile Include="Gauges\MCLPanel\MCL_Panel.cs" />
+    <Compile Include="Gauges\Miscellaneous\AOA_Panel.cs" />
+    <Compile Include="Gauges\Miscellaneous\Demar_Panel.cs" />
+    <Compile Include="Gauges\Miscellaneous\FireWarning_Panel.cs" />
+    <Compile Include="Gauges\Miscellaneous\Fuel_Burn_Bingo.cs" />
+    <Compile Include="Gauges\Miscellaneous\IFF_Mode_Settings.cs" />
+    <Compile Include="Gauges\Miscellaneous\Low_Altitude_Height.cs" />
+    <Compile Include="Gauges\Miscellaneous\PCI_Panel.cs" />
+    <Compile Include="Gauges\Miscellaneous\RADAR_IFF_Mode_Panel.cs" />
+    <Compile Include="Gauges\Miscellaneous\rwr_Panel.cs" />
+    <Compile Include="Gauges\PCAPanel\PCA_Panel.cs" />
+    <Compile Include="Gauges\PCNPanel\PCNPanelGauge.cs" />
+    <Compile Include="Gauges\PCNPanel\PCN_Panel.cs" />
+    <Compile Include="Gauges\PPAPanel\PPA_Panel.cs" />
+    <Compile Include="Gauges\Radios\Radio_Repeater.cs" />
+    <Compile Include="Gauges\Radios\UHF_Radio.cs" />
+    <Compile Include="Gauges\Radios\VHF_Radio.cs" />
+    <Compile Include="Gauges\TACANPanel\TACANChannelDrum.cs" />
+    <Compile Include="Gauges\TACANPanel\TACANDrumGauge.cs" />
+    <Compile Include="Gauges\TACANPanel\TACANDrumGaugeCounter.cs" />
+    <Compile Include="Gauges\TACANPanel\Tacan_Panel.cs" />
+    <Compile Include="Gauges\TestPanel\Test_Panel.cs" />
+    <Compile Include="Gauges\VorIlsChannel\VorIls_Panel.cs" />
+    <Compile Include="Gauges\VTBPanel\VTB_Panel.cs" />
+    <Compile Include="Interfaces\Functions\Altimeter.cs" />
+    <Compile Include="Interfaces\M2000CInterface.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\HSIPanel\big-needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\HSIPanel\small-needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PCNPanel\PCN_East.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PCNPanel\PCN_Minus.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PCNPanel\PCN_North.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PCNPanel\PCN_Plus.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PCNPanel\PCN_South.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PCNPanel\PCN_West.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Altimeter\alt_drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Altimeter\altimeter_backplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Altimeter\altimeter_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Altimeter\altimeter_needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Common\drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Common\drum_tape_with_point.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Common\needleA.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Common\needleB.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\HSIPanel\compass.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\TACANPanel\drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\TACANPanel\drum_tape_twelve.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\TACANPanel\tacan_channel_x_mode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\TACANPanel\tacan_channel_y_mode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Landing Gear Panel\Bar-Indicator-Horizontal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\UHF Radio\Channel_Drum_Tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <Import Project="..\HeliosPlugin.targets" />
+</Project>

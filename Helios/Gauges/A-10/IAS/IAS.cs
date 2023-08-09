@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.IAS
     using System.Windows;
     using System.Windows.Media;
 
-    [HeliosControl("Helios.A10.IAS", "IAS", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.IAS", "IAS", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class IAS : BaseGauge
     {
         private HeliosValue _indicatedAirSpeed;

@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A10C
     /// This is the A-10C UHF Repeater Panel which uses text displays instead of cutouts for the exported viewport.
     /// </summary>
     /// 
-    [HeliosControl("Helios.A10.UHFFreqRepeater", "UHF Freq Repeater", "A-10C Gauges", typeof(BackgroundImageRenderer))]
+    [HeliosControl("Helios.A10.UHFFreqRepeater", "UHF Freq Repeater", "A-10C Gauges", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     class UHFFreqRepeater : A10CDevice
     {
         public const double GLASS_REFLECTION_OPACITY_DEFAULT = 0.50;

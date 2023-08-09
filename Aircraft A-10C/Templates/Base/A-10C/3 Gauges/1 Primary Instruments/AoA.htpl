@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Angle of Attack</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10.AoA</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>364,376</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

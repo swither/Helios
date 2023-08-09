@@ -37,6 +37,8 @@ copy "Helios Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSIO
 copy "Helios Installer\Release32\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 copy "Keypress Receiver Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 copy "Tools Installer\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
+copy "Aircraft F-15E Plugin Installers\Release\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
+copy "Aircraft F-15E Plugin Installers\Release32\*.msi" %HELIOS_SHARE_FOLDER%\%HELIOS_BUILT_VERSION%\ 
 
 REM collect and format log
 FOR /F %%i IN ('git rev-parse %HELIOS_REFERENCE_TAG%') DO @set REFERENCE_COMMIT=%%i
@@ -54,8 +56,9 @@ if exist "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets" (
 )
 mkdir ..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets
 tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip" -C "Helios Installer\Release" *.msi -C "..\..\Keypress Receiver Installer\Release" *.msi -C "..\..\Tools Installer\Release" *.msi
-tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip" -C "Helios Installer\Release32" *.msi
+tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip" -C "Helios Installer\Release32" *.msi -C "Aircraft F-15E Plugin Installers\Release32" *.msi
 tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_StreamDeck_Alpha.zip" -C "bin\x64\Release" Plugins\OpenMacroBoard.SDK.dll Plugins\OpenMacroBoard.VirtualBoard.dll Plugins\StreamDeckSharp.dll Plugins\HeliosMacroBoard.dll
+tar -a -c -f "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_F-15E_Plugin.zip" -C "Aircraft F-15E Plugin Installers\Release" *.msi
 echo # Release %HELIOS_BUILT_VERSION% >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo ## User Notes >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo [EDIT REQUIRED: create user-readable notes from following Developer Notes and then update the Change Notes in Wiki from these] >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
@@ -66,7 +69,7 @@ echo.>> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 echo Full change notes from previous releases here: https://github.com/HeliosVirtualCockpit/Helios/wiki/Change-Log >> "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 
 REM create draft on github (requires https://cli.github.com/)
-gh release create --draft --title "Helios %HELIOS_BUILT_VERSION%" %HELIOS_BUILT_VERSION% "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip#Helios Installers" "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip#Helios Installers for 32-bit Systems (untested)" "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_StreamDeck_Alpha.zip#Helios StreamDeck Plugin (alpha, needs a developer)" -F "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
+gh release create --draft --title "Helios %HELIOS_BUILT_VERSION%" %HELIOS_BUILT_VERSION% "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_F-15E_Plugin.zip#Helios F-15E Plugin Installer (64bit)" "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios32Bit_Installers.zip#Helios Installers for 32-bit Systems (untested)" "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_Installers.zip#Helios Installers" "..\Releases\Helios\%HELIOS_BUILT_VERSION%\Assets\Helios_StreamDeck_Alpha.zip#Helios StreamDeck Plugin (alpha, needs a developer)" -F "..\Releases\Helios\%HELIOS_BUILT_VERSION%\changes.md"
 
 :end
 REM clean up (except HELIOS_BUILT_VERSION)

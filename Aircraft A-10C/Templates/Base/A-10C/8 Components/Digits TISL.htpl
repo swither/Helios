@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>TISL Code Wheel Window</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10.TISLCodeWheel</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>16,21</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

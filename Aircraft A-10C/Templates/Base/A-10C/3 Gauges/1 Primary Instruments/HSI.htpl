@@ -1,0 +1,16 @@
+﻿<ControlTemplate>
+	<Name>HSI</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10.HSI</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<IsDesiredHeadingRelative>True</IsDesiredHeadingRelative>
+			<IsBearingRelative>True</IsBearingRelative>
+			<IsDesiredCourseRelative>True</IsDesiredCourseRelative>
+			<Location>0,0</Location>
+			<Size>350,350</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

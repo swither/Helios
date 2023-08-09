@@ -1,0 +1,10 @@
+﻿<ControlTemplate>
+  <Name>UHF Radio Panel</Name>
+  <Category>M-2000C</Category>
+  <TypeIdentifier>HELIOS.M2000C.UHF_RADIO</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+	    <ImageAssetLocation>{M2000C}/Images/</ImageAssetLocation>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

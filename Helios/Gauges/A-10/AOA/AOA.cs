@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.ADI
     using System.Windows.Media;
 
     // Annotation Indicating the unique name for this control, display, toolbox group, and control renderer.
-    [HeliosControl("Helios.A10.AoA", "Angle of Attack", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.AoA", "Angle of Attack", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class AOA : BaseGauge
     {
         // Value object used to expose angle of attack rendered on the gauge

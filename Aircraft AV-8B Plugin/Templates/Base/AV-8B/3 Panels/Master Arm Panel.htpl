@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Master Arm Panel</Name>
+	<Category>AV-8B Harrier</Category>
+	<TypeIdentifier>Helios.AV8B.MasterArmPanel</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>196,881</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

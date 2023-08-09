@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Gauges
     using System.Xml;
 
     [HeliosControl("Helios.Gauges.BarGauge", "Bar Gauge", "Custom Controls", typeof(GaugeRenderer), HeliosControlFlags.None)]
-    internal class BarGauge : BaseGauge, IConfigurableImageLocation
+    public class BarGauge : BaseGauge, IConfigurableImageLocation
     {
 
         private string _imageFile = "";

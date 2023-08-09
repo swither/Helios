@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Blanking Panel Left</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10C.MISC.Panel.Left</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>312,120</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

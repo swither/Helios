@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Right MPCD</Name>
+	<Category>AV-8B Harrier</Category>
+	<TypeIdentifier>AV8B.MPCDR</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>400,494</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

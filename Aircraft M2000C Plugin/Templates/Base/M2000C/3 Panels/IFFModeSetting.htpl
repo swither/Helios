@@ -1,0 +1,10 @@
+﻿<ControlTemplate>
+  <Name>IFF Mode Display</Name>
+  <Category>M-2000C</Category>
+  <TypeIdentifier>HELIOS.M2000C.IFF_MODE_SETTING</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+	    <ImageAssetLocation>{M2000C}/Images/</ImageAssetLocation>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

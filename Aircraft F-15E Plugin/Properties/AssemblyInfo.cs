@@ -1,6 +1,9 @@
-﻿using System.Reflection;
+﻿using GadrocsWorkshop.Helios.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+[assembly: HeliosModule("Helios F-15E Strike Eagle Support for DCS", "F-15E")]
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information

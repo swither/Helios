@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>UHFChanDisplay</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10.UHFChannelDisplay</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>173,100</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

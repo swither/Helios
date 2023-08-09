@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>TACAN Channel</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10.TACANChannel</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>55,20</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

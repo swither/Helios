@@ -27,6 +27,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Timers;
 using System.Windows.Threading;
@@ -1078,14 +1080,21 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             _main.NetworkAliases.Add(secondId, firstId);
         }
 
-        public Type ResolveFunctionType(string typeName)
+        public Type ResolveFunctionType(string typeName) => this.ResolveFunctionType(typeName, "");
+        public Type ResolveFunctionType(string typeName, string assemblyName)
         {
+            Type type = null;
             // this will intentionally break attempts to instantiate things outside the prefix
             if (!typeName.StartsWith(NetworkFunction.OMITTED_PREFIX))
             {
                 typeName = $"{NetworkFunction.OMITTED_PREFIX}{typeName}";
             }
-            return Type.GetType(typeName);
+            type = Type.GetType(typeName);
+            if (type == null)
+            {
+                type = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(typeName)).Where(t => t != null).First();
+            }
+            return type;
         }
     }
 }

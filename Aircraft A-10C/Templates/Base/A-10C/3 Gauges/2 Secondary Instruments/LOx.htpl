@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Liquid Oxygen</Name>
+	<Category>A-10C Warthog</Category>
+	<TypeIdentifier>Helios.A10.LiquidOxygen</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>4,0</Location>
+			<Size>360,360</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

@@ -1,0 +1,10 @@
+﻿<ControlTemplate>
+  <Name>VHF Radio Panel V2</Name>
+  <Category>M-2000C</Category>
+  <TypeIdentifier>HELIOS.M2000C.VHF_RADIO</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+	    <ImageAssetLocation>{M2000C}/Images/</ImageAssetLocation>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
-using GadrocsWorkshop.Helios.Gauges.FA18C;
 using GadrocsWorkshop.Helios.Windows;
 using GadrocsWorkshop.Helios.Windows.ViewModel;
 

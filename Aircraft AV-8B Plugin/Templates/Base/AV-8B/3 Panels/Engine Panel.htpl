@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+	<Name>Engine Panel</Name>
+	<Category>AV-8B Harrier</Category>
+	<TypeIdentifier>Helios.AV8B.EDP</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>27,0</Location>
+			<Size>300,171</Size>
+			<Hidden>False</Hidden>
+			<Children />
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

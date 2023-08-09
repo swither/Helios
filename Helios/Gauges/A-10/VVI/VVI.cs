@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.VVI
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.A10.VVI", "VVI", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.VVI", "VVI", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class VVI : BaseGauge
     {
         private HeliosValue _verticalVelocity;

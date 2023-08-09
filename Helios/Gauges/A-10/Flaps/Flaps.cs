@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.Flaps
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.A10.Flaps", "Flaps", "A-10 Gauges", typeof(GaugeRenderer))]
+    [HeliosControl("Helios.A10.Flaps", "Flaps", "A-10 Gauges", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class Flaps : BaseGauge
     {
         private HeliosValue _position;
