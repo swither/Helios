@@ -27,14 +27,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5066166E05C84E83B4CA3A4710B17C42"
+        "MsmKey" = "8:_C13141BB73CBDAE7CE95D6F90D5C7DFB"
         "OwnerKey" = "8:_E0FCE269CDE242BB9DE549CEBA212EC7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_C98D1EF7385980C9E2E348ADD62F054F"
-        "OwnerKey" = "8:_5066166E05C84E83B4CA3A4710B17C42"
+        "OwnerKey" = "8:_C13141BB73CBDAE7CE95D6F90D5C7DFB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -64,7 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5066166E05C84E83B4CA3A4710B17C42"
+        "OwnerKey" = "8:_C13141BB73CBDAE7CE95D6F90D5C7DFB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -242,14 +242,14 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5066166E05C84E83B4CA3A4710B17C42"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C13141BB73CBDAE7CE95D6F90D5C7DFB"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5066166E05C84E83B4CA3A4710B17C42"
+                    "_C13141BB73CBDAE7CE95D6F90D5C7DFB"
                     {
                     "Name" = "8:NLog.dll"
                     "Attributes" = "3:512"
@@ -993,7 +993,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E0FCE269CDE242BB9DE549CEBA212EC7"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Aircraft F-15E Plugin\\obj\\x64\\Debug\\F-15E.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_66FB489228344392BB1CFA162F333836"

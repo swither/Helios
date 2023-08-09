@@ -16,7 +16,7 @@
         "Entry"
         {
         "MsmKey" = "8:_09A990C611B855A670139451BDCF76F8"
-        "OwnerKey" = "8:_504EC2BC438C3358099BAB22BA186B83"
+        "OwnerKey" = "8:_22C8BA1C0EA46C51159A5695E07B01FF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -27,14 +27,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_19FA8E3BB2854FA2A93C5C017BB785D0"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_504EC2BC438C3358099BAB22BA186B83"
-        "OwnerKey" = "8:_19FA8E3BB2854FA2A93C5C017BB785D0"
+        "MsmKey" = "8:_22C8BA1C0EA46C51159A5695E07B01FF"
+        "OwnerKey" = "8:_78A3702BB3BA4206BA159CA6E9AAF420"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -45,8 +39,14 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_78A3702BB3BA4206BA159CA6E9AAF420"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_891E5167E2CE83606E69BB2298C3E17B"
-        "OwnerKey" = "8:_19FA8E3BB2854FA2A93C5C017BB785D0"
+        "OwnerKey" = "8:_78A3702BB3BA4206BA159CA6E9AAF420"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -58,19 +58,19 @@
         "Entry"
         {
         "MsmKey" = "8:_D0730D29E833C6F0494A2E25E32952CE"
-        "OwnerKey" = "8:_19FA8E3BB2854FA2A93C5C017BB785D0"
+        "OwnerKey" = "8:_78A3702BB3BA4206BA159CA6E9AAF420"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_19FA8E3BB2854FA2A93C5C017BB785D0"
+        "OwnerKey" = "8:_78A3702BB3BA4206BA159CA6E9AAF420"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_504EC2BC438C3358099BAB22BA186B83"
+        "OwnerKey" = "8:_22C8BA1C0EA46C51159A5695E07B01FF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -237,14 +237,14 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_504EC2BC438C3358099BAB22BA186B83"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_22C8BA1C0EA46C51159A5695E07B01FF"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_504EC2BC438C3358099BAB22BA186B83"
+                    "_22C8BA1C0EA46C51159A5695E07B01FF"
                     {
                     "Name" = "8:NLog.dll"
                     "Attributes" = "3:512"
@@ -989,9 +989,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_19FA8E3BB2854FA2A93C5C017BB785D0"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_78A3702BB3BA4206BA159CA6E9AAF420"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Aircraft F-15E Plugin\\obj\\x64\\Release\\F-15E.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8461F76B9BF44DEF9904482B9A1754E0"
@@ -1017,7 +1017,7 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CE03157C1570476891CE2CEA0373D895"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C762363CE29D49979114265B329EB70C"
             {
             "SourcePath" = "8:"
             "TargetName" = "8:"

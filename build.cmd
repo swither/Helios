@@ -152,7 +152,7 @@ move "Helios Installer\Release\setup.exe" "Helios Installer\Release\Helios.%HELI
 move "Helios Installer\Release32\setup.exe" "Helios Installer\Release32\Helios32bit.%HELIOS_BUILT_VERSION%.Setup.exe"
 move "Keypress Receiver Installer\Release\setup.exe" "Keypress Receiver Installer\Release\Helios Keypress Receiver.%HELIOS_BUILT_VERSION%.Setup.exe"
 move "Aircraft F-15E Plugin Installers\Release\setup.exe" "Aircraft F-15E Plugin Installers\Release\Helios F-15E Plugin.%HELIOS_BUILT_VERSION%.Setup.exe"
-move "Aircraft F-15E Plugin Installers\Release32\setup.exe" "Aircraft F-15E Plugin Installers\Release32\Helios F-15E Plugin.%HELIOS_BUILT_VERSION%.Setup.exe"
+move "Aircraft F-15E Plugin Installers\Release32\setup.exe" "Aircraft F-15E Plugin Installers\Release32\Helios F-15E 32bit Plugin.%HELIOS_BUILT_VERSION%.Setup.exe"
 
 REM fix up installers
 pushd "Helios Installer\Release"
@@ -196,7 +196,7 @@ if %errorlevel% neq 0 (
 )
 popd
 pushd "Aircraft F-15E Plugin Installers\Release32"
-cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios F-15E 32bit Plugin.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
+cscript //nologo ..\HeliosInstallAdjustments.vbs "Helios F-15E Plugin.%HELIOS_BUILT_VERSION%.msi" %HELIOS_BUILT_VERSION%
 if %errorlevel% neq 0 (
 	echo Installer fixup script failed to fix up 32-bit Helios F-15E Plugin installer.  Already built installers will be deleted.
 	popd
