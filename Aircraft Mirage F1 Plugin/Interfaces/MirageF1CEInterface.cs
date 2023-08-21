@@ -25,12 +25,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.MIRAGEF1.CE
     /// <summary>
     /// Interface for DCS Mirage F1CE, including devices which are unique to this variant.
     /// </summary>
-    [HeliosInterface("Helios.MIRAGEF1CE", "DCS Mirage-F1CE", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
+    [HeliosInterface("Helios.MIRAGEF1CE", "DCS Mirage F1CE", typeof(DCSInterfaceEditor), typeof(UniqueHeliosInterfaceFactory), UniquenessKey = "Helios.DCSInterface")]
     public class MirageF1CEInterface: MirageF1Interface
     {
         public MirageF1CEInterface() : base(
             "DCS Mirage F1CE",
-            "MIRAGE-F1CE",
+            "Mirage-F1CE",
             "pack://application:,,,/MirageF1;component/Interfaces/ExportFunctionsMirageF1CE.lua")
         {
 #if (CREATEINTERFACE && DEBUG)
@@ -57,7 +57,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.MIRAGEF1.CE
             #region Navigation indicator
 #pragma warning disable CS0162 // Unreachable code detected
             AddFunction(new Switch(this, "1", "1204", SwitchPositions.Create(4, 0d, 0.3333d, "3555", "Posn", "%0.4f"), "Navigation indicator", "Mode selector switch", "%0.4f"));
-            AddFunction(new Switch(this, "1", "1205", SwitchPositions.Create(2, 0d, 1d, "3557", "Posn", "%0.-1f"), "Navigation indicator", "Normal/Additional vector selector switch", "%0.-1f"));
+            AddFunction(new Switch(this, "1", "1205", SwitchPositions.Create(2, 0d, 1d, "3557", "Posn", "%0.1f"), "Navigation indicator", "Normal/Additional vector selector switch", "%0.1f"));
             AddFunction(new Switch(this, "1", "1206", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", "3558"), new SwitchPosition("0.0", "Posn 2", "3558") }, "Navigation indicator", "Additional target selector switch", "%0.1f"));
             AddFunction(new Axis(this, "1", "3559", "1207", 0.1d, 0.0d, 1d, "Navigation indicator", "Bearing/Distance selector knob", false, "%0.1f"));
             AddFunction(new PushButton(this, "1", "3560", "1208", "Navigation indicator", "Test button", "%1d"));
