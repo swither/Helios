@@ -8,7 +8,8 @@
                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                  xmlns:windows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
-                                 xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System" xmlns:helios="clr-namespace:GadrocsWorkshop.Helios;assembly=Helios"
+                                 xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System" 
+								 xmlns:helios="clr-namespace:GadrocsWorkshop.Helios;assembly=Helios"
                                  xmlns:controls="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS.Controls"
                                  mc:Ignorable="d"
                                  d:DesignHeight="800" d:DesignWidth="800"
@@ -555,7 +556,7 @@
                                 </Rectangle.Fill>
                             </Rectangle>
                         </Canvas>
-                        
+
                         <!-- DCS UI view underlay -->
                         <Canvas>
                             <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}"
@@ -609,7 +610,7 @@
                                        Height="{Binding Path=ScaledUserInterface.Height}" Stroke="LightGray">
                             </Rectangle>
                         </Canvas>
-                        
+
                         <!-- monitors2 user interface -->
                         <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
                             <ItemsControl.ItemsPanel>
@@ -726,6 +727,8 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}"

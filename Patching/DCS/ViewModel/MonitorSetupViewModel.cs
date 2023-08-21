@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using GadrocsWorkshop.Helios.Controls.Special;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
@@ -41,6 +42,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private readonly Dictionary<ShadowVisual, ViewportViewModel> _viewports =
             new Dictionary<ShadowVisual, ViewportViewModel>();
+
+        internal const string PREFERENCES_SETTINGS_GROUP = "DCSMonitorSetupPreferences";
 
         /// <summary>
         /// backing field for property ConfigureCommand, contains
@@ -70,7 +73,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             foreach (ShadowVisual viewport in Data.Viewports)
             {
-                AddViewport(viewport, Data.GlobalOffset);
+                if(!(viewport.Viewport is DCSMonitorScriptAppender))
+                {
+                    AddViewport(viewport, Data.GlobalOffset);
+                }
             }
 
             UpdateAllGeometry();
@@ -114,7 +120,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private static void OnSourceOfAdditionalViewportsChange(DependencyObject d,
             DependencyPropertyChangedEventArgs e)
         {
-            MonitorSetupViewModel model = (MonitorSetupViewModel) d;
+            MonitorSetupViewModel model = (MonitorSetupViewModel)d;
             if (!model._loaded)
             {
                 return;
@@ -579,7 +585,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         public static readonly DependencyProperty IconScaleProperty =
             DependencyProperty.Register("IconScale", typeof(double), typeof(MonitorSetupViewModel),
                 new PropertyMetadata(1.0));
-
         public CombinedMonitorSetupViewModel CombinedMonitorSetup { get; }
 
         public SourceOfAdditionalViewports SourceOfAdditionalViewports

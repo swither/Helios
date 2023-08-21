@@ -445,6 +445,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         protected override List<StatusReportItem> CreateStatusReport()
         {
+
             // all we have right now is the monitor setup file generator
             // actually enumerate the report now and store it
             List<StatusReportItem> newReport = _renderer.PerformReadyCheck().ToList();
@@ -457,7 +458,9 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             return newReport;
         }
 
-        public override IEnumerable<StatusReportItem> PerformReadyCheck() => _renderer.PerformReadyCheck();
+        public override IEnumerable<StatusReportItem> PerformReadyCheck() {
+            return _renderer.PerformReadyCheck(); 
+        }
 
         protected override void UpdateAllGeometry()
         {
@@ -602,7 +605,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 OnPropertyChanged("Rendered", oldValue, value, false);
             }
         }
-
+        
         /// <summary>
         /// the name of the combined monitor setup that needs to be selected in DCS
         /// </summary>
