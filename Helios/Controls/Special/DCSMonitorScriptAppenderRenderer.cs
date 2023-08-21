@@ -24,7 +24,6 @@ namespace GadrocsWorkshop.Helios.Controls.Special
     {
         private ImageBrush _imageBrush;
         private Rect _rectangle;
-        private Brush _fontBrush;
 
         protected override void OnRender(DrawingContext drawingContext)
         {
