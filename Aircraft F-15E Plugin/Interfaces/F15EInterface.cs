@@ -45,10 +45,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
 
             // see if we can restore from JSON
 #if (!DEBUG)
-                        //if (LoadFunctionsFromJson())
-                        //{
-                        //    return;
-                        //}
+                        if (LoadFunctionsFromJson())
+                        {
+                            return;
+                        }
 #endif
 #pragma warning disable CS0162 // Unreachable code detected
             #region UFC Panel
