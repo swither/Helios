@@ -38,6 +38,7 @@
       <DependentUpon>CombinedMonitorSetupControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="DCS\DCSPatchInstallation.cs" />
+    <Compile Include="DCS\IrisConfiguration.cs" />
     <Compile Include="DCS\ViewModel\AdditionalViewportsViewModel.cs" />
     <Compile Include="DCS\ViewModel\CombinedMonitorSetupViewModel.cs" />
     <Compile Include="DCS\ViewModel\CombinedMonitorSetupViewModel_DesignInstance.cs" />

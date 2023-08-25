@@ -63,6 +63,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private ViewportSetupFile _allViewports;
 
+        private ViewportSetupFile _irisViewports = new ViewportSetupFile() ;
         #endregion
 
         public MonitorSetupGenerator(MonitorSetup parent)
@@ -93,11 +94,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             // emit in sorted canonical order so we can compare files later
-
+            _irisViewports.Viewports.Clear();
             foreach (KeyValuePair<string, Rect> viewport in _allViewports.Viewports.OrderBy(p => p.Key))
             {
                 if (TryCreateViewport(lines, viewport, out FormattableString code))
                 {
+                    _irisViewports.Viewports.Add(viewport.Key,viewport.Value);
                     yield return new StatusReportItem
                     {
                         Status = $"{template.MonitorSetupFileBaseName}: {code}",
@@ -222,6 +224,20 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 }
                 _monitorSetup = Render(lines);
             }
+
+            IrisConfiguration irisConfig = new IrisConfiguration(_parent);
+            irisConfig.BackgroundRectangle = mainView;
+            irisConfig.Open($"{(template.Combined ? template.FileName : _parent.Profile.Name)}");
+
+            if (irisConfig.IsOpen)
+            {
+                foreach(KeyValuePair<string, Rect> viewport in _irisViewports.Viewports.OrderBy(p => p.Key))
+                {
+                    irisConfig.WriteViewport(viewport);
+                }
+                irisConfig.Close();
+            }
+            irisConfig.Dispose();   
         }
 
         private static string Render(IEnumerable<FormattableString> lines) => string.Join(Environment.NewLine, lines.Select(FormattableString.Invariant));
