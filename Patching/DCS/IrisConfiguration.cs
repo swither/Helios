@@ -81,11 +81,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private string _networkAddress = "";
         #endregion
-        /// <summary
-        /// The Iris configuration requires infrmation from both the sending and receiving profiles.  The receiving side
-        /// ultimately determines the size of te viewport, so the receiving side is the one creating the Iris configuration
-        /// from the ViewportSetupFiles.  In orer to facilitate the setup on the sending side, a viewport-only profile is 
-        /// created to help the viewport layout
+        /// <summary>
+        /// The Iris configuration requires information from both the sending and receiving profiles.  The receiving side
+        /// ultimately determines the size of the viewport, so the receiving side is the one creating the Iris configuration
+        /// from the ViewportSetupFiles.  In order to facilitate the setup on the sending side, a viewport-only profile is 
+        /// created to help the viewport layout on the local system.
         /// TODO: There should should be a method to merge the sending and receiving data into a single Iris Config.
         /// </summary>
         /// <param name="parent"></param>
