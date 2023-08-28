@@ -231,7 +231,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             if (irisConfig.IsOpen)
             {
-                foreach(KeyValuePair<string, Rect> viewport in _irisViewports.Viewports.OrderBy(p => p.Key))
+                foreach(KeyValuePair<string, Rect> viewport in _irisViewports.Viewports.OrderBy(p => (p.Value.Width*p.Value.Height)))
                 {
                     irisConfig.WriteViewport(viewport);
                 }
