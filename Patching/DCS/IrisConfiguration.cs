@@ -107,7 +107,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             try
             {
                 _configName = Path.ChangeExtension(configName, "xml");
-                _irisPath = Path.Combine(Directory.GetParent(Path.GetDirectoryName(_parent.Profile.Path)).FullName, "Iris_Partial_Configs");
+                _irisPath = Path.Combine(ConfigManager.DocumentPath, "Iris_Partial_Configs");
                 _tempPath = Path.Combine(_irisPath, Path.ChangeExtension(_configName, "tmp"));
                 _backupPath = Path.Combine(_irisPath, Path.ChangeExtension(_configName, "bak"));
                 _remoteHost = _networkAddress;
@@ -156,7 +156,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             _profileName = Path.ChangeExtension(configName, "hpf");
             if (!_isRemote) { _profileName = "Local_" + _profileName; }
-            _irisProfilePath = Path.Combine(_irisPath, "LocalProfiles");
+            _irisProfilePath = Path.Combine(ConfigManager.DocumentPath, "Profiles", "Local_Iris_Profiles");
             _tempProfilePath = Path.Combine(_irisProfilePath, Path.ChangeExtension(_profileName, "tmp"));
             _backupProfilePath = Path.Combine(_irisProfilePath, Path.ChangeExtension(_profileName, "bak"));
 
@@ -337,7 +337,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void PlaceViewportsOnMonitor()
         {
             Array.Resize(ref _packingRectangles, _rectangleIdNumber);
-            RectanglePacker.Pack(_packingRectangles, out PackingRectangle bounds, PackingHints.FindBest, 1, 1, Convert.ToUInt32(_localProfile.Monitors[0].Width), Convert.ToUInt32(_localProfile.Monitors[0].Height));
+            RectanglePacker.Pack(_packingRectangles, out PackingRectangle bounds, PackingHints.FindBest, 1, 10, Convert.ToUInt32(_localProfile.Monitors[0].Width), Convert.ToUInt32(_localProfile.Monitors[0].Height));
             foreach(PackingRectangle viewport in _packingRectangles)
             {
                 ViewportExtent vp = new ViewportExtent()
