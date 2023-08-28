@@ -337,7 +337,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void PlaceViewportsOnMonitor()
         {
             Array.Resize(ref _packingRectangles, _rectangleIdNumber);
-            RectanglePacker.Pack(_packingRectangles, out PackingRectangle bounds, PackingHints.FindBest, 1, 10, Convert.ToUInt32(_localProfile.Monitors[0].Width), Convert.ToUInt32(_localProfile.Monitors[0].Height));
+            RectanglePacker.Pack(_packingRectangles, out PackingRectangle bounds, PackingHints.FindBest, 1, 1, Convert.ToUInt32(_localProfile.Monitors[0].Width), Convert.ToUInt32(_localProfile.Monitors[0].Height));
             foreach(PackingRectangle viewport in _packingRectangles)
             {
                 ViewportExtent vp = new ViewportExtent()
