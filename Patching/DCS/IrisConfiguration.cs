@@ -132,7 +132,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 _xmlWriter.WriteStartElement("IrisConfig");
                 _xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
                 _xmlWriter.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema");
-                _xmlWriter.WriteStartElement("Viewports");
+                _xmlWriter.WriteStartElement("ViewPorts");
                 _isOpen = true;
             }
             catch (Exception ex)
@@ -178,7 +178,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 viewportRect.Intersect(_parent.Rendered);
                 if (viewportRect.Width < viewport.Value.Width || viewportRect.Height < viewport.Value.Height)
                 {
-                    // viewports that aren't entire rendered do not work
+                    // viewports that aren't entirely rendered do not work
                     string message = $"viewport '{viewport.Key}' not included in IRIS configuration because it is not entirely contained in rendered resolution";
                     ConfigManager.LogManager.LogInfo(message);
                     return false;
@@ -186,7 +186,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 else
                 {
 
-                    _xmlWriter.WriteStartElement("Viewport");
+                    _xmlWriter.WriteStartElement("ViewPort");
                     ConvertToDCS(ref viewportRect);
                     _xmlWriter.WriteElementString("Name", viewport.Key);
                     _xmlWriter.WriteElementString("Description", $"Viewport for {viewport.Key}");
@@ -198,7 +198,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     _xmlWriter.WriteElementString("SizeY", viewportRect.Height.ToString());
                     _xmlWriter.WriteElementString("ScreenPositionX", $"{(_isRemote ? viewportRect.Left : 0)}");
                     _xmlWriter.WriteElementString("ScreenPositionY", $"{(_isRemote ? viewportRect.Top : 0)}");
-                    _xmlWriter.WriteEndElement();  // viewport
+                    _xmlWriter.WriteEndElement();  // ViewPort
 
                     if (!_isRemote) CreateViewportVisual(viewport);
 
@@ -211,7 +211,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
         /// <summary>
         /// Creates a new Viewport control for inclusion in the Local profile.
-        /// Viewports are ordered by decreasing area of rectangle
         /// </summary>
         private void CreateViewportVisual(KeyValuePair<string, Rect> viewport)
         {
