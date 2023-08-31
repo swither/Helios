@@ -188,8 +188,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 }
                 else
                 {
-
-
                     _xmlWriter.WriteStartElement("ViewPort");
                     _xmlWriter.WriteElementString("Name", viewport.Key);
                     _xmlWriter.WriteElementString("Description", $"Viewport for {viewport.Key}");
