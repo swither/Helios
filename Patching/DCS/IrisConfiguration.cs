@@ -93,7 +93,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             _parent = parent;
             SubscribeToLocationChanges();
-            _isRemote = ConfigManager.SettingsManager.LoadSetting("DCSInstallation", "IsRemote", false);
+            // _isRemote = ConfigManager.SettingsManager.LoadSetting("DCSInstallation", "IsRemote", false);
+            _isRemote = (_parent.IrisConfigurationType == IrisConfigurationType.IrisClientConfig);
             _networkAddress = ConfigManager.SettingsManager.LoadSetting("DCSInterface", "IPAddress", System.Net.IPAddress.Loopback.ToString());
             _portNumber = ConfigManager.SettingsManager.LoadSetting("DCSInterface", "Port", 9089+5);
         }
