@@ -17,6 +17,7 @@
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using CommandLine;
+    using CommandLine.Text;
     using System.Collections.Generic;
 
     class CommandLineOptions : Util.CommonCommandLineOptions
@@ -27,11 +28,23 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         [Option('s', "generateInterfaceSchema")]
         public bool GenerateInterfaceSchema { get; set; }
 
-        [Value(0, MetaName = "[Profile]", HelpText = "Startup profile name")]
+        [Value(0, MetaName = "[Profile]", HelpText = "Filename & path of the Profile or Helio16 package to open on start")]
         public IEnumerable<string> Profiles
         {
             get;
             set;
         } = new List<string>();
+        [Usage(ApplicationAlias = "\"Profile Editor.exe\"")]
+        public static IEnumerable<Example> Examples
+        {
+            get
+            {
+                yield return new Example("Opening a Helios16 installer package at startup", UnParserSettings.WithGroupSwitchesOnly(), new CommandLineOptions() { Profiles = new string[] { @"c:\users\public\downloads\Wibble Profile.helios16" } });
+                yield return new Example("Opening a Profile at startup from the active Helios Profiles directory", new CommandLineOptions() { Profiles = new string[] { @"Wobble.hpf" } });
+                yield return new Example("Debug logging enabled", new CommandLineOptions() { LogLevel = LogLevel.Debug });
+                yield return new Example("Using an alternate Helios data directory", new CommandLineOptions() { DocumentsName = "HeliosVR" });
+            }
+        }
+
     }
 }

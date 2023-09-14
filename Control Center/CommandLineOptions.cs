@@ -16,18 +16,32 @@
 namespace GadrocsWorkshop.Helios.ControlCenter
 {
     using CommandLine;
+    using CommandLine.Text;
     using System.Collections.Generic;
+    using System.Linq;
 
     class CommandLineOptions : Util.CommonCommandLineOptions
     {
         [Option('x', "exit", HelpText = "Kill a running Control Center")]
         public bool Exit { get; set; } = false;
 
-        [Value(0, MetaName="[Profile]", HelpText = "Startup profile name")]
+        [Value(0, MetaName="[Profile]", HelpText = "Filename & path of the Profile to autostart")]
         public IEnumerable<string> Profiles
         {
             get;
             set;
         } = new List<string>();
+
+        [Usage(ApplicationAlias = "\"Control Center.exe\"")] 
+        public static IEnumerable<Example> Examples
+        {
+            get
+            {
+                yield return new Example("Running a Profile at startup", UnParserSettings.WithGroupSwitchesOnly(), new CommandLineOptions() { Profiles = new string[] { @"c:\temp\Helios Profiles\Wibble.hpf" } });
+                yield return new Example("Running a Profile at startup from the active Helios Profiles directory", new CommandLineOptions() { Profiles = new string[] { @"Wobble.hpf" } });
+                yield return new Example("Debug logging enabled", new CommandLineOptions() { LogLevel = LogLevel.Debug });
+                yield return new Example("Using an alternate Helios data directory", new CommandLineOptions() { DocumentsName = "HeliosVR" });
+            }
+        }
     }
 }

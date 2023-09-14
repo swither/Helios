@@ -293,16 +293,27 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 return;
             }
 
-            if (profileEditor.StartupFile != null && File.Exists(profileEditor.StartupFile))
+            string primaryProfilePath = ConfigManager.ProfilePath;
+            string secondaryProfilePath = ConfigManager.SettingsManager.LoadSetting("Helios", "SecondaryProfileDirectory", null);
+            string startupProfile = profileEditor.StartupFile;
+
+            if(Path.GetExtension(startupProfile) == ".hpf")
             {
-                string extension = Path.GetExtension(profileEditor.StartupFile);
+                startupProfile = File.Exists(startupProfile) ? startupProfile :
+                  (File.Exists(Path.Combine(primaryProfilePath, startupProfile)) ? Path.Combine(primaryProfilePath, startupProfile) :
+                  (File.Exists(Path.Combine(secondaryProfilePath, startupProfile)) ? Path.Combine(secondaryProfilePath, startupProfile) : ""));
+            }
+
+            if (profileEditor.StartupFile != null && File.Exists(startupProfile))
+            {
+                string extension = Path.GetExtension(startupProfile);
                 switch (extension)
                 {
                     case ".hpf":
-                        LoadProfile(profileEditor.StartupFile);
+                        LoadProfile(startupProfile);
                         break;
                     case ".helios16":
-                        InstallArchive(profileEditor.StartupFile);
+                        InstallArchive(startupProfile);
                         break;
                     default:
                         // ignore
