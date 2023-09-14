@@ -93,7 +93,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             _parent = parent;
             SubscribeToLocationChanges();
-            _isRemote = ConfigManager.SettingsManager.LoadSetting("DCSInstallation", "IsRemote", false);
+            // _isRemote = ConfigManager.SettingsManager.LoadSetting("DCSInstallation", "IsRemote", false);
+            _isRemote = (_parent.IrisConfigurationType == IrisConfigurationType.IrisClientConfig);
             _networkAddress = ConfigManager.SettingsManager.LoadSetting("DCSInterface", "IPAddress", System.Net.IPAddress.Loopback.ToString());
             _portNumber = ConfigManager.SettingsManager.LoadSetting("DCSInterface", "Port", 9089+5);
         }
@@ -107,6 +108,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             try
             {
                 _configName = Path.ChangeExtension(configName, "xml");
+                _configName = $"{(_isRemote ? "Remote" : "Local")}_{_configName}";
                 _irisPath = Path.Combine(ConfigManager.DocumentPath, "Iris_Partial_Configs");
                 _tempPath = Path.Combine(_irisPath, Path.ChangeExtension(_configName, "tmp"));
                 _backupPath = Path.Combine(_irisPath, Path.ChangeExtension(_configName, "bak"));
@@ -132,7 +134,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 _xmlWriter.WriteStartElement("IrisConfig");
                 _xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
                 _xmlWriter.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema");
-                _xmlWriter.WriteStartElement("Viewports");
+                _xmlWriter.WriteStartElement("ViewPorts");
                 _isOpen = true;
             }
             catch (Exception ex)
@@ -155,7 +157,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void OpenLocalProfile(string configName)
         {
             _profileName = Path.ChangeExtension(configName, "hpf");
-            if (!_isRemote) { _profileName = "Local_" + _profileName; }
+            //if (!_isRemote) { _profileName = "Local_" + _profileName; }
             _irisProfilePath = Path.Combine(ConfigManager.DocumentPath, "Profiles", "Local_Iris_Profiles");
             _tempProfilePath = Path.Combine(_irisProfilePath, Path.ChangeExtension(_profileName, "tmp"));
             _backupProfilePath = Path.Combine(_irisProfilePath, Path.ChangeExtension(_profileName, "bak"));
@@ -168,6 +170,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// <summary>
         /// Writes a single viewport into the Iris config file
         /// </summary>
+        /// <remarks>The Iris coordinates use Windows coordinates where the primary display origin is 0,0
+        /// and this is different from DCS where the leftmost monitor is 0,0</remarks>
         /// <param name="viewport">Name and the viewport rectangle as a KeyValuePair</param>
         /// <returns>Success/Failure</returns>
         public bool WriteViewport(KeyValuePair<string, Rect> viewport)
@@ -178,16 +182,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 viewportRect.Intersect(_parent.Rendered);
                 if (viewportRect.Width < viewport.Value.Width || viewportRect.Height < viewport.Value.Height)
                 {
-                    // viewports that aren't entire rendered do not work
+                    // viewports that aren't entirely rendered do not work
                     string message = $"viewport '{viewport.Key}' not included in IRIS configuration because it is not entirely contained in rendered resolution";
                     ConfigManager.LogManager.LogInfo(message);
                     return false;
                 }
                 else
                 {
-
-                    _xmlWriter.WriteStartElement("Viewport");
-                    ConvertToDCS(ref viewportRect);
+                    _xmlWriter.WriteStartElement("ViewPort");
                     _xmlWriter.WriteElementString("Name", viewport.Key);
                     _xmlWriter.WriteElementString("Description", $"Viewport for {viewport.Key}");
                     _xmlWriter.WriteElementString("Host", _remoteHost);
@@ -198,7 +200,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     _xmlWriter.WriteElementString("SizeY", viewportRect.Height.ToString());
                     _xmlWriter.WriteElementString("ScreenPositionX", $"{(_isRemote ? viewportRect.Left : 0)}");
                     _xmlWriter.WriteElementString("ScreenPositionY", $"{(_isRemote ? viewportRect.Top : 0)}");
-                    _xmlWriter.WriteEndElement();  // viewport
+                    _xmlWriter.WriteEndElement();  // ViewPort
 
                     if (!_isRemote) CreateViewportVisual(viewport);
 
@@ -211,7 +213,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
         /// <summary>
         /// Creates a new Viewport control for inclusion in the Local profile.
-        /// Viewports are ordered by decreasing area of rectangle
         /// </summary>
         private void CreateViewportVisual(KeyValuePair<string, Rect> viewport)
         {
@@ -219,8 +220,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 Rect viewportRect = viewport.Value;
                 _rectangleID.Add(_rectangleIdNumber, viewport.Key);
-                _packingRectangles[_rectangleIdNumber] = new PackingRectangle(Convert.ToUInt32(viewportRect.X), Convert.ToUInt32(viewportRect.Y), Convert.ToUInt32(viewportRect.Width), Convert.ToUInt32(viewportRect.Height), _rectangleIdNumber++);
-            } else
+                //_packingRectangles[_rectangleIdNumber] = new PackingRectangle(Convert.ToUInt32(_parent.Rendered.Left < 0 ? viewportRect.X - _parent.Rendered.Left : viewportRect.X), Convert.ToUInt32(viewportRect.Y), Convert.ToUInt32(viewportRect.Width), Convert.ToUInt32(viewportRect.Height), _rectangleIdNumber++);
+                // all of the viewports to be packed are located at 0,0
+                _packingRectangles[_rectangleIdNumber] = new PackingRectangle(0, 0, Convert.ToUInt32(viewportRect.Width), Convert.ToUInt32(viewportRect.Height), _rectangleIdNumber++);
+            }
+            else
             {
                 string message = $"Maximum number of viewports for local profile has been exceeded: '{_packingRectangles.Count()}'.";
                 ConfigManager.LogManager.LogError(message);
@@ -274,6 +278,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
             }
         }
+        /// <summary>
+        /// Writes a minimal Helios profile to contain the viewports, and incluide the DCS Monitor Setup 
+        /// and Additional Viewports interfaces.
+        /// </summary>
         private void WriteLocalProfile()
         {
             if (_isProfileOpen)
@@ -333,9 +341,24 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 File.Move(_tempProfilePath, _profileName);
             }
         }
-
+        /// <summary>
+        /// Packs all of the viewports onto a single monitor and names them with the original viewport name. 
+        /// We don't know the configurations of the local monitors, so the profile is written with the 
+        /// viewports on a single 1920x1080 monitor with the intention that this profile will be 
+        /// reconfigured using "Reset Monitors" in Profile Explorer, with No Scaling selected.
+        /// </summary>
         private void PlaceViewportsOnMonitor()
         {
+            _localProfile.Monitors[0].Top = 0;
+            _localProfile.Monitors[0].Left = 0;
+            _localProfile.Monitors[0].Width = 1920;
+            _localProfile.Monitors[0].Height = 1080;
+
+            for(int i = _localProfile.Monitors.Count() -1; i > 0 ; i--)
+            {
+                _localProfile.Monitors.RemoveAt(i);
+            }
+
             Array.Resize(ref _packingRectangles, _rectangleIdNumber);
             RectanglePacker.Pack(_packingRectangles, out PackingRectangle bounds, PackingHints.FindBest, 1, 1, Convert.ToUInt32(_localProfile.Monitors[0].Width), Convert.ToUInt32(_localProfile.Monitors[0].Height));
             foreach(PackingRectangle viewport in _packingRectangles)
@@ -356,7 +379,24 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 vp.BackgroundColor = _colors[Math.Abs(vp.Name.GetHashCode()) % _colors.Length];                     
                 _localProfile.Monitors[0].Children.Add(vp);
             }
+            Helios.Controls.TextDecoration label = new Helios.Controls.TextDecoration()
+            {
+                Top = _localProfile.Monitors[0].Height / 2,
+                Left = 0,
+                Width = _localProfile.Monitors[0].Width,
+                Height = 64,
+                Name = "Viewport_Label"
+            };
+            label.Text = @"This profile is to help creating a viewport layout suitable for Iris to export.  Perform a ""Reset Monitors"" specifiying ""No Scaling""";
+            label.TextFormat.FontSize = 32;
+            label.TextFormat.HorizontalAlignment = TextHorizontalAlignment.Center;
+            label.ScalingMode = Helios.Controls.TextScalingMode.None;
+            label.FillBackground = true;
+            label.BackgroundColor = Color.FromArgb(0x80,0x1E,0x1E,0x1E);
+            label.FontColor = Color.FromArgb(0xff, 0x6f, 0xe2, 0x06);
+            _localProfile.Monitors[0].Children.Add(label);
         }
+
         public bool IsOpen { get => _isOpen; }
         public bool IsProfileOpen { get => _isProfileOpen; }
         public bool HasBackground { get => _hasBackground; set => _hasBackground = value; }

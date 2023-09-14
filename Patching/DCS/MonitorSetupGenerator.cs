@@ -99,7 +99,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 if (TryCreateViewport(lines, viewport, out FormattableString code))
                 {
-                    _irisViewports.Viewports.Add(viewport.Key,viewport.Value);
+                    if (_parent.IrisConfigurationType != IrisConfigurationType.NoIris)
+                    {
+                        _irisViewports.Viewports.Add(viewport.Key, viewport.Value);
+                    }
                     yield return new StatusReportItem
                     {
                         Status = $"{template.MonitorSetupFileBaseName}: {code}",
@@ -225,19 +228,22 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 _monitorSetup = Render(lines);
             }
 
-            IrisConfiguration irisConfig = new IrisConfiguration(_parent);
-            irisConfig.BackgroundRectangle = mainView;
-            irisConfig.Open($"{(template.Combined ? template.FileName : _parent.Profile.Name)}");
-
-            if (irisConfig.IsOpen)
+            if(_parent.IrisConfigurationType != IrisConfigurationType.NoIris)
             {
-                foreach(KeyValuePair<string, Rect> viewport in _irisViewports.Viewports.OrderBy(p => (p.Value.Width*p.Value.Height)))
+                IrisConfiguration irisConfig = new IrisConfiguration(_parent);
+                irisConfig.BackgroundRectangle = mainView;
+                irisConfig.Open($"{(template.Combined ? template.FileName : _parent.Profile.Name)}");
+
+                if (irisConfig.IsOpen)
                 {
-                    irisConfig.WriteViewport(viewport);
+                    foreach (KeyValuePair<string, Rect> viewport in _irisViewports.Viewports.OrderBy(p => (p.Value.Width * p.Value.Height)))
+                    {
+                        irisConfig.WriteViewport(viewport);
+                    }
+                    irisConfig.Close();
                 }
-                irisConfig.Close();
+                irisConfig.Dispose();
             }
-            irisConfig.Dispose();   
         }
 
         private static string Render(IEnumerable<FormattableString> lines) => string.Join(Environment.NewLine, lines.Select(FormattableString.Invariant));

@@ -255,7 +255,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             AddFunction(new FlagValue(this, "426", "Caution Panel (Pilot)", "Oxygen Indicator", "True when indicator is lit", "%1d"));
             AddFunction(new FlagValue(this, "432", "Caution Panel (Pilot)", "SPARE x4 Indicator", "True when indicators are lit", "%1d"));
             #endregion Caution Panel (Pilot)
-
             #region Indicators (others) Pilot
             AddFunction(new FlagValue(this, "409", "Indicators (Pilot)", "Laser Armed Indicator", "True when indicator is lit", "%1d"));
             AddFunction(new FlagValue(this, "410", "Indicators (Pilot)", "A/P Indicator", "True when indicator is lit", "%1d"));
