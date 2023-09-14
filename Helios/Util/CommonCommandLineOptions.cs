@@ -24,7 +24,7 @@ namespace GadrocsWorkshop.Helios.Util
     public class CommonCommandLineOptions: CommandLineOptions
     {
         [Option('l', "loglevel", Required = false, Default = LogLevel.Info,
-            HelpText = "Set log level [Debug, Info, Warning, Error].")]
+            HelpText = "Set logging level [Debug, Info, Warning, Error].")]
         public LogLevel LogLevel { get; set; } = LogLevel.Info;
 
         [Option('d', "documents", Required = false, Default = "Helios",

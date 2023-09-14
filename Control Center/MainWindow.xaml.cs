@@ -1079,11 +1079,19 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
 
             App app = Application.Current as App;
-            if (app != null && app.StartupProfile != null && File.Exists(app.StartupProfile))
+            if (app != null && app.StartupProfile != null)
             {
-                LoadProfileList(app.StartupProfile);
-                LoadProfile(app.StartupProfile, true);
-                StartProfile();
+                string primaryProfilePath = ConfigManager.ProfilePath;
+                string secondaryProfilePath = ConfigManager.SettingsManager.LoadSetting("Helios", "SecondaryProfileDirectory", null);
+                string startupProfile = File.Exists(app.StartupProfile) ? app.StartupProfile :
+                    (File.Exists(Path.Combine(primaryProfilePath, app.StartupProfile)) ? Path.Combine(primaryProfilePath, app.StartupProfile) :
+                    (File.Exists(Path.Combine(secondaryProfilePath, app.StartupProfile)) ? Path.Combine(secondaryProfilePath, app.StartupProfile) : ""));
+                if(startupProfile != "")
+                {
+                    LoadProfileList(startupProfile);
+                    LoadProfile(startupProfile, true);
+                    StartProfile();
+                }
             }
 
             VersionChecker.Check versionCheck = ConfigManager.VersionChecker.CheckAvailableVersion(false);
