@@ -441,6 +441,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
             catch (Exception ex)
             {
+                Exception _ = ex;
                 return InstallationResult.Fatal;
             }
         }

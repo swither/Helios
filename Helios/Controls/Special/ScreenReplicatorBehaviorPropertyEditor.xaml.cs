@@ -21,6 +21,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
     /// <summary>
     /// Interaction logic for ScreenReplicatorBehaviorPropertyEditor.xaml
     /// </summary>
+    [HeliosPropertyEditor("Helios.Base.ScreenReplicatorAdjustable", "Behavior")]
     [HeliosPropertyEditor("Helios.Base.ScreenReplicator", "Behavior")]
     public partial class ScreenReplicatorBehaviorPropertyEditor : HeliosPropertyEditor
     {

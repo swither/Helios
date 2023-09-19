@@ -67,7 +67,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
 
         protected override void OnRefresh()
         {
-            _inactiveBrush = Brushes.Yellow;
+            _inactiveBrush = Brushes.Goldenrod;
             _inactivePen = new Pen(_inactiveBrush, 1d) {DashStyle = DashStyles.Dash};
             _inactiveTextFormat = new TextFormat
             {
@@ -82,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             }
         }
 
-        private ImageBrush CreateImageBrush(ScreenReplicator replicator)
+        virtual protected ImageBrush CreateImageBrush(ScreenReplicator replicator)
         {
             ImageBrush brush = null;
             _hDC = NativeMethods.GetDC(NativeMethods.GetDesktopWindow());
