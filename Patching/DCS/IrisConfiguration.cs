@@ -145,7 +145,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
             if (!_isRemote)
             {
-                OpenLocalProfile(configName);
+                OpenLocalProfile(_parent.CurrentProfileName);
             }
             return _isOpen;
         }
@@ -156,8 +156,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// <param name="configName"></param>
         private void OpenLocalProfile(string configName)
         {
-            _profileName = Path.ChangeExtension(configName, "hpf");
-            //if (!_isRemote) { _profileName = "Local_" + _profileName; }
+            _profileName =  $"{((!_isRemote) ? configName :"Helios")}_Local_Viewports.hpf";
             _irisProfilePath = Path.Combine(ConfigManager.DocumentPath, "Profiles", "Local_Iris_Profiles");
             _tempProfilePath = Path.Combine(_irisProfilePath, Path.ChangeExtension(_profileName, "tmp"));
             _backupProfilePath = Path.Combine(_irisProfilePath, Path.ChangeExtension(_profileName, "bak"));
@@ -220,8 +219,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 Rect viewportRect = viewport.Value;
                 _rectangleID.Add(_rectangleIdNumber, viewport.Key);
-                //_packingRectangles[_rectangleIdNumber] = new PackingRectangle(Convert.ToUInt32(_parent.Rendered.Left < 0 ? viewportRect.X - _parent.Rendered.Left : viewportRect.X), Convert.ToUInt32(viewportRect.Y), Convert.ToUInt32(viewportRect.Width), Convert.ToUInt32(viewportRect.Height), _rectangleIdNumber++);
-                // all of the viewports to be packed are located at 0,0
                 _packingRectangles[_rectangleIdNumber] = new PackingRectangle(0, 0, Convert.ToUInt32(viewportRect.Width), Convert.ToUInt32(viewportRect.Height), _rectangleIdNumber++);
             }
             else
@@ -379,22 +376,30 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 vp.BackgroundColor = _colors[Math.Abs(vp.Name.GetHashCode()) % _colors.Length];                     
                 _localProfile.Monitors[0].Children.Add(vp);
             }
-            Helios.Controls.TextDecoration label = new Helios.Controls.TextDecoration()
-            {
-                Top = _localProfile.Monitors[0].Height / 2,
-                Left = 0,
-                Width = _localProfile.Monitors[0].Width,
-                Height = 64,
-                Name = "Viewport_Label"
+            string[] info = new string[] { 
+                @"This profile is to aid creation of a viewport layout suitable for Iris Server to export." ,
+                @"Perform a ""Reset Monitors"" specifiying ""No Scaling"" and re-adjust positions as required.",
+                @"Do not change the size of any viewports."
             };
-            label.Text = @"This profile is to help creating a viewport layout suitable for Iris to export.  Perform a ""Reset Monitors"" specifiying ""No Scaling""";
-            label.TextFormat.FontSize = 32;
-            label.TextFormat.HorizontalAlignment = TextHorizontalAlignment.Center;
-            label.ScalingMode = Helios.Controls.TextScalingMode.None;
-            label.FillBackground = true;
-            label.BackgroundColor = Color.FromArgb(0x80,0x1E,0x1E,0x1E);
-            label.FontColor = Color.FromArgb(0xff, 0x6f, 0xe2, 0x06);
-            _localProfile.Monitors[0].Children.Add(label);
+            for (int i = -1;i <= 1; i++)
+            {
+                Helios.Controls.TextDecoration label = new Helios.Controls.TextDecoration()
+                {
+                    Top = _localProfile.Monitors[0].Height / 2 + (i * 48),
+                    Left = 0,
+                    Width = _localProfile.Monitors[0].Width,
+                    Height = 48,
+                    Name = $"Viewport_Label_{i+1}"
+                };
+                label.Text = info[i + 1];
+                label.TextFormat.FontSize = 32;
+                label.TextFormat.HorizontalAlignment = TextHorizontalAlignment.Center;
+                label.ScalingMode = Helios.Controls.TextScalingMode.None;
+                label.FillBackground = true;
+                label.BackgroundColor = Color.FromArgb(0x80, 0x1E, 0x1E, 0x1E);
+                label.FontColor = Color.FromArgb(0xff, 0x6f, 0xe2, 0x06);
+                _localProfile.Monitors[0].Children.Add(label);
+            }
         }
 
         public bool IsOpen { get => _isOpen; }
