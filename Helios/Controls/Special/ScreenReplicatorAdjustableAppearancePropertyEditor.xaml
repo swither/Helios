@@ -28,38 +28,37 @@
         <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Brightness">
             <Label.ToolTip>Brightness Adjustment Value between 0.0 and 2.0.  1.0 is neutral.</Label.ToolTip>
         </Label>
-		<Slider Name="sliderbrightness" Grid.Column="1" Grid.Row="1" Minimum="0.0" Maximum="2.0" Value="{Binding Control.Brightness}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="brightnessslider_ValueChanged" />		
+		<Slider Name="sliderbrightness" Grid.Column="1" Grid.Row="1" Minimum="0.0" Maximum="2.0" Value="{Binding Control.Brightness}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="BrightnessSliderValueChanged" />		
 		<TextBlock Name="textBlockBrightnessValue" Grid.Column="2" Grid.Row="1" Margin="0,0,0,0" Text="1.0" />
 		
 		<Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Brightness (R)">
             <Label.ToolTip>Brightness Adjustment Value for Red between 0.0 and 2.0.  1.0 is neutral.</Label.ToolTip>
         </Label>
-		<Slider Name="sliderredbrightness" Grid.Column="1" Grid.Row="2" Minimum="0.0" Maximum="2.0" Value="{Binding Control.RedBrightness}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="redbrightnessslider_ValueChanged" />
+		<Slider Name="sliderredbrightness" Grid.Column="1" Grid.Row="2" Minimum="0.0" Maximum="2.0" Value="{Binding Control.RedBrightness}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="RedBrightnessSliderValueChanged" />
 		<TextBlock Name="textBlockRedBrightnessValue" Grid.Column="2" Grid.Row="2" Margin="0,0,0,0" Text="1.0" />
 		
         <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" Content="Brightness (G)">
             <Label.ToolTip>Brightness Adjustment Value for Green between 0.0 and 2.0.  1.0 is neutral.</Label.ToolTip>
         </Label>
-		<Slider Name="slidergreenbrightness" Grid.Column="1" Grid.Row="3" Minimum="0.0" Maximum="2.0" Value="{Binding Control.GreenBrightness}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="greenbrightnessslider_ValueChanged" />
+		<Slider Name="slidergreenbrightness" Grid.Column="1" Grid.Row="3" Minimum="0.0" Maximum="2.0" Value="{Binding Control.GreenBrightness}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="GreenBrightnessSliderValueChanged" />
 		<TextBlock Name="textBlockGreenBrightnessValue" Grid.Column="2" Grid.Row="3" Margin="0,0,0,0" Text="1.0" />
 		
         <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" Content="Brightness (B)">
             <Label.ToolTip>Brightness Adjustment Value for Blue between 0.0 and 2.0.  1.0 is neutral.</Label.ToolTip>
         </Label>
-		<Slider Name="sliderbluebrightness" Grid.Column="1" Grid.Row="4" Minimum="0.0" Maximum="2.0" Value="{Binding Control.BlueBrightness}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="bluebrightnessslider_ValueChanged" />
+		<Slider Name="sliderbluebrightness" Grid.Column="1" Grid.Row="4" Minimum="0.0" Maximum="2.0" Value="{Binding Control.BlueBrightness}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="BlueBrightnessSliderValueChanged" />
 		<TextBlock Name="textBlockBlueBrightnessValue" Grid.Column="2" Grid.Row="4" Margin="0,0,0,0" Text="1.0" />
 		
         <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right" Content="Contrast">
             <Label.ToolTip>Contrast Adjustment Value between 0.1 and 2.0.  1.0 is neutral.</Label.ToolTip>
         </Label>
-		<Slider Name="slidercontrast" Grid.Column="1" Grid.Row="5" Minimum="0.0" Maximum="2.0" Value="{Binding Control.Contrast}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="contrastslider_ValueChanged" />
+		<Slider Name="slidercontrast" Grid.Column="1" Grid.Row="5" Minimum="0.0" Maximum="2.0" Value="{Binding Control.Contrast}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="ContrastSliderValueChanged" />
 		<TextBlock Name="textBlockContrastValue" Grid.Column="2" Grid.Row="5" Margin="0,0,0,0" Text="1.0" />
 		
         <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Content="Gamma">
             <Label.ToolTip>Gamma Adjustment Value between 0.1 and 2.0.  1.0 is neutral.</Label.ToolTip>
         </Label>
-		<Slider Name="slidergamma" Grid.Column="1" Grid.Row="6" Width="120" Minimum="0.0" Maximum="2.0" Value="{Binding Control.Gamma}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="gammaslider_ValueChanged" />
-		<TextBlock Name="textBlockGammaValue" Grid.Column="2" Grid.Row="6" Margin="0,0,0,0" Text="1.0" />
-	
+		<Slider Name="slidergamma" Grid.Column="1" Grid.Row="6" Width="120" Minimum="0.0" Maximum="2.0" Value="{Binding Control.Gamma}" Margin="2" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="GammaSliderValueChanged" />
+		<TextBlock Name="textBlockGammaValue" Grid.Column="2" Grid.Row="6" Margin="0,0,0,0" Text="1.0" />	
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>

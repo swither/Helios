@@ -30,30 +30,30 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             InitializeComponent();
         }
-        private void brightnessslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void BrightnessSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             this.textBlockBrightnessValue.Text = $"{e.NewValue:N2}";
         }
-        private void redbrightnessslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void RedBrightnessSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             this.textBlockRedBrightnessValue.Text = $"{e.NewValue:N2}";
         }
-        private void greenbrightnessslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void GreenBrightnessSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             this.textBlockGreenBrightnessValue.Text = $"{e.NewValue:N2}";
         }
-        private void bluebrightnessslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void BlueBrightnessSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             this.textBlockBlueBrightnessValue.Text = $"{e.NewValue:N2}";
         }
-        private void contrastslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void ContrastSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if(textBlockContrastValue != null)
             {
                 this.textBlockContrastValue.Text = $"{e.NewValue:N2}";
             }
         }
-        private void gammaslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void GammaSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if(this.textBlockGammaValue != null)
             {
