@@ -2955,8 +2955,7 @@
     <Error Condition="!Exists('..\packages\KeraLua.1.0.29\build\net45\KeraLua.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\KeraLua.1.0.29\build\net45\KeraLua.targets'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)TimeStamp.g.cs" "$(ProjectDir)TimeStamp.tt"</PreBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\KeraLua.1.0.29\build\net45\KeraLua.targets" Condition="Exists('..\packages\KeraLua.1.0.29\build\net45\KeraLua.targets')" />
 </Project>
