@@ -487,10 +487,10 @@
     <Content Include="Templates\Base\M2000C\8 Components\After_Burner_Indicator.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\M2000C\3 Panels\Altimeter.htpl">
+    <Content Include="Templates\Base\M2000C\3 Panels\0_Altimeter.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\M2000C\3 Panels\AoA_Indicator.htpl">
+    <Content Include="Templates\Base\M2000C\3 Panels\0_AoA_Indicator.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\Base\M2000C\3 Panels\Caution_Panel.htpl">
@@ -499,7 +499,7 @@
     <Content Include="Templates\Base\M2000C\8 Components\DEMAR_Indicator.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\M2000C\3 Panels\Engine_Sensor_Panel.htpl">
+    <Content Include="Templates\Base\M2000C\3 Panels\0_Engine_Sensor_Panel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\Base\M2000C\3 Panels\Engine_Start_Panel.htpl">
@@ -514,7 +514,7 @@
     <Content Include="Templates\Base\M2000C\3 Panels\Fuel_Panel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\M2000C\3 Panels\HSI_Panel.htpl">
+    <Content Include="Templates\Base\M2000C\3 Panels\0_HSI_Panel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\Base\M2000C\3 Panels\IFFModeSetting.htpl">
@@ -594,8 +594,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gauges\ADI\BackupADI.cs" />
+    <Compile Include="Gauges\ADI\BackupADIGauge.cs" />
     <Compile Include="Gauges\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\CautionPanel\Caution_Panel.cs" />
+    <Compile Include="Gauges\Accelerometer\Accelerometer.cs" />
+    <Compile Include="Gauges\Accelerometer\AccelerometerGauge.cs" />
+    <Compile Include="Gauges\Clock\Clock.cs" />
+    <Compile Include="Gauges\Clock\ClockGauge.cs" />
     <Compile Include="Gauges\Common\Mk2CDrumGauge.cs" />
     <Compile Include="Gauges\Common\Mk2CNeedle.cs" />
     <Compile Include="Gauges\ECMBox\ECM_Box.cs" />
@@ -632,6 +638,8 @@
     <Compile Include="Gauges\TestPanel\Test_Panel.cs" />
     <Compile Include="Gauges\VorIlsChannel\VorIls_Panel.cs" />
     <Compile Include="Gauges\VTBPanel\VTB_Panel.cs" />
+    <Compile Include="Gauges\VVI\VVI.cs" />
+    <Compile Include="Gauges\VVI\VVIGauge.cs" />
     <Compile Include="Interfaces\Functions\Altimeter.cs" />
     <Compile Include="Interfaces\M2000CInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -773,6 +781,127 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Clock\Clock_Dial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Clock\NeedleStopWatchMinutes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Clock\NeedleSeconds.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Clock\NeedleMinutes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Clock\NeedleHours.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\M2000C\3 Panels\0_Clock.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\ADI\ADI_Wings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\ADI\ADI_Tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\ADI\ADI_Pointer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\ADI\ADI_Off_Flag.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\ADI\ADI_Gradiant.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\ADI\ADI_Bezel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Accelerometer\Accelerometer_Dial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Accelerometer\Needle1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Accelerometer\Needle2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\VVI\VVI_Needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\VVI\VVI_Dial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\M2000C\3 Panels\0_Accelerometer.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\M2000C\3 Panels\0_VVI.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\M2000C\3 Panels\0_IAS.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Base\M2000C\3 Panels\0_ADI_Backup.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="..\HeliosPlugin.targets" />
 </Project>
