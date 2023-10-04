@@ -33,12 +33,14 @@ namespace GadrocsWorkshop.Helios.ControlCenter
     using System.Windows.Threading;
     using GadrocsWorkshop.Helios.Windows;
     using GadrocsWorkshop.Helios.Windows.Controls;
+    using NLog;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private IntPtr HWND_TOPMOST = new IntPtr(-1);
         private const long TOPMOST_TICK_COUNT = 3 * TimeSpan.TicksPerSecond;
 
@@ -590,6 +592,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             {
                 ReportStatus("Preflight check is disabled.  Helios will not be able to ensure configuration is correct.");
             }
+            ConfigManager.ProfileName = ActiveProfile.Name;
 
             ActiveProfile.ControlCenterShown += Profile_ShowControlCenter;
             ActiveProfile.ControlCenterHidden += Profile_HideControlCenter;
@@ -597,6 +600,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             ActiveProfile.ProfileHintReceived += Profile_ProfileHintReceived;
             ActiveProfile.DriverStatusReceived += Profile_DriverStatusReceived;
             ActiveProfile.ClientChanged += Profile_ClientChanged;
+            ActiveProfile.ProfileTransferControl += Profile_ProfileTransferControl;
 
             ActiveProfile.Start();
 
@@ -714,10 +718,46 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             _lastDriverStatus = "";
         }
 
+        /// <summary>
+        /// Attempts to locate a profile with the suffix ".hpf" in the prescribed profile directories
+        /// stops the currrent profile, loads the new profile and then starts it.
+        /// </summary>
+        /// <remarks>Deliberately requiring file extension .hpf and only allowing loads from primary or secondary
+        /// profile locations</remarks>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Profile_ProfileTransferControl(object sender, EventArgs e)
+        {
+            HeliosActionEventArgs newProfile = e as HeliosActionEventArgs;
+
+            string primaryProfilePath = ConfigManager.ProfilePath;
+            string secondaryProfilePath = ConfigManager.SettingsManager.LoadSetting("Helios", "SecondaryProfileDirectory", null);
+            string startupProfile = newProfile.Value.StringValue;
+
+            startupProfile = Path.ChangeExtension(Path.GetFileName(startupProfile), ".hpf");
+
+            if (startupProfile != "" && Path.GetExtension(startupProfile) == ".hpf")
+            {
+                startupProfile = File.Exists(startupProfile) ? startupProfile :
+                  (File.Exists(Path.Combine(primaryProfilePath, startupProfile)) ? Path.Combine(primaryProfilePath, startupProfile) :
+                  (File.Exists(Path.Combine(secondaryProfilePath, startupProfile)) ? Path.Combine(secondaryProfilePath, startupProfile) : ""));
+
+                if (File.Exists(startupProfile))
+                {
+                    StopProfile();
+                    LoadProfile(startupProfile, false);
+                    StartProfile();
+                    return;
+                }
+            }
+            Logger.Warn($"Transfering control to another profile is not possible.  New profile name {startupProfile} cannot be found.");
+        }
+
         private void StopProfile()
         {
             if (ActiveProfile != null && ActiveProfile.IsStarted)
             {
+                ConfigManager.ProfileName = "";
                 ActiveProfile.Stop();
             }
         }
@@ -764,6 +804,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 profile.ProfileHintReceived -= Profile_ProfileHintReceived;
                 profile.DriverStatusReceived -= Profile_DriverStatusReceived;
                 profile.ClientChanged -= Profile_ClientChanged;
+                profile.ProfileTransferControl -= Profile_ProfileTransferControl;
             }
 
             if (_dispatcherTimer != null)
