@@ -71,7 +71,7 @@ namespace GadrocsWorkshop.Helios
             if (Helios.RunningVersion.IsDevelopmentPrototype)
             {
                 _developmentPrototype = true;
-                _timeBombTime = TimeStamp.CompilationTimestampUtc.AddDays(365.0);
+                _timeBombTime = TimeStamp.CompilationTimestampUtc.AddDays(90.0);
             }
             _lastReturnedVersion = ToVersion(_settings.LoadSetting("Helios", "LastReturnedVersion", "0.0.0.0"));
             _nextDateForVersionWarning = _settings.LoadSetting("Helios", "NextDateForVersionWarning", TodayString);
