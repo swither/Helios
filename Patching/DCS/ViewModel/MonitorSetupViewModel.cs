@@ -66,6 +66,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             SourceOfAdditionalViewports = Data.UsingViewportProvider
                 ? SourceOfAdditionalViewports.AdditionalViewportsInterface
                 : SourceOfAdditionalViewports.ThirdPartySolution;
+            IrisConfigurationType = IrisConfigurationType.NoIris;
+
             foreach (DCSMonitor monitor in Data.Monitors)
             {
                 AddMonitor(monitor, Data.GlobalOffset);
@@ -129,6 +131,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             model.Data.UsingViewportProvider = ((SourceOfAdditionalViewports) e.NewValue) ==
                                                SourceOfAdditionalViewports.AdditionalViewportsInterface;
             model.Data.InvalidateStatusReport();
+        }
+
+        private static void OnIrisConfigurationTypeChange(DependencyObject d,
+    DependencyPropertyChangedEventArgs e)
+        {
+            
+            MonitorSetupViewModel model = (MonitorSetupViewModel)d;
+            if (!model._loaded)
+            {
+                return;
+            }
+
+            model.Data.IrisConfigurationType = (IrisConfigurationType)e.NewValue;
+            if ((IrisConfigurationType)e.NewValue != IrisConfigurationType.NoIris)
+            {
+                model.Data.InvalidateStatusReport();
+            }
         }
 
         private void ProtectLastMonitor(List<MonitorViewModel> monitors, Action<MonitorViewModel, bool> setter)
@@ -597,6 +616,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             DependencyProperty.Register("SourceOfAdditionalViewports", typeof(SourceOfAdditionalViewports),
                 typeof(MonitorSetupViewModel),
                 new PropertyMetadata(default(SourceOfAdditionalViewports), OnSourceOfAdditionalViewportsChange));
+
+        public IrisConfigurationType IrisConfigurationType
+        {
+            get => (IrisConfigurationType)GetValue(IrisConfigurationTypeProperty);
+            set => SetValue(IrisConfigurationTypeProperty, value);
+        }
+
+        public static readonly DependencyProperty IrisConfigurationTypeProperty =
+            DependencyProperty.Register("IrisConfigurationType", typeof(IrisConfigurationType),
+                typeof(MonitorSetupViewModel),
+                new PropertyMetadata(default(IrisConfigurationType), OnIrisConfigurationTypeChange));
 
         /// <summary>
         /// The desktop rectangle (in DCS coordinates) that DCS will select for rendering, based on specifying its size as the "Resolution" parameter

@@ -23,21 +23,21 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Margin="4,10,2,2" Style="{StaticResource Heading2}">Screen Area</TextBlock>
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Margin="4,10,2,2" Style="{StaticResource Heading2}">Screen Area To Capture</TextBlock>
         <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Left">
-            <Label.ToolTip>Left co-ordinate of the section of screen to replicate.  Relative to 0 which is the left edge of your primary desktop monitor.</Label.ToolTip>
+            <Label.ToolTip>Left co-ordinate of the section of screen to capture for replication.  Relative to 0 which is the left edge of your primary desktop monitor.</Label.ToolTip>
         </Label>
         <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="1" FontSize="10" Margin="2" Text="{Binding Control.CaptureLeft}" />
         <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Top">
-            <Label.ToolTip>Top co-ordinate of the section of screen to replicate.  Relative to 0 which is the top edge of your primary desktop monitor.</Label.ToolTip>
+            <Label.ToolTip>Top co-ordinate of the section of screen to capture for replication.  Relative to 0 which is the top edge of your primary desktop monitor.</Label.ToolTip>
         </Label>
         <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="2" FontSize="10" Margin="2" Text="{Binding Control.CaptureTop}" />
         <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" Content="Width">
-            <Label.ToolTip>Width of the area to replilcate.</Label.ToolTip>
+            <Label.ToolTip>Width of the area to capture for replication.</Label.ToolTip>
         </Label>
         <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="3" FontSize="10" Margin="2" Text="{Binding Control.CaptureWidth}" />
         <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" Content="Height">
-            <Label.ToolTip>Height of the area to capture.</Label.ToolTip>
+            <Label.ToolTip>Height of the area to capture for replication.</Label.ToolTip>
         </Label>
         <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="4" FontSize="10" Margin="2" Text="{Binding Control.CaptureHeight}" />
 

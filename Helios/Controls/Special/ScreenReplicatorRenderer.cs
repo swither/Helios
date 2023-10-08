@@ -14,9 +14,16 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Color = System.Windows.Media.Color;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
+using Pen = System.Windows.Media.Pen;
+
 
 namespace GadrocsWorkshop.Helios.Controls.Special
 {
@@ -60,15 +67,15 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             }
             else
             {
-                drawingContext.DrawRectangle(null, _inactivePen, _displayRect);
-                _inactiveTextFormat.RenderText(drawingContext, _inactiveBrush, "Screen Replicator", _displayRect);
+                drawingContext.DrawRectangle((ConfigManager.Application.ShowDesignTimeControls) ? new SolidColorBrush(Color.FromArgb(0x40, 0x64, 0x95, 0xed)) : null, _inactivePen, _displayRect);
+                _inactiveTextFormat.RenderText(drawingContext, _inactiveBrush, replicator.Name, _displayRect);
             }
         }
 
         protected override void OnRefresh()
         {
-            _inactiveBrush = Brushes.Yellow;
-            _inactivePen = new Pen(_inactiveBrush, 1d) {DashStyle = DashStyles.Dash};
+            _inactiveBrush = Brushes.BlueViolet;
+            _inactivePen = new Pen(_inactiveBrush, 1d) { DashStyle = DashStyles.Dash };
             _inactiveTextFormat = new TextFormat
             {
                 HorizontalAlignment = TextHorizontalAlignment.Center,
@@ -82,7 +89,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             }
         }
 
-        private ImageBrush CreateImageBrush(ScreenReplicator replicator)
+        virtual protected ImageBrush CreateImageBrush(ScreenReplicator replicator)
         {
             ImageBrush brush = null;
             _hDC = NativeMethods.GetDC(NativeMethods.GetDesktopWindow());

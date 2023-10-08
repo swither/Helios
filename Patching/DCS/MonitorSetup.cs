@@ -78,6 +78,11 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private Rect _rendered;
 
+        /// <summary>
+        /// backing field for the setting which describes the type of Iris Configuration processing to take place
+        /// </summary>
+        private IrisConfigurationType _irisConfigurationSource;
+
         public MonitorSetup()
             : base("DCS Monitor Setup")
         {
@@ -670,6 +675,12 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public string StatusName => Name;
 
+        public IrisConfigurationType IrisConfigurationType
+        {
+            get => _irisConfigurationSource;
+            set => _irisConfigurationSource = value;    
+        }
+
         /// <summary>
         /// functionality supporting combined monitor setups
         /// </summary>
@@ -678,6 +689,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         internal string MonitorLayoutKey { get; private set; }
 
         internal MonitorSetupGenerator Renderer => _renderer;
+
 
         #endregion
 

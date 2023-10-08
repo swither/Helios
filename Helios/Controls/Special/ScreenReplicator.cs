@@ -25,18 +25,20 @@ namespace GadrocsWorkshop.Helios.Controls.Special
     [HeliosControl("Helios.Base.ScreenReplicator", "Screen Replicator", "Special Controls", typeof(ScreenReplicatorRenderer))]
     public class ScreenReplicator : HeliosVisual
     {
-        private Int32Rect _catprueLocation = new Int32Rect(0, 0, 300, 300);
+        private Int32Rect _captureLocation = new Int32Rect(0, 0, 300, 300);
         private int _replicationsPerSecond = 2;
         private bool _replicateOnProfileStart = false;
         private bool _isRunning = false;
         private bool _isReplicating = false;
         private bool _blankOnStop = true;
+        private readonly Size _defaultSize = new Size(300, 300);
 
         private int _millisecondsPerReplication = 500;
         private int _lastReplication;
 
-        public ScreenReplicator()
-            : base("Screen Shot Extractor", new Size(300, 300))
+        public ScreenReplicator() : this("Screen Shot Extractor", new Size(300,300)) { }
+        public ScreenReplicator(string name, Size size)
+            : base(name, size)
         {
             HeliosAction startReplicating = new HeliosAction(this, "", "", "start replication", "Start replicating the screen.");
             startReplicating.Execute += StartReplicating_Execute;
@@ -64,14 +66,14 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             get
             {
-                return _catprueLocation.Y;
+                return _captureLocation.Y;
             }
             set
             {
-                if (!_catprueLocation.Y.Equals(value))
+                if (!_captureLocation.Y.Equals(value))
                 {
-                    int oldValue = _catprueLocation.Y;
-                    _catprueLocation.Y = value;
+                    int oldValue = _captureLocation.Y;
+                    _captureLocation.Y = value;
                     OnPropertyChanged("CaptureTop", oldValue, value, true);
                     OnDisplayUpdate();
                 }
@@ -82,14 +84,14 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             get
             {
-                return _catprueLocation.X;
+                return _captureLocation.X;
             }
             set
             {
-                if (!_catprueLocation.X.Equals(value))
+                if (!_captureLocation.X.Equals(value))
                 {
-                    int oldValue = _catprueLocation.X;
-                    _catprueLocation.X = value;
+                    int oldValue = _captureLocation.X;
+                    _captureLocation.X = value;
                     OnPropertyChanged("CaptureLeft", oldValue, value, true);
                     OnDisplayUpdate();
                 }
@@ -100,14 +102,14 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             get
             {
-                return _catprueLocation.Width;
+                return _captureLocation.Width;
             }
             set
             {
-                if (!_catprueLocation.Width.Equals(value))
+                if (!_captureLocation.Width.Equals(value))
                 {
-                    int oldValue = _catprueLocation.Width;
-                    _catprueLocation.Width = value;
+                    int oldValue = _captureLocation.Width;
+                    _captureLocation.Width = value;
                     OnPropertyChanged("CaptureWidth", oldValue, value, true);
                     OnDisplayUpdate();
                 }
@@ -118,14 +120,14 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             get
             {
-                return _catprueLocation.Height;
+                return _captureLocation.Height;
             }
             set
             {
-                if (!_catprueLocation.Height.Equals(value))
+                if (!_captureLocation.Height.Equals(value))
                 {
-                    int oldValue = _catprueLocation.Height;
-                    _catprueLocation.Height = value;
+                    int oldValue = _captureLocation.Height;
+                    _captureLocation.Height = value;
                     OnPropertyChanged("CaptureHeight", oldValue, value, true);
                     OnDisplayUpdate();
                 }
@@ -136,7 +138,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             get
             {
-                return _catprueLocation;
+                return _captureLocation;
             }
         }
 

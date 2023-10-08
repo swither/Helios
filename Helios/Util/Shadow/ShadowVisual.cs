@@ -45,7 +45,7 @@ namespace GadrocsWorkshop.Helios.Util.Shadow
         /// true if viewport location is directly on monitor, however if the Viewport is on a child, then the location
         /// is not tracked and automatic updating is not performed.
         /// </summary>
-        public bool IsViewportDirectlyOnMonitor => Visual.Parent.Equals(Monitor);
+        public bool IsViewportDirectlyOnMonitor => (Visual.Parent == null || Visual.Parent.Equals(Monitor));
 
         /// <summary>
         /// map from visual child to its shadow representation

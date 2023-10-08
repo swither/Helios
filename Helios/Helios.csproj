@@ -163,6 +163,11 @@
       <DependentUpon>CalibrationFilterBehaviorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Special\ExternalIndicatorControl.cs" />
+    <Compile Include="Controls\Special\ScreenReplicatorAdjustable.cs" />
+    <Compile Include="Controls\Special\ScreenReplicatorAdjustableAppearancePropertyEditor.xaml.cs">
+      <DependentUpon>ScreenReplicatorAdjustableAppearancePropertyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Special\ScreenReplicatorAdjustableRenderer.cs" />
     <Compile Include="Controls\Special\SimpleComputationWire.cs" />
     <Compile Include="Controls\Special\TestControl.cs" />
     <Compile Include="Controls\NumericTextDisplayBehaviorPropertyEditor.xaml.cs">
@@ -475,6 +480,9 @@
     <Page Include="Controls\RockerSwitchAppearanceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Special\ScreenReplicatorAdjustableAppearancePropertyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Special\SimpleComputationWireBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>

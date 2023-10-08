@@ -63,6 +63,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// </summary>
         private ViewportSetupFile _allViewports;
 
+        private ViewportSetupFile _irisViewports = new ViewportSetupFile() ;
         #endregion
 
         public MonitorSetupGenerator(MonitorSetup parent)
@@ -92,8 +93,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return item;
             }
 
-            // emit in sorted canonical order so we can compare files later
+            // for Iris, we only want the current profile even if it is in a combined
+            _irisViewports.Viewports.Clear();
+            if (_parent.IrisConfigurationType != IrisConfigurationType.NoIris)
+            {
+                foreach (KeyValuePair<string, Rect> viewport in _localViewports.Viewports.OrderBy(p => p.Key))
+                {
+                    _irisViewports.Viewports.Add(viewport.Key, viewport.Value);
+                }
+            }
 
+            // emit in sorted canonical order so we can compare files later
             foreach (KeyValuePair<string, Rect> viewport in _allViewports.Viewports.OrderBy(p => p.Key))
             {
                 if (TryCreateViewport(lines, viewport, out FormattableString code))
@@ -221,6 +231,26 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     lines.Add($"{_localViewports.DCSMonitorSetupAdditionalLua}");
                 }
                 _monitorSetup = Render(lines);
+            }
+
+            if(_parent.IrisConfigurationType != IrisConfigurationType.NoIris)
+            {
+                IrisConfiguration irisConfig = new IrisConfiguration(_parent);
+                irisConfig.BackgroundRectangle = mainView;
+                irisConfig.Open($"{(template.Combined ? template.FileName : _parent.Profile.Name)}");
+
+                if (irisConfig.IsOpen)
+                {
+                    foreach (KeyValuePair<string, Rect> viewport in _irisViewports.Viewports.OrderBy(p => (p.Value.Width * p.Value.Height)))
+                    {
+                        if (true)
+                        {
+                            irisConfig.WriteViewport(viewport);
+                        }
+                    }
+                    irisConfig.Close();
+                }
+                irisConfig.Dispose();
             }
         }
 

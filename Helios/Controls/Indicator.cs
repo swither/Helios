@@ -56,7 +56,7 @@ namespace GadrocsWorkshop.Helios.Controls
             _textFormat.VerticalAlignment = TextVerticalAlignment.Center;
             _textFormat.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(TextFormat_PropertyChanged);
 
-            _value = new HeliosValue(this, new BindingValue(false), "", "indicator", "Current On/Off State for this indicator.", "True if the indicator is on, otherwise false.", BindingValueUnits.Boolean);
+            _value = new HeliosValue(this, new BindingValue(false), "", "indicator", "Current On/Off State for this indicator.", "True if the indicator is on, otherwise False.", BindingValueUnits.Boolean);
             _value.Execute += new HeliosActionHandler(On_Execute);
             Values.Add(_value);
             Actions.Add(_value);
