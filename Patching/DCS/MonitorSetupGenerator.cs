@@ -93,16 +93,21 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return item;
             }
 
-            // emit in sorted canonical order so we can compare files later
+            // for Iris, we only want the current profile even if it is in a combined
             _irisViewports.Viewports.Clear();
+            if (_parent.IrisConfigurationType != IrisConfigurationType.NoIris)
+            {
+                foreach (KeyValuePair<string, Rect> viewport in _localViewports.Viewports.OrderBy(p => p.Key))
+                {
+                    _irisViewports.Viewports.Add(viewport.Key, viewport.Value);
+                }
+            }
+
+            // emit in sorted canonical order so we can compare files later
             foreach (KeyValuePair<string, Rect> viewport in _allViewports.Viewports.OrderBy(p => p.Key))
             {
                 if (TryCreateViewport(lines, viewport, out FormattableString code))
                 {
-                    if (_parent.IrisConfigurationType != IrisConfigurationType.NoIris)
-                    {
-                        _irisViewports.Viewports.Add(viewport.Key, viewport.Value);
-                    }
                     yield return new StatusReportItem
                     {
                         Status = $"{template.MonitorSetupFileBaseName}: {code}",
@@ -238,7 +243,10 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     foreach (KeyValuePair<string, Rect> viewport in _irisViewports.Viewports.OrderBy(p => (p.Value.Width * p.Value.Height)))
                     {
-                        irisConfig.WriteViewport(viewport);
+                        if (true)
+                        {
+                            irisConfig.WriteViewport(viewport);
+                        }
                     }
                     irisConfig.Close();
                 }

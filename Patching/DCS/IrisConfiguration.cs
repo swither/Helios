@@ -86,7 +86,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         /// ultimately determines the size of the viewport, so the receiving side is the one creating the Iris configuration
         /// from the ViewportSetupFiles.  In order to facilitate the setup on the sending side, a viewport-only profile is 
         /// created to help the viewport layout on the local system.
-        /// TODO: There should should be a method to merge the sending and receiving data into a single Iris Config.
+        /// TODO: There should be a method to merge the sending and receiving data into a single Iris Config.
         /// </summary>
         /// <param name="parent"></param>
         public IrisConfiguration(MonitorSetup parent)
@@ -157,7 +157,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private void OpenLocalProfile(string configName)
         {
             _profileName =  $"{((!_isRemote) ? configName :"Helios")}_Local_Viewports.hpf";
-            _irisProfilePath = Path.Combine(ConfigManager.DocumentPath, "Profiles", "Local_Iris_Profiles");
+            _irisProfilePath = Path.Combine(ConfigManager.DocumentPath, "Profiles");
             _tempProfilePath = Path.Combine(_irisProfilePath, Path.ChangeExtension(_profileName, "tmp"));
             _backupProfilePath = Path.Combine(_irisProfilePath, Path.ChangeExtension(_profileName, "bak"));
 
