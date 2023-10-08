@@ -1230,7 +1230,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
             AddFunction(new Switch(this, PCCM, "608", SwitchPositions.Create(3, 1.0, -0.5, "3608", new string[] { "A", "M", "T" }), "EW PANEL", "D2M Power Switch", "%0.1f"));
             AddFunction(new Switch(this, PCCM, "609", SwitchPositions.Create(3, 1.0, -0.5, "3609", new string[] { "A", "S.A.", "AU"}), "EW PANEL", "Decoy Release Mode Switch", "%0.1f"));
             AddFunction(new Switch(this, RWR, "610", SwitchPositions.Create(11, 0.0, 0.1, "3610",new string[] { "A","1","2","3","4","5","6","7","8","9","10"}, "%0.2f"), "EW PANEL", "Decoy Release Program Knob", "%0.2f"));
-            AddFunction(new PushButton(this,SPIRALE,"3990","990","EW PANEL", "ECM Box Clear Button"));
             #region  ECM BOX
             AddFunction(new Switch(this, RWR, "194", new SwitchPosition[] {
                 new SwitchPosition("1.0", "AUTO", "3194"),

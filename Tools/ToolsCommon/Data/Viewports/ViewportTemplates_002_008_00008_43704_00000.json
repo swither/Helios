@@ -1,0 +1,33 @@
+﻿[
+  {
+    "templateName": "F-5E",
+    "moduleId": "F-5E",
+    "isHeliosTemplate": true,
+    "viewports": [
+      {
+        "viewportName": "RWR",
+        "SuppressViewportNamePrefix": false,
+        "relativeInitFilePath": "Mods/aircraft/F-5E/Cockpit/Scripts/AN_ALR87/indicator/AN_ALR87_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 0,
+        "y": 0,
+        "width": 300,
+        "height": 300
+      },
+      {
+        "viewportName": "RADAR",
+        "SuppressViewportNamePrefix": false,
+        "relativeInitFilePath": "Mods/aircraft/F-5E/Cockpit/Scripts/AN_APQ159/AN_APQ159_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 0,
+        "y": 0,
+        "width": 300,
+        "height": 300
+      }
+    ]
+  }
+]
