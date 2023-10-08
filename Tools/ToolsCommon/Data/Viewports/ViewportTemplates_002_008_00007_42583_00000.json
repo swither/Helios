@@ -1,12 +1,12 @@
 ﻿[
   {
     "templateName": "F-15E",
-    "moduleId": "F-15ESE",
+    "moduleId": "F-15E",
     "isHeliosTemplate": true,
     "viewports": [
       {
-        "viewportName": "F_15E_LEFT_MPD_PLT",
-        "SuppressViewportNamePrefix": true,
+        "viewportName": "LEFT_MPD_PLT",
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/F-15E/Cockpit/Scripts/Bake/MFDG/Bake_FCL_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -17,8 +17,8 @@
         "height": 300
       },
       {
-        "viewportName": "F_15E_CENTER_MPCD_PLT",
-        "SuppressViewportNamePrefix": true,
+        "viewportName": "CENTER_MPCD_PLT",
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/F-15E/Cockpit/Scripts/Bake/MFDG/Bake_FCC_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -29,8 +29,8 @@
         "height": 300
       },
       {
-        "viewportName": "F_15E_RIGHT_MPD_PLT",
-        "SuppressViewportNamePrefix": true,
+        "viewportName": "RIGHT_MPD_PLT",
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/F-15E/Cockpit/Scripts/Bake/MFDG/Bake_FCR_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -41,8 +41,8 @@
         "height": 300
       },
       {
-        "viewportName": "F_15E_LEFT_MPD_WSO",
-        "SuppressViewportNamePrefix": true,
+        "viewportName": "LEFT_MPD_WSO",
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/F-15E/Cockpit/Scripts/Bake/MFDG/Bake_RCLI_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -53,8 +53,8 @@
         "height": 300
       },
       {
-        "viewportName": "F_15E_LEFT_MPCD_WSO",
-        "SuppressViewportNamePrefix": true,
+        "viewportName": "LEFT_MPCD_WSO",
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/F-15E/Cockpit/Scripts/Bake/MFDG/Bake_RCLO_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -65,8 +65,8 @@
         "height": 300
       },
       {
-        "viewportName": "F_15E_RIGHT_MPD_WSO",
-        "SuppressViewportNamePrefix": true,
+        "viewportName": "RIGHT_MPD_WSO",
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/F-15E/Cockpit/Scripts/Bake/MFDG/Bake_RCRI_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -77,8 +77,8 @@
         "height": 300
       },
       {
-        "viewportName": "F_15E_RIGHT_MPCD_WSO",
-        "SuppressViewportNamePrefix": true,
+        "viewportName": "RIGHT_MPCD_WSO",
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/F-15E/Cockpit/Scripts/Bake/MFDG/Bake_RCRO_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,

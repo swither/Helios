@@ -6,7 +6,7 @@
     "viewports": [
       {
         "viewportName": "ALR_300_RWR",
-        "SuppressViewportNamePrefix": true,
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/Common/ALR_300/Indicator/Baked/ALR_300_bake_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -18,7 +18,7 @@
       },
       {
         "viewportName": "F1_Radar",
-        "SuppressViewportNamePrefix": true,
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/Mirage-F1/Mirage-F1_Common/Radar_Cyrano_IV_legacy/Indicator/Main/CyranoLegacy_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -41,7 +41,7 @@
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
-        "SuppressViewportNamePrefix": true,
+        "SuppressViewportNamePrefix": false,
         "x": 0,
         "y": 0,
         "width": 540,
@@ -49,7 +49,7 @@
       },
       {
         "viewportName": "F1_Radar",
-        "SuppressViewportNamePrefix": true,
+        "SuppressViewportNamePrefix": false,
         "relativeInitFilePath": "Mods/aircraft/Mirage-F1/Mirage-F1_Common/Radar_Cyrano_IV_legacy/Indicator/Main/CyranoLegacy_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
