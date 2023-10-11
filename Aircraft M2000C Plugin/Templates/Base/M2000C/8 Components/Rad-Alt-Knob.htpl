@@ -1,19 +1,16 @@
 ﻿<ControlTemplate>
   <Name>RADAR Altimeter Knob</Name>
   <Category>M-2000C</Category>
-  <TypeIdentifier>Helios.Base.Potentiometer</TypeIdentifier>
+  <TypeIdentifier>Helios.Base.RotaryEncoder</TypeIdentifier>
   <Template>
     <TemplateValues>
-          <Location>0,0</Location>
-          <Size>100,100</Size>
-          <Hidden>False</Hidden>
-          <KnobImage>{M2000C}/Images/Misc/RadAlt_Knob.png</KnobImage>
-          <InitialValue>0</InitialValue>
-          <StepValue>0.1</StepValue>
-          <MaxValue>1</MaxValue>
-          <MinValue>0</MinValue>
-          <InitialRotation>225</InitialRotation>
-          <RotationTravel>270</RotationTravel>    
+      <Location>0,0</Location>
+      <Size>100,100</Size>
+      <Hidden>False</Hidden>
+      <KnobImage>{M2000C}/Images/Misc/RadAlt_Knob.png</KnobImage>
+      <RotationStep>10</RotationStep>
+      <StepValue>0.01</StepValue>
+      <InitialRotation>0</InitialRotation> 
 	  </TemplateValues>
   </Template>
 </ControlTemplate>
