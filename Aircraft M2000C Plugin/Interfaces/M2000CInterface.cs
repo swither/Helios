@@ -1415,6 +1415,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.M2000C
             AddFunction(new ScaledNetworkValue(this, "401", new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 12d), "Flight Instruments", "Clock Hours", "Hour value of current time", "0 - 12", BindingValueUnits.Hours));
             AddFunction(new ScaledNetworkValue(this, "402", new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 60d), "Flight Instruments", "Clock Minutes", "Minute value of current time", "0 - 60", BindingValueUnits.Minutes));
             AddFunction(new ScaledNetworkValue(this, "403", new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 900d), "Flight Instruments", "Stopwatch Seconds", "Seconds from stopwatch start ", "0 - 900", BindingValueUnits.Seconds,"%.3f"));
+            AddFunction(new Axis(this, NAVINST, "3925", "925", 0.005d, 0d, 1d, "Flight Instruments", "Clock Outer Bezel Ring",true,"%0.3f"));
+
 
             AddFunction(new ScaledNetworkValue(this, "303", new CalibrationPointCollectionDouble(0d, 0d, 1d, 1000d), "Flight Instruments", "Indicated Air Speed", "Speed in Knots", "0 to 1000", BindingValueUnits.Knots, "%.4f"));
             AddFunction(new ScaledNetworkValue(this, "304", new CalibrationPointCollectionDouble(0d, 0d, 1d, 10d), "Flight Instruments", "Mach Number", "Speed in Mach", "0 to 10", BindingValueUnits.Numeric, "%.4f"));

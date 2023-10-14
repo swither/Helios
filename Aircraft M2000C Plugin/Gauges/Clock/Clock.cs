@@ -46,7 +46,9 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.Clock
             _frameGlassPanel.Opacity = GLASS_REFLECTION_OPACITY_DEFAULT;
             _frameGlassPanel.DrawBorder = false;
             _frameGlassPanel.FillBackground = false;
+            AddPot("Clock Outer Bezel Ring", new Point(0, 0), new Size(375, 375), "Clock Outer Bezel Ring");
         }
+
         private void AddGauge(string name, Point pos, Size size, string interfaceDevice, string interfaceElement)
         {
             _gauge = new ClockGauge(name, new Size(375, 375), _interfaceDeviceName, new string[4] { "Clock Hours", "Clock Minutes", "Stopwatch Seconds", "Stopwatch Minutes" })
@@ -118,6 +120,24 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.Clock
                 //string addedKey = Actions.GetKeyForItem(panelAction);
             }
             return panel;
+        }
+
+        private void AddPot(string name, Point posn, Size size, string interfaceElementName)
+        {
+            AddPot(name: name,
+                posn: posn,
+                size: size,
+                knobImage: "{M2000C}/Gauges/Clock/Clock_Outer_Dial.xaml",
+                initialRotation: 0,
+                rotationTravel: 360,
+                minValue: 0,
+                maxValue: 1,
+                initialValue: 0,
+                stepValue: 0.02,
+                interfaceDeviceName: _interfaceDeviceName,
+                interfaceElementName: interfaceElementName,
+                isContinuous: true,
+                fromCenter: false);
         }
         private void AddButton(string name, Point posn, Size size, string interfaceDeviceName, string interfaceElementName, string imageModifier = "")
         {

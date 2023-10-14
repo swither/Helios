@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Canvas Width="111.001" Height="111.001"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Canvas Width="111.001" Height="111.001">
+
+        <Canvas>
+
+            <!-- Layer 1/<Ellipse> -->
+            <Path StrokeThickness="1.0" Stroke="#ff4c4c4c" StrokeMiterLimit="1.0" Fill="#ff989898" Data="F1 M 0.503,55.504 C 0.503,25.681 24.680,1.504 54.503,1.504 C 84.326,1.504 108.503,25.681 108.503,55.504 C 108.503,85.327 84.326,109.504 54.503,109.504 C 24.680,109.504 0.503,85.327 0.503,55.504 Z"/>
+
+        </Canvas>
+    </Canvas>
+</Canvas>
