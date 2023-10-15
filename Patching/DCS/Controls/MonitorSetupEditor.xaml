@@ -705,7 +705,7 @@
                 <WrapPanel Grid.Row="3" Grid.Column="1" Orientation="Vertical">
                     <TextBlock Style="{StaticResource DocumentationTopLeftMode}">The Iris client runs on the remote computer where the Helios profile will be running in the Control Center.  The Iris client needs a configuration which tells Iris where to render the viewports it receives over the network.</TextBlock>
                     <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationTopLeftMode}">The Iris server runs on the computer where DCS runs.  The Iris server needs a configuration which tells Iris where to capture the viewports exported from DCS and also the IP address where to send the captured viewport data.</TextBlock>
-                    <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationTopLeftMode}">Start by using the Helois profile which will be run in Control Center on the remote machine 
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource DocumentationTopLeftMode}">Start by using the Helios profile which will be run in Control Center on the remote machine 
                         and selecting "The current Profile will be run on the remote computer running Helios" 
                         from the dropdown above.  This will result in a partial Iris configuration being
                         created for running on the remote computer.  It will also create a compact profile
