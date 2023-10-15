@@ -81,7 +81,7 @@
                 <TextBlock Grid.Row="15" Grid.Column="1" Style="{StaticResource Documentation}">The configuration for internal controls within Composite Gauges or Panels will be saved to the profile as comments.</TextBlock>
 
                 <TextBlock Grid.Row="16" Grid.Column="0" Style="{StaticResource PropertyNameSpaced}">Save DCS Interface Functions to Log</TextBlock>
-                <CheckBox Grid.Row="16" Grid.Column="1" IsChecked="{Binding LogFunctionDictionary}"/>
+                <CheckBox Grid.Row="16" Grid.Column="1" IsChecked="{Binding LogDCSFunctionDictionary}"/>
                <TextBlock Grid.Row="17" Grid.Column="1" Style="{StaticResource Documentation}">The DCS Interface Devices and Elements will be written to the Profile Editor log file.</TextBlock>
                 
             </Grid>
