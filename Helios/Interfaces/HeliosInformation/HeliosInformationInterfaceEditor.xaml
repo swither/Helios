@@ -25,7 +25,7 @@
                     <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="HeliosVersion"/>
                     <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="HeliosPath"/>
 					<TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="BMSFalconPath"/>
-					<TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="ProfileName"/>
+					<TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource InterfaceEditorStatus}" Text="" Name="ProfileName"/>
 				</Grid>
             </Grid>
         </GroupBox>
