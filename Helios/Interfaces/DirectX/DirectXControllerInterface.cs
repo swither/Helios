@@ -299,20 +299,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
             {
                 if (!Values.Contains(function.Value))
                 {
-                    Values.Add(function.Value);
-                    foreach (IBindingTrigger trigger in function.Triggers)
+                    try
                     {
-                        Triggers.Add(trigger);
-                    }
+                        Values.Add(function.Value);
+                        foreach (IBindingTrigger trigger in function.Triggers)
+                        {
+                            Triggers.Add(trigger);
+                        }
 
-                    if (!_functions.Contains(function))
-                    {
-                        _functions.Add(function);
-                        Logger.Info($"Adding {function.Name}. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                        if (!_functions.Contains(function))
+                        {
+                            _functions.Add(function);
+                            Logger.Info($"Adding {function.Name}. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                        }
+                        else
+                        {
+                            Logger.Error($"Attempt to add {function.Name} which already exists. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Logger.Error($"Attempt to add {function.Name} which already exists. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                        Logger.Error($"Attempt to add {function.Name} threw exception {e.Message}. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}.  Typically this happens when two (or more) USB devices have the same UID.  Try to isolate the problematic device by systematically removing USB devices.");
                     }
                 }
                 else
