@@ -275,7 +275,7 @@ namespace GadrocsWorkshop.Helios
                     // add lua environment variables
                     _luaInterpreter.DoString("HeliosPath = " + "'" + ConfigManager.DocumentPath.Replace("\\", "\\\\") + "'");
                     _luaInterpreter.DoString("BMSFalconPath = " + "'" + ConfigManager.BMSFalconPath.Replace("\\", "\\\\") + "'");
-                    _luaInterpreter.DoString("ProfileName = " + "'" + ConfigManager.ProfileName + "'");
+                    _luaInterpreter.DoString("ProfileName = " + "'" + ConfigManager.ProfileName.Replace("'", @"\'") + "'");
                 }
                 return _luaInterpreter;
             }
