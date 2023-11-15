@@ -548,6 +548,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Images\Custom\RWRRings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
