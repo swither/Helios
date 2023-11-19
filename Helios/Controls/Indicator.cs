@@ -293,7 +293,16 @@ namespace GadrocsWorkshop.Helios.Controls
             On = false;
             EndTriggerBypass(true);
         }
-
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (OffImage.ToLower().Replace("/", @"\") == imageName ||
+                OnImage.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
         public override void MouseDown(Point location)
         {
             if (DesignMode)

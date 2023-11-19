@@ -25,15 +25,15 @@ namespace GadrocsWorkshop.Helios.Controls
     [HeliosControl("Helios.Base.CustomGauge", "Custom Gauge", "Custom Controls", typeof(CustomGaugeRenderer))]
     public class CustomGauge : CustomNeedle
     {
-        private double _needleScale = 1d;
+        private double _needleScale = 0.5d;
         private double _needleHeight = 1d;
         private double _needlePivotX = 0.5d;
         private double _needlePivotY = 0.5d;
-        private double _needlePosX;
-        private double _needlePosY;
-        private double _initialValue;
+        private double _needlePosX = 0.475d;
+        private double _needlePosY = 0.05d;
+        private double _initialValue = 0d;
         private double _stepValue = 0.1d;
-        private double _minValue;
+        private double _minValue = 0d;
         private double _maxValue = 1d;
         private string _bgplateImage = "{Helios}/Gauges/KA-50/RadarAltimeter/radar_alt_faceplate.xaml";
         private double _initialRotation;
@@ -302,7 +302,15 @@ namespace GadrocsWorkshop.Helios.Controls
             _heliosValue.SetValue(new BindingValue(InitialValue), true);
             SetRotation();
         }
-
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (KnobImage.ToLower().Replace("/", @"\") == imageName || BgPlateImage.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
         public override void WriteXml(XmlWriter writer)
         {
             base.WriteXml(writer);

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Windows;
+using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
 namespace GadrocsWorkshop.Helios.Controls
 {
@@ -72,6 +73,14 @@ namespace GadrocsWorkshop.Helios.Controls
                     OnDisplayUpdate();
                 }
             }
+        }
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (KnobImage.ToLower().Replace("/", @"\") == imageName) { 
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
         }
     }
 }

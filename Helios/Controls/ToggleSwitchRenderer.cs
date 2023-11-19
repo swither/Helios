@@ -62,12 +62,14 @@ namespace GadrocsWorkshop.Helios.Controls
             ToggleSwitch toggleSwitch = Visual as ToggleSwitch;
             if (toggleSwitch != null)
             {
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = toggleSwitch.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
                 _imageRect.Width = toggleSwitch.Width;
                 _imageRect.Height = toggleSwitch.Height;
-                _imageOne = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionOneImage);
-                _imageOneIndicatorOn = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionOneIndicatorOnImage);
-                _imageTwo = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionTwoImage);
-                _imageTwoIndicatorOn = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionTwoIndicatorOnImage);
+                _imageOne = refreshCapableImage.LoadImage(toggleSwitch.PositionOneImage, loadOptions);
+                _imageOneIndicatorOn = refreshCapableImage.LoadImage(toggleSwitch.PositionOneIndicatorOnImage, loadOptions);
+                _imageTwo = refreshCapableImage.LoadImage(toggleSwitch.PositionTwoImage, loadOptions);
+                _imageTwoIndicatorOn = refreshCapableImage.LoadImage(toggleSwitch.PositionTwoIndicatorOnImage, loadOptions);
             }
             else
             {

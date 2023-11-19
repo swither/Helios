@@ -241,6 +241,21 @@ namespace GadrocsWorkshop.Helios.Controls
             PositionTwoImage = string.IsNullOrEmpty(PositionTwoImage) ? PositionTwoImage : string.IsNullOrEmpty(oldName) ? newName + PositionTwoImage : PositionTwoImage.Replace(oldName, newName);
             PositionTwoIndicatorOnImage = string.IsNullOrEmpty(PositionTwoIndicatorOnImage) ? PositionTwoIndicatorOnImage : string.IsNullOrEmpty(oldName) ? newName + PositionTwoIndicatorOnImage : PositionTwoIndicatorOnImage.Replace(oldName, newName);
         }
+
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (PositionOneImage.ToLower().Replace("/", @"\") == imageName ||
+                PositionTwoImage.ToLower().Replace("/", @"\") == imageName ||
+                PositionOneIndicatorOnImage?.ToLower().Replace("/", @"\") == imageName ||
+                PositionTwoIndicatorOnImage?.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                OnPropertyChanged("PositionTwoImage", PositionTwoImage, PositionTwoImage, true);
+                Refresh();
+            }
+            return ImageRefresh;
+        }
+
         protected override void ThrowSwitch(SwitchAction action)
        {
             if (action == SwitchAction.Increment)

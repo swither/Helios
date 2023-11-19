@@ -23,6 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges
         private Geometry _clip;
         private Geometry _renderClip;
         private bool _hidden = false;
+        private bool _imageRefresh = false;
 
         public event EventHandler DisplayUpdate;
 
@@ -56,6 +57,15 @@ namespace GadrocsWorkshop.Helios.Gauges
                     OnDisplayUpdate();
                 }
             }
+        }
+
+        /// <summary>
+        /// Indicates that the Image or images are to be reloaded from disk
+        /// </summary>
+        public bool ImageRefresh
+        {
+            get => _imageRefresh;
+            set => _imageRefresh = value;
         }
 
         #endregion

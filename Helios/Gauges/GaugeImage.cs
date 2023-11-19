@@ -16,6 +16,7 @@
 
 namespace GadrocsWorkshop.Helios.Gauges
 {
+    using GadrocsWorkshop.Helios.Controls;
     using System.Windows;
     using System.Windows.Media;
 
@@ -150,7 +151,9 @@ namespace GadrocsWorkshop.Helios.Gauges
         protected override void OnRefresh(double xScale, double yScale)
         {
             _imageRectangle = new Rect(_rectangle.X * xScale, _rectangle.Y * yScale, _rectangle.Width * xScale, _rectangle.Height * yScale);
-            _image = ConfigManager.ImageManager.LoadImage(_imageFile, (int)_imageRectangle.Width, (int)_imageRectangle.Height);
+            IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+            LoadImageOptions loadOptions = ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None; 
+			_image = refreshCapableImage.LoadImage(_imageFile, (int)_imageRectangle.Width, (int)_imageRectangle.Height, loadOptions);
         }
     }
 }

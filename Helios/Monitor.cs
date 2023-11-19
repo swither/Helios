@@ -64,6 +64,16 @@ namespace GadrocsWorkshop.Helios
         {
         }
 
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (BackgroundImage?.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                OnPropertyChanged("BackgroundImage", BackgroundImage, BackgroundImage, true);
+                Refresh();
+            }
+            return ImageRefresh;
+        }
         #region Properties
 
         public override string TypeIdentifier => "Helios.Monitor";

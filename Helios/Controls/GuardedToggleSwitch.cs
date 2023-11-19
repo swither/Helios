@@ -356,7 +356,18 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             base.OnPropertyChanged(args);
         }
-
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (PositionOneGuardDownImage.ToLower().Replace("/", @"\") == imageName ||
+                PositionOneGuardUpImage.ToLower().Replace("/", @"\") == imageName ||
+                PositionTwoGuardDownImage.ToLower().Replace("/", @"\") == imageName ||
+                PositionTwoGuardUpImage.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
         #region HeliosControl Implementation
 
         public override void Reset()

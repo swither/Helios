@@ -199,7 +199,18 @@ namespace GadrocsWorkshop.Helios.Controls
             IndicatorOnImage = string.IsNullOrEmpty(IndicatorOnImage) ? IndicatorOnImage : string.IsNullOrEmpty(oldName) ? newName + IndicatorOnImage : IndicatorOnImage.Replace(oldName, newName);
             PushedIndicatorOnImage = string.IsNullOrEmpty(PushedIndicatorOnImage) ? PushedIndicatorOnImage : string.IsNullOrEmpty(oldName) ? newName + PushedIndicatorOnImage : PushedIndicatorOnImage.Replace(oldName, newName);
         }
-
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (PushedImage.ToLower().Replace("/", @"\") == imageName ||
+                Image.ToLower().Replace("/", @"\") == imageName ||
+                IndicatorOnImage?.ToLower().Replace("/", @"\") == imageName ||
+                PushedIndicatorOnImage?.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
         public override void MouseDown(Point location)
         {
             if (DesignMode)

@@ -117,7 +117,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         #region Properties
 
-        public bool ImageRefresh
+        public new bool ImageRefresh
 		{
 			get { return _imageRefresh; }
 			set
@@ -224,6 +224,32 @@ namespace GadrocsWorkshop.Helios.Controls
             BackgroundImage = !string.IsNullOrEmpty(BackgroundImage) ? BackgroundImage : string.IsNullOrEmpty(oldName) ? newName + BackgroundImage : BackgroundImage.Replace(oldName, newName);
             ForegroundImage = !string.IsNullOrEmpty(ForegroundImage) ? ForegroundImage : string.IsNullOrEmpty(oldName) ? newName + ForegroundImage : ForegroundImage.Replace(oldName, newName);
             TapeImage = !string.IsNullOrEmpty(TapeImage) ? TapeImage : string.IsNullOrEmpty(oldName) ? newName + TapeImage : TapeImage.Replace(oldName, newName);
+        }
+
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+			ImageRefresh = false;
+            if (BackgroundImage.ToLower().Replace("/", @"\") == imageName)
+            {
+                _Background.ImageRefresh = ImageRefresh = true;
+            }
+            if (ForegroundImage.ToLower().Replace("/", @"\") == imageName)
+            {
+                _Foreground.ImageRefresh = ImageRefresh = true;
+            }
+            if (TapeImage.ToLower().Replace("/", @"\") == imageName)
+            {
+                _Tape.ImageRefresh = ImageRefresh = true;
+            }
+            if (OffFlagImage.ToLower().Replace("/", @"\") == imageName)
+            {
+                _OffFlag.ImageRefresh = ImageRefresh = true;
+            }
+			if(ImageRefresh)
+			{
+                Refresh();
+            }
+            return ImageRefresh;
         }
 
         public double Tape_PosX
@@ -749,10 +775,6 @@ namespace GadrocsWorkshop.Helios.Controls
 
 			EndTriggerBypass(true);
 		}
-
-
-
-
 
 
 		#endregion

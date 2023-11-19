@@ -83,9 +83,12 @@ namespace GadrocsWorkshop.Helios.Controls
             RotarySwitch rotarySwitch = Visual as RotarySwitch;
             if (rotarySwitch != null)
             {
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = rotarySwitch.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+
                 _imageRect.Width = rotarySwitch.Width;
                 _imageRect.Height = rotarySwitch.Height;
-                _image = ConfigManager.ImageManager.LoadImage(rotarySwitch.KnobImage);
+                _image = refreshCapableImage.LoadImage(rotarySwitch.KnobImage, loadOptions);
                 _imageBrush = new ImageBrush(_image);
                 _center = new Point(rotarySwitch.Width / 2d, rotarySwitch.Height / 2d);
 

@@ -65,7 +65,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         #region Properties
 
-        public bool ImageRefresh
+        public new bool ImageRefresh
         {
             get { return _imageRefresh;  }
             set

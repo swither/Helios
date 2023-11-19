@@ -23,6 +23,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Windows.Media;
     using System.Xml;
+    using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
     [HeliosControl("Helios.Base.ImageTranslucent", "Translucent Image", "Panel Decorations", typeof(ImageTranslucentRenderer))]
     public class ImageTranslucent : HeliosVisual
@@ -66,18 +67,28 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     string oldValue = _imageFile;
                     _imageFile = value;
-
-                    ImageSource image = ConfigManager.ImageManager.LoadImage(_imageFile);
-					if (image != null)
-					{
-						Width = image.Width;
-						Height = image.Height;
-					}
-					else
-					{
-						Width =100d;
-						Height = 100d;
-					}
+                    ImageSource image = null;
+                    if (ImageRefresh)
+                    {
+                        if (ConfigManager.ImageManager is IImageManager3 refreshCapableImage)
+                        {
+                            image = refreshCapableImage.LoadImage(Image, Convert.ToInt32(Width), Convert.ToInt32(Height), LoadImageOptions.ReloadIfChangedExternally);
+                        }
+                    }
+                    else
+                    {
+                        image = ConfigManager.ImageManager.LoadImage(_imageFile);
+                        if (image != null)
+                        {
+                            Width = image.Width;
+                            Height = image.Height;
+                        }
+                        else
+                        {
+                            Width = 100d;
+                            Height = 100d;
+                        }
+                    }
                     OnPropertyChanged("Image", oldValue, value, true);
                     Refresh();
                 }
@@ -254,6 +265,15 @@ namespace GadrocsWorkshop.Helios.Controls
 			EndTriggerBypass(true);
 		}
 
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (Image.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
         public override bool HitTest(Point location)
         {
             // return false to allow pass through interaction with underlying controls

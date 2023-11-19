@@ -45,6 +45,7 @@ namespace GadrocsWorkshop.Helios
         private bool _snapTarget = true;
         private bool _hidden;
         private bool _defaultHidden;
+        private bool _imageRefresh = false;
 
         private readonly HeliosValue _hiddenValue;
 
@@ -231,6 +232,24 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        /// <summary>
+        /// Indicates that the Image or images are to be reloaded from disk
+        /// </summary>
+        public bool ImageRefresh
+        {
+            get => _imageRefresh;
+            set => _imageRefresh = value;
+        }
+        /// <summary>
+        /// Checks to see if there is an image(s) of the specidied name and if so, flags them to be
+        /// reloaded from disk
+        /// </summary>
+        /// <param name="imageName">Name of the image to be checked</param>
+        /// <returns>true if the image was found</returns>
+        public virtual bool ConditionalImageRefresh(string imageName)
+        {
+            return ImageRefresh;
+        }
         /// <summary>
         /// Lazy creates and returns the renderer for this visual
         ///

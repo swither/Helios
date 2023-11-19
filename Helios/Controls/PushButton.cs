@@ -462,6 +462,16 @@ namespace GadrocsWorkshop.Helios.Controls
             Image = string.IsNullOrEmpty(Image) ? Image : string.IsNullOrEmpty(oldName) ? newName + Image : Image.Replace(oldName, newName);
             PushedImage = string.IsNullOrEmpty(PushedImage) ? PushedImage : string.IsNullOrEmpty(oldName) ? newName + PushedImage : PushedImage.Replace(oldName, newName);
         }
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (PushedImage.ToLower().Replace("/", @"\") == imageName ||
+                Image.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
         public override void MouseDown(Point location)
         {
             if (!BypassTriggers)

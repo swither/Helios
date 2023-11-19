@@ -65,6 +65,19 @@ namespace GadrocsWorkshop.Helios.Controls
             Triggers.Add(_KneeboardPosition);
         }
 
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (PositionOneImage.ToLower().Replace("/", @"\") == imageName ||
+                PositionOneIndicatorOnImage?.ToLower().Replace("/", @"\") == imageName ||
+                PositionTwoImage.ToLower().Replace("/", @"\") == imageName ||
+                PositionTwoIndicatorOnImage?.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
+
         #region Properties
 
         public double Value

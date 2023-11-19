@@ -41,6 +41,8 @@ namespace GadrocsWorkshop.Helios
 
         string MakeImagePathRelative(string filename);
         string MakeImagePathAbsolute(string fileName);
+
+        System.Collections.Generic.List<string> ChangedImages { get; set; }
     }
 
     public class ImageLoadEventArgs : EventArgs

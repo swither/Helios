@@ -15,6 +15,7 @@
 
 namespace GadrocsWorkshop.Helios
 {
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
     using System.Windows;
     using System.Windows.Media;
 
@@ -59,8 +60,9 @@ namespace GadrocsWorkshop.Helios
                 {
                     _backgroundFillBrush = new SolidColorBrush(display.BackgroundColor);
                 }
-
-                ImageSource backgroundImage = ConfigManager.ImageManager.LoadImage(display.BackgroundImage);
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = display.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+                ImageSource backgroundImage = refreshCapableImage.LoadImage(display.BackgroundImage, loadOptions);
                 if (backgroundImage != null)
                 {
                     _backgroundImageBrush = new ImageBrush(backgroundImage);
