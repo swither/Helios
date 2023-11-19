@@ -1,0 +1,15 @@
+﻿<ControlTemplate>
+  <Name>RWR Rings</Name>
+  <Category>Panels</Category>
+  <TypeIdentifier>Helios.Base.Image</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <Image>{helios}/Images/Custom/RWRRings.xaml</Image>
+      <Alignment>Centered</Alignment>
+      <CornerRadius>0</CornerRadius>
+      <Location>0,0</Location>
+      <Size>300,300</Size>
+      <Hidden>False</Hidden>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>
