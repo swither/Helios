@@ -659,15 +659,6 @@ namespace GadrocsWorkshop.Helios.Controls
             CurrentPosition = DefaultPosition;
             EndTriggerBypass(true);
         }
-        //public override bool ConditionalImageRefresh(string imageName)
-        //{
-        //    if (KnobImage.ToLower().Replace("/", @"\") == imageName)
-        //    {
-        //        ImageRefresh = true;
-        //        Refresh();
-        //    }
-        //    return ImageRefresh;
-        //}
 
         public override void WriteXml(XmlWriter writer)
         {
