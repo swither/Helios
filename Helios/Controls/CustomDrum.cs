@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 	[HeliosControl("Helios.Base.CustomDrum", "Custom Drum", "Custom Controls", typeof(Gauges.GaugeRenderer))]
 
-    public class CustomDrum : Gauges.BaseGauge, IConfigurableImageLocation
+    public class CustomDrum : Gauges.BaseGauge, IConfigurableImageLocation, IRefreshableImage
     {
 
         private HeliosValue _drumOffset;

@@ -17,6 +17,7 @@
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
     using System;
     using System.ComponentModel;
     using System.Globalization;
@@ -26,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
     [HeliosControl("Helios.Base.ImageTranslucent", "Translucent Image", "Panel Decorations", typeof(ImageTranslucentRenderer))]
-    public class ImageTranslucent : HeliosVisual
+    public class ImageTranslucent : HeliosVisual, IRefreshableImage
     {
 		private double _opacity= 0.5d;
 		private double _default_opacity = 0.5d;

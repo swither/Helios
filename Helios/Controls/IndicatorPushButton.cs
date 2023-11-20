@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
     [HeliosControl("Helios.Base.IndicatorPushButton", "Push Caution Indicator", "Push Buttons", typeof(IndicatorPushButtonRenderer))]
-    public class IndicatorPushButton : PushButton, IConfigurableImageLocation
+    public class IndicatorPushButton : PushButton, IConfigurableImageLocation, IRefreshableImage
     {
         private string _imageOnFile = "{Helios}/Images/Indicators/caution-indicator-on.png";
         private string _pushedOnImageFile = "{Helios}/Images/Indicators/caution-indicator-on-pushed.png";

@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
     [HeliosControl("Helios.Base.Indicator", "Caution Indicator", "Indicators", typeof(IndicatorRenderer))]
-    public class Indicator : HeliosVisual, IConfigurableImageLocation
+    public class Indicator : HeliosVisual, IConfigurableImageLocation, IRefreshableImage
     {
         private bool _on;
 

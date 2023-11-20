@@ -16,11 +16,12 @@
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
     using System;
     using System.Windows;
 
     [HeliosControl("Helios.Base.GuardedThreeWayToggle", "Guarded Three Way Toggle Switch", "Three Way Toggle Switches", typeof(GuardedThreeWayToggleRenderer))]
-    public class GuardedThreeWayToggle : HeliosVisual
+    public class GuardedThreeWayToggle : HeliosVisual, IRefreshableImage
     {
         private static readonly Rect GuardUpRegion = new Rect(0, 0, 65, 123);
         private static readonly Rect SwitchRegion = new Rect(0, 123, 65, 80);
@@ -430,8 +431,8 @@ namespace GadrocsWorkshop.Helios.Controls
                 PositionOneGuardUpImage.ToLower().Replace("/", @"\") == imageName ||
                 PositionTwoGuardDownImage.ToLower().Replace("/", @"\") == imageName ||
                 PositionTwoGuardUpImage.ToLower().Replace("/", @"\") == imageName ||
-                PositionThreeGuardDownImage.ToLower().Replace("/", @"\") == imageName ||
-                PositionThreeGuardUpImage.ToLower().Replace("/", @"\") == imageName)
+                PositionThreeGuardUpImage.ToLower().Replace("/", @"\") == imageName ||
+                PositionThreeGuardDownImage.ToLower().Replace("/", @"\") == imageName)
             {
                 ImageRefresh = true;
                 Refresh();

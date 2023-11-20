@@ -27,6 +27,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
     using GadrocsWorkshop.Helios.ProfileEditor.UndoEvents;
     using GadrocsWorkshop.Helios.Windows.Controls;
     using GadrocsWorkshop.Helios.Windows.ViewModel;
@@ -320,6 +321,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                             monitor.ImageRefresh = false;
                             ProcessVisualChildren(monitor.Children, imageName);
                         }
+                        if(!_processedChangedImages.Contains(imageName)) _processedChangedImages.Add(imageName);
                     }
                     foreach (string ProcessedImageName in _processedChangedImages)
                     {
@@ -755,70 +757,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             _changedImages = false;
 
         }
-        /// <summary>
-        /// Checks the supported controls for images which match the name provided, and if there is 
-        /// a name match, tells the control to reload the image.  Primarily used for when the image
-        /// file has changed on disc.
-        /// </summary>
-        /// <param name="visual">HeliosVisual control to be investigated</param>
-        /// <param name="imageName">The name of the image which is to be reloaded if it is found</param>
-        /// <returns>true if the image was found</returns>
-        private bool LocateAndReloadImage(HeliosVisual visual, string imageName)
-        {
-            switch (visual)
-            {
-                case ImageDecorationBase currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case ImageTranslucent currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case HeliosPanel currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case RotaryKnob currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case ThreeWayToggleSwitch currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case ToggleSwitch currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case KneeboardSwitch currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case IndicatorPushButton currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case PushButton currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case Indicator currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case GuardedToggleSwitch currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case GuardedThreeWayToggle currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case CustomGauge currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case CustomTape currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                case CustomDrum currentControl:
-                    currentControl.ConditionalImageRefresh(imageName);
-                    break;
-                default:
-                    Logger.Debug($"Child Investigation failed for \"{visual.GetType().Name}\" - \"{visual.Name}\" and file \"{imageName}\" ");
-                    visual.ImageRefresh = false;
-                    break;
-            }
-            return visual.ImageRefresh;
-        }
 
         private void ProcessVisualChildren(HeliosVisualCollection visuals, string imageName)
         {
@@ -828,10 +766,15 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 {
                     ProcessVisualChildren(visual.Children, imageName);
                 }
-                if (LocateAndReloadImage(visual, imageName))
+
+                if (visual is IRefreshableImage refreshableControl)
                 {
-                    _processedChangedImages.Add(imageName);
-                    Logger.Debug($"Image reload requested for control {visual.GetType().Name} \"{visual.Name}\" image: \"{imageName}\"");
+                    if (refreshableControl.ConditionalImageRefresh(imageName)){
+                        Logger.Debug($"Image reload requested for control {visual.GetType().Name} \"{visual.Name}\" image: \"{imageName}\"");
+                    }
+                } else
+                {
+                    Logger.Debug($"Visual investigation not performed on \"{visual.GetType().Name}\" - \"{visual.Name}\" and file \"{imageName}\" ");
                 }
                 visual.ImageRefresh = false;
             }

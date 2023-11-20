@@ -16,11 +16,12 @@
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
     using System;
     using System.Xml;
 
     [HeliosControl("Helios.Base.KneeboardSwitch", "Kneeboard Switch", "Rockers", typeof(KneeboardSwitchRenderer))]
-    public class KneeboardSwitch : ToggleSwitchBase
+    public class KneeboardSwitch : ToggleSwitchBase, IRefreshableImage
     {
         private double _value = 0.0d;
         private double _value_inc=1;

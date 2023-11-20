@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
     [HeliosControl("Helios.Base.ThreeWayToggleSwitch", "Three Way Toggle Switch", "Three Way Toggle Switches", typeof(ThreeWayToggleSwitchRenderer))]
-    public class ThreeWayToggleSwitch : ToggleSwitchBase, IConfigurableImageLocation
+    public class ThreeWayToggleSwitch : ToggleSwitchBase, IConfigurableImageLocation, IRefreshableImage
     {
         private ThreeWayToggleSwitchType _switchType = ThreeWayToggleSwitchType.OnOnOn;
         private ThreeWayToggleSwitchPosition _position = ThreeWayToggleSwitchPosition.Two;

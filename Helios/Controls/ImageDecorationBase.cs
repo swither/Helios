@@ -75,7 +75,7 @@ namespace GadrocsWorkshop.Helios.Controls
         }
     }
 
-    public class ImageDecorationBase : HeliosVisual
+    public class ImageDecorationBase : HeliosVisual, IRefreshableImage
     {
         private string _imageFile = "";
         private ImageAlignment _alignment = ImageAlignment.Centered;

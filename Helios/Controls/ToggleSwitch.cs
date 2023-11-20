@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
     [HeliosControl("Helios.Base.ToggleSwitch", "Toggle Switch", "Toggle Switches", typeof(ToggleSwitchRenderer))]
-    public class ToggleSwitch : ToggleSwitchBase, IConfigurableImageLocation
+    public class ToggleSwitch : ToggleSwitchBase, IConfigurableImageLocation, IRefreshableImage
     {
         private ToggleSwitchType _switchType = ToggleSwitchType.OnOn;
         private ToggleSwitchPosition _position = ToggleSwitchPosition.Two;

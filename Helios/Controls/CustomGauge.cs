@@ -18,12 +18,13 @@ using System.Globalization;
 using System.Windows;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Controls
 {
     [HeliosControl("Helios.Base.CustomGauge", "Custom Gauge", "Custom Controls", typeof(CustomGaugeRenderer))]
-    public class CustomGauge : CustomNeedle
+    public class CustomGauge : CustomNeedle, IRefreshableImage
     {
         private double _needleScale = 0.5d;
         private double _needleHeight = 1d;

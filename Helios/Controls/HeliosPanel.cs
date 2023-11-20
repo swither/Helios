@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
     [HeliosControl("Helios.Panel", "Generic Bezel", "Panels", typeof(HeliosPanelRenderer))]
-    public class HeliosPanel : HeliosVisualContainer, IConfigurableImageLocation
+    public class HeliosPanel : HeliosVisualContainer, IConfigurableImageLocation, IRefreshableImage
     {
         private bool _drawBorder = true;
 

@@ -50,10 +50,8 @@ namespace GadrocsWorkshop.Helios.Gauges
         }
 
         #region Properties
-        public bool ImageRefresh { get; set; }
 
         public string Image { get; set; }
-
 
 		public double Tape_Width
 		{

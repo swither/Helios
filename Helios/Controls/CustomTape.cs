@@ -24,7 +24,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
 	[HeliosControl("Helios.Base.CustomTape", "Custom Tape", "Custom Controls", typeof(Gauges.GaugeRenderer))]
 
-    public class CustomTape : Gauges.BaseGauge, Capabilities.IConfigurableImageLocation
+    public class CustomTape : Gauges.BaseGauge, Capabilities.IConfigurableImageLocation, Capabilities.IRefreshableImage
     {
         private HeliosValue _offFlag;
         private HeliosValue _tapeOffset;
