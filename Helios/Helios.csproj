@@ -384,6 +384,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\helios-bug-report.txt" />
+    <Content Include="Templates\Base\Panels\RWR Rings.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Images\Rockers\wheel-dark-down.png" />
     <Resource Include="Images\Rockers\wheel-dark-horiz-left.png" />
     <Resource Include="Images\Rockers\wheel-dark-horiz-norm.png" />
