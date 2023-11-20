@@ -82,18 +82,20 @@ namespace GadrocsWorkshop.Helios.Controls
             RockerSwitch toggleSwitch = Visual as RockerSwitch;
             if (toggleSwitch != null)
             {
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = toggleSwitch.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+
                 _imageRect.Width = toggleSwitch.Width;
                 _imageRect.Height = toggleSwitch.Height;
-                _imageOne = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionOneImage);
-                _imageOneIndicatorOn = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionOneIndicatorOnImage);
+                _imageOne = refreshCapableImage.LoadImage(toggleSwitch.PositionOneImage, loadOptions);
+                _imageOneIndicatorOn = refreshCapableImage.LoadImage(toggleSwitch.PositionOneIndicatorOnImage, loadOptions);
 
-                _imageTwo = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionTwoImage);
-                _imageTwoIndicatorOn = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionTwoIndicatorOnImage);
+                _imageTwo = refreshCapableImage.LoadImage(toggleSwitch.PositionTwoImage, loadOptions);
+                _imageTwoIndicatorOn = refreshCapableImage.LoadImage(toggleSwitch.PositionTwoIndicatorOnImage, loadOptions);
 
-                _imageThree = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionThreeImage);
-                _imageThreeIndicatorOn = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionThreeIndicatorOnImage);
+                _imageThree = refreshCapableImage.LoadImage(toggleSwitch.PositionThreeImage, loadOptions);
+                _imageThreeIndicatorOn = refreshCapableImage.LoadImage(toggleSwitch.PositionThreeIndicatorOnImage, loadOptions);
                 _textBrush = new SolidColorBrush(toggleSwitch.TextColor);
-
 
             }
             else

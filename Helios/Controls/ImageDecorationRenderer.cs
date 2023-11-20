@@ -53,7 +53,10 @@ namespace GadrocsWorkshop.Helios.Controls
                 return;
             }
 
-            _image = ConfigManager.ImageManager.LoadImage(profileImage.Image);
+            IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+            LoadImageOptions loadOptions = Visual.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+
+            _image = refreshCapableImage.LoadImage(profileImage.Image, loadOptions);
             _imageRect.Width = profileImage.Width;
             _imageRect.Height = profileImage.Height;
 

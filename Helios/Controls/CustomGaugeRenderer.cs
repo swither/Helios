@@ -76,11 +76,12 @@ namespace GadrocsWorkshop.Helios.Controls
                 _backgroundImage = null;
                 return;
             }
+            IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+            LoadImageOptions loadOptions = _gauge.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
 
             _imageRect.X = _gauge.Width * _gauge.NeedlePosX;
             _imageRect.Y = _gauge.Height * _gauge.NeedlePosY;
-            _image = ConfigManager.ImageManager.LoadImage(_gauge.KnobImage) ?? ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png");
-
+            _image = refreshCapableImage.LoadImage(_gauge.KnobImage, loadOptions) ?? ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png");
             // WARNING: needle scale applied to image but not rotation point
             _imageRect.Height = _gauge.Height * _gauge.NeedleScale;
             _imageRect.Width = _image.Width * (_imageRect.Height / _image.Height); // uniform image based on Height
@@ -96,7 +97,7 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 _backgroundRect.Width = _gauge.Width;
                 _backgroundRect.Height = _gauge.Height;
-                _backgroundImage = ConfigManager.ImageManager.LoadImage(_gauge.BgPlateImage);
+                _backgroundImage = refreshCapableImage.LoadImage(_gauge.BgPlateImage, loadOptions);
             }
             else
             {

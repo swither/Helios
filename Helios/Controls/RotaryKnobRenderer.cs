@@ -16,8 +16,11 @@
 
 namespace GadrocsWorkshop.Helios.Controls
 {
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
+    using System;
     using System.Windows;
     using System.Windows.Media;
+    using System.Windows.Media.Media3D;
 
     public class RotaryKnobRenderer : HeliosVisualRenderer
     {
@@ -57,9 +60,12 @@ namespace GadrocsWorkshop.Helios.Controls
             RotaryKnob rotary = Visual as RotaryKnob;
             if (rotary != null)
             {
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = rotary.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
                 _imageRect.Width = rotary.Width;
                 _imageRect.Height = rotary.Height;
-                _image = ConfigManager.ImageManager.LoadImage(rotary.KnobImage);
+
+                _image = refreshCapableImage.LoadImage(rotary.KnobImage, loadOptions);
                 _brush = new ImageBrush(_image);
                 _center = new Point(rotary.Width / 2d, rotary.Height / 2d);
             }

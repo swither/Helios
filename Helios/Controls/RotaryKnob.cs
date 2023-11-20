@@ -14,14 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using System.Windows;
+using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
 namespace GadrocsWorkshop.Helios.Controls
 {
     /// <summary>
     /// base class for analog rotary knobs rather than rotary switches
     /// </summary>
-    public abstract class RotaryKnob : Rotary, Capabilities.IConfigurableImageLocation
+    public abstract class RotaryKnob : Rotary, IConfigurableImageLocation, IRefreshableImage
     {
         private string _knobImage;
         private double _rotation;
@@ -72,6 +74,14 @@ namespace GadrocsWorkshop.Helios.Controls
                     OnDisplayUpdate();
                 }
             }
+        }
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (KnobImage.ToLower().Replace("/", @"\") == imageName) { 
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
         }
     }
 }

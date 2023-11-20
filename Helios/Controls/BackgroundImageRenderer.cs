@@ -38,7 +38,7 @@ namespace GadrocsWorkshop.Helios.Controls
             if (Visual is IBackgroundImage control)
             {
                 _backgroundRectangle = new Rect(0, 0, Visual.Width, Visual.Height);
-                _backgroundBrush = CreateImageBrush(control.BackgroundImage);
+                _backgroundBrush = CreateImageBrush(control.BackgroundImage, Visual.ImageRefresh);
             }
             else
             {
@@ -46,9 +46,12 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        private ImageBrush CreateImageBrush(string imagefile)
+        private ImageBrush CreateImageBrush(string imagefile, bool ImageRefresh)
         {
-            ImageSource image = ConfigManager.ImageManager.LoadImage(imagefile);
+            IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+            LoadImageOptions loadOptions = ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+
+            ImageSource image = refreshCapableImage.LoadImage(imagefile, loadOptions);
             if (image == null)
             {
                 return null;

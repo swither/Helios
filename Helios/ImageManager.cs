@@ -37,6 +37,7 @@ namespace GadrocsWorkshop.Helios
         private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly Uri _documentImageUri;
         private readonly HashSet<string> _failedImagePaths = new HashSet<string>();
+        private static List<string> _changedImages = new List<string>();
 
         public event EventHandler<ImageLoadEventArgs> ImageLoadSuccess;
         public event EventHandler<ImageLoadEventArgs> ImageLoadFailure;
@@ -589,6 +590,12 @@ namespace GadrocsWorkshop.Helios
                     DropObjectCache();;
                 }
             }
+        }
+        
+        public List<string> ChangedImages
+        {
+            get => _changedImages;
+            set => _changedImages = value;
         }
 
         #endregion

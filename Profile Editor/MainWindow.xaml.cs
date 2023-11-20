@@ -27,6 +27,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
     using GadrocsWorkshop.Helios.ProfileEditor.UndoEvents;
     using GadrocsWorkshop.Helios.Windows.Controls;
     using GadrocsWorkshop.Helios.Windows.ViewModel;
@@ -45,6 +46,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using System.Windows.Threading;
     using AvalonDock.Layout;
     using AvalonDock.Layout.Serialization;
+    using System.CodeDom;
+    using System.ServiceModel.Channels;
+    using System.Windows.Forms.ComponentModel.Com2Interop;
+    using System.Windows.Media;
+
 
     /// <summary>
     /// we may refactor profile loading into here if we can untangle it enough
@@ -98,11 +104,20 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// </summary>
         private bool _closing;
 
-        
+        /// <summary>
+        /// true if there are images which have changed and need to be checked
+        /// </summary>
+
+        private bool _changedImages = false;
+
         /// <summary>
         /// all plugin tools, indexed by their descriptor Id
         /// </summary>
         private Dictionary<string, object> _tools = new Dictionary<string, object>();
+
+        private FileSystemWatcher _imageFileWatcher;
+
+        private List<string> _processedChangedImages = new List<string>();
 
         public MainWindow()
         {
@@ -281,7 +296,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             base.OnActivated(e);
 
             // do this once
-            if (_loaded)
+            if (!_changedImages && _loaded)
             {
                 return;
             }
@@ -293,6 +308,36 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 return;
             }
 
+            _processedChangedImages.Clear();
+            if (_changedImages && ConfigManager.ImageManager.ChangedImages.Count() > 0)
+            {
+                if(ConfigManager.ImageManager.ChangedImages.Count() <= 3) // We only process small numbers of changed images
+                {
+                    foreach (string imageName in ConfigManager.ImageManager.ChangedImages)
+                    {
+                        foreach (Monitor monitor in Profile.Monitors)
+                        {
+                            monitor.ConditionalImageRefresh(imageName);
+                            monitor.ImageRefresh = false;
+                            ProcessVisualChildren(monitor.Children, imageName);
+                        }
+                        if(!_processedChangedImages.Contains(imageName)) _processedChangedImages.Add(imageName);
+                    }
+                    foreach (string ProcessedImageName in _processedChangedImages)
+                    {
+                        ConfigManager.ImageManager.ChangedImages.Remove(ProcessedImageName);
+                    }
+                    _changedImages = ConfigManager.ImageManager.ChangedImages.Count() == 0 ? false : true;
+                }
+                else
+                {
+                    // Ignore large numbers of changed images.
+                    _changedImages = false;
+                    ConfigManager.ImageManager.ChangedImages.Clear();
+                }
+                return;
+            }
+
             string primaryProfilePath = ConfigManager.ProfilePath;
             string secondaryProfilePath = ConfigManager.SettingsManager.LoadSetting("Helios", "SecondaryProfileDirectory", null);
             string startupProfile = profileEditor.StartupFile;
@@ -300,8 +345,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             if(Path.GetExtension(startupProfile) == ".hpf")
             {
                 startupProfile = File.Exists(startupProfile) ? startupProfile :
-                  (File.Exists(Path.Combine(primaryProfilePath, startupProfile)) ? Path.Combine(primaryProfilePath, startupProfile) :
-                  (File.Exists(Path.Combine(secondaryProfilePath, startupProfile)) ? Path.Combine(secondaryProfilePath, startupProfile) : ""));
+                  (File.Exists(Path.Combine(primaryProfilePath, startupProfile)) ? System.IO.Path.Combine(primaryProfilePath, startupProfile) :
+                  (File.Exists(Path.Combine(secondaryProfilePath, startupProfile)) ? System.IO.Path.Combine(secondaryProfilePath, startupProfile) : ""));
             }
 
             if (profileEditor.StartupFile != null && File.Exists(startupProfile))
@@ -442,6 +487,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             base.OnSourceInitialized(e);
         }
 
+        private void OnImageFileChanged(object source, FileSystemEventArgs e)
+        {
+            if (e.ChangeType.Equals(WatcherChangeTypes.Changed) & (System.IO.Path.GetExtension(e.Name.ToUpper()) == ".PNG" | System.IO.Path.GetExtension(e.Name.ToUpper()) == ".JPG" | System.IO.Path.GetExtension(e.Name.ToUpper()) == ".JPEG"))
+            {
+                if (!ConfigManager.ImageManager.ChangedImages.Contains(e.Name.ToLower()))
+                {
+                    ConfigManager.ImageManager.ChangedImages.Add(e.Name.ToLower());
+                    _changedImages = true;
+                    Logger.Debug($@"File Change detected '{e.Name}';");
+                }
+            }
+        }
         #endregion
 
         #region Adorners
@@ -612,6 +669,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 {
                     imageManager2.ClearFailureTracking();
                 }
+                WatchImages();  
 
                 Profile = new HeliosProfile();
 
@@ -677,9 +735,50 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             if (result == true)
             {
                 LoadProfile(dlg.FileName);
+                WatchImages();
             }
         }
 
+        private void WatchImages()
+        {
+            if (_imageFileWatcher == null)
+            {
+                _imageFileWatcher = new FileSystemWatcher()
+                {
+                    Path = ConfigManager.ImagePath,
+                    NotifyFilter = NotifyFilters.LastWrite,
+                    Filter = "*.*",  //multiple filetypes is not currently supported
+                    EnableRaisingEvents = true,
+                    IncludeSubdirectories = true,
+                };
+                _imageFileWatcher.Changed += new FileSystemEventHandler(OnImageFileChanged);
+            }
+            ConfigManager.ImageManager.ChangedImages.Clear();
+            _changedImages = false;
+
+        }
+
+        private void ProcessVisualChildren(HeliosVisualCollection visuals, string imageName)
+        {
+            foreach (HeliosVisual visual in visuals)
+            {
+                if(visual.Children.Count > 0)
+                {
+                    ProcessVisualChildren(visual.Children, imageName);
+                }
+
+                if (visual is IRefreshableImage refreshableControl)
+                {
+                    if (refreshableControl.ConditionalImageRefresh(imageName)){
+                        Logger.Debug($"Image reload requested for control {visual.GetType().Name} \"{visual.Name}\" image: \"{imageName}\"");
+                    }
+                } else
+                {
+                    Logger.Debug($"Visual investigation not performed on \"{visual.GetType().Name}\" - \"{visual.Name}\" and file \"{imageName}\" ");
+                }
+                visual.ImageRefresh = false;
+            }
+        }
         private void LoadProfile(string path, bool suppressLayout = false)
         {
             StatusBarMessage = "Loading Profile...";
@@ -799,7 +898,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void RestoreSavedLayout(HeliosProfile profile)
         {
-            string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
+            string layoutFileName = System.IO.Path.ChangeExtension(profile.Path, "hply");
             if (File.Exists(layoutFileName))
             {
                 try
@@ -949,7 +1048,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             RemoveLoadingAdorner();
             StatusBarMessage = "";
 
-            string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
+            string layoutFileName = System.IO.Path.ChangeExtension(profile.Path, "hply");
             if (File.Exists(layoutFileName))
             {
                 Logger.Debug("deleting previous layout file");

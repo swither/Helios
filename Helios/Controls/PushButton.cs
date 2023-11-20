@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
     [HeliosControl("Helios.Base.PushButton", "Tactile Square", "Push Buttons", typeof(PushButtonRenderer))]
-    public class PushButton : HeliosVisual, IConfigurableImageLocation
+    public class PushButton : HeliosVisual, IConfigurableImageLocation, IRefreshableImage
     {
         private PushButtonType _buttonType;
         private string _imageFile = "{Helios}/Images/Buttons/tactile-dark-square.png";
@@ -461,6 +461,16 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             Image = string.IsNullOrEmpty(Image) ? Image : string.IsNullOrEmpty(oldName) ? newName + Image : Image.Replace(oldName, newName);
             PushedImage = string.IsNullOrEmpty(PushedImage) ? PushedImage : string.IsNullOrEmpty(oldName) ? newName + PushedImage : PushedImage.Replace(oldName, newName);
+        }
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (PushedImage.ToLower().Replace("/", @"\") == imageName ||
+                Image.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
         }
         public override void MouseDown(Point location)
         {

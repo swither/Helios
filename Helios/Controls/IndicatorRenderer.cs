@@ -49,12 +49,16 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRefresh()
         {
+            Indicator indicator = Visual as Indicator;
             if (_indicator != null)
             {
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = _indicator.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+
                 _imageRect.Width = _indicator.Width;
                 _imageRect.Height = _indicator.Height;
-                _onImage = ConfigManager.ImageManager.LoadImage(_indicator.OnImage);
-                _offImage = ConfigManager.ImageManager.LoadImage(_indicator.OffImage);
+                _onImage = refreshCapableImage.LoadImage(_indicator.OnImage, loadOptions);
+                _offImage = refreshCapableImage.LoadImage(_indicator.OffImage, loadOptions);
                 _onBrush = new SolidColorBrush(_indicator.OnTextColor);
                 _offBrush = new SolidColorBrush(_indicator.OffTextColor);
             }

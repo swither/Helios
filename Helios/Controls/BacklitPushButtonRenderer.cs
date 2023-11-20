@@ -79,9 +79,12 @@ namespace GadrocsWorkshop.Helios.Controls
             BacklitPushButton pushButton = Visual as BacklitPushButton;
             if (pushButton != null)
             {
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = pushButton.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+
                 _imageRect.Width = pushButton.Width;
                 _imageRect.Height = pushButton.Height;
-                _image = ConfigManager.ImageManager.LoadImage(pushButton.Image);
+                _image = refreshCapableImage.LoadImage(pushButton.Image, loadOptions);
                 _textBrush = new SolidColorBrush(pushButton.TextColor);
 
                 _glyphBrush = new SolidColorBrush(pushButton.GlyphColor);

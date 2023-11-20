@@ -27,7 +27,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
     [HeliosControl("Helios.Base.Indicator", "Caution Indicator", "Indicators", typeof(IndicatorRenderer))]
-    public class Indicator : HeliosVisual, IConfigurableImageLocation
+    public class Indicator : HeliosVisual, IConfigurableImageLocation, IRefreshableImage
     {
         private bool _on;
 
@@ -293,7 +293,16 @@ namespace GadrocsWorkshop.Helios.Controls
             On = false;
             EndTriggerBypass(true);
         }
-
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (OffImage.ToLower().Replace("/", @"\") == imageName ||
+                OnImage.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
         public override void MouseDown(Point location)
         {
             if (DesignMode)

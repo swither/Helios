@@ -24,9 +24,10 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Windows.Media;
     using System.Xml;
+    using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
     [HeliosControl("Helios.Panel", "Generic Bezel", "Panels", typeof(HeliosPanelRenderer))]
-    public class HeliosPanel : HeliosVisualContainer, IConfigurableImageLocation
+    public class HeliosPanel : HeliosVisualContainer, IConfigurableImageLocation, IRefreshableImage
     {
         private bool _drawBorder = true;
 
@@ -334,6 +335,26 @@ namespace GadrocsWorkshop.Helios.Controls
             TopRightCornerImage = string.IsNullOrEmpty(TopRightCornerImage) ? TopRightCornerImage : string.IsNullOrEmpty(oldName) ? newName + TopRightCornerImage : TopRightCornerImage.Replace(oldName, newName);
             BottomLeftCornerImage = string.IsNullOrEmpty(BottomLeftCornerImage) ? BottomLeftCornerImage : string.IsNullOrEmpty(oldName) ? newName + BottomLeftCornerImage : BottomLeftCornerImage.Replace(oldName, newName);
             BottomRightCornerImage = string.IsNullOrEmpty(BottomRightCornerImage) ? BottomRightCornerImage : string.IsNullOrEmpty(oldName) ? newName + BottomRightCornerImage : BottomRightCornerImage.Replace(oldName, newName);
+        }
+
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if (BackgroundImage?.ToLower().Replace("/", @"\") == imageName ||
+                TopBorderImage?.ToLower().Replace("/", @"\") == imageName ||
+                BottomBorderImage?.ToLower().Replace("/", @"\") == imageName ||
+                BottomBorderImage?.ToLower().Replace("/", @"\") == imageName ||
+                LeftBorderImage?.ToLower().Replace("/", @"\") == imageName ||
+                RightBorderImage?.ToLower().Replace("/", @"\") == imageName ||
+                TopLeftCornerImage?.ToLower().Replace("/", @"\") == imageName ||
+                TopRightCornerImage?.ToLower().Replace("/", @"\") == imageName ||
+                BottomLeftCornerImage?.ToLower().Replace("/", @"\") == imageName ||
+                BottomRightCornerImage?.ToLower().Replace("/", @"\") == imageName ||
+                BottomRightCornerImage?.ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;        
         }
 
         public override void WriteXml(XmlWriter writer)

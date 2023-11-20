@@ -39,6 +39,7 @@ namespace GadrocsWorkshop.Helios.Gauges
             foreach (GaugeComponent component in gauge.Components)
             {
                 component.Refresh(_scaleX, _scaleY);
+                component.ImageRefresh = false;
             }
         }
     }
