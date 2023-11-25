@@ -263,7 +263,7 @@
                                     <Setter TargetName="AircraftPath5" Property="Fill" Value="#FF231F20" />
                                     <Setter TargetName="AircraftPath6" Property="Fill" Value="#FF231F20" />
                                     <Setter TargetName="Border" Property="ToolTip"
-                                            Value="This monitor is used for DCS 3D Views" />
+                                            Value="This monitor is used for DCS 3D Views.  Click here to exclude 3D views." />
                                 </Trigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
