@@ -88,6 +88,9 @@
   <ItemGroup>
     <Content Include="Helios.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="..\HeliosProjectReference.properties" />
   <Import Project="..\Helios.targets" />
 </Project>

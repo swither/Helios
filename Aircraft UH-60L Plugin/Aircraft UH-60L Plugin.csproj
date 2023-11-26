@@ -377,5 +377,8 @@
   <ItemGroup>
     <Resource Include="Interfaces\ExportFunctions.lua" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="..\HeliosPlugin.targets" />
 </Project>

@@ -818,6 +818,7 @@
     <Content Include="Templates\HeliosFalcon\Falcon RTT RWR.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <Content Include="Templates\HeliosFalcon\Falcon RTT DED ONTOP.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
