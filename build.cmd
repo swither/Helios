@@ -86,7 +86,7 @@ if %errorlevel% neq 0 (
 	exit /b 1
 )
 
-if "%2" == "noinstallers"(
+if "%2" == "noinstallers" (
 	echo Installers will not be built for integration tests
 	echo Run End: %date% %time%
 	exit /b 0

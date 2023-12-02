@@ -56,6 +56,7 @@ jobs:
         shell: cmd
         run: |
           build.cmd test noinstallers
+          echo "rc=%errorlevel%" >> $env:GITHUB_ENV
 
       - name: zip up build logs
         continue-on-error: true
@@ -68,3 +69,8 @@ jobs:
           name: Build Logs
           path: "./BuildLogs.zip"
           retention-days: 2
+
+      - name: Force Error if Previous Error
+        if: ${{ rc }} != 0
+        run: |
+          ForceExit
