@@ -67,5 +67,4 @@ jobs:
         with:
           name: Build Logs
           path: "./BuildLogs.zip"
-          retention-days:7
-         
+          retention-days:2
