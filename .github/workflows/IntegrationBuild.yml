@@ -1,0 +1,76 @@
+name: Build Test for Integration of Code into Master Branch
+# This workflow is intended to ensure that new commits on the master 
+# branch successfully compile.
+# Installers are not created due to the time they take to run.
+# 
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  
+jobs:  
+  CI-Build:    
+    runs-on: windows-latest
+    if: ${{ contains(github.ref,'master') }}
+   
+    steps:      
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-tags: true
+          fetch-depth: 0
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.3.1
+      
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+
+      - name: Disable Out of Process Building
+        run: .\DisableOutOfProcBuild.exe
+        working-directory: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild
+
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NuGetAPIKey }}
+          nuget-version: '5.x'
+          
+      - name: NuGet Restore
+        run: |
+          nuget restore BuildMeFirst.sln
+          nuget restore "KeyPressReceiver/Keypress Receiver.csproj"
+          nuget restore Thirdparty/StreamDeckSharp/src/StreamDeckSharp/StreamDeckSharp.csproj
+          nuget restore Thirdparty/OpenMacroBoard.SDK/src/OpenMacroBoard.SDK/OpenMacroBoard.SDK.csproj
+          nuget restore Thirdparty/OpenMacroBoard.SDK/src/OpenMacroBoard.VirtualBoard/OpenMacroBoard.VirtualBoard.csproj
+          nuget restore Helios.sln
+        
+      - name: Clean and Build x86 and x64 Solutions
+        continue-on-error: true
+        env:
+          DevEnvDir: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\'
+        shell: cmd
+        run: |
+          build.cmd test noinstallers
+          echo "rc=%errorlevel%" >> $env:GITHUB_ENV
+
+      - name: zip up build logs
+        continue-on-error: true
+        run: |
+          tar -a -c -f "BuildLogs.zip" -C "." *.binlog
+          
+      - name: Upload Build Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build Logs
+          path: "./BuildLogs.zip"
+          retention-days: 2
+
+      - name: Force Error if Previous Error
+        if: ${{ env.rc != 0 }}
+        run: |
+          ForceExit
