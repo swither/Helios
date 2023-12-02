@@ -50,12 +50,14 @@ jobs:
           nuget restore Helios.sln
         
       - name: Clean and Build x86 and x64 Solutions
-        continue-on-error: true
+        continue-on-error: false
+        env:
+          DevEnvDir: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE'
         shell: cmd
         run: |
           build.cmd test noinstallers
 
-      - name: zip up the msi and build logs
+      - name: zip up build logs
         continue-on-error: true
         run: |
           tar -a -c -f "BuildLogs.zip" -C "." *.binlog
@@ -65,5 +67,5 @@ jobs:
         with:
           name: Build Logs
           path: "./BuildLogs.zip"
-          retention-days: 2
+          retention-days:7
          
