@@ -71,6 +71,6 @@ jobs:
           retention-days: 2
 
       - name: Force Error if Previous Error
-        if: ${{ rc }} != 0
+        if: ${{ env.rc != 0 }}
         run: |
           ForceExit
