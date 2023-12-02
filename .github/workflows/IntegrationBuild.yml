@@ -52,7 +52,7 @@ jobs:
       - name: Clean and Build x86 and x64 Solutions
         continue-on-error: true
         env:
-          DevEnvDir: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE'
+          DevEnvDir: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\'
         shell: cmd
         run: |
           build.cmd test noinstallers
