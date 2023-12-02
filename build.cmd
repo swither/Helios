@@ -86,6 +86,12 @@ if %errorlevel% neq 0 (
 	exit /b 1
 )
 
+if "%2" == "noinstallers"(
+	echo Installers will not be built for integration tests
+	echo Run End: %date% %time%
+	exit /b 0
+)
+
 REM modify installer projects to use correct version number in msi names that get baked into setup.exe
 echo backing up "Helios Installer\Helios Installer.vdproj" to "Helios Installer\Helios Installer.vdproj.bak" 
 move "Helios Installer\Helios Installer.vdproj" "Helios Installer\Helios Installer.vdproj.bak"
