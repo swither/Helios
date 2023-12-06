@@ -1,3 +1,4 @@
+[![CI Build State](https://github.com/HeliosVirtualCockpit/Helios/actions/workflows/IntegrationBuild.yml/badge.svg)](https://github.com/HeliosVirtualCockpit/Helios/actions/workflows/IntegrationBuild.yml)
 # Helios Virtual Cockpit 1.6 Source Code Repository
 
 This is the source code repository for the Helios Virtual Cockpit version 1.6.  
