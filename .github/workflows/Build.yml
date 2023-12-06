@@ -89,16 +89,34 @@ jobs:
         shell: cmd
         run: |
           build.cmd %NewTag%
+          echo "rc=%errorlevel%" >> $env:GITHUB_ENV
 
-      - name: zip up the msi and build logs
+      - name: zip up build logs
         continue-on-error: true
         run: |
           mkdir ./Assets
+          tar -a -c -f "BuildLogs.zip" -C "." *.binlog
+
+      - name: Upload Build Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build Logs
+          path: "./BuildLogs.zip"
+          retention-days: 2
+
+      - name: Force Error if there was a Previous Error
+        # This is a delayed exit because we needed to make the build logs available before leaving
+        if: ${{ env.rc != 0 }}
+        run: |
+          ForceExit   #  This should always cause an error because the program will not be found.  The real error is going to be on the Clean & Build step above.
+
+      - name: zip up the msi
+        continue-on-error: true
+        run: |
           tar -a -c -f "./Assets/Helios_Installers.zip" -C "Helios Installer\Release" *.msi -C "../../Keypress Receiver Installer/Release" *.msi -C "../../Tools Installer/Release" *.msi
           tar -a -c -f "./Assets/Helios32Bit_Installers.zip" -C "Helios Installer/Release32" *.msi -C "../../Aircraft F-15E Plugin Installers/Release32" *.msi
           tar -a -c -f "./Assets/Helios_StreamDeck_Alpha.zip" -C "bin/x64/Release" Plugins/OpenMacroBoard.SDK.dll Plugins/OpenMacroBoard.VirtualBoard.dll Plugins/StreamDeckSharp.dll Plugins/HeliosMacroBoard.dll
           tar -a -c -f "./Assets/Helios_F-15E_Plugin.zip" -C "Aircraft F-15E Plugin Installers/Release" *.msi
-          tar -a -c -f "BuildLogs.zip" -C "." *.binlog
           
       - uses: actions/cache@v3
         id: cache
@@ -112,12 +130,5 @@ jobs:
         with:
           name: Helios Installers for ${{ env.NewTag }}
           path: "./Assets/H*.zip"
-          retention-days: 2
-          
-      - name: Upload Build Logs
-        uses: actions/upload-artifact@v3
-        with:
-          name: Build Logs
-          path: "./BuildLogs.zip"
           retention-days: 2
          
