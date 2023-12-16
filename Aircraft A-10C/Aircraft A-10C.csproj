@@ -903,22 +903,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <Content Include="Templates\Base\A-10C\8 Components\Keys\Com1.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\UFC_Com1.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\A-10C\8 Components\Keys\Com2.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\UFC_Com2.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\A-10C\8 Components\Keys\ComSec.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\UFC_ComSec.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\A-10C\8 Components\Keys\ECCM.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\UFC_ECCM.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\A-10C\8 Components\Keys\IDMRT.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\UFC_IDMRT.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\A-10C\8 Components\Keys\IFF.htpl">
+    <Content Include="Templates\Base\A-10C\8 Components\Keys\UFC_IFF.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
