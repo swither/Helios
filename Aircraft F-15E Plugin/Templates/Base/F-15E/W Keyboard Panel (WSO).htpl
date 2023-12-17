@@ -1,0 +1,12 @@
+<ControlTemplate>
+  <Name>UFC Keyboard Panel (WSO)</Name>
+  <Category>F-15E Strike Eagle</Category>
+  <TypeIdentifier>Helios.F15E.UFC.WSO.KEYBOARD</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <Location>0,0</Location>
+      <Size>654,266</Size>
+      <BackgroundImage>{F-15E}/Images/UFC/UFC_Panel_KU.png</BackgroundImage>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

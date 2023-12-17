@@ -1,0 +1,12 @@
+<ControlTemplate>
+  <Name>UFC Option Panel (WSO)</Name>
+  <Category>F-15E Strike Eagle</Category>
+  <TypeIdentifier>Helios.F15E.UFC.WSO.ODU</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <Location>0,0</Location>
+      <Size>654,407</Size>
+      <BackgroundImage>{F-15E}/Images/UFC/UFC_Panel_ODU.png</BackgroundImage>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

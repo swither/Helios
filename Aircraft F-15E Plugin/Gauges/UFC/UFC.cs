@@ -19,11 +19,11 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
     using GadrocsWorkshop.Helios.Interfaces.DCS.F15E;
-    using System;
     using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Media;
 
+    public enum UFCType { Full, ODU, Keyboard }
     [HeliosControl("Helios.F15E.UFC", "Up Front Controller", "F-15E Strike Eagle", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     public class UFC : CompositeVisualWithBackgroundImage
     {
@@ -31,66 +31,109 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
         private Rect _scaledScreenRect = SCREEN_RECT;
         private string _interfaceDevice = "";
-        private HeliosPanel _frameBezelPanel;
+        private HeliosPanel _framePanel;
+        private HeliosPanel _framePanelOdu;
+        private HeliosPanel _framePanelKu;
         private const string Panel_Image = "UFC_Panel_";
         private const string ImageLocation = "{F-15E}/Images/UFC/";
         private const double _oduFontSize = 25;
+        private UFCType _ufcType;
+        private string _backgroundImage;
 
-        public UFC(string interfaceDevice, Cockpit cockpit)
-            : base(interfaceDevice, new Size(654, 827))
+        public UFC(string interfaceDevice, Cockpit cockpit) : this(interfaceDevice, cockpit, UFCType.Full, cockpit == Cockpit.Pilot ? new Size(654, 827) : new Size(654, 827 - 161)) { }
+        public UFC(string interfaceDevice, Cockpit cockpit, UFCType ufcType, Size size)
+            : base(interfaceDevice, size)
         {
+            _ufcType = ufcType; 
             SupportedInterfaces = new[] { typeof(Interfaces.DCS.F15E.F15EInterface) };
             _interfaceDevice = interfaceDevice;
             string[] labels = { "GREC_L","A1","N2","B3","GREC_R","Mark","W4","M5","E6","IP","Decimal","7","S8","C9","Shift","AP","Clr","0","Data","Menu"};
-            _frameBezelPanel = AddPanel("UFC Frame", new Point(Left, Top), NativeSize, $"{ImageLocation}{Panel_Image}Base.png", _interfaceDevice);
-            _frameBezelPanel.Opacity = 1d;
-            _frameBezelPanel.FillBackground = false;
-            _frameBezelPanel.DrawBorder = false;
+            _backgroundImage = $"{ImageLocation}{Panel_Image}base.png";
+            HeliosPanel frameFullPanel = AddPanel("UFC Full Frame", new Point(0, 0), NativeSize, null, _interfaceDevice);
+            frameFullPanel.Opacity = 1d;
+            frameFullPanel.FillBackground = false;
+            frameFullPanel.DrawBorder = false;
 
-            AddUFCTextDisplay("Option Line 1", new Point(119d, 61d), new Size(414d, 39d), _interfaceDevice, "Option Line 1", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6),20);
-            AddUFCTextDisplay("Option Line 2", new Point(119d, 120d), new Size(414d, 39d), _interfaceDevice, "Option Line 2", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6e, 0x6d),20);
-            AddUFCTextDisplay("Option Line 3", new Point(119d, 179d), new Size(414d, 39d), _interfaceDevice, "Option Line 3", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6f, 0x6e),20);
-            AddUFCTextDisplay("Option Line 4", new Point(119d, 237d), new Size(414d, 39d), _interfaceDevice, "Option Line 4", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6f, 0x6e),20 );
-            AddUFCTextDisplay("Option Line 5", new Point(119d, 296d), new Size(414d, 39d), _interfaceDevice, "Option Line 5", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
-            AddUFCTextDisplay("Option Line 6", new Point(119d, 354d), new Size(414d, 39d), _interfaceDevice, "Option Line 6", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
-            AddEncoder("Left UHF Preset Channel Selector", new Point(0, 340), new Size(112, 112), "Left UHF Preset Channel Selector");
-            AddRadioButton("Left UHF Preset Channel Pull Switch", new Rect(22, 361, 70, 70), "Left UHF Preset Channel Pull Switch");
-            AddEncoder("Right UHF Preset Channel Selector", new Point(541, 340), new Size(112, 112), "Right UHF Preset Channel Selector");
-            AddRadioButton("Right UHF Preset Channel Pull Switch", new Rect(562, 361, 70, 70), "Right UHF Preset Channel Pull Switch");
-            AddPot("UHF Radio 3 Volume", new Point(75d, 457d), new Size(90d, 90d), "UHF Radio 3 Volume", $"{ImageLocation}RadioVol_Knob_Back.png");
-            AddPot("UHF Radio 1 Volume", new Point(98d, 479d), new Size(45d, 45d), "UHF Radio 1 Volume", $"{ImageLocation}UFC_Knob_1.png");
-            AddPot("UHF Radio 4 Volume", new Point(488d, 457d), new Size(90d, 90d), "UHF Radio 4 Volume", $"{ImageLocation}RadioVol_Knob_Back.png");
-            AddPot("UHF Radio 2 Volume", new Point(511d, 479d), new Size(45d, 45d), "UHF Radio 2 Volume", $"{ImageLocation}UFC_Knob_1.png");
-            AddPot("UFC LCD Brightness", new Point(68d, 592d), new Size(75d, 75d), "UFC LCD Brightness", $"{ImageLocation}UFC_Knob_1a.png",225d,270d);
+            int buttonNumber;
 
-            int buttonNumber = 1;
-            for(double i=60;i<=296;i += 59)
+            if (ufcType == UFCType.Full || ufcType == UFCType.Keyboard)
             {
-                AddOSBButton($"Option Push Button {buttonNumber} Left", new Rect(54d, i, 37d, 37d), $"Option Push Button {buttonNumber} Left");
-                AddOSBButton($"Option Push Button {buttonNumber} Right", new Rect(557d, i, 37d, 37d), $"Option Push Button {buttonNumber++} Right");
-            }
-            buttonNumber = 0;
-            for (int j = 418; j <= 610; j += 64)
-            {
-                for (int i = 164;i <= 420; i+=64)
+                int hOffset = ufcType == UFCType.Full ? 0 : -407;
+                _backgroundImage = $"{ImageLocation}{Panel_Image}KU.png";
+                _framePanelKu = AddPanel("UFC Keyboard Frame", new Point(0, 407 + hOffset), new Size(654, 266), _backgroundImage, _interfaceDevice);
+                _framePanelKu.Opacity = 1d;
+                _framePanelKu.FillBackground = false;
+                _framePanelKu.DrawBorder = false;
+                _framePanelKu.IsHidden = false;
+                AddPot("UHF Radio 3 Volume", new Point(75d, 457d + hOffset), new Size(90d, 90d), "UHF Radio 3 Volume", $"{ImageLocation}RadioVol_Knob_Back.png");
+                AddPot("UHF Radio 1 Volume", new Point(98d, 479d + hOffset), new Size(45d, 45d), "UHF Radio 1 Volume", $"{ImageLocation}UFC_Knob_1.png");
+                AddPot("UHF Radio 4 Volume", new Point(488d, 457d + hOffset), new Size(90d, 90d), "UHF Radio 4 Volume", $"{ImageLocation}RadioVol_Knob_Back.png");
+                AddPot("UHF Radio 2 Volume", new Point(511d, 479d + hOffset), new Size(45d, 45d), "UHF Radio 2 Volume", $"{ImageLocation}UFC_Knob_1.png");
+                AddPot("UFC LCD Brightness", new Point(68d, 592d + hOffset), new Size(75d, 75d), "UFC LCD Brightness", $"{ImageLocation}UFC_Knob_1a.png", 225d, 270d);
+                AddKeypadButton($"Emission Limit Key", new Rect(528, 612 + hOffset, 57d, 47d), "EMIS_LMT");
+                buttonNumber = 0;
+                for (int j = 418 + hOffset; j <= 610 + hOffset; j += 64)
                 {
-                    string keyName;
-                    if(labels[buttonNumber] == "GREC_L")
+                    for (int i = 164; i <= 420; i += 64)
                     {
-                        keyName = "Left Guard Receiver";
-                    } else if(labels[buttonNumber] == "GREC_R")
-                    {
-                        keyName = "Right Guard Receiver";
-                    } else
-                    {
-                        keyName = labels[buttonNumber]; 
+                        string keyName;
+                        if (labels[buttonNumber] == "GREC_L")
+                        {
+                            keyName = "Left Guard Receiver";
+                        }
+                        else if (labels[buttonNumber] == "GREC_R")
+                        {
+                            keyName = "Right Guard Receiver";
+                        }
+                        else
+                        {
+                            keyName = labels[buttonNumber];
+                        }
+                        AddKeypadButton($"{keyName} Key", new Rect(i + 15, j, 44d, 44d), labels[buttonNumber++]);
                     }
-                    AddKeypadButton($"{keyName} Key", new Rect(i+15, j, 44d, 44d), labels[buttonNumber++]);
                 }
             }
-            AddKeypadButton($"Emission Limit Key", new Rect(528, 612, 57d, 47d), "EMIS_LMT");
 
+            if (ufcType == UFCType.ODU || ufcType == UFCType.Full)
+            {
+                _backgroundImage = $"{ImageLocation}{Panel_Image}ODU.png";
+                _framePanelOdu = AddPanel("UFC ODU Frame", new Point(0, 0), new Size(654, 407), _backgroundImage, _interfaceDevice);
+                _framePanelOdu.Opacity = 1d;
+                _framePanelOdu.FillBackground = false;
+                _framePanelOdu.DrawBorder = false;
 
+                AddUFCTextDisplay("Option Line 1", new Point(119d, 61d), new Size(414d, 39d), _interfaceDevice, "Option Line 1", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
+                AddUFCTextDisplay("Option Line 2", new Point(119d, 120d), new Size(414d, 39d), _interfaceDevice, "Option Line 2", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6e, 0x6d), 20);
+                AddUFCTextDisplay("Option Line 3", new Point(119d, 179d), new Size(414d, 39d), _interfaceDevice, "Option Line 3", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6f, 0x6e), 20);
+                AddUFCTextDisplay("Option Line 4", new Point(119d, 237d), new Size(414d, 39d), _interfaceDevice, "Option Line 4", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6f, 0x6e), 20);
+                AddUFCTextDisplay("Option Line 5", new Point(119d, 296d), new Size(414d, 39d), _interfaceDevice, "Option Line 5", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
+                AddUFCTextDisplay("Option Line 6", new Point(119d, 354d), new Size(414d, 39d), _interfaceDevice, "Option Line 6", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
+                AddEncoder("Left UHF Preset Channel Selector", new Point(0, 340), new Size(112, 112), "Left UHF Preset Channel Selector");
+                AddRadioButton("Left UHF Preset Channel Pull Switch", new Rect(22, 361, 70, 70), "Left UHF Preset Channel Pull Switch");
+                AddEncoder("Right UHF Preset Channel Selector", new Point(541, 340), new Size(112, 112), "Right UHF Preset Channel Selector");
+                AddRadioButton("Right UHF Preset Channel Pull Switch", new Rect(562, 361, 70, 70), "Right UHF Preset Channel Pull Switch");
+
+                buttonNumber = 1;
+                for (double i = 60; i <= 296; i += 59)
+                {
+                    AddOSBButton($"Option Push Button {buttonNumber} Left", new Rect(54d, i, 37d, 37d), $"Option Push Button {buttonNumber} Left");
+                    AddOSBButton($"Option Push Button {buttonNumber} Right", new Rect(557d, i, 37d, 37d), $"Option Push Button {buttonNumber++} Right");
+                }
+            }
+            switch (_ufcType)
+            {
+                case UFCType.Keyboard:
+                    _framePanel = _framePanelKu;
+                    break;
+                case UFCType.ODU:
+                    _framePanel = _framePanelOdu;
+                    break;
+                case UFCType.Full:
+                    _backgroundImage = $"{ImageLocation}{Panel_Image}base.png";
+                    _framePanel = frameFullPanel;
+                    break;
+                default: break;
+            }
 
         }
         protected HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceDevice)
@@ -135,7 +178,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
         }
         private void AddRadioButton(string name, Rect rect, string label)
         {
-            Helios.Controls.PushButton button = new Helios.Controls.PushButton();
+            PushButton button = new PushButton();
             button.Top = rect.Y;
             button.Left = rect.X;
             button.Width = rect.Width;
@@ -149,7 +192,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
 
         private void AddOSBButton(string name, Rect rect, string label)
         {
-        Helios.Controls.PushButton button = new Helios.Controls.PushButton();
+        PushButton button = new PushButton();
         button.Top = rect.Y;
         button.Left = rect.X;
         button.Width = rect.Width;
@@ -396,11 +439,28 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
             action.Device = ComponentName(name);
             if (!Actions.ContainsKey(Actions.GetKeyForItem(action))) Actions.Add(action);
         }
-        public override string DefaultBackgroundImage => $"{ImageLocation}{Panel_Image}Base.png";
+        public override string DefaultBackgroundImage => _backgroundImage;
 
         protected override void OnBackgroundImageChange()
         {
-            _frameBezelPanel.BackgroundImage = BackgroundImageIsCustomized ? null : $"{ImageLocation}{Panel_Image}Base.png";
+            if (_framePanel != null && string.IsNullOrWhiteSpace(BackgroundImage))
+            {
+                switch (_ufcType)
+                {
+                    case UFCType.Full:
+                        _framePanel.BackgroundImage = BackgroundImageIsCustomized ? null : DefaultBackgroundImage;
+                        _framePanelKu.BackgroundImage = null;
+                        _framePanelOdu.BackgroundImage = null;
+                        break;
+                    case UFCType.ODU:
+                        _framePanel.BackgroundImage = BackgroundImageIsCustomized ? null : DefaultBackgroundImage;
+                        break;
+                    case UFCType.Keyboard:
+                        _framePanel.BackgroundImage = BackgroundImageIsCustomized ? null : DefaultBackgroundImage;
+                        break;
+                    default: break;
+                }
+            }
         }
         public override bool HitTest(Point location)
         {

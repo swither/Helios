@@ -106,7 +106,11 @@
     <Compile Include="Gauges\MFD\MPD WSO Left.cs" />
     <Compile Include="Gauges\MFD\MPD WSO Right.cs" />
     <Compile Include="Gauges\MFD\MPD.cs" />
+    <Compile Include="Gauges\UFC\UFC Pilot - Keyboard.cs" />
+    <Compile Include="Gauges\UFC\UFC Pilot - ODU.cs" />
     <Compile Include="Gauges\UFC\UFC Pilot.cs" />
+    <Compile Include="Gauges\UFC\UFC WSO - Keyboard.cs" />
+    <Compile Include="Gauges\UFC\UFC WSO - ODU.cs" />
     <Compile Include="Gauges\UFC\UFC WSO.cs" />
     <Compile Include="Gauges\UFC\UFC.cs" />
     <Compile Include="Gauges\UFC\UFCTextDisplay.cs" />
@@ -383,6 +387,20 @@
     <Content Include="Docs\Helios.F-15E.Plugin.Install.Read.Me.rtf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\Base\F-15E\W Keyboard Panel %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\W ODU Panel %28WSO%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P Keyboard Panel %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-15E\P ODU Panel %28Pilot%29.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Images\UFC\UFC_Panel_KU.png" />
+    <Resource Include="Images\UFC\UFC_Panel_ODU.png" />
     <Content Include="Templates\Base\F-15E\P Compass %28Pilot%29.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
