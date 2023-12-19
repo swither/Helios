@@ -1,0 +1,7 @@
+﻿@@ -48,32 +48,99 @@
+ ces_defs.lua%22)%0D%0A
++dofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0A
+ dofile(LockOn_Op
+@@ -1791,8 +1791,76 @@
+ ACMFD_%22)
++%0D%0A--%0D%0A--ViewportHandling%0D%0Atry_find_assigned_viewport(%22AH_64D_TEDAC%22)
