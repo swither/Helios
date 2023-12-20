@@ -124,6 +124,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             InitializeComponent();
 
             ToolMenuItems = new ObservableCollection<MenuItemModel>();
+            ProfileEditorCommands.AddInterface.InputGestures.Add(new KeyGesture(Key.I, ModifierKeys.Control));
             LoadTools();
 
             DataContext = this;

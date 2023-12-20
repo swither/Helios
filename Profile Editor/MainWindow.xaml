@@ -63,7 +63,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Add Interface" Command="local:ProfileEditorCommands.AddInterface">
+                <MenuItem Header="_Add Interface" Command="local:ProfileEditorCommands.AddInterface" InputGestureText="Ctrl+I">
                     <MenuItem.Icon>
                         <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE710;"/>
                     </MenuItem.Icon>
@@ -86,28 +86,28 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Edit">
-                <MenuItem Header="_Undo" Command="ApplicationCommands.Undo">
+                <MenuItem Header="_Undo" Command="ApplicationCommands.Undo"  InputGestureText="Ctrl+Z">
                     <MenuItem.Icon>
                         <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE7A7;"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Redo" Command="ApplicationCommands.Redo">
+                <MenuItem Header="_Redo" Command="ApplicationCommands.Redo"  InputGestureText="Ctrl+Y">
                     <MenuItem.Icon>
                         <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE7A6;"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Cu_t" Command="ApplicationCommands.Cut">
+                <MenuItem Header="Cu_t" Command="ApplicationCommands.Cut"  InputGestureText="Ctrl+X">
                     <MenuItem.Icon>
                         <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE8C6;"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Copy" Command="ApplicationCommands.Copy">
+                <MenuItem Header="_Copy" Command="ApplicationCommands.Copy"  InputGestureText="Ctrl+C">
                     <MenuItem.Icon>
                         <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE8C8;"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Paste" Command="ApplicationCommands.Paste">
+                <MenuItem Header="_Paste" Command="ApplicationCommands.Paste"  InputGestureText="Ctrl+V">
                     <MenuItem.Icon>
                         <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE77F;"/>
                     </MenuItem.Icon>
