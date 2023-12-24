@@ -318,6 +318,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         public float magDeviationSystem;    // current mag deviation of the system
         public float magDeviationReal;      // current mag deviation of the system
 
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_ECM_PROGRAMS)]
+        public EcmBits[] ecmBits;           // see EcmBits enum for details - Note: these are currently not combinable bits, but mutually exclusive states!
+
+        public EcmOperStates ecmOperState;  // (unsigned char) see enum EcmOperStates for details
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_RWR_OBJECTS)]
+        public JammingStates[] RWRjammingStatus;  // (unsigned) char see enum JammingStates for details
+
         // VERSION 20
         public int radio2_preset;       // Radio 2 channel preset (if present).
         public int radio2_frequency;    // Radio 2 channel frequency (if present).
@@ -328,13 +336,5 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         public short iffTransponderActiveCode3A; // mode 3A
         public short iffTransponderActiveCodeC;  // mode C
         public short iffTransponderActiveCode4;  // mode 4; assumes the correct codeword
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_ECM_PROGRAMS)]
-        public EcmBits[] ecmBits;           // see EcmBits enum for details - Note: these are currently not combinable bits, but mutually exclusive states!
-
-        public EcmOperStates ecmOperState;  // (unsigned char) see enum EcmOperStates for details
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_RWR_OBJECTS)]
-        public JammingStates[] RWRjammingStatus;  // (unsigned) char see enum JammingStates for details
     }
 }
