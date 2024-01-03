@@ -16,6 +16,7 @@
 
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
+using GadrocsWorkshop.Helios.Interfaces.DCS.Soft;
 using GadrocsWorkshop.Helios.UDPInterface;
 using GadrocsWorkshop.Helios.Util;
 using System;
@@ -69,6 +70,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// the full text of an export module to be attached to the interface in the profile
         /// </summary>
         private string _exportModuleText;
+
+        /// <summary>
+        /// backing field for property ExportImpersonationModuleText, contains
+        /// the full text of an export module to be attached to the interface in the profile
+        /// </summary>
+        private string _exportImpersonationModuleText;
 
         /// <summary>
         /// backing field for property ExportModuleBaseName, contains
@@ -172,8 +179,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         public DCSVehicleImpersonation VehicleImpersonation => _vehicleImpersonation;
 
-        public virtual string StatusName =>
-            ImpersonatedVehicleName != null ? $"{Name} impersonating {ImpersonatedVehicleName}" : Name;
+        public virtual string StatusName
+        {
+            get {
+                if(this is SoftInterface softwareInterface && softwareInterface.ImpersonatedVehicles != null)
+                {
+                    string vehicles = string.Empty;
+                    foreach(string vehicle in softwareInterface.ImpersonatedVehicles)
+                    {
+                        vehicles += $"{(vehicles == string.Empty ? "" : vehicle == softwareInterface.ImpersonatedVehicles.Last() ? " and" : ",")} {vehicle}";
+                    }
+                    return $"{Name} impersonating {vehicles}";
+                }
+                else
+                {
+                    return $"{Name} impersonating {ImpersonatedVehicleName}";
+                }
+             }
+        }
 
         /// <summary>
         /// the base name to use when writing an embedded module file during setup
@@ -232,6 +255,31 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 string oldValue = _exportModuleText;
                 _exportModuleText = value;
                 OnPropertyChanged("ExportModuleText", oldValue, value, true);
+            }
+        }
+        /// <summary>
+        /// the full text of an export impersonation module to be attached to the interface in the profile
+        /// </summary>
+        public string ExportImpersonationModuleText
+        {
+            get => _exportImpersonationModuleText;
+            set
+            {
+                if (value != null)
+                {
+                    // normalize carriage returns so we can compare it later
+                    // NOTE: XMLReader drops all the carriage returns in cdata
+                    value = Regex.Replace(value, "\r\n|\n\r|\n|\r", "\r\n");
+                }
+
+                if (_exportImpersonationModuleText == value)
+                {
+                    return;
+                }
+
+                string oldValue = _exportImpersonationModuleText;
+                _exportImpersonationModuleText = value;
+                OnPropertyChanged("ExportImpersonationModuleText", oldValue, value, true);
             }
         }
 
@@ -347,6 +395,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         private void ActiveVehicle_ValueReceived(object sender, NetworkTriggerValue.Value e)
         {
+            ConfigManager.VehicleName = e.Text; 
             ProfileHintReceived?.Invoke(this, new ProfileHint {Tag = e.Text});
         }
 

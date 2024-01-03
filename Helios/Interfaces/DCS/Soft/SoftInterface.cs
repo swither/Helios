@@ -32,6 +32,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
     public class SoftInterface : DCSInterface
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private IList<string> _vehicles;
 
         /// <summary>
         /// constructor used during Add Interface discovery
@@ -76,10 +77,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
 
             // the first listed vehicle is all we support right now
             VehicleName = loaded.Vehicles.FirstOrDefault();
-
+            ImpersonatedVehicles = loaded.Vehicles as IList<string>;
             // XXX enable this once implemented
             // ModuleName = loaded.Module
-            
+
             // display warning if not done
             Incomplete = loaded.Functions.Any(interfaceFunction => interfaceFunction.Unimplemented);
 
@@ -158,6 +159,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Soft
         public bool HasInterfaceFile => SpecFilePath != null;
 
         public bool Incomplete { get; private set; }
+
+        public IList<string> ImpersonatedVehicles
+        {
+            get => _vehicles;
+            set { _vehicles = value; }
+        }
 
         #endregion
     }

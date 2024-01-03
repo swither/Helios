@@ -1017,6 +1017,7 @@
     <None Include="Fonts\MonospacedLEDCounter7.ttf" />
     <None Include="Images\A-10\readme.md" />
     <Resource Include="Interfaces\DCS\A10C\ExportFunctionsA10C2.lua" />
+    <Resource Include="Interfaces\DCS\Common\HeliosImpersonationExport.lua" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\hud.png" />
