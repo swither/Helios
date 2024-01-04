@@ -129,6 +129,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             AddFunction(new NetworkValue(this, "T3", "Simulator Telemetry", "yaw", "Current yaw of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
             AddFunction(new NetworkValue(this, "T4", "Simulator Telemetry", "barometric altitude", "Current barometric altitude the aircraft.", "", BindingValueUnits.Meters, null));
             AddFunction(new NetworkValue(this, "T5", "Simulator Telemetry", "radar altitude", "Current radar altitude of the aircraft.", "", BindingValueUnits.Meters, null));
+            AddFunction(new NetworkValue(this, "T6", "Simulator Telemetry", "magnetic yaw", "Current magnetic yaw of the aircraft.", "(-180 to 180)", BindingValueUnits.Degrees, null));
             AddFunction(new NetworkValue(this, "T13", "Simulator Telemetry", "vertical velocity", "Current vertical velocity of the aircraft.", "", BindingValueUnits.MetersPerSecond, null));
             AddFunction(new NetworkValue(this, "T14", "Simulator Telemetry", "indicated airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.MetersPerSecond, null));
             AddFunction(new NetworkValue(this, "T16", "Simulator Telemetry", "angle of attack", "Current angle of attack for the aircraft.", "", BindingValueUnits.Degrees, null));
