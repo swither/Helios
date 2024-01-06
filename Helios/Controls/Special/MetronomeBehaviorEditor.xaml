@@ -1,0 +1,65 @@
+﻿<HeliosSdk:HeliosPropertyEditor
+    x:Class="GadrocsWorkshop.Helios.Controls.Special.MetronomeBehaviorEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Helios="clr-namespace:GadrocsWorkshop.Helios"
+    xmlns:HeliosBase="clr-namespace:GadrocsWorkshop.Helios.Controls"
+    xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Height="Auto"
+    d:DesignWidth="180"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    mc:Ignorable="d">
+
+    <HeliosSdk:HeliosPropertyEditor.Resources>
+        <Style x:Key="LabelStyle" TargetType="Label">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Control.TimerEnabled}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TextboxStyle" TargetType="TextBox">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Control.TimerEnabled}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </HeliosSdk:HeliosPropertyEditor.Resources>
+
+    <Grid
+        Height="Auto"
+        Margin="4"
+        Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalAlignment="Right"
+            Content="Tick Interval"
+            FontSize="10">
+            <!--Style="{StaticResource LabelStyle}">-->
+            <Label.ToolTip>Default tick interval.  Value in seconds</Label.ToolTip>
+        </Label>
+        <HeliosSdk:HeliosTextBox
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="2"
+            FontSize="10"
+            IsEnabled="True"
+            Text="{Binding Control.TickInterval}">
+            <!--Style="{StaticResource TextboxStyle}"-->
+            <HeliosSdk:HeliosTextBox.ToolTip>Value in seconds between each tick</HeliosSdk:HeliosTextBox.ToolTip>
+        </HeliosSdk:HeliosTextBox>
+    </Grid>
+</HeliosSdk:HeliosPropertyEditor>

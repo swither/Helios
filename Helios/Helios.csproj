@@ -188,9 +188,13 @@
     <Compile Include="Controls\Special\DCSMonitorSetupScriptAppenderBehaviorEditor.xaml.cs">
       <DependentUpon>DCSMonitorSetupScriptAppenderBehaviorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Special\MetronomeBehaviorEditor.xaml.cs">
+      <DependentUpon>MetronomeBehaviorEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TextualDisplayEnablerAppearancePropertyEditor.xaml.cs">
       <DependentUpon>TextualDisplayEnablerAppearancePropertyEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Special\Metronome.cs" />
     <Compile Include="Controls\TimerPanelBehaviorEditor.xaml.cs">
       <DependentUpon>TimerPanelBehaviorEditor.xaml</DependentUpon>
     </Compile>
@@ -385,6 +389,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\helios-bug-report.txt" />
+    <Resource Include="Images\General\metronome_wire.png" />
     <Content Include="Templates\Base\Panels\RWR Rings.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -493,6 +498,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Special\DCSMonitorSetupScriptAppenderBehaviorEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Special\MetronomeBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
