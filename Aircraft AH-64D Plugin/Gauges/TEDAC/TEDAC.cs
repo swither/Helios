@@ -22,6 +22,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
     using System.Xml;
     using System.Windows;
     using System.Windows.Media;
+    using System.Globalization;
 
 
     [HeliosControl("Helios.AH64D.TEDAC", "TADS Electronic Display and Control", "AH-64D", typeof(BackgroundImageRenderer),HeliosControlFlags.NotShownInUI)]
@@ -36,6 +37,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
         private bool _includeViewport = true;
         private string _vpName = "";
         private const string Panel_Image = "{AH-64D}/Images/TEDAC/TEDAC_frame.png";
+        public const double GLASS_REFLECTION_OPACITY_DEFAULT = 0.30d;
+        private double _glassReflectionOpacity = GLASS_REFLECTION_OPACITY_DEFAULT;
 
         public TEDAC()
             : base("TEDAC", new Size(1089, 1080))
@@ -45,7 +48,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
             _vpName = "AH_64D_TEDAC";
             if (_includeViewport) AddViewport(_vpName);
             _frameGlassPanel = AddPanel("TEDAC Glass", new Point(142, 150), new Size(800d, 800d), "{AH-64D}/Images/MFD/MFD_glass.png", _interfaceDevice);
-            _frameGlassPanel.Opacity = 0.3d;
+            _frameGlassPanel.Opacity = _glassReflectionOpacity;
             _frameGlassPanel.DrawBorder = false;
             _frameGlassPanel.FillBackground=false;
  
@@ -374,7 +377,25 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
         {
             _frameBezelPanel.BackgroundImage = BackgroundImageIsCustomized ? null : Panel_Image;
         }
+        public double GlassReflectionOpacity
+        {
+            get
+            {
+                return _glassReflectionOpacity;
+            }
+            set
+            {
+                double oldValue = _glassReflectionOpacity;
+                if (value != oldValue)
+                {
+                    _glassReflectionOpacity = value;
+                    OnPropertyChanged("GlassReflectionOpacity", oldValue, value, true);
+                    _frameGlassPanel.IsHidden = _glassReflectionOpacity == 0d ? true : false;
+                    _frameGlassPanel.Opacity = _glassReflectionOpacity;
 
+                }
+            }
+        }
         public override bool HitTest(Point location)
         {
             if (_scaledScreenRect.Contains(location))
@@ -407,6 +428,10 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
             {
                 writer.WriteElementString("EmbeddedViewportName", "");
             }
+            if (_glassReflectionOpacity > 0d)
+            {
+                writer.WriteElementString("GlassReflectionOpacity", GlassReflectionOpacity.ToString(CultureInfo.InvariantCulture));
+            }
 
         }
         public override void ReadXml(XmlReader reader)
@@ -430,6 +455,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
                     }
                 }
             }
+            GlassReflectionOpacity = reader.Name.Equals("GlassReflectionOpacity") ? double.Parse(reader.ReadElementString("GlassReflectionOpacity"), CultureInfo.InvariantCulture) : 0d;
         }
     }
 }
