@@ -67,7 +67,7 @@ namespace GadrocsWorkshop.Helios.Controls
         public LinearPotentiometerAnimated(string name, Size size)
             : base(name, size)
         {
-            AnimationFrameImageNamePattern ="{Helios}/Images/AH-64D/Power/Lever_0.png";
+            AnimationFrameImageNamePattern ="{Helios}/Images/Levers/Lever_0.png";
             AnimationFrameNumber = AnimationFrameCount-1;
             _clickableVertical = true;
             ClickType = LinearClickType.Swipe;

@@ -26,6 +26,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.HeliosInformation
     {
         private HeliosValue _heliosVersion;
         private HeliosValue _heliosProfileName;
+        private HeliosValue _heliosVehicleName;
 
         public HeliosInformationInterface()
             : base("Helios Information")
@@ -37,12 +38,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.HeliosInformation
             _heliosProfileName = new HeliosValue(this, BindingValue.Empty, "", "Active Profile Name", "Name of the Active Profile.", "Text value without filetype suffix", BindingValueUnits.Text);
             Values.Add(_heliosProfileName);
             Triggers.Add(_heliosProfileName);
+
+            _heliosVehicleName = new HeliosValue(this, BindingValue.Empty, "", "DCS Vehicle Name", "Name of the DCS Vehicle being used.", "Text value", BindingValueUnits.Text);
+            Values.Add(_heliosVehicleName);
+            Triggers.Add(_heliosVehicleName);
         }
 
         private void Profile_ProfileTick(object sender, EventArgs e)
         {
             _heliosVersion.SetValue(new BindingValue(ConfigManager.HeliosVersion), false);
             _heliosProfileName.SetValue(new BindingValue(ConfigManager.ProfileName), false);
+            _heliosVehicleName.SetValue(new BindingValue(ConfigManager.VehicleName), false);
         }
 
         #region Overrides of HeliosInterface

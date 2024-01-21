@@ -26,6 +26,7 @@ namespace GadrocsWorkshop.Helios
     {
         private static string _documentPath;
         private static string _profileName;
+        private static string _vehicleName;
 
         /// <summary>
         /// Private constructor to prevent instances.  This class is a Singleton which should be accessed
@@ -35,7 +36,8 @@ namespace GadrocsWorkshop.Helios
             string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
             ApplicationPath = Path.GetDirectoryName(assemblyLocation);
             BMSFalconPath = GetBMSFalconPath();
-            ProfileName = ""; 
+            ProfileName = "";
+            VehicleName = "";
         }
 
         #region Properties
@@ -43,6 +45,11 @@ namespace GadrocsWorkshop.Helios
         {
             get => _profileName;
             set => _profileName = value;
+        }
+        public static string VehicleName
+        {
+            get => _vehicleName;
+            set => _vehicleName = value;
         }
         public static string DocumentPath
         {

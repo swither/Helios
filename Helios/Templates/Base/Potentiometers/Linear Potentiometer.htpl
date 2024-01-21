@@ -1,0 +1,22 @@
+﻿<ControlTemplate>
+  <Name>Animated Linear Potentiometer</Name>
+  <Category>Potentiometers</Category>
+  <TypeIdentifier>Helios.Base.LinearPotentiometerAnimated</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <Location>0,0</Location>
+      <Size>73,240</Size>
+      <Hidden>False</Hidden>
+      <AnimationFrameImageNamePattern>{Helios}/Images/Levers/Lever_0.png</AnimationFrameImageNamePattern>
+      <InitialValue>0</InitialValue>
+      <StepValue>0.05</StepValue>
+      <MaxValue>1</MaxValue>
+      <MinValue>0</MinValue>
+      <InitialPosition>0</InitialPosition>
+      <ClickType>
+        <Type>Swipe</Type>
+        <Sensitivity>0</Sensitivity>
+      </ClickType>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>
