@@ -1,3 +1,6 @@
+--  "version": "1.6.6060.0000",
+--  "commit": "0b967712abb9765c5f535e5c005ffd854bb62848",
+
 -- Lookup tables for weapons store type display
 driver.gStationTypes = {["9M127-1 Vikhr-M"] = "NC", ["Kh-25ML (AS-10 Karen)"] = "NC", ["S-8KOM HEAT/Frag"] = "HP", ["S-8TsM SM Orange"] = "HP", ["S-8OFP2 MPP"] = "HP", ["S-8OM IL"] = "HP", ["S-13"] = "HP", ["UPK-23-250"] = "NN", ["BKF - 12 x AO-2.5RT"] = "A6", ["BKF - 12 x PTAB-2.5KO"] = "A6",
 				 ["FAB-250"] = "A6", ["FAB-250-M62 GP"] ="A6", ["FAB-500"] = "A6" }  
