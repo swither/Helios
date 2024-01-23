@@ -20,11 +20,13 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Globalization;
     using System.Windows;
 
-    [HeliosControl("Helios.Base.HatSwitch", "Hat Switch", "Four Way Hat Switches", typeof(HatSwitchRenderer))]
+    [HeliosControl("Helios.Base.HatSwitch", "Hat Switch", "Switches (Hat)", typeof(HatSwitchRenderer))]
     public class HatSwitch : HeliosVisual
     {
 
         private HatSwitchPosition _position = HatSwitchPosition.Center;
+        private HatSwitchPosition _horizontalPosition = HatSwitchPosition.Center;
+        private HatSwitchPosition _verticalPosition = HatSwitchPosition.Center;
 
         private string _centerImage;
         private string _upImage;
@@ -33,6 +35,8 @@ namespace GadrocsWorkshop.Helios.Controls
         private string _rightImage;
 
         private HeliosValue _positionValue;
+        private HeliosValue _horizontalPositionValue;
+        private HeliosValue _verticalPositionValue;
         private HeliosTrigger _upTrigger;
         private HeliosTrigger _downTrigger;
         private HeliosTrigger _leftTrigger;
@@ -78,6 +82,18 @@ namespace GadrocsWorkshop.Helios.Controls
             Triggers.Add(_centerTrigger);
             _centerExitTrigger = new HeliosTrigger(this, "", "center", "exited", "Triggered when the hat is exiting from the center position.");
             Triggers.Add(_centerExitTrigger);
+
+            _horizontalPositionValue = new HeliosValue(this, new BindingValue((double)HorizontalSwitchPosition), "", "horizontal position", "Current horizontal position of the hat switch.", "Position 0 = left, 1 = center, 2 = right.", BindingValueUnits.Numeric);
+            _horizontalPositionValue.Execute += new HeliosActionHandler(SetHorizontalPositionAction_Execute);
+            Values.Add(_horizontalPositionValue);
+            Triggers.Add(_horizontalPositionValue);
+            Actions.Add(_horizontalPositionValue);
+
+            _verticalPositionValue = new HeliosValue(this, new BindingValue((double)VerticalSwitchPosition), "", "vertical position", "Current vertical position of the hat switch.", "Position 0 = Up, 1 = center, 2 = down.", BindingValueUnits.Numeric);
+            _verticalPositionValue.Execute += new HeliosActionHandler(SetVerticalPositionAction_Execute);
+            Values.Add(_verticalPositionValue);
+            Triggers.Add(_verticalPositionValue);
+            Actions.Add(_verticalPositionValue);
 
             _positionValue = new HeliosValue(this, new BindingValue((double)SwitchPosition), "", "position", "Current position of the hat switch.", "Position 0 = center, 1 = up, 2 = down, 3 = left,  or 4 = right.", BindingValueUnits.Numeric);
             _positionValue.Execute += new HeliosActionHandler(SetPositionAction_Execute);
@@ -153,6 +169,18 @@ namespace GadrocsWorkshop.Helios.Controls
                     OnDisplayUpdate();
                 }
             }
+        }
+
+        public HatSwitchPosition HorizontalSwitchPosition
+        {
+            get => _horizontalPosition;
+            set => _horizontalPosition = value;
+
+        }
+        public HatSwitchPosition VerticalSwitchPosition
+        {
+            get => _verticalPosition;
+            set => _verticalPosition = value;
         }
 
         public string UpImage
@@ -328,7 +356,32 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             EndTriggerBypass(e.BypassCascadingTriggers);
         }
-
+        void SetHorizontalPositionAction_Execute(object action, HeliosActionEventArgs e)
+        {
+            BeginTriggerBypass(e.BypassCascadingTriggers);
+            try
+            {
+                SwitchPosition = HorizontalSwitchPosition = (HatSwitchPosition)Enum.Parse(typeof(HatSwitchPosition), e.Value.StringValue);
+            }
+            catch
+            {
+                // No-op if the parse fails we won't set the position.
+            }
+            EndTriggerBypass(e.BypassCascadingTriggers);
+        }
+        void SetVerticalPositionAction_Execute(object action, HeliosActionEventArgs e)
+        {
+            BeginTriggerBypass(e.BypassCascadingTriggers);
+            try
+            {
+                SwitchPosition = VerticalSwitchPosition = (HatSwitchPosition)Enum.Parse(typeof(HatSwitchPosition), e.Value.StringValue);
+            }
+            catch
+            {
+                // No-op if the parse fails we won't set the position.
+            }
+            EndTriggerBypass(e.BypassCascadingTriggers);
+        }
         #endregion
 
         public override void WriteXml(System.Xml.XmlWriter writer)
