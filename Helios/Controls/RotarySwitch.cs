@@ -290,7 +290,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
                 if (!BypassTriggers)
                 {
-                    if (oldValue > 0 && oldValue < Positions.Count)
+                    if (oldValue > 0 && oldValue <= Positions.Count)
                     {
                         Positions[oldValue-1].ExitTrigger.FireTrigger(BindingValue.Empty);
                     }
