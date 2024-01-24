@@ -440,12 +440,12 @@ function helios_private.processSimulatorData(selfData)
 	-- send this best effort (NOTE: helios.send will filter nil values)
 	if (pitch ~= nil and bank ~= nil and yaw ~= nil) then
         -- these are text keys, which is very slightly slower but avoids collision with modules and drivers
-		helios.send("T1", math.floor(0.5 + pitch * 57.3), "%d")
-		helios.send("T2", math.floor(0.5 + bank * 57.3), "%d")
-		helios.send("T3", math.floor(0.5 + yaw * 57.3), "%d")
+		helios.send("T1", math.floor(0.5 + helios_modules_util.Degrees(pitch) * 10) / 10, "%.1f")
+		helios.send("T2", math.floor(0.5 + helios_modules_util.Degrees(bank) * 10) / 10, "%.1f")
+		helios.send("T3", math.floor(0.5 + helios_modules_util.Degrees(yaw) * 10) / 10, "%.1f")
 		helios.send("T4", altBar, "%.1f")
 		helios.send("T5", altRad, "%.1f")
-		helios.send("T6", math.floor(0.5 + magneticYaw * 57.3), "%d")
+		helios.send("T6", math.floor(0.5 + helios_modules_util.Degrees(magneticYaw) * 10) / 10, "%.1f")
         if math.abs(vvi) < 0.04 then
             -- don't send +/- 0.0 while bouncing on the ground
             vvi = 0.0
