@@ -1,4 +1,4 @@
-name: Build HeliosDev & Create MSI Files
+name: HeliosDev Build & Create MSI Files
 # This workflow is intended to produce a new Helios build for testing (ie 1.6.1000.0). 
 # On successful build and packaging, the files are made available as assets
 # 
