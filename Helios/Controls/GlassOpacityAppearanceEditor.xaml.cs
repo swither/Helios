@@ -52,6 +52,7 @@
     [HeliosPropertyEditor("Helios.AH64D.TEDAC", "Appearance")]
     [HeliosPropertyEditor("Helios.AH64D.EUFD.CPG", "Appearance")]
     [HeliosPropertyEditor("Helios.AH64D.EUFD.PILOT", "Appearance")]
+    [HeliosPropertyEditor("Helios.AH64D.CMWS", "Appearance")]
 
     public partial class GlassOpacityAppearanceEditor : HeliosPropertyEditor
     {

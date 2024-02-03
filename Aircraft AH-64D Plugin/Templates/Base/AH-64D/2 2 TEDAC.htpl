@@ -7,8 +7,10 @@
 			<Location>0,0</Location>
 			<Size>544,540</Size>
 			<Hidden>False</Hidden>
-			<EmbeddedViewportName>AH_64D_TEDAC</EmbeddedViewportName>
-			<Children />
+			<EmbeddedViewportName>TEDAC</EmbeddedViewportName>
+      <RequiresPatches>False</RequiresPatches>
+      <GlassReflectionOpacity>0.3</GlassReflectionOpacity>
+      <Children />
 		</TemplateValues>
 	</Template>
 </ControlTemplate>

@@ -61,7 +61,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.KU
             // Top Row 104 Bottom Row 334
             // Left col 39 Right Col 520 
             AddPot("Brightness Control", new Point(59d, 389d), new Size(62d, 62d), "Brightness Control Knob");
-            AddTextDisplay("Scratchpad", new Point(58d, 32d), new Size(484d, 52d), _interfaceDevice, "Scratchpad", 22, "KEYBOARD UNIT", TextHorizontalAlignment.Left, "#=$;!=:");
+            AddTextDisplay("Scratchpad", new Point(58d, 32d), new Size(484d, 52d), _interfaceDevice, "Scratchpad", 25, "APACHE: KEYBOARD UNIT.", TextHorizontalAlignment.Left, "!=:");
 
         }
         protected HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceDevice)
@@ -203,9 +203,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.KU
         private void AddTextDisplay(string name, Point posn, Size size,
                 string interfaceDeviceName, string interfaceElementName, double baseFontsize, string testDisp, TextHorizontalAlignment hTextAlign, string devDictionary)
         {
-            //string font = "MS 33558";
-            string font = "Helios Virtual Cockpit A-10C_ALQ_213";
-            
+            string font = "AH-64D-KU Regular";
+
             TextDisplay display = AddTextDisplay(
                 name: name,
                 posn: posn,

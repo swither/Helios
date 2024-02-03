@@ -19,14 +19,16 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
     using System;
+    using System.Globalization;
     using System.Windows;
     using System.Windows.Media;
+    using System.Xml;
 
     [HeliosControl("Helios.AH64D.CMWS", "CMWS Display", "AH-64D", typeof(BackgroundImageRenderer),HeliosControlFlags.NotShownInUI)]
     public class CMWSDisplay : CompositeVisualWithBackgroundImage
     {
         private string _interfaceDeviceName = "CMWS";
-        private string _font = "Helios Virtual Cockpit A-10C_ALQ_213";
+        private string _font = "AH-64D-CMWS Regular";
         private static readonly Rect SCREEN_RECT = new Rect(0, 0, 1, 1);
         private Rect _scaledScreenRect = SCREEN_RECT;
         private CMWSThreatDisplay _display;
@@ -34,6 +36,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
         private HeliosPanel _frameBezelPanel;
         private HeliosPanel _displayBackgroundPanel;
         private const string Panel_Image = "{AH-64D}/Images/CMWS/cmws_frame.png";
+        public const double GLASS_REFLECTION_OPACITY_DEFAULT = 0.30d;
+        private double _glassReflectionOpacity = GLASS_REFLECTION_OPACITY_DEFAULT;
 
         public CMWSDisplay()
             : base("CMWS Display", new Size(640, 409))
@@ -46,10 +50,11 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
             _displayBackgroundPanel.DrawBorder = false;
 
             AddCMWSPart("Threat Display", new Point(326d, 29d), new Size(110d, 110d), _interfaceDeviceName, "CMWS Threat Display");
-            AddTextDisplay("Line 1", new Point(206d, 29d), new Size(180d, 55d), _interfaceDeviceName, "Line 1", 26, "FOUT", TextHorizontalAlignment.Left, @"0={;6=|;9=}");
-            AddTextDisplay("Line 2", new Point(206d, 84d), new Size(180d, 55d), _interfaceDeviceName, "Line 2", 26, "COUT", TextHorizontalAlignment.Left, @"0={;6=|;9=}");
+            AddTextDisplay("Line 1", new Point(216d, 28d), new Size(118d, 54d), _interfaceDeviceName, "Line 1", 28, "FOUT", TextHorizontalAlignment.Left, @"");
+            AddTextDisplay("Line 2", new Point(216d, 82d), new Size(118d, 54d), _interfaceDeviceName, "Line 2", 28, "COUT", TextHorizontalAlignment.Left, @"");
+
             _frameGlassPanel = AddPanel("CMWS Glass", new Point(206, 29), new Size(230d, 110d), "{AH-64D}/Images/MFD/MFD_glass.png", _interfaceDeviceName);
-            _frameGlassPanel.Opacity = 0.3d;
+            _frameGlassPanel.Opacity = _glassReflectionOpacity;
             _frameGlassPanel.DrawBorder = false;
             _frameGlassPanel.FillBackground = false;
 
@@ -286,6 +291,25 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
         {
             _frameBezelPanel.BackgroundImage = BackgroundImageIsCustomized ? null : Panel_Image;
         }
+        public double GlassReflectionOpacity
+        {
+            get
+            {
+                return _glassReflectionOpacity;
+            }
+            set
+            {
+                double oldValue = _glassReflectionOpacity;
+                if (value != oldValue)
+                {
+                    _glassReflectionOpacity = value;
+                    _frameGlassPanel.IsHidden = _glassReflectionOpacity == 0d ? true : false;
+                    _frameGlassPanel.Opacity = _glassReflectionOpacity;
+                    OnPropertyChanged("GlassReflectionOpacity", oldValue, value, true);
+                }
+            }
+        }
+
         public override bool HitTest(Point location)
         {
             if (_scaledScreenRect.Contains(location))
@@ -309,5 +333,20 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
         {
             // No-Op
         }
+        public override void WriteXml(XmlWriter writer)
+        {
+            base.WriteXml(writer);
+            if (_glassReflectionOpacity > 0d)
+            {
+                writer.WriteElementString("GlassReflectionOpacity", GlassReflectionOpacity.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            base.ReadXml(reader);
+            GlassReflectionOpacity = reader.Name.Equals("GlassReflectionOpacity") ? double.Parse(reader.ReadElementString("GlassReflectionOpacity"), CultureInfo.InvariantCulture) : 0d;
+        }
+
     }
 }

@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
     using System.Windows;
     using System.Windows.Media;
     using System.Globalization;
-
+    using System.Windows.Media.TextFormatting;
 
     [HeliosControl("Helios.AH64D.TEDAC", "TADS Electronic Display and Control", "AH-64D", typeof(BackgroundImageRenderer),HeliosControlFlags.NotShownInUI)]
     public class TEDAC : CompositeVisualWithBackgroundImage
@@ -36,6 +36,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
         private HeliosPanel _frameBezelPanel;
         private bool _includeViewport = true;
         private string _vpName = "";
+        private bool _vpRequiresPatches = false;
         private const string Panel_Image = "{AH-64D}/Images/TEDAC/TEDAC_frame.png";
         public const double GLASS_REFLECTION_OPACITY_DEFAULT = 0.30d;
         private double _glassReflectionOpacity = GLASS_REFLECTION_OPACITY_DEFAULT;
@@ -45,7 +46,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
         {
             SupportedInterfaces = new[] { typeof(Interfaces.DCS.AH64D.AH64DInterface) };
 
-            _vpName = "AH_64D_TEDAC";
+            _vpName = "TEDAC";
             if (_includeViewport) AddViewport(_vpName);
             _frameGlassPanel = AddPanel("TEDAC Glass", new Point(142, 150), new Size(800d, 800d), "{AH-64D}/Images/MFD/MFD_glass.png", _interfaceDevice);
             _frameGlassPanel.Opacity = _glassReflectionOpacity;
@@ -95,6 +96,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
                     }
                     else if (value != "")
                     {
+                        _includeViewport = true;
                         foreach (HeliosVisual visual in this.Children)
                         {
                             if (visual.TypeIdentifier == "Helios.Base.ViewportExtent")
@@ -116,9 +118,10 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
         }
         public bool RequiresPatches
         {
-            get => _vpName != "" ? true:false;
-            set => _ = value;
+            get => _vpRequiresPatches;
+            set => _vpRequiresPatches = value;
         }
+
         protected HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceDevice)
         {
             HeliosPanel panel = AddPanel
@@ -173,6 +176,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
                 Width = vpRect.Width,
                 Height = vpRect.Height
             });
+            _includeViewport = true;
         }
         private void RemoveViewport(string name)
         {
@@ -422,7 +426,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
             base.WriteXml(writer);
             if (_includeViewport)
             {
-                writer.WriteElementString("EmbeddedViewportName", _vpName);
+                writer.WriteElementString("EmbeddedViewportName", ViewportName);
+                if(RequiresPatches) writer.WriteElementString("RequiresPatches", RequiresPatches.ToString(CultureInfo.InvariantCulture));
             }
             else
             {
@@ -438,11 +443,9 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
         {
             base.ReadXml(reader);
             _includeViewport = true;
-            if (reader.Name != "EmbeddedViewportName")
-            {
-                return;
-            }
-            _vpName = reader.ReadElementString("EmbeddedViewportName");
+
+            ViewportName = reader.Name.Equals("EmbeddedViewportName") ? reader.ReadElementString("EmbeddedViewportName") : "";
+            RequiresPatches = reader.Name.Equals("RequiresPatches") ? bool.Parse(reader.ReadElementString("RequiresPatches")) : false;
             if (_vpName == "")
             {
                 _includeViewport = false;
