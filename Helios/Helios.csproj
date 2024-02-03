@@ -389,6 +389,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\helios-bug-report.txt" />
+    <Content Include="Docs\Licenses\RectpackSharp\License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\Base\Potentiometers\Linear Potentiometer.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1059,19 +1062,45 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Docs\Licenses\AvalonDock\LICENSE.txt" />
-    <Content Include="Docs\Licenses\CommandLineParser\LICENSE.txt" />
-    <Content Include="Docs\Licenses\EOSSharp\LICENSE.txt" />
-    <Content Include="Docs\Licenses\GoogleDiffMatchPatch\LICENSE.txt" />
-    <Content Include="Docs\Licenses\HidSharp\LICENSE.txt" />
-    <Content Include="Docs\Licenses\KeraLua\LICENSE.txt" />
-    <Content Include="Docs\Licenses\LibGit2Sharp.NativeBinaries\LICENSE.txt" />
-    <Content Include="Docs\Licenses\LibGit2Sharp\LICENSE.txt" />
-    <Content Include="Docs\Licenses\NLog\LICENSE.txt" />
-    <Content Include="Docs\Licenses\NLua\LICENSE.txt" />
-    <Content Include="Docs\Licenses\Phidget\License.txt" />
-    <Content Include="Docs\Licenses\SharpDX.DirectInput\LICENSE.txt" />
-    <Content Include="Docs\Licenses\SharpDX\LICENSE.txt" />
+    <Content Include="Docs\Licenses\AvalonDock\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\CommandLineParser\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\EOSSharp\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\GoogleDiffMatchPatch\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\HidSharp\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\KeraLua\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\LibGit2Sharp.NativeBinaries\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\LibGit2Sharp\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\NLog\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\NLua\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\Phidget\License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\SharpDX.DirectInput\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Docs\Licenses\SharpDX\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="HeliosNotificationObject.cd" />
     <None Include="Gauges\GaugeTextDisplay.cs" />
     <Compile Include="Gauges\F-16\ADI\ADI.cs" />
@@ -1700,7 +1729,9 @@
     <Content Include="Templates\Base\F-16\RWR Bezel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Docs\Licenses\VCRedist\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf" />
+    <Content Include="Docs\Licenses\VCRedist\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Images\Toggles\guard-up-empty.png" />
     <Resource Include="Images\Buttons\green-push-in.png">
     </Resource>
