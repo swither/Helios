@@ -50,6 +50,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		PlatformsForPlugin.properties = PlatformsForPlugin.properties
 		publish.cmd = publish.cmd
 		uninstall.cmd = uninstall.cmd
+		TaskList.md = TaskList.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{4BAD86A3-88DE-4AD6-B1E3-982D118CCB8D}"
