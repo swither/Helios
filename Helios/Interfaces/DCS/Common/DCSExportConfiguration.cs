@@ -1557,7 +1557,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private IEnumerable<StatusReportItem> CheckImpersonationModules(InstallationLocation location)
         {
             ModuleFormatInfo moduleInfo = ExportModuleFormatInfo[_parent.ExportModuleFormat];
-            if (_parent is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count > 0) {
+            if (_parent is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count > 1) {
                 foreach(string vehicle in softInterface.ImpersonatedVehicles)
                 {
                     // check if module file is even used by this interface
@@ -1642,7 +1642,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 yield return new StatusReportItem
                 {
                     Status =
-                    $"There are no vehicles being impersonated by the {moduleInfo.DisplayName} interface for {_parent.VehicleName}",
+                    $"There are no vehicles being impersonated by the {moduleInfo.DisplayName} for {_parent.VehicleName}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
