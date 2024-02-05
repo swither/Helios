@@ -375,7 +375,7 @@ namespace GadrocsWorkshop.Helios
                         profileAware.DriverStatusReceived += Interface_DriverStatusReceived;
                         profileAware.ClientChanged += Interface_ClientChanged;
                         _tags.UnionWith(profileAware.Tags);
-                        if(heliosInterface is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count > 0) {
+                        if(heliosInterface is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count() > 1) {
                             foreach(string xVehicle in softInterface.ImpersonatedVehicles) {
                                 if (!_tags.Contains(xVehicle))
                                 {
@@ -410,7 +410,7 @@ namespace GadrocsWorkshop.Helios
                     if (heliosInterface is IProfileAwareInterface profileAware)
                     {
                         _tags.UnionWith(profileAware.Tags);
-                        if (heliosInterface is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count > 0)
+                        if (heliosInterface is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count() > 1)
                         {
                             foreach (string xVehicle in softInterface.ImpersonatedVehicles)
                             {
