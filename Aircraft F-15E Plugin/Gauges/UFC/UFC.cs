@@ -102,12 +102,12 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
                 _framePanelOdu.FillBackground = false;
                 _framePanelOdu.DrawBorder = false;
 
-                AddUFCTextDisplay("Option Line 1", new Point(119d, 61d), new Size(414d, 39d), _interfaceDevice, "Option Line 1", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
-                AddUFCTextDisplay("Option Line 2", new Point(119d, 120d), new Size(414d, 39d), _interfaceDevice, "Option Line 2", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6e, 0x6d), 20);
-                AddUFCTextDisplay("Option Line 3", new Point(119d, 179d), new Size(414d, 39d), _interfaceDevice, "Option Line 3", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6f, 0x6e), 20);
-                AddUFCTextDisplay("Option Line 4", new Point(119d, 237d), new Size(414d, 39d), _interfaceDevice, "Option Line 4", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6f, 0x6e), 20);
-                AddUFCTextDisplay("Option Line 5", new Point(119d, 296d), new Size(414d, 39d), _interfaceDevice, "Option Line 5", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
-                AddUFCTextDisplay("Option Line 6", new Point(119d, 354d), new Size(414d, 39d), _interfaceDevice, "Option Line 6", _oduFontSize, "%%%%%%%%%%%%%%%%%%%%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
+                AddUFCTextDisplay("Option Line 1", new Point(119d, 61d), new Size(414d, 39d), _interfaceDevice, "Option Line 1", _oduFontSize, "!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
+                AddUFCTextDisplay("Option Line 2", new Point(119d, 120d), new Size(414d, 39d), _interfaceDevice, "Option Line 2", _oduFontSize, "!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6e, 0x6d), 20);
+                AddUFCTextDisplay("Option Line 3", new Point(119d, 179d), new Size(414d, 39d), _interfaceDevice, "Option Line 3", _oduFontSize, "!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6f, 0x6e), 20);
+                AddUFCTextDisplay("Option Line 4", new Point(119d, 237d), new Size(414d, 39d), _interfaceDevice, "Option Line 4", _oduFontSize, "!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6f, 0x6e), 20);
+                AddUFCTextDisplay("Option Line 5", new Point(119d, 296d), new Size(414d, 39d), _interfaceDevice, "Option Line 5", _oduFontSize, "!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
+                AddUFCTextDisplay("Option Line 6", new Point(119d, 354d), new Size(414d, 39d), _interfaceDevice, "Option Line 6", _oduFontSize, "!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
                 AddEncoder("Left UHF Preset Channel Selector", new Point(0, 340), new Size(112, 112), "Left UHF Preset Channel Selector");
                 AddRadioButton("Left UHF Preset Channel Pull Switch", new Rect(22, 361, 70, 70), "Left UHF Preset Channel Pull Switch");
                 AddEncoder("Right UHF Preset Channel Selector", new Point(541, 340), new Size(112, 112), "Right UHF Preset Channel Selector");

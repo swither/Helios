@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Controls;
 using GadrocsWorkshop.Helios.Util;
 using System.Text.RegularExpressions;
-using static GadrocsWorkshop.Helios.NativeMethods;
-
+using System.Xml;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
 {
@@ -21,16 +21,31 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
     /// character needs to be formed from two characters - the first for the dots and the second for the main character.  Thus a normal A needs to be
     /// "!A" a space would need to be "! "
     /// </remarks>
-    [HeliosControl("Helios.Base.F15E.UFCTextDisplay", "UFC Text Display", "Text Displays", typeof(TextDisplayRenderer),HeliosControlFlags.NotShownInUI)]
+    [HeliosControl("Helios.Base.F15E.UFCTextDisplay", "UFC Text Display", "F-15E Strike Eagle", typeof(TextDisplayRenderer), HeliosControlFlags.NotShownInUI)]
     public class UFCTextDisplay : TextDisplayRect
     {
         private readonly HeliosValue _value;
         private int _valueIndex = 0;
-        private int _valueLength = 0;
+        private int _valueLength = 20;
 
         public UFCTextDisplay()
-            : base("TextDisplay", new System.Windows.Size(100, 50))
+            : base("F-15E UFC Text Display", new System.Windows.Size(414, 39))
         {
+            TextFormat = new TextFormat
+            {
+                FontFamily = ConfigManager.FontManager.GetFontFamilyByName("Helios Virtual Cockpit F-15E_Up_Front_Controller"),
+                HorizontalAlignment = TextHorizontalAlignment.Left,
+                VerticalAlignment = TextVerticalAlignment.Center,
+                FontSize = 25,
+                ConfiguredFontSize = 25,
+                PaddingRight = 0,
+                PaddingLeft = 0,
+                PaddingTop = 0,
+                PaddingBottom = 0
+            };
+            TextTestValue = "!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%";
+            ParserDictionary = "";
+
             _value = new HeliosValue(this, new BindingValue(false), "", "TextDisplay", "Value of this Text Display", "A text string.", BindingValueUnits.Text);
             _value.Execute += On_Execute;
             Values.Add(_value);
@@ -65,7 +80,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
                     parts[i] = Regex.Replace(parts[i], @"(\d{3})(\d{3})[\D]+", "$1.$2");
                     parts[i] = Regex.Replace(parts[i], @"(\d{3})(\d{3})$", "$1.$2");
                 }
-        }
+            }
 
             string tmpBlankString = string.Concat(Enumerable.Repeat("! ", _valueLength));
             string pad1 = "";
@@ -86,16 +101,28 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
             TextValue = $"{parts[1]}{pad1}{parts[2]}{pad2}{parts[3]}"; ;
             EndTriggerBypass(e.BypassCascadingTriggers);
         }
-            
+
         public int TextIndex
         {
-            get { return _valueIndex; } 
-            set { _valueIndex = value; } 
+            get { return _valueIndex; }
+            set { _valueIndex = value; }
         }
         public int TextLength
         {
-            get { return _valueLength; }    
+            get { return _valueLength; }
             set { _valueLength = value; }
+        }
+        public override void ReadXml(XmlReader reader)
+        {
+            base.ReadXml(reader);
+            TextLength = reader.Name.Equals("TextLength") ? Int32.Parse(reader.ReadElementString("TextLength")) : 20;
+            TextLength = reader.Name.Equals("TextIndex") ? Int32.Parse(reader.ReadElementString("TextIndex")) : 0;
+        }
+        public override void WriteXml(XmlWriter writer)
+        {
+            base.WriteXml(writer);
+            if (TextLength > 0) writer.WriteElementString("TextLength", TextLength.ToString());
+            if (TextIndex > 0) writer.WriteElementString("TextIndex", TextIndex.ToString());
         }
     }
 }

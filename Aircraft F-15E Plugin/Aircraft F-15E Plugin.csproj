@@ -406,6 +406,9 @@
     </Content>
     <Resource Include="Interfaces\ExportFunctionsF15E.lua" />
     <None Include="app.config" />
+    <Content Include="Templates\Base\F-15E\W UFC Display Line.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Templates\Base\F-15E\Images\ADI_Bezel.htpl" />
     <None Include="Templates\Base\F-15E\Images\ADI_Knob.htpl" />
     <None Include="Templates\Base\F-15E\Images\ADI_Knob_Center_Norm.htpl" />
