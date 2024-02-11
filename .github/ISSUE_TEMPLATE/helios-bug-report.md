@@ -1,6 +1,6 @@
 ---
 name: Helios Bug report
-about: Create a report for problems with the Helios Project to help us improve
+about: This **MUST** be used for all problem reports.  Create a report for problems with the Helios Project to help us to help you
 title: ''
 labels: 'New Issue'
 assignees: ''
