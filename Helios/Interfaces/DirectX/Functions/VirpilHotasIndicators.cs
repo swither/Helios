@@ -200,10 +200,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Vendor.Functions
         public void OpenHidDevice() { OpenHidDevice(_device); }
         public void OpenHidDevice(Joystick device)
         {
-            _hotasDevice = DeviceList.Local.GetHidDevices().Where(d => d.VendorID == device.Properties.VendorId && d.ProductID == device.Properties.ProductId && d.GetProductName() == device.Properties.ProductName).FirstOrDefault(d => d.GetMaxFeatureReportLength() > 0);
+            _hotasDevice = DeviceList.Local.GetHidDevices().Where(d => d.VendorID == device.Properties.VendorId && d.ProductID == device.Properties.ProductId && d.DevicePath.Split('#')[3] == device.Properties.InterfacePath.Split('#')[3]).FirstOrDefault(d => d.GetMaxFeatureReportLength() > 0);
             if (_hotasDevice == null)
             {
-                Logger.Info($"Unable to find USB device with VendorID: {device.Properties.VendorId} and ProductID: {device.Properties.ProductId}.");
+                Logger.Info($"Unable to find USB device with VendorID: {device.Properties.VendorId}, ProductID: {device.Properties.ProductId} and Device InterfacePath: {device.Properties.InterfacePath.Split('#')[3]}.");
             }
         }
 
