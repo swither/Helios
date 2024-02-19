@@ -145,6 +145,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 
             #region VHF AM Radio (ARC-210)
             AddFunction(new PushButton(this, UFC, BUTTON_33, "534", "UFC", "Toggle ARC-210 RT2 Status (long press)", "%0.1f"));
+            AddFunction(new PushButton(this, UFC, BUTTON_34, "535", "UFC", "Toggle ECCM", "%0.1f"));
+            AddFunction(new PushButton(this, UFC, BUTTON_35, "536", "UFC", "Toggle IDM R/T", "%0.1f"));
 
             AddFunction(new Switch(this, VHF_AM_RADIO, "551", SwitchPositions.Create(7, 0d, 0.1d, BUTTON_43, new string[] { "OFF", "TR G", "TR", "ADF", "CHG PRST", "TEST", "ZERO (PULL)"}, "%0.1f"), "ARC-210", "Master switch", "%0.1f"));
             AddFunction(new RotaryEncoder(this, VHF_AM_RADIO, BUTTON_27, "552", 0.1d, "ARC-210", "Channel select knob"));
