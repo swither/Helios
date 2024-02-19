@@ -19,6 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
     using System;
+    using System.ComponentModel;
     using System.Globalization;
     using System.Windows;
     using System.Windows.Media;
@@ -335,17 +336,21 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.CMWS
         }
         public override void WriteXml(XmlWriter writer)
         {
+            TypeConverter doubleConverter = TypeDescriptor.GetConverter(typeof(double));
+
             base.WriteXml(writer);
             if (_glassReflectionOpacity > 0d)
             {
-                writer.WriteElementString("GlassReflectionOpacity", GlassReflectionOpacity.ToString(CultureInfo.InvariantCulture));
+                writer.WriteElementString("GlassReflectionOpacity", doubleConverter.ConvertToInvariantString(GlassReflectionOpacity));
             }
         }
 
         public override void ReadXml(XmlReader reader)
         {
+            TypeConverter doubleConverter = TypeDescriptor.GetConverter(typeof(double));
+
             base.ReadXml(reader);
-            GlassReflectionOpacity = reader.Name.Equals("GlassReflectionOpacity") ? double.Parse(reader.ReadElementString("GlassReflectionOpacity"), CultureInfo.InvariantCulture) : 0d;
+            GlassReflectionOpacity = reader.Name.Equals("GlassReflectionOpacity") ? (double)doubleConverter.ConvertFromInvariantString(reader.ReadElementString("GlassReflectionOpacity")) : 0d;
         }
 
     }

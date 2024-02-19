@@ -20,6 +20,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
     using GadrocsWorkshop.Helios.Controls;
     using NLog.Filters;
     using System;
+    using System.ComponentModel;
     using System.Globalization;
     using System.Windows;
     using System.Windows.Media;
@@ -383,10 +384,13 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
 
         public override void WriteXml(XmlWriter writer)
         {
+            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
+
             base.WriteXml(writer);
             if (_includeViewport)
             {
                 writer.WriteElementString("EmbeddedViewportName", _vpName);
+                if (RequiresPatches) writer.WriteElementString("RequiresPatches", boolConverter.ConvertToInvariantString(RequiresPatches));
             }
             else
             {
@@ -400,17 +404,20 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
 
         public override void ReadXml(XmlReader reader)
         {
+            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
+
             base.ReadXml(reader);
             _includeViewport = true;
-            if (reader.Name != "EmbeddedViewportName")
-            {
-                return;
-            }
-            _vpName = reader.ReadElementString("EmbeddedViewportName");
+            _vpName = reader.Name.Equals("EmbeddedViewportName") ? reader.ReadElementString("EmbeddedViewportName") : "";
             if (_vpName == "")
             {
                 _includeViewport = false;
                 RemoveViewport("");
+                RequiresPatches = false;
+            }
+            else 
+            {
+                RequiresPatches = reader.Name.Equals("RequiresPatches") ? (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("RequiresPatches")) : false;
             }
             GlassReflectionOpacity = reader.Name.Equals("GlassReflectionOpacity") ? double.Parse(reader.ReadElementString("GlassReflectionOpacity"), CultureInfo.InvariantCulture) : 0d;
         }
