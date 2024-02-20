@@ -6,9 +6,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="225">
+             mc:Ignorable="d" d:DesignHeight="80" d:DesignWidth="225">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions> 
@@ -19,7 +20,7 @@
         <Label Content="Enable Transparency"
                Grid.Row="0"
                Grid.Column="0"
-               HorizontalAlignment="Center"
+               HorizontalAlignment="Right"
                VerticalAlignment="Center"/>
         <CheckBox IsChecked="{Binding Control.TransparencyEnabled}"
                   IsEnabled="True"
@@ -30,11 +31,22 @@
         <Label Content="Flip Horizontally"
                Grid.Row="1"
                Grid.Column="0"
-               HorizontalAlignment="Center"
+               HorizontalAlignment="Right"
                VerticalAlignment="Center"/>
         <CheckBox IsChecked="{Binding Control.HorizontalFlipEnabled}"
                   IsEnabled="True"
                   Grid.Row="1"
+                  Grid.Column="1"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center" />
+        <Label Content="Flip Vertically"
+               Grid.Row="2"
+               Grid.Column="0"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"/>
+        <CheckBox IsChecked="{Binding Control.VerticalFlipEnabled}"
+                  IsEnabled="True"
+                  Grid.Row="2"
                   Grid.Column="1"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center" />

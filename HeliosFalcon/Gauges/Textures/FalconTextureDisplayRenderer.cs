@@ -101,15 +101,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
                                                          surfaceDesc.lPitch * (int)_display.TextureRect.Height,
                                                          surfaceDesc.lPitch);
 
-                if(_display.TransparencyEnabled)
-                {
-                    image = ImageTransparency(image);
-                }
+                if(_display.TransparencyEnabled) { image = ImageTransparency(image); }
 
-                if(_display.HorizontalFlipEnabled)
-                {
-                    image = FlipImageHorizontally(image);
-                }
+                if(_display.HorizontalFlipEnabled && !_display.VerticalFlipEnabled) { image = FlipImage(image, -1, 1); } // -1,1 flips in the horizontal
+
+                if(_display.VerticalFlipEnabled && !_display.HorizontalFlipEnabled) { image = FlipImage(image, 1, -1); } // 1,-1 flips in the vertical
+
+                if (_display.VerticalFlipEnabled && _display.HorizontalFlipEnabled) { image = FlipImage(image, -1, -1); } // -1,-1 flips in the horizontal and vertical
 
                 brush = new ImageBrush(image);
 
@@ -125,7 +123,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             return brush;
         }
 
-        private BitmapSource FlipImageHorizontally(BitmapSource originalImage)
+        private BitmapSource FlipImage(BitmapSource originalImage, int scaleFactorX, int scaleFactorY)
         {
             // Create a TransformedBitmap to apply the flip transformation
             TransformedBitmap flippedImage = new TransformedBitmap();
@@ -133,7 +131,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             flippedImage.Source = originalImage;
 
             // Apply the horizontal flip transformation
-            ScaleTransform flipTransform = new ScaleTransform(-1, 1);
+            ScaleTransform flipTransform = new ScaleTransform(scaleFactorX, scaleFactorY);
             flippedImage.Transform = flipTransform;
 
             flippedImage.EndInit();

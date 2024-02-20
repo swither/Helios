@@ -52,6 +52,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
         /// </summary>
         private bool _transparency;
         private bool _horizontalFlip;
+        private bool _verticalFlip;
         private string _aircraftName;
         private bool _flying;
 
@@ -135,6 +136,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
                 bool oldValue = _horizontalFlip;
                 _horizontalFlip = value;
                 OnPropertyChanged(nameof(HorizontalFlipEnabled), oldValue, value, true);
+            }
+        }
+
+        public bool VerticalFlipEnabled
+        {
+            get => _verticalFlip;
+            set
+            {
+                if (_verticalFlip == value)
+                {
+                    return;
+                }
+                bool oldValue = _verticalFlip;
+                _verticalFlip = value;
+                OnPropertyChanged(nameof(VerticalFlipEnabled), oldValue, value, true);
             }
         }
 
@@ -391,6 +407,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
         {
             base.WriteXml(writer);
             writer.WriteElementString("TransparentBackground", TransparencyEnabled.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteElementString("HorizontalImageFlip", HorizontalFlipEnabled.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteElementString("VerticalImageFlip", VerticalFlipEnabled.ToString(System.Globalization.CultureInfo.InvariantCulture));
         }
 
         public override void ReadXml(System.Xml.XmlReader reader)
@@ -400,6 +418,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             try
             {
                 TransparencyEnabled = bool.Parse(reader.ReadElementString("TransparentBackground"));
+                HorizontalFlipEnabled = bool.Parse(reader.ReadElementString("HorizontalImageFlip"));
+                VerticalFlipEnabled = bool.Parse(reader.ReadElementString("VerticalImageFlip"));
             }
             catch
             {
