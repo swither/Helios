@@ -106,6 +106,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
                     image = ImageTransparency(image);
                 }
 
+                if(_display.HorizontalFlipEnabled)
+                {
+                    image = FlipImageHorizontally(image);
+                }
+
                 brush = new ImageBrush(image);
 
                 _defaultImage = new ImageBrush(image)
@@ -120,7 +125,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             return brush;
         }
 
-        BitmapSource ImageTransparency(BitmapSource sourceImage)
+        private BitmapSource FlipImageHorizontally(BitmapSource originalImage)
+        {
+            // Create a TransformedBitmap to apply the flip transformation
+            TransformedBitmap flippedImage = new TransformedBitmap();
+            flippedImage.BeginInit();
+            flippedImage.Source = originalImage;
+
+            // Apply the horizontal flip transformation
+            ScaleTransform flipTransform = new ScaleTransform(-1, 1);
+            flippedImage.Transform = flipTransform;
+
+            flippedImage.EndInit();
+
+            return flippedImage;
+        }
+
+        private BitmapSource ImageTransparency(BitmapSource sourceImage)
         {
             if (sourceImage.Format != PixelFormats.Bgra32)
             {
