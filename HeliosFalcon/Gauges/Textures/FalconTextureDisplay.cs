@@ -418,12 +418,28 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             try
             {
                 TransparencyEnabled = bool.Parse(reader.ReadElementString("TransparentBackground"));
-                HorizontalFlipEnabled = bool.Parse(reader.ReadElementString("HorizontalImageFlip"));
-                VerticalFlipEnabled = bool.Parse(reader.ReadElementString("VerticalImageFlip"));
             }
             catch
             {
                 TransparencyEnabled = false;
+            }
+
+            try
+            {
+                HorizontalFlipEnabled = bool.Parse(reader.ReadElementString("HorizontalImageFlip"));
+            }
+            catch
+            {
+                HorizontalFlipEnabled = false;
+            }
+
+            try
+            {
+                VerticalFlipEnabled = bool.Parse(reader.ReadElementString("VerticalImageFlip"));
+            }
+            catch
+            {
+                VerticalFlipEnabled = false;
             }
         }
     }
