@@ -101,10 +101,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
                                                          surfaceDesc.lPitch * (int)_display.TextureRect.Height,
                                                          surfaceDesc.lPitch);
 
-                if(_display.TransparencyEnabled)
-                {
-                    image = ImageTransparency(image);
-                }
+                if(_display.TransparencyEnabled) { image = ImageTransparency(image); }
+
+                if(_display.HorizontalFlipEnabled && !_display.VerticalFlipEnabled) { image = FlipImage(image, -1, 1); } // -1,1 flips in the horizontal
+
+                if(_display.VerticalFlipEnabled && !_display.HorizontalFlipEnabled) { image = FlipImage(image, 1, -1); } // 1,-1 flips in the vertical
+
+                if (_display.VerticalFlipEnabled && _display.HorizontalFlipEnabled) { image = FlipImage(image, -1, -1); } // -1,-1 flips in the horizontal and vertical
 
                 brush = new ImageBrush(image);
 
@@ -120,7 +123,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             return brush;
         }
 
-        BitmapSource ImageTransparency(BitmapSource sourceImage)
+        private BitmapSource FlipImage(BitmapSource originalImage, int scaleFactorX, int scaleFactorY)
+        {
+            // Create a TransformedBitmap to apply the flip transformation
+            TransformedBitmap flippedImage = new TransformedBitmap();
+            flippedImage.BeginInit();
+            flippedImage.Source = originalImage;
+
+            // Apply the horizontal flip transformation
+            ScaleTransform flipTransform = new ScaleTransform(scaleFactorX, scaleFactorY);
+            flippedImage.Transform = flipTransform;
+
+            flippedImage.EndInit();
+
+            return flippedImage;
+        }
+
+        private BitmapSource ImageTransparency(BitmapSource sourceImage)
         {
             if (sourceImage.Format != PixelFormats.Bgra32)
             {

@@ -24,6 +24,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
     using System.Windows.Media;
     using System.Globalization;
     using System.Windows.Media.TextFormatting;
+    using System.ComponentModel;
 
     [HeliosControl("Helios.AH64D.TEDAC", "TADS Electronic Display and Control", "AH-64D", typeof(BackgroundImageRenderer),HeliosControlFlags.NotShownInUI)]
     public class TEDAC : CompositeVisualWithBackgroundImage
@@ -423,11 +424,14 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
         }
         public override void WriteXml(XmlWriter writer)
         {
+            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
+            TypeConverter doubleConverter = TypeDescriptor.GetConverter(typeof(double));
+
             base.WriteXml(writer);
             if (_includeViewport)
             {
                 writer.WriteElementString("EmbeddedViewportName", ViewportName);
-                if(RequiresPatches) writer.WriteElementString("RequiresPatches", RequiresPatches.ToString(CultureInfo.InvariantCulture));
+                if (RequiresPatches) writer.WriteElementString("RequiresPatches", boolConverter.ConvertToInvariantString(RequiresPatches));
             }
             else
             {
@@ -435,17 +439,20 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
             }
             if (_glassReflectionOpacity > 0d)
             {
-                writer.WriteElementString("GlassReflectionOpacity", GlassReflectionOpacity.ToString(CultureInfo.InvariantCulture));
+                writer.WriteElementString("GlassReflectionOpacity", doubleConverter.ConvertToInvariantString(GlassReflectionOpacity));
             }
 
         }
         public override void ReadXml(XmlReader reader)
         {
+            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
+            TypeConverter doubleConverter = TypeDescriptor.GetConverter(typeof(double));
+
             base.ReadXml(reader);
             _includeViewport = true;
 
             ViewportName = reader.Name.Equals("EmbeddedViewportName") ? reader.ReadElementString("EmbeddedViewportName") : "";
-            RequiresPatches = reader.Name.Equals("RequiresPatches") ? bool.Parse(reader.ReadElementString("RequiresPatches")) : false;
+            RequiresPatches = reader.Name.Equals("RequiresPatches") ? (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("RequiresPatches")) : false;
             if (_vpName == "")
             {
                 _includeViewport = false;
@@ -458,7 +465,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
                     }
                 }
             }
-            GlassReflectionOpacity = reader.Name.Equals("GlassReflectionOpacity") ? double.Parse(reader.ReadElementString("GlassReflectionOpacity"), CultureInfo.InvariantCulture) : 0d;
+            GlassReflectionOpacity = reader.Name.Equals("GlassReflectionOpacity") ? (double)doubleConverter.ConvertFromInvariantString(reader.ReadElementString("GlassReflectionOpacity")) : 0d;
         }
     }
 }
