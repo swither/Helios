@@ -77,6 +77,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
                 {
                     parts[i] = Regex.Replace(parts[i], @"([EW]\s{0,2})(\d{1,3})(\d{2})(\d{3})$", "$1$2°$3.$4");
                     parts[i] = Regex.Replace(parts[i], @"([NS]\s{0,1})(\d{1,2})(\d{2})(\d{3})$", "$1$2°$3.$4");
+                    parts[i] = Regex.Replace(parts[i], @"([A-Z]{1,3}\s{1,2})(\d{3})(\d{2,3})$", "$1$2.$3");
                     parts[i] = Regex.Replace(parts[i], @"(\d{3})(\d{3})[\D]+", "$1.$2");
                     parts[i] = Regex.Replace(parts[i], @"(\d{3})(\d{3})$", "$1.$2");
                 }
