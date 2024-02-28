@@ -16,11 +16,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile Editor", "Profile Editor\Profile Editor.csproj", "{3AF089A2-9DA0-40C3-AD3A-92253F497BC8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EBC0933D-26DF-4199-AA44-D5ADBD449342} = {EBC0933D-26DF-4199-AA44-D5ADBD449342}
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611} = {FEF979FA-2BB9-4127-9192-D2DA8C99F611}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Control Center", "Control Center\Control Center.csproj", "{80D80B0F-0DC0-49E2-97C2-3CC6436FA61F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EBC0933D-26DF-4199-AA44-D5ADBD449342} = {EBC0933D-26DF-4199-AA44-D5ADBD449342}
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611} = {FEF979FA-2BB9-4127-9192-D2DA8C99F611}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phidgets", "Phidgets\Phidgets.csproj", "{06BA10F4-279C-4E82-B77C-333706A617B9}"
@@ -163,6 +165,8 @@ EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Aircraft F-15E Plugin Installer", "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin Installer.vdproj", "{A08B5B1B-85FF-4B50-8D1F-846076823550}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Aircraft F-15E Plugin 32bit Installer", "Aircraft F-15E Plugin Installers\Aircraft F-15E Plugin 32bit Installer.vdproj", "{5684FF87-DB5E-4213-BF90-B4DEF7253409}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NOR Interface Plugin", "NOR Interface Plugin\NOR Interface Plugin.csproj", "{FEF979FA-2BB9-4127-9192-D2DA8C99F611}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1118,6 +1122,30 @@ Global
 		{5684FF87-DB5E-4213-BF90-B4DEF7253409}.Release|AnyCPU.ActiveCfg = Release
 		{5684FF87-DB5E-4213-BF90-B4DEF7253409}.Release|AnyCPU32.ActiveCfg = Release
 		{5684FF87-DB5E-4213-BF90-B4DEF7253409}.Release|x64.ActiveCfg = Release
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Debug|AnyCPU32.ActiveCfg = Debug|AnyCPU32
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Debug|AnyCPU32.Build.0 = Debug|AnyCPU32
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Debug|x64.ActiveCfg = Debug|x64
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Debug|x64.Build.0 = Debug|x64
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.JustInstallers|AnyCPU.ActiveCfg = Debug|Any CPU
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.JustInstallers|AnyCPU.Build.0 = Debug|Any CPU
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.JustInstallers|AnyCPU32.ActiveCfg = Debug|AnyCPU32
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.JustInstallers|AnyCPU32.Build.0 = Debug|AnyCPU32
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.JustInstallers|x64.ActiveCfg = Debug|x64
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.JustInstallers|x64.Build.0 = Debug|x64
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.NoInstallers|AnyCPU.ActiveCfg = Debug|Any CPU
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.NoInstallers|AnyCPU.Build.0 = Debug|Any CPU
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.NoInstallers|AnyCPU32.ActiveCfg = Debug|AnyCPU32
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.NoInstallers|AnyCPU32.Build.0 = Debug|AnyCPU32
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.NoInstallers|x64.ActiveCfg = Debug|x64
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.NoInstallers|x64.Build.0 = Debug|x64
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Release|AnyCPU32.ActiveCfg = Release|AnyCPU32
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Release|AnyCPU32.Build.0 = Release|AnyCPU32
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Release|x64.ActiveCfg = Release|x64
+		{FEF979FA-2BB9-4127-9192-D2DA8C99F611}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
