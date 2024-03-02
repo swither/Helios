@@ -57,7 +57,18 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             string documentPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 RunningVersion.IsDevelopmentPrototype ? options.DevDocumentsName : options.DocumentsName);
-            HeliosInit.Initialize(documentPath, "ProfileEditor.log", options.LogLevel);
+            try
+            {
+                HeliosInit.Initialize(documentPath, "ProfileEditor.log", options.LogLevel);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error encountered in Helios initialization. Profile Editor will now exit.\nPlease file a bug report:\n{ex.Message}\n{ex}",
+                    $"Error in {ex.Source}");
+                Current.Shutdown();
+                return;
+            }
             if (options.GenerateInterfaceSchema)
             {
                 Json.InterfaceExport exporter = new Json.InterfaceExport();

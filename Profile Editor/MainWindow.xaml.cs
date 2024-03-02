@@ -121,6 +121,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         public MainWindow()
         {
+            if (!HeliosInit.HeliosInitSuccess)
+            {
+                this.Close();
+                return;
+            }
             InitializeComponent();
 
             ToolMenuItems = new ObservableCollection<MenuItemModel>();

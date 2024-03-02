@@ -103,7 +103,20 @@ namespace GadrocsWorkshop.Helios
         {
             Logger.Debug($"Helios will load user images from {Anonymizer.Anonymize(userImagePath)}");
             _documentImagePath = userImagePath;
-            _documentImageUri = new Uri(userImagePath);
+            try
+            {
+                _documentImageUri = new Uri(userImagePath);
+            } 
+            catch (UriFormatException ex)
+            {
+                Logger.Error($"Helios Image Manager encountered an error while setting a Uri for user images from \"{Anonymizer.Anonymize(userImagePath)}\".  Exception {ex}");
+                throw new ApplicationException($"Image Manager Exception while attempting to create a Uri with invalid User Image Path {Anonymizer.Anonymize(userImagePath)}. {ex.Message}");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Logger.Error($"Helios Image Manager encountered an error with the User Image Path being null. Exception {ex}");
+                throw new ApplicationException($"Image Manager Exception while attempting to create a Uri without a User Image Path. {ex.Message}");
+            }
             _xamlFirewall = new XamlFirewall();
         }
 
