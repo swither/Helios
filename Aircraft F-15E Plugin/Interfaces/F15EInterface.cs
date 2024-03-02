@@ -173,28 +173,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             AddFunction(new ScaledNetworkValue(this, "349", new CalibrationPointCollectionDouble(-1d, -90d, 1d, 90d), "Flight Instruments", "ADI Aircraft Pitch Angle", "Backup ADI angle of the aircraft in degrees", "-90 to +90", BindingValueUnits.Degrees, "%.3f"));
             AddFunction(new ScaledNetworkValue(this, "348", new CalibrationPointCollectionDouble(-1d, -180d, 1d, 180d), "Flight Instruments", "ADI Aircraft Bank Angle", "Backup ADI angle of the aircraft in degrees", "0 to +360", BindingValueUnits.Degrees, "%.3f"));
             AddFunction(new NetworkValue(this, "347", "Flight Instruments", "ADI Off Flag", "rotational position of the OFF flag","", BindingValueUnits.Numeric, "%.1f"));
-
-            CalibrationPointCollectionDouble airspeedScale = new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 1000d);
-            AddFunction(new ScaledNetworkValue(this, "345", airspeedScale, "Flight Instruments", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots, "%.3f"));
-
-            CalibrationPointCollectionDouble vviScale = new CalibrationPointCollectionDouble(-0.6d, -6000d, 0.6d, 6000d);
-            vviScale.Add(new CalibrationPointDouble(0d, 0d));
-            AddFunction(new ScaledNetworkValue(this, "362", vviScale, "Flight Instruments", "Vertical Velocity", "Vertical velocity indicator -6000 to +6000.", "", BindingValueUnits.FeetPerMinute, "%.3f"));
-            CalibrationPointCollectionDouble AoAScale = new CalibrationPointCollectionDouble(-0.05d, -5d, 0.5d, 50d) {
-                new CalibrationPointDouble(0d, 0d)
-                };
-            AddFunction(new ScaledNetworkValue(this, "346", AoAScale, "Flight Instruments", "Angle of Attack", "Current angle of attack of the aircraft.", "", BindingValueUnits.Degrees, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "345", new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 1000d), "Flight Instruments", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "362", new CalibrationPointCollectionDouble()
+                {
+                new CalibrationPointDouble(-0.6d, -6000d),
+                new CalibrationPointDouble(0.0d, 0.0d),
+                new CalibrationPointDouble(0.6d, 6000d),
+                }, "Flight Instruments", "Vertical Velocity", "Vertical velocity indicator -6000 to +6000.", "", BindingValueUnits.FeetPerMinute, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "346", new CalibrationPointCollectionDouble() {
+                new CalibrationPointDouble(-0.05d, -5d),
+                new CalibrationPointDouble(0d, 0d),
+                new CalibrationPointDouble(0.5d, 50d)
+                }, "Flight Instruments", "Angle of Attack", "Current angle of attack of the aircraft.", "", BindingValueUnits.Degrees, "%.3f"));
             //AddFunction(new FlagValue(this, "", "Flight Instruments", "AOA Flag", "Off Flag"));
             AddFunction(new Axis(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.clk_adj_knob.ToString("d"), "366", 0.1d, 0.0d, 1.0d, "Clock (Pilot)", "Clock Adjust", false, "%.1f"));
             AddFunction(new Axis(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.tmr_stop_btn.ToString("d"), "367", 0.1d, 0.0d, 1.0d, "Clock (Pilot)", "Timer Stop", false, "%.1f"));
-            CalibrationPointCollectionDouble hourScale = new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 12d);
-            CalibrationPointCollectionDouble minuteScale = new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d);
-            AddFunction(new ScaledNetworkValue(this, "365", hourScale, "Clock (Pilot)", "Clock Hours", "Current hours value of the clock", "0-12", BindingValueUnits.Hours, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "364", minuteScale, "Clock (Pilot)", "Clock Minutes", "Current minutes value of the clock", "0-60", BindingValueUnits.Minutes, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "363", minuteScale, "Clock (Pilot)", "Clock Seconds", "Current seconds value of the clock", "0-60", BindingValueUnits.Seconds, "%.2f"));
-            CalibrationPointCollectionDouble cabinPressureScale = new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 50000d);
-            AddFunction(new ScaledNetworkValue(this, "361", cabinPressureScale, "Flight Instruments", "Cabin Pressure", "Current cabin pressure in feet", "0 - 50,000", BindingValueUnits.Feet, "%.3f"));
-
+            AddFunction(new ScaledNetworkValue(this, "365", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 12d), "Clock (Pilot)", "Clock Hours", "Current hours value of the clock", "0-12", BindingValueUnits.Hours, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "364", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d), "Clock (Pilot)", "Clock Minutes", "Current minutes value of the clock", "0-60", BindingValueUnits.Minutes, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "363", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d), "Clock (Pilot)", "Clock Seconds", "Current seconds value of the clock", "0-60", BindingValueUnits.Seconds, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "361", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 50000d), "Flight Instruments", "Cabin Pressure", "Current cabin pressure in feet", "0 - 50,000", BindingValueUnits.Feet, "%.3f"));
             AddFunction(new ScaledNetworkValue(this, "753", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 360d), "Flight Instruments", "Magnetic Compass Heading", "Compass heading in degrees", "0 to +360", BindingValueUnits.Degrees, "%.3f"));
             AddFunction(new ScaledNetworkValue(this, "755", new CalibrationPointCollectionDouble(-1d, -180d, 1d, 180d), "Flight Instruments", "Magnetic Compass Roll", "Compassrose roll", "-180 to +180", BindingValueUnits.Degrees, "%.3f"));
             AddFunction(new ScaledNetworkValue(this, "754", new CalibrationPointCollectionDouble(-1d, -90d, 1d, 90d), "Flight Instruments", "Magnetic Compass Pitch", "Compassrose pitch", "-90 to +90", BindingValueUnits.Degrees, "%.3f"));
@@ -556,12 +553,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             AddFunction(new Axis(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.rc_clk_adj_knob.ToString("d"), "1382", 0.1d, 0.0d, 1.0d, "Clock (WSO)", "Clock Adjust", false, "%.1f"));
             AddFunction(new Axis(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.rc_tmr_stop_btn.ToString("d"), "1383", 0.1d, 0.0d, 1.0d, "Clock (WSO)", "Timer Stop", false, "%.1f"));
 
-            AddFunction(new ScaledNetworkValue(this, "1381", hourScale, "Clock (WSO)", "Clock Hours", "Current hours value of the clock", "0-12", BindingValueUnits.Hours, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "1380", minuteScale, "Clock (WSO)", "Clock Minutes", "Current minutes value of the clock", "0-60", BindingValueUnits.Minutes, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "1379", minuteScale, "Clock (WSO)", "Clock Seconds", "Current seconds value of the clock", "0-60", BindingValueUnits.Seconds, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "1349", cabinPressureScale, "Flight Instruments (WSO)", "Cabin Pressure", "Current cabin pressure in feet", "0 - 50,000", BindingValueUnits.Feet, "%.3f"));
-            AddFunction(new ScaledNetworkValue(this, "1350", airspeedScale, "Flight Instruments (WSO)", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots, "%.3f"));
-            AddFunction(new ScaledNetworkValue(this, "1365", vviScale, "Flight Instruments (WSO)", "Vertical Velocity", "Vertical velocity indicator -6000 to +6000.", "", BindingValueUnits.FeetPerMinute, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "1381", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 12d), "Clock (WSO)", "Clock Hours", "Current hours value of the clock", "0-12", BindingValueUnits.Hours, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "1380", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d), "Clock (WSO)", "Clock Minutes", "Current minutes value of the clock", "0-60", BindingValueUnits.Minutes, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "1379", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d), "Clock (WSO)", "Clock Seconds", "Current seconds value of the clock", "0-60", BindingValueUnits.Seconds, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "1349", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 50000d), "Flight Instruments (WSO)", "Cabin Pressure", "Current cabin pressure in feet", "0 - 50,000", BindingValueUnits.Feet, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "1350", new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 1000d), "Flight Instruments (WSO)", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "1365", new CalibrationPointCollectionDouble()
+                {
+                new CalibrationPointDouble(-0.6d, -6000d),
+                new CalibrationPointDouble(0.0d, 0.0d),
+                new CalibrationPointDouble(0.6d, 6000d),
+                }, "Flight Instruments (WSO)", "Vertical Velocity", "Vertical velocity indicator -6000 to +6000.", "", BindingValueUnits.FeetPerMinute, "%.3f"));
             AddFunction(new Functions.Altimeter(this, "Flight Instruments (WSO)", Cockpit.WSO));
             AddFunction(new RotaryEncoder(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.rc_alt_adj_knob.ToString("d"), "1364", 0.1d, "Flight Instruments (WSO)", "Altitude adjust"));
 
