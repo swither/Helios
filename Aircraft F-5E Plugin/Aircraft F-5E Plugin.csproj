@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3eff9cb2-bf47-4491-86f4-4553b03c897e}</ProjectGuid>
+    <ProjectGuid>{3EFF9CB2-BF47-4491-86F4-4553B03C897E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GadrocsWorkshop.Helios</RootNamespace>
@@ -64,11 +64,26 @@
     <Resource Include="Interfaces/ExportFunctions.lua" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gauges\Instruments\VVIGauge.cs" />
     <Compile Include="Properties/AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Images\" />
+    <Folder Include="Templates\Base\F-5E\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\Instruments\VVI.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\Instruments\VVI_Needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
   </ItemGroup>
   <Import Project="../HeliosPlugin.targets" />
 </Project>
