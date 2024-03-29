@@ -76,11 +76,11 @@
     <Folder Include="Templates\Base\F-5E\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Gauges\Instruments\VVI.xaml">
+    <Resource Include="Gauges\Instruments\VVI-Faceplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Resource Include="Gauges\Instruments\VVI_Needle.xaml">
+    <Resource Include="Gauges\Instruments\VVI-Needle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>

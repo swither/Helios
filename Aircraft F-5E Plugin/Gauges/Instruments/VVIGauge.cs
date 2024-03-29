@@ -19,7 +19,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F5E.Instruments.VVI
     using System;
     using System.Windows;
 
-    [HeliosControl("Helios.F5E.Instruments.VVI", "Vertical Velocity Indicator", "F-5E Tiger II", typeof(GaugeRenderer), HeliosControlFlags.None)]
+    [HeliosControl("Helios.F5E.Instruments.VVI", "Vertical Velocity Indicator", "F-5E Tiger II", typeof(GaugeRenderer), HeliosControlFlags.NotShownInUI)]
     public class VVIGauge : BaseGauge
     {
         private HeliosValue _verticalVelocity;
@@ -28,9 +28,10 @@ namespace GadrocsWorkshop.Helios.Gauges.F5E.Instruments.VVI
 
         public VVIGauge(): base("Vertical Velocity Indicator", new Size(300d,300d))
         {
-            double scalingFactor = 300d / 370d;
-            Components.Add(new GaugeImage("{F-5E}/Gauges/Instruments/VVI.xaml", new Rect(0d, 0d, 300d, 300d)));
-            _needle = new GaugeNeedle("{F-5E}/Gauges/Instruments/VVI_Needle.xaml", new Point(150d, 150d), new Size(30d * scalingFactor, 189 * scalingFactor), new Point(15 * scalingFactor, 128 * scalingFactor), -90d);
+            double scalingFactor = this.Height / NativeSize.Height;
+            scalingFactor = 1d;
+            Components.Add(new GaugeImage("{F-5E}/Gauges/Instruments/VVI-Faceplate.xaml", new Rect(0d, 0d, this.Height, this.Width)));
+            _needle = new GaugeNeedle("{F-5E}/Gauges/Instruments/VVI-Needle.xaml", new Point(this.Height/2, this.Width/2), new Size(31.159d * scalingFactor, 190 * scalingFactor), new Point(16.080 * scalingFactor, 128.658 * scalingFactor), -90d);
             Components.Add(_needle);
             _verticalVelocity = new HeliosValue(this, new BindingValue(0d), $"Instruments_Vertical Velocity Indicator", "Vertical Velocity Indicator", "Veritcal velocity of the aircraft", "(-6,000 to 6,000)", BindingValueUnits.FeetPerMinute);
             _verticalVelocity.Execute += new HeliosActionHandler(VerticalVelocity_Execute);
