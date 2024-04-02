@@ -543,7 +543,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new PushButton(this, CDU, BUTTON_58, "470", "CDU", "CLR"));
             AddFunction(new PushButton(this, CDU, BUTTON_59, "471", "CDU", "FA"));
 
-            AddFunction(new Rocker(this, CDU, BUTTON_60, BUTTON_61, BUTTON_60, BUTTON_61, "424", "CDU", "Brightness", false));
+            AddFunction(new Switch(this, CDU, "424", new SwitchPosition[] { new SwitchPosition("1.0", "Right", BUTTON_61, BUTTON_61, "0.0", "0.0"), new SwitchPosition("0.0", "Middle", null), new SwitchPosition("-1.0", "Left", BUTTON_60, BUTTON_60, "0.0", "0.0") }, "CDU", "Brightness", "%0.1f"));
             AddFunction(new Rocker(this, CDU, BUTTON_62, BUTTON_63, BUTTON_62, BUTTON_63, "463", "CDU", "Page", true));
             AddFunction(new Rocker(this, CDU, BUTTON_64, BUTTON_65, BUTTON_64, BUTTON_65, "469", "CDU", "Blank", false));
             AddFunction(new Rocker(this, CDU, BUTTON_66, BUTTON_67, BUTTON_66, BUTTON_67, "472", "CDU", "+/-", true));
