@@ -43,12 +43,12 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
             AddPart("Master Arm Device", new MasterArmPanel(), new Point(164, 304), new Size(138, 617), _interfaceDeviceName, "Master Arm Element");
             AddPart("ODU Device", new ODU_1(), new Point(351 , 42), new Size(546 , 313), _interfaceDeviceName, "ODU Element");
             AddPart("MFD Left Device", new Left_MPCD_1(), new Point(301 , 347), new Size(560 , 692), _interfaceDeviceName, "MFD Left Element");
-            AddPart("MFD Right Device", new Right_MPCD_1(), new Point(1707 , 347), new Size(560 , 692), _interfaceDeviceName, "MFD Right Element");
             AddPart("EDP Device", new EDP(), new Point(1769, 85), new Size(405, 233), _interfaceDeviceName, "EDP Element");
             AddPart("Landing Gear Indicators", new GearIndicatorPanel(), new Point(859, 759), new Size(135, 225), _interfaceDeviceName, "Gear Indicator Element");
             AddButton("Landing Gear Indicators", 859, 759, new Size(135, 225), _interfaceDeviceName, "Gear Indicator Button");  // this is to allow pressing the indicator panel to activate something
             AddPart("UFC Device", new UFC_1(), new Point(856 , 20), new Size(872 , 876), _interfaceDeviceName, "UFC Element");
-            AddPart("Flight Instrument Device", new FlightInstrumentPanel(), new Point(998 , 858), new Size(774 , 556), _interfaceDeviceName, "Flight Instrument Panel");
+            AddPart("Flight Instrument Device", new FlightInstrumentPanel(), new Point(998, 858), new Size(774, 556), _interfaceDeviceName, "Flight Instrument Panel");
+            AddPart("MFD Right Device", new Right_MPCD_1(), new Point(1707, 347), new Size(560, 692), _interfaceDeviceName, "MFD Right Element");
             AddPart("Slip Turn Indicator", new SlipTurnPanel(), new Point(765, 1321), new Size(225, 114), _interfaceDeviceName, "Slip Ball");
             AddPart("SMC Device", new SMC_1(), new Point(275 , 1047), new Size(708 , 271), _interfaceDeviceName, "SMC Element");
             AddPart("FQIS Device", new FuelPanel.FQIS(), new Point(1774 , 1043), new Size(484 , 191), _interfaceDeviceName, "FQIS Element");
