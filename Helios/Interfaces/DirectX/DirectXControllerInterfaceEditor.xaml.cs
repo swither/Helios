@@ -16,6 +16,7 @@
 namespace GadrocsWorkshop.Helios.Interfaces.DirectX
 {
     using GadrocsWorkshop.Helios.Windows.Controls;
+    using SharpDX;
     using SharpDX.DirectInput;
     using System;
     using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
     using System.Windows.Controls;
     using System.Windows.Media;
     using System.Windows.Threading;
+    using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
     /// <summary>
     /// Interaction logic for DirectXControllerInterfaceEditor.xaml
@@ -34,6 +36,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
         private Dictionary<DirectXControllerPOVHat, PointOfViewIndicator> _povs = new Dictionary<DirectXControllerPOVHat, PointOfViewIndicator>();
 
         private DispatcherTimer _timer = new DispatcherTimer();
+
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
 
         public DirectXControllerInterfaceEditor()
         {
@@ -50,20 +55,39 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
 
             if (dxInterface != null && dxInterface.IsValid)
             {
-                JoystickState state = dxInterface.GetState();
-                foreach (KeyValuePair<DirectXControllerButton, ButtonIndicator> pair in _buttons)
+                try
                 {
-                    pair.Value.IsPushed = pair.Key.GetValue(state);
-                }
+                    JoystickState state = dxInterface.GetState();
+                    foreach (KeyValuePair<DirectXControllerButton, ButtonIndicator> pair in _buttons)
+                    {
+                        pair.Value.IsPushed = pair.Key.GetValue(state);
+                    }
 
-                foreach (KeyValuePair<DirectXControllerAxis, AxisBar> pair in _axis)
-                {
-                    pair.Value.Value = pair.Key.GetValue(state);
-                }
+                    foreach (KeyValuePair<DirectXControllerAxis, AxisBar> pair in _axis)
+                    {
+                        pair.Value.Value = pair.Key.GetValue(state);
+                    }
 
-                foreach (KeyValuePair<DirectXControllerPOVHat, PointOfViewIndicator> pair in _povs)
+                    foreach (KeyValuePair<DirectXControllerPOVHat, PointOfViewIndicator> pair in _povs)
+                    {
+                        pair.Value.Direction = pair.Key.GetValue(state);
+                    }
+                } catch (Exception ex)
                 {
-                    pair.Value.Direction = pair.Key.GetValue(state);
+                    if (ex is SharpDXException)
+                    {
+                        SharpDXException sharpDXEx = (SharpDXException)ex;
+                        Logger.Warn($"Unable to obtain device status for \"{dxInterface.Name}\" due to {sharpDXEx.Descriptor.ApiCode}.  {sharpDXEx.Message}.  Check the correct functioning of the device.");
+                    } else
+                    {
+                        Logger.Warn($"Unable to obtain device status for \"{dxInterface.Name}\".  {ex.Message}.  Check the correct functioning of the device.");
+                    }
+                    _timer.Stop();
+                    AxisGroup.Visibility = Visibility.Collapsed;
+                    ButtonGroup.Visibility = Visibility.Collapsed;
+                    POVGroup.Visibility = Visibility.Collapsed;
+                    MessageText.Text = $"Unable to obtain device status for \"{dxInterface.Name}\" due to {ex.Message}Action:  Delete this interface and check the correct functioning of the device.";
+                    MessageGroup.Visibility = Visibility.Visible;
                 }
             }
         }
@@ -171,29 +195,29 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
 
                 if (_axis.Count > 0)
                 {
-                    AxisGroup.Visibility = System.Windows.Visibility.Visible;
+                    AxisGroup.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    AxisGroup.Visibility = System.Windows.Visibility.Collapsed;
+                    AxisGroup.Visibility = Visibility.Collapsed;
                 }
 
                 if (_buttons.Count > 0)
                 {
-                    ButtonGroup.Visibility = System.Windows.Visibility.Visible;
+                    ButtonGroup.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    ButtonGroup.Visibility = System.Windows.Visibility.Collapsed;
+                    ButtonGroup.Visibility = Visibility.Collapsed;
                 }
 
                 if (_povs.Count > 0)
                 {
-                    POVGroup.Visibility = System.Windows.Visibility.Visible;
+                    POVGroup.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    POVGroup.Visibility = System.Windows.Visibility.Collapsed;
+                    POVGroup.Visibility = Visibility.Collapsed;
                 }
             }
         }

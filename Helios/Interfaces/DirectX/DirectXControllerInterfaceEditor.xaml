@@ -20,5 +20,8 @@
         <GroupBox Name="POVGroup" Header="POVs" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="0,4,0,0">
             <WrapPanel Name="POVPanel" Orientation="Horizontal" />
         </GroupBox>
+        <GroupBox Name="MessageGroup" Header="Messages" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="0,4,0,0" Visibility="Collapsed">
+            <HeliosSdk:HeliosTextBox x:Name="MessageText" HorizontalAlignment="Left" TextWrapping="Wrap" Text=""/>
+        </GroupBox>
     </StackPanel>
 </HeliosSdk:HeliosInterfaceEditor>
