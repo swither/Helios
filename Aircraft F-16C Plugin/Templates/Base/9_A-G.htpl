@@ -1,0 +1,14 @@
+﻿<ControlTemplate>
+	<Name>A-G</Name>
+	<Category>F-16</Category>
+	<TypeIdentifier>Helios.Base.PushButton</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>101,43.04</Location>
+			<Size>50,50</Size>
+			<Type>Momentary</Type>
+			<Image>{F-16C}/Images/a-g.png</Image>
+			<PushedImage>{F-16C}/Images/a-g-press.png</PushedImage>
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

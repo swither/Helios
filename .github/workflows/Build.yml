@@ -115,9 +115,8 @@ jobs:
         continue-on-error: true
         run: |
           tar -a -c -f "./Assets/Helios_Installers.zip" -C "Helios Installer\Release" *.msi -C "../../Keypress Receiver Installer/Release" *.msi -C "../../Tools Installer/Release" *.msi
-          tar -a -c -f "./Assets/Helios32Bit_Installers.zip" -C "Helios Installer/Release32" *.msi -C "../../Aircraft F-15E Plugin Installers/Release32" *.msi
+          tar -a -c -f "./Assets/Helios32Bit_Installers.zip" -C "Helios Installer/Release32" *.msi
           tar -a -c -f "./Assets/Helios_StreamDeck_Alpha.zip" -C "bin/x64/Release" Plugins/OpenMacroBoard.SDK.dll Plugins/OpenMacroBoard.VirtualBoard.dll Plugins/StreamDeckSharp.dll Plugins/HeliosMacroBoard.dll
-          tar -a -c -f "./Assets/Helios_F-15E_Plugin.zip" -C "Aircraft F-15E Plugin Installers/Release" *.msi
           
       - uses: actions/cache@v3
         id: cache
