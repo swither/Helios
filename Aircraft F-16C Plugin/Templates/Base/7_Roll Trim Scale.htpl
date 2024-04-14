@@ -1,0 +1,12 @@
+﻿<ControlTemplate>
+	<Name>Roll Trim Scale</Name>
+	<Category>F-16</Category>
+	<TypeIdentifier>Helios.F16.RollTrim</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>200,0</Location>
+			<Size>100,200</Size>
+			<Hidden>False</Hidden>
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

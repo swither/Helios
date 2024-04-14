@@ -1,0 +1,12 @@
+﻿<ControlTemplate>
+	<Name>FTIT Gauge</Name>
+	<Category>F-16</Category>
+	<TypeIdentifier>Helios.F16.FTIT</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>300,300</Size>
+			<Hidden>False</Hidden>
+		</TemplateValues>
+	</Template>
+</ControlTemplate>
