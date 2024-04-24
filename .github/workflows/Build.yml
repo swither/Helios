@@ -99,7 +99,7 @@ jobs:
           tar -a -c -f "BuildLogs.zip" -C "." *.binlog
 
       - name: Upload Build Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build Logs
           path: "./BuildLogs.zip"
@@ -126,7 +126,7 @@ jobs:
           enableCrossOsArchive: true         
     
       - name: Upload Helios_Installers
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Helios Installers for ${{ env.NewTag }}
           path: "./Assets/H*.zip"

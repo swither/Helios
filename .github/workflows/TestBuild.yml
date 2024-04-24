@@ -63,7 +63,7 @@ jobs:
           tar -a -c -f "BuildLogs.zip" -C "." *.binlog
 
       - name: Upload Build Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build Logs
           path: "./BuildLogs.zip"
@@ -83,7 +83,7 @@ jobs:
           tar -a -c -f "./Assets/HeliosDev_StreamDeck_Alpha.zip" -C "bin/x64/Release" Plugins/OpenMacroBoard.SDK.dll Plugins/OpenMacroBoard.VirtualBoard.dll Plugins/StreamDeckSharp.dll Plugins/HeliosMacroBoard.dll
     
       - name: Upload Helios_Installers
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: HeliosDev_Installers
           path: "./Assets/H*.zip"
