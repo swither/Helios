@@ -58,9 +58,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Docs/Helios.F-5E.Plugin.Install.Read.Me.rtf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Interfaces/ExportFunctions.lua" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="Docs\Helios.F-5E.Plugin.Install.Read.Me.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
