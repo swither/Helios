@@ -24,7 +24,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F16C.Functions
 
     public class FuelFlow : DCSFunction
     {
+/// TODO: Use this in an interface
+#pragma warning disable CS0649
         private static ExportDataElement[] DataElementsTemplate;
+#pragma warning restore CS0649
 
         private HeliosValue _fuel;
 
