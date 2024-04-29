@@ -56,8 +56,11 @@ jobs:
           fi
 
           # Calculate the name of the new tag by incrementing the Build section of the release (4th number).
-          echo "New Tag: ${currentTag:0:8}.$(($(cut -d\- -f1 <<<${currentTag:9})+1))"
-          echo "NewTag=${currentTag:0:8}.$(($(cut -d\- -f1 <<<${currentTag:9})+1))" >> $GITHUB_ENV
+          echo "New Tag: ${latestTag:0:8}.$(($(cut -d\- -f1 <<<${latestTag:9})+1))"
+          echo "NewTag=${latestTag:0:8}.$(($(cut -d\- -f1 <<<${latestTag:9})+1))" >> $GITHUB_ENV
+          # echo "New Tag: ${currentTag:0:8}.$(($(cut -d\- -f1 <<<${currentTag:9})+1))"
+          # echo "NewTag=${currentTag:0:8}.$(($(cut -d\- -f1 <<<${currentTag:9})+1))" >> $GITHUB_ENV
+
           # Find the previous release's most recent Tag, by decrementing the last 3 digits of the current branch name
           # this requires that the branch names are sequential, and don't miss a release.
           echo "${currentBranch:2}"
