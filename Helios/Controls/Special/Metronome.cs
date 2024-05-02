@@ -17,6 +17,7 @@
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Controls.Capabilities;
 using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Net.Cache;
 using System.Windows;
@@ -35,9 +36,10 @@ namespace GadrocsWorkshop.Helios.Controls.Special
     [HeliosControl("Helios.Special.Metronome", "Metronome", "Special Controls",typeof(ImageDecorationRenderer))]
     public class Metronome : ImageDecorationBase, IWindowsPreviewInput
     {
-        private bool _tickEnabled = true;
+        private bool _metronomeEnabled = true;
         private DispatcherTimer _tick;
         private HeliosValue _tickIntervalDefaultValue;
+        private HeliosValue _metronomeEnabledValue;
         private HeliosTrigger _tickTrigger;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -48,6 +50,11 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             Alignment = ImageAlignment.Stretched;
             Width = 128;
             Height = 128;
+
+            _metronomeEnabledValue = new HeliosValue(this, new BindingValue(false), "Metronome", "Enable", "Indicates whether the metronome should run.", "True if the metronome is enabled.", BindingValueUnits.Boolean);
+            _metronomeEnabledValue.Execute += SetTimerEnabledAction_Execute;
+            Values.Add(_metronomeEnabledValue);
+            Actions.Add(_metronomeEnabledValue);
 
             _tickIntervalDefaultValue = new HeliosValue(this, new BindingValue(false), "Metronome", "Default Interval", "Default time for each tick.", "Positive numeric value in seconds.", BindingValueUnits.Numeric);
             _tickIntervalDefaultValue.Execute += SetTimerDefaultIntervalAction_Execute;
@@ -91,6 +98,20 @@ namespace GadrocsWorkshop.Helios.Controls.Special
                 OnPropertyChanged("TickInterval", oldValue, value, true);
             }
         }
+        public bool MetronomeEnabled
+        {
+            get => _metronomeEnabled;
+            set
+            {
+                if (!_metronomeEnabled.Equals(value))
+                {
+                    _metronomeEnabled = value;
+                    OnPropertyChanged("MetronomeEnabled", value, !value, true);
+                    OnDisplayUpdate();
+                }
+            }
+        }
+
         #endregion
 
         protected override void OnProfileChanged(HeliosProfile oldProfile)
@@ -108,6 +129,30 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             }
         }
 
+        private void Profile_ProfileStarted(object sender, EventArgs e)
+        {
+            if (ConfigManager.Application.ShowDesignTimeControls)
+            {
+                // don't use this in Profile Editor or other design time tools
+                return;
+            }
+
+            if (!_metronomeEnabled)
+            {
+                // timer functionality not enabled
+                return;
+            }
+            if(_tick is null)
+            {
+                _tick = new DispatcherTimer(IntervalTimespan, DispatcherPriority.Input, TimerTick, Dispatcher.CurrentDispatcher);
+
+            } else
+            {
+                _tick.Tick += TimerTick;
+            }
+            _tick.IsEnabled = _metronomeEnabled;
+            _tick.Start();
+        }
         private void Profile_ProfileStopped(object sender, EventArgs e)
         {
             if (ConfigManager.Application.ShowDesignTimeControls)
@@ -124,36 +169,10 @@ namespace GadrocsWorkshop.Helios.Controls.Special
 
             // shut down
             _tick.Stop();
-
             // unregister to reduce circularity
             _tick.Tick -= TimerTick;
         }
 
-        private void Profile_ProfileStarted(object sender, EventArgs e)
-        {
-            if (ConfigManager.Application.ShowDesignTimeControls)
-            {
-                // don't use this in Profile Editor or other design time tools
-                return;
-            }
-
-            if (!_tickEnabled)
-            {
-                // timer functionality not enabled
-                return;
-            }
-
-            // fixes auto close not working after a stop and start of the profile
-            if (_tick != null)
-            {
-                _tick.Tick += TimerTick;
-                _tick.IsEnabled = _tickEnabled;
-            }
-            else
-            {
-                _tick = new DispatcherTimer(IntervalTimespan, DispatcherPriority.Input, TimerTick, Dispatcher.CurrentDispatcher);
-            }
-        }
 
         private TimeSpan IntervalTimespan => TimeSpan.FromSeconds(Math.Max(_tickInterval, MINIMUM_TIME_OUT));
 
@@ -161,19 +180,6 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             TickInterval = _configuredTickInterval;
             _tickTrigger.FireTrigger(new BindingValue(true));
-        }
-
-        public override void WriteXml(XmlWriter writer)
-        {
-            base.WriteXml(writer);
-            writer.WriteElementString("TickInterval", _tickInterval.ToString(CultureInfo.InvariantCulture));
-        }
-
-        public override void ReadXml(XmlReader reader)
-        {
-            base.ReadXml(reader);
-            _tickInterval = double.Parse(reader.ReadElementString("TickInterval"), CultureInfo.InvariantCulture);
-            _configuredTickInterval = _tickInterval;
         }
 
         private void RestartTimer()
@@ -198,21 +204,51 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             TickInterval = Math.Abs(e.Value.DoubleValue);
             _configuredTickInterval = TickInterval;
-            Logger.Debug($"Metronome: {this.Name} Set Default Metronome Interval Action: {TickInterval} Enabled: {_tickEnabled} {(_tick == null ? "No Timer" : "Timer")}");
+            Logger.Debug($"Metronome: {this.Name} Set Default Metronome Interval Action: {TickInterval} Enabled: {_metronomeEnabled} {(_tick == null ? "No Timer" : "Timer")}");
 
             if (_tick != null) _tick.Interval = IntervalTimespan;
-            if (_tickEnabled)
+            if (_metronomeEnabled)
             {
                 RestartTimer();
             }
         }
 
+        /// <summary>
+        /// Set Timer Enabled action on control
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="e"></param>
+        private void SetTimerEnabledAction_Execute(object action, HeliosActionEventArgs e)
+        {
+            _metronomeEnabled = e.Value.BoolValue;
+            Logger.Debug($"Metronome: {this.Name} Set Metronome Enabled Action: {_metronomeEnabled} {(_tick == null ? "No Metronome" : "Metronome")}");
+            if (_tick == null)
+            {
+                _tick = new DispatcherTimer(IntervalTimespan, DispatcherPriority.Input, TimerTick, Dispatcher.CurrentDispatcher);
+                _tick.IsEnabled = _metronomeEnabled;
+            }
+
+            if (_metronomeEnabled)
+            {
+                RestartTimer();
+                _tick.Tick += TimerTick;
+                _tick.IsEnabled = _metronomeEnabled;
+            }
+            else
+            {
+                _tick?.Stop();
+                if (_tick != null)
+                {
+                    _tick.Tick -= TimerTick;
+                }
+            }
+        }
+
         #endregion
-
-
+        #region overrides
         public void PreviewMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            if (_tickEnabled) RestartTimer();
+            if (_metronomeEnabled) RestartTimer();
         }
 
         public void PreviewMouseUp(object sender, MouseButtonEventArgs mouseButtonEventArgs)
@@ -222,12 +258,31 @@ namespace GadrocsWorkshop.Helios.Controls.Special
 
         public void PreviewTouchDown(object sender, TouchEventArgs touchEventArgs)
         {
-            if (_tickEnabled) RestartTimer();
+            if (_metronomeEnabled) RestartTimer();
         }
 
         public void PreviewTouchUp(object sender, TouchEventArgs touchEventArgs)
         {
             // no code
         }
+        public override void WriteXml(XmlWriter writer)
+        {
+            base.WriteXml(writer);
+            if (!_metronomeEnabled)
+            {
+                writer.WriteElementString("MetronomeEnabled", _metronomeEnabled.ToString(CultureInfo.InvariantCulture));
+            }
+            writer.WriteElementString("TickInterval", _tickInterval.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
+            base.ReadXml(reader); 
+            MetronomeEnabled = reader.Name.Equals("MetronomeEnabled") ? (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("MetronomeEnabled")) : true;
+            _tickInterval = double.Parse(reader.ReadElementString("TickInterval"), CultureInfo.InvariantCulture);
+            _configuredTickInterval = _tickInterval;
+        }
+        #endregion
     }
 }

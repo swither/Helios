@@ -40,8 +40,9 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
         <Label
             Grid.Row="0"
             Grid.Column="0"
@@ -61,5 +62,23 @@
             <!--Style="{StaticResource TextboxStyle}"-->
             <HeliosSdk:HeliosTextBox.ToolTip>Value in seconds between each tick</HeliosSdk:HeliosTextBox.ToolTip>
         </HeliosSdk:HeliosTextBox>
+		<Label
+	        Grid.Row="1"
+	        Grid.Column="0"
+	        HorizontalAlignment="Right"
+	        VerticalAlignment="Center"
+	        Content="Metronome Enabled"
+	        FontSize="10">
+			<Label.ToolTip>Enable / Disable The Metronome</Label.ToolTip>
+		</Label>
+		<CheckBox
+            x:Name="checkBox"
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Content=""
+            IsChecked="{Binding Control.MetronomeEnabled}" />
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>
