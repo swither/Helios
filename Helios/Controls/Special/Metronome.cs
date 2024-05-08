@@ -41,6 +41,8 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         private HeliosValue _tickIntervalDefaultValue;
         private HeliosValue _metronomeEnabledValue;
         private HeliosTrigger _tickTrigger;
+        private HeliosTrigger _tickTockTrigger;
+        private bool _tickTock = false;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public Metronome() : base("Metronome")
@@ -61,6 +63,8 @@ namespace GadrocsWorkshop.Helios.Controls.Special
             Values.Add(_tickIntervalDefaultValue);
             _tickTrigger = new HeliosTrigger(this, "", "", "Metronome Tick", "Fired when the time period interval expires.", "Always returns true.", BindingValueUnits.Boolean);
             Triggers.Add(_tickTrigger);
+            _tickTockTrigger = new HeliosTrigger(this, "", "", "Metronome Tick Tock", "Fired when the time period interval expires.", "Returns alternating true and false.", BindingValueUnits.Boolean);
+            Triggers.Add(_tickTockTrigger);
         }
         #region Properties
 
@@ -180,6 +184,8 @@ namespace GadrocsWorkshop.Helios.Controls.Special
         {
             TickInterval = _configuredTickInterval;
             _tickTrigger.FireTrigger(new BindingValue(true));
+            _tickTock = !_tickTock;
+            _tickTockTrigger.FireTrigger(new BindingValue(_tickTock));
         }
 
         private void RestartTimer()
