@@ -383,8 +383,23 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 }
                 visual.Top += offset.Y;
 
-                visual.Width = Math.Max(visual.Width * lScaleX, 1d);
-                visual.Height = Math.Max(visual.Height * lScaleY, 1d);
+                if (!visual.KeepAspectRatio)
+                {
+                    visual.Width = Math.Max(visual.Width * lScaleX, 1d);
+                    visual.Height = Math.Max(visual.Height * lScaleY, 1d);
+                } else
+                {
+                    /// Aspect ratio is locked, so we allow the Visual to calculate the new size
+                    /// using the dimension which has changed the most.
+                    if(Math.Abs(lScaleX-1) > Math.Abs(lScaleY-1))
+                    {
+                        visual.Width = Math.Max(visual.Width * lScaleX, 1d);
+                    }
+                    else
+                    {
+                        visual.Height = Math.Max(visual.Height * lScaleY, 1d);
+                    }
+                }
 
                 if (forceProportions)
                 {
