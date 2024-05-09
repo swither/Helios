@@ -26,23 +26,11 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
     [HeliosControl("Helios.F15E.UFC.PILOT", "Up Front Controller (Pilot)", "F-15E Strike Eagle", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     public class UFC_Pilot : UFC
     {
-        private string _interfaceDevice = "";
-        private HeliosPanel _frameBezelPanel;
         private const string Panel_Image = "UFC_Panel_";
-        private const string ImageLocation = "{F-15E}/Images/UFC/";
-        private string _backgroundImage;
 
         public UFC_Pilot()
             : base("UFC Panel (Pilot)", Cockpit.Pilot)
         {
-            if (this.BackgroundImage == null)
-            {
-                _backgroundImage = $"{ImageLocation}{Panel_Image}Lower.png";
-                _frameBezelPanel = AddPanel("UFC Frame Pilot", new Point(Left, NativeSize.Height - 161), new Size(NativeSize.Width, 161), _backgroundImage, _interfaceDevice);
-                _frameBezelPanel.Opacity = 1d;
-                _frameBezelPanel.FillBackground = false;
-                _frameBezelPanel.DrawBorder = false;
-            }
             InterfaceDevice = "HUD Control Panel";
             AddThreeWayToggle("HUD Symbology Reject Mode", 187, 695, new Size(37, 86), "HUD Symbology Reject Mode");
             AddThreeWayToggle("HUD DAY/AUTO/NIGHT Mode Selector", 304, 695, new Size(37, 86), "HUD DAY/AUTO/NIGHT Mode Selector");
@@ -55,16 +43,6 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
             for (int i = 180; i <= 405; i += 75)
             {
                 AddIndicatorPushButton($"{MasterModes[j]} Master Mode Selector", new Point(i+15, 793), new Size(47,30), MasterModes[j], "HUD Control Panel", $"{MasterModes[j]} Master Mode Selector",$"{MasterModes[j++]} Master Mode Indicator");
-            }
-        }
-        public override string DefaultBackgroundImage => _backgroundImage;
-
-        protected override void OnBackgroundImageChange()
-        {
-            base.OnBackgroundImageChange();
-            if(_frameBezelPanel != null && string.IsNullOrWhiteSpace(BackgroundImage))
-            {
-                _frameBezelPanel.BackgroundImage = BackgroundImageIsCustomized ? null : DefaultBackgroundImage;
             }
         }
     }

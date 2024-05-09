@@ -387,6 +387,7 @@
     <Content Include="Docs\Helios.F-15E.Plugin.Install.Read.Me.rtf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\UFC\UFC_Panel_Full.png" />
     <Content Include="Templates\Base\F-15E\W Keyboard Panel %28WSO%29.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

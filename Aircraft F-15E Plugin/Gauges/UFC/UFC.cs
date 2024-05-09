@@ -32,13 +32,11 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
         private Rect _scaledScreenRect = SCREEN_RECT;
         private string _interfaceDevice = "";
         private HeliosPanel _framePanel;
-        private HeliosPanel _framePanelOdu;
-        private HeliosPanel _framePanelKu;
         private const string Panel_Image = "UFC_Panel_";
-        private const string ImageLocation = "{F-15E}/Images/UFC/";
+        private const string _imageLocation = "{F-15E}/Images/UFC/";
         private const double _oduFontSize = 25;
         private UFCType _ufcType;
-        private string _backgroundImage;
+        private string _defaultBackgroundImage;
 
         public UFC(string interfaceDevice, Cockpit cockpit) : this(interfaceDevice, cockpit, UFCType.Full, cockpit == Cockpit.Pilot ? new Size(654, 827) : new Size(654, 827 - 161)) { }
         public UFC(string interfaceDevice, Cockpit cockpit, UFCType ufcType, Size size)
@@ -48,23 +46,14 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
             SupportedInterfaces = new[] { typeof(Interfaces.DCS.F15E.F15EInterface) };
             _interfaceDevice = interfaceDevice;
             string[] labels = { "GREC_L","A1","N2","B3","GREC_R","Mark","W4","M5","E6","IP","Decimal","7","S8","C9","Shift","AP","Clr","0","Data","Menu"};
-            _backgroundImage = $"{ImageLocation}{Panel_Image}base.png";
-            HeliosPanel frameFullPanel = AddPanel("UFC Full Frame", new Point(0, 0), NativeSize, null, _interfaceDevice);
-            frameFullPanel.Opacity = 1d;
-            frameFullPanel.FillBackground = false;
-            frameFullPanel.DrawBorder = false;
+            BackgroundImage = _defaultBackgroundImage = $"{ImageLocation}{Panel_Image}{(cockpit == Cockpit.Pilot ? "Full" : "Base")}.png";
 
             int buttonNumber;
 
             if (ufcType == UFCType.Full || ufcType == UFCType.Keyboard)
             {
                 int hOffset = ufcType == UFCType.Full ? 0 : -407;
-                _backgroundImage = $"{ImageLocation}{Panel_Image}KU.png";
-                _framePanelKu = AddPanel("UFC Keyboard Frame", new Point(0, 407 + hOffset), new Size(654, 266), _backgroundImage, _interfaceDevice);
-                _framePanelKu.Opacity = 1d;
-                _framePanelKu.FillBackground = false;
-                _framePanelKu.DrawBorder = false;
-                _framePanelKu.IsHidden = false;
+                BackgroundImage = _defaultBackgroundImage = $"{ImageLocation}{Panel_Image}{(ufcType == UFCType.Keyboard ? "KU" : (cockpit == Cockpit.Pilot ? "Full" : "Base"))}.png";
                 AddPot("UHF Radio 3 Volume", new Point(75d, 457d + hOffset), new Size(90d, 90d), "UHF Radio 3 Volume", $"{ImageLocation}RadioVol_Knob_Back.png");
                 AddPot("UHF Radio 1 Volume", new Point(98d, 479d + hOffset), new Size(45d, 45d), "UHF Radio 1 Volume", $"{ImageLocation}UFC_Knob_1.png");
                 AddPot("UHF Radio 4 Volume", new Point(488d, 457d + hOffset), new Size(90d, 90d), "UHF Radio 4 Volume", $"{ImageLocation}RadioVol_Knob_Back.png");
@@ -96,11 +85,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
 
             if (ufcType == UFCType.ODU || ufcType == UFCType.Full)
             {
-                _backgroundImage = $"{ImageLocation}{Panel_Image}ODU.png";
-                _framePanelOdu = AddPanel("UFC ODU Frame", new Point(0, 0), new Size(654, 407), _backgroundImage, _interfaceDevice);
-                _framePanelOdu.Opacity = 1d;
-                _framePanelOdu.FillBackground = false;
-                _framePanelOdu.DrawBorder = false;
+                BackgroundImage = _defaultBackgroundImage = $"{ImageLocation}{Panel_Image}{(ufcType == UFCType.ODU ? "ODU" : (cockpit == Cockpit.Pilot ? "Full" : "Base"))}.png";
 
                 AddUFCTextDisplay("Option Line 1", new Point(119d, 61d), new Size(414d, 39d), _interfaceDevice, "Option Line 1", _oduFontSize, "!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0x9e, 0x9e, 0xa6), 20);
                 AddUFCTextDisplay("Option Line 2", new Point(119d, 120d), new Size(414d, 39d), _interfaceDevice, "Option Line 2", _oduFontSize, "!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%", TextHorizontalAlignment.Left, "", Color.FromArgb(0xE0, 0xa2, 0x6e, 0x6d), 20);
@@ -120,49 +105,7 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
                     AddOSBButton($"Option Push Button {buttonNumber} Right", new Rect(557d, i, 37d, 37d), $"Option Push Button {buttonNumber++} Right");
                 }
             }
-            switch (_ufcType)
-            {
-                case UFCType.Keyboard:
-                    _framePanel = _framePanelKu;
-                    break;
-                case UFCType.ODU:
-                    _framePanel = _framePanelOdu;
-                    break;
-                case UFCType.Full:
-                    _backgroundImage = $"{ImageLocation}{Panel_Image}base.png";
-                    _framePanel = frameFullPanel;
-                    break;
-                default: break;
-            }
-
         }
-        protected HeliosPanel AddPanel(string name, Point posn, Size size, string background, string interfaceDevice)
-        {
-            HeliosPanel panel = AddPanel
-                (
-                name: name,
-                posn: posn,
-                size: size,
-                background: background
-                );
-            // in this instance, we want to allow the panels to be hide-able so the actions need to be added
-            IBindingAction panelAction = panel.Actions["toggle.hidden"];
-            panelAction.Device = $"{Name}_{name}";
-            panelAction.Name = "hidden";
-            if (!Actions.ContainsKey(panel.Actions.GetKeyForItem(panelAction)))
-            {
-                Actions.Add(panelAction);
-            }
-            panelAction = panel.Actions["set.hidden"];
-            panelAction.Device = $"{Name}_{name}";
-            panelAction.Name = "hidden";
-            if (!Actions.ContainsKey(panel.Actions.GetKeyForItem(panelAction)))
-            {
-                Actions.Add(panelAction);
-            }
-            return panel;
-        }
-
         private void AddKeypadButton(string name, Rect rect, string label)
         {
             Helios.Controls.PushButton button = new Helios.Controls.PushButton();
@@ -439,27 +382,14 @@ namespace GadrocsWorkshop.Helios.Gauges.F15E.UFC
             action.Device = ComponentName(name);
             if (!Actions.ContainsKey(Actions.GetKeyForItem(action))) Actions.Add(action);
         }
-        public override string DefaultBackgroundImage => _backgroundImage;
+        public override string DefaultBackgroundImage => _defaultBackgroundImage;
+        public string ImageLocation => _imageLocation;
 
         protected override void OnBackgroundImageChange()
         {
             if (_framePanel != null && string.IsNullOrWhiteSpace(BackgroundImage))
             {
-                switch (_ufcType)
-                {
-                    case UFCType.Full:
-                        _framePanel.BackgroundImage = BackgroundImageIsCustomized ? null : DefaultBackgroundImage;
-                        _framePanelKu.BackgroundImage = null;
-                        _framePanelOdu.BackgroundImage = null;
-                        break;
-                    case UFCType.ODU:
-                        _framePanel.BackgroundImage = BackgroundImageIsCustomized ? null : DefaultBackgroundImage;
-                        break;
-                    case UFCType.Keyboard:
-                        _framePanel.BackgroundImage = BackgroundImageIsCustomized ? null : DefaultBackgroundImage;
-                        break;
-                    default: break;
-                }
+                BackgroundImage = BackgroundImageIsCustomized ? BackgroundImage : DefaultBackgroundImage;
             }
         }
         public override bool HitTest(Point location)

@@ -6,7 +6,6 @@
     <TemplateValues>
       <Location>0,0</Location>
       <Size>654,266</Size>
-      <BackgroundImage>{F-15E}/Images/UFC/UFC_Panel_Ku.png</BackgroundImage>
     </TemplateValues>
   </Template>
 </ControlTemplate>
