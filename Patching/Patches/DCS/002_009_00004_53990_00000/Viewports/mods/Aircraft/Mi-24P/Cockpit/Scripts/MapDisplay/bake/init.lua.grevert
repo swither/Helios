@@ -1,0 +1,8 @@
+﻿@@ -56,16 +56,18 @@
+ .lua%22)%0D%0A
++--
+ dofile(L
+@@ -296,51 +296,8 @@
+ %0D%0A%0D%0A
+-try_find_assigned_viewport(%22MI24P_MAP%22)%0D%0A%0D%0A
+ page
