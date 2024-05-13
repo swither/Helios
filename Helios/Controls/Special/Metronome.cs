@@ -260,6 +260,7 @@ namespace GadrocsWorkshop.Helios.Controls.Special
                     _tick.Tick -= TimerTick;
                 }
                 _tickTockTrigger.FireTrigger(new BindingValue(false));
+                _tockTickTrigger.FireTrigger(new BindingValue(true));
             }
         }
 
