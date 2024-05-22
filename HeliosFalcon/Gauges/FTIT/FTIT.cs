@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FTIT
 	using System;
 	using System.Windows;
 
-	[HeliosControl("Helios.Falcon.FTIT", "Falcon BMS FTIT", "Falcon Simulator", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.FTIT", "Falcon BMS FTIT", "Falcon Simulator F-16", typeof(GaugeRenderer))]
 	public class FTIT : BaseGauge
 	{
 		private FalconInterface _falconInterface;

@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ICP
 	using System.Windows;
 	using System.Globalization;
 
-	[HeliosControl("Helios.Falcon.ICP", "Falcon BMS ICP", "Falcon Simulator", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.ICP", "Falcon BMS ICP", "Falcon Simulator F-16", typeof(GaugeRenderer))]
 	public class ICP : BaseGauge
 	{
 		private enum SwitchAction

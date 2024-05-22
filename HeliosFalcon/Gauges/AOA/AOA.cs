@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.AOA
 	using System.Windows;
 	using System.Windows.Media;
 
-	[HeliosControl("Helios.Falcon.AOA", "Falcon BMS AOA", "Falcon Simulator", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.AOA", "Falcon BMS AOA", "Falcon Simulator F-16", typeof(GaugeRenderer))]
 	public class AOA : BaseGauge
 	{
 		private FalconInterface _falconInterface;

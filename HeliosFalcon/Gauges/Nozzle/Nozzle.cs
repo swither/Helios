@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Nozzle
 	using System;
 	using System.Windows;
 
-	[HeliosControl("Helios.Falcon.Nozzle", "Falcon BMS Nozzle", "Falcon Simulator", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.Nozzle", "Falcon BMS Nozzle", "Falcon Simulator F-16", typeof(GaugeRenderer))]
 	public class Nozzle : BaseGauge
 	{
 		private FalconInterface _falconInterface;

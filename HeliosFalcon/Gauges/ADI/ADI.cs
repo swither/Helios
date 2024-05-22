@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.ADI
 	using System.Windows;
 	using System.Windows.Media;
 
-	[HeliosControl("Helios.Falcon.ADI", "Falcon BMS ADI", "Falcon Simulator", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.ADI", "Falcon BMS ADI", "Falcon Simulator F-16", typeof(GaugeRenderer))]
 	public class ADI : BaseGauge
 	{
 		private FalconInterface _falconInterface;

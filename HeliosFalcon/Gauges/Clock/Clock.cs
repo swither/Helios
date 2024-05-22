@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Clock
 	using System;
 	using System.Windows;
 
-	[HeliosControl("Helios.Falcon.Clock", "Falcon BMS Clock", "Falcon Simulator", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.Clock", "Falcon BMS Clock", "Falcon Simulator F-16", typeof(GaugeRenderer))]
 	public class Clock : BaseGauge
 	{
 		private FalconInterface _falconInterface;
