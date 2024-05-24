@@ -34,6 +34,7 @@ namespace GadrocsWorkshop.Helios.Gauges
         private Point _location;
         private Point _scaledLocation;
         private double _startRoll = 0d;
+        private double _tapeDigits = 10d;
 
         private double _value;
 
@@ -41,14 +42,23 @@ namespace GadrocsWorkshop.Helios.Gauges
             : this(imageFile, location, format, digitSize, digitSize)
         {
         }
-
-        public GaugeDrumCounter(string imageFile, Point location, string format, Size digitSize, Size digitRenderSize)
+        /// <summary>
+        /// Displays the same tape image on multiple drums
+        /// </summary>
+        /// <param name="imageFile">Image file for the tape</param>
+        /// <param name="location">Top Left position of the tape</param>
+        /// <param name="format">Character(s) describing how the drums move eg ##%</param>
+        /// <param name="digitSize">digit size on the image of the tape</param>
+        /// <param name="digitRenderSize">size of digits rendered on screen</param>
+        /// <param name="tapeDigits">The number of digits looped through. Default = 10</param>
+        public GaugeDrumCounter(string imageFile, Point location, string format, Size digitSize, Size digitRenderSize, double tapeDigits = 10d)
         {
             _imageFile = imageFile;
             _digitSize = digitSize;
             _baseDigitRenderSize = digitRenderSize;
             _location = location;
             _format = format;
+            _tapeDigits = tapeDigits;
         }
 
         #region Properties
@@ -165,11 +175,11 @@ namespace GadrocsWorkshop.Helios.Gauges
             int digit = 0;
 
             drawingContext.PushTransform(new TranslateTransform(_scaledLocation.X + ((_format.Length - 1) * _digitRenderSize.Width), _scaledLocation.Y));
-            for (int i = _format.Length-1; i >= 0; i--)
+            for (int i = _format.Length - 1; i >= 0; i--)
             {
                 digit++;
-                double digitValue = rollingValue % 10d;
                 char formatDigit = _format[i];
+                double digitValue = rollingValue % ((_tapeDigits <= 10 || "0123456789".Contains(formatDigit)) ? 10d : 100d);
 
                 double renderValue = digitValue;
 
@@ -184,7 +194,7 @@ namespace GadrocsWorkshop.Helios.Gauges
 
                     if (rolling && previousDigitValue >= 9)
                     {
-                        renderValue += roll;
+                        renderValue += (_tapeDigits == 10 ? roll : previousDigitValue % 1);
                     }
                     else
                     {
@@ -193,7 +203,7 @@ namespace GadrocsWorkshop.Helios.Gauges
                 }
 
                 roll = renderValue % 1d;
-                renderValue += 1d; // Push up for the 9
+                renderValue += 1d; // Push up for the last digit
                 drawingContext.PushTransform(new TranslateTransform(xOffset, -(renderValue * _digitRenderSize.Height)));
                 drawingContext.DrawImage(_image, _imageRect);
                 drawingContext.Pop();
@@ -202,6 +212,7 @@ namespace GadrocsWorkshop.Helios.Gauges
                 rollingValue = rollingValue / 10d;
                 xOffset -= _digitRenderSize.Width;
             }
+
             drawingContext.Pop();
         }
 
@@ -216,7 +227,7 @@ namespace GadrocsWorkshop.Helios.Gauges
             if (originalImage != null)
             {
                 _imageRect = new Rect(0, 0, (originalImage.Width * scaleX), (originalImage.Height * scaleY));
-                _image = ConfigManager.ImageManager.LoadImage(_imageFile, (int)_imageRect.Width, (int)_imageRect.Height);                
+                _image = ConfigManager.ImageManager.LoadImage(_imageFile, (int)_imageRect.Width, (int)_imageRect.Height);
             }
         }
         /// <summary>
