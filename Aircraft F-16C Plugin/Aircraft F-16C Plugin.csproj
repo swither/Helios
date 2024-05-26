@@ -142,151 +142,151 @@
     <Resource Include="Gauges\Common\f16_gauge_bezel.png" />
     <Resource Include="Gauges\HSI\hsi_bezel.png" />
     <Resource Include="Gauges\VVI\vvi_bezel.png" />
-    <Content Include="Templates\Base\3_Fuel-Gauge-Bl50.htpl">
+    <Content Include="Templates\Base\F-16C\3_Fuel-Gauge-Bl50.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_0.htpl">
+    <Content Include="Templates\Base\F-16C\9_0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_1.htpl">
+    <Content Include="Templates\Base\F-16C\9_1.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_2.htpl">
+    <Content Include="Templates\Base\F-16C\9_2.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_3.htpl">
+    <Content Include="Templates\Base\F-16C\9_3.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_4.htpl">
+    <Content Include="Templates\Base\F-16C\9_4.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_5.htpl">
+    <Content Include="Templates\Base\F-16C\9_5.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_6.htpl">
+    <Content Include="Templates\Base\F-16C\9_6.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_7.htpl">
+    <Content Include="Templates\Base\F-16C\9_7.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_8.htpl">
+    <Content Include="Templates\Base\F-16C\9_8.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_9.htpl">
+    <Content Include="Templates\Base\F-16C\9_9.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_A-A.htpl">
+    <Content Include="Templates\Base\F-16C\9_A-A.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_A-G.htpl">
+    <Content Include="Templates\Base\F-16C\9_A-G.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\Arrow.htpl">
+    <Content Include="Templates\Base\F-16C\Arrow.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\CMDS Outline.htpl">
+    <Content Include="Templates\Base\F-16C\CMDS Outline.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_COM 1.htpl">
+    <Content Include="Templates\Base\F-16C\9_COM 1.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_COM 2.htpl">
+    <Content Include="Templates\Base\F-16C\9_COM 2.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\DED Bezel.htpl">
+    <Content Include="Templates\Base\F-16C\DED Bezel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_ENTR.htpl">
+    <Content Include="Templates\Base\F-16C\9_ENTR.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\2_F-16 ICP Panel.htpl">
+    <Content Include="Templates\Base\F-16C\2_F-16 ICP Panel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\F-16 Panel.htpl">
+    <Content Include="Templates\Base\F-16C\F-16 Panel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\Gear Handle.htpl">
+    <Content Include="Templates\Base\F-16C\Gear Handle.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\Gear Light Diagarm.htpl">
+    <Content Include="Templates\Base\F-16C\Gear Light Diagarm.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\Horizontal Panel Guard.htpl">
+    <Content Include="Templates\Base\F-16C\Horizontal Panel Guard.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_IFF.htpl">
+    <Content Include="Templates\Base\F-16C\9_IFF.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_LIST.htpl">
+    <Content Include="Templates\Base\F-16C\9_LIST.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\Panel Screw.htpl">
+    <Content Include="Templates\Base\F-16C\Panel Screw.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_RCL.htpl">
+    <Content Include="Templates\Base\F-16C\9_RCL.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\RWR Bezel.htpl">
+    <Content Include="Templates\Base\F-16C\RWR Bezel.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\Seat Arming Switch.htpl">
+    <Content Include="Templates\Base\F-16C\Seat Arming Switch.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\Spider Canopy Switch.htpl">
+    <Content Include="Templates\Base\F-16C\Spider Canopy Switch.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\Vertical Panel Guard.htpl">
+    <Content Include="Templates\Base\F-16C\Vertical Panel Guard.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\9_WX.htpl">
+    <Content Include="Templates\Base\F-16C\9_WX.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\7_Yaw Trim Scale.htpl">
+    <Content Include="Templates\Base\F-16C\7_Yaw Trim Scale.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\7_Roll Trim Scale.htpl">
+    <Content Include="Templates\Base\F-16C\7_Roll Trim Scale.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\7_Pitch Trim Scale.htpl">
+    <Content Include="Templates\Base\F-16C\7_Pitch Trim Scale.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_VVI.htpl">
+    <Content Include="Templates\Base\F-16C\3_VVI.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_RPM.htpl">
+    <Content Include="Templates\Base\F-16C\3_RPM.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_Oil-Pressure-Gauge.htpl">
+    <Content Include="Templates\Base\F-16C\3_Oil-Pressure-Gauge.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_Nozzle-Position-Gauge.htpl">
+    <Content Include="Templates\Base\F-16C\3_Nozzle-Position-Gauge.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_HSI_Gauge.htpl">
+    <Content Include="Templates\Base\F-16C\3_HSI_Gauge.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_Hydraulic-Pressure-Gauge.htpl">
+    <Content Include="Templates\Base\F-16C\3_Hydraulic-Pressure-Gauge.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_ADI.htpl">
+    <Content Include="Templates\Base\F-16C\3_ADI.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_AoA.htpl">
+    <Content Include="Templates\Base\F-16C\3_AoA.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_FTIT-Gauge.htpl">
+    <Content Include="Templates\Base\F-16C\3_FTIT-Gauge.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_Airspeed-Gauge.htpl">
+    <Content Include="Templates\Base\F-16C\3_Airspeed-Gauge.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_Fuel-Flow-Gauge.htpl">
+    <Content Include="Templates\Base\F-16C\3_Fuel-Flow-Gauge.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\3_Altimeter.htpl">
+    <Content Include="Templates\Base\F-16C\3_Altimeter.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\Base\2_MFD.htpl">
+    <Content Include="Templates\Base\F-16C\2_MFD.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Interfaces\ExportFunctions.lua" />
