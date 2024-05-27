@@ -48,12 +48,13 @@ namespace GenerateImageTemplates
                 lines.Add("<ControlTemplate>");
                 lines.Add($"    <Name>{Path.GetFileNameWithoutExtension(imageFilePath).Replace('_',' ')} Image</Name>");
                 lines.Add($"    <Category>{TemplateCategory}</Category>");
-                lines.Add("    <TypeIdentifier>Helios.Base.Image</TypeIdentifier>");
+                lines.Add("    <TypeIdentifier>Helios.Base.ImageTranslucent</TypeIdentifier>");
                 lines.Add("    <Template>");
                 lines.Add("        <TemplateValues>");
                 lines.Add($@"            <Image>{resourcePath}/{DirectoryDifference(Path.GetDirectoryName(imagePath), Path.GetDirectoryName(imageFilePath)).Replace('\\', '/')}{Path.GetFileName(imageFilePath)}</Image>");
                 lines.Add("            <Alignment>Stretched</Alignment>"); 
                 lines.Add("            <CornerRadius>0</CornerRadius>");
+                lines.Add("            <DefaultOpacity>1.0</DefaultOpacity>");
                 lines.Add("            <Location>0,0</Location>");
                 lines.Add($"            <Size>{imageSize.Width},{imageSize.Height}</Size>");
                 lines.Add("            <Hidden>False</Hidden>");
@@ -66,7 +67,7 @@ namespace GenerateImageTemplates
                 {
                     Directory.CreateDirectory(outputDirectoryPath);
                 }
-                File.WriteAllLines(Path.Combine(outputDirectoryPath,Path.ChangeExtension(imageName,"htpl")), lines);
+                File.WriteAllLines(Path.Combine(outputDirectoryPath,Path.ChangeExtension($"9 {imageName}","htpl")), lines);
             }
         }
         private static string DirectoryDifference(string originalDirectoryPath, string fileDirectoryPath)

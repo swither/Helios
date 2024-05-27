@@ -88,6 +88,474 @@
     <Content Include="Docs\Helios.F-5E.Plugin.Install.Read.Me.rtf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\Base\F-5E\9 Air_Data.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 ALT.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Aoa_Flaps.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 AOA_High.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 AOA_Low.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 AOA_OK.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Auto_Balance_Center.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Auto_Balance_Left.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Auto_Balance_Right.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Bomb_Armed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Canopy.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Channel_Select_Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 DC_Over.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Dir_Gyro.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Drag_Chute_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Drag_Chute_Pulled_Full.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Drag_Chute_Pulled_Half.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Engine_Ice.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Ext_Tanks copy.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Ext_Tanks.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Fire.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Flap_Mode_Down.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Flap_Mode_Mid.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Flap_Mode_Up.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Flight_Hyd.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Gear_Down_Lit.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Gear_Down_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Gear_Up_Lit.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Gear_Up_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Green_Round.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Green_Round_2.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Gun_Armed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Handoff_Diamond.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Handoff_H.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Hook_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Hook_Pushed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 IFF.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 INSNS.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Knob_1.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Knob_2.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Knob_3.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Knob_4.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Knob_5.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Knob_7.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Knob_8.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Knob_9.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 LNDG_Light_Switch_Down.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 LNDG_Light_Switch_Up.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 LOW.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 L_Fuel_Low.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 L_Fuel_Press.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 L_Gen.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Master_Caution.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 MFD_Button_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 MFD_Button_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Mode_Open.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Mode_Pri.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Oxygen.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Oxygen_Mode_Down.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Oxygen_Mode_Up.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Oxygen_Supply_Off.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Oxygen_Supply_On.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Oxygen_Test_Center.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Oxygen_Test_Down.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Oxygen_Test_Up.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Pylon_Sw_Chr_Dn.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Pylon_Sw_Chr_Up.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Pylon_Sw_Yellow_Dn.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Pylon_Sw_Yellow_Up.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Radar_ExG.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Radar_Fail.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Radar_In_Range.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Radar_Lock_On.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Radar_Range_10.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Radar_Range_20.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Radar_Range_40.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Radar_Range_5.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Radio_Mode.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Rotary_1.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_ACTPWR_Lit.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_ACTPWR_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_ACTPWR_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Altitude_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Altitude_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Handoff_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Handoff_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Launch_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Launch_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Mode_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Mode_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Power_Lit.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Power_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Power_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Search_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Search_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Ship_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_Ship_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_SysTest_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_SysTest_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_TGTSep_Norm.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 RWR_TGTSep_Pressed.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 R_Fuel_Low.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 R_Fuel_Press.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 R_Gen.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Search.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Sel_Jett.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Ship_U.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Spare.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Speed_Brake_Ext.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Sys_Test.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Sys_Test_ON.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Tacan_Knob_1.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Tacan_Select_Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Tacan_Volume.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 TGT_SEP.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 UnKnown.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\9 Util_Hyd.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Images\Buttons_Knobs_Switches\Auto_Balance_Center.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Auto_Balance_Left.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Auto_Balance_Right.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Channel_Select_Knob.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Drag_Chute_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Drag_Chute_Pulled_Full.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Drag_Chute_Pulled_Half.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Flap_Mode_Down.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Flap_Mode_Mid.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Flap_Mode_Up.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Gear_Down_Lit.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Gear_Down_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Gear_Up_Lit.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Gear_Up_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Hook_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Hook_Pushed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Knob_1.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Knob_2.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Knob_3.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Knob_4.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Knob_5.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Knob_7.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Knob_8.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Knob_9.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\LNDG_Light_Switch_Down.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\LNDG_Light_Switch_Up.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\MFD_Button_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\MFD_Button_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Oxygen_Mode_Down.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Oxygen_Mode_Up.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Oxygen_Supply_Off.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Oxygen_Supply_On.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Oxygen_Test_Center.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Oxygen_Test_Down.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Oxygen_Test_Up.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Pylon_Sw_Chr_Dn.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Pylon_Sw_Chr_Up.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Pylon_Sw_Yellow_Dn.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Pylon_Sw_Yellow_Up.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Radio_Mode.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Rotary_1.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_ACTPWR_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_ACTPWR_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Altitude_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Altitude_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Handoff_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Handoff_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Launch_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Launch_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Mode_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Mode_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Power_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Power_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Search_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Search_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Ship_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_Ship_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_SysTest_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_SysTest_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_TGTSep_Norm.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\RWR_TGTSep_Pressed.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Tacan_Knob_1.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Tacan_Select_Knob.png" />
+    <Resource Include="Images\Buttons_Knobs_Switches\Tacan_Volume.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Air_Data.png" />
+    <Resource Include="Images\Lamps_And_Indicators\ALT.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Aoa_Flaps.png" />
+    <Resource Include="Images\Lamps_And_Indicators\AOA_High.png" />
+    <Resource Include="Images\Lamps_And_Indicators\AOA_Low.png" />
+    <Resource Include="Images\Lamps_And_Indicators\AOA_OK.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Bomb_Armed.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Canopy.png" />
+    <Resource Include="Images\Lamps_And_Indicators\DC_Over.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Dir_Gyro.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Engine_Ice.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Ext_Tanks copy.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Ext_Tanks.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Fire.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Flight_Hyd.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Green_Round.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Green_Round_2.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Gun_Armed.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Handoff_Diamond.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Handoff_H.png" />
+    <Resource Include="Images\Lamps_And_Indicators\IFF.png" />
+    <Resource Include="Images\Lamps_And_Indicators\INSNS.png" />
+    <Resource Include="Images\Lamps_And_Indicators\LOW.png" />
+    <Resource Include="Images\Lamps_And_Indicators\L_Fuel_Low.png" />
+    <Resource Include="Images\Lamps_And_Indicators\L_Fuel_Press.png" />
+    <Resource Include="Images\Lamps_And_Indicators\L_Gen.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Master_Caution.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Mode_Open.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Mode_Pri.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Oxygen.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Radar_ExG.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Radar_Fail.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Radar_In_Range.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Radar_Lock_On.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Radar_Range_10.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Radar_Range_20.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Radar_Range_40.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Radar_Range_5.png" />
+    <Resource Include="Images\Lamps_And_Indicators\RWR_ACTPWR_Lit.png" />
+    <Resource Include="Images\Lamps_And_Indicators\RWR_Power_Lit.png" />
+    <Resource Include="Images\Lamps_And_Indicators\R_Fuel_Low.png" />
+    <Resource Include="Images\Lamps_And_Indicators\R_Fuel_Press.png" />
+    <Resource Include="Images\Lamps_And_Indicators\R_Gen.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Search.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Sel_Jett.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Ship_U.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Spare.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Speed_Brake_Ext.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Sys_Test.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Sys_Test_ON.png" />
+    <Resource Include="Images\Lamps_And_Indicators\TGT_SEP.png" />
+    <Resource Include="Images\Lamps_And_Indicators\UnKnown.png" />
+    <Resource Include="Images\Lamps_And_Indicators\Util_Hyd.png" />
     <Content Include="Templates\Base\F-5E\7 RADAR Grid.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -152,6 +620,138 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\Base\F-5E\3 Vertical Velocity.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Act Power Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Altitude Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Bomb Arm Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Boost Pump Toggle Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 Chaff Flare Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Chute Handle Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 Dark Grey Knob 1.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 Dark Grey Knob 2.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 DF TACAN Rotary Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Flap Mode Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Gear Lever.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\8 Green Indicator Lamp.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Green Oxygen Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 Grey Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Handoff Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Hook Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Launch Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 MFD Button Bottom.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 MFD Button Left.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 MFD Button Right.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 MFD Button Top.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Mode Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Power Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 RADAR Knob 1.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 RADAR Knob 2.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Red Oxygen Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Rotary Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 Rudder Trim Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Search Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Ship Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Small Toggle Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 Sys Test Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 TACAN Mode Rotary Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 TACAN Rotary Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 TACAN Volume Knob.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Taxi Landing Light Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\5 TGT Push Button.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Three-Way Toggle.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 UHF Rotary Knob 1.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 UHF Rotary Knob 2.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\4 UHF Rotary Knob 3.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 White Oxygen Switch.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 White Toggle.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Base\F-5E\6 Yellow Toggle.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Interfaces\ExportFunctions.lua" />

@@ -1,0 +1,16 @@
+<ControlTemplate>
+    <Name>Sys Test ON Image</Name>
+    <Category>F-5E Tiger II</Category>
+    <TypeIdentifier>Helios.Base.ImageTranslucent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-5E}/Images/Lamps_And_Indicators/Sys_Test_ON.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <DefaultOpacity>1.0</DefaultOpacity>
+            <Location>0,0</Location>
+            <Size>37,38</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>
