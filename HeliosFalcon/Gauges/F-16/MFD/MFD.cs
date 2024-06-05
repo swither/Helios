@@ -1,5 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
-//  Copyright 2022 Helios Contributors
+//  Copyright 2024 Helios Contributors
 //
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -52,26 +52,46 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 		private GaugeImage _rockerBRT;
 		private GaugeImage _rockerCON;
 
-		private HeliosTrigger _buttonOSB01Trigger;
-		private HeliosTrigger _buttonOSB02Trigger;
-		private HeliosTrigger _buttonOSB03Trigger;
-		private HeliosTrigger _buttonOSB04Trigger;
-		private HeliosTrigger _buttonOSB05Trigger;
-		private HeliosTrigger _buttonOSB06Trigger;
-		private HeliosTrigger _buttonOSB07Trigger;
-		private HeliosTrigger _buttonOSB08Trigger;
-		private HeliosTrigger _buttonOSB09Trigger;
-		private HeliosTrigger _buttonOSB10Trigger;
-		private HeliosTrigger _buttonOSB11Trigger;
-		private HeliosTrigger _buttonOSB12Trigger;
-		private HeliosTrigger _buttonOSB13Trigger;
-		private HeliosTrigger _buttonOSB14Trigger;
-		private HeliosTrigger _buttonOSB15Trigger;
-		private HeliosTrigger _buttonOSB16Trigger;
-		private HeliosTrigger _buttonOSB17Trigger;
-		private HeliosTrigger _buttonOSB18Trigger;
-		private HeliosTrigger _buttonOSB19Trigger;
-		private HeliosTrigger _buttonOSB20Trigger;
+		private HeliosTrigger _buttonOSB01Pushed;
+		private HeliosTrigger _buttonOSB02Pushed;
+		private HeliosTrigger _buttonOSB03Pushed;
+		private HeliosTrigger _buttonOSB04Pushed;
+		private HeliosTrigger _buttonOSB05Pushed;
+		private HeliosTrigger _buttonOSB06Pushed;
+		private HeliosTrigger _buttonOSB07Pushed;
+		private HeliosTrigger _buttonOSB08Pushed;
+		private HeliosTrigger _buttonOSB09Pushed;
+		private HeliosTrigger _buttonOSB10Pushed;
+		private HeliosTrigger _buttonOSB11Pushed;
+		private HeliosTrigger _buttonOSB12Pushed;
+		private HeliosTrigger _buttonOSB13Pushed;
+		private HeliosTrigger _buttonOSB14Pushed;
+		private HeliosTrigger _buttonOSB15Pushed;
+		private HeliosTrigger _buttonOSB16Pushed;
+		private HeliosTrigger _buttonOSB17Pushed;
+		private HeliosTrigger _buttonOSB18Pushed;
+		private HeliosTrigger _buttonOSB19Pushed;
+		private HeliosTrigger _buttonOSB20Pushed;
+		private HeliosTrigger _buttonOSB01Released;
+		private HeliosTrigger _buttonOSB02Released;
+		private HeliosTrigger _buttonOSB03Released;
+		private HeliosTrigger _buttonOSB04Released;
+		private HeliosTrigger _buttonOSB05Released;
+		private HeliosTrigger _buttonOSB06Released;
+		private HeliosTrigger _buttonOSB07Released;
+		private HeliosTrigger _buttonOSB08Released;
+		private HeliosTrigger _buttonOSB09Released;
+		private HeliosTrigger _buttonOSB10Released;
+		private HeliosTrigger _buttonOSB11Released;
+		private HeliosTrigger _buttonOSB12Released;
+		private HeliosTrigger _buttonOSB13Released;
+		private HeliosTrigger _buttonOSB14Released;
+		private HeliosTrigger _buttonOSB15Released;
+		private HeliosTrigger _buttonOSB16Released;
+		private HeliosTrigger _buttonOSB17Released;
+		private HeliosTrigger _buttonOSB18Released;
+		private HeliosTrigger _buttonOSB19Released;
+		private HeliosTrigger _buttonOSB20Released;
 		private HeliosTrigger _rockerGAINUpTrigger;
 		private HeliosTrigger _rockerGAINDownTrigger;
 		private HeliosTrigger _rockerSYMUpTrigger;
@@ -234,65 +254,125 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 
 		private void AddActions()
 		{
-			_buttonOSB01Trigger = new HeliosTrigger(this, "", "", "Button OSB-1 Pushed", "Fired when button OSB-1 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB01Trigger);
+			_buttonOSB01Pushed = new HeliosTrigger(this, "", "", "Button OSB-1 Pushed", "Fired when button OSB-1 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB01Pushed);
 
-			_buttonOSB02Trigger = new HeliosTrigger(this, "", "", "Button OSB-2 Pushed", "Fired when button OSB-2 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB02Trigger);
+			_buttonOSB01Released = new HeliosTrigger(this, "", "", "Button OSB-1 Released", "Fired when button OSB-1 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB01Released);
 
-			_buttonOSB03Trigger = new HeliosTrigger(this, "", "", "Button OSB-3 Pushed", "Fired when button OSB-3 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB03Trigger);
+			_buttonOSB02Pushed = new HeliosTrigger(this, "", "", "Button OSB-2 Pushed", "Fired when button OSB-2 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB02Pushed);
 
-			_buttonOSB04Trigger = new HeliosTrigger(this, "", "", "Button OSB-4 Pushed", "Fired when button OSB-4 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB04Trigger);
+			_buttonOSB02Released = new HeliosTrigger(this, "", "", "Button OSB-2 Released", "Fired when button OSB-2 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB02Released);
 
-			_buttonOSB05Trigger = new HeliosTrigger(this, "", "", "Button OSB-5 Pushed", "Fired when button OSB-5 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB05Trigger);
+			_buttonOSB03Pushed = new HeliosTrigger(this, "", "", "Button OSB-3 Pushed", "Fired when button OSB-3 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB03Pushed);
 
-			_buttonOSB06Trigger = new HeliosTrigger(this, "", "", "Button OSB-6 Pushed", "Fired when button OSB-6 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB06Trigger);
+			_buttonOSB03Released = new HeliosTrigger(this, "", "", "Button OSB-3 Released", "Fired when button OSB-3 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB03Released);
 
-			_buttonOSB07Trigger = new HeliosTrigger(this, "", "", "Button OSB-7 Pushed", "Fired when button OSB-7 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB07Trigger);
+			_buttonOSB04Pushed = new HeliosTrigger(this, "", "", "Button OSB-4 Pushed", "Fired when button OSB-4 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB04Pushed);
 
-			_buttonOSB08Trigger = new HeliosTrigger(this, "", "", "Button OSB-8 Pushed", "Fired when button OSB-8 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB08Trigger);
+			_buttonOSB04Released = new HeliosTrigger(this, "", "", "Button OSB-4 Released", "Fired when button OSB-4 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB04Released);
 
-			_buttonOSB09Trigger = new HeliosTrigger(this, "", "", "Button OSB-9 Pushed", "Fired when button OSB-9 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB09Trigger);
+			_buttonOSB05Pushed = new HeliosTrigger(this, "", "", "Button OSB-5 Pushed", "Fired when button OSB-5 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB05Pushed);
 
-			_buttonOSB10Trigger = new HeliosTrigger(this, "", "", "Button OSB-10 Pushed", "Fired when button OSB-10 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB10Trigger);
+			_buttonOSB05Released = new HeliosTrigger(this, "", "", "Button OSB-5 Released", "Fired when button OSB-5 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB05Released);
 
-			_buttonOSB11Trigger = new HeliosTrigger(this, "", "", "Button OSB-11 Pushed", "Fired when button OSB-11 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB11Trigger);
+			_buttonOSB06Pushed = new HeliosTrigger(this, "", "", "Button OSB-6 Pushed", "Fired when button OSB-6 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB06Pushed);
 
-			_buttonOSB12Trigger = new HeliosTrigger(this, "", "", "Button OSB-12 Pushed", "Fired when button OSB-12 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB12Trigger);
+			_buttonOSB06Released = new HeliosTrigger(this, "", "", "Button OSB-6 Released", "Fired when button OSB-6 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB06Released);
 
-			_buttonOSB13Trigger = new HeliosTrigger(this, "", "", "Button OSB-13 Pushed", "Fired when button OSB-13 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB13Trigger);
+			_buttonOSB07Pushed = new HeliosTrigger(this, "", "", "Button OSB-7 Pushed", "Fired when button OSB-7 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB07Pushed);
 
-			_buttonOSB14Trigger = new HeliosTrigger(this, "", "", "Button OSB-14 Pushed", "Fired when button OSB-14 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB14Trigger);
+			_buttonOSB07Released = new HeliosTrigger(this, "", "", "Button OSB-7 Released", "Fired when button OSB-7 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB07Released);
 
-			_buttonOSB15Trigger = new HeliosTrigger(this, "", "", "Button OSB-15 Pushed", "Fired when button OSB-15 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB15Trigger);
+			_buttonOSB08Pushed = new HeliosTrigger(this, "", "", "Button OSB-8 Pushed", "Fired when button OSB-8 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB08Pushed);
 
-			_buttonOSB16Trigger = new HeliosTrigger(this, "", "", "Button OSB-16 Pushed", "Fired when button OSB-16 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB16Trigger);
+			_buttonOSB08Released = new HeliosTrigger(this, "", "", "Button OSB-8 Released", "Fired when button OSB-8 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB08Released);
 
-			_buttonOSB17Trigger = new HeliosTrigger(this, "", "", "Button OSB-17 Pushed", "Fired when button OSB-17 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB17Trigger);
+			_buttonOSB09Pushed = new HeliosTrigger(this, "", "", "Button OSB-9 Pushed", "Fired when button OSB-9 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB09Pushed);
 
-			_buttonOSB18Trigger = new HeliosTrigger(this, "", "", "Button OSB-18 Pushed", "Fired when button OSB-18 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB18Trigger);
+			_buttonOSB09Released = new HeliosTrigger(this, "", "", "Button OSB-9 Released", "Fired when button OSB-9 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB09Released);
 
-			_buttonOSB19Trigger = new HeliosTrigger(this, "", "", "Button OSB-19 Pushed", "Fired when button OSB-19 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB19Trigger);
+			_buttonOSB10Pushed = new HeliosTrigger(this, "", "", "Button OSB-10 Pushed", "Fired when button OSB-10 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB10Pushed);
 
-			_buttonOSB20Trigger = new HeliosTrigger(this, "", "", "Button OSB-20 Pushed", "Fired when button OSB-20 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
-			Triggers.Add(_buttonOSB20Trigger);
+			_buttonOSB10Released = new HeliosTrigger(this, "", "", "Button OSB-10 Released", "Fired when button OSB-10 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB10Released);
+
+			_buttonOSB11Pushed = new HeliosTrigger(this, "", "", "Button OSB-11 Pushed", "Fired when button OSB-11 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB11Pushed);
+
+			_buttonOSB11Released = new HeliosTrigger(this, "", "", "Button OSB-11 Released", "Fired when button OSB-11 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB11Released);
+
+			_buttonOSB12Pushed = new HeliosTrigger(this, "", "", "Button OSB-12 Pushed", "Fired when button OSB-12 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB12Pushed);
+
+			_buttonOSB12Released = new HeliosTrigger(this, "", "", "Button OSB-12 Released", "Fired when button OSB-12 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB12Released);
+
+			_buttonOSB13Pushed = new HeliosTrigger(this, "", "", "Button OSB-13 Pushed", "Fired when button OSB-13 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB13Pushed);
+
+			_buttonOSB13Released = new HeliosTrigger(this, "", "", "Button OSB-13 Released", "Fired when button OSB-13 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB13Released);
+
+			_buttonOSB14Pushed = new HeliosTrigger(this, "", "", "Button OSB-14 Pushed", "Fired when button OSB-14 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB14Pushed);
+
+			_buttonOSB14Released = new HeliosTrigger(this, "", "", "Button OSB-14 Released", "Fired when button OSB-14 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB14Released);
+
+			_buttonOSB15Pushed = new HeliosTrigger(this, "", "", "Button OSB-15 Pushed", "Fired when button OSB-15 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB15Pushed);
+
+			_buttonOSB15Released = new HeliosTrigger(this, "", "", "Button OSB-15 Released", "Fired when button OSB-15 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB15Released);
+
+			_buttonOSB16Pushed = new HeliosTrigger(this, "", "", "Button OSB-16 Pushed", "Fired when button OSB-16 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB16Pushed);
+
+			_buttonOSB16Released = new HeliosTrigger(this, "", "", "Button OSB-16 Released", "Fired when button OSB-16 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB16Released);
+
+			_buttonOSB17Pushed = new HeliosTrigger(this, "", "", "Button OSB-17 Pushed", "Fired when button OSB-17 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB17Pushed);
+
+			_buttonOSB17Released = new HeliosTrigger(this, "", "", "Button OSB-17 Released", "Fired when button OSB-17 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB17Released);
+
+			_buttonOSB18Pushed = new HeliosTrigger(this, "", "", "Button OSB-18 Pushed", "Fired when button OSB-18 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB18Pushed);
+
+			_buttonOSB18Released = new HeliosTrigger(this, "", "", "Button OSB-18 Released", "Fired when button OSB-18 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB18Released);
+
+			_buttonOSB19Pushed = new HeliosTrigger(this, "", "", "Button OSB-19 Pushed", "Fired when button OSB-19 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB19Pushed);
+
+			_buttonOSB19Released = new HeliosTrigger(this, "", "", "Button OSB-19 Released", "Fired when button OSB-19 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB19Released);
+
+			_buttonOSB20Pushed = new HeliosTrigger(this, "", "", "Button OSB-20 Pushed", "Fired when button OSB-20 is pushed.", "Always returns true.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB20Pushed);
+
+			_buttonOSB20Released = new HeliosTrigger(this, "", "", "Button OSB-20 Released", "Fired when button OSB-20 is released.", "Always returns false.", BindingValueUnits.Boolean);
+			Triggers.Add(_buttonOSB20Released);
 
 			_rockerGAINUpTrigger = new HeliosTrigger(this, "", "", "Rocker GAIN-UP Pushed", "Fired when rocker GAIN-UP is pushed.", "Always returns true.", BindingValueUnits.Boolean);
 			Triggers.Add(_rockerGAINUpTrigger);
@@ -457,103 +537,104 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 			if (_rectButtonOSB01.Contains(point))
 			{
 				_buttonOSB01.Image = _buttonPressImage;
-				_buttonOSB01Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB01Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB02.Contains(point))
 			{
 				_buttonOSB02.Image = _buttonPressImage;
-				_buttonOSB02Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB02Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB03.Contains(point))
 			{
 				_buttonOSB03.Image = _buttonPressImage;
-				_buttonOSB03Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB03Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB04.Contains(point))
 			{
 				_buttonOSB04.Image = _buttonPressImage;
-				_buttonOSB04Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB04Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB05.Contains(point))
 			{
 				_buttonOSB05.Image = _buttonPressImage;
-				_buttonOSB05Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB05Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB06.Contains(point))
 			{
 				_buttonOSB06.Image = _buttonPressImage;
-				_buttonOSB06Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB06Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB07.Contains(point))
 			{
 				_buttonOSB07.Image = _buttonPressImage;
-				_buttonOSB07Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB07Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB08.Contains(point))
 			{
 				_buttonOSB08.Image = _buttonPressImage;
-				_buttonOSB08Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB08Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB09.Contains(point))
 			{
 				_buttonOSB09.Image = _buttonPressImage;
-				_buttonOSB09Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB09Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB10.Contains(point))
 			{
 				_buttonOSB10.Image = _buttonPressImage;
-				_buttonOSB10Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB10Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB11.Contains(point))
 			{
 				_buttonOSB11.Image = _buttonPressImage;
-				_buttonOSB11Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB11Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB12.Contains(point))
 			{
 				_buttonOSB12.Image = _buttonPressImage;
-				_buttonOSB12Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB12Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB13.Contains(point))
 			{
 				_buttonOSB13.Image = _buttonPressImage;
-				_buttonOSB13Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB13Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB14.Contains(point))
 			{
 				_buttonOSB14.Image = _buttonPressImage;
-				_buttonOSB14Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB14Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB15.Contains(point))
 			{
 				_buttonOSB15.Image = _buttonPressImage;
-				_buttonOSB15Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB15Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB16.Contains(point))
 			{
 				_buttonOSB16.Image = _buttonPressImage;
-				_buttonOSB16Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB16Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB17.Contains(point))
 			{
 				_buttonOSB17.Image = _buttonPressImage;
-				_buttonOSB17Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB17Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB18.Contains(point))
 			{
 				_buttonOSB18.Image = _buttonPressImage;
-				_buttonOSB18Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB18Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB19.Contains(point))
 			{
 				_buttonOSB19.Image = _buttonPressImage;
-				_buttonOSB19Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB19Pushed.FireTrigger(new BindingValue(true));
 			}
 			if (_rectButtonOSB20.Contains(point))
 			{
 				_buttonOSB20.Image = _buttonPressImage;
-				_buttonOSB20Trigger.FireTrigger(new BindingValue(true));
+				_buttonOSB20Pushed.FireTrigger(new BindingValue(true));
 			}
+
 			if (_rectRockerGAINUp.Contains(point))
 			{
 				_rockerGAIN.Image = _rockerGAINUpImage;
@@ -600,6 +681,89 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 
 		public override void MouseUp(Point location)
 		{
+			Point point = new Point(location.X * _rectBase.Width / Width, location.Y * _rectBase.Height / Height);
+
+			if (_rectButtonOSB01.Contains(point))
+			{
+				_buttonOSB01Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB02.Contains(point))
+			{
+				_buttonOSB02Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB03.Contains(point))
+			{
+				_buttonOSB03Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB04.Contains(point))
+			{
+				_buttonOSB04Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB05.Contains(point))
+			{
+				_buttonOSB05Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB06.Contains(point))
+			{
+				_buttonOSB06Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB07.Contains(point))
+			{
+				_buttonOSB07Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB08.Contains(point))
+			{
+				_buttonOSB08Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB09.Contains(point))
+			{
+				_buttonOSB09Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB10.Contains(point))
+			{
+				_buttonOSB10Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB11.Contains(point))
+			{
+				_buttonOSB11Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB12.Contains(point))
+			{
+				_buttonOSB12Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB13.Contains(point))
+			{
+				_buttonOSB13Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB14.Contains(point))
+			{
+				_buttonOSB14Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB15.Contains(point))
+			{
+				_buttonOSB15Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB16.Contains(point))
+			{
+				_buttonOSB16Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB17.Contains(point))
+			{
+				_buttonOSB17Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB18.Contains(point))
+			{
+				_buttonOSB18Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB19.Contains(point))
+			{
+				_buttonOSB19Released.FireTrigger(new BindingValue(false));
+			}
+			if (_rectButtonOSB20.Contains(point))
+			{
+				_buttonOSB20Released.FireTrigger(new BindingValue(false));
+			}
+
 			SetButtonUpImage();
 
 			_rockerGAIN.Image = _rockerGAINCenterImage;
