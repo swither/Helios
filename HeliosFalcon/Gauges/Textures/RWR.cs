@@ -19,7 +19,7 @@ using GadrocsWorkshop.Helios.ComponentModel;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
 {
-    [HeliosControl("Helios.Falcon.OpenFalcon.RWR", "RWR", "Falcon Textures", typeof(FalconTextureDisplayRenderer))]
+    [HeliosControl("Helios.Falcon.OpenFalcon.RWR", "RWR", "Falcon BMS Textures", typeof(FalconTextureDisplayRenderer))]
     public class RWR : FalconTextureDisplay
     {
         private static readonly Rect _defaultRect = new Rect(5, 420, 80, 80);

@@ -21,7 +21,7 @@ using GadrocsWorkshop.Helios.ComponentModel;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.RWR
 {
-	[HeliosControl("Helios.Falcon.RWR", "Block 50/52 RWR", "Falcon Simulator F-16", typeof(RWRRenderer))] 
+	[HeliosControl("Helios.Falcon.RWR", "Block 50/52 RWR", "Falcon BMS F-16", typeof(RWRRenderer))] 
 	public class RWR : HeliosVisual
 	{
 		private bool _on;

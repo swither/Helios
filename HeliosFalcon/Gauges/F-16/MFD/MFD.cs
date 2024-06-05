@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.MFD
 	using System;
 	using System.Windows;
 
-	[HeliosControl("Helios.Falcon.MFD", "Falcon BMS MFD", "Falcon Simulator F-16", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.MFD", "Falcon BMS MFD", "Falcon BMS F-16", typeof(GaugeRenderer))]
 	public class MFD : BaseGauge
 	{
 		private FalconInterface _falconInterface;

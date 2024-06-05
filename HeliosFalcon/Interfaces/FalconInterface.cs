@@ -740,7 +740,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 {
                     Status = "Falcon BMS config parameter g_bExportRTTTextures is not enabled",
                     Severity = StatusReportItem.SeverityCode.Error,
-                    Recommendation = $"In order to use Falcon Textures please edit the {Anonymizer.Anonymize(FalconPath)}\\User\\Config\\Falcon BMS User.cfg file and add the line: set g_bExportRTTTextures 1 to the file"
+                    Recommendation = $"In order to use Falcon BMS Textures please edit the {Anonymizer.Anonymize(FalconPath)}\\User\\Config\\Falcon BMS User.cfg file and add the line: set g_bExportRTTTextures 1 to the file"
                 };
             }
 

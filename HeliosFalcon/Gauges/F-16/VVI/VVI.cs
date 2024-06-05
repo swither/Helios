@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.VVI
 	using System.Windows;
 	using System.Windows.Media;
 
-	[HeliosControl("Helios.Falcon.VVI", "Falcon BMS VVI", "Falcon Simulator F-16", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.VVI", "Falcon BMS VVI", "Falcon BMS F-16", typeof(GaugeRenderer))]
 	public class VVI : BaseGauge
 	{
 		private FalconInterface _falconInterface;

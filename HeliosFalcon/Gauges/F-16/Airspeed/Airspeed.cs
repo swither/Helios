@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Airspeed
 	using System;
 	using System.Windows;
 
-	[HeliosControl("Helios.Falcon.Airspeed", "Falcon BMS Airspeed", "Falcon Simulator F-16", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.Airspeed", "Falcon BMS Airspeed", "Falcon BMS F-16", typeof(GaugeRenderer))]
 	public class Airspeed : BaseGauge
 	{
 		private FalconInterface _falconInterface;

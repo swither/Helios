@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.EPU
 	using System;
 	using System.Windows;
 
-	[HeliosControl("Helios.Falcon.EPU", "Falcon BMS EPU", "Falcon Simulator F-16", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.EPU", "Falcon BMS EPU", "Falcon BMS F-16", typeof(GaugeRenderer))]
 	public class EPU : BaseGauge
 	{
 		private FalconInterface _falconInterface;

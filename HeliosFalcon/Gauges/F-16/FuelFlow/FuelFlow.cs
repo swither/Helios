@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.FuelFlow
 	using System.Windows;
 	using System.Windows.Media;
 
-	[HeliosControl("Helios.Falcon.FuelFLow", "Falcon BMS Fuel Flow", "Falcon Simulator F-16", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.FuelFLow", "Falcon BMS Fuel Flow", "Falcon BMS F-16", typeof(GaugeRenderer))]
 	public class FuelFlow : BaseGauge
 	{
 		private FalconInterface _falconInterface;

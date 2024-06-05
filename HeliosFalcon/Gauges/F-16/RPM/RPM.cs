@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.RPM
 	using System;
 	using System.Windows;
 
-	[HeliosControl("Helios.Falcon.RPM", "Falcon BMS RPM", "Falcon Simulator F-16", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.RPM", "Falcon BMS RPM", "Falcon BMS F-16", typeof(GaugeRenderer))]
 	public class RPM : BaseGauge
 	{
 		private FalconInterface _falconInterface;

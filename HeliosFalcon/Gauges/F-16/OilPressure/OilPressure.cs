@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.OilPressure
 	using System;
 	using System.Windows;
 
-	[HeliosControl("Helios.Falcon.OilPressure", "Falcon BMS Oil Pressure", "Falcon Simulator F-16", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.OilPressure", "Falcon BMS Oil Pressure", "Falcon BMS F-16", typeof(GaugeRenderer))]
 	public class OilPressure : BaseGauge
 	{
 		private FalconInterface _falconInterface;

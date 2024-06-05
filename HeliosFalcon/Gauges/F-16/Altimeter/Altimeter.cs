@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Gauges.Falcon.Altimeter
 	using System.Windows;
 	using System.Windows.Media;
 
-	[HeliosControl("Helios.Falcon.Altimeter", "Falcon BMS Altimeter", "Falcon Simulator F-16", typeof(GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.Altimeter", "Falcon BMS Altimeter", "Falcon BMS F-16", typeof(GaugeRenderer))]
 	public class Altimeter : BaseGauge
 	{
 		private FalconInterface _falconInterface;
