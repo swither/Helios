@@ -55,6 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gauges\F-16\HydraulicPressure\BaseHydraulicPressure.cs" />
     <Compile Include="Gauges\F-16\HydraulicPressure\HydraulicPressureA.cs" />
     <Compile Include="Gauges\F-16\HydraulicPressure\HydraulicPressureB.cs" />
     <Compile Include="Gauges\F-16\OilPressure\OilPressure.cs" />
