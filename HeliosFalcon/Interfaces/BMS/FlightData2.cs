@@ -330,6 +330,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         public int radio2_preset;       // Radio 2 channel preset (if present).
         public int radio2_frequency;    // Radio 2 channel frequency (if present).
 
+        // VERSION 21
+        public int tacan_ils_frequency; // Tacan ILS (110.30 = 11030). Valid interval [108.10, 111.95].
+
         // IFF transponder currently active (as seen from outside) codes, negative for OFF or n/a
         public char iffTransponderActiveCode1;  // mode 1
         public short iffTransponderActiveCode2;  // mode 2
