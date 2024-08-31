@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9A126B83-3EBC-4D79-BB0A-F5AE11243C1C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GadrocsWorkshop.Helios</RootNamespace>
+    <AssemblyName>CH-47F</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Docs\Helios.CH-47F.Plugin.Install.Read.Me.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Gauges\Chronometer\Images\Chronometer_Bezel.png" />
+    <Resource Include="Gauges\Chronometer\Images\M880_Button_Norm.png" />
+    <Resource Include="Gauges\Chronometer\Images\M880_Button_Pressed.png" />
+    <Resource Include="Gauges\Chronometer\Images\M880_Knob.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Bezel_Bot.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Bezel_Top.png" />
+    <Resource Include="Gauges\SFD\Images\SFD_Indicator.png" />
+    <Resource Include="Gauges\SFD\Images\SFD_glass.png" />
+    <Resource Include="Gauges\RWR\Images\RWR_glass.png" />
+    <Resource Include="Gauges\SFD\Images\SFD_Bezel.png" />
+    <Resource Include="Gauges\SFD\Images\SFD_Knob.png" />
+    <Resource Include="Gauges\SFD\Images\SFD_Mode_Norm.png" />
+    <Resource Include="Gauges\SFD\Images\SFD_Mode_Pressed.png" />
+    <Resource Include="Gauges\RWR\Images\RWR_Bezel.png" />
+    <Resource Include="Gauges\RWR\Images\RWR_BRIL_Knob.png" />
+    <Resource Include="Gauges\RWR\Images\RWR_DAY_SW_Down.png" />
+    <Resource Include="Gauges\RWR\Images\RWR_DAY_SW_Up.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Lx_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Lx_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Rx_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Rx_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_0_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_0_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_1_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_1_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_2_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_2_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_3_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_3_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_4_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_4_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_5_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_5_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_6_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_6_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_7_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_7_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_8_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_8_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_9_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_9_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Arrow_Down_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Arrow_Down_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Arrow_Left_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Arrow_Left_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Arrow_Right_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Arrow_Right_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Arrow_Up_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Arrow_Up_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_ASE_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_ASE_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_A_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_A_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_BRT_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_BRT_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_B_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_B_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_CLR_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_CLR_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_CNI_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_CNI_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_C_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_C_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DASH_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DASH_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DATA_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DATA_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DIM_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DIM_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DIR_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DIR_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DOT_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_DOT_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_D_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_D_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_EMPTY_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_EMPTY_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_E_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_E_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_FD_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_FD_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_FPLN_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_FPLN_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_F_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_F_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_G_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_G_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_H_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_H_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_IDX_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_IDX_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_I_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_I_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_J_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_J_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_K_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_K_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_L_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_L_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_MARK_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_MARK_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_MFD_Data_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_MFD_Data_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_MSN_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_MSN_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_M_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_M_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_N_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_N_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_O_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_O_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_PAD_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_PAD_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_P_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_P_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Q_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Q_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R1_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R1_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R2_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R2_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R3_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R3_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R4_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R4_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R5_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R5_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R6_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R6_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_R_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_SLASH_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_SLASH_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_SNSR_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_SNSR_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_SP_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_SP_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_STAT_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_STAT_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_S_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_S_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_TDL_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_TDL_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_T_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_T_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_U_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_U_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_V_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_V_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_WPN_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_WPN_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_W_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_W_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_X_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_X_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Y_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Y_Pressed.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Z_Norm.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Z_Pressed.png" />
+    <Resource Include="Images\MFD\MFD_glass.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_glass.png" />
+    <Resource Include="Gauges\CDU\Images\CDU_Bezel.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Bezel.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Button_Horizontal_Normal.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Button_Horizontal_Pressed.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Button_Vertical_Normal.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Button_Vertical_Pressed.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Knob.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Rocker_Backlight_Down.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Rocker_Backlight_Normal.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Rocker_Backlight_Up.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Rocker_Brightness_Down.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Rocker_Brightness_Normal.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Rocker_Brightness_Up.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Rocker_Contrast_Down.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Rocker_Contrast_Normal.png" />
+    <Resource Include="Images\MFD\CH_47_MFD_Rocker_Contrast_Up.png" />
+    <Resource Include="Interfaces\ExportFunctions.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Gauges\CDU\CDU Bottom.cs" />
+    <Compile Include="Gauges\CDU\CDU Keyboard Copilot.cs" />
+    <Compile Include="Gauges\CDU\CDU Keyboard Pilot.cs" />
+    <Compile Include="Gauges\CDU\CDU Top.cs" />
+    <Compile Include="Gauges\Chronometer\Chronometer.cs" />
+    <Compile Include="Gauges\FAT\FAT.cs" />
+    <Compile Include="Gauges\CDU\CDU Copilot.cs" />
+    <Compile Include="Gauges\CDU\CDU Pilot.cs" />
+    <Compile Include="Gauges\MFD\MFD Copilot Left.cs" />
+    <Compile Include="Gauges\MFD\MFD Center.cs" />
+    <Compile Include="Gauges\MFD\MFD Pilot Left.cs" />
+    <Compile Include="Gauges\MFD\MFD Copilot Right.cs" />
+    <Compile Include="Gauges\MFD\MFD Pilot Right.cs" />
+    <Compile Include="Gauges\MFD\MFD.cs" />
+    <Compile Include="Gauges\RadAlt\RadAlt.cs" />
+    <Compile Include="Gauges\RadAlt\RadAltInstrument.cs" />
+    <Compile Include="Gauges\RWR\RWR.cs" />
+    <Compile Include="Gauges\SFD\SFD Copilot.cs" />
+    <Compile Include="Gauges\SFD\SFD Pilot.cs" />
+    <Compile Include="Gauges\SFD\SFD.cs" />
+    <Compile Include="Interfaces\CH-47FInterface.cs" />
+    <Compile Include="Interfaces\Commands.cs" />
+    <Compile Include="Interfaces\Devices.cs" />
+    <Compile Include="Interfaces\Functions\CH-47FFunction.cs" />
+    <Compile Include="Interfaces\Functions\Altimeter.cs" />
+    <Compile Include="Interfaces\Functions\RADARAltimeter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\FAT\Images\fat_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gauges\RWR\Images\RWR_Rings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <Import Project="..\HeliosPlugin.targets" />
+</Project>

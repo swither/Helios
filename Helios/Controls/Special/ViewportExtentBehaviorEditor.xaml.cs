@@ -38,6 +38,20 @@ namespace GadrocsWorkshop.Helios.Controls.Special
     [HeliosPropertyEditor("Helios.F15E.MPD.ColorWsoLeft", "Behavior")]
     [HeliosPropertyEditor("Helios.F15E.MPD.WsoRight", "Behavior")]
     [HeliosPropertyEditor("Helios.F15E.MPD.ColorWsoRight", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.MFD.PilotLeft", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.MFD.PilotRight", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.MFD.CopilotLeft", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.MFD.CopilotRight", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.MFD.Center", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.CDU.Top.Pilot", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.CDU.Top.Copilot", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.CDU.Pilot", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.CDU.Copilot", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.SFD.Pilot", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.SFD.Copilot", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.RWR", "Behavior")]
+    [HeliosPropertyEditor("Helios.CH47F.Chronometer", "Behavior")]
+    
 
     public partial class ViewportExtentBehaviorEditor : HeliosPropertyEditor
     {

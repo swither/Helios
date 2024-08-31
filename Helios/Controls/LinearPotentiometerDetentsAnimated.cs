@@ -34,27 +34,23 @@ namespace GadrocsWorkshop.Helios.Controls
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private bool _clickableVertical = false;
-        private bool _clickableHorizontal = false;
-        LinearClickType _clickType = LinearClickType.Swipe;
 
-        private bool _mouseDown = false;
-        private Point _mouseDownLocation;
-        private double _swipeThreshold = 10d;
         private List<double> _detents = new List<double>();
         private bool _detentHit = false;
         private int _currentDetentPosition = 0;
         private double _previousDragPosition = 0;
         private HeliosTrigger _minValueTrigger;
+        private HeliosTrigger _maxValueTrigger;
 
         public LinearPotentiometerDetentsAnimated( )
             : base( "Linear Potentiometer with Detents (Animated)", new Size( 73, 240 ) )
         {
-            _clickableVertical = true;
             ClickType = LinearClickType.Swipe;
             _detents.Sort();
-            _minValueTrigger = new HeliosTrigger(this, "", "minimum value position", "released", "Fires when potentiometer moves out of MinValue position");
+            _minValueTrigger = new HeliosTrigger(this, "", "minimum value position", "released", "Fires before potentiometer moves out of MinValue position");
             this.Triggers.Add(_minValueTrigger);
+            _maxValueTrigger = new HeliosTrigger(this, "", "maximum value position", "released", "Fires before potentiometer moves out of MaxValue position");
+            this.Triggers.Add(_maxValueTrigger);
         }
 
         #region Properties
@@ -95,7 +91,6 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             OnPropertyChanged("DetentPosition", value, -999d, true);
         }
-
         #endregion
 
         #region Actions
@@ -143,6 +138,7 @@ namespace GadrocsWorkshop.Helios.Controls
         public override void WriteXml ( XmlWriter writer )
         {
             base.WriteXml( writer );
+
             writer.WriteStartElement("DetentPositions");
             _detents.Sort();
             foreach (double position in _detents)
@@ -151,7 +147,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 writer.WriteAttributeString("Position", position.ToString(CultureInfo.InvariantCulture));
                 writer.WriteEndElement();
             }
-            writer.WriteEndElement();
+           writer.WriteEndElement();
         }
         public override void ReadXml ( XmlReader reader )
         {
@@ -176,45 +172,9 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             _detents.Sort();
         }
-        public override void MouseDown(Point location)
-        {
-            if (_clickType == LinearClickType.Swipe)
-            {
-                _mouseDown = true;
-                _mouseDownLocation = location;
-            }
-            base.MouseDown(location);
-        }
-        public override void MouseDrag(Point location)
-        {
-            if (_mouseDown && _clickType == LinearClickType.Swipe)
-            {
-                if (_clickableVertical)
-                {
-                    double increment = location.Y - _mouseDownLocation.Y;
-                    if ((increment > 0 && increment > _swipeThreshold) || (increment < 0 && (increment * -1) > _swipeThreshold))
-                    {
-                        CalculateMovement(increment);
-                        _mouseDownLocation = location;
-                    }
-                }
-                else if (_clickableHorizontal)
-                {
-                    double increment = location.X - _mouseDownLocation.X;
-                    if ((increment > 0 && increment > _swipeThreshold) || (increment < 0 && (increment * -1) > _swipeThreshold))
-                    {
-                        CalculateMovement(increment);
-                        _mouseDownLocation = location;
-                    }
-                }
-            } else
-            {
 
-            }
-        }
         public override void MouseUp(Point location)
         {
-            _mouseDown = false;
             _detentHit = false;
             base.MouseUp(location);
         }
@@ -326,6 +286,10 @@ namespace GadrocsWorkshop.Helios.Controls
                 if (currentValue == MinValue && Value != MinValue && !BypassTriggers)
                 {
                     _minValueTrigger.FireTrigger(BindingValue.Empty);
+                }
+                if (currentValue == MaxValue && Value != MaxValue && !BypassTriggers)
+                {
+                    _maxValueTrigger.FireTrigger(BindingValue.Empty);
                 }
                 AnimationFrameNumber = Convert.ToInt32(Clamp(Math.Round(Value * (AnimationFrameCount - 1)), 0, AnimationFrameCount - 1));
                 if (_detents.Contains(MinValue)) _detents.Remove(MinValue);
