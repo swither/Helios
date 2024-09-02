@@ -383,7 +383,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     _localViewports.DCSRestrictToVehicle = string.Join(",", softInterface.ImpersonatedVehicles);
                 } else
                 {
-                    _localViewports.DCSRestrictToVehicle = dcsInterface.VehicleName;
+                    if (dcsInterface.ExportModuleFormat == DCSExportModuleFormat.CaptZeenModule1)
+                    {
+                        _localViewports.DCSRestrictToVehicle = dcsInterface.ImpersonatedVehicleName;
+                    } else
+                    {
+                        _localViewports.DCSRestrictToVehicle = dcsInterface.VehicleName != "DCSGeneric" ? dcsInterface.VehicleName : "";
+                    }
                 }
             } else
             {
