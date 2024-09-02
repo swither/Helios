@@ -42,14 +42,14 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.ADI
             Point center = new Point(174d, 163d);
 
             _pitchCalibration = new CalibrationPointCollectionDouble(-360d, -1066d, 360d, 1066d);
-            _ball = new GaugeNeedle("{Helios}/Gauges/A-10/ADI/adi_backup_ball.xaml", center, new Size(225d, 1350d), new Point(112.5d, 677d));
-            _ball.Clip = new EllipseGeometry(center, 113d, 113d);
+            _ball = new GaugeNeedle("{Helios}/Gauges/A-10/ADI/adi_backup_ball.xaml", center, new Size(225d, 1200d), new Point(112.5d, 600d));
+            _ball.Clip = new EllipseGeometry(center, 112.5d, 112.5d);
             Components.Add(_ball);
 
             Components.Add(new GaugeImage("{Helios}/Gauges/A-10/ADI/adi_backup_inner_ring.xaml", new Rect(0d, 0d, 350d, 350d)));
 
-            _pitchAdjustCalibaration = new CalibrationPointCollectionDouble(0d, -30d, 1d, 30d);
-            _wings = new GaugeNeedle("{Helios}/Gauges/A-10/ADI/adi_backup_wings.xaml", center, new Size(188d, 37d), new Point(94d, 3d));
+            _pitchAdjustCalibaration = new CalibrationPointCollectionDouble(-1d, -35d, 1d, 35d);
+            _wings = new GaugeNeedle("{Helios}/Gauges/A-10/ADI/adi_backup_wings.xaml", center, new Size(188d, 37d), new Point(92d, 3d));
             Components.Add(_wings);
 
             _bankNeedle = new GaugeNeedle("{Helios}/Gauges/A-10/ADI/adi_bank_pointer.xaml", center, new Size(11d, 221d), new Point(5.5d, 110.5d));
@@ -70,8 +70,8 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.ADI
             _roll.Execute += new HeliosActionHandler(Bank_Execute);
             Actions.Add(_roll);
 
-            _pitchAdjustment = new HeliosValue(this, new BindingValue(0d), "", "Pitch adjustment offset", "Location of pitch reference wings.", "(0 to 1) 0 full up and 1 is full down.", BindingValueUnits.Numeric);
-            _pitchAdjustment.Execute += new HeliosActionHandler(PitchAdjsut_Execute);
+            _pitchAdjustment = new HeliosValue(this, new BindingValue(0d), "", "Pitch adjustment offset", "Location of pitch reference wings.", "(1 to -1) 1 full up and -1 is full down.", BindingValueUnits.Numeric);
+            _pitchAdjustment.Execute += new HeliosActionHandler(PitchAdjust_Execute);
             Actions.Add(_pitchAdjustment);
 
             _warningFlag = new HeliosValue(this, new BindingValue(false), "", "Warning Flag", "Indicates whether the warning flag is displayed.", "True if displayed.", BindingValueUnits.Boolean);
@@ -85,10 +85,10 @@ namespace GadrocsWorkshop.Helios.Gauges.A_10.ADI
             _ball.VerticalOffset = _pitchCalibration.Interpolate(e.Value.DoubleValue);
         }
 
-        void PitchAdjsut_Execute(object action, HeliosActionEventArgs e)
+        void PitchAdjust_Execute(object action, HeliosActionEventArgs e)
         {
             _pitchAdjustment.SetValue(e.Value, e.BypassCascadingTriggers);
-            _wings.VerticalOffset = -_pitchAdjustCalibaration.Interpolate(e.Value.DoubleValue);
+            _wings.VerticalOffset = _pitchAdjustCalibaration.Interpolate(e.Value.DoubleValue);
         }
 
         void Bank_Execute(object action, HeliosActionEventArgs e)

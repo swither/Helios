@@ -272,7 +272,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new ScaledNetworkValue(this, "63", 90d, "SAI", "Pitch", "Current pitch displayed on the SAI.", "", BindingValueUnits.Degrees));
             AddFunction(new ScaledNetworkValue(this, "64", -180d, "SAI", "Bank", "Current bank displayed on the SAI.", "", BindingValueUnits.Degrees));
             AddFunction(new FlagValue(this, "65", "SAI", "Warning Flag", "Displayed when SAI is caged or non-functional."));
-            AddFunction(new RotaryEncoder(this, SAI, BUTTON_3, "66", 0.1d, "SAI", "Pitch Trim / Cage"));
+            AddFunction(new Axis(this, SAI, BUTTON_3, "66", 0.1d, -1d, 1d, "SAI", "Pitch Trim / Cage"));
+
             AddFunction(new NetworkValue(this, "715", "SAI", "Pitch Adjust", "Current pitch adjustment setting", "-1 to 1", BindingValueUnits.Numeric));
             AddFunction(new NetworkValue(this, "717", "SAI", "Pitch Adjust neddle", "Current pitch adjustment needle position ", "-1 to 1", BindingValueUnits.Numeric));
 

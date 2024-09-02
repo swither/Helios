@@ -587,6 +587,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Gauges\A-10\ADI\adi_backup_ball.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\A-10\ADI\adi_backup_wings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Interfaces\DCS\Common\RemoteConfigurationSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1795,10 +1803,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Resource Include="Gauges\A-10\ADI\adi_backup_ball.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
     <Resource Include="Gauges\A-10\ADI\adi_backup_inner_ring.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1808,10 +1812,6 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Gauges\A-10\ADI\adi_backup_warning_flag.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Resource Include="Gauges\A-10\ADI\adi_backup_wings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
