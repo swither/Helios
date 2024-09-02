@@ -385,7 +385,15 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     if (dcsInterface.ExportModuleFormat == DCSExportModuleFormat.CaptZeenModule1)
                     {
-                        _localViewports.DCSRestrictToVehicle = dcsInterface.ImpersonatedVehicleName;
+                        switch (dcsInterface.ImpersonatedVehicleName)
+                        {
+                            case "SA342L":
+                                _localViewports.DCSRestrictToVehicle = "SA342,SA342L,SA342M,SA342Mistral,SA342Minigun";
+                                break;
+                            default:
+                                _localViewports.DCSRestrictToVehicle = dcsInterface.ImpersonatedVehicleName;
+                                break;
+                        }       
                     } else
                     {
                         _localViewports.DCSRestrictToVehicle = dcsInterface.VehicleName != "DCSGeneric" ? dcsInterface.VehicleName : "";
