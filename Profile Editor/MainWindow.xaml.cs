@@ -315,11 +315,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
 
             _processedChangedImages.Clear();
-            if (_changedImages && ConfigManager.ImageManager.ChangedImages.Count() > 0)
+            if (_changedImages && ConfigManager.ImageManager.ChangedImages.Count > 0)
             {
-                if(ConfigManager.ImageManager.ChangedImages.Count() <= 3) // We only process small numbers of changed images
+                if(ConfigManager.ImageManager.ChangedImages.Count <= 3) // We only process small numbers of changed images
                 {
-                    foreach (string imageName in ConfigManager.ImageManager.ChangedImages)
+                    List<string> changedImagesProtected = ConfigManager.ImageManager.ChangedImages.Cast<string>().ToList();
+                    ConfigManager.ImageManager.ChangedImages.Clear();
+                    foreach (string imageName in changedImagesProtected)
                     {
                         foreach (Monitor monitor in Profile.Monitors)
                         {
@@ -333,7 +335,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     {
                         ConfigManager.ImageManager.ChangedImages.Remove(ProcessedImageName);
                     }
-                    _changedImages = ConfigManager.ImageManager.ChangedImages.Count() == 0 ? false : true;
+                    _changedImages = ConfigManager.ImageManager.ChangedImages.Count == 0 ? false : true;
                 }
                 else
                 {
@@ -495,13 +497,20 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void OnImageFileChanged(object source, FileSystemEventArgs e)
         {
-            if (e.ChangeType.Equals(WatcherChangeTypes.Changed) & (System.IO.Path.GetExtension(e.Name.ToUpper()) == ".PNG" | System.IO.Path.GetExtension(e.Name.ToUpper()) == ".JPG" | System.IO.Path.GetExtension(e.Name.ToUpper()) == ".JPEG"))
+            if ((e.ChangeType.Equals(WatcherChangeTypes.Changed)|| e.ChangeType.Equals(WatcherChangeTypes.Renamed)) & (System.IO.Path.GetExtension(e.Name.ToUpper()) == ".PNG" | System.IO.Path.GetExtension(e.Name.ToUpper()) == ".JPG" | System.IO.Path.GetExtension(e.Name.ToUpper()) == ".JPEG"))
             {
                 if (!ConfigManager.ImageManager.ChangedImages.Contains(e.Name.ToLower()))
                 {
-                    ConfigManager.ImageManager.ChangedImages.Add(e.Name.ToLower());
-                    _changedImages = true;
-                    Logger.Debug($@"File Change detected '{e.Name}';");
+                    if (e.Name != null)
+                    {
+                        ConfigManager.ImageManager.ChangedImages.Add(e.Name.ToLower());
+                        _changedImages = true;
+                        Logger.Debug($@"File change detected for '{e.Name}';");
+                    }
+                    else
+                    {
+                        Logger.Debug($@"File change triggered but Name is null '{e}';");
+                    }
                 }
             }
         }
@@ -758,6 +767,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     IncludeSubdirectories = true,
                 };
                 _imageFileWatcher.Changed += new FileSystemEventHandler(OnImageFileChanged);
+                _imageFileWatcher.Renamed += new RenamedEventHandler(OnImageFileChanged);
             }
             ConfigManager.ImageManager.ChangedImages.Clear();
             _changedImages = false;
@@ -773,7 +783,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     ProcessVisualChildren(visual.Children, imageName);
                 }
 
-                if (visual is IRefreshableImage refreshableControl)
+                if (visual != null && visual is IRefreshableImage refreshableControl)
                 {
                     if (refreshableControl.ConditionalImageRefresh(imageName)){
                         Logger.Debug($"Image reload requested for control {visual.GetType().Name} \"{visual.Name}\" image: \"{imageName}\"");

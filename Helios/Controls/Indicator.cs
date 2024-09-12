@@ -295,8 +295,9 @@ namespace GadrocsWorkshop.Helios.Controls
         }
         public override bool ConditionalImageRefresh(string imageName)
         {
-            if (OffImage.ToLower().Replace("/", @"\") == imageName ||
-                OnImage.ToLower().Replace("/", @"\") == imageName)
+            ImageRefresh = false;
+            if ((OffImage?? "").ToLower().Replace("/", @"\") == imageName ||
+                (OnImage?? "").ToLower().Replace("/", @"\") == imageName)
             {
                 ImageRefresh = true;
                 Refresh();
