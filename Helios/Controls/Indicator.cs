@@ -51,7 +51,7 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             _referenceHeight = Height;
 
-            _allowInteraction = true;
+            _allowInteraction = false;
 
             _textFormat.VerticalAlignment = TextVerticalAlignment.Center;
             _textFormat.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(TextFormat_PropertyChanged);
@@ -351,7 +351,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override bool HitTest(Point location)
         {
-            return _allowInteraction;
+            return !_allowInteraction;
         }
 
         public override void WriteXml(XmlWriter writer)
@@ -370,7 +370,7 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 writer.WriteElementString("ScalingMode", ScalingMode.ToString());
             }
-            if (AllowInteraction == false)
+            if (AllowInteraction == true)
             {
                 writer.WriteStartElement("Interaction");
                 writer.WriteElementString("AllowInteraction", AllowInteraction.ToString(CultureInfo.InvariantCulture));
@@ -403,13 +403,19 @@ namespace GadrocsWorkshop.Helios.Controls
 
             if (reader.Name.Equals("Interaction"))
             {
-                reader.ReadStartElement("Interaction");
-                AllowInteraction = bool.Parse(reader.ReadElementString("AllowInteraction"));
-                reader.ReadEndElement();
+                if (!reader.IsEmptyElement)
+                {
+                    reader.ReadStartElement("Interaction");
+                    AllowInteraction = reader.Name.Equals("AllowInteraction") ? bool.Parse(reader.ReadElementString("AllowInteraction")) : false;
+                    reader.ReadEndElement();
+                } else
+                {
+                    reader.ReadStartElement("Interaction");
+                }
             }
             else
             {
-                AllowInteraction = true;
+                AllowInteraction = false;
             }
             base.ReadXml(reader);
 
