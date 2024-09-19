@@ -38,6 +38,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private HeliosTrigger _releasedTrigger;
 
         private bool _isContinuous;
+        private bool _continuousConfigurable = false;
 
         public PotentiometerKnob(string name)
             : base(name, new Size(100, 100))
@@ -78,7 +79,9 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public bool ContinuousConfigurable { get; } = false;
+        public bool ContinuousConfigurable { get => _continuousConfigurable;
+            set => _continuousConfigurable = value; 
+        }
 
         public double InitialValue
         {
@@ -224,7 +227,9 @@ namespace GadrocsWorkshop.Helios.Controls
         }
 
         internal double MaxRotation => InitialRotation + RotationTravel;
-
+ 
+        public virtual PushButtonType ButtonType { get; set; }
+        public virtual bool ClickConfigurable { get => false; }
         #endregion
 
         #region Actions
