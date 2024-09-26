@@ -27,8 +27,8 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
 
-    [HeliosControl("Helios.Base.PotentiometerIndicatorClickable", "Clickable Potentiometer with Indicator - Knob 1", "Potentiometers", typeof(RotaryKnobRenderer))]
-    public class PotentiometerIndcatorClickable : PotentiometerClickable, IConfigurableImageLocation, IRefreshableImage
+    [HeliosControl("Helios.Base.RotaryEncoderIndicatorClickable", "Clickable Rotary Encoder with Indicator - Knob 1", "Rotary Encoders", typeof(RotaryKnobRenderer))]
+    public class RotaryEncoderIndcatorClickable : RotaryEncoderClickable, IConfigurableImageLocation, IRefreshableImage
     {
         private string _indicatorOnNormalImageFile = "";
         private string _indicatorOnClickedImageFile = "";
@@ -44,10 +44,8 @@ namespace GadrocsWorkshop.Helios.Controls
         private HeliosAction _toggleAction;
         private HeliosValue _value;
 
-        public PotentiometerIndcatorClickable() : base("Clickable Potentiometer with Indicator")
+        public RotaryEncoderIndcatorClickable() : base("Rotary Encoder with Click and Indicator")
         {
-            ContinuousConfigurable = true;
-            IsContinuous = false;
             _indicatorOffClickedImageFile = PushedImage;
             _indicatorOffNormalImageFile = UnpushedImage;
             Pushed = false;
@@ -161,7 +159,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 case "Pushed":
                     if (AllowRotation != RotaryClickAllowRotationType.Both)
                     {
-                        Value = InitialValue;
+                        //Value = InitialValue;
                     }
                     break;
                 default:
@@ -186,10 +184,10 @@ namespace GadrocsWorkshop.Helios.Controls
         public override bool ConditionalImageRefresh(string imageName)
         {
             ImageRefresh = base.ConditionalImageRefresh(imageName);
-            _indicatorOffNormalImageFileNeedsRefresh = ((_indicatorOffNormalImageFile ?? "").ToLower().Replace("/", @"\") == imageName) && (_indicatorOffNormalImageFile != KnobImage);
-            _indicatorOffClickedImageFileNeedsRefresh = ((_indicatorOffClickedImageFile ?? "").ToLower().Replace("/", @"\") == imageName) && (_indicatorOffClickedImageFile != KnobImage);
-            _indicatorOnNormalImageFileNeedsRefresh = ((_indicatorOnNormalImageFile ?? "").ToLower().Replace("/", @"\") == imageName) && (_indicatorOnNormalImageFile != KnobImage);
-            _indicatorOnClickedImageFileNeedsRefresh = ((_indicatorOnClickedImageFile ?? "").ToLower().Replace("/", @"\") == imageName) && (_indicatorOnClickedImageFile != KnobImage);
+            _indicatorOffNormalImageFileNeedsRefresh = ((_indicatorOffNormalImageFile ?? "").ToLower().Replace("/", @"\") == imageName)  && (_indicatorOffNormalImageFile != KnobImage);
+            _indicatorOffClickedImageFileNeedsRefresh = ((_indicatorOffClickedImageFile ?? "").ToLower().Replace("/", @"\") == imageName)  && (_indicatorOffClickedImageFile != KnobImage);
+            _indicatorOnNormalImageFileNeedsRefresh = ((_indicatorOnNormalImageFile ?? "").ToLower().Replace("/", @"\") == imageName)  && (_indicatorOnNormalImageFile != KnobImage);
+            _indicatorOnClickedImageFileNeedsRefresh = ((_indicatorOnClickedImageFile ?? "").ToLower().Replace("/", @"\") == imageName)  && (_indicatorOnClickedImageFile != KnobImage);
 
             return ImageRefresh;
         }

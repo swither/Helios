@@ -108,7 +108,6 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
         public virtual PushButtonType ButtonType { get; set; }
-        public virtual bool ClickConfigurable { get => false; }
 
         #endregion
         #region Actions

@@ -56,6 +56,8 @@ namespace GadrocsWorkshop.Helios.Controls
             get => _allowRotation;
             set => _allowRotation = value;
         }
+        public virtual bool ClickConfigurable { get => false; }
+        public virtual bool IndicatorConfigurable { get => false; }
 
         /// <summary>
         /// Performs a replace of text in this controls image names

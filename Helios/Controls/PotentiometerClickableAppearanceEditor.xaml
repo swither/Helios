@@ -38,6 +38,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -61,15 +62,18 @@
             <Label.ToolTip>Image used for the encoder's knob when clicked.</Label.ToolTip> Clicked Image
         </Label>
         <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="6" ImageFilename="{Binding Control.IndicatorOnClickedImage, Mode=TwoWay}" Style="{StaticResource ShowIfIndicatorConfigurable}"/>
-
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="7" Margin="4,10,2,2" Style="{StaticResource Heading2}">Rotation</TextBlock>
-        <Label Grid.Column="0" Grid.Row="8" FontSize="10" HorizontalAlignment="Right">
+        <Label Grid.Column="0" Grid.Row="7" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource ShowIfIndicatorConfigurable}">
+            <Label.ToolTip>Display the indicator On images in Profile Editor.  This value is not persisted.</Label.ToolTip> Show Indicator On Images
+        </Label>
+        <CheckBox Grid.Column="2" Grid.Row="7" Margin="3,4,10,0" IsChecked="{Binding Control.On}" Style="{StaticResource ShowIfIndicatorConfigurable}"   />
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="8" Margin="4,10,2,2" Style="{StaticResource Heading2}">Rotation</TextBlock>
+        <Label Grid.Column="0" Grid.Row="9" FontSize="10" HorizontalAlignment="Right">
             <Label.ToolTip>Position of knob at the pots minimum value.</Label.ToolTip> Initial
         </Label>
-        <Slider Grid.Column="1" Grid.Row="8" Minimum="0" Maximum="360" Value="{Binding Control.InitialRotation}" Margin="2" GotFocus="InitialRotation_GotFocus"/>
-        <Label Grid.Column="0" Grid.Row="9" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource HideIfContinuous}">
+        <Slider Grid.Column="1" Grid.Row="9" Minimum="0" Maximum="360" Value="{Binding Control.InitialRotation}" Margin="2" GotFocus="InitialRotation_GotFocus"/>
+        <Label Grid.Column="0" Grid.Row="10" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource HideIfContinuous}">
             <Label.ToolTip>Relative rotation in degrees that is possible starting from the InitialRotation point.</Label.ToolTip> Travel
         </Label>
-        <Slider Grid.Column="1" Grid.Row="9" Minimum="0" Maximum="360" Value="{Binding Control.RotationTravel}" Margin="2" GotFocus="RotationTravel_GotFocus" Style="{StaticResource HideIfContinuous}"/>
+        <Slider Grid.Column="1" Grid.Row="10" Minimum="0" Maximum="360" Value="{Binding Control.RotationTravel}" Margin="2" GotFocus="RotationTravel_GotFocus" Style="{StaticResource HideIfContinuous}"/>
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>

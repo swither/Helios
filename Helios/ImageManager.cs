@@ -18,11 +18,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Resources;
 using GadrocsWorkshop.Helios.Util;
 using NLog;
@@ -194,6 +196,22 @@ namespace GadrocsWorkshop.Helios
             if (_cacheObjects && !request.Options.HasFlag(LoadImageOptions.ReloadIfChangedExternally))
             {
                 _objectCache.Add(request.Key, source);
+            }
+            ///ToDo:  Needs investigation about whether ReloadIfChangedExternally is still needed.
+            ///We want to update the cache entry when the image has been changed externally, however the key 
+            ///contains the ImageOptions so for now we calculate a new key to allow updating.
+            if (_cacheObjects && request.Options.HasFlag(LoadImageOptions.ReloadIfChangedExternally))
+            {
+                ImageLoadRequest adjustedRequest = new ImageLoadRequest(request.Uri, request.Width, request.Height, LoadImageOptions.None);
+                if (_objectCache.ContainsKey(adjustedRequest.Key))
+                {
+                    _objectCache[adjustedRequest.Key] = source;
+                }
+                else
+                {
+                    _objectCache.Add(adjustedRequest.Key, source);
+                }
+
             }
             return source;
         }
