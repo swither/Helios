@@ -393,8 +393,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Interfaces\Helios.CH47F.hif.json" />
-    <None Include="Interfaces\Helios.CH47F.hif.lua" />
+    <Content Include="Interfaces\Helios.CH47F.hif.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Interfaces\Helios.CH47F.hif.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="..\Helios.targets" />
 </Project>

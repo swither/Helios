@@ -35,7 +35,8 @@ namespace GadrocsWorkshop.Helios.Controls
         private PushButtonType _buttonType = PushButtonType.Toggle;
         private string _pushedImageFile = "{Helios}/Images/Knobs/knob6.png";
         private string _unpushedImageFile = "{Helios}/Images/Knobs/knob1.png";
-        private string _knobImageFile = "{Helios}/Images/Knobs/knob1.png";
+        private bool _pushedImageFileNeedsRefresh = false;
+        private bool _unpushedImageFileNeedsRefresh = false;
 
         private bool _pushed;
         private bool _closed;
@@ -58,7 +59,7 @@ namespace GadrocsWorkshop.Helios.Controls
             IsContinuous = false;
             _centreZone = new Rect(Left + Width / 3, Top + Height / 3, Width / 3, Height / 3);
             _buttonType = PushButtonType.Toggle;
-            _knobImageFile = _unpushedImageFile = KnobImage;
+            _unpushedImageFile = KnobImage;
 
             _pushedTrigger = new HeliosTrigger(this, "", "", "button pushed", "Fired when this button is pushed.", "Always returns true.", BindingValueUnits.Boolean);
             _releasedTrigger = new HeliosTrigger(this, "", "", "button released", "Fired when this button is released.", "Always returns false.", BindingValueUnits.Boolean);
@@ -138,6 +139,18 @@ namespace GadrocsWorkshop.Helios.Controls
                 }
             }
         }
+        protected bool PushedImageNeedsRefresh
+        {
+            get => _pushedImageFileNeedsRefresh;
+            set => _pushedImageFileNeedsRefresh = value;
+        }
+
+        protected bool UnpushedImageNeedsRefresh
+        {
+            get => _unpushedImageFileNeedsRefresh;
+            set => _unpushedImageFileNeedsRefresh = value;
+        }
+
         public bool Pushed
         {
             get
@@ -192,10 +205,7 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             get => true;
         }
-        public virtual bool IndicatorConfigurable
-        {
-            get => false;
-        }
+
         #endregion
         void PushedValue_Execute(object action, HeliosActionEventArgs e)
         {
@@ -250,6 +260,12 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             if(args.PropertyName == "Pushed" || args.PropertyName == "PushedImage" || args.PropertyName == "UnpushedImage" )
             {
+                ImageRefresh = Pushed ? _pushedImageFileNeedsRefresh : _unpushedImageFileNeedsRefresh;
+                if(ImageRefresh)
+                {
+                    _pushedImageFileNeedsRefresh = Pushed ? false : _pushedImageFileNeedsRefresh;
+                    _unpushedImageFileNeedsRefresh = Pushed ? _unpushedImageFileNeedsRefresh : false;
+                }
                 KnobImage = Pushed ? PushedImage : UnpushedImage;
             }
             OnDisplayUpdate();
@@ -283,20 +299,14 @@ namespace GadrocsWorkshop.Helios.Controls
             base.ReplaceImageNames(oldName, newName);
             PushedImage = string.IsNullOrEmpty(PushedImage) ? PushedImage : string.IsNullOrEmpty(oldName) ? newName + PushedImage : PushedImage.Replace(oldName, newName);
             UnpushedImage = string.IsNullOrEmpty(UnpushedImage) ? UnpushedImage : string.IsNullOrEmpty(oldName) ? newName + UnpushedImage : UnpushedImage.Replace(oldName, newName);
-            _knobImageFile = string.IsNullOrEmpty(_knobImageFile) ? _knobImageFile : string.IsNullOrEmpty(oldName) ? newName + _knobImageFile : _knobImageFile.Replace(oldName, newName);
         }
 
         public override bool ConditionalImageRefresh(string imageName)
         {
             ImageRefresh = base.ConditionalImageRefresh(imageName);
-            
-            if ((PushedImage ?? "").ToLower().Replace("/", @"\") == imageName ||
-                (UnpushedImage ?? "").ToLower().Replace("/", @"\") == imageName ||
-                (_knobImageFile ?? "").ToLower().Replace("/", @"\") == imageName)
-            {
-                ImageRefresh = true;
-                Refresh();
-            }
+            _pushedImageFileNeedsRefresh = ((PushedImage ?? "").ToLower().Replace("/", @"\") == imageName) && (PushedImage != KnobImage);
+            _unpushedImageFileNeedsRefresh = ((UnpushedImage ?? "").ToLower().Replace("/", @"\") == imageName) && (UnpushedImage != KnobImage);
+
             return ImageRefresh;
         }
 
