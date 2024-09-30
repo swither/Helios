@@ -16,6 +16,7 @@
 
 using GadrocsWorkshop.Helios.Controls.Capabilities;
 using System.Windows;
+using System.Windows.Media;
 using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
 namespace GadrocsWorkshop.Helios.Controls
@@ -68,7 +69,14 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             KnobImage = string.IsNullOrEmpty(KnobImage) ? KnobImage : string.IsNullOrEmpty(oldName) ? newName + KnobImage : KnobImage.Replace(oldName, newName);
         }
-
+        /// <summary>
+        /// Loads / Reloads an image into cache.  This is used when the image has been changed externally, and the image is not currently rendered. 
+        /// </summary>
+        /// <param name="imageName">Name of the non-rendered image</param>
+        protected void ReloadImage(string imageName)
+        {
+            ImageSource _ = (ConfigManager.ImageManager as IImageManager3).LoadImage(imageName, ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None);
+        }
         public double KnobRotation
         {
             get { return this._rotation; }

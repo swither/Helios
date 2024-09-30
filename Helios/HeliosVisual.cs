@@ -355,6 +355,7 @@ namespace GadrocsWorkshop.Helios
                 double oldValue = _rectangle.Width;
                 _rectangle.Width = newValue;
                 OnPropertyChanged("Width", oldValue, newValue, true);
+                ScaleChildren(Math.Max(newValue / oldValue, 0d), 1d);
                 UpdateRectangle();
                 Refresh();
                 OnResized();
@@ -381,6 +382,7 @@ namespace GadrocsWorkshop.Helios
                 double oldValue = _rectangle.Height;
                 _rectangle.Height = newValue;
                 OnPropertyChanged("Height", oldValue, newValue, true);
+                ScaleChildren(1d, Math.Max(newValue / oldValue, 0d));
                 UpdateRectangle();
                 Refresh();
                 OnResized();

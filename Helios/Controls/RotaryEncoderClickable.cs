@@ -25,15 +25,13 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Xml;
 
-    [HeliosControl("Helios.Base.RotaryEncoderClickable", "Clickable RotaryEncoder - Knob 6", "Rotary Encoders", typeof(RotaryKnobRenderer))]
+    [HeliosControl("Helios.Base.RotaryEncoderClickable", "Rotary Encoder Clickable - Knob 6", "Rotary Encoders", typeof(RotaryKnobRenderer))]
     public class RotaryEncoderClickable : RotaryEncoder, IConfigurableImageLocation, IRefreshableImage
     {
         private Rect _centreZone;
         private PushButtonType _buttonType;
         private string _pushedImageFile = "{Helios}/Images/Knobs/knob7.png";
         private string _unpushedImageFile = "{Helios}/Images/Knobs/knob6.png";
-        private bool _pushedImageFileNeedsRefresh = false;
-        private bool _unpushedImageFileNeedsRefresh = false;
 
         private bool _pushed;
         private bool _closed;
@@ -96,7 +94,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public string PushedImage
+        public virtual string PushedImage
         {
             get
             {
@@ -109,12 +107,16 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     string oldValue = _pushedImageFile;
                     _pushedImageFile = value;
+                    if (Pushed && !On)
+                    {
+                        KnobImage = value;
+                    }
                     OnPropertyChanged("PushedImage", oldValue, value, true);
                     Refresh();
                 }
             }
         }
-        public string UnpushedImage
+        public virtual string UnpushedImage
         {
             get
             {
@@ -127,21 +129,14 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     string oldValue = _unpushedImageFile;
                     _unpushedImageFile = value;
+                    if (!Pushed && !On)
+                    {
+                        KnobImage = value;
+                    }
                     OnPropertyChanged("UnpushedImage", oldValue, value, true);
                     Refresh();
                 }
             }
-        }
-        protected bool PushedImageNeedsRefresh
-        {
-            get => _pushedImageFileNeedsRefresh;
-            set => _pushedImageFileNeedsRefresh = value;
-        }
-
-        protected bool UnpushedImageNeedsRefresh
-        {
-            get => _unpushedImageFileNeedsRefresh;
-            set => _unpushedImageFileNeedsRefresh = value;
         }
         public bool Pushed
         {
@@ -161,7 +156,14 @@ namespace GadrocsWorkshop.Helios.Controls
                 }
             }
         }
-
+        public virtual bool On
+        {
+            get => false;
+            set
+            {
+                // no code
+            }
+        }
         public bool IsClosed
         {
             get
@@ -247,19 +249,17 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnPropertyChanged(PropertyNotificationEventArgs args)
         {
-            if (args.PropertyName == "Pushed" || args.PropertyName == "PushedImage" || args.PropertyName == "UnpushedImage")
+            switch (args.PropertyName)
             {
-                ImageRefresh = Pushed ? _pushedImageFileNeedsRefresh : _unpushedImageFileNeedsRefresh;
-                if (ImageRefresh)
-                {
-                    _pushedImageFileNeedsRefresh = Pushed ? false : _pushedImageFileNeedsRefresh;
-                    _unpushedImageFileNeedsRefresh = !Pushed ? false : _unpushedImageFileNeedsRefresh;
-                }
-                KnobImage = Pushed ? PushedImage : UnpushedImage;
+                case "Pushed":
+                    KnobImage = Pushed ? PushedImage : UnpushedImage;
+                    OnDisplayUpdate();
+                    Refresh();
+                    break;
+                default:
+                    base.OnPropertyChanged(args);
+                    break;
             }
-            OnDisplayUpdate();
-            Refresh();
-            base.OnPropertyChanged(args);
         }
 
         public override void Reset()
@@ -293,12 +293,18 @@ namespace GadrocsWorkshop.Helios.Controls
         public override bool ConditionalImageRefresh(string imageName)
         {
             ImageRefresh = base.ConditionalImageRefresh(imageName);
-            _pushedImageFileNeedsRefresh = ((PushedImage ?? "").ToLower().Replace("/", @"\") == imageName) && (PushedImage != KnobImage);
-            _unpushedImageFileNeedsRefresh = ((UnpushedImage ?? "").ToLower().Replace("/", @"\") == imageName) && (UnpushedImage != KnobImage);
-
+            if ((PushedImage ?? "").ToLower().Replace("/", @"\") == imageName && PushedImage != KnobImage)
+            {
+                ImageRefresh = true;
+                ReloadImage(imageName);
+            }
+            if ((UnpushedImage ?? "").ToLower().Replace("/", @"\") == imageName && UnpushedImage != KnobImage)
+            {
+                ImageRefresh = true;
+                ReloadImage(imageName);
+            }
             return ImageRefresh;
         }
-
         public override void MouseDown(Point location)
         {
             if (_centreZone.Contains(location))
