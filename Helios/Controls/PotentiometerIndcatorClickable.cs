@@ -27,17 +27,13 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
 
-    [HeliosControl("Helios.Base.PotentiometerIndicatorClickable", "Clickable Potentiometer with Indicator - Knob 1", "Potentiometers", typeof(RotaryKnobRenderer))]
+    [HeliosControl("Helios.Base.PotentiometerIndicatorClickable", "Potentiometer Clickable with Indicator - Knob 1", "Potentiometers", typeof(RotaryKnobRenderer))]
     public class PotentiometerIndcatorClickable : PotentiometerClickable, IConfigurableImageLocation, IRefreshableImage
     {
         private string _indicatorOnNormalImageFile = "";
         private string _indicatorOnClickedImageFile = "";
         private string _indicatorOffClickedImageFile = "";
         private string _indicatorOffNormalImageFile = "";
-        private bool _indicatorOnNormalImageFileNeedsRefresh = false;
-        private bool _indicatorOnClickedImageFileNeedsRefresh = false;
-        private bool _indicatorOffClickedImageFileNeedsRefresh = false;
-        private bool _indicatorOffNormalImageFileNeedsRefresh = false;
 
         private bool _on;
 
@@ -145,29 +141,18 @@ namespace GadrocsWorkshop.Helios.Controls
             switch (args.PropertyName)
             {
                 case "On":
-                    bool unpushedNeedsRefresh = UnpushedImageNeedsRefresh;
-                    bool pushedNeedsRefresh = PushedImageNeedsRefresh;
-
-                    UnpushedImageNeedsRefresh = On ? _indicatorOnNormalImageFileNeedsRefresh : _indicatorOffNormalImageFileNeedsRefresh;
-                    UnpushedImage = On ? IndicatorOnNormalImage : _indicatorOffNormalImageFile;
-                    PushedImageNeedsRefresh = On ? _indicatorOnClickedImageFileNeedsRefresh : _indicatorOffClickedImageFileNeedsRefresh;
-                    PushedImage = On ? IndicatorOnClickedImage : _indicatorOffClickedImageFile;
-
-                    _indicatorOnNormalImageFileNeedsRefresh = On ? false : _indicatorOnNormalImageFileNeedsRefresh || unpushedNeedsRefresh;
-                    _indicatorOnClickedImageFileNeedsRefresh = On ? false : _indicatorOnClickedImageFileNeedsRefresh || pushedNeedsRefresh;
-                    _indicatorOffClickedImageFileNeedsRefresh = !On ? false : _indicatorOffNormalImageFileNeedsRefresh || unpushedNeedsRefresh;
-                    _indicatorOffNormalImageFileNeedsRefresh = !On ? false : _indicatorOffClickedImageFileNeedsRefresh || pushedNeedsRefresh;
-                    return;
                 case "Pushed":
+                    KnobImage = Pushed ? (On ? _indicatorOnClickedImageFile : _indicatorOffClickedImageFile) : (On ? _indicatorOnNormalImageFile : _indicatorOffNormalImageFile);
+
                     if (AllowRotation != RotaryClickAllowRotationType.Both)
                     {
                         Value = InitialValue;
                     }
                     break;
                 default:
+                    base.OnPropertyChanged(args);
                     break;
             }
-            base.OnPropertyChanged(args);
         }
         /// <summary>
         /// Performs a replace of text in this controls image names
@@ -177,23 +162,26 @@ namespace GadrocsWorkshop.Helios.Controls
         public new void ReplaceImageNames(string oldName, string newName)
         {
             base.ReplaceImageNames(oldName, newName);
-            IndicatorOnNormalImage = string.IsNullOrEmpty(_indicatorOnNormalImageFile) ? _indicatorOnNormalImageFile : string.IsNullOrEmpty(oldName) ? newName + _indicatorOnNormalImageFile : _indicatorOnNormalImageFile.Replace(oldName, newName);
-            _indicatorOffNormalImageFile = string.IsNullOrEmpty(_indicatorOffNormalImageFile) ? _indicatorOffNormalImageFile : string.IsNullOrEmpty(oldName) ? newName + _indicatorOffNormalImageFile : _indicatorOffNormalImageFile.Replace(oldName, newName);
-            IndicatorOnClickedImage = string.IsNullOrEmpty(_indicatorOnClickedImageFile) ? _indicatorOnClickedImageFile : string.IsNullOrEmpty(oldName) ? newName + _indicatorOnClickedImageFile : _indicatorOnClickedImageFile.Replace(oldName, newName);
-            _indicatorOffClickedImageFile = string.IsNullOrEmpty(_indicatorOffClickedImageFile) ? _indicatorOffClickedImageFile : string.IsNullOrEmpty(oldName) ? newName + _indicatorOffClickedImageFile : _indicatorOffClickedImageFile.Replace(oldName, newName);
+            IndicatorOnNormalImage = string.IsNullOrEmpty(IndicatorOnNormalImage) ? IndicatorOnNormalImage : string.IsNullOrEmpty(oldName) ? newName + IndicatorOnNormalImage : IndicatorOnNormalImage.Replace(oldName, newName);
+            IndicatorOnClickedImage = string.IsNullOrEmpty(IndicatorOnClickedImage) ? IndicatorOnClickedImage : string.IsNullOrEmpty(oldName) ? newName + IndicatorOnClickedImage : IndicatorOnClickedImage.Replace(oldName, newName);
         }
 
         public override bool ConditionalImageRefresh(string imageName)
         {
             ImageRefresh = base.ConditionalImageRefresh(imageName);
-            _indicatorOffNormalImageFileNeedsRefresh = ((_indicatorOffNormalImageFile ?? "").ToLower().Replace("/", @"\") == imageName) && (_indicatorOffNormalImageFile != KnobImage);
-            _indicatorOffClickedImageFileNeedsRefresh = ((_indicatorOffClickedImageFile ?? "").ToLower().Replace("/", @"\") == imageName) && (_indicatorOffClickedImageFile != KnobImage);
-            _indicatorOnNormalImageFileNeedsRefresh = ((_indicatorOnNormalImageFile ?? "").ToLower().Replace("/", @"\") == imageName) && (_indicatorOnNormalImageFile != KnobImage);
-            _indicatorOnClickedImageFileNeedsRefresh = ((_indicatorOnClickedImageFile ?? "").ToLower().Replace("/", @"\") == imageName) && (_indicatorOnClickedImageFile != KnobImage);
+            if ((IndicatorOnNormalImage ?? "").ToLower().Replace("/", @"\") == imageName && KnobImage != imageName)
+            {
+                ImageRefresh = true;
+                ReloadImage(imageName);
+            }
+            if ((IndicatorOnClickedImage ?? "").ToLower().Replace("/", @"\") == imageName && KnobImage != imageName)
+            {
+                ImageRefresh = true;
+                ReloadImage(imageName);
+            }
 
             return ImageRefresh;
         }
-
         public override void MouseDown(Point location)
         {
             base.MouseDown(location);
@@ -208,13 +196,12 @@ namespace GadrocsWorkshop.Helios.Controls
             IndicatorOnClickedImage = reader.ReadElementString("PushedIndicatorOnImage");
             IndicatorOnNormalImage = reader.ReadElementString("UnpushedIndicatorOnImage");
             base.ReadXml(reader);
-            _indicatorOffClickedImageFile = PushedImage;
-            _indicatorOffNormalImageFile = UnpushedImage;
-
+            KnobImage = _indicatorOffNormalImageFile;
         }
 
         public override void WriteXml(XmlWriter writer)
         {
+            On = false;
             writer.WriteElementString("PushedIndicatorOnImage", IndicatorOnClickedImage);
             writer.WriteElementString("UnpushedIndicatorOnImage", IndicatorOnNormalImage);
             base.WriteXml(writer);
