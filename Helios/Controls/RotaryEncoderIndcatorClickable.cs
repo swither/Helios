@@ -30,10 +30,9 @@ namespace GadrocsWorkshop.Helios.Controls
     [HeliosControl("Helios.Base.RotaryEncoderIndicatorClickable", "Rotary Encoder Clickable with Indicator - Knob 1", "Rotary Encoders", typeof(RotaryKnobRenderer))]
     public class RotaryEncoderIndcatorClickable : RotaryEncoderClickable, IConfigurableImageLocation, IRefreshableImage
     {
-        private string _indicatorOnNormalImageFile = "";
-        private string _indicatorOnClickedImageFile = "";
-        private string _indicatorOffClickedImageFile = "";
-        private string _indicatorOffNormalImageFile = "";
+        private string _indicatorOnNormalImage = "";
+        private string _indicatorOnClickedImage = "";
+
 
         private bool _on;
 
@@ -55,7 +54,7 @@ namespace GadrocsWorkshop.Helios.Controls
         }
         #region Properties
 
-        public bool On
+        public override bool On
         {
             get
             {
@@ -75,56 +74,23 @@ namespace GadrocsWorkshop.Helios.Controls
                 }
             }
         }
-        public override string PushedImage
+                public string IndicatorOnNormalImage
         {
             get
             {
-                return _indicatorOffClickedImageFile;
+                return _indicatorOnNormalImage;
             }
             set
             {
-                if ((_indicatorOffClickedImageFile == null && value != null)
-                    || (_indicatorOffClickedImageFile != null && !_indicatorOffClickedImageFile.Equals(value)))
+                if ((_indicatorOnNormalImage == null && value != null)
+                    || (_indicatorOnNormalImage != null && !_indicatorOnNormalImage.Equals(value)))
                 {
-                    string oldValue = _indicatorOffClickedImageFile;
-                    _indicatorOffClickedImageFile = value;
-                    OnPropertyChanged("IndicatorOffClickedImage", oldValue, value, true);
-                    Refresh();
-                }
-            }
-        }
-        public override string UnpushedImage
-        {
-            get
-            {
-                return _indicatorOffNormalImageFile;
-            }
-            set
-            {
-                if ((_indicatorOffNormalImageFile == null && value != null)
-                    || (_indicatorOffNormalImageFile != null && !_indicatorOffNormalImageFile.Equals(value)))
-                {
-                    string oldValue = _indicatorOffNormalImageFile;
-                    _indicatorOffNormalImageFile = value;
-                    OnPropertyChanged("IndicatorOffNormalImage", oldValue, value, true);
-                    Refresh();
-                }
-            }
-        }
-
-        public string IndicatorOnNormalImage
-        {
-            get
-            {
-                return _indicatorOnNormalImageFile;
-            }
-            set
-            {
-                if ((_indicatorOnNormalImageFile == null && value != null)
-                    || (_indicatorOnNormalImageFile != null && !_indicatorOnNormalImageFile.Equals(value)))
-                {
-                    string oldValue = _indicatorOnNormalImageFile;
-                    _indicatorOnNormalImageFile = value;
+                    string oldValue = _indicatorOnNormalImage;
+                    _indicatorOnNormalImage = value;
+                    if (!Pushed && On)
+                    {
+                        KnobImage = value;
+                    }
                     OnPropertyChanged("IndicatorOnNormalImage", oldValue, value, true);
                     Refresh();
                 }
@@ -134,15 +100,19 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             get
             {
-                return _indicatorOnClickedImageFile;
+                return _indicatorOnClickedImage;
             }
             set
             {
-                if ((_indicatorOnClickedImageFile == null && value != null)
-                    || (_indicatorOnClickedImageFile != null && !_indicatorOnClickedImageFile.Equals(value)))
+                if ((_indicatorOnClickedImage == null && value != null)
+                    || (_indicatorOnClickedImage != null && !_indicatorOnClickedImage.Equals(value)))
                 {
-                    string oldValue = _indicatorOnClickedImageFile;
-                    _indicatorOnClickedImageFile = value;
+                    string oldValue = _indicatorOnClickedImage;
+                    _indicatorOnClickedImage = value;
+                    if (Pushed && On)
+                    {
+                        KnobImage = value;
+                    }
                     OnPropertyChanged("IndicatorOnClickedImage", oldValue, value, true);
                     Refresh();
                 }            
@@ -174,7 +144,7 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 case "On":
                 case "Pushed":
-                    KnobImage = Pushed ? (On ? _indicatorOnClickedImageFile : _indicatorOffClickedImageFile) : (On ? _indicatorOnNormalImageFile : _indicatorOffNormalImageFile);
+                    KnobImage = Pushed ? (On ? _indicatorOnClickedImage : PushedImage) : (On ? _indicatorOnNormalImage : UnpushedImage);
                     if (AllowRotation != RotaryClickAllowRotationType.Both)
                     {
                         // No code for encoder
@@ -228,12 +198,10 @@ namespace GadrocsWorkshop.Helios.Controls
             IndicatorOnClickedImage = reader.ReadElementString("PushedIndicatorOnImage");
             IndicatorOnNormalImage = reader.ReadElementString("UnpushedIndicatorOnImage");
             base.ReadXml(reader);
-            KnobImage = _indicatorOffNormalImageFile;
         }
 
         public override void WriteXml(XmlWriter writer)
         {
-            On = false;
             writer.WriteElementString("PushedIndicatorOnImage", IndicatorOnClickedImage);
             writer.WriteElementString("UnpushedIndicatorOnImage", IndicatorOnNormalImage);
             base.WriteXml(writer);

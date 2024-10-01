@@ -107,6 +107,10 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     string oldValue = _pushedImageFile;
                     _pushedImageFile = value;
+                    if (Pushed && !On)
+                    {
+                        KnobImage = value;
+                    }
                     OnPropertyChanged("PushedImage", oldValue, value, true);
                     Refresh();
                 }
@@ -125,6 +129,10 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     string oldValue = _unpushedImageFile;
                     _unpushedImageFile = value;
+                    if (!Pushed && !On)
+                    {
+                        KnobImage = value;
+                    }
                     OnPropertyChanged("UnpushedImage", oldValue, value, true);
                     Refresh();
                 }
@@ -148,7 +156,14 @@ namespace GadrocsWorkshop.Helios.Controls
                 }
             }
         }
-
+        public virtual bool On
+        {
+            get => false;
+            set
+            {
+                // no code
+            }
+        }
         public bool IsClosed
         {
             get
