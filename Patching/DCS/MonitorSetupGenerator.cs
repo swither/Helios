@@ -301,8 +301,14 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         internal void ConvertToDCS(ref Rect windowsRect)
         {
-            windowsRect.Offset(-_parent.Rendered.TopLeft.X, -_parent.Rendered.TopLeft.Y);
-            windowsRect.Scale(ConfigManager.DisplayManager.PixelsPerDip, ConfigManager.DisplayManager.PixelsPerDip);
+            if (!windowsRect.IsEmpty)
+            {
+                windowsRect.Offset(-_parent.Rendered.TopLeft.X, -_parent.Rendered.TopLeft.Y);
+                windowsRect.Scale(ConfigManager.DisplayManager.PixelsPerDip, ConfigManager.DisplayManager.PixelsPerDip);
+            } else
+            {
+                windowsRect = _parent.Rendered;
+            }
         }
 
         private bool TryCreateViewport(ICollection<FormattableString> lines, KeyValuePair<string, Rect> viewport, string indent, out FormattableString code)

@@ -205,7 +205,7 @@ namespace GadrocsWorkshop.Helios
                 }
 
                 CheckedDisplays = ConfigManager.DisplayManager.Displays;
-                _validLayout = true;
+                _validLayout = CheckedDisplays.Count == Monitors.Count;
                 foreach (Monitor display in Monitors)
                 {
                     if (CheckedDisplays.Any(systemDisplay =>
