@@ -586,7 +586,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             AddFunction(new PushButton(this, UFC, "3029", "122", "UFC", "UFC Keyboard Pushbutton ENT", "1", "0", "%1d"));
             AddFunction(new PushButton(this, UFC, "3015", "99", "UFC", "UFC I/P Pushbutton", "1", "0", "%1d"));
             AddFunction(new PushButton(this, UFC, "3017", "110", "UFC", "UFC Emission Control Pushbutton", "1", "0", "%1d"));
-            AddFunction(new Switch(this, UFC, "107", new SwitchPosition[] { new SwitchPosition("1.0", "1", "3016"), new SwitchPosition("0.5", "OFF", "3016"), new SwitchPosition("0.0", "2", "3016") }, "UFC", "UFC ADF Function Select Switch", "%0.1f"));
+            AddFunction(new Switch(this, UFC, "107", new SwitchPosition[] { new SwitchPosition("1.0", "1", "3016"), new SwitchPosition("0.0", "OFF", "3016"), new SwitchPosition("-1.0", "2", "3016") }, "UFC", "UFC ADF Function Select Switch", "%0.1f"));
             AddFunction(new Axis(this, UFC, "3030", "108", 0.1d, 0d, 1d, "UFC", "UFC COMM 1 Volume Control Knob"));
             AddFunction(new Axis(this, UFC, "3031", "123", 0.1d, 0d, 1d, "UFC", "UFC COMM 2 Volume Control Knob"));
             AddFunction(new Axis(this, UFC, "3032", "109", 0.1d, 0d, 1d, "UFC", "UFC Brightness Control Knob"));
