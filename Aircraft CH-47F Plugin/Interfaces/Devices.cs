@@ -25,6 +25,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.CH47F
         MFD_CENTER,
         MFD_PILOT_INBOARD,
         MFD_PILOT_OUTBOARD,
+        FD,
         ADC,
         DTU,
         CAAS,
@@ -50,8 +51,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.CH47F
         EMERGENCY_PANEL,
         LIGHTING_REFLECTS,
         TERTIARY_REFLECTS,
-        FD,
-        TURN,
         GPS1,
         GPS2,
         EGI1,
@@ -68,13 +67,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.CH47F
         ARC_186,
         ARC_201,
         ARC_220,
-        COMM_PANEL_LEFT, // Communications Panel (COMM - LEFT)
-        COMM_PANEL_RIGHT, // Communications Panel (COMM - RIGHT)
+        COMM_PANEL_LEFT,
+        COMM_PANEL_RIGHT,
         COMM_PANEL_TROOP_COMMANDER,
         COMM_PANEL_LH_GUNNER,
         COMM_PANEL_RH_GUNNER,
         COMM_PANEL_AFT_ENGINEER,
-        INTERCOM, // must be last in radio group
+        TURN_IND,
+        INTERCOM,
         CREWE,
         WORKSTATIONS,
         AFT_WORKSTATION,
@@ -82,11 +82,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.CH47F
         MACROS,
         ARCADE,
         KNEEBOARD,
-        AN_APR39, // RWR
-        AN_AAR57, // CMWS
-        AN_ALE47, // ICMDS
-        VPM1, // Video Processing Module
-        VPM2, // Video Processing Module
+        AN_APR39,
+        AN_AAR57,
+        AN_ALE47,
+        VPM1,
+        VPM2,
+        CREW_ANIMATION,
+        VISOR,
     }
 
 }
