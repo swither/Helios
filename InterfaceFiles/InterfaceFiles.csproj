@@ -400,5 +400,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Interfaces\DCS.OH6A.hif.json" />
+    <None Include="Interfaces\DCS.OH6A.hif.Lua" />
+  </ItemGroup>
   <Import Project="..\Helios.targets" />
 </Project>
