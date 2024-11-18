@@ -494,7 +494,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.CH47F
             // Digits are 1200 - 1203
             #endregion
             #endregion
-
+ 
             #region Uncategorised
             // RegEx
             // elements\[\x22(?'element'.*)\x22\]\s*\=\s*(?'function'[a-zA-z0-9_]*)\((?'function_args'.*)\){0,1}\,\s*devices\.(?'device'.*)\,.*device_commands\.(?'command'[a-zA-Z0-9_]*)\,\s*(?'argId'\d{1,4})\,{0,1}(?'optional_args'.*)\).*
@@ -1020,7 +1020,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.CH47F
             AddFunction(new PushButton(this, devices.PDP2.ToString("d"), CbToCommand('E', 33), CbToArg(2, 'E', 33), "Power Distribution Panel 2", "DC ESS 2 BUS FEED (E,33)"));
 
             #endregion
+            #region Control Positions
 
+            AddFunction(new ScaledNetworkValue(this, "744", new CalibrationPointCollectionDouble(-1.0d, -100d, 1.0d, 100.0d), "Flight Controls", "Cyclic Pitch", "-100 to 100", "Percentage of Travel", BindingValueUnits.Numeric, "%.4f"));
+            AddFunction(new ScaledNetworkValue(this, "745", new CalibrationPointCollectionDouble(-1.0d, -100d, 1.0d, 100.0d), "Flight Controls", "Cyclic Roll", "-100 to 100", "Percentage of Travel", BindingValueUnits.Numeric, "%.4f")); 
+            AddFunction(new ScaledNetworkValue(this, "747", new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 100.0d), "Flight Controls", "Thrust Lever Position", "0 to 100", "Percentage of Travel", BindingValueUnits.Numeric, "%.4f"));
+            AddFunction(new ScaledNetworkValue(this, "746", new CalibrationPointCollectionDouble(-1.0d, -100d, 1.0d, 100.0d), "Flight Controls", "Pedals", "-100 to 100", "Percentage of Travel", BindingValueUnits.Numeric, "%.4f"));
+
+            #endregion Control Positions
 
         }
         /// <summary>
