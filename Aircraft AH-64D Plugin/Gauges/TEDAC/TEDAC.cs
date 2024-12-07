@@ -458,7 +458,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.TEDAC
                 _includeViewport = false;
                 foreach (HeliosVisual visual in this.Children)
                 {
-                    if(visual.TypeIdentifier == "Helios.Base.ViewportExtent")
+                    if (visual.TypeIdentifier == "Helios.Base.ViewportExtent")
                     {
                         Children.Remove(visual);
                         break;
