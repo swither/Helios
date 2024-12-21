@@ -408,16 +408,12 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.MFD
 
             base.ReadXml(reader);
             _includeViewport = true;
-            _vpName = reader.Name.Equals("EmbeddedViewportName") ? reader.ReadElementString("EmbeddedViewportName") : "";
+            ViewportName = reader.Name.Equals("EmbeddedViewportName") ? reader.ReadElementString("EmbeddedViewportName") : "";
+            RequiresPatches = reader.Name.Equals("RequiresPatches") ? (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("RequiresPatches")) : false;
             if (_vpName == "")
             {
                 _includeViewport = false;
                 RemoveViewport("");
-                RequiresPatches = false;
-            }
-            else 
-            {
-                RequiresPatches = reader.Name.Equals("RequiresPatches") ? (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("RequiresPatches")) : false;
             }
             GlassReflectionOpacity = reader.Name.Equals("GlassReflectionOpacity") ? double.Parse(reader.ReadElementString("GlassReflectionOpacity"), CultureInfo.InvariantCulture) : 0d;
         }
