@@ -88,6 +88,7 @@
     <Content Include="Data\Viewports\ViewportTemplates_002_009_00007_59263_00000.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\Viewports\ViewportTemplates_002_009_00010_04160_00000.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\..\Helios.targets" />

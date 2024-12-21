@@ -1,0 +1,22 @@
+﻿[
+  {
+    "templateName": "F-5E_2024",
+    "moduleId": "F-5E 2024",
+    "categoryName": "F-5E Tiger II",
+    "isHeliosTemplate": true,
+    "viewports": [
+      {
+        "viewportName": "RWR",
+        "SuppressViewportNamePrefix": false,
+        "relativeInitFilePath": "Mods/aircraft/F-5E 2024/Cockpit/Scripts/AN_ALR87/indicator/AN_ALR87_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 0,
+        "y": 0,
+        "width": 300,
+        "height": 300
+      }
+    ]
+  }
+]
