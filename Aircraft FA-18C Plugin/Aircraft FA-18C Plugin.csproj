@@ -212,7 +212,6 @@
     </Content>
     <None Include="app.config" />
     <None Include="Gauges\IFEI\IFEI.psd" />
-    <None Include="Gauges\UFC\UFC Faceplate.psd" />
     <Content Include="Templates\Base\FA-18C\3 Panels\UFC.htpl">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
