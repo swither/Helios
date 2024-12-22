@@ -145,10 +145,6 @@ namespace GadrocsWorkshop.Helios.Controls
                 case "On":
                 case "Pushed":
                     KnobImage = Pushed ? (On ? _indicatorOnClickedImage : PushedImage) : (On ? _indicatorOnNormalImage : UnpushedImage);
-                    if (AllowRotation != RotaryClickAllowRotationType.Both)
-                    {
-                        // No code for encoder
-                    }
                     break;
                  default:
                     base.OnPropertyChanged(args);
