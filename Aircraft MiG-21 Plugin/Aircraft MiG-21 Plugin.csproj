@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Interfaces\ExportFunctions.lua" />
+    <None Include="app.config" />
     <None Include="Templates\Base\MiG-21\0 Sample.htpl" />
   </ItemGroup>
   <ItemGroup>

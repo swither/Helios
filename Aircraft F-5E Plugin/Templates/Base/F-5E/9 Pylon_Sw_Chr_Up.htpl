@@ -1,0 +1,16 @@
+<ControlTemplate>
+    <Name>Pylon Sw Chr Up Image</Name>
+    <Category>F-5E Tiger II</Category>
+    <TypeIdentifier>Helios.Base.ImageTranslucent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-5E}/Images/Buttons_Knobs_Switches/Pylon_Sw_Chr_Up.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <DefaultOpacity>1.0</DefaultOpacity>
+            <Location>0,0</Location>
+            <Size>80,101</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

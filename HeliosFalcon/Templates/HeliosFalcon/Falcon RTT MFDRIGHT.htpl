@@ -1,6 +1,6 @@
 ﻿<ControlTemplate>
-	<Name>Falcon RTT MFDRIGHT</Name>
-	<Category>Falcon RTT Viewports</Category>
+	<Name>Falcon BMS RTT MFDRIGHT</Name>
+	<Category>Falcon BMS RTT Viewports</Category>
 	<TypeIdentifier>Helios.Base.LockedViewportExtent</TypeIdentifier>
 	<Template>
 		<TemplateValues>

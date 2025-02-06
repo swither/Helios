@@ -62,6 +62,7 @@
   <ItemGroup>
     <Resource Include="Interfaces\ExportFunctionsMirageF1EE.lua" />
     <Resource Include="Interfaces\ExportFunctionsMirageF1CE.lua" />
+    <None Include="app.config" />
     <None Include="Templates\Base\MirageF1\0 Sample.htpl" />
   </ItemGroup>
   <ItemGroup>

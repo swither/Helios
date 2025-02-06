@@ -1,0 +1,16 @@
+<ControlTemplate>
+    <Name>Drag Chute Pulled Full Image</Name>
+    <Category>F-5E Tiger II</Category>
+    <TypeIdentifier>Helios.Base.ImageTranslucent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-5E}/Images/Buttons_Knobs_Switches/Drag_Chute_Pulled_Full.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <DefaultOpacity>1.0</DefaultOpacity>
+            <Location>0,0</Location>
+            <Size>302,292</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

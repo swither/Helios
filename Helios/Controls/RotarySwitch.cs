@@ -290,7 +290,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
                 if (!BypassTriggers)
                 {
-                    if (oldValue > 0 && oldValue < Positions.Count)
+                    if (oldValue > 0 && oldValue <= Positions.Count)
                     {
                         Positions[oldValue-1].ExitTrigger.FireTrigger(BindingValue.Empty);
                     }
@@ -318,7 +318,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 OnPropertyChanged("DefaultPosition", oldValue, value, true);
             }
         }
-
+        public virtual PushButtonType ButtonType { get; set; }
         #endregion
 
         void LabelFormat_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

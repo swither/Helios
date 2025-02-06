@@ -1,0 +1,12 @@
+﻿<ControlTemplate>
+	<Name>MFD</Name>
+	<Category>F-16</Category>
+	<TypeIdentifier>F16.MFD</TypeIdentifier>
+	<Template>
+		<TemplateValues>
+			<Location>0,0</Location>
+			<Size>475,475</Size>
+			<Hidden>False</Hidden>
+		</TemplateValues>
+	</Template>
+</ControlTemplate>

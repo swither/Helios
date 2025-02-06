@@ -1,0 +1,11 @@
+﻿@@ -60,75 +60,8 @@
+ %22)%0D%0A
+-dofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0A
+ dofi
+@@ -1571,74 +1571,8 @@
+ --%0D%0A
+---ViewportHandling%0D%0Atry_find_assigned_viewport(%22AH_64D_TEDAC%22)%0D%0A%0D%0A
+ use_
+@@ -1724,10 +1724,8 @@
+ ACMFD_%22)
+-%0D%0A

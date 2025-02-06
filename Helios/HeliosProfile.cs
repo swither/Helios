@@ -27,6 +27,7 @@ namespace GadrocsWorkshop.Helios
     using System.ComponentModel;
 
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.Interfaces.DCS.Soft;
 
     public class HeliosProfile : NotificationObject, IReadyCheck
     {
@@ -204,7 +205,7 @@ namespace GadrocsWorkshop.Helios
                 }
 
                 CheckedDisplays = ConfigManager.DisplayManager.Displays;
-                _validLayout = true;
+                _validLayout = CheckedDisplays.Count == Monitors.Count;
                 foreach (Monitor display in Monitors)
                 {
                     if (CheckedDisplays.Any(systemDisplay =>
@@ -374,6 +375,14 @@ namespace GadrocsWorkshop.Helios
                         profileAware.DriverStatusReceived += Interface_DriverStatusReceived;
                         profileAware.ClientChanged += Interface_ClientChanged;
                         _tags.UnionWith(profileAware.Tags);
+                        if(heliosInterface is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count() > 1) {
+                            foreach(string xVehicle in softInterface.ImpersonatedVehicles) {
+                                if (!_tags.Contains(xVehicle))
+                                {
+                                    _tags.Add(xVehicle);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -401,6 +410,16 @@ namespace GadrocsWorkshop.Helios
                     if (heliosInterface is IProfileAwareInterface profileAware)
                     {
                         _tags.UnionWith(profileAware.Tags);
+                        if (heliosInterface is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count() > 1)
+                        {
+                            foreach (string xVehicle in softInterface.ImpersonatedVehicles)
+                            {
+                                if (!_tags.Contains(xVehicle))
+                                {
+                                    _tags.Add(xVehicle);
+                                }
+                            }
+                        }
                     }
                 }
             }

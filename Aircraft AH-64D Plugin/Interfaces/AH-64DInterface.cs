@@ -943,15 +943,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             // XXX not yet supported
             // Vehicles = new string[] { ModuleName, "other aircraft", "another aircraft" };
 
-            // see if we can restore from JSON
-#if (!DEBUG)
+// see if we can restore from JSON
+//#if (!DEBUG)
                         if (LoadFunctionsFromJson())
                         {
                             return;
                         }
-#endif
-            #region MPDs
-            #region Pilot Left
+//#endif
+#region MPDs
+#region Pilot Left
             AddFunction(new PushButton(this, MFD_PLT_LEFT, mpd_commands.T1.ToString("d"), "20", "MFD Left (Pilot)", "Button T1"));
             AddFunction(new PushButton(this, MFD_PLT_LEFT, mpd_commands.T2.ToString("d"), "21", "MFD Left (Pilot)", "Button T2"));
             AddFunction(new PushButton(this, MFD_PLT_LEFT, mpd_commands.T3.ToString("d"), "22", "MFD Left (Pilot)", "Button T3"));
@@ -1329,7 +1329,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             AddFunction(new PushButton(this, TEDAC, tedac_commands.TDU_B4.ToString("d"), "159", "TEDAC", "FILTER Button"));  // Press to select filter in the TADS FLIR sensor
             AddFunction(new Axis(this, TEDAC, tedac_commands.TDU_GAIN_KNOB.ToString("d"), "148", 0.1d, 0d, 1d, "TEDAC", "FLIR GAIN Control"));
             AddFunction(new Axis(this, TEDAC, tedac_commands.TDU_LEV_KNOB.ToString("d"), "149", 0.1d, 0d, 1d, "TEDAC", "FLIR LEV Control"));
-            AddFunction(Switch.CreateThreeWaySwitch(this, TEDAC, tedac_commands.TDU_MODE_KNOB.ToString("d"), "154", "0.0", "Day", "0.5", "Night", "1.0", "Off", "TEDAC", "Display Mode", "%0.1f"));
+            AddFunction(Switch.CreateThreeWaySwitch(this, TEDAC, tedac_commands.TDU_MODE_KNOB.ToString("d"), "154", "1.0", "Day", "0.5", "Night", "0.0", "Off", "TEDAC", "Display Mode", "%0.1f"));
 #endregion
 #region Video Control Panel,
             AddFunction(new Axis(this, ELEC_INTERFACE, electric_commands.VCP_IHADSS_BRT_KNOB.ToString("d"), "278", 0.1d, 0d, 1d, "Video Control Panel", "IHADSS BRT Control Knob"));
@@ -1498,16 +1498,16 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
             #region Handgrip
             #region CP/G
             #region Left
-            AddFunction(new Switch(this, TEDAC, "491", new SwitchPosition[] { new SwitchPosition("1.0", "OFS", tedac_commands.LHG_IAT_OFS_SW_OFS.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_IAT_OFS_SW_OFS.ToString("d")), new SwitchPosition("-1.0", "IAT", tedac_commands.LHG_IAT_OFS_SW_IAT.ToString("d")) }, "Handgrip Left (CP/G)", "Image AutoTrack/Offset Switch", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "491", new SwitchPosition[] { new SwitchPosition("1.0", "IAT", tedac_commands.LHG_IAT_OFS_SW_IAT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_IAT_OFS_SW_OFS.ToString("d")), new SwitchPosition("-1.0", "OFS", tedac_commands.LHG_IAT_OFS_SW_OFS.ToString("d")) }, "Handgrip Left (CP/G)", "Image AutoTrack/Offset Switch", "%0.1f"));
             AddFunction(new Switch(this, TEDAC, "492", new SwitchPosition[] { new SwitchPosition("1.0", "Zoom", tedac_commands.LHG_TADS_FOV_SW_Z.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_TADS_FOV_SW_Z.ToString("d")), new SwitchPosition("-1.0", "Medium", tedac_commands.LHG_TADS_FOV_SW_M.ToString("d")) }, "Handgrip Left (CP/G)", "TADS FOV Select Switch Zoom/Medium", "%0.1f"));
             AddFunction(new Switch(this, TEDAC, "493", new SwitchPosition[] { new SwitchPosition(" -1.0", "Narrow", tedac_commands.LHG_TADS_FOV_SW_N.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_TADS_FOV_SW_N.ToString("d")), new SwitchPosition("1.0", "Wide", tedac_commands.LHG_TADS_FOV_SW_W.ToString("d")) }, "Handgrip Left (CP/G)", "TADS FOV Select Switch Narrow/Wide", "%0.1f"));
             AddFunction(Switch.CreateThreeWaySwitch(this, TEDAC, tedac_commands.LHG_TADS_SENSOR_SELECT_SW.ToString("d"), "494", "1.0", "FLIR", "0.0", "TV", "-1.0", "DVO", "Handgrip Left (CP/G)", "TADS Sensor Select Switch, FLIR/TV/DVO", "%0.1f"));
-            AddFunction(new Switch(this, TEDAC, "495", new SwitchPosition[] { new SwitchPosition("1.0", "UPDATE", tedac_commands.LHG_STORE_UPDT_SW_UPDT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_STORE_UPDT_SW_UPDT.ToString("d")), new SwitchPosition("-1.0", "STORE", tedac_commands.LHG_STORE_UPDT_SW_STORE.ToString("d")) }, "Handgrip Left (CP/G)", "STORE/Update Switch", "%0.1f"));
-            AddFunction(new Switch(this, TEDAC, "500", new SwitchPosition[] { new SwitchPosition("1.0", "CONTINUOUS", tedac_commands.LHG_FCR_SCAN_SW_C.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_FCR_SCAN_SW_C.ToString("d")), new SwitchPosition("-1.0", "SINGLE", tedac_commands.LHG_FCR_SCAN_SW_S.ToString("d")) }, "Handgrip Left (CP/G)", "FCR Scan Switch", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "495", new SwitchPosition[] { new SwitchPosition("1.0", "STORE", tedac_commands.LHG_STORE_UPDT_SW_STORE.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_STORE_UPDT_SW_UPDT.ToString("d")), new SwitchPosition("-1.0", "UPDATE", tedac_commands.LHG_STORE_UPDT_SW_UPDT.ToString("d"))}, "Handgrip Left (CP/G)", "STORE/Update Switch", "%0.1f"));
+            AddFunction(new Switch(this, TEDAC, "500", new SwitchPosition[] { new SwitchPosition("1.0", "SINGLE", tedac_commands.LHG_FCR_SCAN_SW_S.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_FCR_SCAN_SW_C.ToString("d")), new SwitchPosition("-1.0", "CONTINUOUS", tedac_commands.LHG_FCR_SCAN_SW_C.ToString("d")) }, "Handgrip Left (CP/G)", "FCR Scan Switch", "%0.1f"));
             AddFunction(new PushButton(this, TEDAC, tedac_commands.LHG_CUED_SEARCH_BTN.ToString("d"), "501", "Handgrip Left (CP/G)", "CUED Search Button", "%0.1f"));
             AddFunction(new Switch(this, TEDAC, "498", new SwitchPosition[] { new SwitchPosition("1.0", "Ground Targeting Mode", tedac_commands.LHG_FCR_MODE_SW_UP.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_FCR_MODE_SW_UP.ToString("d")), new SwitchPosition("-1.0", "Air Targeting Mode", tedac_commands.LHG_FCR_MODE_SW_DOWN.ToString("d")) }, "Handgrip Left (CP/G)", "FCR Mode Switch Up/Down", "%0.1f"));
             AddFunction(new Switch(this, TEDAC, "499", new SwitchPosition[] { new SwitchPosition(" -1.0", "Terrain Profile Mode", tedac_commands.LHG_FCR_MODE_SW_LEFT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_FCR_MODE_SW_LEFT.ToString("d")), new SwitchPosition("1.0", "RADAR Map", tedac_commands.LHG_FCR_MODE_SW_RIGHT.ToString("d")) }, "Handgrip Left (CP/G)", "FCR Mode Switch Left/Right", "%0.1f"));
-            // AddFunction(new PushButton(this, TEDAC, tedac_commands.LHG_LMC_BTN.ToString("d"), "502", "Handgrip Left (CP/G)", "Linear Motion Compensation (LMC) Button", "%0.1f"));
+            AddFunction(new PushButton(this, TEDAC, tedac_commands.LHG_LMC_BTN.ToString("d"), "496", "Handgrip Left (CP/G)", "Linear Motion Compensation (LMC) Button", "%0.1f"));
             AddFunction(new Switch(this, TEDAC, "502", new SwitchPosition[] { new SwitchPosition("1.0", "Gun", tedac_commands.LHG_WEAPONS_ACTION_SW_UP.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_WEAPONS_ACTION_SW_UP.ToString("d")), new SwitchPosition("-1.0", "ATA", tedac_commands.LHG_WEAPONS_ACTION_SW_DOWN.ToString("d")) }, "Handgrip Left (CP/G)", "Weapons Action (WAS) Switch Up/Down", "%0.1f"));
             AddFunction(new Switch(this, TEDAC, "503", new SwitchPosition[] { new SwitchPosition(" -1.0", "RKT", tedac_commands.LHG_WEAPONS_ACTION_SW_LEFT.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_WEAPONS_ACTION_SW_LEFT.ToString("d")), new SwitchPosition("1.0", "MSL", tedac_commands.LHG_WEAPONS_ACTION_SW_RIGHT.ToString("d")) }, "Handgrip Left (CP/G)", "Weapons Action (WAS) Switch Left/Right", "%0.1f"));
             AddFunction(new Switch(this, TEDAC, "487", new SwitchPosition[] { new SwitchPosition("1.0", "Up", tedac_commands.LHG_CURSOR_UP.ToString("d")), new SwitchPosition("0.0", "Middle", tedac_commands.LHG_CURSOR_UP.ToString("d")), new SwitchPosition("-1.0", "Down", tedac_commands.LHG_CURSOR_DOWN.ToString("d")) }, "Handgrip Left (CP/G)", "Cursor Controller, Up/Down", "%0.1f"));
@@ -1630,7 +1630,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.AH64D
 #endregion
 #region Standby Instruments
 #region Altimeter
-            AddFunction(new Altimeter(this, "Altimeter", "2051", "Altitude", "Barometric altitude above sea level of the aircraft.", "Value is adjusted per altimeter pressure setting.", "2059", "Pressure", "Manually set barometric altitude.", ""));
+            AddFunction(new Altimeter(this, "Standby Altimeter", "2051", "Altitude", "Barometric altitude above sea level of the aircraft.", "Value is adjusted per altimeter pressure setting.", "2059", "Pressure", "Manually set barometric altitude.", ""));
             AddFunction(new Axis(this, BARO_ALTIMETER, baro_alt_commands.PressureSet.ToString("d"), "477", 0.002d, 0d, 1d, "Standby Altimeter", "Pressure Setting Knob", true, "%.4f"));
 #endregion
 #region Standby Airspeed Indicator

@@ -32,6 +32,7 @@ namespace GadrocsWorkshop.Helios
     public static class HeliosInit
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static bool _heliosInitSuccess = false;
 
         /// <summary>
         /// initialize only the document path and logging functionality, so that Helios classes that log can be used, without starting Helios
@@ -93,7 +94,15 @@ namespace GadrocsWorkshop.Helios
             ConfigManager.ProfileManager = new ProfileManager();
             ConfigManager.FontManager = new FontManager();
             ConfigManager.FontManager.LoadInstalledPrivateFonts();
-            ConfigManager.ImageManager = new ImageManager(ConfigManager.ImagePath);
+            try
+            {
+                ConfigManager.ImageManager = new ImageManager(ConfigManager.ImagePath);
+            }
+            catch (ApplicationException ex)
+            {
+                Logger.Error($"Helios Initialization failure due to a problem with the Image Path. {ex}");
+                throw ex;
+            }
             ConfigManager.DisplayManager = new DisplayManager();
             ConfigManager.ModuleManager = new ModuleManager(ConfigManager.ApplicationPath);
             ConfigManager.TemplateManager = new TemplateManager(ConfigManager.TemplatePath);
@@ -109,6 +118,7 @@ namespace GadrocsWorkshop.Helios
             {
                 Logger.Warn("Hardware rendering is not available on this machine.  Helios will consume large amounts of CPU.");
             }
+            _heliosInitSuccess = true;
         }
 
         private static void LoadPlugins(Assembly execAssembly)
@@ -274,6 +284,9 @@ namespace GadrocsWorkshop.Helios
         public static void OnShutdown()
         {
             NLog.LogManager.Shutdown();
+        }
+        public static bool HeliosInitSuccess {
+            get => _heliosInitSuccess;
         }
     }
 }

@@ -19,9 +19,10 @@ namespace GadrocsWorkshop.Helios.Controls
     using GadrocsWorkshop.Helios.Controls.Capabilities;
     using System;
     using System.Xml;
+    using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
     [HeliosControl("Helios.Base.ThreeWayToggleSwitch", "Three Way Toggle Switch", "Three Way Toggle Switches", typeof(ThreeWayToggleSwitchRenderer))]
-    public class ThreeWayToggleSwitch : ToggleSwitchBase, IConfigurableImageLocation
+    public class ThreeWayToggleSwitch : ToggleSwitchBase, IConfigurableImageLocation, IRefreshableImage
     {
         private ThreeWayToggleSwitchType _switchType = ThreeWayToggleSwitchType.OnOnOn;
         private ThreeWayToggleSwitchPosition _position = ThreeWayToggleSwitchPosition.Two;
@@ -70,7 +71,22 @@ namespace GadrocsWorkshop.Helios.Controls
             Triggers.Add(_positionValue);
 
         }
- 
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if ((PositionOneImage ?? "").ToLower().Replace("/", @"\") == imageName ||
+                (PositionTwoImage ?? "").ToLower().Replace("/", @"\") == imageName ||
+                (PositionThreeImage ?? "").ToLower().Replace("/", @"\") == imageName ||
+                (PositionOneIndicatorOnImage?? "").ToLower().Replace("/", @"\") == imageName ||
+                (PositionTwoIndicatorOnImage ?? "").ToLower().Replace("/", @"\") == imageName ||
+                (PositionThreeIndicatorOnImage?? "").ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                OnPropertyChanged("PositionTwoImage", PositionTwoImage, PositionTwoImage, true);
+                Refresh();
+            }
+            return ImageRefresh;
+        }
+
         #region Properties
 
         public ThreeWayToggleSwitchPosition DefaultPosition

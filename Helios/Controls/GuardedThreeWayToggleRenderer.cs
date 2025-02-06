@@ -74,14 +74,17 @@ namespace GadrocsWorkshop.Helios.Controls
             GuardedThreeWayToggle toggleSwitch = Visual as GuardedThreeWayToggle;
             if (toggleSwitch != null)
             {
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = toggleSwitch.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+
                 _imageRect.Width = toggleSwitch.Width;
                 _imageRect.Height = toggleSwitch.Height;
-                _imageOneGuardUp = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionOneGuardUpImage);
-                _imageOneGuardDown = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionOneGuardDownImage);
-                _imageTwoGuardUp = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionTwoGuardUpImage);
-                _imageTwoGuardDown = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionTwoGuardDownImage);
-                _imageThreeGuardUp = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionThreeGuardUpImage);
-                _imageThreeGuardDown = ConfigManager.ImageManager.LoadImage(toggleSwitch.PositionThreeGuardDownImage);
+                _imageOneGuardUp = refreshCapableImage.LoadImage(toggleSwitch.PositionOneGuardUpImage, loadOptions);
+                _imageOneGuardDown = refreshCapableImage.LoadImage(toggleSwitch.PositionOneGuardDownImage, loadOptions);
+                _imageTwoGuardUp = refreshCapableImage.LoadImage(toggleSwitch.PositionTwoGuardUpImage, loadOptions);
+                _imageTwoGuardDown = refreshCapableImage.LoadImage(toggleSwitch.PositionTwoGuardDownImage, loadOptions);
+                _imageThreeGuardUp = refreshCapableImage.LoadImage(toggleSwitch.PositionThreeGuardUpImage, loadOptions);
+                _imageThreeGuardDown = refreshCapableImage.LoadImage(toggleSwitch.PositionThreeGuardDownImage, loadOptions);
             }
             else
             {

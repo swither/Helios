@@ -63,6 +63,7 @@
     <Resource Include="Interfaces\ExportFunctions.lua" />
     <Resource Include="Interfaces\ExportFunctionsKa-50_2.lua" />
     <Resource Include="Interfaces\ExportFunctionsKa-50_3.lua" />
+    <None Include="app.config" />
     <None Include="Templates\Base\Ka-50\0 Sample.htpl" />
   </ItemGroup>
   <ItemGroup>

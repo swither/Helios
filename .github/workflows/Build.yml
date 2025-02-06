@@ -1,0 +1,147 @@
+name: 2. Build Release Candidate & Create MSI Files
+# This workflow is intended to produce a new Helios build on a push on 
+# a release candidate branch.  On successful build and packaging, the files
+# are zipped and cached for use by the publishing workflow.
+# 
+# This workflow requires strict adherence to the Helios Tag and Branch naming
+# conventions.
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ rc16* ]
+  pull_request:
+    branches: [ rc16* ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+jobs:  
+  build:    
+    runs-on: windows-latest
+    if: ${{ contains(github.ref,'rc16') }}
+   
+    steps:      
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-tags: true
+          fetch-depth: 0
+
+        
+      - name: New Version Number and Change the Version Project
+        run: |
+          $currentTag = $(git describe --tags --abbrev=0)
+          $currentBranch=$(git rev-parse --abbrev-ref HEAD)
+          # $latestTagForBranch=$(git tag -l --sort=-committerdate 1.6.$($currentBranch.substring(4))?.* | select -First 1)
+          $latestTagForBranch=$(git tag -l 1.6.$($currentBranch.substring(4))?.*  | sort -V | select -Last 1)
+          echo "latest Tag:     `"$latestTagForBranch`""
+          if ( -not ($latestTagForBranch -like "1.6.$($currentBranch.substring(4))?.*")) 
+          { 
+            git tag 1.6.$($currentBranch.substring(4))0.0
+            git push --tags origin
+            echo "BaseTag=1.6.$($currentBranch.substring(4))0.0" >> $env:GITHUB_ENV
+            $currentTag = "1.6.$($currentBranch.substring(4))0.0"
+            echo "Creating inital tag `"$currentTag`" for this branch."
+          }
+          else 
+          {
+            echo "BaseTag=0" >> $env:GITHUB_ENV
+            echo "Current Branch: `"$currentBranch`""
+            echo "Current Tag:    `"$currentTag`""
+          }
+          $newTag = $latestTagForBranch.substring(0,8) + "." + ([int]::parse($latestTagForBranch.substring(9).split('-')[0]) + 1)
+          echo "NewTag=$newTag" >> $env:GITHUB_ENV
+          echo "Current ref:    `"${{github.ref}}`""
+          echo "The version of this installer will be `"$newTag`"."
+          echo "Success=false" >> $env:GITHUB_ENV
+ 
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.3.1
+
+      - name: Setup VS Dev Environment
+        uses: seanmiddleditch/gha-setup-vsdevenv@v4
+        
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+
+      - name: Disable Out of Process Building
+        run: .\DisableOutOfProcBuild.exe
+        working-directory: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild
+
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NuGetAPIKey }}
+          nuget-version: '5.x'
+          
+      - name: NuGet Restore
+        #if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          nuget restore BuildMeFirst.sln
+          nuget restore "KeyPressReceiver/Keypress Receiver.csproj"
+          nuget restore Thirdparty/StreamDeckSharp/src/StreamDeckSharp/StreamDeckSharp.csproj
+          nuget restore Thirdparty/OpenMacroBoard.SDK/src/OpenMacroBoard.SDK/OpenMacroBoard.SDK.csproj
+          nuget restore Thirdparty/OpenMacroBoard.SDK/src/OpenMacroBoard.VirtualBoard/OpenMacroBoard.VirtualBoard.csproj
+          nuget restore Helios.sln
+        
+      - name: Clean and Build x86 and x64 Solutions
+        continue-on-error: true
+        shell: cmd
+        run: |
+          build.cmd %NewTag%
+          echo "rc=%errorlevel%" >> $env:GITHUB_ENV
+
+      - name: zip up build logs
+        continue-on-error: true
+        run: |
+          mkdir ./Assets
+          tar -a -c -f "BuildLogs.zip" -C "." *.binlog
+
+      - name: Upload Build Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build Logs
+          path: "./BuildLogs.zip"
+          retention-days: 2
+
+      - name: Force Error if there was a Previous Error
+        # This is a delayed exit because we needed to make the build logs available before leaving
+        if: ${{ env.rc != 0 }}
+        run: |
+          ForceExit   #  This should always cause an error because the program will not be found.  The real error is going to be on the Clean & Build step above.
+
+      - name: zip up the msi
+        continue-on-error: true
+        run: |
+          tar -a -c -f "./Assets/Helios_Installers.zip" -C "Helios Installer\Release" *.msi -C "../../Keypress Receiver Installer/Release" *.msi -C "../../Tools Installer/Release" *.msi
+          tar -a -c -f "./Assets/Helios32Bit_Installers.zip" -C "Helios Installer/Release32" *.msi
+          tar -a -c -f "./Assets/Helios_StreamDeck_Alpha.zip" -C "bin/x64/Release" Plugins/OpenMacroBoard.SDK.dll Plugins/OpenMacroBoard.VirtualBoard.dll Plugins/StreamDeckSharp.dll Plugins/HeliosMacroBoard.dll
+          
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./Assets
+          key: Helios-installers-${{ env.NewTag }} 
+          enableCrossOsArchive: true         
+    
+      - name: Upload Helios_Installers 1
+        uses: actions/upload-artifact@v4
+        with:
+          name: Helios ${{ env.NewTag }} Release Candidate 64Bit Installers
+          path: "./Assets/Helios_Installers.zip"
+          retention-days: 2
+          
+      - name: Upload Helios_Installers 2
+        uses: actions/upload-artifact@v4
+        with:
+          name: Helios ${{ env.NewTag }} Release Candidate 32Bit Installers
+          path: "./Assets/Helios32Bit_Installers.zip"
+          retention-days: 2
+          
+      - name: Upload Helios_Installers 3
+        uses: actions/upload-artifact@v4
+        with:
+          name: Helios ${{ env.NewTag }} Release Candidate Stream Deck Installer
+          path: "./Assets/Helios_StreamDeck_Alpha.zip"
+          retention-days: 2        

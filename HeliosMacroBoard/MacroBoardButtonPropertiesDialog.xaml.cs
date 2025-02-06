@@ -35,6 +35,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.HeliosMacroBoard
                 _pendingButton.Column = _targetButton.Column;
                 _pendingButton.Text = _targetButton.Text;
                 _pendingButton.BackgroundImageUri = _targetButton.BackgroundImageUri;
+                _pendingButton.BackgroundImageEnabled = _targetButton.BackgroundImageEnabled;
             }
         }
 

@@ -16,12 +16,14 @@
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
     using System;
     using System.ComponentModel;
     using System.Globalization;
     using System.Windows;
     using System.Windows.Media;
     using System.Xml;
+    using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
     [HeliosControl("Helios.Base.Image", "User Image", "Panel Decorations", typeof(ImageDecorationRenderer))]
     public class ImageDecoration : ImageDecorationBase
@@ -73,7 +75,7 @@ namespace GadrocsWorkshop.Helios.Controls
         }
     }
 
-    public class ImageDecorationBase : HeliosVisual
+    public class ImageDecorationBase : HeliosVisual, IRefreshableImage
     {
         private string _imageFile = "";
         private ImageAlignment _alignment = ImageAlignment.Centered;
@@ -106,6 +108,16 @@ namespace GadrocsWorkshop.Helios.Controls
             IsSnapTarget = false;
         }
 
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if ((Image?? "").ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
+
         #region Properties
 
         public string Image
@@ -121,13 +133,24 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     string oldValue = _imageFile;
                     _imageFile = value;
-
-                    ImageSource image = ConfigManager.ImageManager.LoadImage(_imageFile);
-                    if (image != null)
+                    ImageSource image = null;
+                    if(ImageRefresh)
                     {
-                        Width = image.Width;
-                        Height = image.Height;
+                        if( ConfigManager.ImageManager is IImageManager3 refreshCapableImage)
+                        {
+                            image = refreshCapableImage.LoadImage(Image, Convert.ToInt32(Width), Convert.ToInt32(Height), LoadImageOptions.ReloadIfChangedExternally);
+                        }
                     }
+                    else
+                    {
+                        image = ConfigManager.ImageManager.LoadImage(_imageFile);
+                        if (image != null)
+                        {
+                            Width = image.Width;
+                            Height = image.Height;
+                        }
+                    }
+
                     OnPropertyChanged("Image", oldValue, value, true);
                     Refresh();
                 }

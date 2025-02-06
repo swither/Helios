@@ -171,10 +171,11 @@
                                     <StackPanel>
                                         <TextBlock Text="{Binding SelectedBinding.Trigger.Unit.LongName}" />
                                         <TextBlock Text="{Binding SelectedBinding.Trigger.TriggerValueDescription}" TextWrapping="Wrap" />
-                                        <TextBlock Text="HeliosPath" TextWrapping="Wrap" />
-                                        <TextBlock Text="returns Helios Path." TextWrapping="Wrap" />
                                     </StackPanel>
                                 </ScrollViewer>
+                                <StackPanel.ToolTip>
+                                    See below for a list of Variables available in LuaScript bindings
+                                </StackPanel.ToolTip>
                             </StackPanel>
                         </Border>
 
@@ -200,12 +201,11 @@
                                     <StackPanel>
                                         <TextBlock Text="{Binding SelectedBinding.Trigger.Unit.LongName}" />
                                         <TextBlock Text="{Binding SelectedBinding.Trigger.TriggerValueDescription}" TextWrapping="Wrap" />
-                                        <TextBlock Text="HeliosPath" TextWrapping="Wrap" />
-                                        <TextBlock Text="returns Helios Path." TextWrapping="Wrap" />
-                                        <TextBlock Text="BMSFalconPath" TextWrapping="Wrap" />
-                                        <TextBlock Text="returns BMS Falcon Path." TextWrapping="Wrap" />
                                     </StackPanel>
                                 </ScrollViewer>
+                                <StackPanel.ToolTip>
+                                    See below for a list of Variables available in LuaScript bindings
+                                </StackPanel.ToolTip>
                             </StackPanel>
                         </Border>
 

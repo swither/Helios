@@ -15,6 +15,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.DCS.Soft;
 using GadrocsWorkshop.Helios.UDPInterface;
 using GadrocsWorkshop.Helios.Util;
 using GadrocsWorkshop.Helios.Util.DCS;
@@ -149,7 +150,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         private string _exportModuleText = "";
 
         /// <summary>
-        /// IP address to which Export.lua will send UDP updates
+        /// full Lua contents of module Impersonation
+        /// </summary>
+        private string _exportImpersonationModuleText = "";
+
+        /// <summary>
+        /// IP V4 address or Hostname to which Export.lua will send UDP updates
         /// </summary>
         private string _ipAddress;
 
@@ -237,7 +243,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             // we recompute the exports if the collection of functions in our interface ever changes, in case there are any dynamic interfaces that change functions
             _parent.Functions.CollectionChanged += Functions_CollectionChanged;
 
-            // location changes require us to recomput
+            // location changes require us to recompute
             SubscribeToLocationChanges();
 
             // some properties in our parent object are relevant to us
@@ -384,7 +390,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// IP address to which Export.lua will send UDP updates
         /// This is a site-specific setting persisted in HeliosSettings instead of in the profile.
         /// </summary>
-        public string IPAddress
+        public string NetworkAddress
         {
             get => _ipAddress;
             set
@@ -557,6 +563,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         Status = $"Wrote {moduleInfo.DisplayName} for {baseName} to {location.SavedGamesName}",
                         Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     });
+
+                    if(_parent is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count() > 1 && !softInterface.ImpersonatedVehicles.Contains(softInterface.Name))
+                    {
+                        foreach (string vehicle in softInterface.ImpersonatedVehicles)
+                        {
+                            File.WriteAllText(
+                                location.ExportModulePath(moduleInfo.ModuleLocation, vehicle),
+                                _exportImpersonationModuleText);
+                            report.Add(new StatusReportItem
+                            {
+                                Status = $"Wrote {moduleInfo.DisplayName} for {vehicle} - {baseName} to {location.SavedGamesName}",
+                                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                            });
+                        }
+                    }
                 }
 
                 // update status after all writes
@@ -845,7 +866,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         CheckDirectories, stubChecker, CheckExportScript, CheckModule
                     };
 
-
+                StatusCodes tempStatus = StatusCodes.UpToDate;
                 foreach (StatusReportItem result in checks.Select(check => check(location)))
                 {
                     report.Add(result);
@@ -855,12 +876,22 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     }
 
                     Logger.Debug(result.Status);
-                    Status = StatusCodes.OutOfDate;
-                    // don't test the remaining items
-                    return report;
+                    tempStatus = StatusCodes.OutOfDate;
                 }
-            }
 
+                foreach (StatusReportItem result in CheckImpersonationModules(location))
+                {
+                    report.Add(result);
+                    if (result.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate))
+                    {
+                        continue;
+                    }
+                    Logger.Debug(result.Status);
+                    tempStatus = StatusCodes.OutOfDate;
+                }
+                Status = tempStatus;
+                return report;
+            }
             // finished
             Status = StatusCodes.UpToDate;
             return report;
@@ -987,6 +1018,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 {
                     UpdateModule();
                     yield return CheckModule(location);
+                    foreach(StatusReportItem result in CheckImpersonationModules(location))
+                    {
+                        yield return result;
+                    }
                 }
             }
         }
@@ -1020,7 +1055,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
             _exportMain = exportMainRaw
                 // REVISIT: validate the IP address against allowable protocol versions and address types for this version of HeliosExport__.lua
-                .Replace("HELIOS_REPLACE_IPAddress", IPAddress)
+                .Replace("HELIOS_REPLACE_NETWORKADDRESS", NetworkAddress)
                 .Replace("HELIOS_REPLACE_Port", Port.ToString())
                 .Replace("HELIOS_REPLACE_ExportInterval", Math.Round(1d / Math.Max(4, ExportFrequency), 3).ToString(CultureInfo.InvariantCulture));
         }
@@ -1044,6 +1079,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             switch (_parent.ExportModuleFormat)
             {
                 case DCSExportModuleFormat.HeliosDriver16:
+                    if (_parent is SoftInterface softInterface)
+                    {
+                        if (softInterface.ImpersonatedVehicles.Count() > 1)
+                        {
+                            _parent.ImpersonatedVehicleName = _parent.Name;
+                            _exportImpersonationModuleText =
+                                string.Join(Environment.NewLine, GenerateImpersonationLines())
+                                + Resources.ReadResourceFile($"pack://application:,,,/Helios;component/Interfaces/DCS/Common/HeliosImpersonationExport.lua")
+                                + $"{Environment.NewLine}return driver";
+                        }
+                    }
+
                     _exportModuleText =
                         string.Join(Environment.NewLine, GenerateDriverLines())
                         + FetchExportFunctions()
@@ -1122,6 +1169,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             yield return "driver.arguments = {";
             yield return $"  {string.Join($",{Environment.NewLine}  ", GenerateFunctions(false))}";
             yield return "}";
+            yield return "";
+        }
+
+        private IEnumerable<string> GenerateImpersonationLines()
+        {
+            string reportingName = _parent.ImpersonatedVehicleName ?? _parent.VehicleName;
+
+            yield return $"-- export impersonation driver for {reportingName} generated by Helios Profile Editor";
+            yield return $"local impersonatorSelfName = \"{reportingName}\"";
             yield return "";
         }
 
@@ -1493,8 +1549,104 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 Link = StatusReportItem.ProfileEditor,
                 Severity = StatusReportItem.SeverityCode.Error
             };
-        }
 
+ 
+        }
+        // NOTE: we don't factor this to share code with the other Check... functions because they are all
+        // subtly different in terms of severity and we want to encourage more special cases added in the future
+        private IEnumerable<StatusReportItem> CheckImpersonationModules(InstallationLocation location)
+        {
+            ModuleFormatInfo moduleInfo = ExportModuleFormatInfo[_parent.ExportModuleFormat];
+            if (_parent is SoftInterface softInterface && softInterface.ImpersonatedVehicles.Count > 1) {
+                foreach(string vehicle in softInterface.ImpersonatedVehicles)
+                {
+                    // check if module file is even used by this interface
+                    if (!moduleInfo.UsesModuleFile)
+                    {
+                        // nothing to check
+                        yield return new StatusReportItem
+                        {
+                            Status = $"{moduleInfo.DisplayName} does not require a module file to be written by Helios.",
+                            Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                        };
+                    }
+                    else
+                    {
+                        // check on module file
+
+                        if (!moduleInfo.IsAllowedToWrite)
+                        {
+                            // no module file at all
+                            yield return new StatusReportItem
+                            {
+                                Status = $"The {moduleInfo.DisplayName} does not use a module or driver file",
+                                Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate | StatusReportItem.StatusFlags.Verbose
+                            };
+                        }
+                        else
+                        {
+                            if ((!_parent.HasEmbeddedModule) && (!moduleInfo.CanGenerate))
+                            {
+                                // no included module and we don't even know its name
+                                yield return new StatusReportItem
+                                {
+                                    Status = $"The {moduleInfo.DisplayName} is not included in this profile, so Helios cannot check if it is installed.",
+                                    Recommendation = "Please manually check that the export module was correctly placed",
+                                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                                };
+                            }
+                            else
+                            {
+                                string exportImpersonationModulePath = location.ExportModulePath(moduleInfo.ModuleLocation, vehicle);
+                                if (!File.Exists(exportImpersonationModulePath))
+                                {
+                                    yield return new StatusReportItem
+                                    {
+                                        Status = $"A part of the {moduleInfo.DisplayName} does not exist at '{exportImpersonationModulePath}'",
+                                        Recommendation = $"Select the interface for {_parent.Name} and run DCS setup",
+                                        Link = StatusReportItem.ProfileEditor,
+                                        Severity = StatusReportItem.SeverityCode.Error
+                                    };
+                                }
+                                else
+                                {
+                                    // NOTE: we have the entire contents we expect in this file in memory, so there is no point in hashing this
+                                    string contents = FileUtility.ReadFile(exportImpersonationModulePath);
+                                    if (string.IsNullOrEmpty(_exportImpersonationModuleText) || contents.Equals(_exportImpersonationModuleText))
+                                    {
+                                        yield return new StatusReportItem
+                                        {
+                                            Status = $"The {moduleInfo.DisplayName} at '{exportImpersonationModulePath}' is up to date",
+                                            Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                                        };
+                                    }
+                                    else
+                                    {
+                                        yield return new StatusReportItem
+                                        {
+                                            Status =
+                                            $"The {moduleInfo.DisplayName} at '{exportImpersonationModulePath}' does not match configuration",
+                                            Recommendation = $"Select the interface for {_parent.Name} and run DCS setup",
+                                            Link = StatusReportItem.ProfileEditor,
+                                            Severity = StatusReportItem.SeverityCode.Error,
+                                        };
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            } else
+            {
+                yield return new StatusReportItem
+                {
+                    Status =
+                    $"There are no vehicles being impersonated by the {moduleInfo.DisplayName} for {_parent.VehicleName}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                };
+            }
+        }
         #endregion
 
         #region Uninstall

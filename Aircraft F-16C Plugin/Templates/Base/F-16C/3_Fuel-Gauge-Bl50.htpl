@@ -1,0 +1,13 @@
+﻿<ControlTemplate>
+  <Name>Fuel Gauge - Block 50</Name>
+  <Category>F-16</Category>
+  <TypeIdentifier>Helios.F16C.FuelGaugeBlk50</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <Location>0,0</Location>
+      <Size>300,300</Size>
+	  <Hidden>False</Hidden>
+      <ValueMultiplier>5000</ValueMultiplier>
+	</TemplateValues>
+  </Template>
+</ControlTemplate>

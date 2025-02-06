@@ -21,6 +21,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
+    using System.Windows.Navigation;
 
     /// <summary>
     /// Interaction logic for ToolboxPanel.xaml
@@ -31,6 +32,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         public ToolboxPanel()
         {
+            if (!HeliosInit.HeliosInitSuccess) return;
             DataContext = this;
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {

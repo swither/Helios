@@ -351,13 +351,30 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Aux Threat Warning", "power indicator", "Aux threat warning system power indicator.", "True if lit.", BindingValueUnits.Boolean);
 
             // UHF Backup Radio Bits
-            AddValue("UHF", "Backup channel", "Current Backup UHF channel", "", BindingValueUnits.Numeric);
-            AddValue("UHF", "Backup frequency", "Current Backup UHF frequency", "", BindingValueUnits.Numeric);
-            AddValue("UHF", "Backup frequency digit 1", "Current Backup UHF frequency digit 1", "", BindingValueUnits.Numeric);
-            AddValue("UHF", "Backup frequency digit 2", "Current Backup UHF frequency digit 2", "", BindingValueUnits.Numeric);
-            AddValue("UHF", "Backup frequency digit 3", "Current Backup UHF frequency digit 3", "", BindingValueUnits.Numeric);
-            AddValue("UHF", "Backup frequency digit 4", "Current Backup UHF frequency digit 4", "", BindingValueUnits.Numeric);
-            AddValue("UHF", "Backup frequency digit 5,6", "Current Backup UHF frequency digit 5,6", "", BindingValueUnits.Numeric);
+            AddValue("UHF", "Backup channel", "Current Backup UHF channel", "", BindingValueUnits.Numeric, "Radio 1");
+            AddValue("UHF", "Backup frequency", "Current Backup UHF frequency", "", BindingValueUnits.Numeric, "Radio 1");
+            AddValue("UHF", "Backup frequency digit 1", "Current Backup UHF frequency digit 1", "", BindingValueUnits.Numeric, "Radio 1");
+            AddValue("UHF", "Backup frequency digit 2", "Current Backup UHF frequency digit 2", "", BindingValueUnits.Numeric, "Radio 1");
+            AddValue("UHF", "Backup frequency digit 3", "Current Backup UHF frequency digit 3", "", BindingValueUnits.Numeric, "Radio 1");
+            AddValue("UHF", "Backup frequency digit 4", "Current Backup UHF frequency digit 4", "", BindingValueUnits.Numeric, "Radio 1");
+            AddValue("UHF", "Backup frequency digit 5,6", "Current Backup UHF frequency digit 5,6", "", BindingValueUnits.Numeric, "Radio 1");
+
+            // Radio2 Bits
+            AddValue("Radio 2", "Radio 2 channel", "Current Backup UHF channel", "", BindingValueUnits.Numeric);
+            AddValue("Radio 2", "Radio 2 frequency", "Current Backup UHF frequency", "", BindingValueUnits.Numeric);
+            AddValue("Radio 2", "Radio 2 frequency digit 1", "Current Backup UHF frequency digit 1", "", BindingValueUnits.Numeric);
+            AddValue("Radio 2", "Radio 2 frequency digit 2", "Current Backup UHF frequency digit 2", "", BindingValueUnits.Numeric);
+            AddValue("Radio 2", "Radio 2 frequency digit 3", "Current Backup UHF frequency digit 3", "", BindingValueUnits.Numeric);
+            AddValue("Radio 2", "Radio 2 frequency digit 4", "Current Backup UHF frequency digit 4", "", BindingValueUnits.Numeric);
+            AddValue("Radio 2", "Radio 2 frequency digit 5,6", "Current Backup UHF frequency digit 5,6", "", BindingValueUnits.Numeric);
+
+            // TACAN ILS Freq Bits
+            AddValue("Tacan", "ILS frequency", "Tacan ILS Frequency", "", BindingValueUnits.Numeric);
+            AddValue("Tacan", "Tacan ILS frequency digit 1", "Current ILS frequency digit 1", "", BindingValueUnits.Numeric);
+            AddValue("Tacan", "Tacan ILS frequency digit 2", "Current ILS frequency digit 2", "", BindingValueUnits.Numeric);
+            AddValue("Tacan", "Tacan ILS frequency digit 3", "Current ILS frequency digit 3", "", BindingValueUnits.Numeric);
+            AddValue("Tacan", "Tacan ILS frequency digit 4", "Current ILS frequency digit 4", "", BindingValueUnits.Numeric);
+            AddValue("Tacan", "Tacan ILS frequency digit 5", "Current ILS frequency digit 5", "", BindingValueUnits.Numeric);
 
             // Hydraulic Bits
             AddValue("Hydraulic", "Pressure A", "Current hydraulic pressure a", "", BindingValueUnits.PoundsPerSquareInch);
@@ -577,6 +594,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Tacan", "ufc tacan chan", new BindingValue(_lastFlightData.UFCTChan));
                 SetValue("Tacan", "aux tacan chan", new BindingValue(_lastFlightData.AUXTChan));
 
+
                 ProcessContacts(_lastFlightData);
 
                 //DED
@@ -628,13 +646,33 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessPowerBits(_lastFlightData2.powerBits);
 
                 SetValue("CMDS", "CMDS Mode", new BindingValue((int)_lastFlightData2.cmdsMode));
-                SetValue("UHF", "Backup channel", new BindingValue(_lastFlightData2.BupUhfPreset));
-                SetValue("UHF", "Backup frequency", new BindingValue(_lastFlightData2.BupUhfFreq));
-                SetValue("UHF", "Backup frequency digit 1", new BindingValue(_lastFlightData2.BupUhfFreq / 100000 % 10));
-                SetValue("UHF", "Backup frequency digit 2", new BindingValue(_lastFlightData2.BupUhfFreq / 10000 % 10));
-                SetValue("UHF", "Backup frequency digit 3", new BindingValue(_lastFlightData2.BupUhfFreq / 1000 % 10));
-                SetValue("UHF", "Backup frequency digit 4", new BindingValue(_lastFlightData2.BupUhfFreq / 100 % 10));
-                SetValue("UHF", "Backup frequency digit 5,6", new BindingValue(_lastFlightData2.BupUhfFreq % 100));
+
+                // Radio 1
+                SetValue("UHF", "Backup channel", new BindingValue(_lastFlightData2.uhf_panel_preset));
+                SetValue("UHF", "Backup frequency", new BindingValue(_lastFlightData2.uhf_panel_frequency));
+                SetValue("UHF", "Backup frequency digit 1", new BindingValue(_lastFlightData2.uhf_panel_frequency / 100000 % 10));
+                SetValue("UHF", "Backup frequency digit 2", new BindingValue(_lastFlightData2.uhf_panel_frequency / 10000 % 10));
+                SetValue("UHF", "Backup frequency digit 3", new BindingValue(_lastFlightData2.uhf_panel_frequency / 1000 % 10));
+                SetValue("UHF", "Backup frequency digit 4", new BindingValue(_lastFlightData2.uhf_panel_frequency / 100 % 10));
+                SetValue("UHF", "Backup frequency digit 5,6", new BindingValue(_lastFlightData2.uhf_panel_frequency % 100));
+
+                // Radio 2
+                SetValue("Radio 2", "Backup channel", new BindingValue(_lastFlightData2.radio2_preset));
+                SetValue("Radio 2", "Backup frequency", new BindingValue(_lastFlightData2.radio2_frequency));
+                SetValue("Radio 2", "Backup frequency digit 1", new BindingValue(_lastFlightData2.radio2_frequency / 100000 % 10));
+                SetValue("Radio 2", "Backup frequency digit 2", new BindingValue(_lastFlightData2.radio2_frequency / 10000 % 10));
+                SetValue("Radio 2", "Backup frequency digit 3", new BindingValue(_lastFlightData2.radio2_frequency / 1000 % 10));
+                SetValue("Radio 2", "Backup frequency digit 4", new BindingValue(_lastFlightData2.radio2_frequency / 100 % 10));
+                SetValue("Radio 2", "Backup frequency digit 5,6", new BindingValue(_lastFlightData2.radio2_frequency % 100));
+
+                // TACAN ILS Frequency
+                SetValue("Tacan", "Tacan ILS frequency", new BindingValue(_lastFlightData2.tacan_ils_frequency));
+                SetValue("Tacan", "Tacan ILS frequency digit 1", new BindingValue(_lastFlightData2.tacan_ils_frequency / 100000 % 10));
+                SetValue("Tacan", "Tacan ILS frequency digit 2", new BindingValue(_lastFlightData2.tacan_ils_frequency / 10000 % 10));
+                SetValue("Tacan", "Tacan ILS frequency digit 3", new BindingValue(_lastFlightData2.tacan_ils_frequency / 1000 % 10));
+                SetValue("Tacan", "Tacan ILS frequency digit 4", new BindingValue(_lastFlightData2.tacan_ils_frequency / 100 % 10));
+                SetValue("Tacan", "Tacan ILS frequency digit 5", new BindingValue(_lastFlightData2.tacan_ils_frequency % 100));
+
                 SetValue("Altitude", "Cabin Altitude", new BindingValue(_lastFlightData2.cabinAlt));
                 SetValue("Hydraulic", "Pressure A", new BindingValue(_lastFlightData2.hydPressureA));
                 SetValue("Hydraulic", "Pressure B", new BindingValue(_lastFlightData2.hydPressureB));

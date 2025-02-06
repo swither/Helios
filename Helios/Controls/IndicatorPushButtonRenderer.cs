@@ -84,12 +84,15 @@ namespace GadrocsWorkshop.Helios.Controls
 
             if (pushButton != null)
             {
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = pushButton.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+
                 _imageRect.Width = pushButton.Width;
                 _imageRect.Height = pushButton.Height;
-                _image = ConfigManager.ImageManager.LoadImage(pushButton.Image);
-                _pushedImage = ConfigManager.ImageManager.LoadImage(pushButton.PushedImage);
-                _indicatorOnImage = ConfigManager.ImageManager.LoadImage(pushButton.IndicatorOnImage);
-                _pushedIndicatorOnImage = ConfigManager.ImageManager.LoadImage(pushButton.PushedIndicatorOnImage);
+                _image = refreshCapableImage.LoadImage(pushButton.Image, loadOptions);
+                _pushedImage = refreshCapableImage.LoadImage(pushButton.PushedImage, loadOptions);
+                _indicatorOnImage = refreshCapableImage.LoadImage(pushButton.IndicatorOnImage, loadOptions);
+                _pushedIndicatorOnImage = refreshCapableImage.LoadImage(pushButton.PushedIndicatorOnImage, loadOptions);
                 _onTextBrush = new SolidColorBrush(pushButton.OnTextColor);
                 _offTextBrush = new SolidColorBrush(pushButton.TextColor);
 

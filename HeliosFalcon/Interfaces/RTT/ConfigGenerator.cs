@@ -285,7 +285,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Interfaces.RTT
             InstallationDangerPromptModel warningModel = new InstallationDangerPromptModel
             {
                 Title = "Advanced Operation Requested",
-                Message = "You are about to enable the Falcon RTT configuration feature of Helios.  Doing so will grant Helios permission to change this file when you start a profile.",
+                Message = "You are about to enable the Falcon BMS RTT configuration feature of Helios.  Doing so will grant Helios permission to change this file when you start a profile.",
                 Info = new List<StructuredInfo>
                 {
                     new StructuredInfo

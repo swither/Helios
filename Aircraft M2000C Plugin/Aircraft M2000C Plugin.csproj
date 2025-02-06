@@ -921,5 +921,8 @@
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="..\HeliosPlugin.targets" />
 </Project>

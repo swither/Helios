@@ -110,7 +110,9 @@ namespace GadrocsWorkshop.Helios.Controls
 
             if (panel != null)
             {
-                _backgroundImage = ConfigManager.ImageManager.LoadImage(panel.BackgroundImage);
+                IImageManager3 refreshCapableImage = ConfigManager.ImageManager as IImageManager3;
+                LoadImageOptions loadOptions = panel.ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None;
+                _backgroundImage = refreshCapableImage.LoadImage(panel.BackgroundImage, loadOptions);
                 _backgroundBrush = null;
                 if (_backgroundImage != null)
                 {
@@ -140,15 +142,15 @@ namespace GadrocsWorkshop.Helios.Controls
                     }
                 }
 
-                _topBorderImage = ConfigManager.ImageManager.LoadImage(panel.TopBorderImage);
-                _rightBorderImage = ConfigManager.ImageManager.LoadImage(panel.RightBorderImage);
-                _bottomBorderImage = ConfigManager.ImageManager.LoadImage(panel.BottomBorderImage);
-                _leftBorderImage = ConfigManager.ImageManager.LoadImage(panel.LeftBorderImage);
+                _topBorderImage = refreshCapableImage.LoadImage(panel.TopBorderImage, loadOptions);
+                _rightBorderImage = refreshCapableImage.LoadImage(panel.RightBorderImage, loadOptions);
+                _bottomBorderImage = refreshCapableImage.LoadImage(panel.BottomBorderImage, loadOptions);
+                _leftBorderImage = refreshCapableImage.LoadImage(panel.LeftBorderImage, loadOptions);
 
-                _topLeftCornerImage = ConfigManager.ImageManager.LoadImage(panel.TopLeftCornerImage);
-                _topRigthCornerImage = ConfigManager.ImageManager.LoadImage(panel.TopRightCornerImage);
-                _bottomLeftCornerImage = ConfigManager.ImageManager.LoadImage(panel.BottomLeftCornerImage);
-                _bottomRightCornerImage = ConfigManager.ImageManager.LoadImage(panel.BottomRightCornerImage);
+                _topLeftCornerImage = refreshCapableImage.LoadImage(panel.TopLeftCornerImage, loadOptions);
+                _topRigthCornerImage = refreshCapableImage.LoadImage(panel.TopRightCornerImage, loadOptions);
+                _bottomLeftCornerImage = refreshCapableImage.LoadImage(panel.BottomLeftCornerImage, loadOptions);
+                _bottomRightCornerImage = refreshCapableImage.LoadImage(panel.BottomRightCornerImage, loadOptions);
             }
         }
     }

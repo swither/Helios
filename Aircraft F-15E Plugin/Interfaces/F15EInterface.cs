@@ -173,28 +173,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             AddFunction(new ScaledNetworkValue(this, "349", new CalibrationPointCollectionDouble(-1d, -90d, 1d, 90d), "Flight Instruments", "ADI Aircraft Pitch Angle", "Backup ADI angle of the aircraft in degrees", "-90 to +90", BindingValueUnits.Degrees, "%.3f"));
             AddFunction(new ScaledNetworkValue(this, "348", new CalibrationPointCollectionDouble(-1d, -180d, 1d, 180d), "Flight Instruments", "ADI Aircraft Bank Angle", "Backup ADI angle of the aircraft in degrees", "0 to +360", BindingValueUnits.Degrees, "%.3f"));
             AddFunction(new NetworkValue(this, "347", "Flight Instruments", "ADI Off Flag", "rotational position of the OFF flag","", BindingValueUnits.Numeric, "%.1f"));
-
-            CalibrationPointCollectionDouble airspeedScale = new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 1000d);
-            AddFunction(new ScaledNetworkValue(this, "345", airspeedScale, "Flight Instruments", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots, "%.3f"));
-
-            CalibrationPointCollectionDouble vviScale = new CalibrationPointCollectionDouble(-0.6d, -6000d, 0.6d, 6000d);
-            vviScale.Add(new CalibrationPointDouble(0d, 0d));
-            AddFunction(new ScaledNetworkValue(this, "362", vviScale, "Flight Instruments", "Vertical Velocity", "Vertical velocity indicator -6000 to +6000.", "", BindingValueUnits.FeetPerMinute, "%.3f"));
-            CalibrationPointCollectionDouble AoAScale = new CalibrationPointCollectionDouble(-0.05d, -5d, 0.5d, 50d) {
+            AddFunction(new ScaledNetworkValue(this, "345", new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 1000d), "Flight Instruments", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "362", new CalibrationPointCollectionDouble(-0.6d, -6000d, 0.6d, 6000d)
+                {
+                new CalibrationPointDouble(0.0d, 0.0d)
+                }, "Flight Instruments", "Vertical Velocity", "Vertical velocity indicator -6000 to +6000.", "", BindingValueUnits.FeetPerMinute, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "346", new CalibrationPointCollectionDouble(-0.05d, -5d, 0.5d, 50d) {
                 new CalibrationPointDouble(0d, 0d)
-                };
-            AddFunction(new ScaledNetworkValue(this, "346", AoAScale, "Flight Instruments", "Angle of Attack", "Current angle of attack of the aircraft.", "", BindingValueUnits.Degrees, "%.3f"));
+                }, "Flight Instruments", "Angle of Attack", "Current angle of attack of the aircraft.", "", BindingValueUnits.Degrees, "%.3f"));
             //AddFunction(new FlagValue(this, "", "Flight Instruments", "AOA Flag", "Off Flag"));
             AddFunction(new Axis(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.clk_adj_knob.ToString("d"), "366", 0.1d, 0.0d, 1.0d, "Clock (Pilot)", "Clock Adjust", false, "%.1f"));
             AddFunction(new Axis(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.tmr_stop_btn.ToString("d"), "367", 0.1d, 0.0d, 1.0d, "Clock (Pilot)", "Timer Stop", false, "%.1f"));
-            CalibrationPointCollectionDouble hourScale = new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 12d);
-            CalibrationPointCollectionDouble minuteScale = new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d);
-            AddFunction(new ScaledNetworkValue(this, "365", hourScale, "Clock (Pilot)", "Clock Hours", "Current hours value of the clock", "0-12", BindingValueUnits.Hours, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "364", minuteScale, "Clock (Pilot)", "Clock Minutes", "Current minutes value of the clock", "0-60", BindingValueUnits.Minutes, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "363", minuteScale, "Clock (Pilot)", "Clock Seconds", "Current seconds value of the clock", "0-60", BindingValueUnits.Seconds, "%.2f"));
-            CalibrationPointCollectionDouble cabinPressureScale = new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 50000d);
-            AddFunction(new ScaledNetworkValue(this, "361", cabinPressureScale, "Flight Instruments", "Cabin Pressure", "Current cabin pressure in feet", "0 - 50,000", BindingValueUnits.Feet, "%.3f"));
-
+            AddFunction(new ScaledNetworkValue(this, "365", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 12d), "Clock (Pilot)", "Clock Hours", "Current hours value of the clock", "0-12", BindingValueUnits.Hours, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "364", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d), "Clock (Pilot)", "Clock Minutes", "Current minutes value of the clock", "0-60", BindingValueUnits.Minutes, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "363", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d), "Clock (Pilot)", "Clock Seconds", "Current seconds value of the clock", "0-60", BindingValueUnits.Seconds, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "361", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 50000d), "Flight Instruments", "Cabin Pressure", "Current cabin pressure in feet", "0 - 50,000", BindingValueUnits.Feet, "%.3f"));
             AddFunction(new ScaledNetworkValue(this, "753", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 360d), "Flight Instruments", "Magnetic Compass Heading", "Compass heading in degrees", "0 to +360", BindingValueUnits.Degrees, "%.3f"));
             AddFunction(new ScaledNetworkValue(this, "755", new CalibrationPointCollectionDouble(-1d, -180d, 1d, 180d), "Flight Instruments", "Magnetic Compass Roll", "Compassrose roll", "-180 to +180", BindingValueUnits.Degrees, "%.3f"));
             AddFunction(new ScaledNetworkValue(this, "754", new CalibrationPointCollectionDouble(-1d, -90d, 1d, 90d), "Flight Instruments", "Magnetic Compass Pitch", "Compassrose pitch", "-90 to +90", BindingValueUnits.Degrees, "%.3f"));
@@ -373,7 +366,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             AddFunction(new Switch(this, devices.FLCTRL.ToString("d"), "453", SwitchPositions.Create(3, 0.5d, -0.25d, Commands.cas_commands.roll_sw.ToString("d"), new string[] { "On", "Reset", "Off" }, "%0.2f"), "CAS", "Roll CAS Switch", "%0.2f"));
             AddFunction(new Switch(this, devices.FLCTRL.ToString("d"), "454", SwitchPositions.Create(3, 0.5d, -0.25d, Commands.cas_commands.pitch_sw.ToString("d"), new string[] { "On","Reset","Off"}, "%0.2f"), "CAS", "Pitch CAS Switch", "%0.2f"));
             AddFunction(new PushButton(this, devices.FLCTRL.ToString("d"), Commands.cas_commands.bit_button.ToString("d"), "455", "CAS", "BIT Button", "%.1f"));
-            AddFunction(new Switch(this, devices.FLCTRL.ToString("d"), "456", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.cas_commands.tf_couple_sw.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.cas_commands.tf_couple_sw.ToString("d")) }, "CAS", "TF Couple Switch", "%0.1f"));
+            AddFunction(new Switch(this, devices.TFR.ToString("d"), "456", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.cas_commands.tf_couple_sw.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.cas_commands.tf_couple_sw.ToString("d")) }, "CAS", "TF Couple Switch", "%0.1f"));
             AddFunction(new PushButton(this, devices.FLCTRL.ToString("d"), Commands.cas_commands.to_button.ToString("d"), "457", "CAS", "T/O Trim Button", "%.1f"));
             AddFunction(new FlagValue(this, "458", "CAS", "T/O Trim Indicator", "True when indicator is lit", "%1d"));
             AddFunction(new Switch(this, devices.FLCTRL.ToString("d"), "335", new SwitchPosition[] { new SwitchPosition("1.0", "Auto", Commands.fltinst_commands.pitch_ratio_sw.ToString("d")), new SwitchPosition("0.0", "EMERG", Commands.fltinst_commands.pitch_ratio_sw.ToString("d")) }, "CAS", "Pitch Ratio switch", "%.1f"));
@@ -461,9 +454,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             AddFunction(new Switch(this, devices.FLINST.ToString("d"), "519", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.misc_commands.ewws_sw.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.misc_commands.ewws_sw.ToString("d")) }, "Left Bulkhead Panel", "EWWS Enable Switch", "%0.1f"));
             AddFunction(new Switch(this, devices.FLINST.ToString("d"), "520", new SwitchPosition[] { new SwitchPosition("1.0", "Upper", Commands.iffctrl_commands.iff_ant_sel_sw.ToString("d")), new SwitchPosition("0.0", "Both", Commands.iffctrl_commands.iff_ant_sel_sw.ToString("d")), new SwitchPosition("-1.0", "Lower", Commands.iffctrl_commands.iff_ant_sel_sw.ToString("d")) }, "Left Bulkhead Panel", "IFF Antenna Select Switch", "%0.1f"));
             AddFunction(new Switch(this, devices.CNPYSYST.ToString("d"), "521", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.misc_commands.seat_adj_sw.ToString("d"), Commands.misc_commands.seat_adj_sw.ToString("d"), "0.0", "0.0"), new SwitchPosition("0.0", "Posn 2", null), new SwitchPosition("-1.0", "Posn 3", Commands.misc_commands.seat_adj_sw.ToString("d"), Commands.misc_commands.seat_adj_sw.ToString("d"), "0.0", "0.0") }, "Left Bulkhead Panel", "Seat Adjust Switch", "%0.1f"));
-            AddFunction(new Switch(this, devices.FLINST.ToString("d"), "522", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.misc_commands.flyup_cover.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.misc_commands.flyup_cover.ToString("d")) }, "Left Bulkhead Panel", "Flyup Enable Switch cover", "%0.1f"));
-            AddFunction(new Switch(this, devices.FLINST.ToString("d"), "523", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.misc_commands.flyup_sw.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.misc_commands.flyup_sw.ToString("d")) }, "Left Bulkhead Panel", "Flyup Enable Switch", "%0.1f"));
-            AddFunction(new Switch(this, devices.FLINST.ToString("d"), "524", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.misc_commands.nctr_sw.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.misc_commands.nctr_sw.ToString("d")) }, "Left Bulkhead Panel", "NCTR Enable Switch", "%0.1f"));
+            AddFunction(new Switch(this, devices.TFR.ToString("d"), "522", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.misc_commands.flyup_cover.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.misc_commands.flyup_cover.ToString("d")) }, "Left Bulkhead Panel", "Flyup Enable Switch cover", "%0.1f"));
+            AddFunction(new Switch(this, devices.TFR.ToString("d"), "523", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.misc_commands.flyup_sw.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.misc_commands.flyup_sw.ToString("d")) }, "Left Bulkhead Panel", "Flyup Enable Switch", "%0.1f"));
+            AddFunction(new Switch(this, devices.AN_APG70.ToString("d"), "524", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.misc_commands.nctr_sw.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.misc_commands.nctr_sw.ToString("d")) }, "Left Bulkhead Panel", "NCTR Enable Switch", "%0.1f"));
             AddFunction(new Switch(this, devices.DEEC.ToString("d"), "525", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.engctrl_commands.vmax_cover.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.engctrl_commands.vmax_cover.ToString("d")) }, "Left Bulkhead Panel", "VMAX Switch cover", "%0.1f"));
             AddFunction(new Switch(this, devices.DEEC.ToString("d"), "526", new SwitchPosition[] { new SwitchPosition("1.0", "Posn 1", Commands.engctrl_commands.vmax_sw.ToString("d")), new SwitchPosition("0.0", "Posn 2", Commands.engctrl_commands.vmax_sw.ToString("d")) }, "Left Bulkhead Panel", "VMAX Switch", "%0.1f"));
             AddFunction(new Switch(this, devices.CNPYSYST.ToString("d"), "800", new SwitchPosition[] { new SwitchPosition("0.0", "Disarmed", Commands.misc_commands.seat_arm_handle.ToString("d")), new SwitchPosition("1.0", "Armed", Commands.misc_commands.seat_arm_handle.ToString("d")) }, "Left Bulkhead Panel", "Seat Arm Handle", "%0.1f"));
@@ -556,12 +549,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             AddFunction(new Axis(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.rc_clk_adj_knob.ToString("d"), "1382", 0.1d, 0.0d, 1.0d, "Clock (WSO)", "Clock Adjust", false, "%.1f"));
             AddFunction(new Axis(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.rc_tmr_stop_btn.ToString("d"), "1383", 0.1d, 0.0d, 1.0d, "Clock (WSO)", "Timer Stop", false, "%.1f"));
 
-            AddFunction(new ScaledNetworkValue(this, "1381", hourScale, "Clock (WSO)", "Clock Hours", "Current hours value of the clock", "0-12", BindingValueUnits.Hours, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "1380", minuteScale, "Clock (WSO)", "Clock Minutes", "Current minutes value of the clock", "0-60", BindingValueUnits.Minutes, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "1379", minuteScale, "Clock (WSO)", "Clock Seconds", "Current seconds value of the clock", "0-60", BindingValueUnits.Seconds, "%.2f"));
-            AddFunction(new ScaledNetworkValue(this, "1349", cabinPressureScale, "Flight Instruments (WSO)", "Cabin Pressure", "Current cabin pressure in feet", "0 - 50,000", BindingValueUnits.Feet, "%.3f"));
-            AddFunction(new ScaledNetworkValue(this, "1350", airspeedScale, "Flight Instruments (WSO)", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots, "%.3f"));
-            AddFunction(new ScaledNetworkValue(this, "1365", vviScale, "Flight Instruments (WSO)", "Vertical Velocity", "Vertical velocity indicator -6000 to +6000.", "", BindingValueUnits.FeetPerMinute, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "1381", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 12d), "Clock (WSO)", "Clock Hours", "Current hours value of the clock", "0-12", BindingValueUnits.Hours, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "1380", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d), "Clock (WSO)", "Clock Minutes", "Current minutes value of the clock", "0-60", BindingValueUnits.Minutes, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "1379", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 60d), "Clock (WSO)", "Clock Seconds", "Current seconds value of the clock", "0-60", BindingValueUnits.Seconds, "%.2f"));
+            AddFunction(new ScaledNetworkValue(this, "1349", new CalibrationPointCollectionDouble(0d, 0d, 1.0d, 50000d), "Flight Instruments (WSO)", "Cabin Pressure", "Current cabin pressure in feet", "0 - 50,000", BindingValueUnits.Feet, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "1350", new CalibrationPointCollectionDouble(0.0d, 0.0d, 1.0d, 1000d), "Flight Instruments (WSO)", "IAS Airspeed", "Current indicated air speed of the aircraft.", "", BindingValueUnits.Knots, "%.3f"));
+            AddFunction(new ScaledNetworkValue(this, "1365", new CalibrationPointCollectionDouble(-0.6d, -6000d, 0.6d, 6000d)
+                {
+                new CalibrationPointDouble(0.0d, 0.0d)
+                }, "Flight Instruments (WSO)", "Vertical Velocity", "Vertical velocity indicator -6000 to +6000.", "", BindingValueUnits.FeetPerMinute, "%.3f"));
             AddFunction(new Functions.Altimeter(this, "Flight Instruments (WSO)", Cockpit.WSO));
             AddFunction(new RotaryEncoder(this, devices.FLINST.ToString("d"), Commands.fltinst_commands.rc_alt_adj_knob.ToString("d"), "1364", 0.1d, "Flight Instruments (WSO)", "Altitude adjust"));
 
@@ -851,7 +847,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.F15E
             AddFunction(new Switch(this, devices.EWS_CMD.ToString("d"), "1475", SwitchPositions.Create(3, 1d, -0.5d, Commands.tews_commands.cmd_disp_sel_sw.ToString("d"), new string[] { "FLARE", "BOTH", "CHAFF" }, "%0.1f"), "CMD Control Panel (WSO)", "CMD Dispenser Selection Switch FLARE/BOTH/CHAFF", "%0.1f"));
             AddFunction(new Switch(this, devices.EWS_CMD.ToString("d"), "1476", SwitchPositions.Create(5, 0d, 0.25d, Commands.tews_commands.cmd_mode_knob.ToString("d"), new string[] { "OFF", "STBY", "MAN", "SEMI", "AUTO" }, "%0.2f"), "CMD Control Panel (WSO)", "CMD Operational Mode OFF/STBY/MAN/SEMI/AUTO", "%0.2f"));
             AddFunction(new Switch(this, devices.EWS_CMD.ToString("d"), "1477", new SwitchPosition[] { new SwitchPosition("1.0", "Open", Commands.tews_commands.cmd_jett_cover.ToString("d")), new SwitchPosition("0.0", "Closed", Commands.tews_commands.cmd_jett_cover.ToString("d")) }, "CMD Control Panel (WSO)", "Flare Jettison Switch Cover", "%0.1f"));
-            AddFunction(new Switch(this, devices.EWS_CMD.ToString("d"), "1478", new SwitchPosition[] { new SwitchPosition("1.0", "Norm", Commands.tews_commands.cmd_jett_sw.ToString("d")), new SwitchPosition("0.0", "Jettison", Commands.tews_commands.cmd_jett_cover.ToString("d")) }, "CMD Control Panel (WSO)", "Flare Jettison Switch", "%0.1f"));
+            AddFunction(new Switch(this, devices.EWS_CMD.ToString("d"), "1478", new SwitchPosition[] { new SwitchPosition("1.0", "Jettison", Commands.tews_commands.cmd_jett_sw.ToString("d")), new SwitchPosition("0.0", "Norm", Commands.tews_commands.cmd_jett_sw.ToString("d")) }, "CMD Control Panel (WSO)", "Flare Jettison Switch", "%0.1f"));
 
             #endregion CMD Control Panel (WSO)
             #region MISC CONTROLS (WSO)

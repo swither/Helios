@@ -83,13 +83,22 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             string documentPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
                 RunningVersion.IsDevelopmentPrototype ? options.DevDocumentsName : options.DocumentsName);
-            HeliosInit.Initialize(documentPath, "ControlCenter.log", options.LogLevel, new HeliosApplication
+            try
             {
-                ShowDesignTimeControls = false,
-                ConnectToServers = true,
-                SettingsAreWritable = false
-            });
-
+                HeliosInit.Initialize(documentPath, "ControlCenter.log", options.LogLevel, new HeliosApplication
+                {
+                    ShowDesignTimeControls = false,
+                    ConnectToServers = true,
+                    SettingsAreWritable = false
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error encountered in Helios initialization. Control Center will now exit.\nPlease file a bug report:\n{ex.Message}\n{ex}",
+                    $"Error in {ex.Source}");
+                Current.Shutdown();
+            }
             // need to defer exit until after we initialize Helios or our main window will crash
             if (exitCode < 0)
             {

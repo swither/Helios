@@ -21,10 +21,11 @@ namespace GadrocsWorkshop.Helios.Controls
 	using System.Windows;
     using System.Windows.Media;
 	using System.Xml;
+    using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 	[HeliosControl("Helios.Base.CustomDrum", "Custom Drum", "Custom Controls", typeof(Gauges.GaugeRenderer))]
 
-    public class CustomDrum : Gauges.BaseGauge, IConfigurableImageLocation
+    public class CustomDrum : Gauges.BaseGauge, IConfigurableImageLocation, IRefreshableImage
     {
 
         private HeliosValue _drumOffset;
@@ -287,6 +288,18 @@ namespace GadrocsWorkshop.Helios.Controls
         public void ReplaceImageNames(string oldName, string newName)
         {
             DrumImage = string.IsNullOrEmpty(DrumImage) ? DrumImage : string.IsNullOrEmpty(oldName) ? newName + DrumImage : DrumImage.Replace(oldName, newName);
+        }
+
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            ImageRefresh = false;
+            if ((DrumImage ?? "").ToLower().Replace("/", @"\") == imageName)
+            {
+                _Drum.ImageRefresh = ImageRefresh = true;
+				Refresh();
+            }
+
+            return ImageRefresh;
         }
 
         #region Actions

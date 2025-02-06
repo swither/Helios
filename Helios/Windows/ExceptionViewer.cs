@@ -66,7 +66,7 @@ namespace GadrocsWorkshop.Helios.Windows
                 message += "\n" + trace;
             }
             MessageBox.Show(
-                $"Unhandled exception occurred.  Please file a bug:\n{message}",
+                $"Unhandled exception occurred.  Please file a bug report:\n{message}",
                 $"Unhandled Error in {ex.Source}");
         }
     }

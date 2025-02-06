@@ -22,6 +22,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
     using System.Xml;
     using System.Windows;
     using System.Windows.Media;
+    using System.Globalization;
+    using System.ComponentModel;
 
     [HeliosControl("Helios.AH64D.EUFD", "Enhanced Up Front Display", "AH-64D", typeof(BackgroundImageRenderer), HeliosControlFlags.NotShownInUI)]
     public class EUFD : CompositeVisualWithBackgroundImage
@@ -35,6 +37,8 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
         private bool _includeViewport = true;
         private string _vpName = "";
         private const string Panel_Image = "{AH-64D}/Images/EUFD/EUFD.png";
+        public const double GLASS_REFLECTION_OPACITY_DEFAULT = 0.30d;
+        private double _glassReflectionOpacity = GLASS_REFLECTION_OPACITY_DEFAULT;
 
         public EUFD(string interfaceDevice)
             : base(interfaceDevice, new Size(1004, 348))
@@ -55,7 +59,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
             }
             if (_includeViewport) AddViewport(_vpName);
             _frameGlassPanel = AddPanel("EUFD Glass", new Point(Left + (173), Top + (25)), new Size(600d, 300d), "{AH-64D}/Images/MFD/MFD_glass.png", _interfaceDevice);
-            _frameGlassPanel.Opacity = 0.3d;
+            _frameGlassPanel.Opacity = _glassReflectionOpacity;
             _frameGlassPanel.DrawBorder = false;
             _frameGlassPanel.FillBackground=false;
  
@@ -278,7 +282,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
             rocker.TextFormat.FontSize = 15;
             rocker.TextFormat.ConfiguredFontSize = 15;
             rocker.TextFormat.FontFamily = ConfigManager.FontManager.GetFontFamilyByName("MS 33558");
-            rocker.Text = interfaceElementName.Substring(0, 3);
+            rocker.Text = interfaceElementName.Substring(0, 3).Replace("IDM","DL");
             rocker.TextColor = Color.FromArgb(0xe0, 0xff, 0xff, 0xff);
             rocker.TextPushOffset = new Point(0, 2);
 
@@ -324,6 +328,25 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
         {
             _frameBezelPanel.BackgroundImage = BackgroundImageIsCustomized ? null : Panel_Image;
         }
+        public double GlassReflectionOpacity
+        {
+            get
+            {
+                return _glassReflectionOpacity;
+            }
+            set
+            {
+                double oldValue = _glassReflectionOpacity;
+                if (value != oldValue)
+                {
+                    _glassReflectionOpacity = value;
+                    OnPropertyChanged("GlassReflectionOpacity", oldValue, value, true);
+                    _frameGlassPanel.IsHidden = _glassReflectionOpacity == 0d ? true : false;
+                    _frameGlassPanel.Opacity = _glassReflectionOpacity;
+
+                }
+            }
+        }
 
         public override bool HitTest(Point location)
         {
@@ -347,31 +370,48 @@ namespace GadrocsWorkshop.Helios.Gauges.AH64D.EUFD
         }
         public override void WriteXml(XmlWriter writer)
         {
+            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
+            TypeConverter doubleConverter = TypeDescriptor.GetConverter(typeof(double));
+
             base.WriteXml(writer);
             if (_includeViewport)
             {
-                writer.WriteElementString("EmbeddedViewportName", _vpName);
+                writer.WriteElementString("EmbeddedViewportName", ViewportName);
+                if (RequiresPatches) writer.WriteElementString("RequiresPatches", boolConverter.ConvertToInvariantString(RequiresPatches));
             }
             else
             {
                 writer.WriteElementString("EmbeddedViewportName", "");
             }
-        }
+            if (_glassReflectionOpacity > 0d)
+            {
+                writer.WriteElementString("GlassReflectionOpacity", doubleConverter.ConvertToInvariantString(GlassReflectionOpacity));
+            }
 
+        }
         public override void ReadXml(XmlReader reader)
         {
+            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
+            TypeConverter doubleConverter = TypeDescriptor.GetConverter(typeof(double));
+
             base.ReadXml(reader);
             _includeViewport = true;
-            if (reader.Name != "EmbeddedViewportName")
-            {
-                return;
-            }
-            _vpName = reader.ReadElementString("EmbeddedViewportName");
+
+            ViewportName = reader.Name.Equals("EmbeddedViewportName") ? reader.ReadElementString("EmbeddedViewportName") : "";
+            RequiresPatches = reader.Name.Equals("RequiresPatches") ? (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("RequiresPatches")) : false;
             if (_vpName == "")
             {
                 _includeViewport = false;
-                RemoveViewport("");
+                foreach (HeliosVisual visual in this.Children)
+                {
+                    if (visual.TypeIdentifier == "Helios.Base.ViewportExtent")
+                    {
+                        Children.Remove(visual);
+                        break;
+                    }
+                }
             }
+            GlassReflectionOpacity = reader.Name.Equals("GlassReflectionOpacity") ? (double)doubleConverter.ConvertFromInvariantString(reader.ReadElementString("GlassReflectionOpacity")) : 0d;
         }
     }
 }

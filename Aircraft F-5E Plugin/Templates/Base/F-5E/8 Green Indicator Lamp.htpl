@@ -1,0 +1,32 @@
+﻿<ControlTemplate>
+  <Name>Green Indicator Lamp</Name>
+  <Category>F-5E Tiger II</Category>
+  <TypeIdentifier>Helios.Base.Indicator</TypeIdentifier>
+  <Template>
+    <TemplateValues>
+      <OnImage>{F-5E}/Images/Lamps_And_Indicators\Green_Round.png</OnImage>
+      <OffImage />
+      <Font>
+        <FontFamily>Franklin Gothic</FontFamily>
+        <FontStyle>Normal</FontStyle>
+        <FontWeight>Normal</FontWeight>
+        <FontSize>6.22222222222222</FontSize>
+        <HorizontalAlignment>Center</HorizontalAlignment>
+        <VerticalAlignment>Center</VerticalAlignment>
+        <Padding>
+          <Left>0</Left>
+          <Top>0</Top>
+          <Right>0</Right>
+          <Bottom>0</Bottom>
+        </Padding>
+      </Font>
+      <Text />
+      <OnTextColor>#FFB3A229</OnTextColor>
+      <OffTextColor>#FF1C1C1C</OffTextColor>
+      <ScalingMode>Height</ScalingMode>
+      <Location>138,60</Location>
+      <Size>28,28</Size>
+      <Hidden>False</Hidden>
+    </TemplateValues>
+  </Template>
+</ControlTemplate>

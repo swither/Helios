@@ -1,0 +1,16 @@
+<ControlTemplate>
+    <Name>Auto Balance Center Image</Name>
+    <Category>F-5E Tiger II</Category>
+    <TypeIdentifier>Helios.Base.ImageTranslucent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-5E}/Images/Buttons_Knobs_Switches/Auto_Balance_Center.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <DefaultOpacity>1.0</DefaultOpacity>
+            <Location>0,0</Location>
+            <Size>157,279</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

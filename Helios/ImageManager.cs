@@ -14,14 +14,17 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Resources;
 using GadrocsWorkshop.Helios.Util;
 using NLog;
@@ -37,6 +40,7 @@ namespace GadrocsWorkshop.Helios
         private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly Uri _documentImageUri;
         private readonly HashSet<string> _failedImagePaths = new HashSet<string>();
+        private static ArrayList _changedImages = ArrayList.Synchronized(new ArrayList());
 
         public event EventHandler<ImageLoadEventArgs> ImageLoadSuccess;
         public event EventHandler<ImageLoadEventArgs> ImageLoadFailure;
@@ -58,6 +62,8 @@ namespace GadrocsWorkshop.Helios
             {"{Helios}/Images/FA-18C/", "{FA-18C}/Images/"},
             {"{Helios}/Gauges/UH-60L/", "{UH-60L}/Gauges/"},
             {"{Helios}/Images/UH-60L/", "{UH-60L}/Images/"},
+            {"{Helios}/Gauges/F-16/", "{F-16C}/Gauges/"},
+            {"{Helios}/Images/F-16/", "{F-16C}/Images/"},
 
         };
 
@@ -102,7 +108,20 @@ namespace GadrocsWorkshop.Helios
         {
             Logger.Debug($"Helios will load user images from {Anonymizer.Anonymize(userImagePath)}");
             _documentImagePath = userImagePath;
-            _documentImageUri = new Uri(userImagePath);
+            try
+            {
+                _documentImageUri = new Uri(userImagePath);
+            } 
+            catch (UriFormatException ex)
+            {
+                Logger.Error($"Helios Image Manager encountered an error while setting a Uri for user images from \"{Anonymizer.Anonymize(userImagePath)}\".  Exception {ex}");
+                throw new ApplicationException($"Image Manager Exception while attempting to create a Uri with invalid User Image Path {Anonymizer.Anonymize(userImagePath)}. {ex.Message}");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Logger.Error($"Helios Image Manager encountered an error with the User Image Path being null. Exception {ex}");
+                throw new ApplicationException($"Image Manager Exception while attempting to create a Uri without a User Image Path. {ex.Message}");
+            }
             _xamlFirewall = new XamlFirewall();
         }
 
@@ -177,6 +196,22 @@ namespace GadrocsWorkshop.Helios
             if (_cacheObjects && !request.Options.HasFlag(LoadImageOptions.ReloadIfChangedExternally))
             {
                 _objectCache.Add(request.Key, source);
+            }
+            ///ToDo:  Needs investigation about whether ReloadIfChangedExternally is still needed.
+            ///We want to update the cache entry when the image has been changed externally, however the key 
+            ///contains the ImageOptions so for now we calculate a new key to allow updating.
+            if (_cacheObjects && request.Options.HasFlag(LoadImageOptions.ReloadIfChangedExternally))
+            {
+                ImageLoadRequest adjustedRequest = new ImageLoadRequest(request.Uri, request.Width, request.Height, LoadImageOptions.None);
+                if (_objectCache.ContainsKey(adjustedRequest.Key))
+                {
+                    _objectCache[adjustedRequest.Key] = source;
+                }
+                else
+                {
+                    _objectCache.Add(adjustedRequest.Key, source);
+                }
+
             }
             return source;
         }
@@ -589,6 +624,12 @@ namespace GadrocsWorkshop.Helios
                     DropObjectCache();;
                 }
             }
+        }
+        
+        public ArrayList ChangedImages
+        {
+            get => _changedImages;
+            set => _changedImages = value;
         }
 
         #endregion

@@ -35,14 +35,18 @@ namespace GadrocsWorkshop.Helios.Controls
         private double _rotationTravel = 270d;
 
         private HeliosValue _heliosValue;
+        private HeliosTrigger _releasedTrigger;
 
         private bool _isContinuous;
+        private bool _continuousConfigurable = false;
 
         public PotentiometerKnob(string name)
             : base(name, new Size(100, 100))
         {
             KnobImage = "{Helios}/Images/Knobs/knob1.png";
 
+            _releasedTrigger = new HeliosTrigger(this, "", "", "released", "Fires when the user's pressure on the control is released");
+            this.Triggers.Add(_releasedTrigger);
             _heliosValue = new HeliosValue(this, new BindingValue(0d), "", "value", "Current value of the potentiometer.", "", BindingValueUnits.Numeric);
             _heliosValue.Execute += new HeliosActionHandler(SetValue_Execute);
             Values.Add(_heliosValue);
@@ -75,7 +79,9 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public bool ContinuousConfigurable { get; } = false;
+        public bool ContinuousConfigurable { get => _continuousConfigurable;
+            set => _continuousConfigurable = value; 
+        }
 
         public double InitialValue
         {
@@ -221,7 +227,8 @@ namespace GadrocsWorkshop.Helios.Controls
         }
 
         internal double MaxRotation => InitialRotation + RotationTravel;
-
+ 
+        public virtual PushButtonType ButtonType { get; set; }
         #endregion
 
         #region Actions
@@ -231,8 +238,11 @@ namespace GadrocsWorkshop.Helios.Controls
             try
             {
                 // NOTE: don't create a Helios object property event
-                _heliosValue.SetValue(e.Value, e.BypassCascadingTriggers);
-                SetRotation();
+                if (AllowRotation == RotaryClickAllowRotationType.Both || (IsPushed && AllowRotation == RotaryClickAllowRotationType.Clicked) || (!IsPushed && AllowRotation == RotaryClickAllowRotationType.Unclicked))
+                {
+                    _heliosValue.SetValue(e.Value, e.BypassCascadingTriggers);
+                    SetRotation();
+                }
             }
             catch
             {
@@ -244,7 +254,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         private void SetRotation()
         {
-            KnobRotation = ControlAngle;
+                KnobRotation = ControlAngle;
         }
 
         #region IPulsedControl
@@ -363,5 +373,11 @@ namespace GadrocsWorkshop.Helios.Controls
             SetRotation();
             EndTriggerBypass(true);
         }
+        public override void MouseUp(Point location)
+        {
+            _releasedTrigger.FireTrigger(BindingValue.Empty);
+            base.MouseUp(location);
+        }
+
     }
 }

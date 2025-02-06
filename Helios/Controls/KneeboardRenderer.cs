@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private ImageBrush _imageBrush;
         private Pen _borderPen;
 
-        protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+        protected override void OnRender(DrawingContext drawingContext)
         {
            if (_image != null)
             {

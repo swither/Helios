@@ -14,17 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Controls.Capabilities;
 using System.Windows;
+using System.Windows.Media;
+using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 
 namespace GadrocsWorkshop.Helios.Controls
 {
     /// <summary>
     /// base class for analog rotary knobs rather than rotary switches
     /// </summary>
-    public abstract class RotaryKnob : Rotary, Capabilities.IConfigurableImageLocation
+    public abstract class RotaryKnob : Rotary, IConfigurableImageLocation, IRefreshableImage
     {
         private string _knobImage;
         private double _rotation;
+        private RotaryClickAllowRotationType _allowRotation = RotaryClickAllowRotationType.Both;
+
 
         protected RotaryKnob(string name, Size defaultSize) : base(name, defaultSize)
         {
@@ -47,7 +52,13 @@ namespace GadrocsWorkshop.Helios.Controls
                 }
             }
         }
-
+        public RotaryClickAllowRotationType AllowRotation
+        {
+            get => _allowRotation;
+            set => _allowRotation = value;
+        }
+        public virtual bool ClickConfigurable { get => false; }
+        public virtual bool IndicatorConfigurable { get => false; }
 
         /// <summary>
         /// Performs a replace of text in this controls image names
@@ -58,7 +69,14 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             KnobImage = string.IsNullOrEmpty(KnobImage) ? KnobImage : string.IsNullOrEmpty(oldName) ? newName + KnobImage : KnobImage.Replace(oldName, newName);
         }
-
+        /// <summary>
+        /// Loads / Reloads an image into cache.  This is used when the image has been changed externally, and the image is not currently rendered. 
+        /// </summary>
+        /// <param name="imageName">Name of the non-rendered image</param>
+        protected void ReloadImage(string imageName)
+        {
+            ImageSource _ = (ConfigManager.ImageManager as IImageManager3).LoadImage(imageName, ImageRefresh ? LoadImageOptions.ReloadIfChangedExternally : LoadImageOptions.None);
+        }
         public double KnobRotation
         {
             get { return this._rotation; }
@@ -72,6 +90,15 @@ namespace GadrocsWorkshop.Helios.Controls
                     OnDisplayUpdate();
                 }
             }
+        }
+
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if ((KnobImage ?? "").ToLower().Replace("/", @"\") == imageName) { 
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
         }
     }
 }

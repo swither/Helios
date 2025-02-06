@@ -16,11 +16,12 @@
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.Controls.Capabilities;
     using System;
     using System.Windows;
 
     [HeliosControl("Helios.Base.GuardedToggleSwitch", "Guarded Toggle Switch", "Toggle Switches", typeof(GuardedToggleSwitchRenderer))]
-    public class GuardedToggleSwitch : HeliosVisual
+    public class GuardedToggleSwitch : HeliosVisual, IRefreshableImage
     {
         private static readonly Rect GuardUpRegion = new Rect(0, 0, 65, 123);
         private static readonly Rect SwitchRegion = new Rect(0, 123, 65, 80);
@@ -356,7 +357,18 @@ namespace GadrocsWorkshop.Helios.Controls
             }
             base.OnPropertyChanged(args);
         }
-
+        public override bool ConditionalImageRefresh(string imageName)
+        {
+            if ((PositionOneGuardDownImage ?? "")   .ToLower().Replace("/", @"\") == imageName ||
+                    (PositionOneGuardUpImage ?? "").ToLower().Replace("/", @"\") == imageName ||
+                (PositionTwoGuardDownImage ?? "").ToLower().Replace("/", @"\") == imageName ||
+                (PositionTwoGuardUpImage ?? "").ToLower().Replace("/", @"\") == imageName)
+            {
+                ImageRefresh = true;
+                Refresh();
+            }
+            return ImageRefresh;
+        }
         #region HeliosControl Implementation
 
         public override void Reset()

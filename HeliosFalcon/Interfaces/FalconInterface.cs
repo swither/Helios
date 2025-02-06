@@ -41,6 +41,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private string _cockpitDatFile;
         private bool _focusAssist;
         private string _falconVersion;
+        private string _pilotCallsign;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private FalconDataExporter _dataExporter;
         private bool _forceKeyFile;
@@ -53,7 +54,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             FalconType = FalconTypes.BMS;
             FalconVersions = GetFalconVersions();
-            _falconPath = GetFalconPath();
+            FalconPath = GetFalconPath();
             PilotCallsign = GetpilotCallsign();
             CurrentTheater = GetCurrentTheater();
 
@@ -91,7 +92,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 
         private HeliosProfile CurrentProfile { get; set; }
         public string CurrentTheater { get; private set; }
-        public string PilotCallsign { get; }
+        public string PilotCallsign {
+            get { return _pilotCallsign; }
+            set
+            {
+                var oldValue = _pilotCallsign;
+                _pilotCallsign = value;
+                OnPropertyChanged("PilotCallsign", oldValue, value, true);
+            }    
+        }
 
         public bool ForceKeyFile
         {
@@ -141,6 +150,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     _falconVersion = value;
                     OnPropertyChanged("FalconVersion", oldValue, value, false);
                     FalconPath = GetFalconPath();
+                    PilotCallsign = GetpilotCallsign();
+                    InvalidateStatusReport();
                 }
             }
         }
@@ -740,7 +751,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 {
                     Status = "Falcon BMS config parameter g_bExportRTTTextures is not enabled",
                     Severity = StatusReportItem.SeverityCode.Error,
-                    Recommendation = $"In order to use Falcon Textures please edit the {Anonymizer.Anonymize(FalconPath)}\\User\\Config\\Falcon BMS User.cfg file and add the line: set g_bExportRTTTextures 1 to the file"
+                    Recommendation = $"In order to use Falcon BMS Textures please edit the {Anonymizer.Anonymize(FalconPath)}\\User\\Config\\Falcon BMS User.cfg file and add the line: set g_bExportRTTTextures 1 to the file"
                 };
             }
 

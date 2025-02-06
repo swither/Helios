@@ -33,7 +33,7 @@ namespace GadrocsWorkshop.Helios.Gauges.FA18C
         private string _font = "MS 33558";
         private string _ufcNumbers16 = "`0=«;`1=¬;`2=Ð;`3=®;`4=¯;`5=°;`6=±;`7=²;`8=³;`9=´;~0=µ;0=¡;1=¢;2=£;3=¤;4=¥;5=¦;6=§;7=¨;8=©;9=ª;_=É;!=È"; //Numeric mapping into characters in the UFC font
         private string _ufcNumbers16Tens = "`0=«;`1=¬;`2=Ð;`3=®;`4=¯;`5=°;`6=±;`7=²;`8=³;`9=´;~0=µ;a=Ñ;b=Ñ;c=Ñ;`=Ò;2=Ó;~=Ó;3=Ô;e=Ô;f=Ô;g=Ô;4=Õ;h=Õ;i=Õ;j=Õ;5=Ö;k=Ö;6=×;l=×;7=Ø;m=Ø;n=Ø;o=Ø;8=Ù;q=Ù;s=Ù;9=Ú;t=Ú;u=Ú;v=Ú;_=É;!=È"; //Numeric mapping into characters in the UFC font
-        private string _ufcCueing = "!=È"; 
+        private string _ufcCueing = "!=È;|=È"; 
 
         public UFC_FA18C()
             : base("UFC", new Size(602, 470))

@@ -45,6 +45,9 @@ namespace GadrocsWorkshop.Helios
         private bool _snapTarget = true;
         private bool _hidden;
         private bool _defaultHidden;
+        private bool _keepAspectRatio = false;
+        private bool _imageRefresh = false;
+        private double _aspectRatio = 1.0;
 
         private readonly HeliosValue _hiddenValue;
 
@@ -189,6 +192,25 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
+        /// Gets or sets whether this control keeps the same aspect ratio when Width/Height are changed.
+        /// </summary>
+        public bool KeepAspectRatio
+        {
+            get => _keepAspectRatio;
+            set
+            {
+                if (_keepAspectRatio.Equals(value))
+                {
+                    return;
+                }
+                _aspectRatio = value ? Width / Height : 1d; 
+                bool oldValue = _keepAspectRatio;
+                _keepAspectRatio = value;
+                OnPropertyChanged("KeepAspectRatio", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
         /// Recursively checks visibility of all visuals up to the root; only returns true if none of them are hidden
         /// </summary>
         public bool IsVisible => (!IsHidden) && (Parent == null || Parent.IsVisible);
@@ -231,6 +253,24 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        /// <summary>
+        /// Indicates that the Image or images are to be reloaded from disk
+        /// </summary>
+        public bool ImageRefresh
+        {
+            get => _imageRefresh;
+            set => _imageRefresh = value;
+        }
+        /// <summary>
+        /// Checks to see if there is an image(s) of the specidied name and if so, flags them to be
+        /// reloaded from disk
+        /// </summary>
+        /// <param name="imageName">Name of the image to be checked</param>
+        /// <returns>true if the image was found</returns>
+        public virtual bool ConditionalImageRefresh(string imageName)
+        {
+            return ImageRefresh;
+        }
         /// <summary>
         /// Lazy creates and returns the renderer for this visual
         ///
@@ -307,7 +347,11 @@ namespace GadrocsWorkshop.Helios
                 {
                     return;
                 }
-
+                if (_keepAspectRatio)
+                {
+                    AspectControledSize = new Size(value , value / _aspectRatio);
+                    return;
+                }
                 double oldValue = _rectangle.Width;
                 _rectangle.Width = newValue;
                 OnPropertyChanged("Width", oldValue, newValue, true);
@@ -330,10 +374,35 @@ namespace GadrocsWorkshop.Helios
                 {
                     return;
                 }
-
+                if (_keepAspectRatio) {
+                    AspectControledSize = new Size(value * _aspectRatio, value);
+                    return;
+                }
                 double oldValue = _rectangle.Height;
                 _rectangle.Height = newValue;
                 OnPropertyChanged("Height", oldValue, newValue, true);
+                UpdateRectangle();
+                Refresh();
+                OnResized();
+            }
+        }
+
+        /// <summary>
+        /// Size of this visual when Aspect Ratio is being maintained.
+        /// </summary>
+        private Size AspectControledSize
+        {
+            set
+            {
+                double newHeightValue = Math.Truncate(value.Height);
+                double newWidthValue = Math.Truncate(value.Width);
+
+                Size oldValue = new Size(_rectangle.Width, _rectangle.Height);
+
+                _rectangle.Height = newHeightValue;
+                _rectangle.Width = newWidthValue;
+                OnPropertyChanged("Height", oldValue.Height, newHeightValue, true);
+                OnPropertyChanged("Width", oldValue.Width, newWidthValue, true);
                 UpdateRectangle();
                 Refresh();
                 OnResized();

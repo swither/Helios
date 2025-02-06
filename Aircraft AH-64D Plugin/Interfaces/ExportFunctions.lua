@@ -9,13 +9,17 @@ end
 function driver.processLowImportance(mainPanelDevice)
 
     -- structured data
-    li = helios.parseIndication(15) -- 15 Pilot Keyboard Unit
+    li = helios.parseIndication(16) -- 16 Pilot Keyboard Unit
     if li then
         helios.send(2080, string.format("%s", helios.ensureString(li.Standby_text):gsub(":", "!")))
+	else
+		helios.send(2080,"")
     end
-    li = helios.parseIndication(14) -- 14 CP/G Keyboard Unit
+    li = helios.parseIndication(15) -- 15 CP/G Keyboard Unit
     if li then
         helios.send(2081, string.format("%s", helios.ensureString(li.Standby_text):gsub(":", "!")))
+	else
+		helios.send(2081,"")
     end
 	if mainPanelDevice:get_argument_value(610) == -1.0 then
 		-- clear the Chaff, Flare, and threat display if the CMWS is off
@@ -23,11 +27,11 @@ function driver.processLowImportance(mainPanelDevice)
 		helios.send(2083, "")
 		for ii = 2084,2093 do helios.send(ii, "0.0") end
 	else
-		li = helios.parseIndication(24) -- 24 CMWS Unit
+		li = helios.parseIndication(25) -- 25 CMWS Unit
 		if li then
 			if li["#83#"]  and li["#83#"] ~= "" then -- Chaff & Flares
-				helios.send(2082, string.format("%1s %s", helios.ensureString(li["#83#"]), helios.ensureString(li["#85#"])))
-				helios.send(2083, string.format("%1s %s", helios.ensureString(li["#84#"]), helios.ensureString(li["#86#"])))
+				helios.send(2082, string.format("%1s%-3s", helios.ensureString(li["#83#"]), helios.ensureString(li["#85#"])))
+				helios.send(2083, string.format("%1s%-3s", helios.ensureString(li["#84#"]), helios.ensureString(li["#86#"])))
 				-- The CMWS flags are held in variables which either are declared or not, and when the exist, they are an empty string
 				helios.send(2084, string.format("%0.1f", li["#87#"] and 1 or 0)) -- Ready (this seems to have an inverse which is #89#)
 				helios.send(2085, string.format("%0.1f", li["#88#"] and 1 or 0)) -- Dispense (this seems to have an inverse which is #90#)

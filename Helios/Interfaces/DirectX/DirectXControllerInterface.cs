@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2023 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -238,11 +239,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
                             testStatus = "";
                             break;
                         case 0x0000: // VPC Panel #1
+                        case 0x00cb: // VPC Stick WarBRD-D #800
+                        case 0x00cc: // VPC Stick WarBRD
                         case 0x025b: // VPC Panel #2
                         case 0x025d: // VPC SharKa-50 Panel
-                        case 0x00cc: // VPC Stick WarBRD
                         case 0x40cc: // VPC Stick WarBRD
                         case 0x40d0: // VPC Stick WarBRD
+                        case 0x80cb: // VPC Stick WarBRD-D #800
                             testStatus = "(Untested) "; 
                             break;
                         default:
@@ -299,20 +302,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.DirectX
             {
                 if (!Values.Contains(function.Value))
                 {
-                    Values.Add(function.Value);
-                    foreach (IBindingTrigger trigger in function.Triggers)
+                    try
                     {
-                        Triggers.Add(trigger);
-                    }
+                        Values.Add(function.Value);
+                        foreach (IBindingTrigger trigger in function.Triggers)
+                        {
+                            Triggers.Add(trigger);
+                        }
 
-                    if (!_functions.Contains(function))
-                    {
-                        _functions.Add(function);
-                        Logger.Info($"Adding {function.Name}. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                        if (!_functions.Contains(function))
+                        {
+                            _functions.Add(function);
+                            Logger.Info($"Adding {function.Name}. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                        }
+                        else
+                        {
+                            Logger.Error($"Attempt to add {function.Name} which already exists. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Logger.Error($"Attempt to add {function.Name} which already exists. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}");
+                        Logger.Error($"Attempt to add {function.Name} threw exception {e.Message}. Function: {function}, Product Name {_deviceId.ProductName} GUID {_deviceId.InstanceGuid}.  Typically this happens when two (or more) USB devices have the same UID.  Try to isolate the problematic device by systematically removing USB devices.");
                     }
                 }
                 else

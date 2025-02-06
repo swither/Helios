@@ -33,7 +33,7 @@ log.write("HELIOS.EXPORT", log.INFO, "initializing Helios Export script")
 -- This section is configured by the DCS Interfaces in Helios Profile Editor
 
 -- address to which we send
-helios_private.host = "HELIOS_REPLACE_IPAddress"
+helios_private.host = "HELIOS_REPLACE_NETWORKADDRESS"
 
 -- UDP port to which we send
 -- NOTE: our local port on which we listen is dynamic
@@ -367,6 +367,8 @@ function helios_impl.init()
 
     log.write("HELIOS.EXPORT", log.DEBUG, "loaded")
 
+    helios_private.host = helios_private.resolveHostname(helios_private.host)
+
     log.write(
         "HELIOS.EXPORT",
         log.INFO,
@@ -429,6 +431,7 @@ function helios_private.processSimulatorData(selfData)
 	local altBar = LoGetAltitudeAboveSeaLevel()
 	local altRad = LoGetAltitudeAboveGroundLevel()
 	local pitch, bank, yaw = LoGetADIPitchBankYaw()
+	local magneticYaw = LoGetMagneticYaw()
 	local vvi = LoGetVerticalVelocity()
 	local ias = LoGetIndicatedAirSpeed()
 	local aoa = LoGetAngleOfAttack()
@@ -439,11 +442,12 @@ function helios_private.processSimulatorData(selfData)
 	-- send this best effort (NOTE: helios.send will filter nil values)
 	if (pitch ~= nil and bank ~= nil and yaw ~= nil) then
         -- these are text keys, which is very slightly slower but avoids collision with modules and drivers
-		helios.send("T1", math.floor(0.5 + pitch * 57.3), "%d")
-		helios.send("T2", math.floor(0.5 + bank * 57.3), "%d")
-		helios.send("T3", math.floor(0.5 + yaw * 57.3), "%d")
+		helios.send("T1", math.floor(0.5 + pitch  	* 57.2957795 * 1000) / 1000, "%.3f")
+		helios.send("T2", math.floor(0.5 + bank * 57.2957795 * 1000) / 1000, "%.3f")
+		helios.send("T3", math.floor(0.5 + yaw * 57.2957795 * 1000) / 1000, "%.3f")
 		helios.send("T4", altBar, "%.1f")
 		helios.send("T5", altRad, "%.1f")
+		helios.send("T6", math.floor(0.5 + magneticYaw * 57.2957795 * 1000) / 1000, "%.3f")
         if math.abs(vvi) < 0.04 then
             -- don't send +/- 0.0 while bouncing on the ground
             vvi = 0.0
@@ -803,6 +807,22 @@ function helios_private.calculateNextUpdate(currentUpdate, updateInterval)
     end
 
     return nextUpdate
+end
+
+--- Resolve Hostname
+function helios_private.resolveHostname(networkAddress)
+	local ipTest = {networkAddress:match("(%d+)%.(%d+)%.(%d+)%.(%d+)")}
+	if(#ipTest ~= 4) then
+		local ipaddress = nil
+		ipaddress = socket.dns.toip(networkAddress)  -- can be IP address or Hostname
+		if(ipaddress ~= nil ) then 
+			log.write("HELIOS.EXPORT", log.INFO, string.format("Resolved address %s to %s",networkAddress, ipaddress))
+			return ipaddress
+		else
+			log.write("HELIOS.EXPORT", log.ERROR, string.format("Unable to resolve address %s",networkAddress))
+		end
+	end
+	return networkAddress
 end
 
 -- ========================= MODULE COMPATIBILITY LAYER ==========================

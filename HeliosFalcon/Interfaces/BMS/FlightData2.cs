@@ -207,6 +207,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         // 17: added Flcs_Flcc, SolenoidStatus to MiscBits
         // 18. added console floodlight brightness
         // 19: added ECM_M1-5, ECM oper + blinkbit, magnetic deviation, RWR jamming status
+        // 20: added radio2_present and radio2_frequency, effective IFF transponder codes, BupUhfPreset changed to uhf_panel_preset, BupUhfFreq changed to uhf_panel_frequency
 
 
         public const int RWRINFO_SIZE = 512;
@@ -235,10 +236,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         // existing on/off bits. It's up to the external program to implement the
         // *actual* blinking.
         public CmdsModes cmdsMode;		// Ownship CMDS mode state, see CmdsModes enum for details
-        public int BupUhfPreset;	// BUP UHF channel preset
+        public int uhf_panel_preset;       // BUP UHF channel preset (F16), radio 1 preset (other aircraft).
 
         // VERSION 3
-        public int BupUhfFreq;		// BUP UHF channel frequency
+        public int uhf_panel_frequency;     // BUP UHF channel frequency, radio 1 frequency (other aircraft).
         public float cabinAlt;		// Ownship cabin altitude
         public float hydPressureA;	// Ownship Hydraulic Pressure A
         public float hydPressureB;	// Ownship Hydraulic Pressure B
@@ -324,5 +325,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_RWR_OBJECTS)]
         public JammingStates[] RWRjammingStatus;  // (unsigned) char see enum JammingStates for details
+
+        // VERSION 20
+        public int radio2_preset;       // Radio 2 channel preset (if present).
+        public int radio2_frequency;    // Radio 2 channel frequency (if present).
+
+        // VERSION 21
+        public int tacan_ils_frequency; // Tacan ILS (110.30 = 11030). Valid interval [108.10, 111.95].
+
+        // IFF transponder currently active (as seen from outside) codes, negative for OFF or n/a
+        public char iffTransponderActiveCode1;  // mode 1
+        public short iffTransponderActiveCode2;  // mode 2
+        public short iffTransponderActiveCode3A; // mode 3A
+        public short iffTransponderActiveCodeC;  // mode C
+        public short iffTransponderActiveCode4;  // mode 4; assumes the correct codeword
     }
 }

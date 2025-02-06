@@ -7,7 +7,7 @@
       <OnImage>{Helios}/Images/Indicators/green-light-on.png</OnImage>
       <OffImage>{Helios}/Images/Indicators/green-light-off.png</OffImage>
       <Font>
-        <FontFamily>Franklin Gothi c</FontFamily>
+        <FontFamily>Franklin Gothic</FontFamily>
         <FontStyle>Normal</FontStyle>
         <FontWeight>Normal</FontWeight>
         <FontSize>12</FontSize>

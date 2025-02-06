@@ -221,7 +221,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
 
             #region Flight Gauges
             AddFunction(new Altimeter(this));
-            AddFunction(new RotaryEncoder(this, FM_PROXY, BUTTON_1, "62", 0.04d, "Altimeter", "Pressure"));
+            //argId 62 has been changed because the element Altimeter, Pressure was already in use inside the Altimeter Function and was causing an exception.
+            //AddFunction(new RotaryEncoder(this, FM_PROXY, BUTTON_1, "62", 0.04d, "Altimeter", "Pressure"));
+            AddFunction(new RotaryEncoder(this, FM_PROXY, BUTTON_1, "62", 0.04d, "Altimeter", "Pressure Adjustment Knob", "%.1f"));
             AddFunction(Switch.CreateThreeWaySwitch(this, AAU34, BUTTON_2, "60", "1.0", "PNEU", "0.0", "NONE", "-1.0", "ELECT", "Altimeter", "ELECT/PNEU switch", "%0.1f"));
 
             AddFunction(new PushButton(this, ACCELEROMETER, BUTTON_1, "904", "Accelerometer", "Push to set"));
@@ -270,7 +272,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new ScaledNetworkValue(this, "63", 90d, "SAI", "Pitch", "Current pitch displayed on the SAI.", "", BindingValueUnits.Degrees));
             AddFunction(new ScaledNetworkValue(this, "64", -180d, "SAI", "Bank", "Current bank displayed on the SAI.", "", BindingValueUnits.Degrees));
             AddFunction(new FlagValue(this, "65", "SAI", "Warning Flag", "Displayed when SAI is caged or non-functional."));
-            AddFunction(new RotaryEncoder(this, SAI, BUTTON_3, "66", 0.1d, "SAI", "Pitch Trim / Cage"));
+            AddFunction(new Axis(this, SAI, BUTTON_3, "66", 0.1d, -1d, 1d, "SAI", "Pitch Trim / Cage"));
+
             AddFunction(new NetworkValue(this, "715", "SAI", "Pitch Adjust", "Current pitch adjustment setting", "-1 to 1", BindingValueUnits.Numeric));
             AddFunction(new NetworkValue(this, "717", "SAI", "Pitch Adjust neddle", "Current pitch adjustment needle position ", "-1 to 1", BindingValueUnits.Numeric));
 
@@ -543,7 +546,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new PushButton(this, CDU, BUTTON_58, "470", "CDU", "CLR"));
             AddFunction(new PushButton(this, CDU, BUTTON_59, "471", "CDU", "FA"));
 
-            AddFunction(new Rocker(this, CDU, BUTTON_60, BUTTON_61, BUTTON_60, BUTTON_61, "424", "CDU", "Brightness", false));
+            AddFunction(new Switch(this, CDU, "424", new SwitchPosition[] { new SwitchPosition("1.0", "Right", BUTTON_61, BUTTON_61, "0.0", "0.0"), new SwitchPosition("0.0", "Middle", null), new SwitchPosition("-1.0", "Left", BUTTON_60, BUTTON_60, "0.0", "0.0") }, "CDU", "Brightness", "%0.1f"));
             AddFunction(new Rocker(this, CDU, BUTTON_62, BUTTON_63, BUTTON_62, BUTTON_63, "463", "CDU", "Page", true));
             AddFunction(new Rocker(this, CDU, BUTTON_64, BUTTON_65, BUTTON_64, BUTTON_65, "469", "CDU", "Blank", false));
             AddFunction(new Rocker(this, CDU, BUTTON_66, BUTTON_67, BUTTON_66, BUTTON_67, "472", "CDU", "+/-", true));
@@ -632,10 +635,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new PushButton(this, CMSP, BUTTON_7, "357", "CMSP", "Return to Previous Rotary Menu"));
             AddFunction(Switch.CreateToggleSwitch(this, CMSP, BUTTON_8, "358", "1", "Jettison", "0", "Off", "CMSP", "ECM Pod Jettison", "%1d"));
             AddFunction(new Axis(this, CMSP, BUTTON_9, "359", 0.1d, 0.15d, 0.85d, "CMSP", "Brightness"));
-            AddFunction(new Switch(this, CMSP, "360", new SwitchPosition[] { new SwitchPosition("0.2", "Menu", BUTTON_11, BUTTON_11, "0.1"), new SwitchPosition("0.1", "On", null), new SwitchPosition("0.0", "Off", BUTTON_10, BUTTON_10, "0.1") }, "CMSP", "MWS", "%0.1f"));
-            AddFunction(new Switch(this, CMSP, "361", new SwitchPosition[] { new SwitchPosition("0.2", "Menu", BUTTON_13, BUTTON_13, "0.1"), new SwitchPosition("0.1", "On", null), new SwitchPosition("0.0", "Off", BUTTON_12, BUTTON_12, "0.1") }, "CMSP", "JMR", "%0.1f"));
-            AddFunction(new Switch(this, CMSP, "362", new SwitchPosition[] { new SwitchPosition("0.2", "Menu", BUTTON_15, BUTTON_15, "0.1"), new SwitchPosition("0.1", "On", null), new SwitchPosition("0.0", "Off", BUTTON_14, BUTTON_14, "0.1") }, "CMSP", "RWR", "%0.1f"));
-            AddFunction(new Switch(this, CMSP, "363", new SwitchPosition[] { new SwitchPosition("0.2", "Menu", BUTTON_17, BUTTON_17, "0.1"), new SwitchPosition("0.1", "On", null), new SwitchPosition("0.0", "Off", BUTTON_16, BUTTON_16, "0.1") }, "CMSP", "DISP", "%0.1f"));
+            AddFunction(new Switch(this, CMSP, "360", new SwitchPosition[] { new SwitchPosition("1.0", "Menu", BUTTON_11, BUTTON_11, "0.0"), new SwitchPosition("0.0", "On", BUTTON_11), new SwitchPosition("-1.0", "Off", BUTTON_10, BUTTON_10, "0.0", null) }, "CMSP", "MWS", "%0.1f"));
+            AddFunction(new Switch(this, CMSP, "361", new SwitchPosition[] { new SwitchPosition("1.0", "Menu", BUTTON_13, BUTTON_13, "0.0"), new SwitchPosition("0.0", "On", BUTTON_13), new SwitchPosition("-1.0", "Off", BUTTON_12, BUTTON_12, "0.0", null) }, "CMSP", "JMR", "%0.1f"));
+            AddFunction(new Switch(this, CMSP, "362", new SwitchPosition[] { new SwitchPosition("1.0", "Menu", BUTTON_15, BUTTON_15, "0.0"), new SwitchPosition("0.0", "On", BUTTON_15), new SwitchPosition("-1.0", "Off", BUTTON_14, BUTTON_14, "0.0", null) }, "CMSP", "RWR", "%0.1f"));
+            AddFunction(new Switch(this, CMSP, "363", new SwitchPosition[] { new SwitchPosition("1.0", "Menu", BUTTON_17, BUTTON_17, "0.0"), new SwitchPosition("0.0", "On", BUTTON_17), new SwitchPosition("-1.0", "Off", BUTTON_16, BUTTON_16, "0.0", null) }, "CMSP", "DISP", "%0.1f"));
             AddFunction(new Switch(this, CMSP, "364", new SwitchPosition[] { new SwitchPosition("0.0", "Off", BUTTON_18), new SwitchPosition("0.1", "Standby", BUTTON_18), new SwitchPosition("0.2", "Manual", BUTTON_18), new SwitchPosition("0.3", "Semi-Automatic", BUTTON_18), new SwitchPosition("0.4", "Automatic", BUTTON_18) }, "CMSP", "Mode Select Dial", "%0.1f"));
             AddFunction(new Text(this, "2400", "CMSP", "Line 1 Display", "Line 1 Display"));
             AddFunction(new Text(this, "2401", "CMSP", "Line 2 MWS Display", "Text Line 2 MWS Display"));
@@ -786,8 +789,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             #region Engine Throtle Panel
             AddFunction(Switch.CreateToggleSwitch(this, ENGINE_SYSTEM, BUTTON_1, "122", "1", "Norm", "0", "Override", "Engine System", "Left Engine Fuel Flow Control", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, ENGINE_SYSTEM, BUTTON_2, "123", "1", "Norm", "0", "Override", "Engine System", "Right Engine Fuel Flow Control", "%1d"));
-            AddFunction(new Switch(this, ENGINE_SYSTEM, "124", new SwitchPosition[] { new SwitchPosition("1", "Ignite", BUTTON_7, BUTTON_7, "0"), new SwitchPosition("0", "Normal", BUTTON_3), new SwitchPosition("-1", "Motor", BUTTON_3) }, "Engine System", "Engine Operate Left", "%1d"));
-            AddFunction(new Switch(this, ENGINE_SYSTEM, "125", new SwitchPosition[] { new SwitchPosition("1", "Ignite", BUTTON_8, BUTTON_8, "0"), new SwitchPosition("0", "Normal", BUTTON_4), new SwitchPosition("-1", "Motor", BUTTON_4) }, "Engine System", "Engine Operate Right", "%1d"));
+            AddFunction(new Switch(this, ENGINE_SYSTEM, "124", new SwitchPosition[] { new SwitchPosition("1", "Ignite", BUTTON_7, BUTTON_7, "0"), new SwitchPosition("0", "Normal", BUTTON_7), new SwitchPosition("-1", "Motor", BUTTON_3, BUTTON_3, "0") }, "Engine System", "Engine Operate Left", "%1d"));
+            AddFunction(new Switch(this, ENGINE_SYSTEM, "125", new SwitchPosition[] { new SwitchPosition("1", "Ignite", BUTTON_8, BUTTON_8, "0"), new SwitchPosition("0", "Normal", BUTTON_8), new SwitchPosition("-1", "Motor", BUTTON_4, BUTTON_4, "0") }, "Engine System", "Engine Operate Right", "%1d"));
             AddFunction(Switch.CreateToggleSwitch(this, ENGINE_SYSTEM, BUTTON_5, "126", "1", "On", "0", "Off", "Engine System", "APU", "%1d"));
             AddFunction(new PushButton(this, SYS_CONTROLLER, BUTTON_3, "127", "System Controller", "Landing Gear Horn Silence Button"));
             AddFunction(new Axis(this, ENGINE_SYSTEM, BUTTON_6, "128", 0.1d, 0.0d, 1.0d, "Engine System", "Throttle Friction Control"));

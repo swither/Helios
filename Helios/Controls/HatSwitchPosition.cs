@@ -23,4 +23,16 @@ namespace GadrocsWorkshop.Helios.Controls
         Left,
         Right
     }
+    public enum HatSwitchHorizontalPosition
+    {
+        Left = 1,
+        Center,
+        Right
+    }
+    public enum HatSwitchVerticalPosition
+    {
+        Up = 1,
+        Center,
+        Down
+    }
 }

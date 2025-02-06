@@ -1,0 +1,16 @@
+<ControlTemplate>
+    <Name>L Fuel Press Image</Name>
+    <Category>F-5E Tiger II</Category>
+    <TypeIdentifier>Helios.Base.ImageTranslucent</TypeIdentifier>
+    <Template>
+        <TemplateValues>
+            <Image>{F-5E}/Images/Lamps_And_Indicators/L_Fuel_Press.png</Image>
+            <Alignment>Stretched</Alignment>
+            <CornerRadius>0</CornerRadius>
+            <DefaultOpacity>1.0</DefaultOpacity>
+            <Location>0,0</Location>
+            <Size>173,44</Size>
+            <Hidden>False</Hidden>
+        </TemplateValues>
+    </Template>
+</ControlTemplate>

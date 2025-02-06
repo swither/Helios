@@ -22,6 +22,8 @@ namespace GadrocsWorkshop.Helios.Controls
     /// Interaction logic for LinearPotentiometerBehaviorEditor.xaml
     /// </summary>
     [HeliosPropertyEditor("Helios.Base.LinearPotentiometerAnimated", "Behavior")]
+    [HeliosPropertyEditor("Helios.Base.LinearPotentiometerDetentsAnimated", "Behavior")]
+
     public partial class LinearPotentiometerBehaviorEditor : HeliosPropertyEditor
     {
         public LinearPotentiometerBehaviorEditor()

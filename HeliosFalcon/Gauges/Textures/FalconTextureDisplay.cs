@@ -51,6 +51,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
         /// backing field for background transparency
         /// </summary>
         private bool _transparency;
+        private bool _horizontalFlip;
+        private bool _verticalFlip;
         private string _aircraftName;
         private bool _flying;
 
@@ -119,6 +121,36 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
                 bool oldValue = _transparency;
                 _transparency = value;
                 OnPropertyChanged(nameof(TransparencyEnabled), oldValue, value, true);
+            }
+        }
+
+        public bool HorizontalFlipEnabled
+        {
+            get => _horizontalFlip;
+            set
+            {
+                if (_horizontalFlip == value)
+                {
+                    return;
+                }
+                bool oldValue = _horizontalFlip;
+                _horizontalFlip = value;
+                OnPropertyChanged(nameof(HorizontalFlipEnabled), oldValue, value, true);
+            }
+        }
+
+        public bool VerticalFlipEnabled
+        {
+            get => _verticalFlip;
+            set
+            {
+                if (_verticalFlip == value)
+                {
+                    return;
+                }
+                bool oldValue = _verticalFlip;
+                _verticalFlip = value;
+                OnPropertyChanged(nameof(VerticalFlipEnabled), oldValue, value, true);
             }
         }
 
@@ -375,6 +407,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
         {
             base.WriteXml(writer);
             writer.WriteElementString("TransparentBackground", TransparencyEnabled.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteElementString("HorizontalImageFlip", HorizontalFlipEnabled.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteElementString("VerticalImageFlip", VerticalFlipEnabled.ToString(System.Globalization.CultureInfo.InvariantCulture));
         }
 
         public override void ReadXml(System.Xml.XmlReader reader)
@@ -388,6 +422,24 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Gauges.Textures
             catch
             {
                 TransparencyEnabled = false;
+            }
+
+            try
+            {
+                HorizontalFlipEnabled = bool.Parse(reader.ReadElementString("HorizontalImageFlip"));
+            }
+            catch
+            {
+                HorizontalFlipEnabled = false;
+            }
+
+            try
+            {
+                VerticalFlipEnabled = bool.Parse(reader.ReadElementString("VerticalImageFlip"));
+            }
+            catch
+            {
+                VerticalFlipEnabled = false;
             }
         }
     }

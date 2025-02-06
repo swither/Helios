@@ -25,7 +25,7 @@ namespace GadrocsWorkshop.Helios.Controls
 	using System.Linq;
 
 
-	[HeliosControl("Helios.Falcon.MapControl", "Falcon BMS Map Control", "Falcon Simulator", typeof(Gauges.GaugeRenderer))]
+	[HeliosControl("Helios.Falcon.MapControl", "Falcon BMS Map Control", "Falcon BMS Common", typeof(Gauges.GaugeRenderer))]
 
 	public class MapControl : MapControls
 	{
