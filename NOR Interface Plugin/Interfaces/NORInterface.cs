@@ -1,4 +1,4 @@
-﻿using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
+using GadrocsWorkshop.Helios.Interfaces.DCS.Common;
 using GadrocsWorkshop.Helios.Windows.Controls;
 using System;
 using System.Collections.Generic;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Diagnostics;
 
 namespace GadrocsWorkshop.Helios.Interfaces
 {
@@ -28,11 +29,14 @@ namespace GadrocsWorkshop.Helios.Interfaces
 	using System.Windows.Media;
 	using static GadrocsWorkshop.Helios.Interfaces.DCS.Common.NetworkTriggerValue;
 	using NOR.FrontDoor.Client.PropertyValue;
+    using static System.Windows.Forms.AxHost;
+    using NLog.Time;
+    using System.Threading;
 
-	/// <summary>
-	/// NOR Frontdoor interface
-	/// </summary>
-	[HeliosInterface(
+    /// <summary>
+    /// NOR Frontdoor interface
+    /// </summary>
+    [HeliosInterface(
 		"Helios.NOR",                          // Helios internal type ID used in Profile XML, must never change
 		"NOR",                 // human readable UI name for this interface
 		typeof(NORInterfaceEditor),               // uses nor interface dialog for setup
@@ -77,7 +81,9 @@ namespace GadrocsWorkshop.Helios.Interfaces
 
 		//Actions hooked up
 
-		public NORInterface(string name)
+		// Worker thread
+		Thread FrontDoorWorkerThread = null;
+        public NORInterface(string name)
 	   : base(name)
 		{
 			_dispatcher = System.Windows.Application.Current.Dispatcher;
@@ -105,20 +111,20 @@ namespace GadrocsWorkshop.Helios.Interfaces
 		}
 
 
-		private void GearHandleAction_Execute(object action, HeliosActionEventArgs e)
-		{
-			if (FDClient != null)
-			{
-				var Commands = new Dictionary<string, NOR.FrontDoor.Client.PropertyValue.IPropertyValue>
-				{ 
-					{ 
-						"LGHandle", 
-						new NOR.FrontDoor.Client.PropertyValue.StringPropertyValue(Clickables["LGHandle"].StringValue == "LGDown" ?  "LGUp" : "LGDown") 
-					}
-				};
-				FDClient.SetClickableStates(Commands);
-			}
-		}
+		//private void GearHandleAction_Execute(object action, HeliosActionEventArgs e)
+		//{
+		//	if (FDClient != null)
+		//	{
+		//		var Commands = new Dictionary<string, NOR.FrontDoor.Client.PropertyValue.IPropertyValue>
+		//		{ 
+		//			{ 
+		//				"LGHandle", 
+		//				new NOR.FrontDoor.Client.PropertyValue.StringPropertyValue(Clickables["LGHandle"].StringValue == "LGDown" ?  "LGUp" : "LGDown") 
+		//			}
+		//		};
+		//		FDClient.SetClickableStates(Commands);
+		//	}
+		//}
 
 		public void RefreshActionsAndTriggers()
 		{
@@ -233,62 +239,170 @@ namespace GadrocsWorkshop.Helios.Interfaces
 			}
 		}
 
-		private void Profile_ProfileStopped(object sender, EventArgs e)
-		{
-			if (FDClient != null)
-			{
-				//Remove front door client
-				FDClient.Dispose();
-			}
-		}
+        static bool ActionsBound = false;
 
-		private async void Profile_ProfileStarted(object sender, EventArgs e)
+        // FrontDoorWorkerThread begin
+        static bool ProfileStarted = false;
+        static bool FrontDoorConnected = false;
+        static bool RunWorker = true;
+        static bool Trying = false;
+        static NORInterface instance = null;
+        private IDisposable _subscription;
+
+        public static void FrontDoorWorkerDoWork()
+        {
+            while (RunWorker)
+            {
+                if (ProfileStarted && !FrontDoorConnected && !Trying)
+                {
+                    instance.ConnectToFrontDoor();
+                }
+
+                if (!ProfileStarted && FrontDoorConnected)
+                {
+                    instance.DisposeFrontDoor();
+                    FrontDoorConnected = false;
+                    Trying = false;
+                }
+
+                Thread.Sleep(100);
+            }
+        }
+        // FrontDoorWorkerThread end
+
+        private void Profile_ProfileStopped(object sender, EventArgs e)
 		{
+            ProfileStarted = false;
+            RunWorker = false;
+        }
+
+        private async void Profile_ProfileStarted(object sender, EventArgs e)
+		{
+            ProfileStarted = true;
+
+            if (FrontDoorWorkerThread == null)
+            {
+				instance = this;
+                FrontDoorWorkerThread = new Thread(NORInterface.FrontDoorWorkerDoWork);
+				FrontDoorWorkerThread.Start();
+            }
+        }
+
+        public async void ConnectToFrontDoor()
+		{
+			Trying = true;
+
+			DisposeFrontDoor();
+
 			//Create frontdoor client
-			FDClient = new FrontDoorClient("127.0.0.1:5555");
+			FDClient = new FrontDoorClient("127.0.0.1:5555", true);
+			_subscription = FDClient.IsConnected.Subscribe(x => ConnectToFrontDoorReply(x));
+        }
 
-			//Bound actions
-			BoundClickablesActions = new Dictionary<string, HeliosAction>();
-			foreach (var Binding in InputBindings)
-			{
-				if (Binding.Action.Device == "Clickables")
-				{
-					BoundClickablesActions[Binding.Action.Name] = (HeliosAction)Binding.Action;
-				}
-			}
-			foreach (var Binding in BoundClickablesActions)
-			{
-				Binding.Value.Execute += ClickableExecute;
-			}
+        private async void DisposeFrontDoor()
+		{
+			_subscription?.Dispose();
+			if (FDClient != null)
+            {
+                FDClient.Dispose();
+                FDClient = null;
+            }
+            
+        }
 
-			//Bounds triggers
-			BoundClickables = new Dictionary<string, HeliosTrigger>();
-			BoundProperties = new Dictionary<string, Dictionary<string, HeliosTrigger>>();
-			foreach (var Binding in OutputBindings)
-			{
-				if (Binding.Trigger.Device == "Clickables")
-				{
-					BoundClickables[Binding.Trigger.Name] =  (HeliosTrigger)Binding.Trigger;
-				}
-				else
-				{
-					//public Dictionary<String, Dictionary<String, HeliosTrigger>> BoundProperties;
-					if (!BoundProperties.ContainsKey(Binding.Trigger.Device))
-					{
-						BoundProperties.Add(Binding.Trigger.Device, new Dictionary<string, HeliosTrigger>());
-					}
-					BoundProperties[Binding.Trigger.Device].Add(Binding.Trigger.Name, (HeliosTrigger)Binding.Trigger);
-				}
+        private async void ConnectToFrontDoorReply(bool Connected)
+        {
+            if (!ProfileStarted)
+            {
+				DisposeFrontDoor();
+                FrontDoorConnected = false;
+				Trying = false;
 				
+                return;
+            }
+			
+
+            if (ProfileStarted && FrontDoorConnected && !Connected)
+            {
+                // Disconnected
+                FrontDoorConnected = false;
+				Trying = false;
+                return;
+            }
+
+            if (ProfileStarted && !FrontDoorConnected && !Connected)
+            {
+                // Failed to connect
+                return;
+            }
+
+            if (ProfileStarted && FrontDoorConnected)
+			{
+				return;
 			}
 
+			if (!ActionsBound)
+			{
+				BindActions();
+				ActionsBound = true;
+			}
 
-			ProcessPlayerState(await FDClient.GetPlayerState());
-			_ = FDClient.StreamPlayerEvents(OnPlayerStateReceived);
+			try
+			{
+				var PlayerState = await FDClient.GetPlayerState();
+				ProcessPlayerState(PlayerState);
+				_ = FDClient.StreamPlayerEvents(OnPlayerStateReceived);
 
-		}
+				FrontDoorConnected = true;
+			}
+			catch (Exception ex)
+			{
+                DisposeFrontDoor();
 
-		private void ClickableExecute(object action, HeliosActionEventArgs e)
+                FrontDoorConnected = false;
+				Trying = false;
+            }
+        }
+
+        private void BindActions()
+		{ 
+			//Bound actions
+            BoundClickablesActions = new Dictionary<string, HeliosAction>();
+            foreach (var Binding in InputBindings)
+            {
+                if (Binding.Action.Device == "Clickables")
+                {
+                    BoundClickablesActions[Binding.Action.Name] = (HeliosAction)Binding.Action;
+                }
+            }
+            foreach (var Binding in BoundClickablesActions)
+            {
+                Binding.Value.Execute += ClickableExecute;
+            }
+
+            //Bounds triggers
+            BoundClickables = new Dictionary<string, HeliosTrigger>();
+            BoundProperties = new Dictionary<string, Dictionary<string, HeliosTrigger>>();
+            foreach (var Binding in OutputBindings)
+            {
+                if (Binding.Trigger.Device == "Clickables")
+                {
+                    BoundClickables[Binding.Trigger.Name] = (HeliosTrigger)Binding.Trigger;
+                }
+                else
+                {
+                    //public Dictionary<String, Dictionary<String, HeliosTrigger>> BoundProperties;
+                    if (!BoundProperties.ContainsKey(Binding.Trigger.Device))
+                    {
+                        BoundProperties.Add(Binding.Trigger.Device, new Dictionary<string, HeliosTrigger>());
+                    }
+                    BoundProperties[Binding.Trigger.Device].Add(Binding.Trigger.Name, (HeliosTrigger)Binding.Trigger);
+                }
+
+            }
+        }
+
+        private void ClickableExecute(object action, HeliosActionEventArgs e)
 		{
 			if (FDClient != null)
 			{
@@ -332,9 +446,10 @@ namespace GadrocsWorkshop.Helios.Interfaces
 			{
 				var StrippedPath = BoundProperty.Key.Substring(0, BoundProperty.Key.LastIndexOf('.'));
 				var ComponentPath = PlayerPath + '.' + StrippedPath;
-		
-				ProcessProperties(StrippedPath, await FDClient.GetComponentProperties(ComponentPath));
-				_ = FDClient.StreamComponent(ComponentPath, OnPropertiesReceived);
+
+				var propertyGroupValues = await FDClient.GetComponentProperties(ComponentPath);
+				ProcessProperties(StrippedPath, propertyGroupValues);
+				await FDClient.StreamComponent(ComponentPath, OnPropertiesReceived);
 			}
 
 
@@ -367,17 +482,18 @@ namespace GadrocsWorkshop.Helios.Interfaces
 		}
 
 
-		private void ProcessReceivedClickables(Dictionary<string, Dictionary<string, NOR.FrontDoor.Client.PropertyValue.IPropertyValue>> Data)
+		private void ProcessReceivedClickables(List<PropertyGroupValue> Data)
 		{
 			
 			foreach (var BoundClickable in BoundClickables)
 			{
-				if (!Data["Clickables"].ContainsKey(BoundClickable.Key))
+				var Clickables = Data.Single(x => x.Key == "Clickables");
+				if (!Clickables.PropertyValues.ContainsKey(BoundClickable.Key))
 				{
 					continue;
 				}
 
-				var Value = Data["Clickables"][BoundClickable.Key];
+				var Value = Clickables.PropertyValues[BoundClickable.Key];
 
 				BindingValue bindValue;
 				if (Value is NOR.FrontDoor.Client.PropertyValue.DoublePropertyValue)
@@ -395,11 +511,11 @@ namespace GadrocsWorkshop.Helios.Interfaces
 		}
 
 
-		void ProcessPlayerState(Dictionary<string, Dictionary<string, NOR.FrontDoor.Client.PropertyValue.IPropertyValue>> Player)
+		void ProcessPlayerState(List<PropertyGroupValue> Player)
 		{
 			bool Success = true;
 
-			if (!Player.ContainsKey("Possessed"))
+			if (!Player.Any(x => x.Key == "Possessed"))
 			{
 				Success = false;
 
@@ -407,26 +523,26 @@ namespace GadrocsWorkshop.Helios.Interfaces
 				TearDownStreams();
 				return;
 			}
-			var Possessed = Player["Possessed"];
+			var Possessed = Player.Single(x => x.Key == "Possessed");
 
-			if (!Possessed.ContainsKey("ActorPath"))
+			if (!Possessed.PropertyValues.ContainsKey("ActorPath"))
 			{
 				Success = false;
 			}
 
-			if (!Possessed.ContainsKey("TypeName"))
+			if (!Possessed.PropertyValues.ContainsKey("TypeName"))
 			{
 				Success = false;
-			}
+            }
 
-			if (Possessed["TypeName"].StringValue != TypeName)
-			{
-				Success = false;
-			}
+            if (Success && Possessed.PropertyValues["TypeName"].StringValue != TypeName)
+            {
+                Success = false;
+            }
 
 			if (Success)
 			{
-				PlayerPath = Possessed["ActorPath"].StringValue; ;
+				PlayerPath = Possessed.PropertyValues["ActorPath"].StringValue; ;
 
 				//Stream stuff
 				_= SetupStreamsAsync();
@@ -439,18 +555,26 @@ namespace GadrocsWorkshop.Helios.Interfaces
 			}
 		}
 
-		void ProcessProperties(String Component, Dictionary<string, Dictionary<string, NOR.FrontDoor.Client.PropertyValue.IPropertyValue>> Properties)
+        void ProcessProperties(String Component, List<PropertyGroupValue> Properties)
 		{
-			foreach (var State in Properties)
+			foreach (var propertyGroupValue in Properties)
 			{
-				var Combined = Component + "." +  State.Key;
+				var Combined = Component + "." + propertyGroupValue.Key;
 				if (BoundProperties.ContainsKey(Combined))
 				{
 					var BoundComponent = BoundProperties[Combined];
 
 					foreach (var KvP in BoundComponent)
 					{
-						var Value = State.Value[KvP.Key];
+						if (!propertyGroupValue.PropertyValues.TryGetValue(KvP.Key, out var Value))
+						{
+							if (!propertyGroupValue.PropertyValues.TryGetValue(KvP.Key.Replace("AOAdeg", "AoADeg"),
+								    out Value))
+							{
+								Console.WriteLine($"{KvP.Key} not found in {Component}");
+								continue;
+							}
+						}
 
 						BindingValue bindValue;
 						if (Value is NOR.FrontDoor.Client.PropertyValue.DoublePropertyValue)
@@ -472,14 +596,10 @@ namespace GadrocsWorkshop.Helios.Interfaces
 
 						_dispatcher.Invoke(() => KvP.Value.FireTrigger(bindValue),
 						System.Windows.Threading.DispatcherPriority.Send);
-
 					}
 				}
-
 			}
-
-
-		}
+        }
 	
 
 		private Task OnPlayerStateReceived(StreamResult arg)

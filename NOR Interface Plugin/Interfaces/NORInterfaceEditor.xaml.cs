@@ -13,6 +13,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
 using GadrocsWorkshop.Helios.Windows;
 using System.Windows.Input;
 
@@ -162,24 +163,24 @@ namespace GadrocsWorkshop.Helios.Interfaces
 			var Player = await FDClient.GetPlayerState();
 
 
-			if (!Player.ContainsKey("Possessed"))
+			if (!Player.Any(x => x.Key == "Possessed"))
 			{
 				return;
 			}
-			var Possessed = Player["Possessed"];
+			var Possessed = Player.Single(x => x.Key == "Possessed");
 
-			if (!Possessed.ContainsKey("ActorPath"))
+			if (!Possessed.PropertyValues.ContainsKey("ActorPath"))
 			{
 				return;
 			}
 
-			if (!Possessed.ContainsKey("TypeName"))
+			if (!Possessed.PropertyValues.ContainsKey("TypeName"))
 			{
 				return;
 			}
-			_parent.TypeName = Possessed["TypeName"].StringValue;
+			_parent.TypeName = Possessed.PropertyValues["TypeName"].StringValue;
 
-			var PlayerPath = Possessed["ActorPath"];
+			var PlayerPath = Possessed.PropertyValues["ActorPath"];
 
 			GrabStatus.Text = "Grabbing Clickables";
 
@@ -188,7 +189,7 @@ namespace GadrocsWorkshop.Helios.Interfaces
 			_parent.ClickablesCache = new List<Tuple<String, String>>();
 			foreach (var ClickableGroup in ClickablesDict)
 			{
-				foreach (var Clickable in ClickableGroup.Value)
+				foreach (var Clickable in ClickableGroup.PropertyValues)
 				{
 					if (Clickable.Value is NOR.FrontDoor.Client.PropertyValue.DoublePropertyValue)
 					{
@@ -215,7 +216,9 @@ namespace GadrocsWorkshop.Helios.Interfaces
 					String StrippedComp = Component.Replace(PlayerPath.StringValue + ".", "");
 					GrabStatus.Text = $"Grabbing Component Properties: {StrippedComp}";
 
-					var CompProperties = await FDClient.GetComponentProperties(Component);
+                    try
+					{
+						var CompProperties = await FDClient.GetComponentProperties(Component);
 
 					var ComponentDict = new Dictionary<string, List<Tuple<string, string>>>();
 
@@ -223,7 +226,7 @@ namespace GadrocsWorkshop.Helios.Interfaces
 					{
 						var PropertyGroupList = new List<Tuple<string, string>>();
 
-						foreach (var CompProperty in CompPropertyGroup.Value)
+						foreach (var CompProperty in CompPropertyGroup.PropertyValues)
 						{
 							BindingValueUnit Unit;
 							if (CompProperty.Value is NOR.FrontDoor.Client.PropertyValue.DoublePropertyValue)
@@ -250,7 +253,13 @@ namespace GadrocsWorkshop.Helios.Interfaces
 					}
 
 					_parent.ComponentsCache.Add(StrippedComp, ComponentDict);
-				}
+
+                    }
+                    catch
+                    {
+                        
+                    }
+                }
 			}
 
 			PopulateList();
